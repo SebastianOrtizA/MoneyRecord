@@ -42,6 +42,9 @@ namespace MoneyRecord.ViewModels
         private bool isAscending = false;
 
         [ObservableProperty]
+        private bool isRefreshing = false;
+
+        [ObservableProperty]
         private ObservableCollection<Transaction> transactions = new();
 
         [ObservableProperty]
@@ -64,105 +67,67 @@ namespace MoneyRecord.ViewModels
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("=== LoadDataAsync START ===");
+                IsRefreshing = true;
                 
                 var (startDate, endDate) = GetDateRange();
-                System.Diagnostics.Debug.WriteLine($"Date range: {startDate} to {endDate}");
 
                 CurrentBalance = await _databaseService.GetBalanceAsync(startDate, endDate);
                 TotalIncomes = await _databaseService.GetTotalIncomesAsync(startDate, endDate);
                 TotalExpenses = await _databaseService.GetTotalExpensesAsync(startDate, endDate);
-                
-                System.Diagnostics.Debug.WriteLine($"Balance: {CurrentBalance}, Incomes: {TotalIncomes}, Expenses: {TotalExpenses}");
 
                 var transactionList = await _databaseService.GetTransactionsAsync(startDate, endDate);
-                System.Diagnostics.Debug.WriteLine($"Retrieved {transactionList.Count} transactions");
                 
                 // Sort by date
                 transactionList = IsAscending 
                     ? transactionList.OrderBy(t => t.Date).ToList()
                     : transactionList.OrderByDescending(t => t.Date).ToList();
 
-                System.Diagnostics.Debug.WriteLine($"IsGroupedByCategory: {IsGroupedByCategory}");
-
                 // Update collections on main thread
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    System.Diagnostics.Debug.WriteLine("Inside MainThread.InvokeOnMainThreadAsync");
                     
                     if (IsGroupedByCategory)
                     {
-                        System.Diagnostics.Debug.WriteLine("Starting grouping...");
-                        
-                        try
+                        // Group transactions by category with null safety
+                        var validTransactions = transactionList
+                            .Where(t => !string.IsNullOrEmpty(t.CategoryName))
+                            .ToList();
+                            
+                        var groupedList = validTransactions
+                            .GroupBy(t => t.CategoryName)
+                            .ToList();
+                            
+                        var groups = new List<TransactionGroup>();
+                            
+                        foreach (var g in groupedList)
                         {
-                            // Group transactions by category with null safety
-                            var validTransactions = transactionList
-                                .Where(t => !string.IsNullOrEmpty(t.CategoryName))
-                                .ToList();
-                            
-                            System.Diagnostics.Debug.WriteLine($"Valid transactions for grouping: {validTransactions.Count}");
-                            
-                            var groupedList = validTransactions
-                                .GroupBy(t => t.CategoryName)
-                                .ToList();
-                            
-                            System.Diagnostics.Debug.WriteLine($"Created {groupedList.Count} groups");
-                            
-                            var groups = new List<TransactionGroup>();
-                            
-                            foreach (var g in groupedList)
-                            {
-                                System.Diagnostics.Debug.WriteLine($"Creating group for category: {g.Key}");
-                                var transactionsInGroup = g.ToList();
-                                System.Diagnostics.Debug.WriteLine($"  Transactions in group: {transactionsInGroup.Count}");
+                            var transactionsInGroup = g.ToList();
                                 
-                                try
-                                {
-                                    var group = new TransactionGroup(g.Key, transactionsInGroup);
-                                    System.Diagnostics.Debug.WriteLine($"  Created TransactionGroup successfully");
-                                    groups.Add(group);
-                                }
-                                catch (Exception ex)
-                                {
-                                    System.Diagnostics.Debug.WriteLine($"  ERROR creating TransactionGroup: {ex.Message}");
-                                    throw;
-                                }
+                            try
+                            {
+                                var group = new TransactionGroup(g.Key, transactionsInGroup);
+                                groups.Add(group);
                             }
+                            catch (Exception ex)
+                            {
+                                throw;
+                            }
+                        }
                             
-                            groups = groups.OrderBy(g => g.CategoryName).ToList();
-                            System.Diagnostics.Debug.WriteLine($"Sorted {groups.Count} groups");
+                        groups = groups.OrderBy(g => g.CategoryName).ToList();
 
-                            System.Diagnostics.Debug.WriteLine("Clearing GroupedTransactions...");
-                            GroupedTransactions.Clear();
+                        GroupedTransactions.Clear();
                             
-                            System.Diagnostics.Debug.WriteLine("Creating new ObservableCollection with all groups...");
-                            // Instead of adding one by one, replace the entire collection
-                            var newGroupedCollection = new ObservableCollection<TransactionGroup>(groups);
+                        // Instead of adding one by one, replace the entire collection
+                        var newGroupedCollection = new ObservableCollection<TransactionGroup>(groups);
                             
-                            System.Diagnostics.Debug.WriteLine("Replacing GroupedTransactions collection...");
-                            // Replace the backing field directly to avoid multiple notifications
-                            groupedTransactions = newGroupedCollection;
-                            OnPropertyChanged(nameof(GroupedTransactions));
+                        GroupedTransactions = newGroupedCollection;
+                        OnPropertyChanged(nameof(GroupedTransactions));
                             
-                            System.Diagnostics.Debug.WriteLine($"GroupedTransactions now has {GroupedTransactions.Count} groups");
-                            
-                            System.Diagnostics.Debug.WriteLine("Clearing Transactions...");
-                            Transactions.Clear();
-                            
-                            System.Diagnostics.Debug.WriteLine("Grouping completed successfully");
-                        }
-                        catch (Exception groupEx)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"ERROR in grouping logic: {groupEx.Message}");
-                            System.Diagnostics.Debug.WriteLine($"Stack: {groupEx.StackTrace}");
-                            throw;
-                        }
+                        Transactions.Clear();
                     }
                     else
                     {
-                        System.Diagnostics.Debug.WriteLine("Starting flat list...");
-                        
                         // Show flat list
                         Transactions.Clear();
                         foreach (var transaction in transactionList)
@@ -171,30 +136,19 @@ namespace MoneyRecord.ViewModels
                         }
 
                         GroupedTransactions.Clear();
-                        
-                        System.Diagnostics.Debug.WriteLine("Flat list completed successfully");
                     }
                 });
-                
-                System.Diagnostics.Debug.WriteLine("=== LoadDataAsync END ===");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"=== LoadDataAsync EXCEPTION ===");
-                System.Diagnostics.Debug.WriteLine($"Exception type: {ex.GetType().Name}");
-                System.Diagnostics.Debug.WriteLine($"Error loading data: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-                
-                if (ex.InnerException != null)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
-                    System.Diagnostics.Debug.WriteLine($"Inner stack: {ex.InnerException.StackTrace}");
-                }
-                
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     await Shell.Current.DisplayAlert("Error", $"Failed to load transactions: {ex.Message}\n\nCheck Output window for details.", "OK");
                 });
+            }
+            finally
+            {
+                IsRefreshing = false;
             }
         }
 
@@ -251,8 +205,6 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error toggling grouping: {ex.Message}");
-                
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     await Shell.Current.DisplayAlert("Error", $"Failed to toggle view: {ex.Message}", "OK");
@@ -296,7 +248,6 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error deleting transaction: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error", $"Failed to delete transaction: {ex.Message}", "OK");
             }
         }

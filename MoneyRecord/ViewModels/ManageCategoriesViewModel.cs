@@ -78,19 +78,13 @@ namespace MoneyRecord.ViewModels
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine($"Attempting to delete category: {category.Name} (ID: {category.Id})");
-                
                 // Check if category has transactions
                 var hasTransactions = await _databaseService.CategoryHasTransactionsAsync(category.Id);
-                
-                System.Diagnostics.Debug.WriteLine($"Category has transactions: {hasTransactions}");
 
                 if (hasTransactions)
                 {
                     // Get other categories of the same type (excluding the one being deleted)
                     var availableCategories = Categories.Where(c => c.Id != category.Id).ToList();
-                    
-                    System.Diagnostics.Debug.WriteLine($"Available categories for reassignment: {availableCategories.Count}");
 
                     if (availableCategories.Count == 0)
                     {
@@ -107,8 +101,6 @@ namespace MoneyRecord.ViewModels
                         "Cancel",
                         null,
                         categoryNames);
-
-                    System.Diagnostics.Debug.WriteLine($"User selected: {selectedCategory}");
 
                     if (selectedCategory == "Cancel" || selectedCategory == null)
                         return;
@@ -134,16 +126,11 @@ namespace MoneyRecord.ViewModels
 
                     if (!confirmReassign)
                     {
-                        System.Diagnostics.Debug.WriteLine("User cancelled the reassignment");
                         return;
                     }
 
-                    System.Diagnostics.Debug.WriteLine($"Reassigning transactions from {category.Id} to {replacementCategory.Id}");
-
                     // Reassign transactions
                     var reassignedCount = await _databaseService.ReassignTransactionsCategoryAsync(category.Id, replacementCategory.Id);
-
-                    System.Diagnostics.Debug.WriteLine($"Reassigned {reassignedCount} transactions");
 
                     // Delete the category
                     await _databaseService.DeleteCategoryAsync(category);
@@ -162,15 +149,12 @@ namespace MoneyRecord.ViewModels
                         return;
 
                     await _databaseService.DeleteCategoryAsync(category);
-                    
-                    System.Diagnostics.Debug.WriteLine($"Category {category.Name} deleted (no transactions)");
                 }
 
                 await LoadCategoriesAsync();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error in DeleteCategoryAsync: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }

@@ -9,9 +9,20 @@ namespace MoneyRecord.Converters
         {
             if (value is TransactionType type)
             {
-                return type == TransactionType.Income 
-                    ? Colors.Green 
-                    : Colors.Red;
+                if (type == TransactionType.Income)
+                {
+                    // Green for income
+                    return Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#66BB6A") // Light green for dark theme
+                        : Color.FromArgb("#2E7D32"); // Dark green for light theme
+                }
+                else
+                {
+                    // Red for expense
+                    return Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#EF5350") // Light red for dark theme
+                        : Color.FromArgb("#D32F2F"); // Dark red for light theme
+                }
             }
             return Colors.Gray;
         }

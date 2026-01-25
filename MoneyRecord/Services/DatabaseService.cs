@@ -95,12 +95,10 @@ namespace MoneyRecord.Services
                     .Where(t => t.CategoryId == categoryId)
                     .CountAsync();
                 
-                System.Diagnostics.Debug.WriteLine($"Category {categoryId} has {count} transactions");
                 return count > 0;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error checking transactions: {ex.Message}");
                 return false;
             }
         }

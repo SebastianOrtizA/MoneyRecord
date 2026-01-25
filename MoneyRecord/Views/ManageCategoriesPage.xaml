@@ -7,105 +7,149 @@
              x:DataType="viewmodels:ManageCategoriesViewModel"
              Title="{Binding Title}">
 
-    <VerticalStackLayout Padding="20" Spacing="20">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
 
-        <!-- Add Category Section -->
-        <Frame BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2D2D2D}" 
-               BorderColor="Transparent"
-               CornerRadius="10"
-               Padding="15"
-               IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
-            <VerticalStackLayout Spacing="10">
-                <Label Text="Add New Category" 
-                       FontSize="18" 
-                       FontAttributes="Bold"/>
-                
-                <Entry Text="{Binding NewCategoryName}" 
-                       Placeholder="Category name"
-                       FontSize="16"/>
-                
-                <Button Text="Add Category" 
-                       Command="{Binding AddCategoryCommand}"
-                       BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
-            </VerticalStackLayout>
-        </Frame>
+            <!-- Add Category Section -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" 
+                   BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                   CornerRadius="12"
+                   Padding="16"
+                   IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Add New Category" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                    
+                    <Entry Text="{Binding NewCategoryName}" 
+                           Placeholder="Category name"
+                           PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
+                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
+                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                           FontSize="16"/>
+                    
+                    <Button Text="Add Category" 
+                           Command="{Binding AddCategoryCommand}"
+                           HeightRequest="44"
+                           CornerRadius="8"
+                           FontSize="16"
+                           BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
+                           TextColor="White"/>
+                </VerticalStackLayout>
+            </Frame>
 
-        <!-- Edit Category Section -->
-        <Frame BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#4A4A2D}" 
-               BorderColor="{AppThemeBinding Light=#FFD54F, Dark=#FFD54F}"
-               CornerRadius="10"
-               Padding="15"
-               IsVisible="{Binding IsEditMode}">
-            <VerticalStackLayout Spacing="10">
-                <Label Text="Edit Category" 
-                       FontSize="18" 
-                       FontAttributes="Bold"
-                       TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
-                
-                <Entry Text="{Binding EditCategoryName}" 
-                       Placeholder="Category name"
-                       FontSize="16"/>
-                
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
-                    <Button Grid.Column="0"
-                           Text="Cancel" 
-                           Command="{Binding CancelEditCommand}"
-                           BackgroundColor="Gray"/>
-                    <Button Grid.Column="1"
-                           Text="Save" 
-                           Command="{Binding SaveEditCommand}"
-                           BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
-                </Grid>
-            </VerticalStackLayout>
-        </Frame>
+            <!-- Edit Category Section -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#3D3D1F}" 
+                   BorderColor="{AppThemeBinding Light=#FFD54F, Dark=#FFD54F}"
+                   CornerRadius="12"
+                   Padding="16"
+                   IsVisible="{Binding IsEditMode}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Edit Category" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
+                    
+                    <Entry Text="{Binding EditCategoryName}" 
+                           Placeholder="Category name"
+                           PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
+                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
+                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                           FontSize="16"/>
+                    
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Button Grid.Column="0"
+                               Text="Cancel" 
+                               Command="{Binding CancelEditCommand}"
+                               HeightRequest="44"
+                               CornerRadius="8"
+                               FontSize="16"
+                               BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
+                               TextColor="White"/>
+                        <Button Grid.Column="1"
+                               Text="Save" 
+                               Command="{Binding SaveEditCommand}"
+                               HeightRequest="44"
+                               CornerRadius="8"
+                               FontSize="16"
+                               BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
+                               TextColor="White"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
 
-        <!-- Categories List -->
-        <Label Text="Categories" FontSize="18" FontAttributes="Bold"/>
-        
-        <CollectionView ItemsSource="{Binding Categories}"
-                       EmptyView="No categories yet">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Category">
-                    <Frame Margin="0,5" 
-                           Padding="15"
-                           BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                           CornerRadius="8">
-                        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
-                            <Label Grid.Column="0"
-                                   Text="{Binding Name}" 
-                                   FontSize="16"
-                                   VerticalOptions="Center"/>
-                            
-                            <Button Grid.Column="1"
-                                    Text="Edit"
-                                    FontSize="12"
-                                    Padding="10,5"
-                                    BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
-                                    TextColor="White"
-                                    CornerRadius="5"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=EditCategoryCommand}"
-                                    CommandParameter="{Binding .}"/>
-                            
-                            <Button Grid.Column="2"
-                                    Text="Delete"
-                                    FontSize="12"
-                                    Padding="10,5"
-                                    BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
-                                    TextColor="White"
-                                    CornerRadius="5"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=DeleteCategoryCommand}"
-                                    CommandParameter="{Binding .}"/>
-                        </Grid>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <!-- Categories List Header -->
+            <Label Text="Categories" 
+                   FontSize="20" 
+                   FontAttributes="Bold"
+                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+            
+            <!-- Categories List -->
+            <CollectionView ItemsSource="{Binding Categories}">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
+                        <Label Text="📁" 
+                               FontSize="48" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="No categories yet" 
+                               FontSize="16"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Category">
+                        <Frame Margin="0,6" 
+                               Padding="16"
+                               BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                               BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                               CornerRadius="10"
+                               HasShadow="False">
+                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+                                <Label Grid.Column="0"
+                                       Text="{Binding Name}" 
+                                       FontSize="16"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
+                                       VerticalOptions="Center"/>
+                                
+                                <Button Grid.Column="1"
+                                        Text="✏️ Edit"
+                                        FontSize="13"
+                                        HeightRequest="36"
+                                        Padding="12,0"
+                                        BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                        TextColor="White"
+                                        CornerRadius="6"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=EditCategoryCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                
+                                <Button Grid.Column="2"
+                                        Text="🗑️ Delete"
+                                        FontSize="13"
+                                        HeightRequest="36"
+                                        Padding="12,0"
+                                        BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                                        TextColor="White"
+                                        CornerRadius="6"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=DeleteCategoryCommand}"
+                                        CommandParameter="{Binding .}"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-        <Button Text="Back" 
-               Command="{Binding GoBackCommand}"
-               BackgroundColor="Gray"
-               Margin="0,20,0,0"/>
+            <Button Text="← Back" 
+                   Command="{Binding GoBackCommand}"
+                   HeightRequest="44"
+                   CornerRadius="8"
+                   FontSize="16"
+                   BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
+                   TextColor="White"
+                   Margin="0,20,0,0"/>
 
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>

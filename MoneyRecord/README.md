@@ -23,7 +23,13 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - Amount
   - Category
   - Sort by date (ascending/descending)
+  - Group by category (optional)
   - Color-coded by type (green for income, red for expenses)
+- **Transaction Actions**:
+  - Each transaction card has Edit and Delete buttons
+  - Tap "✏️ Edit" to modify the transaction
+  - Tap "🗑️ Delete" to remove (with confirmation)
+- **Pull to Refresh**: Pull down to reload transaction data
 
 ### 3. Category Management
 - **Income Categories**: Create and manage income categories
@@ -73,12 +79,24 @@ MoneyRecord/
 ## How to Use
 
 ### Adding a Transaction
-1. From the main page, tap "Add Income" or "Add Expense"
+1. From the main page, tap "💰 Add Income" or "💸 Add Expense"
 2. Select the date (defaults to today)
 3. Enter a description (optional)
 4. Enter the amount
 5. Select a category from the dropdown
 6. Tap "Save"
+
+### Editing a Transaction
+1. On the main page, find the transaction you want to edit
+2. Tap the **"✏️ Edit"** button on the transaction card
+3. Make your changes in the edit screen
+4. Tap "Save" to save changes
+
+### Deleting a Transaction
+1. On the main page, find the transaction you want to delete
+2. Tap the **"🗑️ Delete"** button on the transaction card
+3. Confirm the deletion in the dialog
+4. Tap "Yes, Delete" to permanently remove the transaction
 
 ### Managing Categories
 1. Open the flyout menu (hamburger icon)
@@ -90,10 +108,19 @@ MoneyRecord/
 ### Viewing Different Periods
 1. On the main page, use the Period picker
 2. Select "Last Week", "Last Month", "Last Year", or "Custom Period"
-3. The balance, incomes, expenses, and transaction list update automatically
+3. If "Custom Period" is selected, choose your start and end dates
+4. The balance, incomes, expenses, and transaction list update automatically
 
 ### Sorting Transactions
 - Tap the sort button (↓ Newest First / ↑ Oldest First) to toggle sorting order
+
+### Grouping Transactions
+- Tap the grouping button (📄 List View / 📂 Grouped) to toggle between:
+  - **List View**: All transactions in chronological order
+  - **Grouped View**: Transactions grouped by category with totals
+
+### Refreshing Data
+- Pull down on the main page to refresh transaction data
 
 ## Database Schema
 
