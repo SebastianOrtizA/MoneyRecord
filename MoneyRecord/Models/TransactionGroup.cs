@@ -1,18 +1,33 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.Models
 {
-    public class TransactionGroup : ObservableCollection<Transaction>
+    public partial class TransactionGroup : ObservableObject
     {
-        public string CategoryName { get; set; } = string.Empty;
-        public decimal Total { get; set; }
-        public int TransactionCount { get; set; }
-        public TransactionType Type { get; set; }
+        [ObservableProperty]
+        private string categoryName = string.Empty;
 
-        public TransactionGroup(string categoryName, List<Transaction> transactions) : base(transactions ?? new List<Transaction>())
+        [ObservableProperty]
+        private decimal total;
+
+        [ObservableProperty]
+        private int transactionCount;
+
+        [ObservableProperty]
+        private TransactionType type;
+
+        [ObservableProperty]
+        private bool isExpanded = false;
+
+        [ObservableProperty]
+        private ObservableCollection<Transaction> items = new();
+
+        public TransactionGroup(string categoryName, List<Transaction> transactions)
         {
             CategoryName = categoryName ?? "Unknown";
             TransactionCount = transactions?.Count ?? 0;
+            Items = new ObservableCollection<Transaction>(transactions ?? new List<Transaction>());
             
             if (transactions != null && transactions.Any())
             {
@@ -24,6 +39,11 @@ namespace MoneyRecord.Models
                 Type = TransactionType.Expense;
                 Total = 0;
             }
+        }
+
+        public void ToggleExpanded()
+        {
+            IsExpanded = !IsExpanded;
         }
     }
 }

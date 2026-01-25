@@ -23,7 +23,11 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - Amount
   - Category
   - Sort by date (ascending/descending)
-  - Group by category (optional)
+  - **Grouped View (Default)**: Collapsible groups by category
+    - Groups are collapsed by default
+    - Tap group header to expand/collapse
+    - Shows category name, total amount, and transaction count
+  - **List View**: All transactions in chronological order
   - Color-coded by type (green for income, red for expenses)
 - **Transaction Actions**:
   - Each transaction card has Edit and Delete buttons
@@ -115,9 +119,16 @@ MoneyRecord/
 - Tap the sort button (↓ Newest First / ↑ Oldest First) to toggle sorting order
 
 ### Grouping Transactions
+- The default view is **Grouped by Category** with collapsible sections
+- **Tap a group header** to expand or collapse its transactions
+- Each group shows:
+  - ▶/▼ Expand/collapse indicator
+  - Category name
+  - Total amount for the category
+  - Number of transactions
 - Tap the grouping button (📄 List View / 📂 Grouped) to toggle between:
+  - **Grouped View**: Transactions grouped by category with collapsible sections
   - **List View**: All transactions in chronological order
-  - **Grouped View**: Transactions grouped by category with totals
 
 ### Refreshing Data
 - Pull down on the main page to refresh transaction data

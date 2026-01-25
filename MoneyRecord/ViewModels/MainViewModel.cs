@@ -36,13 +36,16 @@ namespace MoneyRecord.ViewModels
         private bool isCustomPeriodSelected = false;
 
         [ObservableProperty]
-        private bool isGroupedByCategory;
+        private bool isGroupedByCategory = true;  // Default to grouped view
 
         [ObservableProperty]
         private bool isAscending = false;
 
         [ObservableProperty]
         private bool isRefreshing = false;
+
+        [ObservableProperty]
+        private bool hasTransactions = false;
 
         [ObservableProperty]
         private ObservableCollection<Transaction> transactions = new();
@@ -137,6 +140,9 @@ namespace MoneyRecord.ViewModels
 
                         GroupedTransactions.Clear();
                     }
+                    
+                    // Update HasTransactions flag
+                    HasTransactions = transactionList.Any();
                 });
             }
             catch (Exception ex)
@@ -209,6 +215,15 @@ namespace MoneyRecord.ViewModels
                 {
                     await Shell.Current.DisplayAlert("Error", $"Failed to toggle view: {ex.Message}", "OK");
                 });
+            }
+        }
+
+        [RelayCommand]
+        private void ToggleGroupExpanded(TransactionGroup group)
+        {
+            if (group != null)
+            {
+                group.ToggleExpanded();
             }
         }
 

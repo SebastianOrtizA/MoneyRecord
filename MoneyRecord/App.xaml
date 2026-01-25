@@ -15,6 +15,7 @@
             <converters:BoolToSortTextConverter x:Key="BoolToSortTextConverter" />
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:BoolToGroupTextConverter x:Key="BoolToGroupTextConverter" />
+            <converters:BoolToExpandIconConverter x:Key="BoolToExpandIconConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

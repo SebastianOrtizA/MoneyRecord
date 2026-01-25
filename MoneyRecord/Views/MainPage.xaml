@@ -205,7 +205,7 @@
                             <Label Text="📊" 
                                    FontSize="48" 
                                    HorizontalOptions="Center"/>
-                            <Label Text="No transactions yet" 
+                            <Label Text="There are no transactions to show" 
                                    FontSize="18"
                                    FontAttributes="Bold"
                                    HorizontalOptions="Center"
@@ -285,113 +285,144 @@
             </ContentView>
 
 
-            <!-- Grouped Transactions List -->
+            <!-- Grouped Transactions List (Collapsible) -->
             <ContentView IsVisible="{Binding IsGroupedByCategory}">
-                <CollectionView ItemsSource="{Binding GroupedTransactions}"
-                               IsGrouped="True">
-                    <CollectionView.EmptyView>
-                        <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
-                            <Label Text="📊" 
-                                   FontSize="48" 
-                                   HorizontalOptions="Center"/>
-                            <Label Text="No transactions yet" 
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   HorizontalOptions="Center"
-                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                            <Label Text="Start tracking your finances by adding your first transaction" 
-                                   FontSize="14"
-                                   HorizontalOptions="Center"
-                                   HorizontalTextAlignment="Center"
-                                   TextColor="{AppThemeBinding Light=#999999, Dark=#888888}"/>
-                        </VerticalStackLayout>
-                    </CollectionView.EmptyView>
-                    <CollectionView.GroupHeaderTemplate>
-                        <DataTemplate x:DataType="models:TransactionGroup">
-                            <Frame Margin="0,12,0,6"
-                                   Padding="16"
-                                   BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
-                                   BorderColor="{AppThemeBinding Light=#2196F3, Dark=#64B5F6}"
-                                   CornerRadius="12"
-                                   HasShadow="True">
-                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
-                                    <Label Grid.Row="0" Grid.Column="0"
-                                           Text="{Binding CategoryName}"
-                                           FontSize="18"
-                                           FontAttributes="Bold"
-                                           VerticalOptions="Center"
-                                           TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
-                                    <Label Grid.Row="0" Grid.Column="1"
-                                           Text="{Binding Total, StringFormat='${0:N2}'}"
-                                           FontSize="22"
-                                           FontAttributes="Bold"
-                                           VerticalOptions="Center"
-                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
-                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                           Text="{Binding TransactionCount, StringFormat='{0} transactions'}"
-                                           FontSize="13"
-                                           TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.GroupHeaderTemplate>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Transaction">
-                            <Frame Margin="16,6,0,6" 
-                                   Padding="14"
-                                   BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                                   BackgroundColor="{AppThemeBinding Light=#FAFAFA, Dark=#252525}"
-                                   CornerRadius="10"
-                                   HasShadow="False">
-                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
-                                    <!-- Row 0: Date and Amount -->
-                                    <Label Grid.Row="0" Grid.Column="0"
-                                           Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
-                                           FontSize="13"
-                                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                                    
-                                    <Label Grid.Row="0" Grid.Column="1"
-                                           Text="{Binding Amount, StringFormat='${0:N2}'}"
-                                           FontSize="18"
-                                           FontAttributes="Bold"
-                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
-                                    
-                                    <!-- Row 1: Description -->
-                                    <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                                           Text="{Binding Description}"
-                                           FontSize="15"
-                                           LineBreakMode="TailTruncation"/>
-                                    
-                                    <!-- Row 2: Action Buttons -->
-                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
-                                                          Spacing="10" 
-                                                          HorizontalOptions="End"
-                                                          Margin="0,6,0,0">
-                                        <Button Text="✏️ Edit"
-                                                FontSize="13"
-                                                HeightRequest="32"
-                                                Padding="12,0"
-                                                CornerRadius="6"
-                                                BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
-                                                TextColor="White"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=EditTransactionCommand}"
+                <VerticalStackLayout>
+                    <!-- Empty State -->
+                    <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center"
+                                        IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}">
+                        <Label Text="📊" 
+                               FontSize="48" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="There are no transactions to show" 
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        <Label Text="Start tracking your finances by adding your first transaction" 
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#999999, Dark=#888888}"/>
+                    </VerticalStackLayout>
+                    
+                    <!-- Collapsible Groups -->
+                    <CollectionView ItemsSource="{Binding GroupedTransactions}"
+                                   IsVisible="{Binding HasTransactions}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:TransactionGroup">
+                                <VerticalStackLayout Margin="0,6">
+                                    <!-- Group Header (Clickable) -->
+                                    <Frame Padding="16"
+                                           BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
+                                           BorderColor="{AppThemeBinding Light=#2196F3, Dark=#64B5F6}"
+                                           CornerRadius="12"
+                                           HasShadow="False">
+                                        <Frame.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=ToggleGroupExpandedCommand}"
                                                 CommandParameter="{Binding .}"/>
-                                        <Button Text="🗑️ Delete"
-                                                FontSize="13"
-                                                HeightRequest="32"
-                                                Padding="12,0"
-                                                CornerRadius="6"
-                                                BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
-                                                TextColor="White"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=DeleteTransactionCommand}"
-                                                CommandParameter="{Binding .}"/>
-                                    </HorizontalStackLayout>
-                                </Grid>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                                        </Frame.GestureRecognizers>
+                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
+                                            <!-- Expand/Collapse Icon -->
+                                            <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                                                   Text="{Binding IsExpanded, Converter={StaticResource BoolToExpandIconConverter}}"
+                                                   FontSize="16"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
+                                            
+                                            <!-- Category Name -->
+                                            <Label Grid.Row="0" Grid.Column="1"
+                                                   Text="{Binding CategoryName}"
+                                                   FontSize="18"
+                                                   FontAttributes="Bold"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
+                                            
+                                            <!-- Total Amount -->
+                                            <Label Grid.Row="0" Grid.Column="2"
+                                                   Text="{Binding Total, StringFormat='${0:N2}'}"
+                                                   FontSize="20"
+                                                   FontAttributes="Bold"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+                                            
+                                            <!-- Transaction Count -->
+                                            <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                                   Text="{Binding TransactionCount, StringFormat='{0} transactions'}"
+                                                   FontSize="13"
+                                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                        </Grid>
+                                    </Frame>
+                                    
+                                    <!-- Expanded Items -->
+                                    <VerticalStackLayout IsVisible="{Binding IsExpanded}"
+                                                        BindableLayout.ItemsSource="{Binding Items}"
+                                                        Margin="16,0,0,0">
+                                        <BindableLayout.ItemTemplate>
+                                            <DataTemplate x:DataType="models:Transaction">
+                                                <Frame Margin="0,6,0,0" 
+                                                       Padding="14"
+                                                       BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                                       BackgroundColor="{AppThemeBinding Light=#FAFAFA, Dark=#252525}"
+                                                       CornerRadius="10"
+                                                       HasShadow="False">
+                                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+                                                        <!-- Row 0: Date and Amount -->
+                                                        <Label Grid.Row="0" Grid.Column="0"
+                                                               Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
+                                                               FontSize="13"
+                                                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                                        
+                                                        <Label Grid.Row="0" Grid.Column="1"
+                                                               Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                                               FontSize="18"
+                                                               FontAttributes="Bold"
+                                                               TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+                                                        
+                                                        <!-- Row 1: Description -->
+                                                        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                                               Text="{Binding Description}"
+                                                               FontSize="15"
+                                                               TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
+                                                               LineBreakMode="TailTruncation"/>
+                                                        
+                                                        <!-- Row 2: Action Buttons -->
+                                                        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                                              Spacing="10" 
+                                                                              HorizontalOptions="End"
+                                                                              Margin="0,6,0,0">
+                                                            <Button Text="✏️ Edit"
+                                                                    FontSize="13"
+                                                                    HeightRequest="32"
+                                                                    Padding="12,0"
+                                                                    CornerRadius="6"
+                                                                    BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                                                    TextColor="White"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=EditTransactionCommand}"
+                                                                    CommandParameter="{Binding .}"/>
+                                                            <Button Text="🗑️ Delete"
+                                                                    FontSize="13"
+                                                                    HeightRequest="32"
+                                                                    Padding="12,0"
+                                                                    CornerRadius="6"
+                                                                    BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                                                                    TextColor="White"
+                                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=DeleteTransactionCommand}"
+                                                                    CommandParameter="{Binding .}"/>
+                                                        </HorizontalStackLayout>
+                                                    </Grid>
+                                                </Frame>
+                                            </DataTemplate>
+                                        </BindableLayout.ItemTemplate>
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
             </ContentView>
+
 
         </VerticalStackLayout>
     </ScrollView>
