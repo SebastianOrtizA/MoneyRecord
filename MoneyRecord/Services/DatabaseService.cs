@@ -17,12 +17,20 @@ namespace MoneyRecord.Services
 
             await _database.CreateTableAsync<Category>();
             await _database.CreateTableAsync<Transaction>();
+            await _database.CreateTableAsync<Account>();
 
             // Add default categories if none exist
             var categoryCount = await _database.Table<Category>().CountAsync();
             if (categoryCount == 0)
             {
                 await AddDefaultCategories();
+            }
+
+            // Add default "Cash" account if none exist
+            var accountCount = await _database.Table<Account>().CountAsync();
+            if (accountCount == 0)
+            {
+                await AddDefaultAccountAsync();
             }
         }
 
@@ -127,13 +135,25 @@ namespace MoneyRecord.Services
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
 
-            // Load category names
+            // Load category names and account names
             foreach (var transaction in transactions)
             {
                 var category = await _database.Table<Category>()
                     .Where(c => c.Id == transaction.CategoryId)
                     .FirstOrDefaultAsync();
                 transaction.CategoryName = category?.Name ?? "Unknown";
+
+                if (transaction.AccountId.HasValue)
+                {
+                    var account = await _database.Table<Account>()
+                        .Where(a => a.Id == transaction.AccountId.Value)
+                        .FirstOrDefaultAsync();
+                    transaction.AccountName = account?.Name ?? "Cash";
+                }
+                else
+                {
+                    transaction.AccountName = "Cash";
+                }
             }
 
             return transactions;
@@ -204,6 +224,157 @@ namespace MoneyRecord.Services
             return await _database!.Table<Transaction>()
                 .Where(t => t.CategoryId == categoryId)
                 .CountAsync();
+        }
+
+        // Account operations
+        private async Task AddDefaultAccountAsync()
+        {
+            var cashAccount = new Account
+            {
+                Name = "Cash",
+                InitialBalance = 0,
+                IsDefault = true
+            };
+            await _database!.InsertAsync(cashAccount);
+        }
+
+        public async Task<List<Account>> GetAccountsAsync()
+        {
+            await InitializeAsync();
+            return await _database!.Table<Account>().ToListAsync();
+        }
+
+        public async Task<Account?> GetAccountAsync(int id)
+        {
+            await InitializeAsync();
+            return await _database!.Table<Account>()
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Account?> GetDefaultAccountAsync()
+        {
+            await InitializeAsync();
+            return await _database!.Table<Account>()
+                .Where(a => a.IsDefault)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> SaveAccountAsync(Account account)
+        {
+            await InitializeAsync();
+            if (account.Id != 0)
+            {
+                return await _database!.UpdateAsync(account);
+            }
+            else
+            {
+                return await _database!.InsertAsync(account);
+            }
+        }
+
+        public async Task<int> DeleteAccountAsync(Account account)
+        {
+            await InitializeAsync();
+            
+            // Reassign transactions from this account to General account
+            var defaultAccount = await GetDefaultAccountAsync();
+            if (defaultAccount != null && account.Id != defaultAccount.Id)
+            {
+                var transactions = await _database!.Table<Transaction>()
+                    .Where(t => t.AccountId == account.Id)
+                    .ToListAsync();
+
+                foreach (var transaction in transactions)
+                {
+                    transaction.AccountId = defaultAccount.Id;
+                    await _database.UpdateAsync(transaction);
+                }
+            }
+
+            return await _database!.DeleteAsync(account);
+        }
+
+        public async Task<bool> AccountHasTransactionsAsync(int accountId)
+        {
+            await InitializeAsync();
+            var count = await _database!.Table<Transaction>()
+                .Where(t => t.AccountId == accountId)
+                .CountAsync();
+            return count > 0;
+        }
+
+        public async Task<decimal> GetAccountBalanceAsync(int accountId)
+        {
+            await InitializeAsync();
+            
+            var account = await GetAccountAsync(accountId);
+            if (account == null)
+                return 0;
+
+            var transactions = await _database!.Table<Transaction>()
+                .Where(t => t.AccountId == accountId)
+                .ToListAsync();
+
+            var incomes = transactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
+            var expenses = transactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+
+            return account.InitialBalance + incomes - expenses;
+        }
+
+        public async Task<decimal> GetTotalBalanceAsync()
+        {
+            await InitializeAsync();
+            
+            var accounts = await GetAccountsAsync();
+            decimal totalBalance = 0;
+
+            foreach (var account in accounts)
+            {
+                totalBalance += await GetAccountBalanceAsync(account.Id);
+            }
+
+            return totalBalance;
+        }
+
+        public async Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync()
+        {
+            await InitializeAsync();
+            
+            var accounts = await GetAccountsAsync();
+            var result = new List<AccountBalanceInfo>();
+
+            foreach (var account in accounts)
+            {
+                var balance = await GetAccountBalanceAsync(account.Id);
+                
+                var lastTransaction = await _database!.Table<Transaction>()
+                    .Where(t => t.AccountId == account.Id)
+                    .OrderByDescending(t => t.Date)
+                    .FirstOrDefaultAsync();
+
+                result.Add(new AccountBalanceInfo
+                {
+                    AccountId = account.Id,
+                    AccountName = account.Name,
+                    CurrentBalance = balance,
+                    LastTransactionDate = lastTransaction?.Date
+                });
+            }
+
+            return result;
+        }
+
+        public async Task<DateTime?> GetLastTransactionDateForAccountAsync(int accountId)
+        {
+            await InitializeAsync();
+            
+            var lastTransaction = await _database!.Table<Transaction>()
+                .Where(t => t.AccountId == accountId)
+                .OrderByDescending(t => t.Date)
+                .FirstOrDefaultAsync();
+
+            return lastTransaction?.Date;
         }
     }
 }

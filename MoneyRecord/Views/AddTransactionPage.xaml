@@ -9,28 +9,37 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
-            <Label Text="Date" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="Date *" FontSize="16" FontAttributes="Bold"/>
             <DatePicker Date="{Binding SelectedDate}" 
                        Format="D"
                        FontSize="16"/>
 
-            <Label Text="Description" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="Description *" FontSize="16" FontAttributes="Bold"/>
             <Entry Text="{Binding Description}" 
-                   Placeholder="Enter description (optional)"
+                   Placeholder="Enter description"
                    FontSize="16"/>
 
-            <Label Text="Amount" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="Amount *" FontSize="16" FontAttributes="Bold"/>
             <Entry Text="{Binding Amount}" 
                    Placeholder="0.00"
                    Keyboard="Numeric"
                    FontSize="16"/>
 
-            <Label Text="Category" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="Account *" FontSize="16" FontAttributes="Bold"/>
+            <Picker ItemsSource="{Binding Accounts}"
+                   SelectedItem="{Binding SelectedAccount}"
+                   ItemDisplayBinding="{Binding Name}"
+                   Title="Select Account"
+                   FontSize="16"/>
+
+            <Label Text="Category *" FontSize="16" FontAttributes="Bold"/>
             <Picker ItemsSource="{Binding Categories}"
                    SelectedItem="{Binding SelectedCategory}"
                    ItemDisplayBinding="{Binding Name}"
                    Title="Select Category"
                    FontSize="16"/>
+
+            <Label Text="* Required fields" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" Margin="0,5,0,0"/>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
                 <Button Grid.Column="0" 

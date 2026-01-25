@@ -78,14 +78,17 @@
 
                     <!-- Balance Display - Responsive Grid -->
                     <VerticalStackLayout Spacing="12" Margin="0,8,0,0">
-                        <!-- Balance Card -->
+                        <!-- Balance Card (Clickable) -->
                         <Frame BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}" 
                                BorderColor="{AppThemeBinding Light=#4CAF50, Dark=#66BB6A}"
                                CornerRadius="8"
                                Padding="12"
                                HasShadow="False">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ShowAccountBalancesCommand}"/>
+                            </Frame.GestureRecognizers>
                             <VerticalStackLayout Spacing="4">
-                                <Label Text="Balance" 
+                                <Label Text="Total Balance (Tap for details)" 
                                        FontSize="14"
                                        TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
                                        HorizontalOptions="Center"/>
@@ -168,37 +171,37 @@
 
 
             <!-- Transaction List Header -->
-            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" Margin="0,8,0,0">
-                <Label Grid.Column="0" 
-                       Text="Transactions" 
+            <VerticalStackLayout Spacing="12" Margin="0,8,0,0">
+                <Label Text="Transactions" 
                        FontSize="20" 
-                       FontAttributes="Bold"
-                       VerticalOptions="Center"/>
-                <Button Grid.Column="1"
-                        Text="{Binding IsGroupedByCategory, Converter={StaticResource BoolToGroupTextConverter}}"
-                        Command="{Binding ToggleGroupingCommand}"
-                        HorizontalOptions="Center"
-                        FontSize="13"
-                        Padding="12,8"
-                        HeightRequest="40"
-                        CornerRadius="8"
-                        BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"
-                        TextColor="White"/>
-                <Button Grid.Column="2"
-                        Text="{Binding IsAscending, Converter={StaticResource BoolToSortTextConverter}}"
-                        Command="{Binding ToggleSortOrderCommand}"
-                        HorizontalOptions="End"
-                        FontSize="13"
-                        Padding="12,8"
-                        HeightRequest="40"
-                        CornerRadius="8"
-                        BackgroundColor="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"
-                        TextColor="White"/>
-            </Grid>
+                       FontAttributes="Bold"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <Button Grid.Column="0"
+                            Text="{Binding CurrentGroupingMode, Converter={StaticResource BoolToGroupTextConverter}}"
+                            Command="{Binding ToggleGroupingCommand}"
+                            HorizontalOptions="Fill"
+                            FontSize="14"
+                            Padding="8,10"
+                            HeightRequest="44"
+                            CornerRadius="8"
+                            BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"
+                            TextColor="White"/>
+                    <Button Grid.Column="1"
+                            Text="{Binding IsAscending, Converter={StaticResource BoolToSortTextConverter}}"
+                            Command="{Binding ToggleSortOrderCommand}"
+                            HorizontalOptions="Fill"
+                            FontSize="14"
+                            Padding="8,10"
+                            HeightRequest="44"
+                            CornerRadius="8"
+                            BackgroundColor="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"
+                            TextColor="White"/>
+                </Grid>
+            </VerticalStackLayout>
 
 
             <!-- Ungrouped Transactions List -->
-            <ContentView IsVisible="{Binding IsGroupedByCategory, Converter={StaticResource InvertedBoolConverter}}">
+            <ContentView IsVisible="{Binding CurrentGroupingMode, Converter={StaticResource GroupingModeToIsNotGroupedConverter}}">
                 <CollectionView ItemsSource="{Binding Transactions}">
                     <CollectionView.EmptyView>
                         <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
@@ -225,7 +228,7 @@
                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                    CornerRadius="12"
                                    HasShadow="False">
-                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
                                     <!-- Row 0: Date and Amount -->
                                     <Label Grid.Row="0" Grid.Column="0"
                                            Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
@@ -233,7 +236,7 @@
                                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     
                                     <Label Grid.Row="0" Grid.Column="1"
-                                           Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                           Text="{Binding ., Converter={StaticResource TransactionAmountConverter}}"
                                            FontSize="22"
                                            FontAttributes="Bold"
                                            TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
@@ -253,8 +256,16 @@
                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     </HorizontalStackLayout>
                                     
-                                    <!-- Row 3: Action Buttons -->
-                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+                                    <!-- Row 3: Account -->
+                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                                        <Label Text="🏦" FontSize="12"/>
+                                        <Label Text="{Binding AccountName}"
+                                               FontSize="13"
+                                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    </HorizontalStackLayout>
+                                    
+                                    <!-- Row 4: Action Buttons -->
+                                    <HorizontalStackLayout Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
                                                           Spacing="12" 
                                                           HorizontalOptions="End"
                                                           Margin="0,8,0,0">
@@ -286,7 +297,7 @@
 
 
             <!-- Grouped Transactions List (Collapsible) -->
-            <ContentView IsVisible="{Binding IsGroupedByCategory}">
+            <ContentView IsVisible="{Binding CurrentGroupingMode, Converter={StaticResource GroupingModeToIsGroupedConverter}}">
                 <VerticalStackLayout>
                     <!-- Empty State -->
                     <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center"
@@ -333,7 +344,7 @@
                                             
                                             <!-- Category Name -->
                                             <Label Grid.Row="0" Grid.Column="1"
-                                                   Text="{Binding CategoryName}"
+                                                   Text="{Binding GroupName}"
                                                    FontSize="18"
                                                    FontAttributes="Bold"
                                                    VerticalOptions="Center"
@@ -341,11 +352,11 @@
                                             
                                             <!-- Total Amount -->
                                             <Label Grid.Row="0" Grid.Column="2"
-                                                   Text="{Binding Total, StringFormat='${0:N2}'}"
+                                                   Text="{Binding ., Converter={StaticResource GroupTotalConverter}}"
                                                    FontSize="20"
                                                    FontAttributes="Bold"
                                                    VerticalOptions="Center"
-                                                   TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+                                                   TextColor="{Binding ., Converter={StaticResource GroupTypeToColorConverter}}"/>
                                             
                                             <!-- Transaction Count -->
                                             <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
@@ -367,7 +378,7 @@
                                                        BackgroundColor="{AppThemeBinding Light=#FAFAFA, Dark=#252525}"
                                                        CornerRadius="10"
                                                        HasShadow="False">
-                                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="6">
+                                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
                                                         <!-- Row 0: Date and Amount -->
                                                         <Label Grid.Row="0" Grid.Column="0"
                                                                Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
@@ -375,7 +386,7 @@
                                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                                         
                                                         <Label Grid.Row="0" Grid.Column="1"
-                                                               Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                                               Text="{Binding ., Converter={StaticResource TransactionAmountConverter}}"
                                                                FontSize="18"
                                                                FontAttributes="Bold"
                                                                TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
@@ -387,8 +398,24 @@
                                                                TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                                                                LineBreakMode="TailTruncation"/>
                                                         
-                                                        <!-- Row 2: Action Buttons -->
-                                                        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                        <!-- Row 2: Category -->
+                                                        <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                                                            <Label Text="📁" FontSize="11"/>
+                                                            <Label Text="{Binding CategoryName}"
+                                                                   FontSize="12"
+                                                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                                        </HorizontalStackLayout>
+                                                        
+                                                        <!-- Row 3: Account -->
+                                                        <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                                                            <Label Text="🏦" FontSize="11"/>
+                                                            <Label Text="{Binding AccountName}"
+                                                                   FontSize="12"
+                                                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                                        </HorizontalStackLayout>
+                                                        
+                                                        <!-- Row 4: Action Buttons -->
+                                                        <HorizontalStackLayout Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" 
                                                                               Spacing="10" 
                                                                               HorizontalOptions="End"
                                                                               Margin="0,6,0,0">

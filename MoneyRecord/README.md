@@ -1,11 +1,11 @@
 # MoneyRecord - Personal Finance Tracker
 
-A .NET 10 MAUI application for tracking income and expenses with real-time balance calculations.
+A .NET 10 MAUI application for tracking income and expenses with real-time balance calculations and multiple account support.
 
 ## Features
 
 ### 1. Main Dashboard
-- **Current Balance Display**: Shows real-time balance based on selected period
+- **Total Balance Display**: Shows combined balance across all accounts (tap to view individual account balances)
 - **Total Incomes**: Sum of all income transactions for the period
 - **Total Expenses**: Sum of all expense transactions for the period
 - **Period Selection**: View data for:
@@ -14,9 +14,24 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - Last Year
   - Custom Period
 
-### 2. Transaction Management
-- **Add Income**: Record income transactions with date, category, amount, and description
-- **Add Expense**: Record expense transactions with date, category, amount, and description
+### 2. Account Management
+- **Multiple Accounts**: Create and manage different accounts such as:
+  - Cash (default)
+  - Savings Account
+  - Credit Card
+  - Bank Account
+  - Custom accounts
+- **Account Creation**: Specify name and initial balance when creating accounts
+- **Default Account**: "Cash" account is created automatically as the default account
+- **Account Operations**: Add, edit, and delete accounts
+- **Balance Overview**: Tap the total balance on the main screen to see all account balances with last transaction dates
+- **Transaction Reassignment**: When deleting an account, transactions are automatically moved to the Cash account
+
+### 3. Transaction Management
+- **Add Income**: Record income transactions with date, category, amount, description, and account
+- **Add Expense**: Record expense transactions with date, category, amount, description, and account
+- **Required Fields**: All transaction fields are required (date, description, amount, account, category)
+- **Account Selection**: Choose which account each transaction affects
 - **Transaction List**: View all transactions for selected period with:
   - Date
   - Description
@@ -35,7 +50,7 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - Tap "🗑️ Delete" to remove (with confirmation)
 - **Pull to Refresh**: Pull down to reload transaction data
 
-### 3. Category Management
+### 4. Category Management
 - **Income Categories**: Create and manage income categories
 - **Expense Categories**: Create and manage expense categories
 - **Default Categories**: App comes with pre-configured categories:
@@ -43,7 +58,7 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - Expense: Food, Transportation, Entertainment, Utilities, Shopping, Other Expense
 - **Category Operations**: Add new categories, delete existing ones (swipe to delete)
 
-### 4. Data Storage
+### 5. Data Storage
 - **SQLite Database**: All data stored locally using sqlite-net-pcl
 - **Persistent Storage**: Data saved in app's local directory
 - **Automatic Updates**: Balance updates automatically when transactions are added
@@ -61,39 +76,62 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
 ```
 MoneyRecord/
 ├── Models/
-│   ├── Category.cs          - Category entity
-│   └── Transaction.cs       - Transaction entity
+│   ├── Account.cs            - Account entity
+│   ├── AccountBalanceInfo.cs - Account balance display model
+│   ├── Category.cs           - Category entity
+│   ├── Transaction.cs        - Transaction entity
+│   └── TransactionGroup.cs   - Grouped transactions model
 ├── Services/
-│   └── DatabaseService.cs   - SQLite database operations
+│   └── DatabaseService.cs    - SQLite database operations
 ├── ViewModels/
 │   ├── MainViewModel.cs                - Main page logic
 │   ├── AddTransactionViewModel.cs      - Add transaction logic
-│   └── ManageCategoriesViewModel.cs    - Category management logic
+│   ├── ManageCategoriesViewModel.cs    - Category management logic
+│   └── ManageAccountsViewModel.cs      - Account management logic
 ├── Views/
 │   ├── MainPage.xaml/.cs               - Main dashboard
 │   ├── AddTransactionPage.xaml/.cs     - Add transaction screen
-│   └── ManageCategoriesPage.xaml/.cs   - Category management screen
+│   ├── ManageCategoriesPage.xaml/.cs   - Category management screen
+│   └── ManageAccountsPage.xaml/.cs     - Account management screen
 ├── Converters/
-│   └── Converters.cs        - UI value converters
-├── App.xaml/.cs             - App entry point
-├── AppShell.xaml/.cs        - Shell navigation
-└── MauiProgram.cs           - Dependency injection setup
+│   └── Converters.cs         - UI value converters
+├── App.xaml/.cs              - App entry point
+├── AppShell.xaml/.cs         - Shell navigation
+└── MauiProgram.cs            - Dependency injection setup
 ```
 
 ## How to Use
+
+### Managing Accounts
+1. Open the flyout menu (hamburger icon)
+2. Select "Manage Accounts"
+3. To add an account:
+   - Enter the account name (e.g., "Bank Account", "Cash", "Credit Card")
+   - Enter the initial balance
+   - Tap "➕ Add Account"
+4. To edit an account: Tap the **"✏️ Edit"** button
+5. To delete an account: Tap the **"🗑️ Delete"** button (transactions will be moved to General account)
+
+### Viewing Account Balances
+1. On the main page, tap the **Total Balance** card
+2. A popup will show all accounts with:
+   - Account name
+   - Current balance
+   - Last transaction date
 
 ### Adding a Transaction
 1. From the main page, tap "💰 Add Income" or "💸 Add Expense"
 2. Select the date (defaults to today)
 3. Enter a description (optional)
 4. Enter the amount
-5. Select a category from the dropdown
-6. Tap "Save"
+5. Select an account from the dropdown (defaults to General)
+6. Select a category from the dropdown
+7. Tap "Save"
 
 ### Editing a Transaction
 1. On the main page, find the transaction you want to edit
 2. Tap the **"✏️ Edit"** button on the transaction card
-3. Make your changes in the edit screen
+3. Make your changes in the edit screen (including changing the account)
 4. Tap "Save" to save changes
 
 ### Deleting a Transaction
@@ -107,7 +145,7 @@ MoneyRecord/
 2. Select "Income Categories" or "Expense Categories"
 3. Enter a new category name
 4. Tap "Add Category"
-5. To delete: Swipe left on a category and tap "Delete"
+5. To delete: Tap the delete button on a category
 
 ### Viewing Different Periods
 1. On the main page, use the Period picker
@@ -135,6 +173,12 @@ MoneyRecord/
 
 ## Database Schema
 
+### Account Table
+- Id (int, primary key, auto-increment)
+- Name (string)
+- InitialBalance (decimal)
+- IsDefault (bool)
+
 ### Category Table
 - Id (int, primary key, auto-increment)
 - Name (string)
@@ -147,6 +191,7 @@ MoneyRecord/
 - Amount (decimal)
 - CategoryId (int, foreign key)
 - Type (enum: Income/Expense)
+- AccountId (int?, foreign key, nullable - defaults to General account)
 
 ## License Information
 

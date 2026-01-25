@@ -17,8 +17,13 @@ namespace MoneyRecord.Models
 
         public TransactionType Type { get; set; }
 
+        public int? AccountId { get; set; }
+
         [Ignore]
         public string CategoryName { get; set; } = string.Empty;
+
+        [Ignore]
+        public string AccountName { get; set; } = string.Empty;
     }
 
     public enum TransactionType

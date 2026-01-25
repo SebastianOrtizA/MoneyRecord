@@ -16,6 +16,12 @@
             <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:BoolToGroupTextConverter x:Key="BoolToGroupTextConverter" />
             <converters:BoolToExpandIconConverter x:Key="BoolToExpandIconConverter" />
+            <converters:GroupingModeToIsGroupedConverter x:Key="GroupingModeToIsGroupedConverter" />
+            <converters:GroupingModeToIsNotGroupedConverter x:Key="GroupingModeToIsNotGroupedConverter" />
+            <converters:BalanceToColorConverter x:Key="BalanceToColorConverter" />
+            <converters:TransactionAmountConverter x:Key="TransactionAmountConverter" />
+            <converters:GroupTotalConverter x:Key="GroupTotalConverter" />
+            <converters:GroupTypeToColorConverter x:Key="GroupTypeToColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -25,11 +25,13 @@ namespace MoneyRecord
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<AddTransactionViewModel>();
             builder.Services.AddTransient<ManageCategoriesViewModel>();
+            builder.Services.AddTransient<ManageAccountsViewModel>();
 
             // Register Views
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<AddTransactionPage>();
             builder.Services.AddTransient<ManageCategoriesPage>();
+            builder.Services.AddTransient<ManageAccountsPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

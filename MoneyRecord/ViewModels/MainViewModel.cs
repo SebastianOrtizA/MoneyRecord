@@ -36,7 +36,10 @@ namespace MoneyRecord.ViewModels
         private bool isCustomPeriodSelected = false;
 
         [ObservableProperty]
-        private bool isGroupedByCategory = true;  // Default to grouped view
+        private GroupingMode currentGroupingMode = GroupingMode.Category;  // Default to grouped by category
+
+        [ObservableProperty]
+        private bool isGroupedByCategory = true;  // Kept for backward compatibility
 
         [ObservableProperty]
         private bool isAscending = false;
@@ -52,6 +55,9 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<TransactionGroup> groupedTransactions = new();
+
+        [ObservableProperty]
+        private ObservableCollection<AccountBalanceInfo> accountBalances = new();
 
         public List<string> Periods { get; } = new() { "Last Week", "Last Month", "Last Year", "Custom Period" };
 
@@ -74,11 +80,20 @@ namespace MoneyRecord.ViewModels
                 
                 var (startDate, endDate) = GetDateRange();
 
-                CurrentBalance = await _databaseService.GetBalanceAsync(startDate, endDate);
+                // Get total balance across all accounts
+                CurrentBalance = await _databaseService.GetTotalBalanceAsync();
                 TotalIncomes = await _databaseService.GetTotalIncomesAsync(startDate, endDate);
                 TotalExpenses = await _databaseService.GetTotalExpensesAsync(startDate, endDate);
 
                 var transactionList = await _databaseService.GetTransactionsAsync(startDate, endDate);
+                
+                // Pre-fetch account balances if grouping by account
+                Dictionary<string, decimal>? accountBalances = null;
+                if (CurrentGroupingMode == GroupingMode.Account)
+                {
+                    var balanceInfos = await _databaseService.GetAllAccountBalancesAsync();
+                    accountBalances = balanceInfos.ToDictionary(b => b.AccountName, b => b.CurrentBalance);
+                }
                 
                 // Sort by date
                 transactionList = IsAscending 
@@ -89,16 +104,25 @@ namespace MoneyRecord.ViewModels
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     
-                    if (IsGroupedByCategory)
+                    if (CurrentGroupingMode != GroupingMode.None)
                     {
-                        // Group transactions by category with null safety
-                        var validTransactions = transactionList
-                            .Where(t => !string.IsNullOrEmpty(t.CategoryName))
-                            .ToList();
-                            
-                        var groupedList = validTransactions
-                            .GroupBy(t => t.CategoryName)
-                            .ToList();
+                        // Group transactions by category or account
+                        IEnumerable<IGrouping<string, Transaction>> groupedList;
+                        
+                        if (CurrentGroupingMode == GroupingMode.Category)
+                        {
+                            var validTransactions = transactionList
+                                .Where(t => !string.IsNullOrEmpty(t.CategoryName))
+                                .ToList();
+                            groupedList = validTransactions.GroupBy(t => t.CategoryName);
+                        }
+                        else // GroupingMode.Account
+                        {
+                            var validTransactions = transactionList
+                                .Where(t => !string.IsNullOrEmpty(t.AccountName))
+                                .ToList();
+                            groupedList = validTransactions.GroupBy(t => t.AccountName);
+                        }
                             
                         var groups = new List<TransactionGroup>();
                             
@@ -108,7 +132,14 @@ namespace MoneyRecord.ViewModels
                                 
                             try
                             {
-                                var group = new TransactionGroup(g.Key, transactionsInGroup);
+                                // For account grouping, use the account balance; for category, sum transactions
+                                decimal? overrideTotal = null;
+                                if (CurrentGroupingMode == GroupingMode.Account && accountBalances != null)
+                                {
+                                    overrideTotal = accountBalances.GetValueOrDefault(g.Key, 0);
+                                }
+                                
+                                var group = new TransactionGroup(g.Key, transactionsInGroup, CurrentGroupingMode, overrideTotal);
                                 groups.Add(group);
                             }
                             catch (Exception ex)
@@ -117,7 +148,7 @@ namespace MoneyRecord.ViewModels
                             }
                         }
                             
-                        groups = groups.OrderBy(g => g.CategoryName).ToList();
+                        groups = groups.OrderBy(g => g.GroupName).ToList();
 
                         GroupedTransactions.Clear();
                             
@@ -195,6 +226,38 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
+        private async Task ManageAccountsAsync()
+        {
+            await Shell.Current.GoToAsync(nameof(ManageAccountsPage));
+        }
+
+        [RelayCommand]
+        private async Task ShowAccountBalancesAsync()
+        {
+            try
+            {
+                var balances = await _databaseService.GetAllAccountBalancesAsync();
+                
+                // Build the message to display
+                var message = string.Join("\n\n", balances.Select(b => 
+                    $"🏦 {b.AccountName}\n" +
+                    $"   Balance: ${b.CurrentBalance:N2}\n" +
+                    $"   Last Activity: {b.LastTransactionDateDisplay}"));
+
+                if (string.IsNullOrEmpty(message))
+                {
+                    message = "No accounts found.";
+                }
+
+                await Shell.Current.DisplayAlert("Account Balances", message, "OK");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to load account balances: {ex.Message}", "OK");
+            }
+        }
+
+        [RelayCommand]
         private async Task ToggleSortOrderAsync()
         {
             IsAscending = !IsAscending;
@@ -206,7 +269,18 @@ namespace MoneyRecord.ViewModels
         {
             try
             {
-                IsGroupedByCategory = !IsGroupedByCategory;
+                // Cycle through: None -> Category -> Account -> None
+                CurrentGroupingMode = CurrentGroupingMode switch
+                {
+                    GroupingMode.None => GroupingMode.Category,
+                    GroupingMode.Category => GroupingMode.Account,
+                    GroupingMode.Account => GroupingMode.None,
+                    _ => GroupingMode.None
+                };
+                
+                // Update legacy property for backward compatibility
+                IsGroupedByCategory = CurrentGroupingMode != GroupingMode.None;
+                
                 await LoadDataAsync();
             }
             catch (Exception ex)

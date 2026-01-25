@@ -14,6 +14,13 @@
             Route="MainPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Manage Accounts" Icon="wallet">
+        <ShellContent
+            Title="Accounts"
+            ContentTemplate="{DataTemplate views:ManageAccountsPage}"
+            Route="ManageAccounts" />
+    </FlyoutItem>
+
     <FlyoutItem Title="Manage Categories" Icon="folder">
         <ShellContent
             Title="Income Categories"

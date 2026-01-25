@@ -33,6 +33,12 @@ namespace MoneyRecord.ViewModels
         private List<Category> categories = new();
 
         [ObservableProperty]
+        private Account? selectedAccount;
+
+        [ObservableProperty]
+        private List<Account> accounts = new();
+
+        [ObservableProperty]
         private string title = "Add Transaction";
 
         [ObservableProperty]
@@ -45,6 +51,7 @@ namespace MoneyRecord.ViewModels
 
         public async Task InitializeAsync()
         {
+            await LoadAccountsAsync();
             await LoadCategoriesAsync();
             
             if (Transaction != null)
@@ -61,13 +68,31 @@ namespace MoneyRecord.ViewModels
                 // Load categories and select the current one
                 await LoadCategoriesAsync();
                 SelectedCategory = Categories.FirstOrDefault(c => c.Id == Transaction.CategoryId);
+                
+                // Select the current account
+                if (Transaction.AccountId.HasValue)
+                {
+                    SelectedAccount = Accounts.FirstOrDefault(a => a.Id == Transaction.AccountId.Value);
+                }
+                else
+                {
+                    SelectedAccount = Accounts.FirstOrDefault(a => a.IsDefault);
+                }
             }
             else
             {
                 // Add mode
                 IsEditMode = false;
                 Title = TransactionType == TransactionType.Income ? "Add Income" : "Add Expense";
+                
+                // Default to Cash account
+                SelectedAccount = Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
             }
+        }
+
+        private async Task LoadAccountsAsync()
+        {
+            Accounts = await _databaseService.GetAccountsAsync();
         }
 
         private async Task LoadCategoriesAsync()
@@ -84,9 +109,9 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task SaveAsync()
         {
-            if (SelectedCategory == null)
+            if (string.IsNullOrWhiteSpace(Description))
             {
-                await Shell.Current.DisplayAlert("Error", "Please select a category", "OK");
+                await Shell.Current.DisplayAlert("Error", "Please enter a description", "OK");
                 return;
             }
 
@@ -96,6 +121,20 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+            if (SelectedAccount == null)
+            {
+                await Shell.Current.DisplayAlert("Error", "Please select an account", "OK");
+                return;
+            }
+
+            if (SelectedCategory == null)
+            {
+                await Shell.Current.DisplayAlert("Error", "Please select a category", "OK");
+                return;
+            }
+
+            int accountId = SelectedAccount.Id;
+
             if (IsEditMode && Transaction != null)
             {
                 // Update existing transaction
@@ -104,6 +143,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.Amount = amountValue;
                 Transaction.CategoryId = SelectedCategory.Id;
                 Transaction.Type = TransactionType;
+                Transaction.AccountId = accountId;
                 
                 await _databaseService.SaveTransactionAsync(Transaction);
                 await Shell.Current.DisplayAlert("Success", "Transaction updated successfully", "OK");
@@ -117,7 +157,8 @@ namespace MoneyRecord.ViewModels
                     Description = Description,
                     Amount = amountValue,
                     CategoryId = SelectedCategory.Id,
-                    Type = TransactionType
+                    Type = TransactionType,
+                    AccountId = accountId
                 };
 
                 await _databaseService.SaveTransactionAsync(newTransaction);
