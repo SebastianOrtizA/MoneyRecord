@@ -26,12 +26,16 @@ namespace MoneyRecord
             builder.Services.AddTransient<AddTransactionViewModel>();
             builder.Services.AddTransient<ManageCategoriesViewModel>();
             builder.Services.AddTransient<ManageAccountsViewModel>();
+            builder.Services.AddTransient<TransfersViewModel>();
+            builder.Services.AddTransient<AddTransferViewModel>();
 
             // Register Views
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<AddTransactionPage>();
             builder.Services.AddTransient<ManageCategoriesPage>();
             builder.Services.AddTransient<ManageAccountsPage>();
+            builder.Services.AddTransient<TransfersPage>();
+            builder.Services.AddTransient<AddTransferPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

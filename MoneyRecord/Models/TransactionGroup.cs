@@ -53,9 +53,23 @@ namespace MoneyRecord.Models
             }
             else if (transactions != null && transactions.Any())
             {
-                // For category grouping, sum the transaction amounts
-                Type = transactions.FirstOrDefault()?.Type ?? TransactionType.Expense;
-                Total = transactions.Sum(t => t.Amount);
+                // Check if this is a transfer-only group
+                var hasOnlyTransfers = transactions.All(t => t.Type == TransactionType.Transfer);
+                
+                if (hasOnlyTransfers)
+                {
+                    // For transfer category group, sum all transfer amounts (neutral display)
+                    Type = TransactionType.Transfer;
+                    Total = transactions.Sum(t => t.Amount);
+                }
+                else
+                {
+                    // For regular category grouping, sum the transaction amounts
+                    // Exclude transfers from the sum if mixed (shouldn't happen normally)
+                    var nonTransferTransactions = transactions.Where(t => t.Type != TransactionType.Transfer).ToList();
+                    Type = nonTransferTransactions.FirstOrDefault()?.Type ?? TransactionType.Expense;
+                    Total = nonTransferTransactions.Sum(t => t.Amount);
+                }
             }
             else
             {

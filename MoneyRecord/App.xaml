@@ -22,6 +22,7 @@
             <converters:TransactionAmountConverter x:Key="TransactionAmountConverter" />
             <converters:GroupTotalConverter x:Key="GroupTotalConverter" />
             <converters:GroupTypeToColorConverter x:Key="GroupTypeToColorConverter" />
+            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

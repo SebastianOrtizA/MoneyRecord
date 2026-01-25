@@ -6,31 +6,47 @@ namespace MoneyRecord.Services
     public class DatabaseService
     {
         private SQLiteAsyncConnection? _database;
+        private readonly SemaphoreSlim _initLock = new(1, 1);
+        private bool _isInitialized;
 
         public async Task InitializeAsync()
         {
-            if (_database != null)
+            if (_isInitialized)
                 return;
 
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "moneyrecord.db3");
-            _database = new SQLiteAsyncConnection(dbPath);
-
-            await _database.CreateTableAsync<Category>();
-            await _database.CreateTableAsync<Transaction>();
-            await _database.CreateTableAsync<Account>();
-
-            // Add default categories if none exist
-            var categoryCount = await _database.Table<Category>().CountAsync();
-            if (categoryCount == 0)
+            await _initLock.WaitAsync();
+            try
             {
-                await AddDefaultCategories();
+                if (_isInitialized)
+                    return;
+
+                var dbPath = Path.Combine(FileSystem.AppDataDirectory, "moneyrecord.db3");
+                _database = new SQLiteAsyncConnection(dbPath);
+
+                await _database.CreateTableAsync<Category>();
+                await _database.CreateTableAsync<Transaction>();
+                await _database.CreateTableAsync<Account>();
+                await _database.CreateTableAsync<Transfer>();
+
+                // Add default categories if none exist
+                var categoryCount = await _database.Table<Category>().CountAsync();
+                if (categoryCount == 0)
+                {
+                    await AddDefaultCategories();
+                }
+
+                // Add default "Cash" account if none exist
+                var accountCount = await _database.Table<Account>().CountAsync();
+                if (accountCount == 0)
+                {
+                    await AddDefaultAccountAsync();
+                }
+
+                _isInitialized = true;
             }
-
-            // Add default "Cash" account if none exist
-            var accountCount = await _database.Table<Account>().CountAsync();
-            if (accountCount == 0)
+            finally
             {
-                await AddDefaultAccountAsync();
+                _initLock.Release();
             }
         }
 
@@ -133,7 +149,7 @@ namespace MoneyRecord.Services
             await InitializeAsync();
             var transactions = await _database!.Table<Transaction>()
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
-                .ToListAsync();
+                .ToListAsync() ?? new List<Transaction>();
 
             // Load category names and account names
             foreach (var transaction in transactions)
@@ -204,7 +220,8 @@ namespace MoneyRecord.Services
                 .Where(t => t.Type == TransactionType.Income && t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
 
-            return transactions.Sum(t => t.Amount);
+            // Use Math.Abs to handle cases where amounts might be stored as negative values
+            return transactions.Sum(t => Math.Abs(t.Amount));
         }
 
         public async Task<decimal> GetTotalExpensesAsync(DateTime startDate, DateTime endDate)
@@ -214,7 +231,8 @@ namespace MoneyRecord.Services
                 .Where(t => t.Type == TransactionType.Expense && t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
 
-            return transactions.Sum(t => t.Amount);
+            // Use Math.Abs to handle cases where amounts might be stored as negative values
+            return transactions.Sum(t => Math.Abs(t.Amount));
         }
 
         // Debugging helper method
@@ -241,7 +259,7 @@ namespace MoneyRecord.Services
         public async Task<List<Account>> GetAccountsAsync()
         {
             await InitializeAsync();
-            return await _database!.Table<Account>().ToListAsync();
+            return await _database!.Table<Account>().ToListAsync() ?? new List<Account>();
         }
 
         public async Task<Account?> GetAccountAsync(int id)
@@ -316,32 +334,57 @@ namespace MoneyRecord.Services
                 .Where(t => t.AccountId == accountId)
                 .ToListAsync();
 
-            var incomes = transactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
-            var expenses = transactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+            // Use Math.Abs to handle cases where amounts might be stored as negative values
+            var incomes = transactions
+                .Where(t => t.Type == TransactionType.Income)
+                .Sum(t => Math.Abs(t.Amount));
+            var expenses = transactions
+                .Where(t => t.Type == TransactionType.Expense)
+                .Sum(t => Math.Abs(t.Amount));
 
-            return account.InitialBalance + incomes - expenses;
+            // Include transfers: outgoing transfers reduce balance, incoming transfers increase balance
+            var outgoingTransfers = await _database.Table<Transfer>()
+                .Where(t => t.SourceAccountId == accountId)
+                .ToListAsync();
+            var incomingTransfers = await _database.Table<Transfer>()
+                .Where(t => t.DestinationAccountId == accountId)
+                .ToListAsync();
+
+            var transfersOut = outgoingTransfers.Sum(t => Math.Abs(t.Amount));
+            var transfersIn = incomingTransfers.Sum(t => Math.Abs(t.Amount));
+
+            return account.InitialBalance + incomes - expenses - transfersOut + transfersIn;
         }
 
         public async Task<decimal> GetTotalBalanceAsync()
         {
             await InitializeAsync();
             
-            var accounts = await GetAccountsAsync();
-            decimal totalBalance = 0;
+            // Get sum of all account initial balances
+            var accounts = await GetAccountsAsync() ?? new List<Account>();
+            decimal totalInitialBalance = accounts.Sum(a => a.InitialBalance);
 
-            foreach (var account in accounts)
-            {
-                totalBalance += await GetAccountBalanceAsync(account.Id);
-            }
+            // Get ALL transactions (including those without AccountId)
+            var allTransactions = await _database!.Table<Transaction>().ToListAsync();
+            
+            // Use Math.Abs to handle cases where amounts might be stored as negative values
+            var totalIncomes = allTransactions
+                .Where(t => t.Type == TransactionType.Income)
+                .Sum(t => Math.Abs(t.Amount));
+            var totalExpenses = allTransactions
+                .Where(t => t.Type == TransactionType.Expense)
+                .Sum(t => Math.Abs(t.Amount));
 
-            return totalBalance;
+            // Transfers don't affect total balance (money moves between accounts)
+            // Balance = InitialBalance + Incomes - Expenses
+            return totalInitialBalance + totalIncomes - totalExpenses;
         }
 
         public async Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync()
         {
             await InitializeAsync();
             
-            var accounts = await GetAccountsAsync();
+            var accounts = await GetAccountsAsync() ?? new List<Account>();
             var result = new List<AccountBalanceInfo>();
 
             foreach (var account in accounts)
@@ -356,7 +399,7 @@ namespace MoneyRecord.Services
                 result.Add(new AccountBalanceInfo
                 {
                     AccountId = account.Id,
-                    AccountName = account.Name,
+                    AccountName = account.Name ?? string.Empty,
                     CurrentBalance = balance,
                     LastTransactionDate = lastTransaction?.Date
                 });
@@ -375,6 +418,107 @@ namespace MoneyRecord.Services
                 .FirstOrDefaultAsync();
 
             return lastTransaction?.Date;
+        }
+
+        // Transfer operations
+        public async Task<List<Transfer>> GetTransfersAsync()
+        {
+            await InitializeAsync();
+            var transfers = await _database!.Table<Transfer>().ToListAsync() ?? new List<Transfer>();
+
+            // Load account names
+            foreach (var transfer in transfers)
+            {
+                var sourceAccount = await _database.Table<Account>()
+                    .Where(a => a.Id == transfer.SourceAccountId)
+                    .FirstOrDefaultAsync();
+                transfer.SourceAccountName = sourceAccount?.Name ?? "Unknown";
+
+                var destAccount = await _database.Table<Account>()
+                    .Where(a => a.Id == transfer.DestinationAccountId)
+                    .FirstOrDefaultAsync();
+                transfer.DestinationAccountName = destAccount?.Name ?? "Unknown";
+            }
+
+            return transfers;
+        }
+
+        public async Task<Transfer?> GetTransferAsync(int id)
+        {
+            await InitializeAsync();
+            var transfer = await _database!.Table<Transfer>()
+                .Where(t => t.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (transfer != null)
+            {
+                var sourceAccount = await _database.Table<Account>()
+                    .Where(a => a.Id == transfer.SourceAccountId)
+                    .FirstOrDefaultAsync();
+                transfer.SourceAccountName = sourceAccount?.Name ?? "Unknown";
+
+                var destAccount = await _database.Table<Account>()
+                    .Where(a => a.Id == transfer.DestinationAccountId)
+                    .FirstOrDefaultAsync();
+                transfer.DestinationAccountName = destAccount?.Name ?? "Unknown";
+            }
+
+            return transfer;
+        }
+
+        public async Task<int> SaveTransferAsync(Transfer transfer)
+        {
+            await InitializeAsync();
+            if (transfer.Id != 0)
+            {
+                return await _database!.UpdateAsync(transfer);
+            }
+            else
+            {
+                return await _database!.InsertAsync(transfer);
+            }
+        }
+
+        public async Task<int> DeleteTransferAsync(Transfer transfer)
+        {
+            await InitializeAsync();
+            return await _database!.DeleteAsync(transfer);
+        }
+
+        public async Task<bool> AccountHasTransfersAsync(int accountId)
+        {
+            await InitializeAsync();
+            var count = await _database!.Table<Transfer>()
+                .Where(t => t.SourceAccountId == accountId || t.DestinationAccountId == accountId)
+                .CountAsync();
+            return count > 0;
+        }
+
+        /// <summary>
+        /// Gets transfers within the specified date range with account names populated
+        /// </summary>
+        public async Task<List<Transfer>> GetTransfersAsync(DateTime startDate, DateTime endDate)
+        {
+            await InitializeAsync();
+            var transfers = await _database!.Table<Transfer>()
+                .Where(t => t.Date >= startDate && t.Date <= endDate)
+                .ToListAsync() ?? new List<Transfer>();
+
+            // Load account names
+            foreach (var transfer in transfers)
+            {
+                var sourceAccount = await _database.Table<Account>()
+                    .Where(a => a.Id == transfer.SourceAccountId)
+                    .FirstOrDefaultAsync();
+                transfer.SourceAccountName = sourceAccount?.Name ?? "Unknown";
+
+                var destAccount = await _database.Table<Account>()
+                    .Where(a => a.Id == transfer.DestinationAccountId)
+                    .FirstOrDefaultAsync();
+                transfer.DestinationAccountName = destAccount?.Name ?? "Unknown";
+            }
+
+            return transfers;
         }
     }
 }

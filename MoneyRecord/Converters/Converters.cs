@@ -16,6 +16,13 @@ namespace MoneyRecord.Converters
                         ? Color.FromArgb("#66BB6A") // Light green for dark theme
                         : Color.FromArgb("#2E7D32"); // Dark green for light theme
                 }
+                else if (type == TransactionType.Transfer)
+                {
+                    // Orange for transfer
+                    return Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#FFB74D") // Light orange for dark theme
+                        : Color.FromArgb("#FF9800"); // Orange for light theme
+                }
                 else
                 {
                     // Red for expense
@@ -182,6 +189,7 @@ namespace MoneyRecord.Converters
 
     /// <summary>
     /// Converts transaction amount to display format: negative for expenses, positive for incomes.
+    /// For transfers: negative for outgoing, positive for incoming.
     /// Requires Transaction object as binding source.
     /// </summary>
     public class TransactionAmountConverter : IValueConverter
@@ -190,9 +198,22 @@ namespace MoneyRecord.Converters
         {
             if (value is Transaction transaction)
             {
-                var displayAmount = transaction.Type == TransactionType.Expense
-                    ? -Math.Abs(transaction.Amount)
-                    : Math.Abs(transaction.Amount);
+                decimal displayAmount;
+                
+                if (transaction.Type == TransactionType.Transfer)
+                {
+                    // For transfers: negative if outgoing, positive if incoming
+                    displayAmount = transaction.IsOutgoingTransfer
+                        ? -Math.Abs(transaction.Amount)
+                        : Math.Abs(transaction.Amount);
+                }
+                else
+                {
+                    displayAmount = transaction.Type == TransactionType.Expense
+                        ? -Math.Abs(transaction.Amount)
+                        : Math.Abs(transaction.Amount);
+                }
+                
                 return displayAmount.ToString("C2", culture);
             }
             return "$0.00";
@@ -206,6 +227,7 @@ namespace MoneyRecord.Converters
 
     /// <summary>
     /// Converts group total to display format with proper sign based on transaction type.
+    /// For transfer groups, shows the total amount moved (neutral).
     /// Requires TransactionGroup object as binding source.
     /// </summary>
     public class GroupTotalConverter : IValueConverter
@@ -214,6 +236,12 @@ namespace MoneyRecord.Converters
         {
             if (value is TransactionGroup group)
             {
+                // For transfer groups, show neutral amount (no sign)
+                if (group.GroupName == "🔄 Transfers")
+                {
+                    return Math.Abs(group.Total).ToString("C2", culture);
+                }
+                
                 // For expense groups, display as negative; for income groups, display as positive
                 var displayAmount = group.Type == TransactionType.Expense
                     ? -Math.Abs(group.Total)
@@ -238,12 +266,28 @@ namespace MoneyRecord.Converters
         {
             if (value is TransactionGroup group)
             {
+                // Check if this is a transfer group by name
+                if (group.GroupName == "🔄 Transfers")
+                {
+                    // Orange for transfers
+                    return Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#FFB74D")
+                        : Color.FromArgb("#FF9800");
+                }
+                
                 if (group.Type == TransactionType.Income)
                 {
                     // Green for income
                     return Application.Current?.RequestedTheme == AppTheme.Dark
                         ? Color.FromArgb("#66BB6A")
                         : Color.FromArgb("#2E7D32");
+                }
+                else if (group.Type == TransactionType.Transfer)
+                {
+                    // Orange for transfers
+                    return Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#FFB74D")
+                        : Color.FromArgb("#FF9800");
                 }
                 else
                 {
@@ -254,6 +298,26 @@ namespace MoneyRecord.Converters
                 }
             }
             return Colors.Gray;
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts a string to a boolean. Returns true if the string is not null or empty.
+    /// </summary>
+    public class StringToBoolConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is string stringValue)
+            {
+                return !string.IsNullOrEmpty(stringValue);
+            }
+            return false;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

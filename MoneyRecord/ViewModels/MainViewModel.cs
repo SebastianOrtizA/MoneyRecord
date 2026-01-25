@@ -85,20 +85,27 @@ namespace MoneyRecord.ViewModels
                 TotalIncomes = await _databaseService.GetTotalIncomesAsync(startDate, endDate);
                 TotalExpenses = await _databaseService.GetTotalExpensesAsync(startDate, endDate);
 
-                var transactionList = await _databaseService.GetTransactionsAsync(startDate, endDate);
+                var transactionList = await _databaseService.GetTransactionsAsync(startDate, endDate) ?? new List<Transaction>();
+                
+                // Fetch transfers and convert them to Transaction items for display
+                var transfers = await _databaseService.GetTransfersAsync(startDate, endDate) ?? new List<Transfer>();
+                var transferTransactions = ConvertTransfersToTransactions(transfers, CurrentGroupingMode);
+                
+                // Combine regular transactions with transfer transactions
+                var combinedList = transactionList.Concat(transferTransactions).ToList();
                 
                 // Pre-fetch account balances if grouping by account
                 Dictionary<string, decimal>? accountBalances = null;
                 if (CurrentGroupingMode == GroupingMode.Account)
                 {
-                    var balanceInfos = await _databaseService.GetAllAccountBalancesAsync();
-                    accountBalances = balanceInfos.ToDictionary(b => b.AccountName, b => b.CurrentBalance);
+                    var balanceInfos = await _databaseService.GetAllAccountBalancesAsync() ?? new List<AccountBalanceInfo>();
+                    accountBalances = balanceInfos.ToDictionary(b => b.AccountName ?? string.Empty, b => b.CurrentBalance);
                 }
                 
                 // Sort by date
-                transactionList = IsAscending 
-                    ? transactionList.OrderBy(t => t.Date).ToList()
-                    : transactionList.OrderByDescending(t => t.Date).ToList();
+                combinedList = IsAscending 
+                    ? combinedList.OrderBy(t => t.Date).ToList()
+                    : combinedList.OrderByDescending(t => t.Date).ToList();
 
                 // Update collections on main thread
                 await MainThread.InvokeOnMainThreadAsync(() =>
@@ -111,17 +118,17 @@ namespace MoneyRecord.ViewModels
                         
                         if (CurrentGroupingMode == GroupingMode.Category)
                         {
-                            var validTransactions = transactionList
+                            var validTransactions = combinedList
                                 .Where(t => !string.IsNullOrEmpty(t.CategoryName))
                                 .ToList();
-                            groupedList = validTransactions.GroupBy(t => t.CategoryName);
+                            groupedList = validTransactions.GroupBy(t => t.CategoryName ?? string.Empty);
                         }
                         else // GroupingMode.Account
                         {
-                            var validTransactions = transactionList
+                            var validTransactions = combinedList
                                 .Where(t => !string.IsNullOrEmpty(t.AccountName))
                                 .ToList();
-                            groupedList = validTransactions.GroupBy(t => t.AccountName);
+                            groupedList = validTransactions.GroupBy(t => t.AccountName ?? string.Empty);
                         }
                             
                         var groups = new List<TransactionGroup>();
@@ -164,7 +171,7 @@ namespace MoneyRecord.ViewModels
                     {
                         // Show flat list
                         Transactions.Clear();
-                        foreach (var transaction in transactionList)
+                        foreach (var transaction in combinedList)
                         {
                             Transactions.Add(transaction);
                         }
@@ -173,7 +180,7 @@ namespace MoneyRecord.ViewModels
                     }
                     
                     // Update HasTransactions flag
-                    HasTransactions = transactionList.Any();
+                    HasTransactions = combinedList.Any();
                 });
             }
             catch (Exception ex)
@@ -205,6 +212,12 @@ namespace MoneyRecord.ViewModels
             {
                 { "TransactionType", TransactionType.Expense }
             });
+        }
+
+        [RelayCommand]
+        private async Task AddTransferAsync()
+        {
+            await Shell.Current.GoToAsync(nameof(AddTransferPage));
         }
 
         [RelayCommand]
@@ -307,10 +320,19 @@ namespace MoneyRecord.ViewModels
             if (transaction == null)
                 return;
 
-            await Shell.Current.GoToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
+            // Check if this is a transfer (has TransferId set)
+            if (transaction.TransferId.HasValue)
             {
-                { "Transaction", transaction }
-            });
+                // Navigate to edit transfer page - convert to string for Shell query property
+                await Shell.Current.GoToAsync($"{nameof(AddTransferPage)}?TransferId={transaction.TransferId.Value}");
+            }
+            else
+            {
+                await Shell.Current.GoToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
+                {
+                    { "Transaction", transaction }
+                });
+            }
         }
 
         [RelayCommand]
@@ -319,9 +341,13 @@ namespace MoneyRecord.ViewModels
             if (transaction == null)
                 return;
 
+            // Check if this is a transfer
+            var isTransfer = transaction.TransferId.HasValue;
+            var itemType = isTransfer ? "transfer" : "transaction";
+
             var confirm = await Shell.Current.DisplayAlert(
                 "Confirm Delete",
-                $"Are you sure you want to delete this transaction?\n\n{transaction.Description}\n${transaction.Amount:N2}",
+                $"Are you sure you want to delete this {itemType}?\n\n{transaction.Description}\n${transaction.Amount:N2}",
                 "Yes, Delete",
                 "Cancel");
 
@@ -330,14 +356,27 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                await _databaseService.DeleteTransactionAsync(transaction);
+                if (isTransfer)
+                {
+                    // Delete the transfer
+                    var transfer = await _databaseService.GetTransferAsync(transaction.TransferId!.Value);
+                    if (transfer != null)
+                    {
+                        await _databaseService.DeleteTransferAsync(transfer);
+                    }
+                }
+                else
+                {
+                    await _databaseService.DeleteTransactionAsync(transaction);
+                }
+                
                 await LoadDataAsync();
                 
-                await Shell.Current.DisplayAlert("Success", "Transaction deleted successfully", "OK");
+                await Shell.Current.DisplayAlert("Success", $"{char.ToUpper(itemType[0])}{itemType[1..]} deleted successfully", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Failed to delete transaction: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlert("Error", $"Failed to delete {itemType}: {ex.Message}", "OK");
             }
         }
 
@@ -386,6 +425,78 @@ namespace MoneyRecord.ViewModels
             }
 
             return (startDate, endDate);
+        }
+
+        /// <summary>
+        /// Converts Transfer objects to Transaction objects for unified display.
+        /// When grouping by Category: creates one transaction per transfer with "Transfer" category.
+        /// When grouping by Account: creates two transactions per transfer (outgoing and incoming).
+        /// When not grouped: creates one transaction per transfer showing the transfer details.
+        /// </summary>
+        private List<Transaction> ConvertTransfersToTransactions(List<Transfer> transfers, GroupingMode groupingMode)
+        {
+            var result = new List<Transaction>();
+            const string transferCategoryName = "🔄 Transfers";
+
+            foreach (var transfer in transfers)
+            {
+                if (groupingMode == GroupingMode.Account)
+                {
+                    // Create outgoing transaction for source account (negative)
+                    result.Add(new Transaction
+                    {
+                        Id = -transfer.Id, // Use negative ID to avoid conflicts with real transactions
+                        Date = transfer.Date,
+                        Description = $"Transfer to {transfer.DestinationAccountName}: {transfer.Description}",
+                        Amount = transfer.Amount,
+                        Type = TransactionType.Transfer,
+                        AccountId = transfer.SourceAccountId,
+                        AccountName = transfer.SourceAccountName,
+                        CategoryName = transferCategoryName,
+                        TransferId = transfer.Id,
+                        IsOutgoingTransfer = true,
+                        TransferCounterpartAccount = transfer.DestinationAccountName
+                    });
+
+                    // Create incoming transaction for destination account (positive)
+                    result.Add(new Transaction
+                    {
+                        Id = -transfer.Id - 1000000, // Use offset to ensure unique ID
+                        Date = transfer.Date,
+                        Description = $"Transfer from {transfer.SourceAccountName}: {transfer.Description}",
+                        Amount = transfer.Amount,
+                        Type = TransactionType.Transfer,
+                        AccountId = transfer.DestinationAccountId,
+                        AccountName = transfer.DestinationAccountName,
+                        CategoryName = transferCategoryName,
+                        TransferId = transfer.Id,
+                        IsOutgoingTransfer = false,
+                        TransferCounterpartAccount = transfer.SourceAccountName
+                    });
+                }
+                else
+                {
+                    // For Category grouping or flat list: single entry showing the transfer
+                    result.Add(new Transaction
+                    {
+                        Id = -transfer.Id,
+                        Date = transfer.Date,
+                        Description = string.IsNullOrEmpty(transfer.Description) 
+                            ? $"{transfer.SourceAccountName} → {transfer.DestinationAccountName}"
+                            : transfer.Description,
+                        Amount = transfer.Amount,
+                        Type = TransactionType.Transfer,
+                        AccountId = transfer.SourceAccountId,
+                        AccountName = $"{transfer.SourceAccountName} → {transfer.DestinationAccountName}",
+                        CategoryName = transferCategoryName,
+                        TransferId = transfer.Id,
+                        IsOutgoingTransfer = false,
+                        TransferCounterpartAccount = transfer.DestinationAccountName
+                    });
+                }
+            }
+
+            return result;
         }
     }
 }

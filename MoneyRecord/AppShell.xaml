@@ -14,6 +14,13 @@
             Route="MainPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Transfers" Icon="swap">
+        <ShellContent
+            Title="Transfers"
+            ContentTemplate="{DataTemplate views:TransfersPage}"
+            Route="TransfersPage" />
+    </FlyoutItem>
+
     <FlyoutItem Title="Manage Accounts" Icon="wallet">
         <ShellContent
             Title="Accounts"

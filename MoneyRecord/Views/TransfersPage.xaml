@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models"
+             x:Class="MoneyRecord.Views.TransfersPage"
+             x:DataType="viewmodels:TransfersViewModel"
+             Title="Transfers">
+
+    <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                 Command="{Binding LoadTransfersCommand}">
+        <VerticalStackLayout Padding="16,12" Spacing="16">
+            
+            <!-- Add Transfer Button -->
+            <Button Text="🔄 New Transfer" 
+                    Command="{Binding AddTransferCommand}"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    CornerRadius="12"
+                    BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"
+                    TextColor="White"/>
+
+            <!-- Transfers List -->
+            <CollectionView ItemsSource="{Binding Transfers}">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
+                        <Label Text="🔄" 
+                               FontSize="48" 
+                               HorizontalOptions="Center"/>
+                        <Label Text="No transfers yet" 
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        <Label Text="Transfer money between your accounts" 
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#999999, Dark=#888888}"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Transfer">
+                        <Frame Margin="0,6" 
+                               Padding="16"
+                               BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                               BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                               CornerRadius="12"
+                               HasShadow="False">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+                                <!-- Row 0: Date and Amount -->
+                                <Label Grid.Row="0" Grid.Column="0"
+                                       Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                
+                                <Label Grid.Row="0" Grid.Column="1"
+                                       Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                       FontSize="22"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"/>
+                                
+                                <!-- Row 1: From Account -->
+                                <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                                    <Label Text="📤" FontSize="12"/>
+                                    <Label Text="From:" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    <Label Text="{Binding SourceAccountName}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"/>
+                                </HorizontalStackLayout>
+                                
+                                <!-- Row 2: To Account -->
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                                    <Label Text="📥" FontSize="12"/>
+                                    <Label Text="To:" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    <Label Text="{Binding DestinationAccountName}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
+                                </HorizontalStackLayout>
+                                
+                                <!-- Row 3: Action Buttons -->
+                                <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                      Spacing="12" 
+                                                      HorizontalOptions="End"
+                                                      Margin="0,8,0,0">
+                                    <Button Text="✏️ Edit"
+                                            FontSize="14"
+                                            HeightRequest="36"
+                                            Padding="16,0"
+                                            CornerRadius="8"
+                                            BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                            TextColor="White"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransfersViewModel}}, Path=EditTransferCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                    <Button Text="🗑️ Delete"
+                                            FontSize="14"
+                                            HeightRequest="36"
+                                            Padding="16,0"
+                                            CornerRadius="8"
+                                            BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                                            TextColor="White"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransfersViewModel}}, Path=DeleteTransferCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </RefreshView>
+
+</ContentPage>

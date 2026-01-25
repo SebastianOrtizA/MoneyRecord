@@ -49,8 +49,35 @@ namespace MoneyRecord.ViewModels
             _databaseService = databaseService;
         }
 
+        /// <summary>
+        /// Resets the ViewModel state for a fresh start
+        /// </summary>
+        private void ResetState()
+        {
+            Transaction = null;
+            TransactionType = TransactionType.Expense;
+            SelectedDate = DateTime.Now;
+            Description = string.Empty;
+            Amount = string.Empty;
+            SelectedCategory = null;
+            SelectedAccount = null;
+            Title = "Add Transaction";
+            IsEditMode = false;
+        }
+
         public async Task InitializeAsync()
         {
+            // Save navigation parameters before reset
+            var savedTransaction = Transaction;
+            var savedType = TransactionType;
+            
+            // Reset state to handle ViewModel reuse
+            ResetState();
+            
+            // Restore navigation parameters
+            Transaction = savedTransaction;
+            TransactionType = savedType;
+
             await LoadAccountsAsync();
             await LoadCategoriesAsync();
             
