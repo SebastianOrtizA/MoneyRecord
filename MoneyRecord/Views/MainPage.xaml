@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models"
+             x:Class="MoneyRecord.Views.MainPage"
+             x:DataType="viewmodels:MainViewModel"
+             Title="Money Record">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            
+            <!-- Current Section -->
+            <Frame BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2D2D2D}" 
+                   BorderColor="Transparent"
+                   CornerRadius="10"
+                   Padding="20">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Current" 
+                           FontSize="24" 
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                    
+                    <Label Text="{Binding CurrentDate, StringFormat='{0:MMMM dd, yyyy}'}" 
+                           FontSize="16"
+                           HorizontalOptions="Center"/>
+
+                    <!-- Period Selector -->
+                    <Picker ItemsSource="{Binding Periods}"
+                            SelectedItem="{Binding SelectedPeriod}"
+                            Title="Select Period"
+                            FontSize="14"
+                            HorizontalOptions="FillAndExpand"/>
+
+                    <!-- Custom Date Range Selector -->
+                    <VerticalStackLayout Spacing="10" 
+                                        IsVisible="{Binding IsCustomPeriodSelected}">
+                        <Grid ColumnDefinitions="Auto,*" 
+                              RowDefinitions="Auto,Auto"
+                              ColumnSpacing="10"
+                              RowSpacing="10">
+                            
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="From:" 
+                                   FontSize="14"
+                                   VerticalOptions="Center"/>
+                            <DatePicker Grid.Row="0" Grid.Column="1"
+                                       Date="{Binding CustomStartDate}"
+                                       Format="MMM dd, yyyy"
+                                       FontSize="14"
+                                       HorizontalOptions="FillAndExpand"/>
+                            
+                            <Label Grid.Row="1" Grid.Column="0"
+                                   Text="To:" 
+                                   FontSize="14"
+                                   VerticalOptions="Center"/>
+                            <DatePicker Grid.Row="1" Grid.Column="1"
+                                       Date="{Binding CustomEndDate}"
+                                       Format="MMM dd, yyyy"
+                                       FontSize="14"
+                                       HorizontalOptions="FillAndExpand"/>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Balance Display -->
+                    <Grid ColumnDefinitions="*,*,*" 
+                          RowDefinitions="Auto,Auto"
+                          ColumnSpacing="10"
+                          RowSpacing="10"
+                          Margin="0,10,0,0">
+                        
+                        <Label Grid.Row="0" Grid.Column="0" 
+                               Text="Balance" 
+                               FontSize="14"
+                               HorizontalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="0" 
+                               Text="{Binding CurrentBalance, StringFormat='${0:N2}'}" 
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
+
+                        <Label Grid.Row="0" Grid.Column="1" 
+                               Text="Incomes" 
+                               FontSize="14"
+                               HorizontalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="1" 
+                               Text="{Binding TotalIncomes, StringFormat='${0:N2}'}" 
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+
+                        <Label Grid.Row="0" Grid.Column="2" 
+                               Text="Expenses" 
+                               FontSize="14"
+                               HorizontalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="2" 
+                               Text="{Binding TotalExpenses, StringFormat='${0:N2}'}" 
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Action Buttons -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Grid.Column="0" 
+                        Text="Add Income" 
+                        Command="{Binding AddIncomeCommand}"
+                        BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                <Button Grid.Column="1" 
+                        Text="Add Expense" 
+                        Command="{Binding AddExpenseCommand}"
+                        BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"/>
+            </Grid>
+
+            <!-- Transaction List Controls -->
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <Label Grid.Column="0" 
+                       Text="Transactions" 
+                       FontSize="20" 
+                       FontAttributes="Bold"
+                       VerticalOptions="Center"/>
+                <Button Grid.Column="1"
+                        Text="{Binding IsGroupedByCategory, Converter={StaticResource BoolToGroupTextConverter}}"
+                        Command="{Binding ToggleGroupingCommand}"
+                        HorizontalOptions="Center"
+                        FontSize="12"
+                        Padding="10,5"
+                        BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"/>
+                <Button Grid.Column="2"
+                        Text="{Binding IsAscending, Converter={StaticResource BoolToSortTextConverter}}"
+                        Command="{Binding ToggleSortOrderCommand}"
+                        HorizontalOptions="End"
+                        FontSize="12"
+                        Padding="10,5"/>
+            </Grid>
+
+            <!-- Ungrouped Transactions List -->
+            <ContentView IsVisible="{Binding IsGroupedByCategory, Converter={StaticResource InvertedBoolConverter}}">
+                <CollectionView ItemsSource="{Binding Transactions}"
+                               EmptyView="No transactions for this period">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Transaction">
+                            <Frame Margin="0,5" 
+                                   Padding="15"
+                                   BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                   CornerRadius="8">
+                                <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto,Auto">
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
+                                           FontSize="12"
+                                           TextColor="Gray"/>
+                                    
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                           Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+                                    
+                                    <Label Grid.Row="1" Grid.Column="0"
+                                           Text="{Binding Description}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"/>
+                                    
+                                    <Label Grid.Row="2" Grid.Column="0"
+                                           Text="{Binding CategoryName}"
+                                           FontSize="12"
+                                           TextColor="Gray"/>
+                                    
+                                    <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" 
+                                                          Spacing="5"
+                                                          VerticalOptions="Center">
+                                        <Button Text="Edit"
+                                                FontSize="12"
+                                                Padding="8,4"
+                                                BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                                TextColor="White"
+                                                CornerRadius="4"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=EditTransactionCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                        <Button Text="Delete"
+                                                FontSize="12"
+                                                Padding="8,4"
+                                                BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                                                TextColor="White"
+                                                CornerRadius="4"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=DeleteTransactionCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ContentView>
+
+            <!-- Grouped Transactions List -->
+            <ContentView IsVisible="{Binding IsGroupedByCategory}">
+                <CollectionView ItemsSource="{Binding GroupedTransactions}"
+                               EmptyView="No transactions for this period"
+                               IsGrouped="True">
+                    <CollectionView.GroupHeaderTemplate>
+                        <DataTemplate x:DataType="models:TransactionGroup">
+                            <Frame Margin="0,10,0,5"
+                                   Padding="15"
+                                   BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1E3A5F}"
+                                   BorderColor="{AppThemeBinding Light=#2196F3, Dark=#64B5F6}"
+                                   CornerRadius="8">
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding CategoryName}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding TransactionCount, StringFormat='{0} items'}"
+                                           FontSize="12"
+                                           VerticalOptions="Center"
+                                           TextColor="Gray"/>
+                                    <Label Grid.Column="2"
+                                           Text="{Binding Total, StringFormat='${0:N2}'}"
+                                           FontSize="20"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.GroupHeaderTemplate>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Transaction">
+                            <Frame Margin="15,5,0,5" 
+                                   Padding="15"
+                                   BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                   CornerRadius="8">
+                                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto">
+                                    <Label Grid.Row="0" Grid.Column="0"
+                                           Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
+                                           FontSize="12"
+                                           TextColor="Gray"/>
+                                    
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                           Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+                                    
+                                    <Label Grid.Row="1" Grid.Column="0"
+                                           Text="{Binding Description}"
+                                           FontSize="14"/>
+                                    
+                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                                          Spacing="5"
+                                                          HorizontalOptions="End"
+                                                          Margin="0,5,0,0">
+                                        <Button Text="Edit"
+                                                FontSize="11"
+                                                Padding="6,3"
+                                                BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                                TextColor="White"
+                                                CornerRadius="4"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=EditTransactionCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                        <Button Text="Delete"
+                                                FontSize="11"
+                                                Padding="6,3"
+                                                BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                                                TextColor="White"
+                                                CornerRadius="4"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=DeleteTransactionCommand}"
+                                                CommandParameter="{Binding .}"/>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ContentView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
