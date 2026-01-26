@@ -19,6 +19,12 @@ namespace MoneyRecord.Models
         public string IconCode { get; set; } = "F0070"; // Default: bank icon
 
         /// <summary>
+        /// The date when the account was created or when the initial balance was assigned.
+        /// Used as fallback for last activity date when no transactions or transfers exist.
+        /// </summary>
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+
+        /// <summary>
         /// Gets the displayable icon character from the unicode code
         /// </summary>
         [Ignore]

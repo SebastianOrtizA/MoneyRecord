@@ -5,9 +5,13 @@ namespace MoneyRecord.Models
         public int AccountId { get; set; }
         public string AccountName { get; set; } = string.Empty;
         public decimal CurrentBalance { get; set; }
-        public DateTime? LastTransactionDate { get; set; }
-        public string LastTransactionDateDisplay => LastTransactionDate.HasValue 
-            ? LastTransactionDate.Value.ToString("MMM dd, yyyy") 
-            : "No transactions";
+        /// <summary>
+        /// The most recent activity date for the account.
+        /// This is the latest of: last transaction date, last transfer date, or account created date.
+        /// </summary>
+        public DateTime? LastActivityDate { get; set; }
+        public string LastActivityDateDisplay => LastActivityDate.HasValue 
+            ? LastActivityDate.Value.ToString("MMM dd, yyyy") 
+            : "No activity";
     }
 }

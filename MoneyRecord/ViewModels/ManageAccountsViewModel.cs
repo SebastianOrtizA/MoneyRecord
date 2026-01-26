@@ -116,7 +116,8 @@ namespace MoneyRecord.ViewModels
                 IsDefault = false,
                 IconCode = string.IsNullOrEmpty(NewAccountIconCode) 
                     ? CategoryIconService.GetDefaultAccountIconCode() 
-                    : NewAccountIconCode
+                    : NewAccountIconCode,
+                CreatedDate = DateTime.Now
             };
 
             await _databaseService.SaveAccountAsync(account);

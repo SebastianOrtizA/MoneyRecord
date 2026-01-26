@@ -269,7 +269,7 @@ namespace MoneyRecord.ViewModels
                 var message = string.Join("\n\n", balances.Select(b => 
                     $"🏦 {b.AccountName}\n" +
                     $"   Balance: ${b.CurrentBalance:N2}\n" +
-                    $"   Last Activity: {b.LastTransactionDateDisplay}"));
+                    $"   Last Activity: {b.LastActivityDateDisplay}"));
 
                 if (string.IsNullOrEmpty(message))
                 {

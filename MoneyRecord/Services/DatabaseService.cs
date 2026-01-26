@@ -396,17 +396,55 @@ namespace MoneyRecord.Services
             {
                 var balance = await GetAccountBalanceAsync(account.Id);
                 
+                // Get the last transaction date for this account
                 var lastTransaction = await _database!.Table<Transaction>()
                     .Where(t => t.AccountId == account.Id)
                     .OrderByDescending(t => t.Date)
                     .FirstOrDefaultAsync();
+
+                // Get the last transfer date for this account (as source or destination)
+                var lastTransferAsSource = await _database!.Table<Transfer>()
+                    .Where(t => t.SourceAccountId == account.Id)
+                    .OrderByDescending(t => t.Date)
+                    .FirstOrDefaultAsync();
+
+                var lastTransferAsDest = await _database!.Table<Transfer>()
+                    .Where(t => t.DestinationAccountId == account.Id)
+                    .OrderByDescending(t => t.Date)
+                    .FirstOrDefaultAsync();
+
+                // Determine the most recent activity date
+                DateTime? lastActivityDate = null;
+
+                // Collect all activity dates
+                var activityDates = new List<DateTime>();
+                
+                if (lastTransaction != null)
+                    activityDates.Add(lastTransaction.Date);
+                
+                if (lastTransferAsSource != null)
+                    activityDates.Add(lastTransferAsSource.Date);
+                
+                if (lastTransferAsDest != null)
+                    activityDates.Add(lastTransferAsDest.Date);
+
+                if (activityDates.Count > 0)
+                {
+                    // Use the most recent transaction or transfer date
+                    lastActivityDate = activityDates.Max();
+                }
+                else
+                {
+                    // Fallback to account's created date (when initial balance was assigned)
+                    lastActivityDate = account.CreatedDate;
+                }
 
                 result.Add(new AccountBalanceInfo
                 {
                     AccountId = account.Id,
                     AccountName = account.Name ?? string.Empty,
                     CurrentBalance = balance,
-                    LastTransactionDate = lastTransaction?.Date
+                    LastActivityDate = lastActivityDate
                 });
             }
 
