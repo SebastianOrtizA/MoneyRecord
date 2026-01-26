@@ -23,6 +23,12 @@
             <converters:GroupTotalConverter x:Key="GroupTotalConverter" />
             <converters:GroupTypeToColorConverter x:Key="GroupTypeToColorConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
+            <converters:StringEqualsConverter x:Key="StringEqualsConverter" />
+            <converters:IconSelectionColorConverter x:Key="IconSelectionColorConverter" />
+            <converters:IconSelectionBackgroundConverter x:Key="IconSelectionBackgroundConverter" />
+            <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
+            <converters:BoolToSelectedBackgroundConverter x:Key="BoolToSelectedBackgroundConverter" />
+            <converters:BoolToIconColorConverter x:Key="BoolToIconColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

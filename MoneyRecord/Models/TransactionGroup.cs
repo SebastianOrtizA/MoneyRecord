@@ -36,13 +36,70 @@ namespace MoneyRecord.Models
         [ObservableProperty]
         private bool isBalanceMode = false;
 
-        public TransactionGroup(string groupName, List<Transaction> transactions, GroupingMode mode = GroupingMode.Category, decimal? overrideTotal = null)
+        [ObservableProperty]
+        private string groupIconCode = "F0770"; // Default tag icon
+
+        /// <summary>
+        /// Gets the displayable icon character from the unicode code
+        /// </summary>
+        public string GroupDisplayIcon
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(GroupIconCode))
+                        return "\uF0770";
+
+                    var codePoint = Convert.ToInt32(GroupIconCode, 16);
+                    return char.ConvertFromUtf32(codePoint);
+                }
+                catch
+                {
+                    return "\uF0770";
+                }
+            }
+        }
+
+        public TransactionGroup(string groupName, List<Transaction> transactions, GroupingMode mode = GroupingMode.Category, decimal? overrideTotal = null, string? accountIconCode = null)
         {
             GroupName = groupName ?? "Unknown";
             CategoryName = groupName ?? "Unknown"; // Keep for backward compatibility
             TransactionCount = transactions?.Count ?? 0;
             Items = new ObservableCollection<Transaction>(transactions ?? new List<Transaction>());
             IsBalanceMode = mode == GroupingMode.Account;
+
+            // Set group icon based on grouping mode
+            if (mode == GroupingMode.Category && transactions != null && transactions.Any())
+            {
+                // For category grouping, use the first transaction's category icon
+                GroupIconCode = transactions.First().CategoryIconCode ?? "F0770";
+            }
+            else if (mode == GroupingMode.Account)
+            {
+                // For account grouping, prefer the explicitly passed account icon
+                // Otherwise, find a non-transfer transaction to get the real account icon
+                if (!string.IsNullOrEmpty(accountIconCode))
+                {
+                    GroupIconCode = accountIconCode;
+                }
+                else if (transactions != null && transactions.Any())
+                {
+                    // Try to find a non-transfer transaction to get the real account icon
+                    var nonTransferTransaction = transactions.FirstOrDefault(t => t.Type != TransactionType.Transfer);
+                    GroupIconCode = nonTransferTransaction?.AccountIconCode 
+                        ?? transactions.First().AccountIconCode 
+                        ?? "F0070";
+                }
+                else
+                {
+                    GroupIconCode = "F0070"; // Default bank icon
+                }
+            }
+            else
+            {
+                GroupIconCode = mode == GroupingMode.Account ? "F0070" : "F0770";
+            }
             
             if (overrideTotal.HasValue)
             {

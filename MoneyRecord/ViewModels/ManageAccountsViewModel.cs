@@ -20,6 +20,9 @@ namespace MoneyRecord.ViewModels
         private string newAccountBalance = "0";
 
         [ObservableProperty]
+        private string newAccountIconCode = string.Empty;
+
+        [ObservableProperty]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -29,7 +32,13 @@ namespace MoneyRecord.ViewModels
         private string editAccountBalance = "0";
 
         [ObservableProperty]
+        private string editAccountIconCode = string.Empty;
+
+        [ObservableProperty]
         private Account? editingAccount;
+
+        [ObservableProperty]
+        private ObservableCollection<AccountIcon> availableIcons = new();
 
         public ManageAccountsViewModel(DatabaseService databaseService)
         {
@@ -38,7 +47,28 @@ namespace MoneyRecord.ViewModels
 
         public async Task InitializeAsync()
         {
+            LoadAvailableIcons();
+            NewAccountIconCode = CategoryIconService.GetDefaultAccountIconCode();
+            UpdateIconSelection(NewAccountIconCode);
             await LoadAccountsAsync();
+        }
+
+        private void LoadAvailableIcons()
+        {
+            AvailableIcons.Clear();
+            var icons = CategoryIconService.GetAccountIcons();
+            foreach (var icon in icons)
+            {
+                AvailableIcons.Add(icon);
+            }
+        }
+
+        private void UpdateIconSelection(string selectedCode)
+        {
+            foreach (var icon in AvailableIcons)
+            {
+                icon.IsSelected = icon.Code == selectedCode;
+            }
         }
 
         private async Task LoadAccountsAsync()
@@ -49,6 +79,20 @@ namespace MoneyRecord.ViewModels
             {
                 Accounts.Add(account);
             }
+        }
+
+        [RelayCommand]
+        private void SelectNewIcon(string iconCode)
+        {
+            NewAccountIconCode = iconCode;
+            UpdateIconSelection(iconCode);
+        }
+
+        [RelayCommand]
+        private void SelectEditIcon(string iconCode)
+        {
+            EditAccountIconCode = iconCode;
+            UpdateIconSelection(iconCode);
         }
 
         [RelayCommand]
@@ -69,12 +113,17 @@ namespace MoneyRecord.ViewModels
             {
                 Name = NewAccountName.Trim(),
                 InitialBalance = balance,
-                IsDefault = false
+                IsDefault = false,
+                IconCode = string.IsNullOrEmpty(NewAccountIconCode) 
+                    ? CategoryIconService.GetDefaultAccountIconCode() 
+                    : NewAccountIconCode
             };
 
             await _databaseService.SaveAccountAsync(account);
             NewAccountName = string.Empty;
             NewAccountBalance = "0";
+            NewAccountIconCode = CategoryIconService.GetDefaultAccountIconCode();
+            UpdateIconSelection(NewAccountIconCode);
             await LoadAccountsAsync();
         }
 
@@ -87,6 +136,8 @@ namespace MoneyRecord.ViewModels
             EditingAccount = account;
             EditAccountName = account.Name;
             EditAccountBalance = account.InitialBalance.ToString();
+            EditAccountIconCode = account.IconCode;
+            UpdateIconSelection(account.IconCode);
             IsEditMode = true;
         }
 
@@ -97,6 +148,8 @@ namespace MoneyRecord.ViewModels
             EditingAccount = null;
             EditAccountName = string.Empty;
             EditAccountBalance = "0";
+            EditAccountIconCode = string.Empty;
+            UpdateIconSelection(NewAccountIconCode);
         }
 
         [RelayCommand]
@@ -118,6 +171,9 @@ namespace MoneyRecord.ViewModels
 
             EditingAccount.Name = EditAccountName.Trim();
             EditingAccount.InitialBalance = balance;
+            EditingAccount.IconCode = string.IsNullOrEmpty(EditAccountIconCode)
+                ? CategoryIconService.GetDefaultAccountIconCode()
+                : EditAccountIconCode;
 
             await _databaseService.SaveAccountAsync(EditingAccount);
             
@@ -125,6 +181,8 @@ namespace MoneyRecord.ViewModels
             EditingAccount = null;
             EditAccountName = string.Empty;
             EditAccountBalance = "0";
+            EditAccountIconCode = string.Empty;
+            UpdateIconSelection(NewAccountIconCode);
             
             await LoadAccountsAsync();
         }
@@ -137,7 +195,7 @@ namespace MoneyRecord.ViewModels
 
             if (account.IsDefault)
             {
-                await Shell.Current.DisplayAlert("Error", "Cannot delete the default Cash account", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Cannot delete the default Cash account", "OK");
                 return;
             }
 
@@ -147,7 +205,7 @@ namespace MoneyRecord.ViewModels
                 ? $"Are you sure you want to delete '{account.Name}'?\n\nAll transactions in this account will be moved to the Cash account."
                 : $"Are you sure you want to delete '{account.Name}'?";
 
-            var confirm = await Shell.Current.DisplayAlert(
+            var confirm = await Shell.Current.DisplayAlertAsync(
                 "Confirm Delete",
                 message,
                 "Yes, Delete",

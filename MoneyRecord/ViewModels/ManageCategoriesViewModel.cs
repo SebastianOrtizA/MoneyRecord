@@ -21,6 +21,9 @@ namespace MoneyRecord.ViewModels
         private string newCategoryName = string.Empty;
 
         [ObservableProperty]
+        private string newCategoryIconCode = string.Empty;
+
+        [ObservableProperty]
         private string title = "Manage Categories";
 
         [ObservableProperty]
@@ -32,6 +35,12 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string editCategoryName = string.Empty;
 
+        [ObservableProperty]
+        private string editCategoryIconCode = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<CategoryIcon> availableIcons = new();
+
         public ManageCategoriesViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
@@ -40,7 +49,20 @@ namespace MoneyRecord.ViewModels
         public async Task InitializeAsync()
         {
             Title = CategoryType == CategoryType.Income ? "Manage Income Categories" : "Manage Expense Categories";
+            LoadAvailableIcons();
+            NewCategoryIconCode = CategoryIconService.GetDefaultIconCode(CategoryType);
+            UpdateIconSelection(NewCategoryIconCode);
             await LoadCategoriesAsync();
+        }
+
+        private void LoadAvailableIcons()
+        {
+            AvailableIcons.Clear();
+            var icons = CategoryIconService.GetIconsForType(CategoryType);
+            foreach (var icon in icons)
+            {
+                AvailableIcons.Add(icon);
+            }
         }
 
         private async Task LoadCategoriesAsync()
@@ -51,6 +73,28 @@ namespace MoneyRecord.ViewModels
             {
                 Categories.Add(category);
             }
+        }
+
+        private void UpdateIconSelection(string selectedCode)
+        {
+            foreach (var icon in AvailableIcons)
+            {
+                icon.IsSelected = icon.Code == selectedCode;
+            }
+        }
+
+        [RelayCommand]
+        private void SelectNewIcon(string iconCode)
+        {
+            NewCategoryIconCode = iconCode;
+            UpdateIconSelection(iconCode);
+        }
+
+        [RelayCommand]
+        private void SelectEditIcon(string iconCode)
+        {
+            EditCategoryIconCode = iconCode;
+            UpdateIconSelection(iconCode);
         }
 
         [RelayCommand]
@@ -65,11 +109,16 @@ namespace MoneyRecord.ViewModels
             var category = new Category
             {
                 Name = NewCategoryName,
-                Type = CategoryType
+                Type = CategoryType,
+                IconCode = string.IsNullOrEmpty(NewCategoryIconCode) 
+                    ? CategoryIconService.GetDefaultIconCode(CategoryType) 
+                    : NewCategoryIconCode
             };
 
             await _databaseService.SaveCategoryAsync(category);
             NewCategoryName = string.Empty;
+            NewCategoryIconCode = CategoryIconService.GetDefaultIconCode(CategoryType);
+            UpdateIconSelection(NewCategoryIconCode);
             await LoadCategoriesAsync();
         }
 
@@ -88,7 +137,7 @@ namespace MoneyRecord.ViewModels
 
                     if (availableCategories.Count == 0)
                     {
-                        await Shell.Current.DisplayAlert("Cannot Delete", 
+                        await Shell.Current.DisplayAlertAsync("Cannot Delete", 
                             "This is the last category of this type. You cannot delete it while it has transactions. Please create another category first.", 
                             "OK");
                         return;
@@ -110,7 +159,7 @@ namespace MoneyRecord.ViewModels
                     
                     if (replacementCategory == null)
                     {
-                        await Shell.Current.DisplayAlert("Error", "Could not find the selected category", "OK");
+                        await Shell.Current.DisplayAlertAsync("Error", "Could not find the selected category", "OK");
                         return;
                     }
 
@@ -118,7 +167,7 @@ namespace MoneyRecord.ViewModels
                     var transactionCount = await _databaseService.GetTransactionCountByCategoryAsync(category.Id);
 
                     // Confirm the reassignment
-                    var confirmReassign = await Shell.Current.DisplayAlert(
+                    var confirmReassign = await Shell.Current.DisplayAlertAsync(
                         "Confirm Reassignment",
                         $"Are you sure you want to move {transactionCount} transaction(s) from '{category.Name}' to '{replacementCategory.Name}' and delete '{category.Name}'?",
                         "Yes, Move and Delete",
@@ -135,14 +184,14 @@ namespace MoneyRecord.ViewModels
                     // Delete the category
                     await _databaseService.DeleteCategoryAsync(category);
 
-                    await Shell.Current.DisplayAlert("Success", 
+                    await Shell.Current.DisplayAlertAsync("Success", 
                         $"Category '{category.Name}' deleted and {reassignedCount} transaction(s) moved to '{replacementCategory.Name}'", 
                         "OK");
                 }
                 else
                 {
                     // No transactions, just confirm deletion
-                    var confirm = await Shell.Current.DisplayAlert("Confirm", 
+                    var confirm = await Shell.Current.DisplayAlertAsync("Confirm", 
                         $"Are you sure you want to delete '{category.Name}'?", "Yes", "No");
                     
                     if (!confirm)
@@ -155,7 +204,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
 
@@ -164,6 +213,8 @@ namespace MoneyRecord.ViewModels
         {
             EditingCategory = category;
             EditCategoryName = category.Name;
+            EditCategoryIconCode = category.IconCode;
+            UpdateIconSelection(category.IconCode);
             IsEditMode = true;
         }
 
@@ -180,11 +231,17 @@ namespace MoneyRecord.ViewModels
             }
 
             EditingCategory.Name = EditCategoryName;
+            EditingCategory.IconCode = string.IsNullOrEmpty(EditCategoryIconCode)
+                ? CategoryIconService.GetDefaultIconCode(CategoryType)
+                : EditCategoryIconCode;
+            
             await _databaseService.SaveCategoryAsync(EditingCategory);
 
             IsEditMode = false;
             EditingCategory = null;
             EditCategoryName = string.Empty;
+            EditCategoryIconCode = string.Empty;
+            UpdateIconSelection(NewCategoryIconCode);
 
             await LoadCategoriesAsync();
         }
@@ -195,6 +252,8 @@ namespace MoneyRecord.ViewModels
             IsEditMode = false;
             EditingCategory = null;
             EditCategoryName = string.Empty;
+            EditCategoryIconCode = string.Empty;
+            UpdateIconSelection(NewCategoryIconCode);
         }
 
         [RelayCommand]

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
+             xmlns:converters="clr-namespace:MoneyRecord.Converters"
              x:Class="MoneyRecord.Views.ManageCategoriesPage"
              x:DataType="viewmodels:ManageCategoriesViewModel"
              Title="{Binding Title}">
@@ -28,6 +29,49 @@
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
+
+                    <!-- Icon Selector for Add -->
+                    <Label Text="Select Icon" 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           Margin="0,4,0,0"/>
+                    <FlexLayout Wrap="Wrap" 
+                                JustifyContent="Start" 
+                                AlignItems="Center"
+                                BindableLayout.ItemsSource="{Binding AvailableIcons}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:CategoryIcon">
+                                <Border StrokeThickness="3"
+                                        Padding="10"
+                                        Margin="4"
+                                        WidthRequest="52"
+                                        HeightRequest="52"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Border.Stroke>
+                                        <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"/>
+                                    </Border.Stroke>
+                                    <Border.BackgroundColor>
+                                        <Binding Path="IsSelected">
+                                            <Binding.Converter>
+                                                <converters:BoolToSelectedBackgroundConverter/>
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </Border.BackgroundColor>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=SelectNewIconCommand}"
+                                            CommandParameter="{Binding Code}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding DisplayIcon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="24"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}"/>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
                     
                     <Button Text="Add Category" 
                            Command="{Binding AddCategoryCommand}"
@@ -57,6 +101,49 @@
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
+
+                    <!-- Icon Selector for Edit -->
+                    <Label Text="Select Icon" 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           Margin="0,4,0,0"/>
+                    <FlexLayout Wrap="Wrap" 
+                                JustifyContent="Start" 
+                                AlignItems="Center"
+                                BindableLayout.ItemsSource="{Binding AvailableIcons}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:CategoryIcon">
+                                <Border StrokeThickness="3"
+                                        Padding="10"
+                                        Margin="4"
+                                        WidthRequest="52"
+                                        HeightRequest="52"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Border.Stroke>
+                                        <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"/>
+                                    </Border.Stroke>
+                                    <Border.BackgroundColor>
+                                        <Binding Path="IsSelected">
+                                            <Binding.Converter>
+                                                <converters:BoolToSelectedBackgroundConverter/>
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </Border.BackgroundColor>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=SelectEditIconCommand}"
+                                            CommandParameter="{Binding Code}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding DisplayIcon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="24"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}"/>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
                     
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Button Grid.Column="0"
@@ -106,14 +193,22 @@
                                BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
                                CornerRadius="10"
                                HasShadow="False">
-                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                                <!-- Category Icon -->
                                 <Label Grid.Column="0"
+                                       Text="{Binding DisplayIcon}"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="24"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                
+                                <Label Grid.Column="1"
                                        Text="{Binding Name}" 
                                        FontSize="16"
                                        TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                                        VerticalOptions="Center"/>
                                 
-                                <Button Grid.Column="1"
+                                <Button Grid.Column="2"
                                         Text="✏️ Edit"
                                         FontSize="13"
                                         HeightRequest="36"
@@ -124,7 +219,7 @@
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=EditCategoryCommand}"
                                         CommandParameter="{Binding .}"/>
                                 
-                                <Button Grid.Column="2"
+                                <Button Grid.Column="3"
                                         Text="🗑️ Delete"
                                         FontSize="13"
                                         HeightRequest="36"

@@ -54,20 +54,21 @@ namespace MoneyRecord.Services
         {
             var defaultIncomeCategories = new[]
             {
-                new Category { Name = "Salary", Type = CategoryType.Income },
-                new Category { Name = "Freelance", Type = CategoryType.Income },
-                new Category { Name = "Investment", Type = CategoryType.Income },
-                new Category { Name = "Other Income", Type = CategoryType.Income }
+                new Category { Name = "Salary", Type = CategoryType.Income, IconCode = "F0116" },       // cash-multiple
+                new Category { Name = "Freelance", Type = CategoryType.Income, IconCode = "F00D6" },    // briefcase
+                new Category { Name = "Investment", Type = CategoryType.Income, IconCode = "F081F" },   // finance
+                new Category { Name = "Other Income", Type = CategoryType.Income, IconCode = "F0CF4" }  // cash-register
             };
 
             var defaultExpenseCategories = new[]
             {
-                new Category { Name = "Food", Type = CategoryType.Expense },
-                new Category { Name = "Transportation", Type = CategoryType.Expense },
-                new Category { Name = "Entertainment", Type = CategoryType.Expense },
-                new Category { Name = "Utilities", Type = CategoryType.Expense },
-                new Category { Name = "Shopping", Type = CategoryType.Expense },
-                new Category { Name = "Other Expense", Type = CategoryType.Expense }
+                new Category { Name = "Food", Type = CategoryType.Expense, IconCode = "F025A" },             // food
+                new Category { Name = "Transportation", Type = CategoryType.Expense, IconCode = "F0BD8" },   // train-car
+                new Category { Name = "Entertainment", Type = CategoryType.Expense, IconCode = "F0356" },    // glass-cocktail
+                new Category { Name = "Utilities", Type = CategoryType.Expense, IconCode = "F0D15" },        // home-city
+                new Category { Name = "Shopping", Type = CategoryType.Expense, IconCode = "F0110" },         // cart
+                new Category { Name = "Home", Type = CategoryType.Expense, IconCode = "F0D15" },             // home-city
+                new Category { Name = "Other Expense", Type = CategoryType.Expense, IconCode = "F0076" }     // basket
             };
 
             foreach (var category in defaultIncomeCategories)
@@ -121,7 +122,7 @@ namespace MoneyRecord.Services
                 
                 return count > 0;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -151,13 +152,14 @@ namespace MoneyRecord.Services
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync() ?? new List<Transaction>();
 
-            // Load category names and account names
+            // Load category names, icons, and account names with icons
             foreach (var transaction in transactions)
             {
                 var category = await _database.Table<Category>()
                     .Where(c => c.Id == transaction.CategoryId)
                     .FirstOrDefaultAsync();
                 transaction.CategoryName = category?.Name ?? "Unknown";
+                transaction.CategoryIconCode = category?.IconCode ?? "F0770";
 
                 if (transaction.AccountId.HasValue)
                 {
@@ -165,10 +167,12 @@ namespace MoneyRecord.Services
                         .Where(a => a.Id == transaction.AccountId.Value)
                         .FirstOrDefaultAsync();
                     transaction.AccountName = account?.Name ?? "Cash";
+                    transaction.AccountIconCode = account?.IconCode ?? "F0070";
                 }
                 else
                 {
                     transaction.AccountName = "Cash";
+                    transaction.AccountIconCode = "F0115"; // cash-100
                 }
             }
 
@@ -251,7 +255,8 @@ namespace MoneyRecord.Services
             {
                 Name = "Cash",
                 InitialBalance = 0,
-                IsDefault = true
+                IsDefault = true,
+                IconCode = "F0115" // cash-100 icon
             };
             await _database!.InsertAsync(cashAccount);
         }

@@ -94,12 +94,17 @@ namespace MoneyRecord.ViewModels
                 // Combine regular transactions with transfer transactions
                 var combinedList = transactionList.Concat(transferTransactions).ToList();
                 
-                // Pre-fetch account balances if grouping by account
+                // Pre-fetch account balances and icons if grouping by account
                 Dictionary<string, decimal>? accountBalances = null;
+                Dictionary<string, string>? accountIcons = null;
                 if (CurrentGroupingMode == GroupingMode.Account)
                 {
                     var balanceInfos = await _databaseService.GetAllAccountBalancesAsync() ?? new List<AccountBalanceInfo>();
                     accountBalances = balanceInfos.ToDictionary(b => b.AccountName ?? string.Empty, b => b.CurrentBalance);
+                    
+                    // Get account icons
+                    var accounts = await _databaseService.GetAccountsAsync() ?? new List<Account>();
+                    accountIcons = accounts.ToDictionary(a => a.Name ?? string.Empty, a => a.IconCode ?? "F0070");
                 }
                 
                 // Sort by date
@@ -141,12 +146,21 @@ namespace MoneyRecord.ViewModels
                             {
                                 // For account grouping, use the account balance; for category, sum transactions
                                 decimal? overrideTotal = null;
-                                if (CurrentGroupingMode == GroupingMode.Account && accountBalances != null)
+                                string? accountIconCode = null;
+                                
+                                if (CurrentGroupingMode == GroupingMode.Account)
                                 {
-                                    overrideTotal = accountBalances.GetValueOrDefault(g.Key, 0);
+                                    if (accountBalances != null)
+                                    {
+                                        overrideTotal = accountBalances.GetValueOrDefault(g.Key, 0);
+                                    }
+                                    if (accountIcons != null)
+                                    {
+                                        accountIconCode = accountIcons.GetValueOrDefault(g.Key, "F0070");
+                                    }
                                 }
                                 
-                                var group = new TransactionGroup(g.Key, transactionsInGroup, CurrentGroupingMode, overrideTotal);
+                                var group = new TransactionGroup(g.Key, transactionsInGroup, CurrentGroupingMode, overrideTotal, accountIconCode);
                                 groups.Add(group);
                             }
                             catch (Exception ex)
@@ -187,7 +201,7 @@ namespace MoneyRecord.ViewModels
             {
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await Shell.Current.DisplayAlert("Error", $"Failed to load transactions: {ex.Message}\n\nCheck Output window for details.", "OK");
+                    await Shell.Current.DisplayAlertAsync("Error", $"Failed to load transactions: {ex.Message}\n\nCheck Output window for details.", "OK");
                 });
             }
             finally
@@ -262,11 +276,11 @@ namespace MoneyRecord.ViewModels
                     message = "No accounts found.";
                 }
 
-                await Shell.Current.DisplayAlert("Account Balances", message, "OK");
+                await Shell.Current.DisplayAlertAsync("Account Balances", message, "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Failed to load account balances: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"Failed to load account balances: {ex.Message}", "OK");
             }
         }
 
@@ -300,7 +314,7 @@ namespace MoneyRecord.ViewModels
             {
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await Shell.Current.DisplayAlert("Error", $"Failed to toggle view: {ex.Message}", "OK");
+                    await Shell.Current.DisplayAlertAsync("Error", $"Failed to toggle view: {ex.Message}", "OK");
                 });
             }
         }
@@ -345,7 +359,7 @@ namespace MoneyRecord.ViewModels
             var isTransfer = transaction.TransferId.HasValue;
             var itemType = isTransfer ? "transfer" : "transaction";
 
-            var confirm = await Shell.Current.DisplayAlert(
+            var confirm = await Shell.Current.DisplayAlertAsync(
                 "Confirm Delete",
                 $"Are you sure you want to delete this {itemType}?\n\n{transaction.Description}\n${transaction.Amount:N2}",
                 "Yes, Delete",
@@ -372,11 +386,11 @@ namespace MoneyRecord.ViewModels
                 
                 await LoadDataAsync();
                 
-                await Shell.Current.DisplayAlert("Success", $"{char.ToUpper(itemType[0])}{itemType[1..]} deleted successfully", "OK");
+                await Shell.Current.DisplayAlertAsync("Success", $"{char.ToUpper(itemType[0])}{itemType[1..]} deleted successfully", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Failed to delete {itemType}: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"Failed to delete {itemType}: {ex.Message}", "OK");
             }
         }
 
@@ -436,7 +450,11 @@ namespace MoneyRecord.ViewModels
         private List<Transaction> ConvertTransfersToTransactions(List<Transfer> transfers, GroupingMode groupingMode)
         {
             var result = new List<Transaction>();
-            const string transferCategoryName = "🔄 Transfers";
+            const string transferCategoryName = "Transfers";
+            const string transferIconCode = "F0A27"; // bank-transfer icon
+
+
+
 
             foreach (var transfer in transfers)
             {
@@ -452,7 +470,9 @@ namespace MoneyRecord.ViewModels
                         Type = TransactionType.Transfer,
                         AccountId = transfer.SourceAccountId,
                         AccountName = transfer.SourceAccountName,
+                        AccountIconCode = transferIconCode,
                         CategoryName = transferCategoryName,
+                        CategoryIconCode = transferIconCode,
                         TransferId = transfer.Id,
                         IsOutgoingTransfer = true,
                         TransferCounterpartAccount = transfer.DestinationAccountName
@@ -468,7 +488,9 @@ namespace MoneyRecord.ViewModels
                         Type = TransactionType.Transfer,
                         AccountId = transfer.DestinationAccountId,
                         AccountName = transfer.DestinationAccountName,
+                        AccountIconCode = transferIconCode,
                         CategoryName = transferCategoryName,
+                        CategoryIconCode = transferIconCode,
                         TransferId = transfer.Id,
                         IsOutgoingTransfer = false,
                         TransferCounterpartAccount = transfer.SourceAccountName
@@ -488,7 +510,9 @@ namespace MoneyRecord.ViewModels
                         Type = TransactionType.Transfer,
                         AccountId = transfer.SourceAccountId,
                         AccountName = $"{transfer.SourceAccountName} → {transfer.DestinationAccountName}",
+                        AccountIconCode = transferIconCode,
                         CategoryName = transferCategoryName,
+                        CategoryIconCode = transferIconCode,
                         TransferId = transfer.Id,
                         IsOutgoingTransfer = false,
                         TransferCounterpartAccount = transfer.DestinationAccountName

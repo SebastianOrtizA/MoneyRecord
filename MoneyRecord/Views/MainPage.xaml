@@ -259,7 +259,10 @@
                                     
                                     <!-- Row 2: Category -->
                                     <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
-                                        <Label Text="📁" FontSize="12"/>
+                                        <Label Text="{Binding CategoryDisplayIcon}" 
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="14"
+                                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
                                         <Label Text="{Binding CategoryName}"
                                                FontSize="13"
                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -267,7 +270,7 @@
                                     
                                     <!-- Row 3: Account -->
                                     <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
-                                        <Label Text="🏦" FontSize="12"/>
+                                        <Label Text="{Binding AccountDisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="14" TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
                                         <Label Text="{Binding AccountName}"
                                                FontSize="13"
                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -343,7 +346,7 @@
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=ToggleGroupExpandedCommand}"
                                                 CommandParameter="{Binding .}"/>
                                         </Frame.GestureRecognizers>
-                                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
+                                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="4">
                                             <!-- Expand/Collapse Icon -->
                                             <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                                                    Text="{Binding IsExpanded, Converter={StaticResource BoolToExpandIconConverter}}"
@@ -351,8 +354,16 @@
                                                    VerticalOptions="Center"
                                                    TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
                                             
+                                            <!-- Category/Group Icon -->
+                                            <Label Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                                   Text="{Binding GroupDisplayIcon}"
+                                                   FontFamily="MaterialDesignIcons"
+                                                   FontSize="28"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                            
                                             <!-- Category Name -->
-                                            <Label Grid.Row="0" Grid.Column="1"
+                                            <Label Grid.Row="0" Grid.Column="2"
                                                    Text="{Binding GroupName}"
                                                    FontSize="18"
                                                    FontAttributes="Bold"
@@ -360,7 +371,7 @@
                                                    TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
                                             
                                             <!-- Total Amount -->
-                                            <Label Grid.Row="0" Grid.Column="2"
+                                            <Label Grid.Row="0" Grid.Column="3"
                                                    Text="{Binding ., Converter={StaticResource GroupTotalConverter}}"
                                                    FontSize="20"
                                                    FontAttributes="Bold"
@@ -368,12 +379,13 @@
                                                    TextColor="{Binding ., Converter={StaticResource GroupTypeToColorConverter}}"/>
                                             
                                             <!-- Transaction Count -->
-                                            <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                            <Label Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
                                                    Text="{Binding TransactionCount, StringFormat='{0} transactions'}"
                                                    FontSize="13"
                                                    TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
                                         </Grid>
                                     </Frame>
+                                    
                                     
                                     <!-- Expanded Items -->
                                     <VerticalStackLayout IsVisible="{Binding IsExpanded}"
@@ -409,7 +421,10 @@
                                                         
                                                         <!-- Row 2: Category -->
                                                         <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
-                                                            <Label Text="📁" FontSize="11"/>
+                                                            <Label Text="{Binding CategoryDisplayIcon}" 
+                                                                   FontFamily="MaterialDesignIcons"
+                                                                   FontSize="12"
+                                                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
                                                             <Label Text="{Binding CategoryName}"
                                                                    FontSize="12"
                                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -417,7 +432,7 @@
                                                         
                                                         <!-- Row 3: Account -->
                                                         <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
-                                                            <Label Text="🏦" FontSize="11"/>
+                                                            <Label Text="{Binding AccountDisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="12" TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
                                                             <Label Text="{Binding AccountName}"
                                                                    FontSize="12"
                                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -465,3 +480,5 @@
     </RefreshView>
 
 </ContentPage>
+
+

@@ -183,32 +183,32 @@ namespace MoneyRecord.ViewModels
         {
             if (SelectedSourceAccount == null)
             {
-                await Shell.Current.DisplayAlert("Error", "Please select a source account", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please select a source account", "OK");
                 return;
             }
 
             if (SelectedDestinationAccount == null)
             {
-                await Shell.Current.DisplayAlert("Error", "Please select a destination account", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please select a destination account", "OK");
                 return;
             }
 
             if (SelectedSourceAccount.Id == SelectedDestinationAccount.Id)
             {
-                await Shell.Current.DisplayAlert("Error", "Source and destination accounts must be different", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Source and destination accounts must be different", "OK");
                 return;
             }
 
             if (!decimal.TryParse(Amount, out var amountValue) || amountValue <= 0)
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter a valid amount greater than zero", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please enter a valid amount greater than zero", "OK");
                 return;
             }
 
             // Check available balance
             if (amountValue > SourceAccountBalance)
             {
-                await Shell.Current.DisplayAlert("Error", 
+                await Shell.Current.DisplayAlertAsync("Error", 
                     $"Insufficient funds. Available balance: ${SourceAccountBalance:N2}", "OK");
                 return;
             }
@@ -225,7 +225,7 @@ namespace MoneyRecord.ViewModels
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
 
                     await _databaseService.SaveTransferAsync(Transfer);
-                    await Shell.Current.DisplayAlert("Success", "Transfer updated successfully", "OK");
+                    await Shell.Current.DisplayAlertAsync("Success", "Transfer updated successfully", "OK");
                 }
                 else
                 {
@@ -246,7 +246,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Failed to save transfer: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"Failed to save transfer: {ex.Message}", "OK");
             }
         }
 

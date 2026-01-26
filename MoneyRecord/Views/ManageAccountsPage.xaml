@@ -43,6 +43,49 @@
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
+
+                    <!-- Icon Selector for Add -->
+                    <Label Text="Select Icon" 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           Margin="0,4,0,0"/>
+                    <FlexLayout Wrap="Wrap" 
+                                JustifyContent="Start" 
+                                AlignItems="Center"
+                                BindableLayout.ItemsSource="{Binding AvailableIcons}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:AccountIcon">
+                                <Border StrokeThickness="3"
+                                        Padding="10"
+                                        Margin="4"
+                                        WidthRequest="52"
+                                        HeightRequest="52"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Border.Stroke>
+                                        <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"/>
+                                    </Border.Stroke>
+                                    <Border.BackgroundColor>
+                                        <Binding Path="IsSelected">
+                                            <Binding.Converter>
+                                                <converters:BoolToSelectedBackgroundConverter/>
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </Border.BackgroundColor>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectNewIconCommand}"
+                                            CommandParameter="{Binding Code}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding DisplayIcon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="24"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}"/>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
                     
                     <Button Text="➕ Add Account" 
                            Command="{Binding AddAccountCommand}"
@@ -82,6 +125,49 @@
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
+
+                    <!-- Icon Selector for Edit -->
+                    <Label Text="Select Icon" 
+                           FontSize="14" 
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           Margin="0,4,0,0"/>
+                    <FlexLayout Wrap="Wrap" 
+                                JustifyContent="Start" 
+                                AlignItems="Center"
+                                BindableLayout.ItemsSource="{Binding AvailableIcons}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:AccountIcon">
+                                <Border StrokeThickness="3"
+                                        Padding="10"
+                                        Margin="4"
+                                        WidthRequest="52"
+                                        HeightRequest="52"
+                                        StrokeShape="RoundRectangle 10">
+                                    <Border.Stroke>
+                                        <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"/>
+                                    </Border.Stroke>
+                                    <Border.BackgroundColor>
+                                        <Binding Path="IsSelected">
+                                            <Binding.Converter>
+                                                <converters:BoolToSelectedBackgroundConverter/>
+                                            </Binding.Converter>
+                                        </Binding>
+                                    </Border.BackgroundColor>
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectEditIconCommand}"
+                                            CommandParameter="{Binding Code}"/>
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding DisplayIcon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="24"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}"/>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
                     
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Button Grid.Column="0"
@@ -131,21 +217,29 @@
                                BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
                                CornerRadius="10"
                                HasShadow="False">
-                            <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
-                                <Label Grid.Row="0" Grid.Column="0"
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
+                                <!-- Account Icon -->
+                                <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                                       Text="{Binding DisplayIcon}"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="28"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                
+                                <Label Grid.Row="0" Grid.Column="1"
                                        Text="{Binding Name}" 
                                        FontSize="16"
                                        FontAttributes="Bold"
                                        TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                                        VerticalOptions="Center"/>
                                 
-                                <Label Grid.Row="1" Grid.Column="0"
+                                <Label Grid.Row="1" Grid.Column="1"
                                        Text="{Binding InitialBalance, StringFormat='Initial: ${0:N2}'}" 
                                        FontSize="13"
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
                                        VerticalOptions="Center"/>
                                 
-                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="1"
+                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
                                         Text="✏️ Edit"
                                         FontSize="13"
                                         HeightRequest="36"
@@ -156,7 +250,7 @@
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditAccountCommand}"
                                         CommandParameter="{Binding .}"/>
                                 
-                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"
                                         Text="🗑️ Delete"
                                         FontSize="13"
                                         HeightRequest="36"

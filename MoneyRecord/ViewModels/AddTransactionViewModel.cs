@@ -138,25 +138,25 @@ namespace MoneyRecord.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Description))
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter a description", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please enter a description", "OK");
                 return;
             }
 
             if (!decimal.TryParse(Amount, out var amountValue) || amountValue <= 0)
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter a valid amount", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please enter a valid amount", "OK");
                 return;
             }
 
             if (SelectedAccount == null)
             {
-                await Shell.Current.DisplayAlert("Error", "Please select an account", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please select an account", "OK");
                 return;
             }
 
             if (SelectedCategory == null)
             {
-                await Shell.Current.DisplayAlert("Error", "Please select a category", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please select a category", "OK");
                 return;
             }
 
@@ -173,7 +173,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.AccountId = accountId;
                 
                 await _databaseService.SaveTransactionAsync(Transaction);
-                await Shell.Current.DisplayAlert("Success", "Transaction updated successfully", "OK");
+                await Shell.Current.DisplayAlertAsync("Success", "Transaction updated successfully", "OK");
             }
             else
             {

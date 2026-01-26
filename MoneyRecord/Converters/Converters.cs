@@ -325,4 +325,155 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Compares two string values and returns true if they are equal.
+    /// Used for icon selection highlighting.
+    /// </summary>
+    public class StringEqualsConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is string currentValue && parameter is string compareValue)
+            {
+                return currentValue == compareValue;
+            }
+            return false;
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Returns the selected color if value equals parameter, otherwise default color.
+    /// </summary>
+    public class IconSelectionColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is string selectedCode && parameter is string iconCode)
+            {
+                if (selectedCode == iconCode)
+                {
+                    // Selected - use primary color
+                    return Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#64B5F6")
+                        : Color.FromArgb("#1976D2");
+                }
+            }
+            // Not selected - use default border color
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#404040")
+                : Color.FromArgb("#E0E0E0");
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Returns a highlighted background color if value equals parameter, otherwise transparent.
+    /// </summary>
+    public class IconSelectionBackgroundConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is string selectedCode && parameter is string iconCode)
+            {
+                if (selectedCode == iconCode)
+                {
+                    // Selected - use light highlight
+                    return Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#1A64B5F6") // Semi-transparent blue
+                        : Color.FromArgb("#E3F2FD");  // Light blue
+                }
+            }
+            // Not selected
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#1E1E1E")
+                : Color.FromArgb("#FFFFFF");
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts boolean IsSelected to border color.
+    /// </summary>
+    public class BoolToColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isSelected && isSelected)
+            {
+                return Application.Current?.RequestedTheme == AppTheme.Dark
+                    ? Color.FromArgb("#64B5F6")
+                    : Color.FromArgb("#1976D2");
+            }
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#404040")
+                : Color.FromArgb("#E0E0E0");
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts boolean IsSelected to background color.
+    /// </summary>
+    public class BoolToSelectedBackgroundConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isSelected && isSelected)
+            {
+                return Application.Current?.RequestedTheme == AppTheme.Dark
+                    ? Color.FromArgb("#1A64B5F6")
+                    : Color.FromArgb("#E3F2FD");
+            }
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#1E1E1E")
+                : Color.FromArgb("#FFFFFF");
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts boolean IsSelected to icon text color.
+    /// </summary>
+    public class BoolToIconColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isSelected && isSelected)
+            {
+                return Application.Current?.RequestedTheme == AppTheme.Dark
+                    ? Color.FromArgb("#64B5F6")
+                    : Color.FromArgb("#1976D2");
+            }
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#FFFFFF")
+                : Color.FromArgb("#333333");
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

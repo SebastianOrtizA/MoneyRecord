@@ -26,6 +26,64 @@ namespace MoneyRecord.Models
         public string AccountName { get; set; } = string.Empty;
 
         /// <summary>
+        /// Icon code for the category (Material Design Icons)
+        /// </summary>
+        [Ignore]
+        public string CategoryIconCode { get; set; } = "F0770";
+
+        /// <summary>
+        /// Gets the displayable icon character from the category unicode code
+        /// </summary>
+        [Ignore]
+        public string CategoryDisplayIcon
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(CategoryIconCode))
+                        return "\uF0770";
+
+                    var codePoint = Convert.ToInt32(CategoryIconCode, 16);
+                    return char.ConvertFromUtf32(codePoint);
+                }
+                catch
+                {
+                    return "\uF0770";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Icon code for the account (Material Design Icons)
+        /// </summary>
+        [Ignore]
+        public string AccountIconCode { get; set; } = "F0070";
+
+        /// <summary>
+        /// Gets the displayable icon character from the account unicode code
+        /// </summary>
+        [Ignore]
+        public string AccountDisplayIcon
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(AccountIconCode))
+                        return "\uF0070";
+
+                    var codePoint = Convert.ToInt32(AccountIconCode, 16);
+                    return char.ConvertFromUtf32(codePoint);
+                }
+                catch
+                {
+                    return "\uF0070";
+                }
+            }
+        }
+
+        /// <summary>
         /// Used for transfers to store the original Transfer.Id for edit/delete operations
         /// </summary>
         [Ignore]

@@ -52,7 +52,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Failed to load transfers: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"Failed to load transfers: {ex.Message}", "OK");
             }
             finally
             {
@@ -84,7 +84,7 @@ namespace MoneyRecord.ViewModels
             if (transfer == null)
                 return;
 
-            var confirm = await Shell.Current.DisplayAlert(
+            var confirm = await Shell.Current.DisplayAlertAsync(
                 "Confirm Delete",
                 $"Are you sure you want to delete this transfer?\n\n" +
                 $"From: {transfer.SourceAccountName}\n" +
@@ -100,11 +100,11 @@ namespace MoneyRecord.ViewModels
             {
                 await _databaseService.DeleteTransferAsync(transfer);
                 await LoadTransfersAsync();
-                await Shell.Current.DisplayAlert("Success", "Transfer deleted successfully", "OK");
+                await Shell.Current.DisplayAlertAsync("Success", "Transfer deleted successfully", "OK");
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error", $"Failed to delete transfer: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", $"Failed to delete transfer: {ex.Message}", "OK");
             }
         }
     }
