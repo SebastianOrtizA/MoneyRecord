@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
              x:Class="MoneyRecord.Views.AddTransactionPage"
              x:DataType="viewmodels:AddTransactionViewModel"
              Title="{Binding Title}">
@@ -23,7 +24,11 @@
             <Entry Text="{Binding Amount}" 
                    Placeholder="0.00"
                    Keyboard="Numeric"
-                   FontSize="16"/>
+                   FontSize="16">
+                <Entry.Behaviors>
+                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                </Entry.Behaviors>
+            </Entry>
 
             <Label Text="Account *" FontSize="16" FontAttributes="Bold"/>
             <Picker ItemsSource="{Binding Accounts}"

@@ -4,6 +4,7 @@
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:converters="clr-namespace:MoneyRecord.Converters"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
              x:Class="MoneyRecord.Views.ManageAccountsPage"
              x:DataType="viewmodels:ManageAccountsViewModel"
              Title="Manage Accounts">
@@ -42,7 +43,11 @@
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                           FontSize="16"/>
+                           FontSize="16">
+                        <Entry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                        </Entry.Behaviors>
+                    </Entry>
 
                     <!-- Icon Selector for Add -->
                     <Label Text="Select Icon" 
@@ -124,7 +129,11 @@
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                           FontSize="16"/>
+                           FontSize="16">
+                        <Entry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                        </Entry.Behaviors>
+                    </Entry>
 
                     <!-- Icon Selector for Edit -->
                     <Label Text="Select Icon" 

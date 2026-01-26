@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 
@@ -199,7 +200,8 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            if (!decimal.TryParse(Amount, out var amountValue) || amountValue <= 0)
+            var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
+            if (amountValue <= 0)
             {
                 await Shell.Current.DisplayAlertAsync("Error", "Please enter a valid amount greater than zero", "OK");
                 return;

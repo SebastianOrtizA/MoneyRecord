@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 using System.Collections.ObjectModel;
@@ -100,14 +101,11 @@ namespace MoneyRecord.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewAccountName))
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter an account name", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please enter an account name", "OK");
                 return;
             }
 
-            if (!decimal.TryParse(NewAccountBalance, out var balance))
-            {
-                balance = 0;
-            }
+            var balance = CurrencyMaskBehavior.ParseCurrencyValue(NewAccountBalance);
 
             var account = new Account
             {
@@ -161,14 +159,11 @@ namespace MoneyRecord.ViewModels
 
             if (string.IsNullOrWhiteSpace(EditAccountName))
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter an account name", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Please enter an account name", "OK");
                 return;
             }
 
-            if (!decimal.TryParse(EditAccountBalance, out var balance))
-            {
-                balance = EditingAccount.InitialBalance;
-            }
+            var balance = CurrencyMaskBehavior.ParseCurrencyValue(EditAccountBalance);
 
             EditingAccount.Name = EditAccountName.Trim();
             EditingAccount.InitialBalance = balance;
