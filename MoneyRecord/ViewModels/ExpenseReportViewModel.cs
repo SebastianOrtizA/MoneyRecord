@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 using System.Collections.ObjectModel;
@@ -16,7 +17,7 @@ namespace MoneyRecord.ViewModels
         private List<Transaction> _expenseTransactions = new();
 
         [ObservableProperty]
-        private string selectedPeriod = "Last Month";
+        private PeriodItem selectedPeriod;
 
         [ObservableProperty]
         private DateTime customStartDate = DateTime.Now.AddMonths(-1);
@@ -42,7 +43,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<CategoryExpenseData> categoryDetails = new();
 
-        public List<string> Periods { get; } = new() { "Today", "Last Week", "Last Month", "Last Year", "Custom Period" };
+        public List<PeriodItem> Periods { get; } = PeriodHelper.GetReportPeriods();
 
         // Heatmap color palette (from coolest to hottest)
         private static readonly Color[] HeatmapColors = new[]
@@ -64,6 +65,7 @@ namespace MoneyRecord.ViewModels
         public ExpenseReportViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
+            selectedPeriod = PeriodHelper.GetDefaultPeriod();
         }
 
         public async Task InitializeAsync()
@@ -250,9 +252,9 @@ namespace MoneyRecord.ViewModels
             return luminance > 0.5 ? Colors.Black : Colors.White;
         }
 
-        partial void OnSelectedPeriodChanged(string value)
+        partial void OnSelectedPeriodChanged(PeriodItem value)
         {
-            IsCustomPeriodSelected = value == "Custom Period";
+            IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
             _ = LoadReportDataAsync();
         }
 
@@ -277,18 +279,18 @@ namespace MoneyRecord.ViewModels
             var endDate = DateTime.Now.Date.AddDays(1).AddTicks(-1);
             DateTime startDate;
 
-            switch (SelectedPeriod)
+            switch (SelectedPeriod?.Type)
             {
-                case "Today":
+                case PeriodType.Today:
                     startDate = DateTime.Now.Date;
                     break;
-                case "Last Week":
+                case PeriodType.LastWeek:
                     startDate = DateTime.Now.Date.AddDays(-7);
                     break;
-                case "Last Year":
+                case PeriodType.LastYear:
                     startDate = DateTime.Now.Date.AddYears(-1);
                     break;
-                case "Custom Period":
+                case PeriodType.CustomPeriod:
                     startDate = CustomStartDate.Date;
                     endDate = CustomEndDate.Date.AddDays(1).AddTicks(-1);
                     break;

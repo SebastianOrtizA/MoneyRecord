@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using System.Collections.ObjectModel;
 
@@ -48,7 +49,7 @@ namespace MoneyRecord.ViewModels
 
         public async Task InitializeAsync()
         {
-            Title = CategoryType == CategoryType.Income ? "Manage Income Categories" : "Manage Expense Categories";
+            Title = CategoryType == CategoryType.Income ? AppResources.ManageIncomeCategories : AppResources.ManageExpenseCategories;
             LoadAvailableIcons();
             NewCategoryIconCode = CategoryIconService.GetDefaultIconCode(CategoryType);
             UpdateIconSelection(NewCategoryIconCode);
@@ -102,7 +103,7 @@ namespace MoneyRecord.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewCategoryName))
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter a category name", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterCategoryName, AppResources.OK);
                 return;
             }
 
@@ -137,21 +138,21 @@ namespace MoneyRecord.ViewModels
 
                     if (availableCategories.Count == 0)
                     {
-                        await Shell.Current.DisplayAlertAsync("Cannot Delete", 
-                            "This is the last category of this type. You cannot delete it while it has transactions. Please create another category first.", 
-                            "OK");
+                        await Shell.Current.DisplayAlertAsync(AppResources.CannotDelete, 
+                            AppResources.LastCategoryCannotDelete, 
+                            AppResources.OK);
                         return;
                     }
 
                     // Ask user to select a replacement category
                     var categoryNames = availableCategories.Select(c => c.Name).ToArray();
-                    var selectedCategory = await Shell.Current.DisplayActionSheet(
-                        $"'{category.Name}' has existing transactions. Select a category to move them to:",
-                        "Cancel",
+                    var selectedCategory = await Shell.Current.DisplayActionSheetAsync(
+                        string.Format(AppResources.CategoryHasTransactions, category.Name),
+                        AppResources.Cancel,
                         null,
                         categoryNames);
 
-                    if (selectedCategory == "Cancel" || selectedCategory == null)
+                    if (selectedCategory == AppResources.Cancel || selectedCategory == null)
                         return;
 
                     // Find the selected category
@@ -159,7 +160,7 @@ namespace MoneyRecord.ViewModels
                     
                     if (replacementCategory == null)
                     {
-                        await Shell.Current.DisplayAlertAsync("Error", "Could not find the selected category", "OK");
+                        await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.Error, AppResources.OK);
                         return;
                     }
 
@@ -168,10 +169,10 @@ namespace MoneyRecord.ViewModels
 
                     // Confirm the reassignment
                     var confirmReassign = await Shell.Current.DisplayAlertAsync(
-                        "Confirm Reassignment",
-                        $"Are you sure you want to move {transactionCount} transaction(s) from '{category.Name}' to '{replacementCategory.Name}' and delete '{category.Name}'?",
-                        "Yes, Move and Delete",
-                        "Cancel");
+                        AppResources.Confirm,
+                        $"{transactionCount} → '{category.Name}' → '{replacementCategory.Name}'",
+                        AppResources.Yes,
+                        AppResources.Cancel);
 
                     if (!confirmReassign)
                     {
@@ -204,7 +205,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", $"An error occurred: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, ex.Message, AppResources.OK);
             }
         }
 
@@ -226,7 +227,7 @@ namespace MoneyRecord.ViewModels
 
             if (string.IsNullOrWhiteSpace(EditCategoryName))
             {
-                await Shell.Current.DisplayAlert("Error", "Please enter a category name", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterCategoryName, AppResources.OK);
                 return;
             }
 

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.AddTransactionPage"
              x:DataType="viewmodels:AddTransactionViewModel"
              Title="{Binding Title}">
@@ -10,17 +11,17 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 
-            <Label Text="Date *" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="{ext:Localize Date}" FontSize="16" FontAttributes="Bold"/>
             <DatePicker Date="{Binding SelectedDate}" 
                        Format="D"
                        FontSize="16"/>
 
-            <Label Text="Description *" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="{ext:Localize Description}" FontSize="16" FontAttributes="Bold"/>
             <Entry Text="{Binding Description}" 
-                   Placeholder="Enter description"
+                   Placeholder="{ext:Localize EnterDescription}"
                    FontSize="16"/>
 
-            <Label Text="Amount *" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="{ext:Localize Amount}" FontSize="16" FontAttributes="Bold"/>
             <Entry Text="{Binding Amount}" 
                    Placeholder="0.00"
                    Keyboard="Numeric"
@@ -30,29 +31,29 @@
                 </Entry.Behaviors>
             </Entry>
 
-            <Label Text="Account *" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="{ext:Localize Account}" FontSize="16" FontAttributes="Bold"/>
             <Picker ItemsSource="{Binding Accounts}"
                    SelectedItem="{Binding SelectedAccount}"
                    ItemDisplayBinding="{Binding Name}"
-                   Title="Select Account"
+                   Title="{ext:Localize SelectAccount}"
                    FontSize="16"/>
 
-            <Label Text="Category *" FontSize="16" FontAttributes="Bold"/>
+            <Label Text="{ext:Localize Category}" FontSize="16" FontAttributes="Bold"/>
             <Picker ItemsSource="{Binding Categories}"
                    SelectedItem="{Binding SelectedCategory}"
                    ItemDisplayBinding="{Binding Name}"
-                   Title="Select Category"
+                   Title="{ext:Localize SelectCategory}"
                    FontSize="16"/>
 
-            <Label Text="* Required fields" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" Margin="0,5,0,0"/>
+            <Label Text="{ext:Localize RequiredFields}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" Margin="0,5,0,0"/>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
                 <Button Grid.Column="0" 
-                       Text="Cancel" 
+                       Text="{ext:Localize Cancel}" 
                        Command="{Binding CancelCommand}"
                        BackgroundColor="Gray"/>
                 <Button Grid.Column="1" 
-                       Text="Save" 
+                       Text="{ext:Localize Save}" 
                        Command="{Binding SaveCommand}"
                        BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
             </Grid>

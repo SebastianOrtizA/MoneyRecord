@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- App General -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>Registro de Dinero</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="RequiredFields" xml:space="preserve">
+    <value>* Campos obligatorios</value>
+  </data>
+  
+  <!-- Navigation / Shell -->
+  <data name="Home" xml:space="preserve">
+    <value>Inicio</value>
+  </data>
+  <data name="ExpenseReport" xml:space="preserve">
+    <value>Reporte de Gastos</value>
+  </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>Reporte de Ingresos</value>
+  </data>
+  <data name="Transfers" xml:space="preserve">
+    <value>Transferencias</value>
+  </data>
+  <data name="ManageAccounts" xml:space="preserve">
+    <value>Administrar Cuentas</value>
+  </data>
+  <data name="ManageCategories" xml:space="preserve">
+    <value>Administrar Categorías</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Cuentas</value>
+  </data>
+  <data name="IncomeCategories" xml:space="preserve">
+    <value>Categorías de Ingresos</value>
+  </data>
+  <data name="ExpenseCategories" xml:space="preserve">
+    <value>Categorías de Gastos</value>
+  </data>
+  
+  <!-- Main Page -->
+  <data name="Summary" xml:space="preserve">
+    <value>Resumen</value>
+  </data>
+  <data name="SelectPeriod" xml:space="preserve">
+    <value>Seleccionar Período</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Desde:</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Hasta:</value>
+  </data>
+  <data name="TotalBalance" xml:space="preserve">
+    <value>Balance Total (Toca para detalles)</value>
+  </data>
+  <data name="Incomes" xml:space="preserve">
+    <value>Ingresos</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Gastos</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>💰 Ingreso</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>🔄 Transferir</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>💸 Gasto</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transacciones</value>
+  </data>
+  <data name="NoTransactions" xml:space="preserve">
+    <value>No hay transacciones para mostrar</value>
+  </data>
+  <data name="StartTracking" xml:space="preserve">
+    <value>Comienza a controlar tus finanzas agregando tu primera transacción</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>✏️ Editar</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>🗑️ Eliminar</value>
+  </data>
+  
+  <!-- Periods -->
+  <data name="Today" xml:space="preserve">
+    <value>Hoy</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>Última Semana</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>Último Mes</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>Último Año</value>
+  </data>
+  <data name="CustomPeriod" xml:space="preserve">
+    <value>Período Personalizado</value>
+  </data>
+  
+  <!-- Grouping -->
+  <data name="ListView" xml:space="preserve">
+    <value>📄 Vista Lista</value>
+  </data>
+  <data name="GroupByCategory" xml:space="preserve">
+    <value>📂 Por Categoría</value>
+  </data>
+  <data name="GroupByAccount" xml:space="preserve">
+    <value>🏦 Por Cuenta</value>
+  </data>
+  <data name="Ungrouped" xml:space="preserve">
+    <value>📋 Sin Agrupar</value>
+  </data>
+  <data name="Grouped" xml:space="preserve">
+    <value>📂 Agrupado</value>
+  </data>
+  <data name="SortOldestFirst" xml:space="preserve">
+    <value>↑ Más Antiguo</value>
+  </data>
+  <data name="SortNewestFirst" xml:space="preserve">
+    <value>↓ Más Reciente</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Ordenar</value>
+  </data>
+  
+  <!-- Add Transaction -->
+  <data name="AddTransaction" xml:space="preserve">
+    <value>Agregar Transacción</value>
+  </data>
+  <data name="AddIncome" xml:space="preserve">
+    <value>Agregar Ingreso</value>
+  </data>
+  <data name="AddExpense" xml:space="preserve">
+    <value>Agregar Gasto</value>
+  </data>
+  <data name="EditIncome" xml:space="preserve">
+    <value>Editar Ingreso</value>
+  </data>
+  <data name="EditExpense" xml:space="preserve">
+    <value>Editar Gasto</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Fecha *</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descripción *</value>
+  </data>
+  <data name="EnterDescription" xml:space="preserve">
+    <value>Ingresa una descripción</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Monto *</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Cuenta *</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Seleccionar Cuenta</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoría *</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>Seleccionar Categoría</value>
+  </data>
+  
+  <!-- Transfers -->
+  <data name="NewTransfer" xml:space="preserve">
+    <value>🔄 Nueva Transferencia</value>
+  </data>
+  <data name="EditTransfer" xml:space="preserve">
+    <value>Editar Transferencia</value>
+  </data>
+  <data name="NoTransfers" xml:space="preserve">
+    <value>Aún no hay transferencias</value>
+  </data>
+  <data name="TransferBetweenAccounts" xml:space="preserve">
+    <value>Transfiere dinero entre tus cuentas</value>
+  </data>
+  <data name="FromAccount" xml:space="preserve">
+    <value>Cuenta Origen *</value>
+  </data>
+  <data name="ToAccount" xml:space="preserve">
+    <value>Cuenta Destino *</value>
+  </data>
+  <data name="SelectSourceAccount" xml:space="preserve">
+    <value>Seleccionar Cuenta Origen</value>
+  </data>
+  <data name="SelectDestinationAccount" xml:space="preserve">
+    <value>Seleccionar Cuenta Destino</value>
+  </data>
+  <data name="TransferButton" xml:space="preserve">
+    <value>Transferir</value>
+  </data>
+  <data name="TransferDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="TransferOptional" xml:space="preserve">
+    <value>Transferencia (opcional)</value>
+  </data>
+  <data name="FromLabel" xml:space="preserve">
+    <value>De:</value>
+  </data>
+  <data name="ToLabel" xml:space="preserve">
+    <value>A:</value>
+  </data>
+  
+  <!-- Manage Accounts -->
+  <data name="AddNewAccount" xml:space="preserve">
+    <value>Agregar Nueva Cuenta</value>
+  </data>
+  <data name="EditAccount" xml:space="preserve">
+    <value>Editar Cuenta</value>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Nombre de Cuenta</value>
+  </data>
+  <data name="AccountNamePlaceholder" xml:space="preserve">
+    <value>Ej: Cuenta Bancaria, Efectivo, Tarjeta de Crédito</value>
+  </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>Balance Inicial</value>
+  </data>
+  <data name="SelectIcon" xml:space="preserve">
+    <value>Seleccionar Ícono</value>
+  </data>
+  <data name="AddAccountButton" xml:space="preserve">
+    <value>➕ Agregar Cuenta</value>
+  </data>
+  <data name="UpdateAccount" xml:space="preserve">
+    <value>💾 Actualizar Cuenta</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>❌ Cancelar Edición</value>
+  </data>
+  <data name="YourAccounts" xml:space="preserve">
+    <value>Tus Cuentas</value>
+  </data>
+  <data name="NoAccounts" xml:space="preserve">
+    <value>Aún no hay cuentas. Agrega tu primera cuenta arriba.</value>
+  </data>
+  
+  <!-- Manage Categories -->
+  <data name="AddNewCategory" xml:space="preserve">
+    <value>Agregar Nueva Categoría</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Editar Categoría</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Nombre de categoría</value>
+  </data>
+  <data name="AddCategoryButton" xml:space="preserve">
+    <value>Agregar Categoría</value>
+  </data>
+  <data name="UpdateCategory" xml:space="preserve">
+    <value>💾 Actualizar Categoría</value>
+  </data>
+  <data name="ManageIncomeCategories" xml:space="preserve">
+    <value>Administrar Categorías de Ingresos</value>
+  </data>
+  <data name="ManageExpenseCategories" xml:space="preserve">
+    <value>Administrar Categorías de Gastos</value>
+  </data>
+  <data name="YourCategories" xml:space="preserve">
+    <value>Tus Categorías</value>
+  </data>
+  <data name="NoCategories" xml:space="preserve">
+    <value>Aún no hay categorías. Agrega tu primera categoría arriba.</value>
+  </data>
+  
+  <!-- Reports -->
+  <data name="ExpenseAnalysis" xml:space="preserve">
+    <value>📊 Análisis de Gastos</value>
+  </data>
+  <data name="IncomeAnalysis" xml:space="preserve">
+    <value>💵 Análisis de Ingresos</value>
+  </data>
+  <data name="IdentifyExpenseCategories" xml:space="preserve">
+    <value>Identifica tus categorías de gastos más utilizadas</value>
+  </data>
+  <data name="IdentifyIncomeCategories" xml:space="preserve">
+    <value>Identifica tus categorías de ingresos más utilizadas</value>
+  </data>
+  <data name="TotalExpenses" xml:space="preserve">
+    <value>Total de Gastos</value>
+  </data>
+  <data name="TotalIncome" xml:space="preserve">
+    <value>Total de Ingresos</value>
+  </data>
+  <data name="CategoryBreakdown" xml:space="preserve">
+    <value>📁 Desglose por Categoría</value>
+  </data>
+  <data name="NoExpenseData" xml:space="preserve">
+    <value>No hay datos de gastos para este período</value>
+  </data>
+  <data name="NoIncomeData" xml:space="preserve">
+    <value>No hay datos de ingresos para este período</value>
+  </data>
+  <data name="AddExpensesToStart" xml:space="preserve">
+    <value>Agrega algunos gastos para ver el desglose de tus gastos</value>
+  </data>
+  <data name="AddIncomeToStart" xml:space="preserve">
+    <value>Agrega algunos ingresos para ver el desglose de tus ganancias</value>
+  </data>
+  
+  <!-- Validation Messages -->
+  <data name="PleaseEnterDescription" xml:space="preserve">
+    <value>Por favor ingresa una descripción</value>
+  </data>
+  <data name="PleaseEnterValidAmount" xml:space="preserve">
+    <value>Por favor ingresa un monto válido</value>
+  </data>
+  <data name="PleaseSelectAccount" xml:space="preserve">
+    <value>Por favor selecciona una cuenta</value>
+  </data>
+  <data name="PleaseSelectCategory" xml:space="preserve">
+    <value>Por favor selecciona una categoría</value>
+  </data>
+  <data name="PleaseEnterCategoryName" xml:space="preserve">
+    <value>Por favor ingresa un nombre de categoría</value>
+  </data>
+  <data name="PleaseEnterAccountName" xml:space="preserve">
+    <value>Por favor ingresa un nombre de cuenta</value>
+  </data>
+  <data name="PleaseSelectSourceAccount" xml:space="preserve">
+    <value>Por favor selecciona una cuenta de origen</value>
+  </data>
+  <data name="PleaseSelectDestinationAccount" xml:space="preserve">
+    <value>Por favor selecciona una cuenta de destino</value>
+  </data>
+  <data name="SourceDestinationMustBeDifferent" xml:space="preserve">
+    <value>Las cuentas de origen y destino deben ser diferentes</value>
+  </data>
+  <data name="InsufficientFunds" xml:space="preserve">
+    <value>Fondos insuficientes en la cuenta de origen</value>
+  </data>
+  
+  <!-- Confirmations -->
+  <data name="DeleteTransaction" xml:space="preserve">
+    <value>Eliminar Transacción</value>
+  </data>
+  <data name="DeleteTransactionConfirm" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar esta transacción?</value>
+  </data>
+  <data name="DeleteTransfer" xml:space="preserve">
+    <value>Eliminar Transferencia</value>
+  </data>
+  <data name="DeleteTransferConfirm" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar esta transferencia?</value>
+  </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Eliminar Categoría</value>
+  </data>
+  <data name="DeleteCategoryConfirm" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar esta categoría?</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Eliminar Cuenta</value>
+  </data>
+  <data name="DeleteAccountConfirm" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar esta cuenta?</value>
+  </data>
+  <data name="CannotDelete" xml:space="preserve">
+    <value>No se puede eliminar</value>
+  </data>
+  <data name="LastCategoryCannotDelete" xml:space="preserve">
+    <value>Esta es la última categoría de este tipo. No puedes eliminarla mientras tenga transacciones. Por favor crea otra categoría primero.</value>
+  </data>
+  <data name="CategoryHasTransactions" xml:space="preserve">
+    <value>'{0}' tiene transacciones existentes. Selecciona una categoría para moverlas:</value>
+  </data>
+  
+  <!-- Account Balance -->
+  <data name="AccountBalances" xml:space="preserve">
+    <value>Balances de Cuentas</value>
+  </data>
+  <data name="AvailableBalance" xml:space="preserve">
+    <value>Disponible: ${0:N2}</value>
+  </data>
+  
+</root>

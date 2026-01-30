@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 
 namespace MoneyRecord.ViewModels
@@ -91,7 +92,7 @@ namespace MoneyRecord.ViewModels
                 Description = Transaction.Description;
                 Amount = Transaction.Amount.ToString();
                 
-                Title = TransactionType == TransactionType.Income ? "Edit Income" : "Edit Expense";
+                Title = TransactionType == TransactionType.Income ? AppResources.EditIncome : AppResources.EditExpense;
                 
                 // Load categories and select the current one
                 await LoadCategoriesAsync();
@@ -111,7 +112,7 @@ namespace MoneyRecord.ViewModels
             {
                 // Add mode
                 IsEditMode = false;
-                Title = TransactionType == TransactionType.Income ? "Add Income" : "Add Expense";
+                Title = TransactionType == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
                 
                 // Default to Cash account
                 SelectedAccount = Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
@@ -139,26 +140,26 @@ namespace MoneyRecord.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Description))
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please enter a description", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterDescription, AppResources.OK);
                 return;
             }
 
             var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
             if (amountValue <= 0)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please enter a valid amount", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterValidAmount, AppResources.OK);
                 return;
             }
 
             if (SelectedAccount == null)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please select an account", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseSelectAccount, AppResources.OK);
                 return;
             }
 
             if (SelectedCategory == null)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please select a category", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseSelectCategory, AppResources.OK);
                 return;
             }
 

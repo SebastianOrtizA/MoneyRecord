@@ -5,9 +5,10 @@
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:converters="clr-namespace:MoneyRecord.Converters"
              xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.ManageAccountsPage"
              x:DataType="viewmodels:ManageAccountsViewModel"
-             Title="Manage Accounts">
+             Title="{ext:Localize ManageAccounts}">
 
     <ContentPage.Resources>
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
@@ -23,20 +24,20 @@
                    Padding="16"
                    IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Add New Account" 
+                    <Label Text="{ext:Localize AddNewAccount}" 
                            FontSize="18" 
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
                     
-                    <Label Text="Account Name" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <Entry Text="{Binding NewAccountName}" 
-                           Placeholder="e.g., Bank Account, Cash, Credit Card"
+                           Placeholder="{ext:Localize AccountNamePlaceholder}"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
                     
-                    <Label Text="Initial Balance" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    <Label Text="{ext:Localize InitialBalance}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <Entry Text="{Binding NewAccountBalance}" 
                            Placeholder="0.00"
                            Keyboard="Numeric"
@@ -50,7 +51,7 @@
                     </Entry>
 
                     <!-- Icon Selector for Add -->
-                    <Label Text="Select Icon" 
+                    <Label Text="{ext:Localize SelectIcon}" 
                            FontSize="14" 
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
                            Margin="0,4,0,0"/>
@@ -92,7 +93,7 @@
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
                     
-                    <Button Text="➕ Add Account" 
+                    <Button Text="{ext:Localize AddAccountButton}" 
                            Command="{Binding AddAccountCommand}"
                            HeightRequest="44"
                            CornerRadius="8"
@@ -109,12 +110,12 @@
                    Padding="16"
                    IsVisible="{Binding IsEditMode}">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Edit Account" 
+                    <Label Text="{ext:Localize EditAccount}" 
                            FontSize="18" 
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
                     
-                    <Label Text="Account Name" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <Entry Text="{Binding EditAccountName}" 
                            Placeholder="Account name"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
@@ -136,7 +137,7 @@
                     </Entry>
 
                     <!-- Icon Selector for Edit -->
-                    <Label Text="Select Icon" 
+                    <Label Text="{ext:Localize SelectIcon}" 
                            FontSize="14" 
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
                            Margin="0,4,0,0"/>
@@ -180,7 +181,7 @@
                     
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Button Grid.Column="0"
-                               Text="Cancel" 
+                               Text="{ext:Localize Cancel}" 
                                Command="{Binding CancelEditCommand}"
                                HeightRequest="44"
                                CornerRadius="8"
@@ -188,7 +189,7 @@
                                BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
                                TextColor="White"/>
                         <Button Grid.Column="1"
-                               Text="Save" 
+                               Text="{ext:Localize Save}" 
                                Command="{Binding SaveEditCommand}"
                                HeightRequest="44"
                                CornerRadius="8"

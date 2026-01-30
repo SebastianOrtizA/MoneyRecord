@@ -9,6 +9,9 @@ namespace MoneyRecord
     {
         public static MauiApp CreateMauiApp()
         {
+            // Initialize localization based on system language
+            _ = LocalizationService.Instance;
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -20,6 +23,7 @@ namespace MoneyRecord
                 });
 
             // Register Services
+            builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);
             builder.Services.AddSingleton<DatabaseService>();
 
             // Register ViewModels

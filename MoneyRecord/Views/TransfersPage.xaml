@@ -3,16 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.TransfersPage"
              x:DataType="viewmodels:TransfersViewModel"
-             Title="Transfers">
+             Title="{ext:Localize Transfers}">
 
     <RefreshView IsRefreshing="{Binding IsRefreshing}"
                  Command="{Binding LoadTransfersCommand}">
         <VerticalStackLayout Padding="16,12" Spacing="16">
             
             <!-- Add Transfer Button -->
-            <Button Text="🔄 New Transfer" 
+            <Button Text="{ext:Localize NewTransfer}" 
                     Command="{Binding AddTransferCommand}"
                     FontSize="16"
                     FontAttributes="Bold"
@@ -28,12 +29,12 @@
                         <Label Text="🔄" 
                                FontSize="48" 
                                HorizontalOptions="Center"/>
-                        <Label Text="No transfers yet" 
+                        <Label Text="{ext:Localize NoTransfers}" 
                                FontSize="18"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        <Label Text="Transfer money between your accounts" 
+                        <Label Text="{ext:Localize TransferBetweenAccounts}" 
                                FontSize="14"
                                HorizontalOptions="Center"
                                HorizontalTextAlignment="Center"
@@ -64,7 +65,7 @@
                                 <!-- Row 1: From Account -->
                                 <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
                                     <Label Text="📤" FontSize="12"/>
-                                    <Label Text="From:" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    <Label Text="{ext:Localize FromLabel}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     <Label Text="{Binding SourceAccountName}"
                                            FontSize="13"
                                            FontAttributes="Bold"
@@ -74,7 +75,7 @@
                                 <!-- Row 2: To Account -->
                                 <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
                                     <Label Text="📥" FontSize="12"/>
-                                    <Label Text="To:" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    <Label Text="{ext:Localize ToLabel}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     <Label Text="{Binding DestinationAccountName}"
                                            FontSize="13"
                                            FontAttributes="Bold"
@@ -86,7 +87,7 @@
                                                       Spacing="12" 
                                                       HorizontalOptions="End"
                                                       Margin="0,8,0,0">
-                                    <Button Text="✏️ Edit"
+                                    <Button Text="{ext:Localize EditButton}"
                                             FontSize="14"
                                             HeightRequest="36"
                                             Padding="16,0"
@@ -95,7 +96,7 @@
                                             TextColor="White"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransfersViewModel}}, Path=EditTransferCommand}"
                                             CommandParameter="{Binding .}"/>
-                                    <Button Text="🗑️ Delete"
+                                    <Button Text="{ext:Localize DeleteButton}"
                                             FontSize="14"
                                             HeightRequest="36"
                                             Padding="16,0"

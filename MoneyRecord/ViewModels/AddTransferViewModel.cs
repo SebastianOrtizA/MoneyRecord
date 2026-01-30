@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 
 namespace MoneyRecord.ViewModels
@@ -184,34 +185,33 @@ namespace MoneyRecord.ViewModels
         {
             if (SelectedSourceAccount == null)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please select a source account", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseSelectSourceAccount, AppResources.OK);
                 return;
             }
 
             if (SelectedDestinationAccount == null)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please select a destination account", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseSelectDestinationAccount, AppResources.OK);
                 return;
             }
 
             if (SelectedSourceAccount.Id == SelectedDestinationAccount.Id)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Source and destination accounts must be different", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.SourceDestinationMustBeDifferent, AppResources.OK);
                 return;
             }
 
             var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
             if (amountValue <= 0)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please enter a valid amount greater than zero", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterValidAmount, AppResources.OK);
                 return;
             }
 
             // Check available balance
             if (amountValue > SourceAccountBalance)
             {
-                await Shell.Current.DisplayAlertAsync("Error", 
-                    $"Insufficient funds. Available balance: ${SourceAccountBalance:N2}", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.InsufficientFunds, AppResources.OK);
                 return;
             }
 

@@ -1,4 +1,5 @@
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using System.Globalization;
 
 namespace MoneyRecord.Converters
@@ -46,9 +47,9 @@ namespace MoneyRecord.Converters
         {
             if (value is bool isAscending)
             {
-                return isAscending ? "↑ Oldest First" : "↓ Newest First";
+                return isAscending ? AppResources.SortOldestFirst : AppResources.SortNewestFirst;
             }
-            return "Sort";
+            return AppResources.Sort;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -68,6 +69,8 @@ namespace MoneyRecord.Converters
             return true;
         }
 
+
+
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is bool boolValue)
@@ -86,18 +89,18 @@ namespace MoneyRecord.Converters
             {
                 return mode switch
                 {
-                    Models.GroupingMode.None => "📄 List View",
-                    Models.GroupingMode.Category => "📂 By Category",
-                    Models.GroupingMode.Account => "🏦 By Account",
-                    _ => "📄 List View"
+                    Models.GroupingMode.None => AppResources.ListView,
+                    Models.GroupingMode.Category => AppResources.GroupByCategory,
+                    Models.GroupingMode.Account => AppResources.GroupByAccount,
+                    _ => AppResources.ListView
                 };
             }
             // Backward compatibility with bool
             if (value is bool isGrouped)
             {
-                return isGrouped ? "📂 Grouped" : "📄 List View";
+                return isGrouped ? AppResources.Grouped : AppResources.ListView;
             }
-            return "📄 List View";
+            return AppResources.ListView;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

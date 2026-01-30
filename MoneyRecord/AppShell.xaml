@@ -4,51 +4,52 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:MoneyRecord.Views"
+    xmlns:ext="clr-namespace:MoneyRecord.Extensions"
     Title="MoneyRecord"
     FlyoutBehavior="Flyout">
 
-    <FlyoutItem Title="Home" Icon="home">
+    <FlyoutItem Title="{ext:Localize Home}" Icon="home">
         <ShellContent
-            Title="Home"
+            Title="{ext:Localize Home}"
             ContentTemplate="{DataTemplate views:MainPage}"
             Route="MainPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Expense Report" Icon="chart">
+    <FlyoutItem Title="{ext:Localize ExpenseReport}" Icon="chart">
         <ShellContent
-            Title="Expense Report"
+            Title="{ext:Localize ExpenseReport}"
             ContentTemplate="{DataTemplate views:ExpenseReportPage}"
             Route="ExpenseReportPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Income Report" Icon="chart">
+    <FlyoutItem Title="{ext:Localize IncomeReport}" Icon="chart">
         <ShellContent
-            Title="Income Report"
+            Title="{ext:Localize IncomeReport}"
             ContentTemplate="{DataTemplate views:IncomeReportPage}"
             Route="IncomeReportPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Transfers" Icon="swap">
+    <FlyoutItem Title="{ext:Localize Transfers}" Icon="swap">
         <ShellContent
-            Title="Transfers"
+            Title="{ext:Localize Transfers}"
             ContentTemplate="{DataTemplate views:TransfersPage}"
             Route="TransfersPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Manage Accounts" Icon="wallet">
+    <FlyoutItem Title="{ext:Localize ManageAccounts}" Icon="wallet">
         <ShellContent
-            Title="Accounts"
+            Title="{ext:Localize Accounts}"
             ContentTemplate="{DataTemplate views:ManageAccountsPage}"
             Route="ManageAccounts" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Manage Categories" Icon="folder">
+    <FlyoutItem Title="{ext:Localize ManageCategories}" Icon="folder">
         <ShellContent
-            Title="Income Categories"
+            Title="{ext:Localize IncomeCategories}"
             ContentTemplate="{DataTemplate views:ManageCategoriesPage}"
             Route="ManageIncomeCategories" />
         <ShellContent
-            Title="Expense Categories"
+            Title="{ext:Localize ExpenseCategories}"
             ContentTemplate="{DataTemplate views:ManageCategoriesPage}"
             Route="ManageExpenseCategories" />
     </FlyoutItem>

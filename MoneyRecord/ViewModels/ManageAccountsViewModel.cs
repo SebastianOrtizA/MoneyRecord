@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using System.Collections.ObjectModel;
 
@@ -101,7 +102,7 @@ namespace MoneyRecord.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewAccountName))
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please enter an account name", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterAccountName, AppResources.OK);
                 return;
             }
 
