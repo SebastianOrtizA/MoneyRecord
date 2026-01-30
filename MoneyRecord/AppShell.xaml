@@ -21,6 +21,13 @@
             Route="ExpenseReportPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="Income Report" Icon="chart">
+        <ShellContent
+            Title="Income Report"
+            ContentTemplate="{DataTemplate views:IncomeReportPage}"
+            Route="IncomeReportPage" />
+    </FlyoutItem>
+
     <FlyoutItem Title="Transfers" Icon="swap">
         <ShellContent
             Title="Transfers"

@@ -64,4 +64,44 @@ namespace MoneyRecord.Models
         /// </summary>
         public double SizeMultiplier => Math.Max(0.5, Percentage / 100.0 * 2);
     }
+
+    /// <summary>
+    /// Represents income data for a single category in reports
+    /// </summary>
+    public class CategoryIncomeData
+    {
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
+        public string IconCode { get; set; } = "F0770";
+        public decimal Amount { get; set; }
+        public double Percentage { get; set; }
+        public Color HeatmapColor { get; set; } = Colors.Gray;
+
+        /// <summary>
+        /// Gets the displayable icon character from the unicode code
+        /// </summary>
+        public string DisplayIcon
+        {
+            get
+            {
+                try
+                {
+                    if (string.IsNullOrEmpty(IconCode))
+                        return "\uF0770";
+
+                    var codePoint = Convert.ToInt32(IconCode, 16);
+                    return char.ConvertFromUtf32(codePoint);
+                }
+                catch
+                {
+                    return "\uF0770";
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if this is part of the "Others" group (categories below 10%)
+        /// </summary>
+        public bool IsOthersGroup { get; set; }
+    }
 }
