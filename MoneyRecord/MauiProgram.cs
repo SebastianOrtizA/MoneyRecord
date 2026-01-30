@@ -29,6 +29,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<ManageAccountsViewModel>();
             builder.Services.AddTransient<TransfersViewModel>();
             builder.Services.AddTransient<AddTransferViewModel>();
+            builder.Services.AddTransient<ExpenseReportViewModel>();
 
             // Register Views
             builder.Services.AddSingleton<MainPage>();
@@ -37,6 +38,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<ManageAccountsPage>();
             builder.Services.AddTransient<TransfersPage>();
             builder.Services.AddTransient<AddTransferPage>();
+            builder.Services.AddTransient<ExpenseReportPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();
