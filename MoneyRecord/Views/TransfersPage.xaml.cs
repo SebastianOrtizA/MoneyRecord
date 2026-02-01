@@ -18,5 +18,15 @@ namespace MoneyRecord.Views
             base.OnAppearing();
             await _viewModel.InitializeAsync();
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            // Navigate to main page instead of closing the app
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.GoToAsync("//MainPage");
+            });
+            return true; // Indicate we've handled the back button
+        }
     }
 }

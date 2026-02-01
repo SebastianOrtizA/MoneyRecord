@@ -1,5 +1,6 @@
 using SQLite;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 
 namespace MoneyRecord.Services
 {
@@ -54,21 +55,21 @@ namespace MoneyRecord.Services
         {
             var defaultIncomeCategories = new[]
             {
-                new Category { Name = "Salary", Type = CategoryType.Income, IconCode = "F0116" },       // cash-multiple
-                new Category { Name = "Freelance", Type = CategoryType.Income, IconCode = "F00D6" },    // briefcase
-                new Category { Name = "Investment", Type = CategoryType.Income, IconCode = "F081F" },   // finance
-                new Category { Name = "Other Income", Type = CategoryType.Income, IconCode = "F0CF4" }  // cash-register
+                new Category { Name = AppResources.DefaultCategorySalary, Type = CategoryType.Income, IconCode = "F0116" },       // cash-multiple
+                new Category { Name = AppResources.DefaultCategoryFreelance, Type = CategoryType.Income, IconCode = "F00D6" },    // briefcase
+                new Category { Name = AppResources.DefaultCategoryInvestment, Type = CategoryType.Income, IconCode = "F081F" },   // finance
+                new Category { Name = AppResources.DefaultCategoryOtherIncome, Type = CategoryType.Income, IconCode = "F0CF4" }  // cash-register
             };
 
             var defaultExpenseCategories = new[]
             {
-                new Category { Name = "Food", Type = CategoryType.Expense, IconCode = "F025A" },             // food
-                new Category { Name = "Transportation", Type = CategoryType.Expense, IconCode = "F0BD8" },   // train-car
-                new Category { Name = "Entertainment", Type = CategoryType.Expense, IconCode = "F0356" },    // glass-cocktail
-                new Category { Name = "Utilities", Type = CategoryType.Expense, IconCode = "F0D15" },        // home-city
-                new Category { Name = "Shopping", Type = CategoryType.Expense, IconCode = "F0110" },         // cart
-                new Category { Name = "Home", Type = CategoryType.Expense, IconCode = "F0D15" },             // home-city
-                new Category { Name = "Other Expense", Type = CategoryType.Expense, IconCode = "F0076" }     // basket
+                new Category { Name = AppResources.DefaultCategoryFood, Type = CategoryType.Expense, IconCode = "F025A" },             // food
+                new Category { Name = AppResources.DefaultCategoryTransportation, Type = CategoryType.Expense, IconCode = "F0BD8" },   // train-car
+                new Category { Name = AppResources.DefaultCategoryEntertainment, Type = CategoryType.Expense, IconCode = "F0356" },    // glass-cocktail
+                new Category { Name = AppResources.DefaultCategoryUtilities, Type = CategoryType.Expense, IconCode = "F0D15" },        // home-city
+                new Category { Name = AppResources.DefaultCategoryShopping, Type = CategoryType.Expense, IconCode = "F0110" },         // cart
+                new Category { Name = AppResources.DefaultCategoryHome, Type = CategoryType.Expense, IconCode = "F0D15" },             // home-city
+                new Category { Name = AppResources.DefaultCategoryOtherExpense, Type = CategoryType.Expense, IconCode = "F0076" }     // basket
             };
 
             foreach (var category in defaultIncomeCategories)
@@ -253,7 +254,7 @@ namespace MoneyRecord.Services
         {
             var cashAccount = new Account
             {
-                Name = "Cash",
+                Name = AppResources.DefaultAccountCash,
                 InitialBalance = 0,
                 IsDefault = true,
                 IconCode = "F0115" // cash-100 icon

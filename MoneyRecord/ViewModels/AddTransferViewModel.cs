@@ -208,10 +208,11 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            // Check available balance
-            if (amountValue > SourceAccountBalance)
+            // Check available balance if account doesn't allow negative balance
+            if (!SelectedSourceAccount.AllowNegativeBalance && amountValue > SourceAccountBalance)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.InsufficientFunds, AppResources.OK);
+                var message = string.Format(AppResources.InsufficientAccountBalance, SelectedSourceAccount.Name);
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, message, AppResources.OK);
                 return;
             }
 

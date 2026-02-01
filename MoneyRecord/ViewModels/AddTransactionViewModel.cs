@@ -163,7 +163,28 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+
             int accountId = SelectedAccount.Id;
+
+            // Validate balance for expense transactions if account doesn't allow negative balance
+            if (TransactionType == TransactionType.Expense && !SelectedAccount.AllowNegativeBalance)
+            {
+                var currentBalance = await _databaseService.GetAccountBalanceAsync(accountId);
+                
+                // For edit mode, add back the original expense amount before checking
+                decimal adjustedBalance = currentBalance;
+                if (IsEditMode && Transaction != null && Transaction.Type == TransactionType.Expense)
+                {
+                    adjustedBalance += Transaction.Amount;
+                }
+                
+                if (adjustedBalance - amountValue < 0)
+                {
+                    var message = string.Format(AppResources.InsufficientAccountBalance, SelectedAccount.Name);
+                    await Shell.Current.DisplayAlertAsync(AppResources.Error, message, AppResources.OK);
+                    return;
+                }
+            }
 
             if (IsEditMode && Transaction != null)
             {

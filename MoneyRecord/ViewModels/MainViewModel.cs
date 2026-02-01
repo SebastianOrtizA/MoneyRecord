@@ -239,25 +239,19 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task ManageIncomeCategoriesAsync()
         {
-            await Shell.Current.GoToAsync(nameof(ManageCategoriesPage), new Dictionary<string, object>
-            {
-                { "CategoryType", CategoryType.Income }
-            });
+            await Shell.Current.GoToAsync("//ManageIncomeCategories");
         }
 
         [RelayCommand]
         private async Task ManageExpenseCategoriesAsync()
         {
-            await Shell.Current.GoToAsync(nameof(ManageCategoriesPage), new Dictionary<string, object>
-            {
-                { "CategoryType", CategoryType.Expense }
-            });
+            await Shell.Current.GoToAsync("//ManageExpenseCategories");
         }
 
         [RelayCommand]
         private async Task ManageAccountsAsync()
         {
-            await Shell.Current.GoToAsync(nameof(ManageAccountsPage));
+            await Shell.Current.GoToAsync("//ManageAccounts");
         }
 
         [RelayCommand]

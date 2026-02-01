@@ -310,6 +310,12 @@
   <data name="NoAccounts" xml:space="preserve">
     <value>Aún no hay cuentas. Agrega tu primera cuenta arriba.</value>
   </data>
+  <data name="AllowNegativeBalance" xml:space="preserve">
+    <value>Permitir saldo negativo</value>
+  </data>
+  <data name="InsufficientAccountBalance" xml:space="preserve">
+    <value>Este gasto resultaría en un saldo negativo. La cuenta '{0}' no permite saldo negativo.</value>
+  </data>
   
   <!-- Manage Categories -->
   <data name="AddNewCategory" xml:space="preserve">
@@ -373,6 +379,45 @@
   </data>
   <data name="AddIncomeToStart" xml:space="preserve">
     <value>Agrega algunos ingresos para ver el desglose de tus ganancias</value>
+  </data>
+  <data name="NoExpenseDataFound" xml:space="preserve">
+    <value>No se encontraron datos de gastos</value>
+  </data>
+  <data name="NoIncomeDataFound" xml:space="preserve">
+    <value>No se encontraron datos de ingresos</value>
+  </data>
+  <data name="AddExpenseTransactionsToSee" xml:space="preserve">
+    <value>Agrega algunas transacciones de gastos para ver tu análisis de gastos</value>
+  </data>
+  <data name="AddIncomeTransactionsToSee" xml:space="preserve">
+    <value>Agrega algunas transacciones de ingresos para ver tu análisis de ganancias</value>
+  </data>
+  <data name="ExpenseHeatmap" xml:space="preserve">
+    <value>🔥 Mapa de Calor de Gastos</value>
+  </data>
+  <data name="IncomeHeatmap" xml:space="preserve">
+    <value>🔥 Mapa de Calor de Ingresos</value>
+  </data>
+  <data name="AllExpenseCategoriesByPercentage" xml:space="preserve">
+    <value>Todas las categorías de gastos por porcentaje</value>
+  </data>
+  <data name="AllIncomeCategoriesByPercentage" xml:space="preserve">
+    <value>Todas las categorías de ingresos por porcentaje</value>
+  </data>
+  <data name="Low" xml:space="preserve">
+    <value>Bajo</value>
+  </data>
+  <data name="Medium" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="High" xml:space="preserve">
+    <value>Alto</value>
+  </data>
+  <data name="CategoryDetails" xml:space="preserve">
+    <value>📋 Detalles por Categoría</value>
+  </data>
+  <data name="TapForDetails" xml:space="preserve">
+    <value>• Toca para detalles</value>
   </data>
   
   <!-- Validation Messages -->
@@ -448,6 +493,53 @@
   </data>
   <data name="AvailableBalance" xml:space="preserve">
     <value>Disponible: ${0:N2}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>← Volver</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categorías</value>
+  </data>
+  <data name="NoCategoriesYet" xml:space="preserve">
+    <value>Aún no hay categorías</value>
+  </data>
+  
+  <!-- Default Categories and Account -->
+  <data name="DefaultAccountCash" xml:space="preserve">
+    <value>Efectivo</value>
+  </data>
+  <data name="DefaultCategorySalary" xml:space="preserve">
+    <value>Salario</value>
+  </data>
+  <data name="DefaultCategoryFreelance" xml:space="preserve">
+    <value>Freelance</value>
+  </data>
+  <data name="DefaultCategoryInvestment" xml:space="preserve">
+    <value>Inversión</value>
+  </data>
+  <data name="DefaultCategoryOtherIncome" xml:space="preserve">
+    <value>Otros Ingresos</value>
+  </data>
+  <data name="DefaultCategoryFood" xml:space="preserve">
+    <value>Comida</value>
+  </data>
+  <data name="DefaultCategoryTransportation" xml:space="preserve">
+    <value>Transporte</value>
+  </data>
+  <data name="DefaultCategoryEntertainment" xml:space="preserve">
+    <value>Entretenimiento</value>
+  </data>
+  <data name="DefaultCategoryUtilities" xml:space="preserve">
+    <value>Servicios</value>
+  </data>
+  <data name="DefaultCategoryShopping" xml:space="preserve">
+    <value>Compras</value>
+  </data>
+  <data name="DefaultCategoryHome" xml:space="preserve">
+    <value>Hogar</value>
+  </data>
+  <data name="DefaultCategoryOtherExpense" xml:space="preserve">
+    <value>Otros Gastos</value>
   </data>
   
 </root>

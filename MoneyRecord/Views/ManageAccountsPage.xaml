@@ -92,6 +92,16 @@
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
+
+                    <!-- Allow Negative Balance Checkbox -->
+                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
+                        <CheckBox IsChecked="{Binding NewAccountAllowNegativeBalance}" 
+                                  Color="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
+                        <Label Text="{ext:Localize AllowNegativeBalance}" 
+                               FontSize="14" 
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </HorizontalStackLayout>
                     
                     <Button Text="{ext:Localize AddAccountButton}" 
                            Command="{Binding AddAccountCommand}"
@@ -178,6 +188,16 @@
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
+
+                    <!-- Allow Negative Balance Checkbox -->
+                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
+                        <CheckBox IsChecked="{Binding EditAccountAllowNegativeBalance}" 
+                                  Color="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
+                        <Label Text="{ext:Localize AllowNegativeBalance}" 
+                               FontSize="14" 
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </HorizontalStackLayout>
                     
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Button Grid.Column="0"
@@ -276,15 +296,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-            <Button Text="← Back" 
-                   Command="{Binding GoBackCommand}"
-                   HeightRequest="44"
-                   CornerRadius="8"
-                   FontSize="16"
-                   BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
-                   TextColor="White"
-                   Margin="0,20,0,0"/>
 
         </VerticalStackLayout>
     </ScrollView>

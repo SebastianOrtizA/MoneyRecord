@@ -4,6 +4,7 @@
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:converters="clr-namespace:MoneyRecord.Converters"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.ManageCategoriesPage"
              x:DataType="viewmodels:ManageCategoriesViewModel"
              Title="{Binding Title}">
@@ -18,20 +19,20 @@
                    Padding="16"
                    IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Add New Category" 
+                    <Label Text="{ext:Localize AddNewCategory}" 
                            FontSize="18" 
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
                     
                     <Entry Text="{Binding NewCategoryName}" 
-                           Placeholder="Category name"
+                           Placeholder="{ext:Localize CategoryName}"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
 
                     <!-- Icon Selector for Add -->
-                    <Label Text="Select Icon" 
+                    <Label Text="{ext:Localize SelectIcon}" 
                            FontSize="14" 
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
                            Margin="0,4,0,0"/>
@@ -73,7 +74,7 @@
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
                     
-                    <Button Text="Add Category" 
+                    <Button Text="{ext:Localize AddCategoryButton}" 
                            Command="{Binding AddCategoryCommand}"
                            HeightRequest="44"
                            CornerRadius="8"
@@ -90,20 +91,20 @@
                    Padding="16"
                    IsVisible="{Binding IsEditMode}">
                 <VerticalStackLayout Spacing="12">
-                    <Label Text="Edit Category" 
+                    <Label Text="{ext:Localize EditCategory}" 
                            FontSize="18" 
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
                     
                     <Entry Text="{Binding EditCategoryName}" 
-                           Placeholder="Category name"
+                           Placeholder="{ext:Localize CategoryName}"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
 
                     <!-- Icon Selector for Edit -->
-                    <Label Text="Select Icon" 
+                    <Label Text="{ext:Localize SelectIcon}" 
                            FontSize="14" 
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
                            Margin="0,4,0,0"/>
@@ -147,7 +148,7 @@
                     
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Button Grid.Column="0"
-                               Text="Cancel" 
+                               Text="{ext:Localize Cancel}" 
                                Command="{Binding CancelEditCommand}"
                                HeightRequest="44"
                                CornerRadius="8"
@@ -155,7 +156,7 @@
                                BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
                                TextColor="White"/>
                         <Button Grid.Column="1"
-                               Text="Save" 
+                               Text="{ext:Localize Save}" 
                                Command="{Binding SaveEditCommand}"
                                HeightRequest="44"
                                CornerRadius="8"
@@ -167,7 +168,7 @@
             </Frame>
 
             <!-- Categories List Header -->
-            <Label Text="Categories" 
+            <Label Text="{ext:Localize Categories}" 
                    FontSize="20" 
                    FontAttributes="Bold"
                    TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
@@ -179,7 +180,7 @@
                         <Label Text="📁" 
                                FontSize="48" 
                                HorizontalOptions="Center"/>
-                        <Label Text="No categories yet" 
+                        <Label Text="{ext:Localize NoCategoriesYet}" 
                                FontSize="16"
                                HorizontalOptions="Center"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -209,7 +210,7 @@
                                        VerticalOptions="Center"/>
                                 
                                 <Button Grid.Column="2"
-                                        Text="✏️ Edit"
+                                        Text="{ext:Localize EditButton}"
                                         FontSize="13"
                                         HeightRequest="36"
                                         Padding="12,0"
@@ -220,7 +221,7 @@
                                         CommandParameter="{Binding .}"/>
                                 
                                 <Button Grid.Column="3"
-                                        Text="🗑️ Delete"
+                                        Text="{ext:Localize DeleteButton}"
                                         FontSize="13"
                                         HeightRequest="36"
                                         Padding="12,0"
@@ -234,15 +235,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-            <Button Text="← Back" 
-                   Command="{Binding GoBackCommand}"
-                   HeightRequest="44"
-                   CornerRadius="8"
-                   FontSize="16"
-                   BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
-                   TextColor="White"
-                   Margin="0,20,0,0"/>
 
         </VerticalStackLayout>
     </ScrollView>

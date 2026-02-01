@@ -25,6 +25,9 @@ namespace MoneyRecord.ViewModels
         private string newAccountIconCode = string.Empty;
 
         [ObservableProperty]
+        private bool newAccountAllowNegativeBalance = false;
+
+        [ObservableProperty]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -35,6 +38,9 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private string editAccountIconCode = string.Empty;
+
+        [ObservableProperty]
+        private bool editAccountAllowNegativeBalance = false;
 
         [ObservableProperty]
         private Account? editingAccount;
@@ -116,13 +122,15 @@ namespace MoneyRecord.ViewModels
                 IconCode = string.IsNullOrEmpty(NewAccountIconCode) 
                     ? CategoryIconService.GetDefaultAccountIconCode() 
                     : NewAccountIconCode,
-                CreatedDate = DateTime.Now
+                CreatedDate = DateTime.Now,
+                AllowNegativeBalance = NewAccountAllowNegativeBalance
             };
 
             await _databaseService.SaveAccountAsync(account);
             NewAccountName = string.Empty;
             NewAccountBalance = "0";
             NewAccountIconCode = CategoryIconService.GetDefaultAccountIconCode();
+            NewAccountAllowNegativeBalance = false;
             UpdateIconSelection(NewAccountIconCode);
             await LoadAccountsAsync();
         }
@@ -137,6 +145,7 @@ namespace MoneyRecord.ViewModels
             EditAccountName = account.Name;
             EditAccountBalance = account.InitialBalance.ToString();
             EditAccountIconCode = account.IconCode;
+            EditAccountAllowNegativeBalance = account.AllowNegativeBalance;
             UpdateIconSelection(account.IconCode);
             IsEditMode = true;
         }
@@ -149,6 +158,7 @@ namespace MoneyRecord.ViewModels
             EditAccountName = string.Empty;
             EditAccountBalance = "0";
             EditAccountIconCode = string.Empty;
+            EditAccountAllowNegativeBalance = false;
             UpdateIconSelection(NewAccountIconCode);
         }
 
@@ -171,6 +181,7 @@ namespace MoneyRecord.ViewModels
             EditingAccount.IconCode = string.IsNullOrEmpty(EditAccountIconCode)
                 ? CategoryIconService.GetDefaultAccountIconCode()
                 : EditAccountIconCode;
+            EditingAccount.AllowNegativeBalance = EditAccountAllowNegativeBalance;
 
             await _databaseService.SaveAccountAsync(EditingAccount);
             
@@ -179,6 +190,7 @@ namespace MoneyRecord.ViewModels
             EditAccountName = string.Empty;
             EditAccountBalance = "0";
             EditAccountIconCode = string.Empty;
+            EditAccountAllowNegativeBalance = false;
             UpdateIconSelection(NewAccountIconCode);
             
             await LoadAccountsAsync();

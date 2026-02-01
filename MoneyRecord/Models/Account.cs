@@ -25,6 +25,13 @@ namespace MoneyRecord.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         /// <summary>
+        /// Indicates whether the account allows negative balance.
+        /// When false, users cannot add expenses that would result in a negative balance.
+        /// Default is false (negative balance not allowed).
+        /// </summary>
+        public bool AllowNegativeBalance { get; set; } = false;
+
+        /// <summary>
         /// Gets the displayable icon character from the unicode code
         /// </summary>
         [Ignore]
