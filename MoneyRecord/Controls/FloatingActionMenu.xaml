@@ -5,7 +5,7 @@
              x:Class="MoneyRecord.Controls.FloatingActionMenu"
              x:DataType="viewmodels:FloatingMenuViewModel">
     
-    <Grid>
+    <Grid x:Name="RootGrid">
         <!-- Semi-transparent overlay when menu is expanded -->
         <BoxView BackgroundColor="#80000000"
                  IsVisible="{Binding IsExpanded}"
@@ -14,21 +14,27 @@
                 <TapGestureRecognizer Command="{Binding CloseMenuCommand}"/>
             </BoxView.GestureRecognizers>
         </BoxView>
-        
-        <!-- FAB Container - Bottom Right -->
-        <Grid HorizontalOptions="End" 
-              VerticalOptions="End"
-              Margin="0,0,20,20">
-            
-            <VerticalStackLayout Spacing="12">
-                
+
+        <!-- Draggable FAB Container -->
+        <Grid x:Name="FabContainer"
+              HorizontalOptions="Start"
+              VerticalOptions="Start"
+              WidthRequest="280"
+              HeightRequest="300">
+
+            <VerticalStackLayout Spacing="12"
+                                 x:Name="FabStackLayout"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="End">
+
                 <!-- Action Buttons (visible when expanded) -->
                 <VerticalStackLayout Spacing="12" 
                                     IsVisible="{Binding IsExpanded}"
+                                    x:Name="ActionButtonsContainer"
                                     HorizontalOptions="End">
-                    
+
                     <!-- Income Button with Label -->
-                    <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+                    <HorizontalStackLayout Spacing="12" x:Name="IncomeButtonRow" HorizontalOptions="End">
                         <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                CornerRadius="8"
                                Padding="12,8"
@@ -54,7 +60,7 @@
                     </HorizontalStackLayout>
                     
                     <!-- Transfer Button with Label -->
-                    <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+                    <HorizontalStackLayout Spacing="12" x:Name="TransferButtonRow" HorizontalOptions="End">
                         <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                CornerRadius="8"
                                Padding="12,8"
@@ -80,7 +86,7 @@
                     </HorizontalStackLayout>
                     
                     <!-- Expense Button with Label -->
-                    <HorizontalStackLayout Spacing="12" HorizontalOptions="End">
+                    <HorizontalStackLayout Spacing="12" x:Name="ExpenseButtonRow" HorizontalOptions="End">
                         <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                CornerRadius="8"
                                Padding="12,8"
@@ -106,20 +112,24 @@
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
                 
-                <!-- Main FAB Button -->
-                <Button x:Name="MainFabButton"
-                        Text="{Binding IsExpanded, Converter={StaticResource BoolToFabIconConverter}}"
-                        FontFamily="MaterialDesignIcons"
-                        Command="{Binding ToggleMenuCommand}"
-                        FontSize="28"
-                        HeightRequest="64"
-                        WidthRequest="64"
-                        CornerRadius="32"
-                        Padding="0"
-                        HorizontalOptions="End"
-                        BackgroundColor="{AppThemeBinding Light=#6200EE, Dark=#BB86FC}"
-                        TextColor="White"
-                        Shadow="{Shadow Brush=Black, Offset='2,4', Radius=8, Opacity=0.4}"/>
+                <!-- Main FAB Button with Drag Handle -->
+                <Grid x:Name="DragHandle" 
+                      HeightRequest="64" 
+                      WidthRequest="64"
+                      HorizontalOptions="End">
+                    <Button x:Name="MainFabButton"
+                            Text="{Binding IsExpanded, Converter={StaticResource BoolToFabIconConverter}}"
+                            FontFamily="MaterialDesignIcons"
+                            FontSize="28"
+                            HeightRequest="64"
+                            WidthRequest="64"
+                            CornerRadius="32"
+                            Padding="0"
+                            BackgroundColor="{AppThemeBinding Light=#6200EE, Dark=#BB86FC}"
+                            TextColor="White"
+                            Shadow="{Shadow Brush=Black, Offset='2,4', Radius=8, Opacity=0.4}"
+                            InputTransparent="True"/>
+                </Grid>
             </VerticalStackLayout>
         </Grid>
     </Grid>
