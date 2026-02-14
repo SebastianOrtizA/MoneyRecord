@@ -90,7 +90,24 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - From Main Page, back button closes the app
 - **Shell Navigation**: Consistent navigation experience with Shell routing
 
-### 9. Data Storage
+### 9. Floating Action Menu (FAB)
+- **Draggable FAB**: Floating action button that can be dragged anywhere on screen
+- **Position Persistence**: FAB position is saved and restored between app sessions
+- **Side Switching**: FAB automatically aligns to left or right edge based on drag position
+- **Smooth Animations**: Uses interpolated smooth drag animations to eliminate flickering
+- **Quick Actions**: Expandable menu with quick access to:
+  - Add Income (blue button)
+  - Add Transfer (orange button)
+  - Add Expense (red button)
+- **Overlay Dismissal**: Tap outside the expanded menu to close it
+- **Modular Architecture**: Clean separation of concerns with:
+  - `FabConfiguration`: Centralized configuration constants
+  - `FabDragHandler`: Drag state tracking and velocity calculation
+  - `FabPositionManager`: Position calculations and persistence
+  - `FabLayoutManager`: UI alignment updates
+  - `SmoothDragAnimator`: Smooth position interpolation during drag
+
+### 10. Data Storage
 - **SQLite Database**: All data stored locally using sqlite-net-pcl
 - **Persistent Storage**: Data saved in app's local directory
 - **Automatic Updates**: Balance updates automatically when transactions are added or modified
@@ -110,6 +127,14 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
 MoneyRecord/
 ├── Behaviors/
 │   └── CurrencyMaskBehavior.cs   - Currency input formatting
+├── Controls/
+│   ├── FabComponents/
+│   │   ├── FabConfiguration.cs       - FAB configuration constants
+│   │   ├── FabDragHandler.cs         - Drag state and velocity tracking
+│   │   ├── FabLayoutManager.cs       - UI alignment management
+│   │   ├── FabPositionManager.cs     - Position calculations and persistence
+│   │   └── SmoothDragAnimator.cs     - Smooth drag interpolation
+│   └── FloatingActionMenu.xaml/.cs   - Draggable floating action menu
 ├── Converters/
 │   └── Converters.cs             - UI value converters
 ├── Extensions/
