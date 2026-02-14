@@ -1,9 +1,12 @@
-﻿using MoneyRecord.Views;
+﻿using MoneyRecord.Services;
+using MoneyRecord.Views;
 
 namespace MoneyRecord
 {
     public partial class AppShell : Shell
     {
+        private readonly INavigationService _navigationService;
+
         public AppShell()
         {
             InitializeComponent();
@@ -11,53 +14,56 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(AddTransactionPage), typeof(AddTransactionPage));
             Routing.RegisterRoute(nameof(AddTransferPage), typeof(AddTransferPage));
 
-            // Handle navigation events for back button behavior
-            this.Navigating += OnShellNavigating;
+            // Get navigation service from DI
+            _navigationService = IPlatformApplication.Current?.Services.GetService<INavigationService>()
+                ?? new NavigationService();
+
+            // Handle navigation events for tracking history
+            this.Navigated += OnShellNavigated;
         }
 
-        private void OnShellNavigating(object? sender, ShellNavigatingEventArgs e)
+        private void OnShellNavigated(object? sender, ShellNavigatedEventArgs e)
         {
-            // If navigating back and would result in app closing, redirect to main page
-            if (e.Source == ShellNavigationSource.Pop || e.Source == ShellNavigationSource.PopToRoot)
+            var currentRoute = e.Current?.Location?.ToString() ?? "";
+            if (!string.IsNullOrEmpty(currentRoute))
             {
-                var currentRoute = Current?.CurrentState?.Location?.ToString() ?? "";
-                
-                // If not on main page and trying to go back, redirect to main page
-                if (!IsMainPage(currentRoute))
-                {
-                    e.Cancel();
-                    MainThread.BeginInvokeOnMainThread(async () =>
-                    {
-                        await GoToAsync("//MainPage");
-                    });
-                }
+                _navigationService.RecordNavigation(currentRoute);
             }
-        }
-
-        private static bool IsMainPage(string route)
-        {
-            return !string.IsNullOrEmpty(route) && 
-                (route.EndsWith("MainPage") || route.Contains("//MainPage"));
         }
 
         protected override bool OnBackButtonPressed()
         {
+            // If we can go back, navigate to previous page
+            if (_navigationService.CanGoBack)
+            {
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await _navigationService.GoBackAsync();
+                });
+                return true;
+            }
+
             // Get the current page route
             var currentRoute = Current?.CurrentState?.Location?.ToString() ?? "";
 
             // If we're not on the main page, navigate to it
             if (!IsMainPage(currentRoute))
             {
-                // Navigate to main page
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
                     await GoToAsync("//MainPage");
                 });
-                return true; // Indicate we've handled the back button
+                return true;
             }
 
-            // On main page, allow default behavior (close app)
+            // On main page with no history, allow default behavior (close app)
             return base.OnBackButtonPressed();
+        }
+
+        private static bool IsMainPage(string route)
+        {
+            return !string.IsNullOrEmpty(route) && 
+                (route.EndsWith("MainPage") || route.Contains("//MainPage"));
         }
     }
 }

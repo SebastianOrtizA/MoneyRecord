@@ -12,6 +12,7 @@ namespace MoneyRecord.ViewModels
     public partial class AddTransferViewModel : ObservableObject
     {
         private readonly DatabaseService _databaseService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private Transfer? transfer;
@@ -74,9 +75,10 @@ namespace MoneyRecord.ViewModels
         private int? _originalDestinationAccountId;
         private decimal _originalAmount;
 
-        public AddTransferViewModel(DatabaseService databaseService)
+        public AddTransferViewModel(DatabaseService databaseService, INavigationService navigationService)
         {
             _databaseService = databaseService;
+            _navigationService = navigationService;
         }
 
         /// <summary>
@@ -245,7 +247,7 @@ namespace MoneyRecord.ViewModels
                     await _databaseService.SaveTransferAsync(newTransfer);
                 }
 
-                await Shell.Current.GoToAsync("..");
+                await _navigationService.GoBackAsync();
             }
             catch (Exception ex)
             {
@@ -256,7 +258,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task CancelAsync()
         {
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoBackAsync();
         }
     }
 }

@@ -12,6 +12,7 @@ namespace MoneyRecord.ViewModels
     public partial class AddTransactionViewModel : ObservableObject
     {
         private readonly DatabaseService _databaseService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private TransactionType transactionType;
@@ -46,9 +47,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isEditMode = false;
 
-        public AddTransactionViewModel(DatabaseService databaseService)
+        public AddTransactionViewModel(DatabaseService databaseService, INavigationService navigationService)
         {
             _databaseService = databaseService;
+            _navigationService = navigationService;
         }
 
         /// <summary>
@@ -215,13 +217,13 @@ namespace MoneyRecord.ViewModels
                 await _databaseService.SaveTransactionAsync(newTransaction);
             }
 
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoBackAsync();
         }
 
         [RelayCommand]
         private async Task CancelAsync()
         {
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoBackAsync();
         }
     }
 }

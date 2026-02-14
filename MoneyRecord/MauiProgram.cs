@@ -26,6 +26,7 @@ namespace MoneyRecord
             // Register Services
             builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);
             builder.Services.AddSingleton<DatabaseService>();
+            builder.Services.AddSingleton<INavigationService, NavigationService>();
 
             // Register ViewModels
             builder.Services.AddSingleton<MainViewModel>();
