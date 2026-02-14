@@ -45,21 +45,21 @@ namespace MoneyRecord.ViewModels
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetReportPeriods();
 
-        // Heatmap color palette (from coolest to hottest)
+        // Heatmap color palette (white to pink to red gradient)
         private static readonly Color[] HeatmapColors = new[]
         {
-            Color.FromArgb("#E3F2FD"), // Very light blue (lowest)
-            Color.FromArgb("#90CAF9"), // Light blue
-            Color.FromArgb("#64B5F6"), // Medium blue
-            Color.FromArgb("#42A5F5"), // Blue
-            Color.FromArgb("#81C784"), // Green
-            Color.FromArgb("#AED581"), // Light green
-            Color.FromArgb("#FFF176"), // Yellow
-            Color.FromArgb("#FFD54F"), // Amber
-            Color.FromArgb("#FFB74D"), // Orange
-            Color.FromArgb("#FF8A65"), // Deep orange
+            Color.FromArgb("#FFFFFF"), // White (lowest)
+            Color.FromArgb("#FFF5F5"), // Very light pink
+            Color.FromArgb("#FFEBEE"), // Light pink
+            Color.FromArgb("#FFCDD2"), // Pink
+            Color.FromArgb("#EF9A9A"), // Medium pink
             Color.FromArgb("#E57373"), // Light red
-            Color.FromArgb("#EF5350"), // Red (highest)
+            Color.FromArgb("#EF5350"), // Red
+            Color.FromArgb("#F44336"), // Bright red
+            Color.FromArgb("#E53935"), // Strong red
+            Color.FromArgb("#D32F2F"), // Dark red
+            Color.FromArgb("#C62828"), // Deeper red
+            Color.FromArgb("#B71C1C"), // Deep red (highest)
         };
 
         public ExpenseReportViewModel(DatabaseService databaseService)

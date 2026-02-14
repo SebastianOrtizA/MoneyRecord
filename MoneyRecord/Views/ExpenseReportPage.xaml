@@ -193,7 +193,8 @@
                         <HorizontalStackLayout Spacing="8" 
                                               HorizontalOptions="Center"
                                               Margin="0,8,0,0">
-                            <Frame BackgroundColor="#E3F2FD" 
+                            <Frame BackgroundColor="#FFFFFF" 
+                                   BorderColor="#E0E0E0"
                                    CornerRadius="4" 
                                    Padding="8,4" 
                                    HasShadow="False">
@@ -204,7 +205,7 @@
                                    FontSize="14" 
                                    VerticalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                            <Frame BackgroundColor="#FFF176" 
+                            <Frame BackgroundColor="#FFCDD2" 
                                    CornerRadius="4" 
                                    Padding="8,4" 
                                    HasShadow="False">
@@ -215,7 +216,7 @@
                                    FontSize="14" 
                                    VerticalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                            <Frame BackgroundColor="#EF5350"
+                            <Frame BackgroundColor="#B71C1C"
                                    CornerRadius="4" 
                                    Padding="8,4" 
                                    HasShadow="False">
