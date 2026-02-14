@@ -9,6 +9,10 @@
              x:DataType="viewmodels:AddTransactionViewModel"
              Title="{Binding Title}">
 
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding CancelCommand}"/>
+    </Shell.BackButtonBehavior>
+
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="20">
 

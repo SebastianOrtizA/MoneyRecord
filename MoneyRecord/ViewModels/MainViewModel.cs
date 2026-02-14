@@ -79,33 +79,48 @@ namespace MoneyRecord.ViewModels
             try
             {
                 IsRefreshing = true;
-                
+
                 var (startDate, endDate) = GetDateRange();
 
-                // Get total balance across all accounts
-                CurrentBalance = await _databaseService.GetTotalBalanceAsync();
-                TotalIncomes = await _databaseService.GetTotalIncomesAsync(startDate, endDate);
-                TotalExpenses = await _databaseService.GetTotalExpensesAsync(startDate, endDate);
+                // Execute all database queries in parallel for faster loading
+                var balanceTask = _databaseService.GetTotalBalanceAsync();
+                var incomesTask = _databaseService.GetTotalIncomesAsync(startDate, endDate);
+                var expensesTask = _databaseService.GetTotalExpensesAsync(startDate, endDate);
+                var transactionsTask = _databaseService.GetTransactionsAsync(startDate, endDate);
+                var transfersTask = _databaseService.GetTransfersAsync(startDate, endDate);
 
-                var transactionList = await _databaseService.GetTransactionsAsync(startDate, endDate) ?? new List<Transaction>();
-                
+                // Wait for all queries to complete
+                await Task.WhenAll(balanceTask, incomesTask, expensesTask, transactionsTask, transfersTask);
+
+                // Retrieve results
+                CurrentBalance = await balanceTask;
+                TotalIncomes = await incomesTask;
+                TotalExpenses = await expensesTask;
+
+                var transactionList = await transactionsTask ?? new List<Transaction>();
+
                 // Fetch transfers and convert them to Transaction items for display
-                var transfers = await _databaseService.GetTransfersAsync(startDate, endDate) ?? new List<Transfer>();
+                var transfers = await transfersTask ?? new List<Transfer>();
                 var transferTransactions = ConvertTransfersToTransactions(transfers, CurrentGroupingMode);
-                
+
                 // Combine regular transactions with transfer transactions
                 var combinedList = transactionList.Concat(transferTransactions).ToList();
-                
+
                 // Pre-fetch account balances and icons if grouping by account
                 Dictionary<string, decimal>? accountBalances = null;
                 Dictionary<string, string>? accountIcons = null;
                 if (CurrentGroupingMode == GroupingMode.Account)
                 {
-                    var balanceInfos = await _databaseService.GetAllAccountBalancesAsync() ?? new List<AccountBalanceInfo>();
+                    var balanceInfosTask = _databaseService.GetAllAccountBalancesAsync();
+                    var accountsTask = _databaseService.GetAccountsAsync();
+
+                    await Task.WhenAll(balanceInfosTask, accountsTask);
+
+                    var balanceInfos = await balanceInfosTask ?? new List<AccountBalanceInfo>();
                     accountBalances = balanceInfos.ToDictionary(b => b.AccountName ?? string.Empty, b => b.CurrentBalance);
-                    
+
                     // Get account icons
-                    var accounts = await _databaseService.GetAccountsAsync() ?? new List<Account>();
+                    var accounts = await accountsTask ?? new List<Account>();
                     accountIcons = accounts.ToDictionary(a => a.Name ?? string.Empty, a => a.IconCode ?? "F0070");
                 }
                 

@@ -13,10 +13,11 @@ namespace MoneyRecord.Views
             BindingContext = _viewModel;
         }
 
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            await _viewModel.InitializeAsync();
+            // Fire-and-forget for non-blocking UI
+            _ = _viewModel.InitializeAsync();
         }
     }
 }

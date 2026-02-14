@@ -149,26 +149,38 @@ namespace MoneyRecord.Services
         public async Task<List<Transaction>> GetTransactionsAsync(DateTime startDate, DateTime endDate)
         {
             await InitializeAsync();
-            var transactions = await _database!.Table<Transaction>()
-                .Where(t => t.Date >= startDate && t.Date <= endDate)
-                .ToListAsync() ?? new List<Transaction>();
 
-            // Load category names, icons, and account names with icons
+            // Load all data in parallel to avoid N+1 queries
+            var transactionsTask = _database!.Table<Transaction>()
+                .Where(t => t.Date >= startDate && t.Date <= endDate)
+                .ToListAsync();
+            var categoriesTask = _database.Table<Category>().ToListAsync();
+            var accountsTask = _database.Table<Account>().ToListAsync();
+
+            await Task.WhenAll(transactionsTask, categoriesTask, accountsTask);
+
+            var transactions = await transactionsTask ?? new List<Transaction>();
+            var categories = (await categoriesTask ?? new List<Category>()).ToDictionary(c => c.Id);
+            var accounts = (await accountsTask ?? new List<Account>()).ToDictionary(a => a.Id);
+
+            // Map relationships in memory (much faster than individual queries)
             foreach (var transaction in transactions)
             {
-                var category = await _database.Table<Category>()
-                    .Where(c => c.Id == transaction.CategoryId)
-                    .FirstOrDefaultAsync();
-                transaction.CategoryName = category?.Name ?? "Unknown";
-                transaction.CategoryIconCode = category?.IconCode ?? "F0770";
-
-                if (transaction.AccountId.HasValue)
+                if (categories.TryGetValue(transaction.CategoryId, out var category))
                 {
-                    var account = await _database.Table<Account>()
-                        .Where(a => a.Id == transaction.AccountId.Value)
-                        .FirstOrDefaultAsync();
-                    transaction.AccountName = account?.Name ?? "Cash";
-                    transaction.AccountIconCode = account?.IconCode ?? "F0070";
+                    transaction.CategoryName = category.Name ?? "Unknown";
+                    transaction.CategoryIconCode = category.IconCode ?? "F0770";
+                }
+                else
+                {
+                    transaction.CategoryName = "Unknown";
+                    transaction.CategoryIconCode = "F0770";
+                }
+
+                if (transaction.AccountId.HasValue && accounts.TryGetValue(transaction.AccountId.Value, out var account))
+                {
+                    transaction.AccountName = account.Name ?? "Cash";
+                    transaction.AccountIconCode = account.IconCode ?? "F0070";
                 }
                 else
                 {

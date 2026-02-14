@@ -495,6 +495,17 @@
                     </ScrollView>
                 </RefreshView>
 
+                <!-- Loading Indicator Overlay -->
+                <Grid IsVisible="{Binding IsRefreshing}"
+                      BackgroundColor="{AppThemeBinding Light=#80FFFFFF, Dark=#80000000}">
+                    <ActivityIndicator IsRunning="{Binding IsRefreshing}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Color="{AppThemeBinding Light=#4CAF50, Dark=#66BB6A}"
+                                       HeightRequest="50"
+                                       WidthRequest="50"/>
+                </Grid>
+
                 <!-- Floating Action Menu -->
                 <controls:FloatingActionMenu />
             </Grid>
