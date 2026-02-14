@@ -8,6 +8,7 @@ namespace MoneyRecord.Controls
     {
         private readonly FabPositionManager _positionManager;
         private readonly FabDragHandler _dragHandler;
+        private readonly SmoothDragAnimator _smoothAnimator;
         private FabLayoutManager? _layoutManager;
 
         private Grid? _rootGrid;
@@ -30,6 +31,7 @@ namespace MoneyRecord.Controls
             // Initialize managers
             _positionManager = new FabPositionManager(preferencesService);
             _dragHandler = new FabDragHandler();
+            _smoothAnimator = new SmoothDragAnimator(smoothingFactor: 0.35, threshold: 0.3);
 
             InitializeElementReferences();
             InitializeLayoutManager();
@@ -131,6 +133,13 @@ namespace MoneyRecord.Controls
             {
                 vm.IsExpanded = false;
             }
+
+            // Initialize smooth animator with current position
+            if (_fabContainer is not null)
+            {
+                _smoothAnimator.Initialize(_fabContainer.TranslationX, _fabContainer.TranslationY);
+                _smoothAnimator.StartAnimation(_fabContainer, ApplySmoothPosition);
+            }
         }
 
         private void HandleDragRunning(double totalX, double totalY)
@@ -152,12 +161,19 @@ namespace MoneyRecord.Controls
                 _layoutManager?.UpdateAlignment(_positionManager.IsOnRight);
             }
 
-            UpdateContainerPosition();
+            // Set target for smooth animation instead of direct update
+            var (targetX, targetY) = _positionManager.CalculateContainerPosition(_rootGrid.Width, _rootGrid.Height);
+            _smoothAnimator.SetTarget(targetX, targetY);
         }
 
         private void HandleDragEnded()
         {
+            _smoothAnimator.StopAnimation();
+            _smoothAnimator.SnapToTarget();
             _dragHandler.EndDrag();
+
+            // Apply final position
+            UpdateContainerPosition();
 
             if (_dragHandler.HasMoved)
             {
@@ -165,6 +181,14 @@ namespace MoneyRecord.Controls
             }
 
             _ = _dragHandler.ResetMovedStateAsync();
+        }
+
+        private void ApplySmoothPosition(double x, double y)
+        {
+            if (_fabContainer is null) return;
+
+            _fabContainer.TranslationX = x;
+            _fabContainer.TranslationY = y;
         }
 
         private void UpdateContainerPosition()
