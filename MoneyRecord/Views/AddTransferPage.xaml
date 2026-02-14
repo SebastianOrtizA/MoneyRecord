@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.AddTransferPage"
              x:DataType="viewmodels:AddTransferViewModel"
@@ -35,14 +36,13 @@
                    FontSize="16"/>
 
             <Label Text="{ext:Localize Amount}" FontSize="16" FontAttributes="Bold"/>
-            <Entry Text="{Binding Amount}" 
+            <controls:DecimalEntry Text="{Binding Amount}" 
                    Placeholder="0.00"
-                   Keyboard="Numeric"
                    FontSize="16">
-                <Entry.Behaviors>
+                <controls:DecimalEntry.Behaviors>
                     <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
-                </Entry.Behaviors>
-            </Entry>
+                </controls:DecimalEntry.Behaviors>
+            </controls:DecimalEntry>
 
             <Label Text="{ext:Localize TransferDescription}" FontSize="16" FontAttributes="Bold"/>
             <Entry Text="{Binding Description}" 

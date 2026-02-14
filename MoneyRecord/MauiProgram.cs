@@ -20,7 +20,8 @@ namespace MoneyRecord
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("materialdesignicons-webfont.ttf", "MaterialDesignIcons");
-                });
+                })
+                .ConfigureDecimalEntry();
 
             // Register Services
             builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);
@@ -51,6 +52,20 @@ namespace MoneyRecord
 #endif
 
             return builder.Build();
+        }
+
+        /// <summary>
+        /// Configures the DecimalEntry control with platform-specific handlers
+        /// to show numeric keyboard with decimal support.
+        /// </summary>
+        private static MauiAppBuilder ConfigureDecimalEntry(this MauiAppBuilder builder)
+        {
+#if ANDROID
+            Platforms.Android.Handlers.DecimalEntryHandler.Configure();
+#elif IOS
+            Platforms.iOS.Handlers.DecimalEntryHandler.Configure();
+#endif
+            return builder;
         }
     }
 }

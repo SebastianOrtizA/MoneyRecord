@@ -5,6 +5,7 @@
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:converters="clr-namespace:MoneyRecord.Converters"
              xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.ManageAccountsPage"
              x:DataType="viewmodels:ManageAccountsViewModel"
@@ -38,17 +39,16 @@
                            FontSize="16"/>
                     
                     <Label Text="{ext:Localize InitialBalance}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <Entry Text="{Binding NewAccountBalance}" 
+                    <controls:DecimalEntry Text="{Binding NewAccountBalance}" 
                            Placeholder="0.00"
-                           Keyboard="Numeric"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16">
-                        <Entry.Behaviors>
+                        <controls:DecimalEntry.Behaviors>
                             <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
-                        </Entry.Behaviors>
-                    </Entry>
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
 
                     <!-- Icon Selector for Add -->
                     <Label Text="{ext:Localize SelectIcon}" 
@@ -134,17 +134,16 @@
                            FontSize="16"/>
                     
                     <Label Text="Initial Balance" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <Entry Text="{Binding EditAccountBalance}" 
+                    <controls:DecimalEntry Text="{Binding EditAccountBalance}" 
                            Placeholder="0.00"
-                           Keyboard="Numeric"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16">
-                        <Entry.Behaviors>
+                        <controls:DecimalEntry.Behaviors>
                             <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
-                        </Entry.Behaviors>
-                    </Entry>
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
 
                     <!-- Icon Selector for Edit -->
                     <Label Text="{ext:Localize SelectIcon}" 
