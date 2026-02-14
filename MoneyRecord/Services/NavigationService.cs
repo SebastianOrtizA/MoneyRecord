@@ -108,6 +108,24 @@ namespace MoneyRecord.Services
             var normalizedRoute = route.StartsWith("//") ? route : $"//{route}";
             return RootRoutes.Contains(normalizedRoute);
         }
+
+        /// <summary>
+        /// Navigates to the specified route.
+        /// </summary>
+        public async Task NavigateToAsync(string route)
+        {
+            RecordNavigation(route);
+            await Shell.Current.GoToAsync(route);
+        }
+
+        /// <summary>
+        /// Navigates to the specified route with parameters.
+        /// </summary>
+        public async Task NavigateToAsync(string route, IDictionary<string, object> parameters)
+        {
+            RecordNavigation(route);
+            await Shell.Current.GoToAsync(route, parameters);
+        }
     }
 
     /// <summary>
@@ -121,5 +139,7 @@ namespace MoneyRecord.Services
         string GetBackRoute();
         Task GoBackAsync();
         void ClearHistory();
+        Task NavigateToAsync(string route);
+        Task NavigateToAsync(string route, IDictionary<string, object> parameters);
     }
 }

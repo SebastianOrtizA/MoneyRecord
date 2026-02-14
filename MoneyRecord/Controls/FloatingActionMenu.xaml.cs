@@ -1,101 +1,92 @@
+using MoneyRecord.Controls.FabComponents;
+using MoneyRecord.Services;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Controls
 {
     public partial class FloatingActionMenu : ContentView
     {
-        // Percentage-based margins
-        private const double EdgeMarginPercent = 0.05;   // 5% of screen width for left/right
-        private const double TopMarginPercent = 0.20;    // 20% of screen height for top
-        private const double BottomMarginPercent = 0.05; // 5% of screen height for bottom
-        private const double FabButtonSize = 64;
-        private const double ContainerWidth = 280;
-        private const double ContainerHeight = 300;
-        private const string PositionYPercentKey = "FABPositionYPercent_v5";
-        private const string IsOnRightKey = "FABIsOnRight_v5";
+        private readonly FabPositionManager _positionManager;
+        private readonly FabDragHandler _dragHandler;
+        private FabLayoutManager? _layoutManager;
 
-        // FAB position stored as percentage of available height (0.0 to 1.0)
-        private double _fabYPercent = -1; // -1 means not initialized
-        private double _startFabYPercent;
-        private bool _isOnRight = true;
-        private bool _isDragging;
-        private bool _hasMoved;
-
-        // Use RootGrid dimensions directly
         private Grid? _rootGrid;
-
-        // Calculated limits (in percentage)
-        private double MinYPercent => TopMarginPercent;
-        private double MaxYPercent
-        {
-            get
-            {
-                double height = _rootGrid?.Height ?? 0;
-                if (height <= 0) return 0.95;
-                return 1.0 - BottomMarginPercent - (FabButtonSize / height);
-            }
-        }
-
-        // Element references
         private Grid? _fabContainer;
         private Grid? _dragHandle;
-        private VerticalStackLayout? _fabStackLayout;
-        private VerticalStackLayout? _actionButtonsContainer;
-        private HorizontalStackLayout? _incomeButtonRow;
-        private HorizontalStackLayout? _transferButtonRow;
-        private HorizontalStackLayout? _expenseButtonRow;
+
+        private double MinYPercent => _positionManager.CalculateMinYPercent();
+        private double MaxYPercent => _positionManager.CalculateMaxYPercent(_rootGrid?.Height ?? 0);
 
         public FloatingActionMenu()
         {
             InitializeComponent();
-            BindingContext = new FloatingMenuViewModel();
 
-            // Get references to named elements
+            // Resolve services from DI container
+            var navigationService = ResolveService<INavigationService>();
+            var preferencesService = ResolveService<IPreferencesService>();
+
+            BindingContext = new FloatingMenuViewModel(navigationService);
+
+            // Initialize managers
+            _positionManager = new FabPositionManager(preferencesService);
+            _dragHandler = new FabDragHandler();
+
+            InitializeElementReferences();
+            InitializeLayoutManager();
+            SetupGestures();
+        }
+
+        private static T ResolveService<T>() where T : class
+        {
+            return Application.Current?.Handler?.MauiContext?.Services.GetService<T>()
+                ?? throw new InvalidOperationException($"Service {typeof(T).Name} not found in DI container.");
+        }
+
+        private void InitializeElementReferences()
+        {
             _rootGrid = this.FindByName<Grid>("RootGrid");
             _fabContainer = this.FindByName<Grid>("FabContainer");
             _dragHandle = this.FindByName<Grid>("DragHandle");
-            _fabStackLayout = this.FindByName<VerticalStackLayout>("FabStackLayout");
-            _actionButtonsContainer = this.FindByName<VerticalStackLayout>("ActionButtonsContainer");
-            _incomeButtonRow = this.FindByName<HorizontalStackLayout>("IncomeButtonRow");
-            _transferButtonRow = this.FindByName<HorizontalStackLayout>("TransferButtonRow");
-            _expenseButtonRow = this.FindByName<HorizontalStackLayout>("ExpenseButtonRow");
 
-            // Load saved preferences
-            _isOnRight = Preferences.Get(IsOnRightKey, true);
-            double savedYPercent = Preferences.Get(PositionYPercentKey, -1d);
-            if (savedYPercent >= 0)
-            {
-                _fabYPercent = savedYPercent;
-            }
-
-            // Subscribe to RootGrid size changes
-            if (_rootGrid != null)
+            if (_rootGrid is not null)
             {
                 _rootGrid.SizeChanged += OnRootGridSizeChanged;
             }
-
-            // Add pan gesture for dragging
-            if (_dragHandle != null)
-            {
-                var panGesture = new PanGestureRecognizer();
-                panGesture.PanUpdated += OnPanUpdated;
-                _dragHandle.GestureRecognizers.Add(panGesture);
-
-                var tapGesture = new TapGestureRecognizer();
-                tapGesture.Tapped += OnFabTapped;
-                _dragHandle.GestureRecognizers.Add(tapGesture);
-            }
         }
 
-        private void SavePosition()
+        private void InitializeLayoutManager()
         {
-            Preferences.Set(PositionYPercentKey, _fabYPercent);
-            Preferences.Set(IsOnRightKey, _isOnRight);
+            var fabStackLayout = this.FindByName<VerticalStackLayout>("FabStackLayout");
+            var actionButtonsContainer = this.FindByName<VerticalStackLayout>("ActionButtonsContainer");
+            var incomeButtonRow = this.FindByName<HorizontalStackLayout>("IncomeButtonRow");
+            var transferButtonRow = this.FindByName<HorizontalStackLayout>("TransferButtonRow");
+            var expenseButtonRow = this.FindByName<HorizontalStackLayout>("ExpenseButtonRow");
+
+            _layoutManager = new FabLayoutManager(
+                fabStackLayout,
+                actionButtonsContainer,
+                incomeButtonRow,
+                transferButtonRow,
+                expenseButtonRow,
+                _dragHandle);
+        }
+
+        private void SetupGestures()
+        {
+            if (_dragHandle is null) return;
+
+            var panGesture = new PanGestureRecognizer();
+            panGesture.PanUpdated += OnPanUpdated;
+            _dragHandle.GestureRecognizers.Add(panGesture);
+
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += OnFabTapped;
+            _dragHandle.GestureRecognizers.Add(tapGesture);
         }
 
         private void OnFabTapped(object? sender, TappedEventArgs e)
         {
-            if (!_hasMoved && BindingContext is FloatingMenuViewModel vm)
+            if (!_dragHandler.HasMoved && BindingContext is FloatingMenuViewModel vm)
             {
                 vm.ToggleMenuCommand.Execute(null);
             }
@@ -103,131 +94,89 @@ namespace MoneyRecord.Controls
 
         private void OnRootGridSizeChanged(object? sender, EventArgs e)
         {
-            if (_rootGrid == null || _rootGrid.Width <= 0 || _rootGrid.Height <= 0) return;
+            if (_rootGrid is null || _rootGrid.Width <= 0 || _rootGrid.Height <= 0) return;
 
-            // Initialize position if not set or out of bounds
-            if (_fabYPercent < 0 || _fabYPercent < MinYPercent || _fabYPercent > MaxYPercent)
-            {
-                _fabYPercent = Math.Clamp(0.80, MinYPercent, MaxYPercent);
-            }
-
+            _positionManager.InitializePositionIfNeeded(MinYPercent, MaxYPercent);
             UpdateContainerPosition();
-            UpdateLayoutAlignment();
+            _layoutManager?.UpdateAlignment(_positionManager.IsOnRight);
         }
 
         private void OnPanUpdated(object? sender, PanUpdatedEventArgs e)
         {
-            if (_rootGrid == null || _rootGrid.Height <= 0) return;
-
-            double gridHeight = _rootGrid.Height;
-            double gridWidth = _rootGrid.Width;
+            if (_rootGrid is null || _rootGrid.Height <= 0) return;
 
             switch (e.StatusType)
             {
                 case GestureStatus.Started:
-                    _isDragging = true;
-                    _hasMoved = false;
-                    _startFabYPercent = _fabYPercent;
-
-                    if (BindingContext is FloatingMenuViewModel vm && vm.IsExpanded)
-                    {
-                        vm.IsExpanded = false;
-                    }
+                    HandleDragStarted();
                     break;
 
                 case GestureStatus.Running:
-                    if (Math.Abs(e.TotalX) > 5 || Math.Abs(e.TotalY) > 5)
-                    {
-                        _hasMoved = true;
-                    }
-
-                    // Convert pixel movement to percentage
-                    double deltaYPercent = e.TotalY / gridHeight;
-                    double newYPercent = _startFabYPercent + deltaYPercent;
-
-                    // Apply limits
-                    _fabYPercent = Math.Clamp(newYPercent, MinYPercent, MaxYPercent);
-
-                    // Check side switch
-                    double currentFabX = _isOnRight 
-                        ? gridWidth - (gridWidth * EdgeMarginPercent) - FabButtonSize / 2
-                        : (gridWidth * EdgeMarginPercent) + FabButtonSize / 2;
-
-                    double newFabCenterX = currentFabX + e.TotalX;
-                    bool shouldBeOnRight = newFabCenterX > gridWidth / 2;
-
-                    if (shouldBeOnRight != _isOnRight)
-                    {
-                        _isOnRight = shouldBeOnRight;
-                        UpdateLayoutAlignment();
-                    }
-
-                    UpdateContainerPosition();
+                    HandleDragRunning(e.TotalX, e.TotalY);
                     break;
 
                 case GestureStatus.Completed:
                 case GestureStatus.Canceled:
-                    _isDragging = false;
-                    if (_hasMoved)
-                    {
-                        SavePosition();
-                    }
-                    MainThread.BeginInvokeOnMainThread(async () =>
-                    {
-                        await Task.Delay(100);
-                        _hasMoved = false;
-                    });
+                    HandleDragEnded();
                     break;
             }
         }
 
-        private void UpdateLayoutAlignment()
+        private void HandleDragStarted()
         {
-            MainThread.BeginInvokeOnMainThread(() =>
+            _dragHandler.StartDrag();
+            _positionManager.StartFabYPercent = _positionManager.FabYPercent;
+
+            if (BindingContext is FloatingMenuViewModel { IsExpanded: true } vm)
             {
-                var alignment = _isOnRight ? LayoutOptions.End : LayoutOptions.Start;
+                vm.IsExpanded = false;
+            }
+        }
 
-                if (_fabStackLayout != null) _fabStackLayout.HorizontalOptions = alignment;
-                if (_actionButtonsContainer != null) _actionButtonsContainer.HorizontalOptions = alignment;
-                if (_incomeButtonRow != null) _incomeButtonRow.HorizontalOptions = alignment;
-                if (_transferButtonRow != null) _transferButtonRow.HorizontalOptions = alignment;
-                if (_expenseButtonRow != null) _expenseButtonRow.HorizontalOptions = alignment;
-                if (_dragHandle != null) _dragHandle.HorizontalOptions = alignment;
+        private void HandleDragRunning(double totalX, double totalY)
+        {
+            if (_rootGrid is null) return;
 
-                var flowDirection = _isOnRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
-                if (_incomeButtonRow != null) _incomeButtonRow.FlowDirection = flowDirection;
-                if (_transferButtonRow != null) _transferButtonRow.FlowDirection = flowDirection;
-                if (_expenseButtonRow != null) _expenseButtonRow.FlowDirection = flowDirection;
-            });
+            _dragHandler.UpdateMovement(totalX, totalY);
+
+            // Update Y position
+            double newYPercent = _positionManager.CalculateNewYPercent(totalY, _rootGrid.Height);
+            _positionManager.FabYPercent = newYPercent;
+            _positionManager.ClampPosition(MinYPercent, MaxYPercent);
+
+            // Check for side switch
+            bool shouldBeOnRight = _positionManager.ShouldSwitchSide(totalX, _rootGrid.Width);
+            if (shouldBeOnRight != _positionManager.IsOnRight)
+            {
+                _positionManager.IsOnRight = shouldBeOnRight;
+                _layoutManager?.UpdateAlignment(_positionManager.IsOnRight);
+            }
+
+            UpdateContainerPosition();
+        }
+
+        private void HandleDragEnded()
+        {
+            _dragHandler.EndDrag();
+
+            if (_dragHandler.HasMoved)
+            {
+                _positionManager.SavePosition();
+            }
+
+            _ = _dragHandler.ResetMovedStateAsync();
         }
 
         private void UpdateContainerPosition()
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                if (_fabContainer == null || _rootGrid == null) return;
+                if (_fabContainer is null || _rootGrid is null) return;
+                if (_rootGrid.Width <= 0 || _rootGrid.Height <= 0) return;
 
-                double gridWidth = _rootGrid.Width;
-                double gridHeight = _rootGrid.Height;
-
-                if (gridWidth <= 0 || gridHeight <= 0) return;
-
-                // Calculate FAB position in pixels
-                // _fabYPercent represents where the TOP of the FAB should be as a % of grid height
-                double fabTopY = _fabYPercent * gridHeight;
-                double fabLeftX = _isOnRight 
-                    ? gridWidth - FabButtonSize - (gridWidth * EdgeMarginPercent)
-                    : gridWidth * EdgeMarginPercent;
-
-                // The container holds the FAB at its bottom
-                // Container position = FAB position - offset to place FAB at container bottom
-                double containerX = _isOnRight 
-                    ? fabLeftX - (ContainerWidth - FabButtonSize)
-                    : fabLeftX;
-                double containerY = fabTopY - (ContainerHeight - FabButtonSize);
-
-                _fabContainer.TranslationX = containerX;
-                _fabContainer.TranslationY = containerY;
+                var (x, y) = _positionManager.CalculateContainerPosition(_rootGrid.Width, _rootGrid.Height);
+                _fabContainer.TranslationX = x;
+                _fabContainer.TranslationY = y;
             });
         }
     }

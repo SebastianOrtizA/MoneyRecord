@@ -276,30 +276,7 @@ namespace MoneyRecord.ViewModels
 
         private (DateTime startDate, DateTime endDate) GetDateRange()
         {
-            var endDate = DateTime.Now.Date.AddDays(1).AddTicks(-1);
-            DateTime startDate;
-
-            switch (SelectedPeriod?.Type)
-            {
-                case PeriodType.Today:
-                    startDate = DateTime.Now.Date;
-                    break;
-                case PeriodType.LastWeek:
-                    startDate = DateTime.Now.Date.AddDays(-7);
-                    break;
-                case PeriodType.LastYear:
-                    startDate = DateTime.Now.Date.AddYears(-1);
-                    break;
-                case PeriodType.CustomPeriod:
-                    startDate = CustomStartDate.Date;
-                    endDate = CustomEndDate.Date.AddDays(1).AddTicks(-1);
-                    break;
-                default: // Last Month
-                    startDate = DateTime.Now.Date.AddMonths(-1);
-                    break;
-            }
-
-            return (startDate, endDate);
+            return DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
         }
     }
 }

@@ -4,6 +4,7 @@ using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
@@ -11,6 +12,7 @@ namespace MoneyRecord.ViewModels
     public partial class ManageAccountsViewModel : ObservableObject
     {
         private readonly DatabaseService _databaseService;
+        private readonly ICategoryIconService _categoryIconService;
 
         [ObservableProperty]
         private ObservableCollection<Account> accounts = new();
@@ -48,15 +50,16 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<AccountIcon> availableIcons = new();
 
-        public ManageAccountsViewModel(DatabaseService databaseService)
+        public ManageAccountsViewModel(DatabaseService databaseService, ICategoryIconService categoryIconService)
         {
             _databaseService = databaseService;
+            _categoryIconService = categoryIconService;
         }
 
         public async Task InitializeAsync()
         {
             LoadAvailableIcons();
-            NewAccountIconCode = CategoryIconService.GetDefaultAccountIconCode();
+            NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
             UpdateIconSelection(NewAccountIconCode);
             await LoadAccountsAsync();
         }
@@ -64,7 +67,7 @@ namespace MoneyRecord.ViewModels
         private void LoadAvailableIcons()
         {
             AvailableIcons.Clear();
-            var icons = CategoryIconService.GetAccountIcons();
+            var icons = _categoryIconService.GetAccountIcons();
             foreach (var icon in icons)
             {
                 AvailableIcons.Add(icon);
@@ -120,7 +123,7 @@ namespace MoneyRecord.ViewModels
                 InitialBalance = balance,
                 IsDefault = false,
                 IconCode = string.IsNullOrEmpty(NewAccountIconCode) 
-                    ? CategoryIconService.GetDefaultAccountIconCode() 
+                    ? _categoryIconService.GetDefaultAccountIconCode() 
                     : NewAccountIconCode,
                 CreatedDate = DateTime.Now,
                 AllowNegativeBalance = NewAccountAllowNegativeBalance
@@ -129,7 +132,7 @@ namespace MoneyRecord.ViewModels
             await _databaseService.SaveAccountAsync(account);
             NewAccountName = string.Empty;
             NewAccountBalance = "0";
-            NewAccountIconCode = CategoryIconService.GetDefaultAccountIconCode();
+            NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
             NewAccountAllowNegativeBalance = false;
             UpdateIconSelection(NewAccountIconCode);
             await LoadAccountsAsync();
@@ -179,7 +182,7 @@ namespace MoneyRecord.ViewModels
             EditingAccount.Name = EditAccountName.Trim();
             EditingAccount.InitialBalance = balance;
             EditingAccount.IconCode = string.IsNullOrEmpty(EditAccountIconCode)
-                ? CategoryIconService.GetDefaultAccountIconCode()
+                ? _categoryIconService.GetDefaultAccountIconCode()
                 : EditAccountIconCode;
             EditingAccount.AllowNegativeBalance = EditAccountAllowNegativeBalance;
 

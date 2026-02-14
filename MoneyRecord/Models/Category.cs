@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using SQLite;
 
 namespace MoneyRecord.Models
@@ -20,24 +21,7 @@ namespace MoneyRecord.Models
         /// Gets the displayable icon character from the unicode code
         /// </summary>
         [Ignore]
-        public string DisplayIcon
-        {
-            get
-            {
-                try
-                {
-                    if (string.IsNullOrEmpty(IconCode))
-                        return "\uF0770";
-
-                    var codePoint = Convert.ToInt32(IconCode, 16);
-                    return char.ConvertFromUtf32(codePoint);
-                }
-                catch
-                {
-                    return "\uF0770";
-                }
-            }
-        }
+        public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(IconCode);
     }
 
     public enum CategoryType
@@ -61,23 +45,6 @@ namespace MoneyRecord.Models
             set => SetProperty(ref _isSelected, value);
         }
 
-        public string DisplayIcon
-        {
-            get
-            {
-                try
-                {
-                    if (string.IsNullOrEmpty(Code))
-                        return "\uF0770";
-
-                    var codePoint = Convert.ToInt32(Code, 16);
-                    return char.ConvertFromUtf32(codePoint);
-                }
-                catch
-                {
-                    return "\uF0770";
-                }
-            }
-        }
+        public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(Code);
     }
 }

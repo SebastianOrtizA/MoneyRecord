@@ -1,14 +1,22 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
+using MoneyRecord.Services;
 using MoneyRecord.Views;
 
 namespace MoneyRecord.ViewModels
 {
     public partial class FloatingMenuViewModel : ObservableObject
     {
+        private readonly INavigationService _navigationService;
+
         [ObservableProperty]
         private bool isExpanded;
+
+        public FloatingMenuViewModel(INavigationService navigationService)
+        {
+            _navigationService = navigationService;
+        }
 
         [RelayCommand]
         private void ToggleMenu()
@@ -20,7 +28,7 @@ namespace MoneyRecord.ViewModels
         private async Task AddIncome()
         {
             IsExpanded = false;
-            await Shell.Current.GoToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
             {
                 { "TransactionType", TransactionType.Income }
             });
@@ -30,7 +38,7 @@ namespace MoneyRecord.ViewModels
         private async Task AddExpense()
         {
             IsExpanded = false;
-            await Shell.Current.GoToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
             {
                 { "TransactionType", TransactionType.Expense }
             });
@@ -40,7 +48,7 @@ namespace MoneyRecord.ViewModels
         private async Task AddTransfer()
         {
             IsExpanded = false;
-            await Shell.Current.GoToAsync(nameof(AddTransferPage));
+            await _navigationService.NavigateToAsync(nameof(AddTransferPage));
         }
 
         [RelayCommand]

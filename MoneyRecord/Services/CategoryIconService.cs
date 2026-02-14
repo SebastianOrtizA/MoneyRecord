@@ -1,4 +1,5 @@
 using MoneyRecord.Models;
+using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services
 {
@@ -6,12 +7,12 @@ namespace MoneyRecord.Services
     /// Service providing Material Design Icons for categories and accounts
     /// Icons from: https://materialdesignicons.com (MIT/Apache 2.0 License)
     /// </summary>
-    public static class CategoryIconService
+    public sealed class CategoryIconService : ICategoryIconService
     {
         /// <summary>
         /// Gets available icons for expense categories
         /// </summary>
-        public static List<CategoryIcon> GetExpenseIcons()
+        public List<CategoryIcon> GetExpenseIcons()
         {
             return
             [
@@ -29,7 +30,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// Gets available icons for income categories
         /// </summary>
-        public static List<CategoryIcon> GetIncomeIcons()
+        public List<CategoryIcon> GetIncomeIcons()
         {
             return
             [
@@ -43,7 +44,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// Gets icons based on category type
         /// </summary>
-        public static List<CategoryIcon> GetIconsForType(CategoryType type)
+        public List<CategoryIcon> GetIconsForType(CategoryType type)
         {
             return type == CategoryType.Income ? GetIncomeIcons() : GetExpenseIcons();
         }
@@ -51,7 +52,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// Gets the default icon code for a category type
         /// </summary>
-        public static string GetDefaultIconCode(CategoryType type)
+        public string GetDefaultIconCode(CategoryType type)
         {
             return type == CategoryType.Income ? "F0116" : "F09B5"; // cash-multiple or food
         }
@@ -59,7 +60,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// Gets available icons for accounts
         /// </summary>
-        public static List<AccountIcon> GetAccountIcons()
+        public List<AccountIcon> GetAccountIcons()
         {
             return
             [
@@ -73,7 +74,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// Gets the default icon code for accounts
         /// </summary>
-        public static string GetDefaultAccountIconCode()
+        public string GetDefaultAccountIconCode()
         {
             return "F0070"; // bank
         }

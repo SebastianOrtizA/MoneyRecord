@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using SQLite;
 
 namespace MoneyRecord.Models
@@ -35,24 +36,7 @@ namespace MoneyRecord.Models
         /// Gets the displayable icon character from the category unicode code
         /// </summary>
         [Ignore]
-        public string CategoryDisplayIcon
-        {
-            get
-            {
-                try
-                {
-                    if (string.IsNullOrEmpty(CategoryIconCode))
-                        return "\uF0770";
-
-                    var codePoint = Convert.ToInt32(CategoryIconCode, 16);
-                    return char.ConvertFromUtf32(codePoint);
-                }
-                catch
-                {
-                    return "\uF0770";
-                }
-            }
-        }
+        public string CategoryDisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
 
         /// <summary>
         /// Icon code for the account (Material Design Icons)
@@ -64,24 +48,7 @@ namespace MoneyRecord.Models
         /// Gets the displayable icon character from the account unicode code
         /// </summary>
         [Ignore]
-        public string AccountDisplayIcon
-        {
-            get
-            {
-                try
-                {
-                    if (string.IsNullOrEmpty(AccountIconCode))
-                        return "\uF0070";
-
-                    var codePoint = Convert.ToInt32(AccountIconCode, 16);
-                    return char.ConvertFromUtf32(codePoint);
-                }
-                catch
-                {
-                    return "\uF0070";
-                }
-            }
-        }
+        public string AccountDisplayIcon => IconHelper.GetAccountDisplayIcon(AccountIconCode);
 
         /// <summary>
         /// Used for transfers to store the original Transfer.Id for edit/delete operations

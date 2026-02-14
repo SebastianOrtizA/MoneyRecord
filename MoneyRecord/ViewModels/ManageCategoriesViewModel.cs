@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
@@ -11,6 +12,7 @@ namespace MoneyRecord.ViewModels
     public partial class ManageCategoriesViewModel : ObservableObject
     {
         private readonly DatabaseService _databaseService;
+        private readonly ICategoryIconService _categoryIconService;
 
         [ObservableProperty]
         private CategoryType categoryType;
@@ -42,16 +44,17 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<CategoryIcon> availableIcons = new();
 
-        public ManageCategoriesViewModel(DatabaseService databaseService)
+        public ManageCategoriesViewModel(DatabaseService databaseService, ICategoryIconService categoryIconService)
         {
             _databaseService = databaseService;
+            _categoryIconService = categoryIconService;
         }
 
         public async Task InitializeAsync()
         {
             Title = CategoryType == CategoryType.Income ? AppResources.ManageIncomeCategories : AppResources.ManageExpenseCategories;
             LoadAvailableIcons();
-            NewCategoryIconCode = CategoryIconService.GetDefaultIconCode(CategoryType);
+            NewCategoryIconCode = _categoryIconService.GetDefaultIconCode(CategoryType);
             UpdateIconSelection(NewCategoryIconCode);
             await LoadCategoriesAsync();
         }
@@ -59,7 +62,7 @@ namespace MoneyRecord.ViewModels
         private void LoadAvailableIcons()
         {
             AvailableIcons.Clear();
-            var icons = CategoryIconService.GetIconsForType(CategoryType);
+            var icons = _categoryIconService.GetIconsForType(CategoryType);
             foreach (var icon in icons)
             {
                 AvailableIcons.Add(icon);
@@ -112,13 +115,13 @@ namespace MoneyRecord.ViewModels
                 Name = NewCategoryName,
                 Type = CategoryType,
                 IconCode = string.IsNullOrEmpty(NewCategoryIconCode) 
-                    ? CategoryIconService.GetDefaultIconCode(CategoryType) 
+                    ? _categoryIconService.GetDefaultIconCode(CategoryType) 
                     : NewCategoryIconCode
             };
 
             await _databaseService.SaveCategoryAsync(category);
             NewCategoryName = string.Empty;
-            NewCategoryIconCode = CategoryIconService.GetDefaultIconCode(CategoryType);
+            NewCategoryIconCode = _categoryIconService.GetDefaultIconCode(CategoryType);
             UpdateIconSelection(NewCategoryIconCode);
             await LoadCategoriesAsync();
         }
@@ -233,7 +236,7 @@ namespace MoneyRecord.ViewModels
 
             EditingCategory.Name = EditCategoryName;
             EditingCategory.IconCode = string.IsNullOrEmpty(EditCategoryIconCode)
-                ? CategoryIconService.GetDefaultIconCode(CategoryType)
+                ? _categoryIconService.GetDefaultIconCode(CategoryType)
                 : EditCategoryIconCode;
             
             await _databaseService.SaveCategoryAsync(EditingCategory);
