@@ -115,9 +115,10 @@ namespace MoneyRecord.Converters
         {
             if (value is bool isExpanded)
             {
-                return isExpanded ? "▼" : "▶";
+                // Material Design Icons: chevron-down (F0140) and chevron-right (F0142)
+                return isExpanded ? "\U000F0140" : "\U000F0142";
             }
-            return "▶";
+            return "\U000F0142";
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -240,11 +241,12 @@ namespace MoneyRecord.Converters
             if (value is TransactionGroup group)
             {
                 // For transfer groups, show neutral amount (no sign)
-                if (group.GroupName == "🔄 Transfers")
+                // Check both emoji version (legacy) and text version
+                if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
                 {
                     return Math.Abs(group.Total).ToString("C2", culture);
                 }
-                
+
                 // For expense groups, display as negative; for income groups, display as positive
                 var displayAmount = group.Type == TransactionType.Expense
                     ? -Math.Abs(group.Total)
@@ -269,15 +271,16 @@ namespace MoneyRecord.Converters
         {
             if (value is TransactionGroup group)
             {
-                // Check if this is a transfer group by name
-                if (group.GroupName == "🔄 Transfers")
+                // Check if this is a transfer group by name or type
+                // Support both emoji version (legacy) and text version
+                if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
                 {
                     // Orange for transfers
                     return Application.Current?.RequestedTheme == AppTheme.Dark
                         ? Color.FromArgb("#FFB74D")
                         : Color.FromArgb("#FF9800");
                 }
-                
+
                 if (group.Type == TransactionType.Income)
                 {
                     // Green for income

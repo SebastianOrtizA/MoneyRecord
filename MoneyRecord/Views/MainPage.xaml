@@ -223,9 +223,11 @@
                 <CollectionView ItemsSource="{Binding Transactions}">
                     <CollectionView.EmptyView>
                         <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
-                            <Label Text="📊" 
+                            <Label Text="&#xF0127;" 
+                                   FontFamily="MaterialDesignIcons"
                                    FontSize="48" 
-                                   HorizontalOptions="Center"/>
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                             <Label Text="{ext:Localize NoTransactions}" 
                                    FontSize="18"
                                    FontAttributes="Bold"
@@ -325,9 +327,11 @@
                     <!-- Empty State -->
                     <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center"
                                         IsVisible="{Binding HasTransactions, Converter={StaticResource InvertedBoolConverter}}">
-                        <Label Text="📊" 
+                        <Label Text="&#xF0127;" 
+                               FontFamily="MaterialDesignIcons"
                                FontSize="48" 
-                               HorizontalOptions="Center"/>
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                         <Label Text="{ext:Localize NoTransactions}" 
                                FontSize="18"
                                FontAttributes="Bold"
@@ -361,6 +365,7 @@
                                             <!-- Expand/Collapse Icon -->
                                             <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
                                                    Text="{Binding IsExpanded, Converter={StaticResource BoolToExpandIconConverter}}"
+                                                   FontFamily="MaterialDesignIcons"
                                                    FontSize="16"
                                                    VerticalOptions="Center"
                                                    TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>

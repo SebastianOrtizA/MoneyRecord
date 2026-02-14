@@ -104,9 +104,11 @@
                                     Spacing="12" 
                                     HorizontalOptions="Center"
                                     IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}">
-                    <Label Text="📊" 
+                    <Label Text="&#xF0127;" 
+                           FontFamily="MaterialDesignIcons"
                            FontSize="48" 
-                           HorizontalOptions="Center"/>
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <Label Text="{ext:Localize NoExpenseDataFound}" 
                            FontSize="18"
                            FontAttributes="Bold"
@@ -197,7 +199,8 @@
                                    HasShadow="False">
                                 <Label Text="{ext:Localize Low}" FontSize="10" TextColor="Black"/>
                             </Frame>
-                            <Label Text="→" 
+                            <Label Text="&#xF0142;" 
+                                   FontFamily="MaterialDesignIcons"
                                    FontSize="14" 
                                    VerticalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -207,11 +210,12 @@
                                    HasShadow="False">
                                 <Label Text="{ext:Localize Medium}" FontSize="10" TextColor="Black"/>
                             </Frame>
-                            <Label Text="→" 
+                            <Label Text="&#xF0142;" 
+                                   FontFamily="MaterialDesignIcons"
                                    FontSize="14" 
                                    VerticalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                            <Frame BackgroundColor="#EF5350" 
+                            <Frame BackgroundColor="#EF5350"
                                    CornerRadius="4" 
                                    Padding="8,4" 
                                    HasShadow="False">

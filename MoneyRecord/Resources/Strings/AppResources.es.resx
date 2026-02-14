@@ -127,13 +127,13 @@
     <value>Gastos</value>
   </data>
   <data name="Income" xml:space="preserve">
-    <value>💰 Ingreso</value>
+    <value>Ingreso</value>
   </data>
   <data name="Transfer" xml:space="preserve">
-    <value>🔄 Transferir</value>
+    <value>Transferir</value>
   </data>
   <data name="Expense" xml:space="preserve">
-    <value>💸 Gasto</value>
+    <value>Gasto</value>
   </data>
   <data name="Transactions" xml:space="preserve">
     <value>Transacciones</value>
@@ -145,10 +145,10 @@
     <value>Comienza a controlar tus finanzas agregando tu primera transacción</value>
   </data>
   <data name="EditButton" xml:space="preserve">
-    <value>✏️ Editar</value>
+    <value>Editar</value>
   </data>
   <data name="DeleteButton" xml:space="preserve">
-    <value>🗑️ Eliminar</value>
+    <value>Eliminar</value>
   </data>
   
   <!-- Periods -->
@@ -170,25 +170,25 @@
   
   <!-- Grouping -->
   <data name="ListView" xml:space="preserve">
-    <value>📄 Vista Lista</value>
+    <value>Vista Lista</value>
   </data>
   <data name="GroupByCategory" xml:space="preserve">
-    <value>📂 Por Categoría</value>
+    <value>Por Categoría</value>
   </data>
   <data name="GroupByAccount" xml:space="preserve">
-    <value>🏦 Por Cuenta</value>
+    <value>Por Cuenta</value>
   </data>
   <data name="Ungrouped" xml:space="preserve">
-    <value>📋 Sin Agrupar</value>
+    <value>Sin Agrupar</value>
   </data>
   <data name="Grouped" xml:space="preserve">
-    <value>📂 Agrupado</value>
+    <value>Agrupado</value>
   </data>
   <data name="SortOldestFirst" xml:space="preserve">
-    <value>↑ Más Antiguo</value>
+    <value>Más Antiguo</value>
   </data>
   <data name="SortNewestFirst" xml:space="preserve">
-    <value>↓ Más Reciente</value>
+    <value>Más Reciente</value>
   </data>
   <data name="Sort" xml:space="preserve">
     <value>Ordenar</value>
@@ -237,7 +237,7 @@
   
   <!-- Transfers -->
   <data name="NewTransfer" xml:space="preserve">
-    <value>🔄 Nueva Transferencia</value>
+    <value>Nueva Transferencia</value>
   </data>
   <data name="EditTransfer" xml:space="preserve">
     <value>Editar Transferencia</value>
@@ -296,13 +296,13 @@
     <value>Seleccionar Ícono</value>
   </data>
   <data name="AddAccountButton" xml:space="preserve">
-    <value>➕ Agregar Cuenta</value>
+    <value>Agregar Cuenta</value>
   </data>
   <data name="UpdateAccount" xml:space="preserve">
-    <value>💾 Actualizar Cuenta</value>
+    <value>Actualizar Cuenta</value>
   </data>
   <data name="CancelEdit" xml:space="preserve">
-    <value>❌ Cancelar Edición</value>
+    <value>Cancelar Edición</value>
   </data>
   <data name="YourAccounts" xml:space="preserve">
     <value>Tus Cuentas</value>
@@ -331,7 +331,7 @@
     <value>Agregar Categoría</value>
   </data>
   <data name="UpdateCategory" xml:space="preserve">
-    <value>💾 Actualizar Categoría</value>
+    <value>Actualizar Categoría</value>
   </data>
   <data name="ManageIncomeCategories" xml:space="preserve">
     <value>Administrar Categorías de Ingresos</value>
@@ -348,10 +348,10 @@
   
   <!-- Reports -->
   <data name="ExpenseAnalysis" xml:space="preserve">
-    <value>📊 Análisis de Gastos</value>
+    <value>Análisis de Gastos</value>
   </data>
   <data name="IncomeAnalysis" xml:space="preserve">
-    <value>💵 Análisis de Ingresos</value>
+    <value>Análisis de Ingresos</value>
   </data>
   <data name="IdentifyExpenseCategories" xml:space="preserve">
     <value>Identifica tus categorías de gastos más utilizadas</value>
@@ -366,7 +366,7 @@
     <value>Total de Ingresos</value>
   </data>
   <data name="CategoryBreakdown" xml:space="preserve">
-    <value>📁 Desglose por Categoría</value>
+    <value>Desglose por Categoría</value>
   </data>
   <data name="NoExpenseData" xml:space="preserve">
     <value>No hay datos de gastos para este período</value>
@@ -393,10 +393,10 @@
     <value>Agrega algunas transacciones de ingresos para ver tu análisis de ganancias</value>
   </data>
   <data name="ExpenseHeatmap" xml:space="preserve">
-    <value>🔥 Mapa de Calor de Gastos</value>
+    <value>Mapa de Calor de Gastos</value>
   </data>
   <data name="IncomeHeatmap" xml:space="preserve">
-    <value>🔥 Mapa de Calor de Ingresos</value>
+    <value>Mapa de Calor de Ingresos</value>
   </data>
   <data name="AllExpenseCategoriesByPercentage" xml:space="preserve">
     <value>Todas las categorías de gastos por porcentaje</value>
@@ -414,7 +414,7 @@
     <value>Alto</value>
   </data>
   <data name="CategoryDetails" xml:space="preserve">
-    <value>📋 Detalles por Categoría</value>
+    <value>Detalles por Categoría</value>
   </data>
   <data name="TapForDetails" xml:space="preserve">
     <value>• Toca para detalles</value>
@@ -495,7 +495,7 @@
     <value>Disponible: ${0:N2}</value>
   </data>
   <data name="Back" xml:space="preserve">
-    <value>← Volver</value>
+    <value>Volver</value>
   </data>
   <data name="Categories" xml:space="preserve">
     <value>Categorías</value>

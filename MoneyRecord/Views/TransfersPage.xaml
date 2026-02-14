@@ -26,9 +26,11 @@
             <CollectionView ItemsSource="{Binding Transfers}">
                 <CollectionView.EmptyView>
                     <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
-                        <Label Text="🔄" 
+                        <Label Text="&#xF04E1;" 
+                               FontFamily="MaterialDesignIcons"
                                FontSize="48" 
-                               HorizontalOptions="Center"/>
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                         <Label Text="{ext:Localize NoTransfers}" 
                                FontSize="18"
                                FontAttributes="Bold"
@@ -64,7 +66,7 @@
                                 
                                 <!-- Row 1: From Account -->
                                 <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
-                                    <Label Text="📤" FontSize="12"/>
+                                    <Label Text="&#xF0CD8;" FontFamily="MaterialDesignIcons" FontSize="14" TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"/>
                                     <Label Text="{ext:Localize FromLabel}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     <Label Text="{Binding SourceAccountName}"
                                            FontSize="13"
@@ -74,7 +76,7 @@
                                 
                                 <!-- Row 2: To Account -->
                                 <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
-                                    <Label Text="📥" FontSize="12"/>
+                                    <Label Text="&#xF0CD5;" FontFamily="MaterialDesignIcons" FontSize="14" TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
                                     <Label Text="{ext:Localize ToLabel}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     <Label Text="{Binding DestinationAccountName}"
                                            FontSize="13"

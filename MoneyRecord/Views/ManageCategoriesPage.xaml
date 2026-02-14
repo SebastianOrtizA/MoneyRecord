@@ -178,10 +178,12 @@
             <!-- Categories List -->
             <CollectionView ItemsSource="{Binding Categories}">
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
-                        <Label Text="📁" 
-                               FontSize="48" 
-                               HorizontalOptions="Center"/>
+                        <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
+                            <Label Text="&#xF024B;" 
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="48" 
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                         <Label Text="{ext:Localize NoCategoriesYet}" 
                                FontSize="16"
                                HorizontalOptions="Center"

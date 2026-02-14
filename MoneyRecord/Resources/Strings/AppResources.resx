@@ -127,13 +127,13 @@
     <value>Expenses</value>
   </data>
   <data name="Income" xml:space="preserve">
-    <value>💰 Income</value>
+    <value>Income</value>
   </data>
   <data name="Transfer" xml:space="preserve">
-    <value>🔄 Transfer</value>
+    <value>Transfer</value>
   </data>
   <data name="Expense" xml:space="preserve">
-    <value>💸 Expense</value>
+    <value>Expense</value>
   </data>
   <data name="Transactions" xml:space="preserve">
     <value>Transactions</value>
@@ -145,10 +145,10 @@
     <value>Start tracking your finances by adding your first transaction</value>
   </data>
   <data name="EditButton" xml:space="preserve">
-    <value>✏️ Edit</value>
+    <value>Edit</value>
   </data>
   <data name="DeleteButton" xml:space="preserve">
-    <value>🗑️ Delete</value>
+    <value>Delete</value>
   </data>
   
   <!-- Periods -->
@@ -170,25 +170,25 @@
   
   <!-- Grouping -->
   <data name="ListView" xml:space="preserve">
-    <value>📄 List View</value>
+    <value>List View</value>
   </data>
   <data name="GroupByCategory" xml:space="preserve">
-    <value>📂 By Category</value>
+    <value>By Category</value>
   </data>
   <data name="GroupByAccount" xml:space="preserve">
-    <value>🏦 By Account</value>
+    <value>By Account</value>
   </data>
   <data name="Ungrouped" xml:space="preserve">
-    <value>📋 Ungrouped</value>
+    <value>Ungrouped</value>
   </data>
   <data name="Grouped" xml:space="preserve">
-    <value>📂 Grouped</value>
+    <value>Grouped</value>
   </data>
   <data name="SortOldestFirst" xml:space="preserve">
-    <value>↑ Oldest First</value>
+    <value>Oldest First</value>
   </data>
   <data name="SortNewestFirst" xml:space="preserve">
-    <value>↓ Newest First</value>
+    <value>Newest First</value>
   </data>
   <data name="Sort" xml:space="preserve">
     <value>Sort</value>
@@ -237,7 +237,7 @@
   
   <!-- Transfers -->
   <data name="NewTransfer" xml:space="preserve">
-    <value>🔄 New Transfer</value>
+    <value>New Transfer</value>
   </data>
   <data name="EditTransfer" xml:space="preserve">
     <value>Edit Transfer</value>
@@ -296,13 +296,13 @@
     <value>Select Icon</value>
   </data>
   <data name="AddAccountButton" xml:space="preserve">
-    <value>➕ Add Account</value>
+    <value>Add Account</value>
   </data>
   <data name="UpdateAccount" xml:space="preserve">
-    <value>💾 Update Account</value>
+    <value>Update Account</value>
   </data>
   <data name="CancelEdit" xml:space="preserve">
-    <value>❌ Cancel Edit</value>
+    <value>Cancel Edit</value>
   </data>
   <data name="YourAccounts" xml:space="preserve">
     <value>Your Accounts</value>
@@ -331,7 +331,7 @@
     <value>Add Category</value>
   </data>
   <data name="UpdateCategory" xml:space="preserve">
-    <value>💾 Update Category</value>
+    <value>Update Category</value>
   </data>
   <data name="ManageIncomeCategories" xml:space="preserve">
     <value>Manage Income Categories</value>
@@ -348,10 +348,10 @@
   
   <!-- Reports -->
   <data name="ExpenseAnalysis" xml:space="preserve">
-    <value>📊 Expense Analysis</value>
+    <value>Expense Analysis</value>
   </data>
   <data name="IncomeAnalysis" xml:space="preserve">
-    <value>💵 Income Analysis</value>
+    <value>Income Analysis</value>
   </data>
   <data name="IdentifyExpenseCategories" xml:space="preserve">
     <value>Identify your most used expense categories</value>
@@ -366,7 +366,7 @@
     <value>Total Income</value>
   </data>
   <data name="CategoryBreakdown" xml:space="preserve">
-    <value>📁 Category Breakdown</value>
+    <value>Category Breakdown</value>
   </data>
   <data name="NoExpenseData" xml:space="preserve">
     <value>No expense data for this period</value>
@@ -393,10 +393,10 @@
     <value>Add some income transactions to see your earnings analysis</value>
   </data>
   <data name="ExpenseHeatmap" xml:space="preserve">
-    <value>🔥 Expense Heatmap</value>
+    <value>Expense Heatmap</value>
   </data>
   <data name="IncomeHeatmap" xml:space="preserve">
-    <value>🔥 Income Heatmap</value>
+    <value>Income Heatmap</value>
   </data>
   <data name="AllExpenseCategoriesByPercentage" xml:space="preserve">
     <value>All expense categories by percentage</value>
@@ -414,7 +414,7 @@
     <value>High</value>
   </data>
   <data name="CategoryDetails" xml:space="preserve">
-    <value>📋 Category Details</value>
+    <value>Category Details</value>
   </data>
   <data name="TapForDetails" xml:space="preserve">
     <value>• Tap for details</value>
@@ -495,7 +495,7 @@
     <value>Available: ${0:N2}</value>
   </data>
   <data name="Back" xml:space="preserve">
-    <value>← Back</value>
+    <value>Back</value>
   </data>
   <data name="Categories" xml:space="preserve">
     <value>Categories</value>
