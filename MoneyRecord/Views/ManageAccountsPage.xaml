@@ -15,8 +15,9 @@
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
 
             <!-- Add Account Section -->
             <Frame BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" 
@@ -296,7 +297,11 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Floating Action Menu -->
+        <controls:FloatingActionMenu />
+    </Grid>
 
 </ContentPage>

@@ -29,6 +29,7 @@
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToSelectedBackgroundConverter x:Key="BoolToSelectedBackgroundConverter" />
             <converters:BoolToIconColorConverter x:Key="BoolToIconColorConverter" />
+            <converters:BoolToFabIconConverter x:Key="BoolToFabIconConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

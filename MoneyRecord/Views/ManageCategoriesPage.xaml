@@ -5,12 +5,14 @@
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:converters="clr-namespace:MoneyRecord.Converters"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.ManageCategoriesPage"
              x:DataType="viewmodels:ManageCategoriesViewModel"
              Title="{Binding Title}">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
 
             <!-- Add Category Section -->
             <Frame BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" 
@@ -236,7 +238,11 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Floating Action Menu -->
+        <controls:FloatingActionMenu />
+    </Grid>
 
 </ContentPage>

@@ -4,14 +4,16 @@
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.ExpenseReportPage"
              x:DataType="viewmodels:ExpenseReportViewModel"
              Title="{ext:Localize ExpenseReport}">
 
-    <RefreshView IsRefreshing="{Binding IsLoading}"
-                 Command="{Binding LoadReportDataCommand}">
-        <ScrollView>
-            <VerticalStackLayout Padding="16,12" Spacing="16">
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}"
+                     Command="{Binding LoadReportDataCommand}">
+            <ScrollView>
+                <VerticalStackLayout Padding="16,12" Spacing="16">
 
                 <!-- Period Filter Section -->
                 <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" 
@@ -311,7 +313,11 @@
                     </VerticalStackLayout>
                 </Frame>
 
-            </VerticalStackLayout>
-        </ScrollView>
-    </RefreshView>
-</ContentPage>
+                            </VerticalStackLayout>
+                        </ScrollView>
+                    </RefreshView>
+
+                    <!-- Floating Action Menu -->
+                    <controls:FloatingActionMenu />
+                </Grid>
+            </ContentPage>
