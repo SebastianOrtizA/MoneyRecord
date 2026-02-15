@@ -199,7 +199,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.AccountId = accountId;
                 
                 await _databaseService.SaveTransactionAsync(Transaction);
-                await Shell.Current.DisplayAlertAsync("Success", "Transaction updated successfully", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Success, AppResources.TransactionUpdatedSuccessfully, AppResources.OK);
             }
             else
             {

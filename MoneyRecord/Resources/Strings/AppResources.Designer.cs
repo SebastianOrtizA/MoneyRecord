@@ -1940,5 +1940,14 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("EnterNewBudgetLimit", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Transaction updated successfully.
+        /// </summary>
+        internal static string TransactionUpdatedSuccessfully {
+            get {
+                return ResourceManager.GetString("TransactionUpdatedSuccessfully", resourceCulture);
+            }
+        }
     }
 }

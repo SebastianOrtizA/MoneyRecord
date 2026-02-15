@@ -704,5 +704,8 @@ Monto: ${2:N2}</value>
   <data name="EnterNewBudgetLimit" xml:space="preserve">
     <value>Ingrese el nuevo límite de presupuesto para {0}:</value>
   </data>
+  <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
+    <value>Transacción actualizada exitosamente</value>
+  </data>
 
 </root>
