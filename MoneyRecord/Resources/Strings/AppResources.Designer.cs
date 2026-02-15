@@ -356,7 +356,7 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("Confirm", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Busca una cadena traducida similar a Custom Period.
         /// </summary>
@@ -365,7 +365,16 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("CustomPeriod", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Calendar Month.
+        /// </summary>
+        internal static string CalendarMonth {
+            get {
+                return ResourceManager.GetString("CalendarMonth", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Busca una cadena traducida similar a Date *.
         /// </summary>

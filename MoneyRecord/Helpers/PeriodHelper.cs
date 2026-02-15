@@ -7,9 +7,10 @@ namespace MoneyRecord.Helpers
     public class PeriodItem : INotifyPropertyChanged
     {
         public PeriodType Type { get; set; }
-        
+
         public string DisplayName => Type switch
         {
+            PeriodType.CalendarMonth => AppResources.CalendarMonth,
             PeriodType.Today => AppResources.Today,
             PeriodType.LastWeek => AppResources.LastWeek,
             PeriodType.LastMonth => AppResources.LastMonth,
@@ -36,6 +37,7 @@ namespace MoneyRecord.Helpers
     {
         public static List<PeriodItem> GetPeriods() =>
         [
+            new PeriodItem { Type = PeriodType.CalendarMonth },
             new PeriodItem { Type = PeriodType.LastWeek },
             new PeriodItem { Type = PeriodType.LastMonth },
             new PeriodItem { Type = PeriodType.LastYear },
@@ -44,6 +46,7 @@ namespace MoneyRecord.Helpers
 
         public static List<PeriodItem> GetReportPeriods() =>
         [
+            new PeriodItem { Type = PeriodType.CalendarMonth },
             new PeriodItem { Type = PeriodType.Today },
             new PeriodItem { Type = PeriodType.LastWeek },
             new PeriodItem { Type = PeriodType.LastMonth },
@@ -51,6 +54,6 @@ namespace MoneyRecord.Helpers
             new PeriodItem { Type = PeriodType.CustomPeriod }
         ];
 
-        public static PeriodItem GetDefaultPeriod() => new() { Type = PeriodType.LastMonth };
+        public static PeriodItem GetDefaultPeriod() => new() { Type = PeriodType.CalendarMonth };
     }
 }

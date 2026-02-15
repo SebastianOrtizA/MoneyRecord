@@ -20,26 +20,35 @@ namespace MoneyRecord.Helpers
             DateTime customStartDate = default,
             DateTime customEndDate = default)
         {
-            var endDate = DateTime.Now.Date.AddDays(1).AddTicks(-1);
+            var now = DateTime.Now;
             DateTime startDate;
+            DateTime endDate;
 
             switch (periodType)
             {
+                case PeriodType.CalendarMonth:
+                    startDate = new DateTime(now.Year, now.Month, 1);
+                    endDate = startDate.AddMonths(1).AddTicks(-1);
+                    break;
                 case PeriodType.Today:
-                    startDate = DateTime.Now.Date;
+                    startDate = now.Date;
+                    endDate = now.Date.AddDays(1).AddTicks(-1);
                     break;
                 case PeriodType.LastWeek:
-                    startDate = DateTime.Now.Date.AddDays(-7);
+                    startDate = now.Date.AddDays(-7);
+                    endDate = now.Date.AddDays(1).AddTicks(-1);
                     break;
                 case PeriodType.LastYear:
-                    startDate = DateTime.Now.Date.AddYears(-1);
+                    startDate = now.Date.AddYears(-1);
+                    endDate = now.Date.AddDays(1).AddTicks(-1);
                     break;
                 case PeriodType.CustomPeriod:
                     startDate = customStartDate.Date;
                     endDate = customEndDate.Date.AddDays(1).AddTicks(-1);
                     break;
                 default: // Last Month
-                    startDate = DateTime.Now.Date.AddMonths(-1);
+                    startDate = now.Date.AddMonths(-1);
+                    endDate = now.Date.AddDays(1).AddTicks(-1);
                     break;
             }
 

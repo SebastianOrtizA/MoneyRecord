@@ -152,6 +152,9 @@
   </data>
   
   <!-- Periods -->
+  <data name="CalendarMonth" xml:space="preserve">
+    <value>Calendar Month</value>
+  </data>
   <data name="Today" xml:space="preserve">
     <value>Today</value>
   </data>
