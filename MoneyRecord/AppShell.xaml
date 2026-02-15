@@ -29,6 +29,13 @@
             Route="IncomeReportPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="{ext:Localize BudgetMode}" Icon="wallet">
+        <ShellContent
+            Title="{ext:Localize BudgetMode}"
+            ContentTemplate="{DataTemplate views:BudgetPage}"
+            Route="BudgetPage" />
+    </FlyoutItem>
+
     <FlyoutItem Title="{ext:Localize Transfers}" Icon="swap">
         <ShellContent
             Title="{ext:Localize Transfers}"

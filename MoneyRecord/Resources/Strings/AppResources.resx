@@ -646,4 +646,63 @@ Amount: ${2:N2}</value>
     <value>Available: ${0:N2}</value>
   </data>
 
+  <!-- Budget Mode -->
+  <data name="BudgetMode" xml:space="preserve">
+    <value>Budget Mode</value>
+  </data>
+  <data name="AddCategoryToBudget" xml:space="preserve">
+    <value>Add Category to Budget</value>
+  </data>
+  <data name="BudgetLimit" xml:space="preserve">
+    <value>Budget Limit</value>
+  </data>
+  <data name="AddBudgetButton" xml:space="preserve">
+    <value>Add Budget</value>
+  </data>
+  <data name="YourBudgets" xml:space="preserve">
+    <value>Your Budgets</value>
+  </data>
+  <data name="NoBudgetsYet" xml:space="preserve">
+    <value>No budgets yet</value>
+  </data>
+  <data name="AddBudgetToStart" xml:space="preserve">
+    <value>Add expense categories to your budget to track spending limits</value>
+  </data>
+  <data name="Spent" xml:space="preserve">
+    <value>Spent</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>Remaining</value>
+  </data>
+  <data name="Exceeded" xml:space="preserve">
+    <value>Exceeded</value>
+  </data>
+  <data name="TotalBudgeted" xml:space="preserve">
+    <value>Budgeted</value>
+  </data>
+  <data name="TotalSpent" xml:space="preserve">
+    <value>Spent</value>
+  </data>
+  <data name="TotalRemaining" xml:space="preserve">
+    <value>Remaining</value>
+  </data>
+  <data name="BudgetAddedSuccessfully" xml:space="preserve">
+    <value>Budget added successfully</value>
+  </data>
+  <data name="FailedToSaveBudget" xml:space="preserve">
+    <value>Failed to save budget: {0}</value>
+  </data>
+  <data name="DeleteBudgetConfirmation" xml:space="preserve">
+    <value>Are you sure you want to remove '{0}' from your budget?</value>
+  </data>
+  <data name="FailedToDeleteBudget" xml:space="preserve">
+    <value>Failed to delete budget: {0}</value>
+  </data>
+  <data name="EditBudget" xml:space="preserve">
+    <value>Edit Budget</value>
+  </data>
+  <data name="EnterNewBudgetLimit" xml:space="preserve">
+    <value>Enter new budget limit for {0}:</value>
+  </data>
+
 </root>

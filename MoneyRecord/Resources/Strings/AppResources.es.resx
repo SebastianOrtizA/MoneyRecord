@@ -646,4 +646,63 @@ Monto: ${2:N2}</value>
     <value>Disponible: ${0:N2}</value>
   </data>
 
+  <!-- Budget Mode -->
+  <data name="BudgetMode" xml:space="preserve">
+    <value>Modo Presupuesto</value>
+  </data>
+  <data name="AddCategoryToBudget" xml:space="preserve">
+    <value>Agregar Categoría al Presupuesto</value>
+  </data>
+  <data name="BudgetLimit" xml:space="preserve">
+    <value>Límite de Presupuesto</value>
+  </data>
+  <data name="AddBudgetButton" xml:space="preserve">
+    <value>Agregar Presupuesto</value>
+  </data>
+  <data name="YourBudgets" xml:space="preserve">
+    <value>Tus Presupuestos</value>
+  </data>
+  <data name="NoBudgetsYet" xml:space="preserve">
+    <value>Aún no hay presupuestos</value>
+  </data>
+  <data name="AddBudgetToStart" xml:space="preserve">
+    <value>Agrega categorías de gastos a tu presupuesto para controlar los límites de gasto</value>
+  </data>
+  <data name="Spent" xml:space="preserve">
+    <value>Gastado</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>Restante</value>
+  </data>
+  <data name="Exceeded" xml:space="preserve">
+    <value>Excedido</value>
+  </data>
+  <data name="TotalBudgeted" xml:space="preserve">
+    <value>Presupuestado</value>
+  </data>
+  <data name="TotalSpent" xml:space="preserve">
+    <value>Gastado</value>
+  </data>
+  <data name="TotalRemaining" xml:space="preserve">
+    <value>Restante</value>
+  </data>
+  <data name="BudgetAddedSuccessfully" xml:space="preserve">
+    <value>Presupuesto agregado exitosamente</value>
+  </data>
+  <data name="FailedToSaveBudget" xml:space="preserve">
+    <value>Error al guardar el presupuesto: {0}</value>
+  </data>
+  <data name="DeleteBudgetConfirmation" xml:space="preserve">
+    <value>¿Está seguro de que desea eliminar '{0}' de su presupuesto?</value>
+  </data>
+  <data name="FailedToDeleteBudget" xml:space="preserve">
+    <value>Error al eliminar el presupuesto: {0}</value>
+  </data>
+  <data name="EditBudget" xml:space="preserve">
+    <value>Editar Presupuesto</value>
+  </data>
+  <data name="EnterNewBudgetLimit" xml:space="preserve">
+    <value>Ingrese el nuevo límite de presupuesto para {0}:</value>
+  </data>
+
 </root>

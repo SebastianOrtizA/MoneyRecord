@@ -30,6 +30,13 @@
             <converters:BoolToSelectedBackgroundConverter x:Key="BoolToSelectedBackgroundConverter" />
             <converters:BoolToIconColorConverter x:Key="BoolToIconColorConverter" />
             <converters:BoolToFabIconConverter x:Key="BoolToFabIconConverter" />
+            <converters:PercentageToProgressConverter x:Key="PercentageToProgressConverter" />
+            <converters:BoolToOverBudgetColorConverter x:Key="BoolToOverBudgetColorConverter" />
+            <converters:BoolToOverBudgetBorderConverter x:Key="BoolToOverBudgetBorderConverter" />
+            <converters:BoolToOverBudgetIconConverter x:Key="BoolToOverBudgetIconConverter" />
+            <converters:BoolToOverBudgetLabelConverter x:Key="BoolToOverBudgetLabelConverter" />
+            <converters:BoolToOverBudgetTextColorConverter x:Key="BoolToOverBudgetTextColorConverter" />
+            <converters:OverBudgetAmountConverter x:Key="OverBudgetAmountConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

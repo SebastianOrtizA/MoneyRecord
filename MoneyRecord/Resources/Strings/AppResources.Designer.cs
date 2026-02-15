@@ -1769,5 +1769,176 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("Available", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Budget Mode.
+        /// </summary>
+        internal static string BudgetMode {
+            get {
+                return ResourceManager.GetString("BudgetMode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Add Category to Budget.
+        /// </summary>
+        internal static string AddCategoryToBudget {
+            get {
+                return ResourceManager.GetString("AddCategoryToBudget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Budget Limit.
+        /// </summary>
+        internal static string BudgetLimit {
+            get {
+                return ResourceManager.GetString("BudgetLimit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Add Budget.
+        /// </summary>
+        internal static string AddBudgetButton {
+            get {
+                return ResourceManager.GetString("AddBudgetButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Your Budgets.
+        /// </summary>
+        internal static string YourBudgets {
+            get {
+                return ResourceManager.GetString("YourBudgets", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a No budgets yet.
+        /// </summary>
+        internal static string NoBudgetsYet {
+            get {
+                return ResourceManager.GetString("NoBudgetsYet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Add expense categories to your budget to track spending limits.
+        /// </summary>
+        internal static string AddBudgetToStart {
+            get {
+                return ResourceManager.GetString("AddBudgetToStart", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Spent.
+        /// </summary>
+        internal static string Spent {
+            get {
+                return ResourceManager.GetString("Spent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Remaining.
+        /// </summary>
+        internal static string Remaining {
+            get {
+                return ResourceManager.GetString("Remaining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Exceeded.
+        /// </summary>
+        internal static string Exceeded {
+            get {
+                return ResourceManager.GetString("Exceeded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Budgeted.
+        /// </summary>
+        internal static string TotalBudgeted {
+            get {
+                return ResourceManager.GetString("TotalBudgeted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Spent.
+        /// </summary>
+        internal static string TotalSpent {
+            get {
+                return ResourceManager.GetString("TotalSpent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Remaining.
+        /// </summary>
+        internal static string TotalRemaining {
+            get {
+                return ResourceManager.GetString("TotalRemaining", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Budget added successfully.
+        /// </summary>
+        internal static string BudgetAddedSuccessfully {
+            get {
+                return ResourceManager.GetString("BudgetAddedSuccessfully", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to save budget: {0}.
+        /// </summary>
+        internal static string FailedToSaveBudget {
+            get {
+                return ResourceManager.GetString("FailedToSaveBudget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to remove '{0}' from your budget?.
+        /// </summary>
+        internal static string DeleteBudgetConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteBudgetConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to delete budget: {0}.
+        /// </summary>
+        internal static string FailedToDeleteBudget {
+            get {
+                return ResourceManager.GetString("FailedToDeleteBudget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Edit Budget.
+        /// </summary>
+        internal static string EditBudget {
+            get {
+                return ResourceManager.GetString("EditBudget", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Enter new budget limit for {0}:.
+        /// </summary>
+        internal static string EnterNewBudgetLimit {
+            get {
+                return ResourceManager.GetString("EnterNewBudgetLimit", resourceCulture);
+            }
+        }
     }
 }

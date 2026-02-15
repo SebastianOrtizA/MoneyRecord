@@ -576,5 +576,93 @@ namespace MoneyRecord.Services
 
             return transfers;
         }
+
+        // Budget operations
+        public async Task<List<Budget>> GetBudgetsAsync()
+        {
+            await InitializeAsync();
+
+            // Ensure Budget table exists
+            await _database!.CreateTableAsync<Budget>();
+
+            return await _database.Table<Budget>().ToListAsync() ?? new List<Budget>();
+        }
+
+        public async Task<Budget?> GetBudgetByIdAsync(int id)
+        {
+            await InitializeAsync();
+            await _database!.CreateTableAsync<Budget>();
+            return await _database.Table<Budget>().Where(b => b.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Budget?> GetBudgetByCategoryIdAsync(int categoryId)
+        {
+            await InitializeAsync();
+            await _database!.CreateTableAsync<Budget>();
+            return await _database.Table<Budget>()
+                .Where(b => b.CategoryId == categoryId && b.IsActive)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> SaveBudgetAsync(Budget budget)
+        {
+            await InitializeAsync();
+            await _database!.CreateTableAsync<Budget>();
+
+            if (budget.Id != 0)
+            {
+                return await _database.UpdateAsync(budget);
+            }
+            else
+            {
+                return await _database.InsertAsync(budget);
+            }
+        }
+
+        public async Task<int> UpdateBudgetAmountAsync(int budgetId, decimal newAmount)
+        {
+            await InitializeAsync();
+            await _database!.CreateTableAsync<Budget>();
+
+            var budget = await _database.Table<Budget>().Where(b => b.Id == budgetId).FirstOrDefaultAsync();
+            if (budget != null)
+            {
+                budget.LimitAmount = newAmount;
+                return await _database.UpdateAsync(budget);
+            }
+            return 0;
+        }
+
+        public async Task<int> DeleteBudgetAsync(int budgetId)
+        {
+            await InitializeAsync();
+            await _database!.CreateTableAsync<Budget>();
+
+            var budget = await _database.Table<Budget>().Where(b => b.Id == budgetId).FirstOrDefaultAsync();
+            if (budget != null)
+            {
+                return await _database.DeleteAsync(budget);
+            }
+            return 0;
+        }
+
+        public async Task<Category?> GetCategoryByIdAsync(int categoryId)
+        {
+            await InitializeAsync();
+            return await _database!.Table<Category>().Where(c => c.Id == categoryId).FirstOrDefaultAsync();
+        }
+
+        public async Task<decimal> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate)
+        {
+            await InitializeAsync();
+            var transactions = await _database!.Table<Transaction>()
+                .Where(t => t.CategoryId == categoryId && 
+                           t.Type == TransactionType.Expense && 
+                           t.Date >= startDate && 
+                           t.Date <= endDate)
+                .ToListAsync();
+
+            return transactions?.Sum(t => Math.Abs(t.Amount)) ?? 0;
+        }
     }
 }

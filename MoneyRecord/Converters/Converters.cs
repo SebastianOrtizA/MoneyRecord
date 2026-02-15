@@ -531,4 +531,160 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// Converts percentage (0-100) to progress value (0-1).
+    /// </summary>
+    public class PercentageToProgressConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is double percentage)
+            {
+                return Math.Min(percentage / 100.0, 1.0);
+            }
+            return 0.0;
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts IsOverBudget bool to background color.
+    /// </summary>
+    public class BoolToOverBudgetColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isOverBudget && isOverBudget)
+            {
+                return Application.Current?.RequestedTheme == AppTheme.Dark
+                    ? Color.FromArgb("#4D1F1F") // Dark red background
+                    : Color.FromArgb("#FFEBEE"); // Light red background
+            }
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#1F3D1F") // Dark green background
+                : Color.FromArgb("#E8F5E9"); // Light green background
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts IsOverBudget bool to border color.
+    /// </summary>
+    public class BoolToOverBudgetBorderConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isOverBudget && isOverBudget)
+            {
+                return Application.Current?.RequestedTheme == AppTheme.Dark
+                    ? Color.FromArgb("#EF5350") // Light red border
+                    : Color.FromArgb("#D32F2F"); // Dark red border
+            }
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#66BB6A") // Light green border
+                : Color.FromArgb("#2E7D32"); // Dark green border
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts IsOverBudget bool to icon.
+    /// </summary>
+    public class BoolToOverBudgetIconConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isOverBudget && isOverBudget)
+            {
+                return "\U000F0029"; // alert-circle icon
+            }
+            return "\U000F012C"; // check-circle icon
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts IsOverBudget bool to label text.
+    /// </summary>
+    public class BoolToOverBudgetLabelConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isOverBudget && isOverBudget)
+            {
+                return AppResources.Exceeded;
+            }
+            return AppResources.Remaining;
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts IsOverBudget bool to text color.
+    /// </summary>
+    public class BoolToOverBudgetTextColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is bool isOverBudget && isOverBudget)
+            {
+                return Application.Current?.RequestedTheme == AppTheme.Dark
+                    ? Color.FromArgb("#EF5350") // Light red
+                    : Color.FromArgb("#D32F2F"); // Dark red
+            }
+            return Application.Current?.RequestedTheme == AppTheme.Dark
+                ? Color.FromArgb("#66BB6A") // Light green
+                : Color.FromArgb("#2E7D32"); // Dark green
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Multi-value converter that returns exceeded amount or remaining amount based on IsOverBudget.
+    /// </summary>
+    public class OverBudgetAmountConverter : IMultiValueConverter
+    {
+        public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (values.Length >= 3 &&
+                values[0] is bool isOverBudget &&
+                values[1] is decimal exceededAmount &&
+                values[2] is decimal remainingAmount)
+            {
+                var amount = isOverBudget ? exceededAmount : remainingAmount;
+                return $"${amount:N2}";
+            }
+            return "$0.00";
+        }
+
+        public object?[] ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
