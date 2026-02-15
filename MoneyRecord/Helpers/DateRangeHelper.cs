@@ -30,6 +30,10 @@ namespace MoneyRecord.Helpers
                     startDate = new DateTime(now.Year, now.Month, 1);
                     endDate = startDate.AddMonths(1).AddTicks(-1);
                     break;
+                case PeriodType.CalendarYear:
+                    startDate = new DateTime(now.Year, 1, 1);
+                    endDate = new DateTime(now.Year, 12, 31, 23, 59, 59, 999).AddTicks(9999);
+                    break;
                 case PeriodType.Today:
                     startDate = now.Date;
                     endDate = now.Date.AddDays(1).AddTicks(-1);

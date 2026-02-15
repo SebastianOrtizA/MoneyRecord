@@ -155,6 +155,9 @@
   <data name="CalendarMonth" xml:space="preserve">
     <value>Calendar Month</value>
   </data>
+  <data name="CalendarYear" xml:space="preserve">
+    <value>Calendar Year</value>
+  </data>
   <data name="Today" xml:space="preserve">
     <value>Today</value>
   </data>

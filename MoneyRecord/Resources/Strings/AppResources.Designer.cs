@@ -376,6 +376,15 @@ namespace MoneyRecord.Resources.Strings {
         }
 
         /// <summary>
+        ///   Busca una cadena traducida similar a Calendar Year.
+        /// </summary>
+        internal static string CalendarYear {
+            get {
+                return ResourceManager.GetString("CalendarYear", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Busca una cadena traducida similar a Date *.
         /// </summary>
         internal static string Date {

@@ -11,6 +11,7 @@ namespace MoneyRecord.Helpers
         public string DisplayName => Type switch
         {
             PeriodType.CalendarMonth => AppResources.CalendarMonth,
+            PeriodType.CalendarYear => AppResources.CalendarYear,
             PeriodType.Today => AppResources.Today,
             PeriodType.LastWeek => AppResources.LastWeek,
             PeriodType.LastMonth => AppResources.LastMonth,
@@ -38,6 +39,7 @@ namespace MoneyRecord.Helpers
         public static List<PeriodItem> GetPeriods() =>
         [
             new PeriodItem { Type = PeriodType.CalendarMonth },
+            new PeriodItem { Type = PeriodType.CalendarYear },
             new PeriodItem { Type = PeriodType.LastWeek },
             new PeriodItem { Type = PeriodType.LastMonth },
             new PeriodItem { Type = PeriodType.LastYear },
@@ -47,6 +49,7 @@ namespace MoneyRecord.Helpers
         public static List<PeriodItem> GetReportPeriods() =>
         [
             new PeriodItem { Type = PeriodType.CalendarMonth },
+            new PeriodItem { Type = PeriodType.CalendarYear },
             new PeriodItem { Type = PeriodType.Today },
             new PeriodItem { Type = PeriodType.LastWeek },
             new PeriodItem { Type = PeriodType.LastMonth },

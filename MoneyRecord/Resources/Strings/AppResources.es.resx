@@ -155,6 +155,9 @@
   <data name="CalendarMonth" xml:space="preserve">
     <value>Mes Actual</value>
   </data>
+  <data name="CalendarYear" xml:space="preserve">
+    <value>Año Actual</value>
+  </data>
   <data name="Today" xml:space="preserve">
     <value>Hoy</value>
   </data>
