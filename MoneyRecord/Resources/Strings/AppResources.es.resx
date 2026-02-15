@@ -322,7 +322,10 @@
   <data name="InsufficientAccountBalance" xml:space="preserve">
     <value>Este gasto resultaría en un saldo negativo. La cuenta '{0}' no permite saldo negativo.</value>
   </data>
-  
+  <data name="NegativeBalanceNotAllowed" xml:space="preserve">
+    <value>No se permite un saldo inicial negativo. Activa 'Permitir saldo negativo' para usar un valor negativo.</value>
+  </data>
+
   <!-- Manage Categories -->
   <data name="AddNewCategory" xml:space="preserve">
     <value>Agregar Nueva Categoría</value>

@@ -115,7 +115,15 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var balance = CurrencyMaskBehavior.ParseCurrencyValue(NewAccountBalance);
+            // Always parse with allowNegative=true to detect negative values for validation
+            var balance = CurrencyMaskBehavior.ParseCurrencyValue(NewAccountBalance, 2, allowNegative: true);
+
+            // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
+            if (balance < 0 && !NewAccountAllowNegativeBalance)
+            {
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.NegativeBalanceNotAllowed, AppResources.OK);
+                return;
+            }
 
             var account = new Account
             {
@@ -177,7 +185,15 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var balance = CurrencyMaskBehavior.ParseCurrencyValue(EditAccountBalance);
+            // Always parse with allowNegative=true to detect negative values for validation
+            var balance = CurrencyMaskBehavior.ParseCurrencyValue(EditAccountBalance, 2, allowNegative: true);
+
+            // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
+            if (balance < 0 && !EditAccountAllowNegativeBalance)
+            {
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.NegativeBalanceNotAllowed, AppResources.OK);
+                return;
+            }
 
             EditingAccount.Name = EditAccountName.Trim();
             EditingAccount.InitialBalance = balance;

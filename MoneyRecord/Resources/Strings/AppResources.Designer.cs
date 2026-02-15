@@ -896,7 +896,16 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("InsufficientAccountBalance", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Negative initial balance is not allowed. Enable 'Allow negative balance' to use a negative value..
+        /// </summary>
+        internal static string NegativeBalanceNotAllowed {
+            get {
+                return ResourceManager.GetString("NegativeBalanceNotAllowed", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Busca una cadena traducida similar a Insufficient funds in source account.
         /// </summary>

@@ -38,16 +38,27 @@
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
-                    
+
+                    <!-- Allow Negative Balance Checkbox - placed before Initial Balance for better UX -->
+                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
+                        <CheckBox IsChecked="{Binding NewAccountAllowNegativeBalance}" 
+                                  Color="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
+                        <Label Text="{ext:Localize AllowNegativeBalance}" 
+                               FontSize="14" 
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </HorizontalStackLayout>
+
                     <Label Text="{ext:Localize InitialBalance}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <controls:DecimalEntry Text="{Binding NewAccountBalance}" 
+                    <controls:DecimalEntry Text="{Binding NewAccountBalance}"
+                           AllowNegative="{Binding NewAccountAllowNegativeBalance}"
                            Placeholder="0.00"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16">
                         <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2" AllowNegativeValues="{Binding NewAccountAllowNegativeBalance}"/>
                         </controls:DecimalEntry.Behaviors>
                     </controls:DecimalEntry>
 
@@ -94,17 +105,7 @@
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
 
-                    <!-- Allow Negative Balance Checkbox -->
-                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
-                        <CheckBox IsChecked="{Binding NewAccountAllowNegativeBalance}" 
-                                  Color="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
-                        <Label Text="{ext:Localize AllowNegativeBalance}" 
-                               FontSize="14" 
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    </HorizontalStackLayout>
-                    
-                    <Button Text="{ext:Localize AddAccountButton}" 
+                    <Button Text="{ext:Localize AddAccountButton}"
                            Command="{Binding AddAccountCommand}"
                            HeightRequest="44"
                            CornerRadius="8"
@@ -125,7 +126,7 @@
                            FontSize="18" 
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
-                    
+
                     <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <Entry Text="{Binding EditAccountName}" 
                            Placeholder="Account name"
@@ -133,16 +134,27 @@
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16"/>
-                    
+
+                    <!-- Allow Negative Balance Checkbox - placed before Initial Balance for better UX -->
+                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
+                        <CheckBox IsChecked="{Binding EditAccountAllowNegativeBalance}" 
+                                  Color="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
+                        <Label Text="{ext:Localize AllowNegativeBalance}" 
+                               FontSize="14" 
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </HorizontalStackLayout>
+
                     <Label Text="Initial Balance" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <controls:DecimalEntry Text="{Binding EditAccountBalance}" 
+                    <controls:DecimalEntry Text="{Binding EditAccountBalance}"
+                           AllowNegative="{Binding EditAccountAllowNegativeBalance}"
                            Placeholder="0.00"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16">
                         <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2" AllowNegativeValues="{Binding EditAccountAllowNegativeBalance}"/>
                         </controls:DecimalEntry.Behaviors>
                     </controls:DecimalEntry>
 
@@ -189,16 +201,6 @@
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
 
-                    <!-- Allow Negative Balance Checkbox -->
-                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
-                        <CheckBox IsChecked="{Binding EditAccountAllowNegativeBalance}" 
-                                  Color="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
-                        <Label Text="{ext:Localize AllowNegativeBalance}" 
-                               FontSize="14" 
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    </HorizontalStackLayout>
-                    
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Button Grid.Column="0"
                                Text="{ext:Localize Cancel}" 

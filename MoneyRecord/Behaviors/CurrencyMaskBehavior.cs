@@ -24,13 +24,36 @@ namespace MoneyRecord.Behaviors
         /// </summary>
         public int DecimalPlaces { get; set; } = 2;
 
+        /// <summary>
+        /// Bindable property for AllowNegativeValues.
+        /// </summary>
+        public static readonly BindableProperty AllowNegativeValuesProperty =
+            BindableProperty.Create(
+                nameof(AllowNegativeValues),
+                typeof(bool),
+                typeof(CurrencyMaskBehavior),
+                false);
+
+        /// <summary>
+        /// Gets or sets whether negative values are allowed. Default is false.
+        /// </summary>
+        public bool AllowNegativeValues
+        {
+            get => (bool)GetValue(AllowNegativeValuesProperty);
+            set => SetValue(AllowNegativeValuesProperty, value);
+        }
+
         protected override void OnAttachedTo(Entry entry)
         {
             base.OnAttachedTo(entry);
             entry.Unfocused += OnEntryUnfocused;
             entry.Focused += OnEntryFocused;
             entry.TextChanged += OnEntryTextChanged;
-            
+            entry.BindingContextChanged += OnEntryBindingContextChanged;
+
+            // Inherit binding context from parent
+            BindingContext = entry.BindingContext;
+
             // Format initial value if present
             FormatIfNotFocused(entry);
         }
@@ -40,7 +63,16 @@ namespace MoneyRecord.Behaviors
             entry.Unfocused -= OnEntryUnfocused;
             entry.Focused -= OnEntryFocused;
             entry.TextChanged -= OnEntryTextChanged;
+            entry.BindingContextChanged -= OnEntryBindingContextChanged;
             base.OnDetachingFrom(entry);
+        }
+
+        private void OnEntryBindingContextChanged(object? sender, EventArgs e)
+        {
+            if (sender is Entry entry)
+            {
+                BindingContext = entry.BindingContext;
+            }
         }
 
         private void OnEntryTextChanged(object? sender, TextChangedEventArgs e)
@@ -68,8 +100,8 @@ namespace MoneyRecord.Behaviors
             if (string.IsNullOrEmpty(text))
                 return;
 
-            var value = ParseCurrencyValue(text, DecimalPlaces);
-            if (value > 0)
+            var value = ParseCurrencyValue(text, DecimalPlaces, AllowNegativeValues);
+            if (value != 0 || text == "0")
             {
                 _isFormatting = true;
                 entry.Text = FormatValue(value);
@@ -80,13 +112,13 @@ namespace MoneyRecord.Behaviors
         private void OnEntryFocused(object? sender, FocusEventArgs e)
         {
             _isFocused = true;
-            
+
             if (sender is not Entry entry)
                 return;
 
             // When focused, show raw numeric value for easier editing
-            var value = ParseCurrencyValue(entry.Text, DecimalPlaces);
-            if (value > 0)
+            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues);
+            if (value != 0)
             {
                 // Show plain number without currency symbol for editing
                 _isFormatting = true;
@@ -102,15 +134,15 @@ namespace MoneyRecord.Behaviors
         private void OnEntryUnfocused(object? sender, FocusEventArgs e)
         {
             _isFocused = false;
-            
+
             if (sender is not Entry entry)
                 return;
 
             // When unfocused, apply full currency formatting
-            var value = ParseCurrencyValue(entry.Text, DecimalPlaces);
-            
+            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues);
+
             _isFormatting = true;
-            if (value > 0)
+            if (value != 0)
             {
                 entry.Text = FormatValue(value);
             }
@@ -134,7 +166,7 @@ namespace MoneyRecord.Behaviors
         /// Static helper method to extract the numeric value from a formatted currency string.
         /// Use this in ViewModels when parsing the bound Amount property.
         /// </summary>
-        public static decimal ParseCurrencyValue(string? text, int decimalPlaces = 2)
+        public static decimal ParseCurrencyValue(string? text, int decimalPlaces = 2, bool allowNegative = false)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return 0m;
@@ -142,18 +174,27 @@ namespace MoneyRecord.Behaviors
             var culture = CultureInfo.CurrentCulture;
             var decimalSep = culture.NumberFormat.CurrencyDecimalSeparator;
             var groupSep = culture.NumberFormat.CurrencyGroupSeparator;
-            
+            var negativeSign = culture.NumberFormat.NegativeSign;
+
+            // Check for negative value indicators
+            bool isNegative = allowNegative && 
+                (text.Contains(negativeSign) || text.Contains('(') || text.Contains(')'));
+
             // Remove currency symbol and group separators, keep only digits and decimal separator
             var cleaned = new System.Text.StringBuilder();
             var hasDecimal = false;
             var decimalDigits = 0;
-            
+
             foreach (var c in text)
             {
                 // Skip group separators (thousand separators)
                 if (c.ToString() == groupSep)
                     continue;
-                
+
+                // Skip negative sign and parentheses (handled separately)
+                if (c.ToString() == negativeSign || c == '(' || c == ')')
+                    continue;
+
                 if (char.IsDigit(c))
                 {
                     if (hasDecimal)
@@ -186,7 +227,8 @@ namespace MoneyRecord.Behaviors
 
             if (decimal.TryParse(cleaned.ToString(), NumberStyles.Number, culture, out var result))
             {
-                return Math.Round(result, decimalPlaces);
+                var roundedResult = Math.Round(result, decimalPlaces);
+                return isNegative ? -roundedResult : roundedResult;
             }
 
             return 0m;

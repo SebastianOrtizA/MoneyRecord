@@ -322,7 +322,10 @@
   <data name="InsufficientAccountBalance" xml:space="preserve">
     <value>This expense would result in a negative balance. The account '{0}' does not allow negative balance.</value>
   </data>
-  
+  <data name="NegativeBalanceNotAllowed" xml:space="preserve">
+    <value>Negative initial balance is not allowed. Enable 'Allow negative balance' to use a negative value.</value>
+  </data>
+
   <!-- Manage Categories -->
   <data name="AddNewCategory" xml:space="preserve">
     <value>Add New Category</value>
