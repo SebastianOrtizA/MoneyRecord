@@ -46,6 +46,9 @@ namespace MoneyRecord.ViewModels
         private string budgetAmount = string.Empty;
 
         [ObservableProperty]
+        private BudgetPeriodItem selectedBudgetPeriod;
+
+        [ObservableProperty]
         private decimal totalBudgeted;
 
         [ObservableProperty]
@@ -56,10 +59,18 @@ namespace MoneyRecord.ViewModels
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetReportPeriods();
 
+        public List<BudgetPeriodItem> BudgetPeriods { get; } =
+        [
+            new BudgetPeriodItem { Period = BudgetPeriod.Day },
+            new BudgetPeriodItem { Period = BudgetPeriod.Month },
+            new BudgetPeriodItem { Period = BudgetPeriod.Year }
+        ];
+
         public BudgetViewModel(DatabaseService databaseService)
         {
             _databaseService = databaseService;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
+            selectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
         }
 
         public async Task InitializeAsync()
@@ -103,13 +114,23 @@ namespace MoneyRecord.ViewModels
 
                     var spentAmount = await _databaseService.GetCategoryExpensesAsync(budget.CategoryId, startDate, endDate);
 
+                    // Calculate projected limit based on budget period and selected date range
+                    var projectedLimit = BudgetProjectionHelper.CalculateProjectedLimit(
+                        budget.LimitAmount,
+                        budget.Period,
+                        SelectedPeriod?.Type ?? PeriodType.CalendarMonth,
+                        CustomStartDate,
+                        CustomEndDate);
+
                     var progress = new BudgetProgress
                     {
                         BudgetId = budget.Id,
                         CategoryId = budget.CategoryId,
                         CategoryName = category.Name,
                         CategoryIconCode = category.IconCode,
-                        LimitAmount = budget.LimitAmount,
+                        Period = budget.Period,
+                        OriginalLimitAmount = budget.LimitAmount,
+                        LimitAmount = projectedLimit,
                         SpentAmount = spentAmount
                     };
                     progress.CalculateProgress();
@@ -152,6 +173,7 @@ namespace MoneyRecord.ViewModels
         {
             IsAddFormVisible = true;
             SelectedCategory = AvailableCategories.FirstOrDefault();
+            SelectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
             BudgetAmount = string.Empty;
         }
 
@@ -160,6 +182,7 @@ namespace MoneyRecord.ViewModels
         {
             IsAddFormVisible = false;
             SelectedCategory = null;
+            SelectedBudgetPeriod = BudgetPeriods[1]; // Reset to Month
             BudgetAmount = string.Empty;
         }
 
@@ -188,6 +211,7 @@ namespace MoneyRecord.ViewModels
                 {
                     CategoryId = SelectedCategory.Id,
                     LimitAmount = amount,
+                    Period = SelectedBudgetPeriod?.Period ?? BudgetPeriod.Month,
                     CreatedDate = DateTime.Now,
                     IsActive = true
                 };
@@ -196,6 +220,7 @@ namespace MoneyRecord.ViewModels
 
                 IsAddFormVisible = false;
                 SelectedCategory = null;
+                SelectedBudgetPeriod = BudgetPeriods[1]; // Reset to Month
                 BudgetAmount = string.Empty;
 
                 await LoadBudgetsAsync();
@@ -206,7 +231,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, 
+                await Shell.Current.DisplayAlertAsync(AppResources.Error,
                     string.Format(AppResources.FailedToSaveBudget, ex.Message), 
                     AppResources.OK);
             }

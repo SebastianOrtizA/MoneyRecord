@@ -37,6 +37,7 @@
             <converters:BoolToOverBudgetLabelConverter x:Key="BoolToOverBudgetLabelConverter" />
             <converters:BoolToOverBudgetTextColorConverter x:Key="BoolToOverBudgetTextColorConverter" />
             <converters:OverBudgetAmountConverter x:Key="OverBudgetAmountConverter" />
+            <converters:BudgetPeriodToDisplayConverter x:Key="BudgetPeriodToDisplayConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

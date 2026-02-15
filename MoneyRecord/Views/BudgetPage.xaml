@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
+             xmlns:helpers="clr-namespace:MoneyRecord.Helpers"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
@@ -148,6 +149,16 @@
                                     MinimumHeightRequest="44"
                                     BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"/>
 
+                            <Label Text="{ext:Localize BudgetPeriod}"
+                                   FontSize="14"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <Picker ItemsSource="{Binding BudgetPeriods}"
+                                    SelectedItem="{Binding SelectedBudgetPeriod}"
+                                    Title="{ext:Localize BudgetPeriod}"
+                                    FontSize="16"
+                                    MinimumHeightRequest="44"
+                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"/>
+
                             <Label Text="{ext:Localize BudgetLimit}"
                                    FontSize="14"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -256,25 +267,37 @@
                                         </Grid>
 
                                         <!-- Amount Details -->
-                                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="4" ColumnSpacing="12">
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="4" ColumnSpacing="8">
                                             <Label Grid.Row="0" Grid.Column="0"
                                                    Text="{ext:Localize Spent}"
                                                    FontSize="12"
                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                             <Label Grid.Row="1" Grid.Column="0"
                                                    Text="{Binding SpentAmount, StringFormat='${0:N2}'}"
-                                                   FontSize="16"
+                                                   FontSize="14"
                                                    FontAttributes="Bold"
                                                    TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"/>
 
                                             <Label Grid.Row="0" Grid.Column="1"
-                                                   Text="{ext:Localize BudgetLimit}"
+                                                   Text="{Binding Period, Converter={StaticResource BudgetPeriodToDisplayConverter}}"
+                                                   FontSize="12"
+                                                   HorizontalTextAlignment="Center"
+                                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            <Label Grid.Row="1" Grid.Column="1"
+                                                   Text="{Binding OriginalLimitAmount, StringFormat='${0:N2}'}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   HorizontalTextAlignment="Center"
+                                                   TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
+
+                                            <Label Grid.Row="0" Grid.Column="2"
+                                                   Text="{ext:Localize ProjectedLimit}"
                                                    FontSize="12"
                                                    HorizontalTextAlignment="End"
                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                                            <Label Grid.Row="1" Grid.Column="1"
+                                            <Label Grid.Row="1" Grid.Column="2"
                                                    Text="{Binding LimitAmount, StringFormat='${0:N2}'}"
-                                                   FontSize="16"
+                                                   FontSize="14"
                                                    FontAttributes="Bold"
                                                    HorizontalTextAlignment="End"
                                                    TextColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>

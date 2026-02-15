@@ -16,6 +16,11 @@ namespace MoneyRecord.Models
 
         public decimal LimitAmount { get; set; }
 
+        /// <summary>
+        /// The period type for the budget limit (Day, Month, Year)
+        /// </summary>
+        public BudgetPeriod Period { get; set; } = BudgetPeriod.Month;
+
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public bool IsActive { get; set; } = true;
@@ -33,6 +38,17 @@ namespace MoneyRecord.Models
         public string CategoryName { get; set; } = string.Empty;
 
         public string CategoryIconCode { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The period type for the budget (Day, Month, Year)
+        /// </summary>
+        public BudgetPeriod Period { get; set; } = BudgetPeriod.Month;
+
+        /// <summary>
+        /// The original limit amount from the budget definition
+        /// </summary>
+        [ObservableProperty]
+        private decimal originalLimitAmount;
 
         [ObservableProperty]
         private decimal limitAmount;

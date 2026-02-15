@@ -708,4 +708,24 @@ Amount: ${2:N2}</value>
     <value>Transaction updated successfully</value>
   </data>
 
+  <!-- Budget Period Options -->
+  <data name="PerDay" xml:space="preserve">
+    <value>Per Day</value>
+  </data>
+  <data name="PerMonth" xml:space="preserve">
+    <value>Per Month</value>
+  </data>
+  <data name="PerYear" xml:space="preserve">
+    <value>Per Year</value>
+  </data>
+  <data name="BudgetPeriod" xml:space="preserve">
+    <value>Budget Period</value>
+  </data>
+  <data name="OriginalLimit" xml:space="preserve">
+    <value>Original Limit</value>
+  </data>
+  <data name="ProjectedLimit" xml:space="preserve">
+    <value>Projected Limit</value>
+  </data>
+
 </root>

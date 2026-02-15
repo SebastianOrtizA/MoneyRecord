@@ -1949,5 +1949,59 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("TransactionUpdatedSuccessfully", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Per Day.
+        /// </summary>
+        internal static string PerDay {
+            get {
+                return ResourceManager.GetString("PerDay", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Per Month.
+        /// </summary>
+        internal static string PerMonth {
+            get {
+                return ResourceManager.GetString("PerMonth", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Per Year.
+        /// </summary>
+        internal static string PerYear {
+            get {
+                return ResourceManager.GetString("PerYear", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Budget Period.
+        /// </summary>
+        internal static string BudgetPeriod {
+            get {
+                return ResourceManager.GetString("BudgetPeriod", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Original Limit.
+        /// </summary>
+        internal static string OriginalLimit {
+            get {
+                return ResourceManager.GetString("OriginalLimit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Projected Limit.
+        /// </summary>
+        internal static string ProjectedLimit {
+            get {
+                return ResourceManager.GetString("ProjectedLimit", resourceCulture);
+            }
+        }
     }
 }

@@ -34,6 +34,35 @@ namespace MoneyRecord.Helpers
         public override int GetHashCode() => Type.GetHashCode();
     }
 
+    /// <summary>
+    /// Represents a budget period option (Day, Month, Year) for selection
+    /// </summary>
+    public class BudgetPeriodItem : INotifyPropertyChanged
+    {
+        public BudgetPeriod Period { get; set; }
+
+        public string DisplayName => Period switch
+        {
+            BudgetPeriod.Day => AppResources.PerDay,
+            BudgetPeriod.Month => AppResources.PerMonth,
+            BudgetPeriod.Year => AppResources.PerYear,
+            _ => Period.ToString()
+        };
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public override string ToString() => DisplayName;
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is BudgetPeriodItem other)
+                return Period == other.Period;
+            return false;
+        }
+
+        public override int GetHashCode() => Period.GetHashCode();
+    }
+
     public static class PeriodHelper
     {
         public static List<PeriodItem> GetPeriods() =>
