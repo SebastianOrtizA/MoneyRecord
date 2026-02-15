@@ -157,6 +157,13 @@ namespace MoneyRecord.Behaviors
         {
             if (ShowCurrencySymbol)
             {
+                // Check if the currency symbol is the generic placeholder (¤)
+                if (_culture.NumberFormat.CurrencySymbol == "¤")
+                {
+                    // Fallback to $ as universal symbol, matching summary list behavior
+                    var formattedNumber = Math.Abs(value).ToString($"N{DecimalPlaces}", _culture);
+                    return value < 0 ? $"-$ {formattedNumber}" : $"$ {formattedNumber}";
+                }
                 return value.ToString("C", _culture);
             }
             return value.ToString($"N{DecimalPlaces}", _culture);
