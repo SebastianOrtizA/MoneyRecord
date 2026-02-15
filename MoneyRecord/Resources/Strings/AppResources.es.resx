@@ -707,5 +707,29 @@ Monto: ${2:N2}</value>
   <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
     <value>Transacción actualizada exitosamente</value>
   </data>
+  <data name="FailedToLoadTransactions" xml:space="preserve">
+    <value>Error al cargar las transacciones: {0}</value>
+  </data>
+  <data name="ConfirmDeleteTransactionTitle" xml:space="preserve">
+    <value>Confirmar Eliminación</value>
+  </data>
+  <data name="ConfirmDeleteTransactionMessage" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar esta transacción?
+
+{0}
+${1:N2}</value>
+  </data>
+  <data name="ConfirmDeleteTransferFromListMessage" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar esta transferencia?
+
+{0}
+${1:N2}</value>
+  </data>
+  <data name="TransactionDeletedSuccessfully" xml:space="preserve">
+    <value>Transacción eliminada exitosamente</value>
+  </data>
+  <data name="FailedToDeleteTransaction" xml:space="preserve">
+    <value>Error al eliminar la transacción: {0}</value>
+  </data>
 
 </root>

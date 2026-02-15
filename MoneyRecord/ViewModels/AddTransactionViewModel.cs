@@ -42,7 +42,7 @@ namespace MoneyRecord.ViewModels
         private List<Account> accounts = new();
 
         [ObservableProperty]
-        private string title = "Add Transaction";
+        private string title = string.Empty;
 
         [ObservableProperty]
         private bool isEditMode = false;
@@ -65,7 +65,7 @@ namespace MoneyRecord.ViewModels
             Amount = string.Empty;
             SelectedCategory = null;
             SelectedAccount = null;
-            Title = "Add Transaction";
+            Title = AppResources.AddTransaction;
             IsEditMode = false;
         }
 

@@ -707,6 +707,30 @@ Amount: ${2:N2}</value>
   <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
     <value>Transaction updated successfully</value>
   </data>
+  <data name="FailedToLoadTransactions" xml:space="preserve">
+    <value>Failed to load transactions: {0}</value>
+  </data>
+  <data name="ConfirmDeleteTransactionTitle" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="ConfirmDeleteTransactionMessage" xml:space="preserve">
+    <value>Are you sure you want to delete this transaction?
+
+{0}
+${1:N2}</value>
+  </data>
+  <data name="ConfirmDeleteTransferFromListMessage" xml:space="preserve">
+    <value>Are you sure you want to delete this transfer?
+
+{0}
+${1:N2}</value>
+  </data>
+  <data name="TransactionDeletedSuccessfully" xml:space="preserve">
+    <value>Transaction deleted successfully</value>
+  </data>
+  <data name="FailedToDeleteTransaction" xml:space="preserve">
+    <value>Failed to delete transaction: {0}</value>
+  </data>
 
   <!-- Budget Period Options -->
   <data name="PerDay" xml:space="preserve">

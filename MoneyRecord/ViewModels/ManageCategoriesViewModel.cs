@@ -27,7 +27,7 @@ namespace MoneyRecord.ViewModels
         private string newCategoryIconCode = string.Empty;
 
         [ObservableProperty]
-        private string title = "Manage Categories";
+        private string title = string.Empty;
 
         [ObservableProperty]
         private bool isEditMode = false;

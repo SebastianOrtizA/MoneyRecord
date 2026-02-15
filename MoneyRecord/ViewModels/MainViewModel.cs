@@ -219,7 +219,7 @@ namespace MoneyRecord.ViewModels
             {
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await Shell.Current.DisplayAlertAsync("Error", $"Failed to load transactions: {ex.Message}\n\nCheck Output window for details.", "OK");
+                    await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadTransactions, ex.Message), AppResources.OK);
                 });
             }
             finally
@@ -369,13 +369,16 @@ namespace MoneyRecord.ViewModels
 
             // Check if this is a transfer
             var isTransfer = transaction.TransferId.HasValue;
-            var itemType = isTransfer ? "transfer" : "transaction";
+
+            var confirmMessage = isTransfer 
+                ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, transaction.Description, transaction.Amount)
+                : string.Format(AppResources.ConfirmDeleteTransactionMessage, transaction.Description, transaction.Amount);
 
             var confirm = await Shell.Current.DisplayAlertAsync(
-                "Confirm Delete",
-                $"Are you sure you want to delete this {itemType}?\n\n{transaction.Description}\n${transaction.Amount:N2}",
-                "Yes, Delete",
-                "Cancel");
+                AppResources.ConfirmDeleteTransactionTitle,
+                confirmMessage,
+                AppResources.YesDelete,
+                AppResources.Cancel);
 
             if (!confirm)
                 return;
@@ -397,12 +400,16 @@ namespace MoneyRecord.ViewModels
                 }
                 
                 await LoadDataAsync();
-                
-                await Shell.Current.DisplayAlertAsync("Success", $"{char.ToUpper(itemType[0])}{itemType[1..]} deleted successfully", "OK");
+
+                var successMessage = isTransfer ? AppResources.TransferDeletedSuccessfully : AppResources.TransactionDeletedSuccessfully;
+                await Shell.Current.DisplayAlertAsync(AppResources.Success, successMessage, AppResources.OK);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", $"Failed to delete {itemType}: {ex.Message}", "OK");
+                var errorMessage = isTransfer 
+                    ? string.Format(AppResources.FailedToDeleteTransfer, ex.Message)
+                    : string.Format(AppResources.FailedToDeleteTransaction, ex.Message);
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, errorMessage, AppResources.OK);
             }
         }
 

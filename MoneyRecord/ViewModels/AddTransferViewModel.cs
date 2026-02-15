@@ -59,7 +59,7 @@ namespace MoneyRecord.ViewModels
         private List<Account> accounts = new();
 
         [ObservableProperty]
-        private string title = "New Transfer";
+        private string title = string.Empty;
 
         [ObservableProperty]
         private bool isEditMode = false;
@@ -225,7 +225,7 @@ namespace MoneyRecord.ViewModels
                     // Update existing transfer
                     Transfer.Date = SelectedDate;
                     Transfer.Amount = amountValue;
-                    Transfer.Description = string.IsNullOrWhiteSpace(Description) ? "Transfer" : Description;
+                    Transfer.Description = string.IsNullOrWhiteSpace(Description) ? AppResources.Transfer : Description;
                     Transfer.SourceAccountId = SelectedSourceAccount.Id;
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
 
