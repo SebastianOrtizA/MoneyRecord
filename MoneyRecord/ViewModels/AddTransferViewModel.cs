@@ -94,7 +94,7 @@ namespace MoneyRecord.ViewModels
             Description = string.Empty;
             SelectedSourceAccount = null;
             SelectedDestinationAccount = null;
-            Title = "New Transfer";
+            Title = AppResources.NewTransfer;
             IsEditMode = false;
             SourceAccountBalance = 0;
             SourceAccountBalanceText = string.Empty;
@@ -124,7 +124,7 @@ namespace MoneyRecord.ViewModels
             {
                 // Edit mode
                 IsEditMode = true;
-                Title = "Edit Transfer";
+                Title = AppResources.EditTransfer;
                 SelectedDate = Transfer.Date;
                 Amount = Transfer.Amount.ToString();
                 Description = Transfer.Description;
@@ -142,8 +142,8 @@ namespace MoneyRecord.ViewModels
             {
                 // Add mode
                 IsEditMode = false;
-                Title = "New Transfer";
-                Description = "Transfer";
+                Title = AppResources.NewTransfer;
+                Description = AppResources.Transfer;
             }
 
             await UpdateSourceAccountBalanceAsync();
@@ -173,7 +173,7 @@ namespace MoneyRecord.ViewModels
                 }
 
                 SourceAccountBalance = balance;
-                SourceAccountBalanceText = $"Available: ${balance:N2}";
+                SourceAccountBalanceText = string.Format(AppResources.Available, balance);
             }
             else
             {
@@ -230,7 +230,7 @@ namespace MoneyRecord.ViewModels
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
 
                     await _databaseService.SaveTransferAsync(Transfer);
-                    await Shell.Current.DisplayAlertAsync("Success", "Transfer updated successfully", "OK");
+                    await Shell.Current.DisplayAlertAsync(AppResources.Success, AppResources.TransferUpdatedSuccessfully, AppResources.OK);
                 }
                 else
                 {
@@ -239,7 +239,7 @@ namespace MoneyRecord.ViewModels
                     {
                         Date = SelectedDate,
                         Amount = amountValue,
-                        Description = string.IsNullOrWhiteSpace(Description) ? "Transfer" : Description,
+                        Description = string.IsNullOrWhiteSpace(Description) ? AppResources.Transfer : Description,
                         SourceAccountId = SelectedSourceAccount.Id,
                         DestinationAccountId = SelectedDestinationAccount.Id
                     };
@@ -251,7 +251,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", $"Failed to save transfer: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToSaveTransfer, ex.Message), AppResources.OK);
             }
         }
 

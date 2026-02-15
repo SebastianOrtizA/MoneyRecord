@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using System.Collections.ObjectModel;
 
@@ -160,7 +161,7 @@ namespace MoneyRecord.ViewModels
             {
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await Shell.Current.DisplayAlertAsync("Error", $"Failed to load report data: {ex.Message}", "OK");
+                    await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadReportData, ex.Message), AppResources.OK);
                 });
             }
             finally
@@ -194,7 +195,7 @@ namespace MoneyRecord.ViewModels
 
                 if (!categoryTransactions.Any())
                 {
-                    await Shell.Current.DisplayAlertAsync(categoryName, "No expense details found.", "OK");
+                    await Shell.Current.DisplayAlertAsync(categoryName, AppResources.NoExpenseDetailsFound, AppResources.OK);
                     return;
                 }
 
@@ -202,20 +203,20 @@ namespace MoneyRecord.ViewModels
                 var details = categoryTransactions.Select(t => 
                     $"📅 {t.Date:MMM dd, yyyy}\n" +
                     $"   💰 ${Math.Abs(t.Amount):N2}\n" +
-                    $"   📝 {(string.IsNullOrEmpty(t.Description) ? "No description" : t.Description)}"
+                    $"   📝 {(string.IsNullOrEmpty(t.Description) ? AppResources.NoDescription : t.Description)}"
                 );
 
                 var totalAmount = categoryTransactions.Sum(t => Math.Abs(t.Amount));
                 var transactionCount = categoryTransactions.Count;
 
-                var message = $"Total: ${totalAmount:N2} ({transactionCount} transaction{(transactionCount > 1 ? "s" : "")})\n\n" +
+                var message = $"{AppResources.Total}: ${totalAmount:N2} ({transactionCount} {(transactionCount > 1 ? AppResources.TransactionPlural : AppResources.TransactionSingular)})\n\n" +
                              string.Join("\n\n", details);
 
-                await Shell.Current.DisplayAlertAsync($"📊 {categoryName}", message, "Close");
+                await Shell.Current.DisplayAlertAsync($"📊 {categoryName}", message, AppResources.Close);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", $"Failed to load category details: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadCategoryDetails, ex.Message), AppResources.OK);
             }
         }
 

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using MoneyRecord.Views;
 using System.Collections.ObjectModel;
@@ -275,23 +276,23 @@ namespace MoneyRecord.ViewModels
             try
             {
                 var balances = await _databaseService.GetAllAccountBalancesAsync();
-                
+
                 // Build the message to display
                 var message = string.Join("\n\n", balances.Select(b => 
                     $"🏦 {b.AccountName}\n" +
-                    $"   Balance: ${b.CurrentBalance:N2}\n" +
-                    $"   Last Activity: {b.LastActivityDateDisplay}"));
+                    $"   {AppResources.Balance}: ${b.CurrentBalance:N2}\n" +
+                    $"   {AppResources.LastActivity}: {b.LastActivityDateDisplay}"));
 
                 if (string.IsNullOrEmpty(message))
                 {
-                    message = "No accounts found.";
+                    message = AppResources.NoAccountsFound;
                 }
 
-                await Shell.Current.DisplayAlertAsync("Account Balances", message, "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.AccountBalances, message, AppResources.OK);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", $"Failed to load account balances: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadAccountBalances, ex.Message), AppResources.OK);
             }
         }
 
@@ -325,7 +326,7 @@ namespace MoneyRecord.ViewModels
             {
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await Shell.Current.DisplayAlertAsync("Error", $"Failed to toggle view: {ex.Message}", "OK");
+                    await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToToggleView, ex.Message), AppResources.OK);
                 });
             }
         }

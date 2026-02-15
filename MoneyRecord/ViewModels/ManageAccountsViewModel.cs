@@ -181,7 +181,7 @@ namespace MoneyRecord.ViewModels
 
             if (string.IsNullOrWhiteSpace(EditAccountName))
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Please enter an account name", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterAccountName, AppResources.OK);
                 return;
             }
 
@@ -223,21 +223,21 @@ namespace MoneyRecord.ViewModels
 
             if (account.IsDefault)
             {
-                await Shell.Current.DisplayAlertAsync("Error", "Cannot delete the default Cash account", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.CannotDeleteDefaultAccount, AppResources.OK);
                 return;
             }
 
             var hasTransactions = await _databaseService.AccountHasTransactionsAsync(account.Id);
-            
+
             string message = hasTransactions
-                ? $"Are you sure you want to delete '{account.Name}'?\n\nAll transactions in this account will be moved to the Cash account."
-                : $"Are you sure you want to delete '{account.Name}'?";
+                ? string.Format(AppResources.DeleteAccountWithTransactions, account.Name)
+                : string.Format(AppResources.DeleteAccountNoTransactions, account.Name);
 
             var confirm = await Shell.Current.DisplayAlertAsync(
-                "Confirm Delete",
+                AppResources.ConfirmDelete,
                 message,
-                "Yes, Delete",
-                "Cancel");
+                AppResources.YesDelete,
+                AppResources.Cancel);
 
             if (!confirm)
                 return;

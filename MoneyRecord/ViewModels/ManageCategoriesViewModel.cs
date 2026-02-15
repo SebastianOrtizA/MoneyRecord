@@ -188,15 +188,15 @@ namespace MoneyRecord.ViewModels
                     // Delete the category
                     await _databaseService.DeleteCategoryAsync(category);
 
-                    await Shell.Current.DisplayAlertAsync("Success", 
-                        $"Category '{category.Name}' deleted and {reassignedCount} transaction(s) moved to '{replacementCategory.Name}'", 
-                        "OK");
+                    await Shell.Current.DisplayAlertAsync(AppResources.Success, 
+                        string.Format(AppResources.CategoryDeletedAndTransactionsMoved, category.Name, reassignedCount, replacementCategory.Name), 
+                        AppResources.OK);
                 }
                 else
                 {
                     // No transactions, just confirm deletion
-                    var confirm = await Shell.Current.DisplayAlertAsync("Confirm", 
-                        $"Are you sure you want to delete '{category.Name}'?", "Yes", "No");
+                    var confirm = await Shell.Current.DisplayAlertAsync(AppResources.Confirm, 
+                        string.Format(AppResources.DeleteCategoryConfirmation, category.Name), AppResources.Yes, AppResources.No);
                     
                     if (!confirm)
                         return;

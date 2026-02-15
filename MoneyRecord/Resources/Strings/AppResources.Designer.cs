@@ -1499,13 +1499,274 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("YourAccounts", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Busca una cadena traducida similar a Your Categories.
         /// </summary>
         internal static string YourCategories {
             get {
                 return ResourceManager.GetString("YourCategories", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Success.
+        /// </summary>
+        internal static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Close.
+        /// </summary>
+        internal static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Confirm Delete.
+        /// </summary>
+        internal static string ConfirmDelete {
+            get {
+                return ResourceManager.GetString("ConfirmDelete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Yes, Delete.
+        /// </summary>
+        internal static string YesDelete {
+            get {
+                return ResourceManager.GetString("YesDelete", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a No accounts found.
+        /// </summary>
+        internal static string NoAccountsFound {
+            get {
+                return ResourceManager.GetString("NoAccountsFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Balance.
+        /// </summary>
+        internal static string Balance {
+            get {
+                return ResourceManager.GetString("Balance", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Last Activity.
+        /// </summary>
+        internal static string LastActivity {
+            get {
+                return ResourceManager.GetString("LastActivity", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to load account balances: {0}.
+        /// </summary>
+        internal static string FailedToLoadAccountBalances {
+            get {
+                return ResourceManager.GetString("FailedToLoadAccountBalances", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to toggle view: {0}.
+        /// </summary>
+        internal static string FailedToToggleView {
+            get {
+                return ResourceManager.GetString("FailedToToggleView", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to load report data: {0}.
+        /// </summary>
+        internal static string FailedToLoadReportData {
+            get {
+                return ResourceManager.GetString("FailedToLoadReportData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a No income details found.
+        /// </summary>
+        internal static string NoIncomeDetailsFound {
+            get {
+                return ResourceManager.GetString("NoIncomeDetailsFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a No expense details found.
+        /// </summary>
+        internal static string NoExpenseDetailsFound {
+            get {
+                return ResourceManager.GetString("NoExpenseDetailsFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a No description.
+        /// </summary>
+        internal static string NoDescription {
+            get {
+                return ResourceManager.GetString("NoDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Total.
+        /// </summary>
+        internal static string Total {
+            get {
+                return ResourceManager.GetString("Total", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a transaction.
+        /// </summary>
+        internal static string TransactionSingular {
+            get {
+                return ResourceManager.GetString("TransactionSingular", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a transactions.
+        /// </summary>
+        internal static string TransactionPlural {
+            get {
+                return ResourceManager.GetString("TransactionPlural", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to load category details: {0}.
+        /// </summary>
+        internal static string FailedToLoadCategoryDetails {
+            get {
+                return ResourceManager.GetString("FailedToLoadCategoryDetails", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cannot delete the default Cash account.
+        /// </summary>
+        internal static string CannotDeleteDefaultAccount {
+            get {
+                return ResourceManager.GetString("CannotDeleteDefaultAccount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to delete '{0}'? All transactions in this account will be moved to the Cash account.
+        /// </summary>
+        internal static string DeleteAccountWithTransactions {
+            get {
+                return ResourceManager.GetString("DeleteAccountWithTransactions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to delete '{0}'?.
+        /// </summary>
+        internal static string DeleteAccountNoTransactions {
+            get {
+                return ResourceManager.GetString("DeleteAccountNoTransactions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Category '{0}' deleted and {1} transaction(s) moved to '{2}'.
+        /// </summary>
+        internal static string CategoryDeletedAndTransactionsMoved {
+            get {
+                return ResourceManager.GetString("CategoryDeletedAndTransactionsMoved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to delete '{0}'?.
+        /// </summary>
+        internal static string DeleteCategoryConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteCategoryConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Transfer updated successfully.
+        /// </summary>
+        internal static string TransferUpdatedSuccessfully {
+            get {
+                return ResourceManager.GetString("TransferUpdatedSuccessfully", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to save transfer: {0}.
+        /// </summary>
+        internal static string FailedToSaveTransfer {
+            get {
+                return ResourceManager.GetString("FailedToSaveTransfer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to load transfers: {0}.
+        /// </summary>
+        internal static string FailedToLoadTransfers {
+            get {
+                return ResourceManager.GetString("FailedToLoadTransfers", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Are you sure you want to delete this transfer?.
+        /// </summary>
+        internal static string DeleteTransferConfirmMessage {
+            get {
+                return ResourceManager.GetString("DeleteTransferConfirmMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Transfer deleted successfully.
+        /// </summary>
+        internal static string TransferDeletedSuccessfully {
+            get {
+                return ResourceManager.GetString("TransferDeletedSuccessfully", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Failed to delete transfer: {0}.
+        /// </summary>
+        internal static string FailedToDeleteTransfer {
+            get {
+                return ResourceManager.GetString("FailedToDeleteTransfer", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a Available: ${0:N2}.
+        /// </summary>
+        internal static string Available {
+            get {
+                return ResourceManager.GetString("Available", resourceCulture);
             }
         }
     }

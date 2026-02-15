@@ -550,5 +550,100 @@
   <data name="DefaultCategoryOtherExpense" xml:space="preserve">
     <value>Other Expense</value>
   </data>
-  
+
+  <!-- Additional Alert Messages -->
+  <data name="Success" xml:space="preserve">
+    <value>Success</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="YesDelete" xml:space="preserve">
+    <value>Yes, Delete</value>
+  </data>
+  <data name="NoAccountsFound" xml:space="preserve">
+    <value>No accounts found.</value>
+  </data>
+  <data name="Balance" xml:space="preserve">
+    <value>Balance</value>
+  </data>
+  <data name="LastActivity" xml:space="preserve">
+    <value>Last Activity</value>
+  </data>
+  <data name="FailedToLoadAccountBalances" xml:space="preserve">
+    <value>Failed to load account balances: {0}</value>
+  </data>
+  <data name="FailedToToggleView" xml:space="preserve">
+    <value>Failed to toggle view: {0}</value>
+  </data>
+  <data name="FailedToLoadReportData" xml:space="preserve">
+    <value>Failed to load report data: {0}</value>
+  </data>
+  <data name="NoIncomeDetailsFound" xml:space="preserve">
+    <value>No income details found.</value>
+  </data>
+  <data name="NoExpenseDetailsFound" xml:space="preserve">
+    <value>No expense details found.</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>No description</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="TransactionSingular" xml:space="preserve">
+    <value>transaction</value>
+  </data>
+  <data name="TransactionPlural" xml:space="preserve">
+    <value>transactions</value>
+  </data>
+  <data name="FailedToLoadCategoryDetails" xml:space="preserve">
+    <value>Failed to load category details: {0}</value>
+  </data>
+  <data name="CannotDeleteDefaultAccount" xml:space="preserve">
+    <value>Cannot delete the default Cash account</value>
+  </data>
+  <data name="DeleteAccountWithTransactions" xml:space="preserve">
+    <value>Are you sure you want to delete '{0}'?
+
+All transactions in this account will be moved to the Cash account.</value>
+  </data>
+  <data name="DeleteAccountNoTransactions" xml:space="preserve">
+    <value>Are you sure you want to delete '{0}'?</value>
+  </data>
+  <data name="CategoryDeletedAndTransactionsMoved" xml:space="preserve">
+    <value>Category '{0}' deleted and {1} transaction(s) moved to '{2}'</value>
+  </data>
+  <data name="DeleteCategoryConfirmation" xml:space="preserve">
+    <value>Are you sure you want to delete '{0}'?</value>
+  </data>
+  <data name="TransferUpdatedSuccessfully" xml:space="preserve">
+    <value>Transfer updated successfully</value>
+  </data>
+  <data name="FailedToSaveTransfer" xml:space="preserve">
+    <value>Failed to save transfer: {0}</value>
+  </data>
+  <data name="FailedToLoadTransfers" xml:space="preserve">
+    <value>Failed to load transfers: {0}</value>
+  </data>
+  <data name="DeleteTransferConfirmMessage" xml:space="preserve">
+    <value>Are you sure you want to delete this transfer?
+
+From: {0}
+To: {1}
+Amount: ${2:N2}</value>
+  </data>
+  <data name="TransferDeletedSuccessfully" xml:space="preserve">
+    <value>Transfer deleted successfully</value>
+  </data>
+  <data name="FailedToDeleteTransfer" xml:space="preserve">
+    <value>Failed to delete transfer: {0}</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Available: ${0:N2}</value>
+  </data>
+
 </root>

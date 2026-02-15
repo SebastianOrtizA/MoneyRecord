@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using MoneyRecord.Views;
 using System.Collections.ObjectModel;
@@ -52,7 +53,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", $"Failed to load transfers: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadTransfers, ex.Message), AppResources.OK);
             }
             finally
             {
@@ -85,13 +86,10 @@ namespace MoneyRecord.ViewModels
                 return;
 
             var confirm = await Shell.Current.DisplayAlertAsync(
-                "Confirm Delete",
-                $"Are you sure you want to delete this transfer?\n\n" +
-                $"From: {transfer.SourceAccountName}\n" +
-                $"To: {transfer.DestinationAccountName}\n" +
-                $"Amount: ${transfer.Amount:N2}",
-                "Yes, Delete",
-                "Cancel");
+                AppResources.ConfirmDelete,
+                string.Format(AppResources.DeleteTransferConfirmMessage, transfer.SourceAccountName, transfer.DestinationAccountName, transfer.Amount),
+                AppResources.YesDelete,
+                AppResources.Cancel);
 
             if (!confirm)
                 return;
@@ -100,11 +98,11 @@ namespace MoneyRecord.ViewModels
             {
                 await _databaseService.DeleteTransferAsync(transfer);
                 await LoadTransfersAsync();
-                await Shell.Current.DisplayAlertAsync("Success", "Transfer deleted successfully", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Success, AppResources.TransferDeletedSuccessfully, AppResources.OK);
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync("Error", $"Failed to delete transfer: {ex.Message}", "OK");
+                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToDeleteTransfer, ex.Message), AppResources.OK);
             }
         }
     }
