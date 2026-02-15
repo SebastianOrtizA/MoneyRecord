@@ -9,8 +9,10 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
 - **Total Incomes**: Sum of all income transactions for the period
 - **Total Expenses**: Sum of all expense transactions for the period
 - **Period Selection**: View data for:
+  - Calendar Month (default) - Current calendar month
+  - Calendar Year - Current calendar year
   - Last Week
-  - Last Month (default)
+  - Last Month
   - Last Year
   - Custom Period
 
@@ -23,6 +25,7 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - Custom accounts
 - **Account Icons**: Select from Material Design icons for visual identification
 - **Account Creation**: Specify name, icon, and initial balance when creating accounts
+- **Negative Initial Balance**: Support for negative initial balance values (useful for credit cards or debts)
 - **Default Account**: "Cash" account is created automatically as the default account
 - **Account Operations**: Add, edit, and delete accounts
 - **Balance Overview**: Tap the total balance on the main screen to see all account balances with last transaction dates
@@ -77,20 +80,35 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - Period selection for custom date ranges
   - Categories below threshold grouped into "Others"
 
-### 7. Localization
+### 7. Budget Management
+- **Category Budgets**: Set spending limits for expense categories
+- **Budget Periods**: Define budgets as daily, monthly, or yearly limits
+- **Budget Projection**: Automatic limit projection based on selected period
+  - A daily budget of $10 shows as $310 when viewing a full month
+  - A monthly budget automatically scales for yearly views
+- **Progress Tracking**: Visual progress bars showing spending vs. budget limit
+- **Color-coded Status**: 
+  - Green: Under 60% of budget
+  - Yellow: 60-80% of budget
+  - Orange: 80-100% of budget
+  - Red: Over budget
+- **Summary View**: Total budgeted, spent, and remaining amounts
+- **Over-budget Alerts**: Clear indication when spending exceeds limits
+
+### 8. Localization
 - **Multi-language Support**: Automatic language detection based on system settings
 - **Supported Languages**:
   - English (default)
   - Spanish (es)
 - **Dynamic Language Switching**: UI updates automatically based on system language
 
-### 8. Android-Specific Features
+### 9. Android-Specific Features
 - **Back Button Handling**: Custom back button behavior using OnBackPressedDispatcher
   - From any page, back button navigates to Main Page
   - From Main Page, back button closes the app
 - **Shell Navigation**: Consistent navigation experience with Shell routing
 
-### 9. Floating Action Menu (FAB)
+### 10. Floating Action Menu (FAB)
 - **Draggable FAB**: Floating action button that can be dragged anywhere on screen
 - **Position Persistence**: FAB position is saved and restored between app sessions
 - **Side Switching**: FAB automatically aligns to left or right edge based on drag position
@@ -107,7 +125,7 @@ A .NET 10 MAUI application for tracking income and expenses with real-time balan
   - `FabLayoutManager`: UI alignment updates
   - `SmoothDragAnimator`: Smooth position interpolation during drag
 
-### 10. Data Storage
+### 11. Data Storage
 - **SQLite Database**: All data stored locally using sqlite-net-pcl
 - **Persistent Storage**: Data saved in app's local directory
 - **Automatic Updates**: Balance updates automatically when transactions are added or modified
@@ -140,10 +158,13 @@ MoneyRecord/
 ├── Extensions/
 │   └── LocalizeExtension.cs      - XAML localization extension
 ├── Helpers/
+│   ├── BudgetProjectionHelper.cs - Budget limit projection calculations
+│   ├── DateRangeHelper.cs        - Date range utilities
 │   └── PeriodHelper.cs           - Period calculation utilities
 ├── Models/
 │   ├── Account.cs                - Account entity
 │   ├── AccountBalanceInfo.cs     - Account balance display model
+│   ├── Budget.cs                 - Budget entity and progress model
 │   ├── Category.cs               - Category entity
 │   ├── CategoryReport.cs         - Report data model
 │   ├── PeriodType.cs             - Period type enumeration
@@ -167,6 +188,7 @@ MoneyRecord/
 ├── ViewModels/
 │   ├── AddTransactionViewModel.cs      - Add/edit transaction logic
 │   ├── AddTransferViewModel.cs         - Add/edit transfer logic
+│   ├── BudgetViewModel.cs              - Budget management logic
 │   ├── ExpenseReportViewModel.cs       - Expense report logic
 │   ├── IncomeReportViewModel.cs        - Income report logic
 │   ├── MainViewModel.cs                - Main page logic
@@ -176,6 +198,7 @@ MoneyRecord/
 ├── Views/
 │   ├── AddTransactionPage.xaml/.cs     - Add/edit transaction screen
 │   ├── AddTransferPage.xaml/.cs        - Add/edit transfer screen
+│   ├── BudgetPage.xaml/.cs             - Budget management screen
 │   ├── ExpenseReportPage.xaml/.cs      - Expense report screen
 │   ├── IncomeReportPage.xaml/.cs       - Income report screen
 │   ├── MainPage.xaml/.cs               - Main dashboard
