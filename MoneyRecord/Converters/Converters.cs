@@ -203,7 +203,7 @@ namespace MoneyRecord.Converters
             if (value is Transaction transaction)
             {
                 decimal displayAmount;
-                
+
                 if (transaction.Type == TransactionType.Transfer)
                 {
                     // For transfers: negative if outgoing, positive if incoming
@@ -217,15 +217,30 @@ namespace MoneyRecord.Converters
                         ? -Math.Abs(transaction.Amount)
                         : Math.Abs(transaction.Amount);
                 }
-                
-                return displayAmount.ToString("C2", culture);
+
+                // Use device's actual culture for currency formatting
+                return FormatCurrency(displayAmount);
             }
-            return "$0.00";
+            return FormatCurrency(0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private static string FormatCurrency(decimal amount)
+        {
+            var deviceCulture = CultureInfo.CurrentCulture;
+
+            // Check if the currency symbol is the generic placeholder (¤)
+            if (deviceCulture.NumberFormat.CurrencySymbol == "¤")
+            {
+                // Fallback to a reasonable default based on region or use $ as universal symbol
+                return $"$ {amount:N2}";
+            }
+
+            return amount.ToString("C2", deviceCulture);
         }
     }
 
@@ -244,21 +259,35 @@ namespace MoneyRecord.Converters
                 // Check both emoji version (legacy) and text version
                 if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
                 {
-                    return Math.Abs(group.Total).ToString("C2", culture);
+                    return FormatCurrency(Math.Abs(group.Total));
                 }
 
                 // For expense groups, display as negative; for income groups, display as positive
                 var displayAmount = group.Type == TransactionType.Expense
                     ? -Math.Abs(group.Total)
                     : Math.Abs(group.Total);
-                return displayAmount.ToString("C2", culture);
+                return FormatCurrency(displayAmount);
             }
-            return "$0.00";
+            return FormatCurrency(0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private static string FormatCurrency(decimal amount)
+        {
+            var deviceCulture = CultureInfo.CurrentCulture;
+
+            // Check if the currency symbol is the generic placeholder (¤)
+            if (deviceCulture.NumberFormat.CurrencySymbol == "¤")
+            {
+                // Fallback to a reasonable default
+                return $"$ {amount:N2}";
+            }
+
+            return amount.ToString("C2", deviceCulture);
         }
     }
 
