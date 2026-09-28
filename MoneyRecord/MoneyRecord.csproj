@@ -22,10 +22,10 @@
 		<ApplicationTitle>MoneyRecord</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.moneyrecord</ApplicationId>
+		<ApplicationId>com.sebastianortiz.moneyrecord</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<!-- To develop, package, and publish an app to the Microsoft Store, see: https://aka.ms/MauiTemplateUnpackaged -->
@@ -36,6 +36,14 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidKeyStore>true</AndroidKeyStore>
+		<AndroidSigningKeyStore>moneyrecord.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>moneyrecord</AndroidSigningKeyAlias>
+		<AndroidSigningStorePass>$(KEYSTORE_PASSWORD)</AndroidSigningStorePass>
+		<AndroidSigningKeyPass>$(KEY_PASSWORD)</AndroidSigningKeyPass>
 	</PropertyGroup>
 
 	<ItemGroup>

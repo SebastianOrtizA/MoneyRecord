@@ -2,4 +2,5 @@
   <Project Path="MoneyRecord/MoneyRecord.csproj" Id="8bb1c388-ca40-4828-841b-81f988e4fd45">
     <Deploy Solution="Debug|*" />
   </Project>
+  <Project Path="MoneyRecord.Tests/MoneyRecord.Tests.csproj" />
 </Solution>

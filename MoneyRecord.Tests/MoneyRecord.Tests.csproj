@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<UseMaui>true</UseMaui>
+		<OutputType>Library</OutputType>
+		<WindowsPackageType>None</WindowsPackageType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.90" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
+		<PackageReference Include="xunit" Version="2.*" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.*" />
+		<PackageReference Include="NSubstitute" Version="5.*" />
+		<PackageReference Include="FluentAssertions" Version="8.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MoneyRecord\MoneyRecord.csproj" />
+	</ItemGroup>
+
+</Project>
