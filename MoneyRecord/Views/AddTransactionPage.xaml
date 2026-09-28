@@ -49,6 +49,77 @@
                    Title="{ext:Localize SelectCategory}"
                    FontSize="16"/>
 
+            <!-- Budget Warning Banner -->
+            <Border IsVisible="{Binding ShowBudgetWarning}"
+                    BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#3E2723}"
+                    StrokeShape="RoundRectangle 8"
+                    Stroke="{AppThemeBinding Light=#FF9800, Dark=#FF9800}"
+                    StrokeThickness="1"
+                    Padding="12">
+                <Label Text="{Binding BudgetWarningText}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light=#E65100, Dark=#FFB74D}"/>
+            </Border>
+
+            <!-- Make Recurring Section (only for new transactions) -->
+            <VerticalStackLayout Spacing="12"
+                                 IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
+                <Grid ColumnDefinitions="*,Auto" Padding="0">
+                    <Label Grid.Column="0"
+                           Text="{ext:Localize MakeRecurring}"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center"/>
+                    <Switch Grid.Column="1"
+                            IsToggled="{Binding IsRecurring}"
+                            OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                </Grid>
+
+                <VerticalStackLayout Spacing="12"
+                                     IsVisible="{Binding IsRecurring}">
+                    <Label Text="{ext:Localize Frequency}" FontSize="16" FontAttributes="Bold"/>
+                    <Picker ItemsSource="{Binding Frequencies}"
+                            SelectedItem="{Binding SelectedFrequencyItem}"
+                            Title="{ext:Localize SelectFrequency}"
+                            FontSize="16"/>
+
+                    <!-- Day of Month (only for Monthly) -->
+                    <VerticalStackLayout Spacing="12"
+                                         IsVisible="{Binding IsMonthlyFrequency}">
+                        <Grid ColumnDefinitions="*,Auto" Padding="0">
+                            <Label Grid.Column="0"
+                                   Text="{ext:Localize SpecificDayOfMonth}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center"/>
+                            <Switch Grid.Column="1"
+                                    IsToggled="{Binding UseSpecificDay}"
+                                    OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                        </Grid>
+                        <Picker ItemsSource="{Binding DaysOfMonth}"
+                                SelectedItem="{Binding SelectedDayOfMonth}"
+                                Title="{ext:Localize SelectDay}"
+                                FontSize="16"
+                                IsVisible="{Binding UseSpecificDay}"/>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,Auto" Padding="0">
+                        <Label Grid.Column="0"
+                               Text="{ext:Localize HasEndDate}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"/>
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding HasEndDate}"
+                                OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                    </Grid>
+                    <DatePicker Date="{Binding EndDate}"
+                                Format="D"
+                                FontSize="16"
+                                IsVisible="{Binding HasEndDate}"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
             <Label Text="{ext:Localize RequiredFields}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" Margin="0,5,0,0"/>
 
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">

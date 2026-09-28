@@ -1,9 +1,11 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
 {
@@ -11,8 +13,11 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(TransferIdString), "TransferId")]
     public partial class AddTransferViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly ITransferRepository _transferRepository;
+        private readonly IBalanceService _balanceService;
         private readonly INavigationService _navigationService;
+        private readonly IErrorHandler _errorHandler;
 
         [ObservableProperty]
         private Transfer? transfer;
@@ -75,10 +80,13 @@ namespace MoneyRecord.ViewModels
         private int? _originalDestinationAccountId;
         private decimal _originalAmount;
 
-        public AddTransferViewModel(DatabaseService databaseService, INavigationService navigationService)
+        public AddTransferViewModel(IAccountRepository accountRepository, ITransferRepository transferRepository, IBalanceService balanceService, INavigationService navigationService, IErrorHandler errorHandler)
         {
-            _databaseService = databaseService;
+            _accountRepository = accountRepository;
+            _transferRepository = transferRepository;
+            _balanceService = balanceService;
             _navigationService = navigationService;
+            _errorHandler = errorHandler;
         }
 
         /// <summary>
@@ -117,7 +125,7 @@ namespace MoneyRecord.ViewModels
             // If TransferId was passed, load the transfer
             if (TransferId.HasValue && Transfer == null)
             {
-                Transfer = await _databaseService.GetTransferAsync(TransferId.Value);
+                Transfer = await _transferRepository.GetByIdAsync(TransferId.Value);
             }
 
             if (Transfer != null)
@@ -151,7 +159,7 @@ namespace MoneyRecord.ViewModels
 
         private async Task LoadAccountsAsync()
         {
-            Accounts = await _databaseService.GetAccountsAsync();
+            Accounts = await _accountRepository.GetAllAsync();
         }
 
         partial void OnSelectedSourceAccountChanged(Account? value)
@@ -164,7 +172,7 @@ namespace MoneyRecord.ViewModels
             if (SelectedSourceAccount != null)
             {
                 // Get base balance
-                var balance = await _databaseService.GetAccountBalanceAsync(SelectedSourceAccount.Id);
+                var balance = await _balanceService.GetAccountBalanceAsync(SelectedSourceAccount.Id);
 
                 // If editing, add back the original transfer amount if this was the source
                 if (IsEditMode && _originalSourceAccountId == SelectedSourceAccount.Id)
@@ -187,26 +195,26 @@ namespace MoneyRecord.ViewModels
         {
             if (SelectedSourceAccount == null)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseSelectSourceAccount, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseSelectSourceAccount);
                 return;
             }
 
             if (SelectedDestinationAccount == null)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseSelectDestinationAccount, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseSelectDestinationAccount);
                 return;
             }
 
             if (SelectedSourceAccount.Id == SelectedDestinationAccount.Id)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.SourceDestinationMustBeDifferent, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.SourceDestinationMustBeDifferent);
                 return;
             }
 
             var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
             if (amountValue <= 0)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterValidAmount, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;
             }
 
@@ -214,7 +222,7 @@ namespace MoneyRecord.ViewModels
             if (!SelectedSourceAccount.AllowNegativeBalance && amountValue > SourceAccountBalance)
             {
                 var message = string.Format(AppResources.InsufficientAccountBalance, SelectedSourceAccount.Name);
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, message, AppResources.OK);
+                await _errorHandler.HandleAsync(message);
                 return;
             }
 
@@ -229,8 +237,8 @@ namespace MoneyRecord.ViewModels
                     Transfer.SourceAccountId = SelectedSourceAccount.Id;
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
 
-                    await _databaseService.SaveTransferAsync(Transfer);
-                    await Shell.Current.DisplayAlertAsync(AppResources.Success, AppResources.TransferUpdatedSuccessfully, AppResources.OK);
+                    await _transferRepository.SaveAsync(Transfer);
+                    await Toast.Make(AppResources.TransferUpdatedSuccessfully).Show();
                 }
                 else
                 {
@@ -244,14 +252,14 @@ namespace MoneyRecord.ViewModels
                         DestinationAccountId = SelectedDestinationAccount.Id
                     };
 
-                    await _databaseService.SaveTransferAsync(newTransfer);
+                    await _transferRepository.SaveAsync(newTransfer);
                 }
 
                 await _navigationService.GoBackAsync();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToSaveTransfer, ex.Message), AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToSaveTransfer, ex.Message));
             }
         }
 

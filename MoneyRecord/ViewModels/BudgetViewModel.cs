@@ -1,16 +1,20 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
-using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
     public partial class BudgetViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IBudgetRepository _budgetRepository;
+        private readonly IBalanceService _balanceService;
+        private readonly IErrorHandler _errorHandler;
 
         [ObservableProperty]
         private PeriodItem selectedPeriod;
@@ -66,9 +70,12 @@ namespace MoneyRecord.ViewModels
             new BudgetPeriodItem { Period = BudgetPeriod.Year }
         ];
 
-        public BudgetViewModel(DatabaseService databaseService)
+        public BudgetViewModel(ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBalanceService balanceService, IErrorHandler errorHandler)
         {
-            _databaseService = databaseService;
+            _categoryRepository = categoryRepository;
+            _budgetRepository = budgetRepository;
+            _balanceService = balanceService;
+            _errorHandler = errorHandler;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
             selectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
         }
@@ -81,9 +88,8 @@ namespace MoneyRecord.ViewModels
 
         private async Task LoadAvailableCategoriesAsync()
         {
-            var expenseCategories = await _databaseService.GetCategoriesAsync(CategoryType.Expense);
-            var existingBudgetCategoryIds = (await _databaseService.GetBudgetsAsync())
-                .Where(b => b.IsActive)
+            var expenseCategories = await _categoryRepository.GetByTypeAsync(CategoryType.Expense);
+            var existingBudgetCategoryIds = (await _budgetRepository.GetActiveBudgetsAsync())
                 .Select(b => b.CategoryId)
                 .ToHashSet();
 
@@ -102,17 +108,16 @@ namespace MoneyRecord.ViewModels
 
                 var (startDate, endDate) = GetDateRange();
 
-                var allBudgets = await _databaseService.GetBudgetsAsync();
-                var activeBudgets = allBudgets.Where(b => b.IsActive).ToList();
+                var activeBudgets = await _budgetRepository.GetActiveBudgetsAsync();
 
                 var budgetProgressList = new List<BudgetProgress>();
 
                 foreach (var budget in activeBudgets)
                 {
-                    var category = await _databaseService.GetCategoryByIdAsync(budget.CategoryId);
+                    var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
                     if (category == null) continue;
 
-                    var spentAmount = await _databaseService.GetCategoryExpensesAsync(budget.CategoryId, startDate, endDate);
+                    var spentAmount = await _balanceService.GetCategoryExpensesAsync(budget.CategoryId, startDate, endDate);
 
                     // Calculate projected limit based on budget period and selected date range
                     var projectedLimit = BudgetProjectionHelper.CalculateProjectedLimit(
@@ -158,9 +163,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, 
-                    string.Format(AppResources.FailedToLoadReportData, ex.Message), 
-                    AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadReportData, ex.Message));
             }
             finally
             {
@@ -191,17 +194,13 @@ namespace MoneyRecord.ViewModels
         {
             if (SelectedCategory == null)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, 
-                    AppResources.PleaseSelectCategory, 
-                    AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseSelectCategory);
                 return;
             }
 
             if (!decimal.TryParse(BudgetAmount.Replace("$", "").Replace(",", ""), out var amount) || amount <= 0)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, 
-                    AppResources.PleaseEnterValidAmount, 
-                    AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;
             }
 
@@ -216,7 +215,7 @@ namespace MoneyRecord.ViewModels
                     IsActive = true
                 };
 
-                await _databaseService.SaveBudgetAsync(budget);
+                await _budgetRepository.SaveAsync(budget);
 
                 IsAddFormVisible = false;
                 SelectedCategory = null;
@@ -225,15 +224,11 @@ namespace MoneyRecord.ViewModels
 
                 await LoadBudgetsAsync();
 
-                await Shell.Current.DisplayAlertAsync(AppResources.Success, 
-                    AppResources.BudgetAddedSuccessfully, 
-                    AppResources.OK);
+                await Toast.Make(AppResources.BudgetAddedSuccessfully).Show();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error,
-                    string.Format(AppResources.FailedToSaveBudget, ex.Message), 
-                    AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToSaveBudget, ex.Message));
             }
         }
 
@@ -252,14 +247,12 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                await _databaseService.DeleteBudgetAsync(budget.BudgetId);
+                await _budgetRepository.DeleteByIdAsync(budget.BudgetId);
                 await LoadBudgetsAsync();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, 
-                    string.Format(AppResources.FailedToDeleteBudget, ex.Message), 
-                    AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToDeleteBudget, ex.Message));
             }
         }
 
@@ -281,22 +274,18 @@ namespace MoneyRecord.ViewModels
 
             if (!decimal.TryParse(result.Replace("$", "").Replace(",", ""), out var newAmount) || newAmount <= 0)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, 
-                    AppResources.PleaseEnterValidAmount, 
-                    AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;
             }
 
             try
             {
-                await _databaseService.UpdateBudgetAmountAsync(budget.BudgetId, newAmount);
+                await _budgetRepository.UpdateAmountAsync(budget.BudgetId, newAmount);
                 await LoadBudgetsAsync();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, 
-                    string.Format(AppResources.FailedToSaveBudget, ex.Message), 
-                    AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToSaveBudget, ex.Message));
             }
         }
 

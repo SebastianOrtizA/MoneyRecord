@@ -33,7 +33,7 @@ namespace MoneyRecord.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Failed to load data: {ex.Message}", "OK");
+                await DisplayAlertAsync("Error", $"Failed to load data: {ex.Message}", "OK");
             }
         }
     }

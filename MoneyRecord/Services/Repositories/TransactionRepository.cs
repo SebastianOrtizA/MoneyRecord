@@ -82,11 +82,14 @@ namespace MoneyRecord.Services.Repositories
                 .Where(t => t.CategoryId == fromCategoryId)
                 .ToListAsync();
 
-            foreach (var transaction in transactions)
+            await _dbInitializer.Database.RunInTransactionAsync(db =>
             {
-                transaction.CategoryId = toCategoryId;
-                await _dbInitializer.Database.UpdateAsync(transaction);
-            }
+                foreach (var transaction in transactions)
+                {
+                    transaction.CategoryId = toCategoryId;
+                    db.Update(transaction);
+                }
+            });
 
             return transactions.Count;
         }
@@ -98,11 +101,14 @@ namespace MoneyRecord.Services.Repositories
                 .Where(t => t.AccountId == fromAccountId)
                 .ToListAsync();
 
-            foreach (var transaction in transactions)
+            await _dbInitializer.Database.RunInTransactionAsync(db =>
             {
-                transaction.AccountId = toAccountId;
-                await _dbInitializer.Database.UpdateAsync(transaction);
-            }
+                foreach (var transaction in transactions)
+                {
+                    transaction.AccountId = toAccountId;
+                    db.Update(transaction);
+                }
+            });
 
             return transactions.Count;
         }

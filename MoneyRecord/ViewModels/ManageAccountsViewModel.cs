@@ -3,19 +3,27 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
-using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
+    public sealed class AccountDisplayItem
+    {
+        public Account Account { get; init; } = null!;
+        public decimal CurrentBalance { get; init; }
+    }
+
     public partial class ManageAccountsViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly ITransactionRepository _transactionRepository;
         private readonly ICategoryIconService _categoryIconService;
+        private readonly IBalanceService _balanceService;
+        private readonly IErrorHandler _errorHandler;
 
         [ObservableProperty]
-        private ObservableCollection<Account> accounts = new();
+        private ObservableCollection<AccountDisplayItem> accounts = new();
 
         [ObservableProperty]
         private string newAccountName = string.Empty;
@@ -50,10 +58,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<AccountIcon> availableIcons = new();
 
-        public ManageAccountsViewModel(DatabaseService databaseService, ICategoryIconService categoryIconService)
+        public ManageAccountsViewModel(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ICategoryIconService categoryIconService, IBalanceService balanceService, IErrorHandler errorHandler)
         {
-            _databaseService = databaseService;
+            _accountRepository = accountRepository;
+            _transactionRepository = transactionRepository;
             _categoryIconService = categoryIconService;
+            _balanceService = balanceService;
+            _errorHandler = errorHandler;
         }
 
         public async Task InitializeAsync()
@@ -84,11 +95,18 @@ namespace MoneyRecord.ViewModels
 
         private async Task LoadAccountsAsync()
         {
-            var accountList = await _databaseService.GetAccountsAsync();
+            var accountList = await _accountRepository.GetAllAsync();
+            var balances = await _balanceService.GetAllAccountBalancesAsync();
+            var balanceMap = balances.ToDictionary(b => b.AccountId, b => b.CurrentBalance);
+
             Accounts.Clear();
             foreach (var account in accountList)
             {
-                Accounts.Add(account);
+                Accounts.Add(new AccountDisplayItem
+                {
+                    Account = account,
+                    CurrentBalance = balanceMap.GetValueOrDefault(account.Id)
+                });
             }
         }
 
@@ -111,7 +129,7 @@ namespace MoneyRecord.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewAccountName))
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterAccountName, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterAccountName);
                 return;
             }
 
@@ -121,7 +139,7 @@ namespace MoneyRecord.ViewModels
             // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
             if (balance < 0 && !NewAccountAllowNegativeBalance)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.NegativeBalanceNotAllowed, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.NegativeBalanceNotAllowed);
                 return;
             }
 
@@ -137,7 +155,7 @@ namespace MoneyRecord.ViewModels
                 AllowNegativeBalance = NewAccountAllowNegativeBalance
             };
 
-            await _databaseService.SaveAccountAsync(account);
+            await _accountRepository.SaveAsync(account);
             NewAccountName = string.Empty;
             NewAccountBalance = "0";
             NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
@@ -147,11 +165,12 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private void EditAccount(Account account)
+        private void EditAccount(AccountDisplayItem item)
         {
-            if (account == null)
+            if (item?.Account == null)
                 return;
 
+            var account = item.Account;
             EditingAccount = account;
             EditAccountName = account.Name;
             EditAccountBalance = account.InitialBalance.ToString();
@@ -181,7 +200,7 @@ namespace MoneyRecord.ViewModels
 
             if (string.IsNullOrWhiteSpace(EditAccountName))
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterAccountName, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterAccountName);
                 return;
             }
 
@@ -191,7 +210,7 @@ namespace MoneyRecord.ViewModels
             // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
             if (balance < 0 && !EditAccountAllowNegativeBalance)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.NegativeBalanceNotAllowed, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.NegativeBalanceNotAllowed);
                 return;
             }
 
@@ -202,7 +221,7 @@ namespace MoneyRecord.ViewModels
                 : EditAccountIconCode;
             EditingAccount.AllowNegativeBalance = EditAccountAllowNegativeBalance;
 
-            await _databaseService.SaveAccountAsync(EditingAccount);
+            await _accountRepository.SaveAsync(EditingAccount);
             
             IsEditMode = false;
             EditingAccount = null;
@@ -216,18 +235,20 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private async Task DeleteAccountAsync(Account account)
+        private async Task DeleteAccountAsync(AccountDisplayItem item)
         {
-            if (account == null)
+            if (item?.Account == null)
                 return;
+
+            var account = item.Account;
 
             if (account.IsDefault)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.CannotDeleteDefaultAccount, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.CannotDeleteDefaultAccount);
                 return;
             }
 
-            var hasTransactions = await _databaseService.AccountHasTransactionsAsync(account.Id);
+            var hasTransactions = await _accountRepository.HasTransactionsAsync(account.Id);
 
             string message = hasTransactions
                 ? string.Format(AppResources.DeleteAccountWithTransactions, account.Name)
@@ -242,7 +263,13 @@ namespace MoneyRecord.ViewModels
             if (!confirm)
                 return;
 
-            await _databaseService.DeleteAccountAsync(account);
+            var defaultAccount = await _accountRepository.GetDefaultAsync();
+            if (defaultAccount != null && account.Id != defaultAccount.Id)
+            {
+                await _transactionRepository.ReassignAccountAsync(account.Id, defaultAccount.Id);
+            }
+
+            await _accountRepository.DeleteAsync(account);
             await LoadAccountsAsync();
         }
 

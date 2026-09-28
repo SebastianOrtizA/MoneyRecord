@@ -3,14 +3,15 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
-using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
     public partial class ExpenseReportViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly ITransactionEnrichmentService _enrichmentService;
+        private readonly IErrorHandler _errorHandler;
 
         private const double OthersThreshold = 10.0; // Categories below 10% go into "Others"
 
@@ -63,9 +64,10 @@ namespace MoneyRecord.ViewModels
             Color.FromArgb("#B71C1C"), // Deep red (highest)
         };
 
-        public ExpenseReportViewModel(DatabaseService databaseService)
+        public ExpenseReportViewModel(ITransactionEnrichmentService enrichmentService, IErrorHandler errorHandler)
         {
-            _databaseService = databaseService;
+            _enrichmentService = enrichmentService;
+            _errorHandler = errorHandler;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
         }
 
@@ -84,7 +86,7 @@ namespace MoneyRecord.ViewModels
                 var (startDate, endDate) = GetDateRange();
 
                 // Get all expense transactions in the date range
-                var transactions = await _databaseService.GetTransactionsAsync(startDate, endDate);
+                var transactions = await _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 _expenseTransactions = transactions
                     .Where(t => t.Type == TransactionType.Expense)
                     .ToList();
@@ -159,10 +161,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadReportData, ex.Message), AppResources.OK);
-                });
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadReportData, ex.Message));
             }
             finally
             {
@@ -216,7 +215,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadCategoryDetails, ex.Message), AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadCategoryDetails, ex.Message));
             }
         }
 

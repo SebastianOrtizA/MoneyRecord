@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord
 {
@@ -11,7 +11,30 @@ namespace MoneyRecord
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            var window = new Window(new AppShell());
+
+            window.Created += (s, e) =>
+            {
+                _ = ProcessRecurringTransactionsAsync();
+            };
+
+            return window;
+        }
+
+        private async Task ProcessRecurringTransactionsAsync()
+        {
+            try
+            {
+                var service = IPlatformApplication.Current?.Services.GetService<IRecurringTransactionService>();
+                if (service != null)
+                {
+                    await service.ProcessDueTransactionsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to process recurring transactions: {ex.Message}");
+            }
         }
     }
 }

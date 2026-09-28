@@ -1,8 +1,8 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
-using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
@@ -11,8 +11,10 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(CategoryType), "CategoryType")]
     public partial class ManageCategoriesViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ITransactionRepository _transactionRepository;
         private readonly ICategoryIconService _categoryIconService;
+        private readonly IErrorHandler _errorHandler;
 
         [ObservableProperty]
         private CategoryType categoryType;
@@ -44,10 +46,12 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<CategoryIcon> availableIcons = new();
 
-        public ManageCategoriesViewModel(DatabaseService databaseService, ICategoryIconService categoryIconService)
+        public ManageCategoriesViewModel(ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ICategoryIconService categoryIconService, IErrorHandler errorHandler)
         {
-            _databaseService = databaseService;
+            _categoryRepository = categoryRepository;
+            _transactionRepository = transactionRepository;
             _categoryIconService = categoryIconService;
+            _errorHandler = errorHandler;
         }
 
         public async Task InitializeAsync()
@@ -71,7 +75,7 @@ namespace MoneyRecord.ViewModels
 
         private async Task LoadCategoriesAsync()
         {
-            var categoryList = await _databaseService.GetCategoriesAsync(CategoryType);
+            var categoryList = await _categoryRepository.GetByTypeAsync(CategoryType);
             Categories.Clear();
             foreach (var category in categoryList)
             {
@@ -106,7 +110,7 @@ namespace MoneyRecord.ViewModels
         {
             if (string.IsNullOrWhiteSpace(NewCategoryName))
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterCategoryName, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterCategoryName);
                 return;
             }
 
@@ -119,7 +123,7 @@ namespace MoneyRecord.ViewModels
                     : NewCategoryIconCode
             };
 
-            await _databaseService.SaveCategoryAsync(category);
+            await _categoryRepository.SaveAsync(category);
             NewCategoryName = string.Empty;
             NewCategoryIconCode = _categoryIconService.GetDefaultIconCode(CategoryType);
             UpdateIconSelection(NewCategoryIconCode);
@@ -132,7 +136,7 @@ namespace MoneyRecord.ViewModels
             try
             {
                 // Check if category has transactions
-                var hasTransactions = await _databaseService.CategoryHasTransactionsAsync(category.Id);
+                var hasTransactions = await _categoryRepository.HasTransactionsAsync(category.Id);
 
                 if (hasTransactions)
                 {
@@ -163,12 +167,12 @@ namespace MoneyRecord.ViewModels
                     
                     if (replacementCategory == null)
                     {
-                        await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.Error, AppResources.OK);
+                        await _errorHandler.HandleAsync(AppResources.Error);
                         return;
                     }
 
                     // Get transaction count for confirmation message
-                    var transactionCount = await _databaseService.GetTransactionCountByCategoryAsync(category.Id);
+                    var transactionCount = await _categoryRepository.GetTransactionCountAsync(category.Id);
 
                     // Confirm the reassignment
                     var confirmReassign = await Shell.Current.DisplayAlertAsync(
@@ -183,14 +187,12 @@ namespace MoneyRecord.ViewModels
                     }
 
                     // Reassign transactions
-                    var reassignedCount = await _databaseService.ReassignTransactionsCategoryAsync(category.Id, replacementCategory.Id);
+                    var reassignedCount = await _transactionRepository.ReassignCategoryAsync(category.Id, replacementCategory.Id);
 
-                    // Delete the category
-                    await _databaseService.DeleteCategoryAsync(category);
+                    await _categoryRepository.DeleteAsync(category);
 
-                    await Shell.Current.DisplayAlertAsync(AppResources.Success, 
-                        string.Format(AppResources.CategoryDeletedAndTransactionsMoved, category.Name, reassignedCount, replacementCategory.Name), 
-                        AppResources.OK);
+                    await Toast.Make(
+                        string.Format(AppResources.CategoryDeletedAndTransactionsMoved, category.Name, reassignedCount, replacementCategory.Name)).Show();
                 }
                 else
                 {
@@ -201,14 +203,14 @@ namespace MoneyRecord.ViewModels
                     if (!confirm)
                         return;
 
-                    await _databaseService.DeleteCategoryAsync(category);
+                    await _categoryRepository.DeleteAsync(category);
                 }
 
                 await LoadCategoriesAsync();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, ex.Message, AppResources.OK);
+                await _errorHandler.HandleAsync(ex, ex.Message);
             }
         }
 
@@ -230,7 +232,7 @@ namespace MoneyRecord.ViewModels
 
             if (string.IsNullOrWhiteSpace(EditCategoryName))
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, AppResources.PleaseEnterCategoryName, AppResources.OK);
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterCategoryName);
                 return;
             }
 
@@ -239,7 +241,7 @@ namespace MoneyRecord.ViewModels
                 ? _categoryIconService.GetDefaultIconCode(CategoryType)
                 : EditCategoryIconCode;
             
-            await _databaseService.SaveCategoryAsync(EditingCategory);
+            await _categoryRepository.SaveAsync(EditingCategory);
 
             IsEditMode = false;
             EditingCategory = null;

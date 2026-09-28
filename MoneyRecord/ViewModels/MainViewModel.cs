@@ -1,9 +1,11 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 using System.Collections.ObjectModel;
 
@@ -11,7 +13,18 @@ namespace MoneyRecord.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IBalanceService _balanceService;
+        private readonly ITransactionEnrichmentService _enrichmentService;
+        private readonly ITransactionRepository _transactionRepository;
+        private readonly ITransferRepository _transferRepository;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IBudgetRepository _budgetRepository;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IErrorHandler _errorHandler;
+
+        private List<Transaction> _allCombinedTransactions = new();
+        private Dictionary<string, decimal>? _cachedAccountBalances;
+        private Dictionary<string, string>? _cachedAccountIcons;
 
         [ObservableProperty]
         private decimal currentBalance;
@@ -38,10 +51,10 @@ namespace MoneyRecord.ViewModels
         private bool isCustomPeriodSelected = false;
 
         [ObservableProperty]
-        private GroupingMode currentGroupingMode = GroupingMode.Category;  // Default to grouped by category
+        private GroupingMode currentGroupingMode = GroupingMode.Category;
 
         [ObservableProperty]
-        private bool isGroupedByCategory = true;  // Kept for backward compatibility
+        private bool isGroupedByCategory = true;
 
         [ObservableProperty]
         private bool isAscending = false;
@@ -61,11 +74,68 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<AccountBalanceInfo> accountBalances = new();
 
+        [ObservableProperty]
+        private ObservableCollection<BudgetProgress> budgetSummaries = new();
+
+        [ObservableProperty]
+        private bool hasBudgets = false;
+
+        [ObservableProperty]
+        private int budgetsOnTrack;
+
+        [ObservableProperty]
+        private int budgetsOverBudget;
+
+        [ObservableProperty]
+        private string searchText = string.Empty;
+
+        [ObservableProperty]
+        private bool isFilterVisible = false;
+
+        [ObservableProperty]
+        private string selectedFilterType = "All";
+
+        [ObservableProperty]
+        private string? selectedFilterCategory;
+
+        [ObservableProperty]
+        private string? selectedFilterAccount;
+
+        [ObservableProperty]
+        private string minAmountText = string.Empty;
+
+        [ObservableProperty]
+        private string maxAmountText = string.Empty;
+
+        [ObservableProperty]
+        private bool hasActiveFilters = false;
+
+        [ObservableProperty]
+        private int filteredCount;
+
+        [ObservableProperty]
+        private int totalCount;
+
+        [ObservableProperty]
+        private ObservableCollection<string> filterCategories = new();
+
+        [ObservableProperty]
+        private ObservableCollection<string> filterAccounts = new();
+
+        public List<string> FilterTypes { get; } = new() { "All", "Income", "Expense", "Transfer" };
+
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
-        public MainViewModel(DatabaseService databaseService)
+        public MainViewModel(IBalanceService balanceService, ITransactionEnrichmentService enrichmentService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler)
         {
-            _databaseService = databaseService;
+            _balanceService = balanceService;
+            _enrichmentService = enrichmentService;
+            _transactionRepository = transactionRepository;
+            _transferRepository = transferRepository;
+            _accountRepository = accountRepository;
+            _budgetRepository = budgetRepository;
+            _categoryRepository = categoryRepository;
+            _errorHandler = errorHandler;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
         }
 
@@ -83,149 +153,186 @@ namespace MoneyRecord.ViewModels
 
                 var (startDate, endDate) = GetDateRange();
 
-                // Execute all database queries in parallel for faster loading
-                var balanceTask = _databaseService.GetTotalBalanceAsync();
-                var incomesTask = _databaseService.GetTotalIncomesAsync(startDate, endDate);
-                var expensesTask = _databaseService.GetTotalExpensesAsync(startDate, endDate);
-                var transactionsTask = _databaseService.GetTransactionsAsync(startDate, endDate);
-                var transfersTask = _databaseService.GetTransfersAsync(startDate, endDate);
+                var balanceTask = _balanceService.GetTotalBalanceAsync();
+                var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
+                var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
+                var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
+                var transfersTask = _enrichmentService.GetEnrichedTransfersAsync(startDate, endDate);
 
-                // Wait for all queries to complete
                 await Task.WhenAll(balanceTask, incomesTask, expensesTask, transactionsTask, transfersTask);
 
-                // Retrieve results
                 CurrentBalance = await balanceTask;
                 TotalIncomes = await incomesTask;
                 TotalExpenses = await expensesTask;
 
                 var transactionList = await transactionsTask ?? new List<Transaction>();
-
-                // Fetch transfers and convert them to Transaction items for display
                 var transfers = await transfersTask ?? new List<Transfer>();
                 var transferTransactions = ConvertTransfersToTransactions(transfers, CurrentGroupingMode);
 
-                // Combine regular transactions with transfer transactions
-                var combinedList = transactionList.Concat(transferTransactions).ToList();
+                _allCombinedTransactions = transactionList.Concat(transferTransactions).ToList();
 
-                // Pre-fetch account balances and icons if grouping by account
-                Dictionary<string, decimal>? accountBalances = null;
-                Dictionary<string, string>? accountIcons = null;
                 if (CurrentGroupingMode == GroupingMode.Account)
                 {
-                    var balanceInfosTask = _databaseService.GetAllAccountBalancesAsync();
-                    var accountsTask = _databaseService.GetAccountsAsync();
-
+                    var balanceInfosTask = _balanceService.GetAllAccountBalancesAsync();
+                    var accountsTask = _accountRepository.GetAllAsync();
                     await Task.WhenAll(balanceInfosTask, accountsTask);
 
                     var balanceInfos = await balanceInfosTask ?? new List<AccountBalanceInfo>();
-                    accountBalances = balanceInfos.ToDictionary(b => b.AccountName ?? string.Empty, b => b.CurrentBalance);
+                    _cachedAccountBalances = balanceInfos.ToDictionary(b => b.AccountName ?? string.Empty, b => b.CurrentBalance);
 
-                    // Get account icons
                     var accounts = await accountsTask ?? new List<Account>();
-                    accountIcons = accounts.ToDictionary(a => a.Name ?? string.Empty, a => a.IconCode ?? "F0070");
+                    _cachedAccountIcons = accounts.ToDictionary(a => a.Name ?? string.Empty, a => a.IconCode ?? "F0070");
                 }
-                
-                // Sort by date
-                combinedList = IsAscending 
-                    ? combinedList.OrderBy(t => t.Date).ToList()
-                    : combinedList.OrderByDescending(t => t.Date).ToList();
-
-                // Update collections on main thread
-                await MainThread.InvokeOnMainThreadAsync(() =>
+                else
                 {
-                    
-                    if (CurrentGroupingMode != GroupingMode.None)
-                    {
-                        // Group transactions by category or account
-                        IEnumerable<IGrouping<string, Transaction>> groupedList;
-                        
-                        if (CurrentGroupingMode == GroupingMode.Category)
-                        {
-                            var validTransactions = combinedList
-                                .Where(t => !string.IsNullOrEmpty(t.CategoryName))
-                                .ToList();
-                            groupedList = validTransactions.GroupBy(t => t.CategoryName ?? string.Empty);
-                        }
-                        else // GroupingMode.Account
-                        {
-                            var validTransactions = combinedList
-                                .Where(t => !string.IsNullOrEmpty(t.AccountName))
-                                .ToList();
-                            groupedList = validTransactions.GroupBy(t => t.AccountName ?? string.Empty);
-                        }
-                            
-                        var groups = new List<TransactionGroup>();
-                            
-                        foreach (var g in groupedList)
-                        {
-                            var transactionsInGroup = g.ToList();
-                                
-                            try
-                            {
-                                // For account grouping, use the account balance; for category, sum transactions
-                                decimal? overrideTotal = null;
-                                string? accountIconCode = null;
-                                
-                                if (CurrentGroupingMode == GroupingMode.Account)
-                                {
-                                    if (accountBalances != null)
-                                    {
-                                        overrideTotal = accountBalances.GetValueOrDefault(g.Key, 0);
-                                    }
-                                    if (accountIcons != null)
-                                    {
-                                        accountIconCode = accountIcons.GetValueOrDefault(g.Key, "F0070");
-                                    }
-                                }
-                                
-                                var group = new TransactionGroup(g.Key, transactionsInGroup, CurrentGroupingMode, overrideTotal, accountIconCode);
-                                groups.Add(group);
-                            }
-                            catch (Exception ex)
-                            {
-                                throw;
-                            }
-                        }
-                            
-                        groups = groups.OrderBy(g => g.GroupName).ToList();
+                    _cachedAccountBalances = null;
+                    _cachedAccountIcons = null;
+                }
 
-                        GroupedTransactions.Clear();
-                            
-                        // Instead of adding one by one, replace the entire collection
-                        var newGroupedCollection = new ObservableCollection<TransactionGroup>(groups);
-                            
-                        GroupedTransactions = newGroupedCollection;
-                        OnPropertyChanged(nameof(GroupedTransactions));
-                            
-                        Transactions.Clear();
-                    }
-                    else
-                    {
-                        // Show flat list
-                        Transactions.Clear();
-                        foreach (var transaction in combinedList)
-                        {
-                            Transactions.Add(transaction);
-                        }
+                UpdateFilterOptions();
+                ApplyFilters();
 
-                        GroupedTransactions.Clear();
-                    }
-                    
-                    // Update HasTransactions flag
-                    HasTransactions = combinedList.Any();
-                });
+                await LoadBudgetSummaryAsync();
             }
             catch (Exception ex)
             {
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadTransactions, ex.Message), AppResources.OK);
-                });
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadTransactions, ex.Message));
             }
             finally
             {
                 IsRefreshing = false;
             }
+        }
+
+        private void UpdateFilterOptions()
+        {
+            var categories = _allCombinedTransactions
+                .Select(t => t.CategoryName)
+                .Where(n => !string.IsNullOrEmpty(n))
+                .Distinct()
+                .OrderBy(n => n)
+                .ToList();
+
+            var accounts = _allCombinedTransactions
+                .Select(t => t.AccountName)
+                .Where(n => !string.IsNullOrEmpty(n))
+                .Distinct()
+                .OrderBy(n => n)
+                .ToList();
+
+            FilterCategories = new ObservableCollection<string>(categories!);
+            FilterAccounts = new ObservableCollection<string>(accounts!);
+        }
+
+        private void ApplyFilters()
+        {
+            var filtered = _allCombinedTransactions.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                var search = SearchText.Trim();
+                filtered = filtered.Where(t =>
+                    (t.Description?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (t.CategoryName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (t.AccountName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
+            }
+
+            if (SelectedFilterType != "All" && !string.IsNullOrEmpty(SelectedFilterType))
+            {
+                filtered = SelectedFilterType switch
+                {
+                    "Income" => filtered.Where(t => t.Type == TransactionType.Income),
+                    "Expense" => filtered.Where(t => t.Type == TransactionType.Expense),
+                    "Transfer" => filtered.Where(t => t.Type == TransactionType.Transfer),
+                    _ => filtered
+                };
+            }
+
+            if (!string.IsNullOrEmpty(SelectedFilterCategory))
+            {
+                filtered = filtered.Where(t => t.CategoryName == SelectedFilterCategory);
+            }
+
+            if (!string.IsNullOrEmpty(SelectedFilterAccount))
+            {
+                filtered = filtered.Where(t => t.AccountName == SelectedFilterAccount);
+            }
+
+            if (decimal.TryParse(MinAmountText, out var minAmount))
+            {
+                filtered = filtered.Where(t => t.Amount >= minAmount);
+            }
+
+            if (decimal.TryParse(MaxAmountText, out var maxAmount))
+            {
+                filtered = filtered.Where(t => t.Amount <= maxAmount);
+            }
+
+            var combinedList = IsAscending
+                ? filtered.OrderBy(t => t.Date).ToList()
+                : filtered.OrderByDescending(t => t.Date).ToList();
+
+            TotalCount = _allCombinedTransactions.Count;
+            FilteredCount = combinedList.Count;
+            HasActiveFilters = !string.IsNullOrWhiteSpace(SearchText) ||
+                               (SelectedFilterType != "All" && !string.IsNullOrEmpty(SelectedFilterType)) ||
+                               !string.IsNullOrEmpty(SelectedFilterCategory) ||
+                               !string.IsNullOrEmpty(SelectedFilterAccount) ||
+                               !string.IsNullOrEmpty(MinAmountText) ||
+                               !string.IsNullOrEmpty(MaxAmountText);
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (CurrentGroupingMode != GroupingMode.None)
+                {
+                    IEnumerable<IGrouping<string, Transaction>> groupedList;
+
+                    if (CurrentGroupingMode == GroupingMode.Category)
+                    {
+                        groupedList = combinedList
+                            .Where(t => !string.IsNullOrEmpty(t.CategoryName))
+                            .GroupBy(t => t.CategoryName ?? string.Empty);
+                    }
+                    else
+                    {
+                        groupedList = combinedList
+                            .Where(t => !string.IsNullOrEmpty(t.AccountName))
+                            .GroupBy(t => t.AccountName ?? string.Empty);
+                    }
+
+                    var groups = new List<TransactionGroup>();
+
+                    foreach (var g in groupedList)
+                    {
+                        decimal? overrideTotal = null;
+                        string? accountIconCode = null;
+
+                        if (CurrentGroupingMode == GroupingMode.Account)
+                        {
+                            if (_cachedAccountBalances != null)
+                                overrideTotal = _cachedAccountBalances.GetValueOrDefault(g.Key, 0);
+                            if (_cachedAccountIcons != null)
+                                accountIconCode = _cachedAccountIcons.GetValueOrDefault(g.Key, "F0070");
+                        }
+
+                        groups.Add(new TransactionGroup(g.Key, g.ToList(), CurrentGroupingMode, overrideTotal, accountIconCode));
+                    }
+
+                    groups = groups.OrderBy(g => g.GroupName).ToList();
+                    GroupedTransactions = new ObservableCollection<TransactionGroup>(groups);
+                    OnPropertyChanged(nameof(GroupedTransactions));
+                    Transactions.Clear();
+                }
+                else
+                {
+                    Transactions.Clear();
+                    foreach (var transaction in combinedList)
+                        Transactions.Add(transaction);
+                    GroupedTransactions.Clear();
+                }
+
+                HasTransactions = combinedList.Any();
+            });
         }
 
         [RelayCommand]
@@ -275,7 +382,7 @@ namespace MoneyRecord.ViewModels
         {
             try
             {
-                var balances = await _databaseService.GetAllAccountBalancesAsync();
+                var balances = await _balanceService.GetAllAccountBalancesAsync();
 
                 // Build the message to display
                 var message = string.Join("\n\n", balances.Select(b => 
@@ -292,7 +399,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadAccountBalances, ex.Message), AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadAccountBalances, ex.Message));
             }
         }
 
@@ -324,10 +431,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await MainThread.InvokeOnMainThreadAsync(async () =>
-                {
-                    await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToToggleView, ex.Message), AppResources.OK);
-                });
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToToggleView, ex.Message));
             }
         }
 
@@ -388,29 +492,83 @@ namespace MoneyRecord.ViewModels
                 if (isTransfer)
                 {
                     // Delete the transfer
-                    var transfer = await _databaseService.GetTransferAsync(transaction.TransferId!.Value);
+                    var transfer = await _transferRepository.GetByIdAsync(transaction.TransferId!.Value);
                     if (transfer != null)
                     {
-                        await _databaseService.DeleteTransferAsync(transfer);
+                        await _transferRepository.DeleteAsync(transfer);
                     }
                 }
                 else
                 {
-                    await _databaseService.DeleteTransactionAsync(transaction);
+                    await _transactionRepository.DeleteAsync(transaction);
                 }
                 
                 await LoadDataAsync();
 
                 var successMessage = isTransfer ? AppResources.TransferDeletedSuccessfully : AppResources.TransactionDeletedSuccessfully;
-                await Shell.Current.DisplayAlertAsync(AppResources.Success, successMessage, AppResources.OK);
+                await Toast.Make(successMessage).Show();
             }
             catch (Exception ex)
             {
-                var errorMessage = isTransfer 
+                var errorMessage = isTransfer
                     ? string.Format(AppResources.FailedToDeleteTransfer, ex.Message)
                     : string.Format(AppResources.FailedToDeleteTransaction, ex.Message);
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, errorMessage, AppResources.OK);
+                await _errorHandler.HandleAsync(ex, errorMessage);
             }
+        }
+
+        [RelayCommand]
+        private void ToggleFilters()
+        {
+            IsFilterVisible = !IsFilterVisible;
+        }
+
+        [RelayCommand]
+        private void ClearFilters()
+        {
+            SearchText = string.Empty;
+            SelectedFilterType = "All";
+            SelectedFilterCategory = null;
+            SelectedFilterAccount = null;
+            MinAmountText = string.Empty;
+            MaxAmountText = string.Empty;
+            ApplyFilters();
+        }
+
+        [RelayCommand]
+        private void PerformSearch()
+        {
+            ApplyFilters();
+        }
+
+        partial void OnSearchTextChanged(string value)
+        {
+            ApplyFilters();
+        }
+
+        partial void OnSelectedFilterTypeChanged(string value)
+        {
+            ApplyFilters();
+        }
+
+        partial void OnSelectedFilterCategoryChanged(string? value)
+        {
+            ApplyFilters();
+        }
+
+        partial void OnSelectedFilterAccountChanged(string? value)
+        {
+            ApplyFilters();
+        }
+
+        partial void OnMinAmountTextChanged(string value)
+        {
+            ApplyFilters();
+        }
+
+        partial void OnMaxAmountTextChanged(string value)
+        {
+            ApplyFilters();
         }
 
         partial void OnSelectedPeriodChanged(PeriodItem value)
@@ -422,20 +580,68 @@ namespace MoneyRecord.ViewModels
         partial void OnCustomStartDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
-            {
                 _ = LoadDataAsync();
-            }
         }
 
         partial void OnCustomEndDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
-            {
                 _ = LoadDataAsync();
-            }
         }
 
+        private async Task LoadBudgetSummaryAsync()
+        {
+            var activeBudgets = await _budgetRepository.GetActiveBudgetsAsync();
+            if (activeBudgets.Count == 0)
+            {
+                HasBudgets = false;
+                BudgetSummaries = new ObservableCollection<BudgetProgress>();
+                return;
+            }
 
+            var now = DateTime.Now;
+            var monthStart = new DateTime(now.Year, now.Month, 1);
+            var monthEnd = monthStart.AddMonths(1).AddTicks(-1);
+
+            var progressList = new List<BudgetProgress>();
+
+            foreach (var budget in activeBudgets)
+            {
+                var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
+                if (category == null) continue;
+
+                var (start, end) = budget.Period switch
+                {
+                    BudgetPeriod.Day => (now.Date, now.Date.AddDays(1).AddTicks(-1)),
+                    BudgetPeriod.Month => (monthStart, monthEnd),
+                    BudgetPeriod.Year => (new DateTime(now.Year, 1, 1), new DateTime(now.Year, 12, 31, 23, 59, 59)),
+                    _ => (monthStart, monthEnd)
+                };
+
+                var spent = await _balanceService.GetCategoryExpensesAsync(budget.CategoryId, start, end);
+
+                var progress = new BudgetProgress
+                {
+                    BudgetId = budget.Id,
+                    CategoryId = budget.CategoryId,
+                    CategoryName = category.Name,
+                    CategoryIconCode = category.IconCode,
+                    Period = budget.Period,
+                    OriginalLimitAmount = budget.LimitAmount,
+                    LimitAmount = budget.LimitAmount,
+                    SpentAmount = spent
+                };
+                progress.CalculateProgress();
+                progressList.Add(progress);
+            }
+
+            var sorted = progressList.OrderByDescending(b => b.ProgressPercentage).ToList();
+
+            BudgetsOnTrack = sorted.Count(b => !b.IsOverBudget);
+            BudgetsOverBudget = sorted.Count(b => b.IsOverBudget);
+            BudgetSummaries = new ObservableCollection<BudgetProgress>(sorted.Take(3));
+            HasBudgets = true;
+        }
 
         private (DateTime startDate, DateTime endDate) GetDateRange()
         {

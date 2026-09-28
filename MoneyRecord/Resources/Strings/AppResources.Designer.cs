@@ -2069,5 +2069,407 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("YourCategories", resourceCulture);
             }
         }
+
+        internal static string BudgetExceeded {
+            get {
+                return ResourceManager.GetString("BudgetExceeded", resourceCulture);
+            }
+        }
+
+        internal static string BudgetNearLimit {
+            get {
+                return ResourceManager.GetString("BudgetNearLimit", resourceCulture);
+            }
+        }
+
+        internal static string BudgetSummary {
+            get {
+                return ResourceManager.GetString("BudgetSummary", resourceCulture);
+            }
+        }
+
+        internal static string OnTrack {
+            get {
+                return ResourceManager.GetString("OnTrack", resourceCulture);
+            }
+        }
+
+        internal static string OverBudget {
+            get {
+                return ResourceManager.GetString("OverBudget", resourceCulture);
+            }
+        }
+
+        internal static string RecurringTransactions {
+            get {
+                return ResourceManager.GetString("RecurringTransactions", resourceCulture);
+            }
+        }
+
+        internal static string MakeRecurring {
+            get {
+                return ResourceManager.GetString("MakeRecurring", resourceCulture);
+            }
+        }
+
+        internal static string Frequency {
+            get {
+                return ResourceManager.GetString("Frequency", resourceCulture);
+            }
+        }
+
+        internal static string SelectFrequency {
+            get {
+                return ResourceManager.GetString("SelectFrequency", resourceCulture);
+            }
+        }
+
+        internal static string HasEndDate {
+            get {
+                return ResourceManager.GetString("HasEndDate", resourceCulture);
+            }
+        }
+
+        internal static string EndDateOptional {
+            get {
+                return ResourceManager.GetString("EndDateOptional", resourceCulture);
+            }
+        }
+
+        internal static string FrequencyDaily {
+            get {
+                return ResourceManager.GetString("FrequencyDaily", resourceCulture);
+            }
+        }
+
+        internal static string FrequencyWeekly {
+            get {
+                return ResourceManager.GetString("FrequencyWeekly", resourceCulture);
+            }
+        }
+
+        internal static string FrequencyBiweekly {
+            get {
+                return ResourceManager.GetString("FrequencyBiweekly", resourceCulture);
+            }
+        }
+
+        internal static string FrequencyMonthly {
+            get {
+                return ResourceManager.GetString("FrequencyMonthly", resourceCulture);
+            }
+        }
+
+        internal static string FrequencyYearly {
+            get {
+                return ResourceManager.GetString("FrequencyYearly", resourceCulture);
+            }
+        }
+
+        internal static string NextOccurrence {
+            get {
+                return ResourceManager.GetString("NextOccurrence", resourceCulture);
+            }
+        }
+
+        internal static string NoRecurringTransactions {
+            get {
+                return ResourceManager.GetString("NoRecurringTransactions", resourceCulture);
+            }
+        }
+
+        internal static string AddRecurringToStart {
+            get {
+                return ResourceManager.GetString("AddRecurringToStart", resourceCulture);
+            }
+        }
+
+        internal static string DeleteRecurringConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteRecurringConfirmation", resourceCulture);
+            }
+        }
+
+        internal static string RecurringTransactionDeleted {
+            get {
+                return ResourceManager.GetString("RecurringTransactionDeleted", resourceCulture);
+            }
+        }
+
+        internal static string FailedToLoadRecurringTransactions {
+            get {
+                return ResourceManager.GetString("FailedToLoadRecurringTransactions", resourceCulture);
+            }
+        }
+
+        internal static string FailedToDeleteRecurringTransaction {
+            get {
+                return ResourceManager.GetString("FailedToDeleteRecurringTransaction", resourceCulture);
+            }
+        }
+
+        internal static string FailedToUpdateRecurringTransaction {
+            get {
+                return ResourceManager.GetString("FailedToUpdateRecurringTransaction", resourceCulture);
+            }
+        }
+
+        internal static string SpecificDayOfMonth {
+            get {
+                return ResourceManager.GetString("SpecificDayOfMonth", resourceCulture);
+            }
+        }
+
+        internal static string SelectDay {
+            get {
+                return ResourceManager.GetString("SelectDay", resourceCulture);
+            }
+        }
+
+        internal static string DayN {
+            get {
+                return ResourceManager.GetString("DayN", resourceCulture);
+            }
+        }
+
+        internal static string EditRecurring {
+            get {
+                return ResourceManager.GetString("EditRecurring", resourceCulture);
+            }
+        }
+
+        internal static string RecurringTransactionUpdated {
+            get {
+                return ResourceManager.GetString("RecurringTransactionUpdated", resourceCulture);
+            }
+        }
+
+        internal static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+
+        internal static string BackupRestore {
+            get {
+                return ResourceManager.GetString("BackupRestore", resourceCulture);
+            }
+        }
+
+        internal static string BackupRestoreDescription {
+            get {
+                return ResourceManager.GetString("BackupRestoreDescription", resourceCulture);
+            }
+        }
+
+        internal static string ExportFullBackup {
+            get {
+                return ResourceManager.GetString("ExportFullBackup", resourceCulture);
+            }
+        }
+
+        internal static string SaveBackupLocal {
+            get {
+                return ResourceManager.GetString("SaveBackupLocal", resourceCulture);
+            }
+        }
+
+        internal static string ShareBackupExternal {
+            get {
+                return ResourceManager.GetString("ShareBackupExternal", resourceCulture);
+            }
+        }
+
+        internal static string ExportTransactionsCsv {
+            get {
+                return ResourceManager.GetString("ExportTransactionsCsv", resourceCulture);
+            }
+        }
+
+        internal static string RestoreFromBackup {
+            get {
+                return ResourceManager.GetString("RestoreFromBackup", resourceCulture);
+            }
+        }
+
+        internal static string RestoreNote {
+            get {
+                return ResourceManager.GetString("RestoreNote", resourceCulture);
+            }
+        }
+
+        internal static string ShareBackup {
+            get {
+                return ResourceManager.GetString("ShareBackup", resourceCulture);
+            }
+        }
+
+        internal static string ShareTransactions {
+            get {
+                return ResourceManager.GetString("ShareTransactions", resourceCulture);
+            }
+        }
+
+        internal static string BackupCreatedSuccessfully {
+            get {
+                return ResourceManager.GetString("BackupCreatedSuccessfully", resourceCulture);
+            }
+        }
+
+        internal static string CsvExportedSuccessfully {
+            get {
+                return ResourceManager.GetString("CsvExportedSuccessfully", resourceCulture);
+            }
+        }
+
+        internal static string FailedToCreateBackup {
+            get {
+                return ResourceManager.GetString("FailedToCreateBackup", resourceCulture);
+            }
+        }
+
+        internal static string FailedToExportCsv {
+            get {
+                return ResourceManager.GetString("FailedToExportCsv", resourceCulture);
+            }
+        }
+
+        internal static string ConfirmRestore {
+            get {
+                return ResourceManager.GetString("ConfirmRestore", resourceCulture);
+            }
+        }
+
+        internal static string RestoreWarning {
+            get {
+                return ResourceManager.GetString("RestoreWarning", resourceCulture);
+            }
+        }
+
+        internal static string YesRestore {
+            get {
+                return ResourceManager.GetString("YesRestore", resourceCulture);
+            }
+        }
+
+        internal static string FailedToRestore {
+            get {
+                return ResourceManager.GetString("FailedToRestore", resourceCulture);
+            }
+        }
+
+        internal static string RestoreSuccessful {
+            get {
+                return ResourceManager.GetString("RestoreSuccessful", resourceCulture);
+            }
+        }
+
+        internal static string SelectBackupFile {
+            get {
+                return ResourceManager.GetString("SelectBackupFile", resourceCulture);
+            }
+        }
+
+        internal static string SearchTransactions {
+            get {
+                return ResourceManager.GetString("SearchTransactions", resourceCulture);
+            }
+        }
+
+        internal static string FilterByType {
+            get {
+                return ResourceManager.GetString("FilterByType", resourceCulture);
+            }
+        }
+
+        internal static string FilterByCategory {
+            get {
+                return ResourceManager.GetString("FilterByCategory", resourceCulture);
+            }
+        }
+
+        internal static string FilterByAccount {
+            get {
+                return ResourceManager.GetString("FilterByAccount", resourceCulture);
+            }
+        }
+
+        internal static string AllCategories {
+            get {
+                return ResourceManager.GetString("AllCategories", resourceCulture);
+            }
+        }
+
+        internal static string AllAccounts {
+            get {
+                return ResourceManager.GetString("AllAccounts", resourceCulture);
+            }
+        }
+
+        internal static string AmountRange {
+            get {
+                return ResourceManager.GetString("AmountRange", resourceCulture);
+            }
+        }
+
+        internal static string Min {
+            get {
+                return ResourceManager.GetString("Min", resourceCulture);
+            }
+        }
+
+        internal static string Max {
+            get {
+                return ResourceManager.GetString("Max", resourceCulture);
+            }
+        }
+
+        internal static string ClearFilters {
+            get {
+                return ResourceManager.GetString("ClearFilters", resourceCulture);
+            }
+        }
+
+        internal static string Trends {
+            get {
+                return ResourceManager.GetString("Trends", resourceCulture);
+            }
+        }
+
+        internal static string TrendsAnalysis {
+            get {
+                return ResourceManager.GetString("TrendsAnalysis", resourceCulture);
+            }
+        }
+
+        internal static string MonthlySpending {
+            get {
+                return ResourceManager.GetString("MonthlySpending", resourceCulture);
+            }
+        }
+
+        internal static string IncomeVsExpenses {
+            get {
+                return ResourceManager.GetString("IncomeVsExpenses", resourceCulture);
+            }
+        }
+
+        internal static string ExpenseCategoryBreakdown {
+            get {
+                return ResourceManager.GetString("ExpenseCategoryBreakdown", resourceCulture);
+            }
+        }
+
+        internal static string NoTrendsData {
+            get {
+                return ResourceManager.GetString("NoTrendsData", resourceCulture);
+            }
+        }
+
+        internal static string AddTransactionsForTrends {
+            get {
+                return ResourceManager.GetString("AddTransactionsForTrends", resourceCulture);
+            }
+        }
     }
 }

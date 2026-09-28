@@ -752,4 +752,215 @@ ${1:N2}</value>
     <value>Projected Limit</value>
   </data>
 
+  <!-- Budget Warnings -->
+  <data name="BudgetExceeded" xml:space="preserve">
+    <value>⚠️ Budget exceeded for '{0}'! Spent ${1:N2} of ${2:N2} limit.</value>
+  </data>
+  <data name="BudgetNearLimit" xml:space="preserve">
+    <value>⚠️ Budget near limit for '{0}'. Only ${1:N2} remaining.</value>
+  </data>
+  <data name="BudgetSummary" xml:space="preserve">
+    <value>Budget Summary</value>
+  </data>
+  <data name="OnTrack" xml:space="preserve">
+    <value>On Track</value>
+  </data>
+  <data name="OverBudget" xml:space="preserve">
+    <value>Over Budget</value>
+  </data>
+
+  <!-- Recurring Transactions -->
+  <data name="RecurringTransactions" xml:space="preserve">
+    <value>Recurring</value>
+  </data>
+  <data name="MakeRecurring" xml:space="preserve">
+    <value>Make Recurring</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Frequency</value>
+  </data>
+  <data name="SelectFrequency" xml:space="preserve">
+    <value>Select Frequency</value>
+  </data>
+  <data name="HasEndDate" xml:space="preserve">
+    <value>Set End Date</value>
+  </data>
+  <data name="EndDateOptional" xml:space="preserve">
+    <value>End Date (optional)</value>
+  </data>
+  <data name="FrequencyDaily" xml:space="preserve">
+    <value>Daily</value>
+  </data>
+  <data name="FrequencyWeekly" xml:space="preserve">
+    <value>Weekly</value>
+  </data>
+  <data name="FrequencyBiweekly" xml:space="preserve">
+    <value>Every 2 Weeks</value>
+  </data>
+  <data name="FrequencyMonthly" xml:space="preserve">
+    <value>Monthly</value>
+  </data>
+  <data name="FrequencyYearly" xml:space="preserve">
+    <value>Yearly</value>
+  </data>
+  <data name="NextOccurrence" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="NoRecurringTransactions" xml:space="preserve">
+    <value>No recurring transactions</value>
+  </data>
+  <data name="AddRecurringToStart" xml:space="preserve">
+    <value>When adding a transaction, toggle "Make Recurring" to create automatic repeating transactions</value>
+  </data>
+  <data name="DeleteRecurringConfirmation" xml:space="preserve">
+    <value>Are you sure you want to delete the recurring transaction '{0}'?</value>
+  </data>
+  <data name="RecurringTransactionDeleted" xml:space="preserve">
+    <value>Recurring transaction deleted</value>
+  </data>
+  <data name="FailedToLoadRecurringTransactions" xml:space="preserve">
+    <value>Failed to load recurring transactions</value>
+  </data>
+  <data name="FailedToDeleteRecurringTransaction" xml:space="preserve">
+    <value>Failed to delete recurring transaction</value>
+  </data>
+  <data name="FailedToUpdateRecurringTransaction" xml:space="preserve">
+    <value>Failed to update recurring transaction</value>
+  </data>
+  <data name="SpecificDayOfMonth" xml:space="preserve">
+    <value>Specific Day of Month</value>
+  </data>
+  <data name="SelectDay" xml:space="preserve">
+    <value>Select Day</value>
+  </data>
+  <data name="DayN" xml:space="preserve">
+    <value>day {0}</value>
+  </data>
+  <data name="EditRecurring" xml:space="preserve">
+    <value>Edit Recurring Transaction</value>
+  </data>
+  <data name="RecurringTransactionUpdated" xml:space="preserve">
+    <value>Recurring transaction updated</value>
+  </data>
+
+  <!-- Settings / Backup & Restore -->
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="BackupRestore" xml:space="preserve">
+    <value>Backup &amp; Restore</value>
+  </data>
+  <data name="BackupRestoreDescription" xml:space="preserve">
+    <value>Export your data or restore from a backup</value>
+  </data>
+  <data name="ExportFullBackup" xml:space="preserve">
+    <value>Export Full Backup (JSON)</value>
+  </data>
+  <data name="SaveBackupLocal" xml:space="preserve">
+    <value>Save Backup to Device</value>
+  </data>
+  <data name="ShareBackupExternal" xml:space="preserve">
+    <value>Share Backup</value>
+  </data>
+  <data name="ExportTransactionsCsv" xml:space="preserve">
+    <value>Export Transactions (CSV)</value>
+  </data>
+  <data name="RestoreFromBackup" xml:space="preserve">
+    <value>Restore from Backup</value>
+  </data>
+  <data name="RestoreNote" xml:space="preserve">
+    <value>Warning: Restoring a backup will replace all current data.</value>
+  </data>
+  <data name="ShareBackup" xml:space="preserve">
+    <value>Share Backup</value>
+  </data>
+  <data name="ShareTransactions" xml:space="preserve">
+    <value>Share Transactions</value>
+  </data>
+  <data name="BackupCreatedSuccessfully" xml:space="preserve">
+    <value>Backup created successfully</value>
+  </data>
+  <data name="CsvExportedSuccessfully" xml:space="preserve">
+    <value>CSV exported successfully</value>
+  </data>
+  <data name="FailedToCreateBackup" xml:space="preserve">
+    <value>Failed to create backup</value>
+  </data>
+  <data name="FailedToExportCsv" xml:space="preserve">
+    <value>Failed to export CSV</value>
+  </data>
+  <data name="ConfirmRestore" xml:space="preserve">
+    <value>Confirm Restore</value>
+  </data>
+  <data name="RestoreWarning" xml:space="preserve">
+    <value>This will replace ALL your current data with the backup data. This action cannot be undone. Are you sure?</value>
+  </data>
+  <data name="YesRestore" xml:space="preserve">
+    <value>Yes, Restore</value>
+  </data>
+  <data name="FailedToRestore" xml:space="preserve">
+    <value>Failed to restore backup</value>
+  </data>
+  <data name="RestoreSuccessful" xml:space="preserve">
+    <value>Restore successful! {0} records imported.</value>
+  </data>
+  <data name="SelectBackupFile" xml:space="preserve">
+    <value>Select Backup File</value>
+  </data>
+
+  <!-- Search & Filters -->
+  <data name="SearchTransactions" xml:space="preserve">
+    <value>Search transactions...</value>
+  </data>
+  <data name="FilterByType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="FilterByAccount" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>All Categories</value>
+  </data>
+  <data name="AllAccounts" xml:space="preserve">
+    <value>All Accounts</value>
+  </data>
+  <data name="AmountRange" xml:space="preserve">
+    <value>Amount Range</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>Min</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+
+  <!-- Trends -->
+  <data name="Trends" xml:space="preserve">
+    <value>Trends</value>
+  </data>
+  <data name="TrendsAnalysis" xml:space="preserve">
+    <value>Trends Analysis</value>
+  </data>
+  <data name="MonthlySpending" xml:space="preserve">
+    <value>Monthly Spending</value>
+  </data>
+  <data name="IncomeVsExpenses" xml:space="preserve">
+    <value>Income vs Expenses</value>
+  </data>
+  <data name="ExpenseCategoryBreakdown" xml:space="preserve">
+    <value>Expense Category Breakdown</value>
+  </data>
+  <data name="NoTrendsData" xml:space="preserve">
+    <value>No trend data available</value>
+  </data>
+  <data name="AddTransactionsForTrends" xml:space="preserve">
+    <value>Add transactions to see your spending trends and patterns</value>
+  </data>
+
 </root>

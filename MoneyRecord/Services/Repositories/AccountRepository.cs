@@ -3,13 +3,10 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services.Repositories
 {
-    /// <summary>
-    /// SQLite implementation of Account repository.
-    /// Single responsibility: Account CRUD operations.
-    /// </summary>
     public sealed class AccountRepository : IAccountRepository
     {
         private readonly DatabaseInitializer _dbInitializer;
+        private List<Account>? _cache;
 
         public AccountRepository(DatabaseInitializer dbInitializer)
         {
@@ -21,42 +18,55 @@ namespace MoneyRecord.Services.Repositories
             await _dbInitializer.InitializeAsync();
         }
 
+        private void InvalidateCache()
+        {
+            _cache = null;
+        }
+
         public async Task<List<Account>> GetAllAsync()
         {
+            if (_cache != null)
+                return _cache;
+
             await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Account>().ToListAsync() ?? [];
+            _cache = await _dbInitializer.Database!.Table<Account>().ToListAsync() ?? [];
+            return _cache;
         }
 
         public async Task<Account?> GetByIdAsync(int id)
         {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Account>()
-                .Where(a => a.Id == id)
-                .FirstOrDefaultAsync();
+            var all = await GetAllAsync();
+            return all.FirstOrDefault(a => a.Id == id);
         }
 
         public async Task<Account?> GetDefaultAsync()
         {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Account>()
-                .Where(a => a.IsDefault)
-                .FirstOrDefaultAsync();
+            var all = await GetAllAsync();
+            return all.FirstOrDefault(a => a.IsDefault);
         }
 
         public async Task<int> SaveAsync(Account entity)
         {
             await EnsureInitializedAsync();
+            int result;
             if (entity.Id != 0)
             {
-                return await _dbInitializer.Database!.UpdateAsync(entity);
+                result = await _dbInitializer.Database!.UpdateAsync(entity);
             }
-            return await _dbInitializer.Database!.InsertAsync(entity);
+            else
+            {
+                result = await _dbInitializer.Database!.InsertAsync(entity);
+            }
+            InvalidateCache();
+            return result;
         }
 
         public async Task<int> DeleteAsync(Account entity)
         {
             await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.DeleteAsync(entity);
+            var result = await _dbInitializer.Database!.DeleteAsync(entity);
+            InvalidateCache();
+            return result;
         }
 
         public async Task<bool> HasTransactionsAsync(int accountId)

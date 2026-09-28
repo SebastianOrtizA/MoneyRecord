@@ -1,8 +1,9 @@
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
-using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 using System.Collections.ObjectModel;
 
@@ -10,7 +11,9 @@ namespace MoneyRecord.ViewModels
 {
     public partial class TransfersViewModel : ObservableObject
     {
-        private readonly DatabaseService _databaseService;
+        private readonly ITransactionEnrichmentService _enrichmentService;
+        private readonly ITransferRepository _transferRepository;
+        private readonly IErrorHandler _errorHandler;
 
         [ObservableProperty]
         private ObservableCollection<Transfer> transfers = new();
@@ -21,9 +24,11 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hasTransfers = false;
 
-        public TransfersViewModel(DatabaseService databaseService)
+        public TransfersViewModel(ITransactionEnrichmentService enrichmentService, ITransferRepository transferRepository, IErrorHandler errorHandler)
         {
-            _databaseService = databaseService;
+            _enrichmentService = enrichmentService;
+            _transferRepository = transferRepository;
+            _errorHandler = errorHandler;
         }
 
         public async Task InitializeAsync()
@@ -38,7 +43,7 @@ namespace MoneyRecord.ViewModels
             {
                 IsRefreshing = true;
 
-                var transferList = await _databaseService.GetTransfersAsync() ?? new List<Transfer>();
+                var transferList = await _enrichmentService.GetAllEnrichedTransfersAsync() ?? new List<Transfer>();
                 transferList = transferList.OrderByDescending(t => t.Date).ToList();
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
@@ -53,7 +58,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadTransfers, ex.Message), AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadTransfers, ex.Message));
             }
             finally
             {
@@ -96,13 +101,13 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                await _databaseService.DeleteTransferAsync(transfer);
+                await _transferRepository.DeleteAsync(transfer);
                 await LoadTransfersAsync();
-                await Shell.Current.DisplayAlertAsync(AppResources.Success, AppResources.TransferDeletedSuccessfully, AppResources.OK);
+                await Toast.Make(AppResources.TransferDeletedSuccessfully).Show();
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToDeleteTransfer, ex.Message), AppResources.OK);
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToDeleteTransfer, ex.Message));
             }
         }
     }

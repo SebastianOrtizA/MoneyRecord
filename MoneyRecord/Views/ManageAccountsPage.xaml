@@ -232,48 +232,55 @@
             <CollectionView ItemsSource="{Binding Accounts}">
                 <CollectionView.EmptyView>
                         <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
-                            <Label Text="&#xF0070;" 
+                            <Label Text="&#xF0070;"
                                    FontFamily="MaterialDesignIcons"
-                                   FontSize="48" 
+                                   FontSize="48"
                                    HorizontalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        <Label Text="No accounts yet" 
+                        <Label Text="No accounts yet"
                                FontSize="16"
                                HorizontalOptions="Center"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     </VerticalStackLayout>
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Account">
-                        <Frame Margin="0,6" 
+                    <DataTemplate x:DataType="viewmodels:AccountDisplayItem">
+                        <Frame Margin="0,6"
                                Padding="16"
                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
                                CornerRadius="10"
                                HasShadow="False">
-                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="4">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="2">
                                 <!-- Account Icon -->
-                                <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
-                                       Text="{Binding DisplayIcon}"
+                                <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="0"
+                                       Text="{Binding Account.DisplayIcon}"
                                        FontFamily="MaterialDesignIcons"
                                        FontSize="28"
                                        VerticalOptions="Center"
                                        TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
-                                
+
                                 <Label Grid.Row="0" Grid.Column="1"
-                                       Text="{Binding Name}" 
+                                       Text="{Binding Account.Name}"
                                        FontSize="16"
                                        FontAttributes="Bold"
                                        TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                                        VerticalOptions="Center"/>
-                                
+
                                 <Label Grid.Row="1" Grid.Column="1"
-                                       Text="{Binding InitialBalance, StringFormat='Initial: ${0:N2}'}" 
-                                       FontSize="13"
-                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                                       Text="{Binding CurrentBalance, StringFormat='{0:C2}'}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
                                        VerticalOptions="Center"/>
-                                
-                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+
+                                <Label Grid.Row="2" Grid.Column="1"
+                                       Text="{Binding Account.InitialBalance, StringFormat='Initial: {0:C2}'}"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#999999, Dark=#777777}"
+                                       VerticalOptions="Center"/>
+
+                                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
                                         Text="{ext:Localize EditButton}"
                                         FontSize="13"
                                         HeightRequest="36"
@@ -283,8 +290,8 @@
                                         CornerRadius="6"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditAccountCommand}"
                                         CommandParameter="{Binding .}"/>
-                                
-                                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"
+
+                                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="3"
                                         Text="{ext:Localize DeleteButton}"
                                         FontSize="13"
                                         HeightRequest="36"
@@ -292,7 +299,7 @@
                                         BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
                                         TextColor="White"
                                         CornerRadius="6"
-                                        IsVisible="{Binding IsDefault, Converter={StaticResource InvertedBoolConverter}}"
+                                        IsVisible="{Binding Account.IsDefault, Converter={StaticResource InvertedBoolConverter}}"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=DeleteAccountCommand}"
                                         CommandParameter="{Binding .}"/>
                             </Grid>

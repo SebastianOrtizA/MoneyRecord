@@ -35,6 +35,8 @@ namespace MoneyRecord.Services.Repositories
                 await Database.CreateTableAsync<Transaction>();
                 await Database.CreateTableAsync<Account>();
                 await Database.CreateTableAsync<Transfer>();
+                await Database.CreateTableAsync<Budget>();
+                await Database.CreateTableAsync<RecurringTransaction>();
 
                 await SeedDefaultDataAsync();
 

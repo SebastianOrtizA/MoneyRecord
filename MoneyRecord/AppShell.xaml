@@ -29,11 +29,25 @@
             Route="IncomeReportPage" />
     </FlyoutItem>
 
+    <FlyoutItem Title="{ext:Localize Trends}" Icon="chart">
+        <ShellContent
+            Title="{ext:Localize Trends}"
+            ContentTemplate="{DataTemplate views:TrendsReportPage}"
+            Route="TrendsReportPage" />
+    </FlyoutItem>
+
     <FlyoutItem Title="{ext:Localize BudgetMode}" Icon="wallet">
         <ShellContent
             Title="{ext:Localize BudgetMode}"
             ContentTemplate="{DataTemplate views:BudgetPage}"
             Route="BudgetPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="{ext:Localize RecurringTransactions}" Icon="swap">
+        <ShellContent
+            Title="{ext:Localize RecurringTransactions}"
+            ContentTemplate="{DataTemplate views:RecurringTransactionsPage}"
+            Route="RecurringTransactionsPage" />
     </FlyoutItem>
 
     <FlyoutItem Title="{ext:Localize Transfers}" Icon="swap">
@@ -59,6 +73,13 @@
             Title="{ext:Localize ExpenseCategories}"
             ContentTemplate="{DataTemplate views:ManageCategoriesPage}"
             Route="ManageExpenseCategories" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="{ext:Localize Settings}" Icon="folder">
+        <ShellContent
+            Title="{ext:Localize Settings}"
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Route="SettingsPage" />
     </FlyoutItem>
 
 </Shell>

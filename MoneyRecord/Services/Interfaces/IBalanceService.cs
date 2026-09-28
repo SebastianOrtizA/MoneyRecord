@@ -15,5 +15,6 @@ namespace MoneyRecord.Services.Interfaces
         Task<decimal> GetBalanceAsync(DateTime? startDate = null, DateTime? endDate = null);
         Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync();
         Task<DateTime?> GetLastTransactionDateForAccountAsync(int accountId);
+        Task<decimal> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate);
     }
 }

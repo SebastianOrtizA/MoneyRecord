@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             x:Class="MoneyRecord.Views.RecurringTransactionsPage"
+             x:DataType="viewmodels:RecurringTransactionsViewModel"
+             Title="{ext:Localize RecurringTransactions}">
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}"
+                     Command="{Binding LoadRecurringTransactionsCommand}">
+            <ScrollView>
+                <VerticalStackLayout Padding="16" Spacing="16">
+
+                    <!-- Edit Form -->
+                    <Frame BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#3D3D1F}"
+                           BorderColor="{AppThemeBinding Light=#FFD54F, Dark=#FFD54F}"
+                           CornerRadius="12"
+                           Padding="16"
+                           IsVisible="{Binding IsEditMode}">
+                        <VerticalStackLayout Spacing="16">
+                            <Label Text="{ext:Localize EditRecurring}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
+
+                            <Label Text="{ext:Localize Amount}" FontSize="14"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <controls:DecimalEntry Text="{Binding EditAmount}"
+                                                   Placeholder="0.00"
+                                                   FontSize="16"
+                                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
+                                                   BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                                <controls:DecimalEntry.Behaviors>
+                                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                                </controls:DecimalEntry.Behaviors>
+                            </controls:DecimalEntry>
+
+                            <Label Text="{ext:Localize Frequency}" FontSize="14"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <Picker ItemsSource="{Binding Frequencies}"
+                                    SelectedItem="{Binding EditSelectedFrequency}"
+                                    Title="{ext:Localize SelectFrequency}"
+                                    FontSize="16"
+                                    MinimumHeightRequest="44"
+                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"/>
+
+                            <!-- Day of Month (only for Monthly) -->
+                            <VerticalStackLayout Spacing="12"
+                                                 IsVisible="{Binding EditIsMonthlyFrequency}">
+                                <Grid ColumnDefinitions="*,Auto" Padding="0">
+                                    <Label Grid.Column="0"
+                                           Text="{ext:Localize SpecificDayOfMonth}"
+                                           FontSize="14"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    <Switch Grid.Column="1"
+                                            IsToggled="{Binding EditUseSpecificDay}"
+                                            OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                                </Grid>
+                                <Picker ItemsSource="{Binding DaysOfMonth}"
+                                        SelectedItem="{Binding EditSelectedDayOfMonth}"
+                                        Title="{ext:Localize SelectDay}"
+                                        FontSize="16"
+                                        MinimumHeightRequest="44"
+                                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"
+                                        IsVisible="{Binding EditUseSpecificDay}"/>
+                            </VerticalStackLayout>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <Button Grid.Column="0"
+                                        Text="{ext:Localize Cancel}"
+                                        Command="{Binding CancelEditCommand}"
+                                        BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
+                                        TextColor="White"
+                                        HeightRequest="44"
+                                        CornerRadius="8"/>
+                                <Button Grid.Column="1"
+                                        Text="{ext:Localize Save}"
+                                        Command="{Binding SaveEditCommand}"
+                                        BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
+                                        TextColor="White"
+                                        HeightRequest="44"
+                                        CornerRadius="8"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Recurring Transaction Cards -->
+                    <CollectionView ItemsSource="{Binding RecurringTransactions}"
+                                    IsVisible="{Binding HasRecurringTransactions}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:RecurringTransaction">
+                                <Frame Margin="0,6"
+                                       Padding="16"
+                                       BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                                       BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                       CornerRadius="12"
+                                       HasShadow="True">
+                                    <VerticalStackLayout Spacing="10">
+                                        <!-- Header: Icon + Description + Edit + Delete -->
+                                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                                            <Label Grid.Column="0"
+                                                   Text="{Binding DisplayIcon}"
+                                                   FontFamily="MaterialDesignIcons"
+                                                   FontSize="28"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                                <Label Text="{Binding Description}"
+                                                       FontSize="16"
+                                                       FontAttributes="Bold"
+                                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                                <Label Text="{Binding CategoryName}"
+                                                       FontSize="12"
+                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            </VerticalStackLayout>
+                                            <Button Grid.Column="2"
+                                                    Text="&#xF03EB;"
+                                                    FontFamily="MaterialDesignIcons"
+                                                    FontSize="20"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                                    HeightRequest="40"
+                                                    WidthRequest="40"
+                                                    Padding="0"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RecurringTransactionsViewModel}}, Path=EditRecurringCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                            <Button Grid.Column="3"
+                                                    Text="&#xF01B4;"
+                                                    FontFamily="MaterialDesignIcons"
+                                                    FontSize="20"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                                                    HeightRequest="40"
+                                                    WidthRequest="40"
+                                                    Padding="0"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RecurringTransactionsViewModel}}, Path=DeleteRecurringCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                        </Grid>
+
+                                        <!-- Details Row -->
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" RowSpacing="4" ColumnSpacing="8">
+                                            <Label Grid.Row="0" Grid.Column="0"
+                                                   Text="{ext:Localize Amount}"
+                                                   FontSize="12"
+                                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            <Label Grid.Row="1" Grid.Column="0"
+                                                   Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+
+                                            <Label Grid.Row="0" Grid.Column="1"
+                                                   Text="{ext:Localize Frequency}"
+                                                   FontSize="12"
+                                                   HorizontalTextAlignment="Center"
+                                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            <Label Grid.Row="1" Grid.Column="1"
+                                                   Text="{Binding FrequencyDisplay}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   HorizontalTextAlignment="Center"
+                                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+
+                                            <Label Grid.Row="0" Grid.Column="2"
+                                                   Text="{ext:Localize Account}"
+                                                   FontSize="12"
+                                                   HorizontalTextAlignment="End"
+                                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            <Label Grid.Row="1" Grid.Column="2"
+                                                   Text="{Binding AccountName}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   HorizontalTextAlignment="End"
+                                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                        </Grid>
+
+                                        <!-- Next Occurrence -->
+                                        <Frame Padding="10"
+                                               CornerRadius="8"
+                                               HasShadow="False"
+                                               BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1A3A5C}"
+                                               BorderColor="{AppThemeBinding Light=#90CAF9, Dark=#1565C0}">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                <Label Grid.Column="0"
+                                                       Text="&#xF00ED;"
+                                                       FontFamily="MaterialDesignIcons"
+                                                       FontSize="18"
+                                                       VerticalOptions="Center"
+                                                       TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
+                                                <Label Grid.Column="1"
+                                                       Text="{ext:Localize NextOccurrence}"
+                                                       FontSize="13"
+                                                       VerticalOptions="Center"
+                                                       Margin="8,0,0,0"
+                                                       TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
+                                                <Label Grid.Column="2"
+                                                       Text="{Binding NextOccurrence, StringFormat='{0:MMM dd, yyyy}'}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       VerticalOptions="Center"
+                                                       TextColor="{AppThemeBinding Light=#1565C0, Dark=#FFFFFF}"/>
+                                            </Grid>
+                                        </Frame>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- Empty State -->
+                    <VerticalStackLayout Spacing="16"
+                                        Padding="40"
+                                        IsVisible="{Binding HasRecurringTransactions, Converter={StaticResource InvertedBoolConverter}}">
+                        <Label Text="&#xF0450;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="64"
+                               HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        <Label Text="{ext:Localize NoRecurringTransactions}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                        <Label Text="{ext:Localize AddRecurringToStart}"
+                               FontSize="14"
+                               HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <!-- Floating Action Menu -->
+        <controls:FloatingActionMenu />
+    </Grid>
+
+</ContentPage>

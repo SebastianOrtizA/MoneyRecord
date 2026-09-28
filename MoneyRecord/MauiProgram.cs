@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
@@ -23,6 +24,7 @@ namespace MoneyRecord
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("materialdesignicons-webfont.ttf", "MaterialDesignIcons");
                 })
+                .UseMauiCommunityToolkit()
                 .ConfigureDecimalEntry();
 
             // Register Infrastructure Services
@@ -39,13 +41,15 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IAccountRepository, AccountRepository>();
             builder.Services.AddSingleton<ITransactionRepository, TransactionRepository>();
             builder.Services.AddSingleton<ITransferRepository, TransferRepository>();
+            builder.Services.AddSingleton<IBudgetRepository, BudgetRepository>();
+            builder.Services.AddSingleton<IRecurringTransactionRepository, RecurringTransactionRepository>();
 
             // Register Business Services
             builder.Services.AddSingleton<IBalanceService, BalanceService>();
             builder.Services.AddSingleton<ITransactionEnrichmentService, TransactionEnrichmentService>();
-
-            // Keep legacy DatabaseService for backward compatibility during migration
-            builder.Services.AddSingleton<DatabaseService>();
+            builder.Services.AddSingleton<IRecurringTransactionService, RecurringTransactionService>();
+            builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
+            builder.Services.AddSingleton<IDataExportService, DataExportService>();
 
             // Register ViewModels
             builder.Services.AddSingleton<MainViewModel>();
@@ -58,6 +62,9 @@ namespace MoneyRecord
             builder.Services.AddTransient<IncomeReportViewModel>();
             builder.Services.AddTransient<FloatingMenuViewModel>();
             builder.Services.AddTransient<BudgetViewModel>();
+            builder.Services.AddTransient<RecurringTransactionsViewModel>();
+            builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<TrendsReportViewModel>();
 
             // Register Views
             builder.Services.AddSingleton<MainPage>();
@@ -69,6 +76,9 @@ namespace MoneyRecord
             builder.Services.AddTransient<ExpenseReportPage>();
             builder.Services.AddTransient<IncomeReportPage>();
             builder.Services.AddTransient<BudgetPage>();
+            builder.Services.AddTransient<RecurringTransactionsPage>();
+            builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<TrendsReportPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

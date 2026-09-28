@@ -1,10 +1,9 @@
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
-using System.ComponentModel;
 
 namespace MoneyRecord.Helpers
 {
-    public class PeriodItem : INotifyPropertyChanged
+    public class PeriodItem
     {
         public PeriodType Type { get; set; }
 
@@ -19,8 +18,6 @@ namespace MoneyRecord.Helpers
             PeriodType.CustomPeriod => AppResources.CustomPeriod,
             _ => Type.ToString()
         };
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public override string ToString() => DisplayName;
 
@@ -37,7 +34,7 @@ namespace MoneyRecord.Helpers
     /// <summary>
     /// Represents a budget period option (Day, Month, Year) for selection
     /// </summary>
-    public class BudgetPeriodItem : INotifyPropertyChanged
+    public class BudgetPeriodItem
     {
         public BudgetPeriod Period { get; set; }
 
@@ -48,8 +45,6 @@ namespace MoneyRecord.Helpers
             BudgetPeriod.Year => AppResources.PerYear,
             _ => Period.ToString()
         };
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public override string ToString() => DisplayName;
 

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             x:Class="MoneyRecord.Views.SettingsPage"
+             x:DataType="viewmodels:SettingsViewModel"
+             Title="{ext:Localize Settings}">
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Backup Section -->
+                <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                       BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                       CornerRadius="12"
+                       Padding="16"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="16">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="&#xF0613;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="28"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{ext:Localize BackupRestore}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Label Text="{ext:Localize BackupRestoreDescription}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="{ext:Localize ExportFullBackup}"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
+                               Margin="0,4,0,0"/>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Grid.Column="0"
+                                    Text="{ext:Localize SaveBackupLocal}"
+                                    Command="{Binding SaveBackupLocalCommand}"
+                                    IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}"
+                                    BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                    TextColor="White"
+                                    FontSize="14"
+                                    HeightRequest="48"
+                                    CornerRadius="10"/>
+                            <Button Grid.Column="1"
+                                    Text="{ext:Localize ShareBackupExternal}"
+                                    Command="{Binding ShareBackupCommand}"
+                                    IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}"
+                                    BackgroundColor="{AppThemeBinding Light=#7B1FA2, Dark=#CE93D8}"
+                                    TextColor="White"
+                                    FontSize="14"
+                                    HeightRequest="48"
+                                    CornerRadius="10"/>
+                        </Grid>
+
+                        <Button Text="{ext:Localize ExportTransactionsCsv}"
+                                Command="{Binding ExportCsvCommand}"
+                                IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
+                                TextColor="White"
+                                FontSize="15"
+                                HeightRequest="48"
+                                CornerRadius="10"/>
+
+                        <Button Text="{ext:Localize RestoreFromBackup}"
+                                Command="{Binding ImportJsonCommand}"
+                                IsEnabled="{Binding IsImporting, Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"
+                                TextColor="White"
+                                FontSize="15"
+                                HeightRequest="48"
+                                CornerRadius="10"/>
+
+                        <!-- Restore Warning -->
+                        <Label Text="{ext:Localize RestoreNote}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                               FontAttributes="Italic"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Floating Action Menu -->
+        <controls:FloatingActionMenu />
+    </Grid>
+
+</ContentPage>
