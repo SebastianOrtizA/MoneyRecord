@@ -38,7 +38,7 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' And Exists('$(MSBuildProjectDirectory)\moneyrecord.keystore')">
 		<AndroidKeyStore>true</AndroidKeyStore>
 		<AndroidSigningKeyStore>moneyrecord.keystore</AndroidSigningKeyStore>
 		<AndroidSigningKeyAlias>moneyrecord</AndroidSigningKeyAlias>
