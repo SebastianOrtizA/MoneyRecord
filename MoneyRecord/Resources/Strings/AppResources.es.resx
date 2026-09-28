@@ -961,4 +961,60 @@ ${1:N2}</value>
     <value>Agrega transacciones para ver tus tendencias y patrones de gastos</value>
   </data>
 
+  <!-- Stage 3: Tags -->
+  <data name="Tags" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="TagsPlaceholder" xml:space="preserve">
+    <value>ej. compras, semanal, urgente</value>
+  </data>
+
+  <!-- Stage 3: Receipt Photos -->
+  <data name="Receipt" xml:space="preserve">
+    <value>Recibo</value>
+  </data>
+  <data name="ReceiptAttached" xml:space="preserve">
+    <value>Recibo adjunto</value>
+  </data>
+  <data name="CameraNotSupported" xml:space="preserve">
+    <value>La cámara no es compatible con este dispositivo</value>
+  </data>
+  <data name="FailedToTakePhoto" xml:space="preserve">
+    <value>Error al tomar la foto</value>
+  </data>
+  <data name="FailedToPickPhoto" xml:space="preserve">
+    <value>Error al seleccionar la foto</value>
+  </data>
+  <data name="ViewReceipt" xml:space="preserve">
+    <value>Ver Recibo</value>
+  </data>
+
+  <!-- Stage 3: Multi-Currency -->
+  <data name="Currency" xml:space="preserve">
+    <value>Moneda</value>
+  </data>
+  <data name="SelectCurrency" xml:space="preserve">
+    <value>Seleccionar Moneda</value>
+  </data>
+  <data name="CurrencyMismatchWarning" xml:space="preserve">
+    <value>Advertencia: Transferencia entre cuentas con diferentes monedas ({0} → {1}). No se aplica conversión de tipo de cambio.</value>
+  </data>
+  <data name="DefaultCurrency" xml:space="preserve">
+    <value>Moneda Predeterminada</value>
+  </data>
+
+  <!-- Stage 3: Enhanced Dashboard -->
+  <data name="RecentTransactions" xml:space="preserve">
+    <value>Transacciones Recientes</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>Ver Todo</value>
+  </data>
+  <data name="NetIncome" xml:space="preserve">
+    <value>Neto</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>Acciones Rápidas</value>
+  </data>
+
 </root>

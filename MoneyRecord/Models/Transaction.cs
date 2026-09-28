@@ -20,6 +20,21 @@ namespace MoneyRecord.Models
 
         public int? AccountId { get; set; }
 
+        public string? Tags { get; set; }
+
+        public string? ReceiptPhotoPath { get; set; }
+
+        [Ignore]
+        public List<string> TagList => string.IsNullOrWhiteSpace(Tags)
+            ? new List<string>()
+            : Tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+
+        [Ignore]
+        public bool HasTags => !string.IsNullOrWhiteSpace(Tags);
+
+        [Ignore]
+        public bool HasReceipt => !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
+
         [Ignore]
         public string CategoryName { get; set; } = string.Empty;
 

@@ -75,6 +75,12 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string sourceAccountBalanceText = string.Empty;
 
+        [ObservableProperty]
+        private bool showCurrencyMismatchWarning = false;
+
+        [ObservableProperty]
+        private string currencyMismatchWarningText = string.Empty;
+
         // Store original transfer values for edit mode
         private int? _originalSourceAccountId;
         private int? _originalDestinationAccountId;
@@ -165,6 +171,30 @@ namespace MoneyRecord.ViewModels
         partial void OnSelectedSourceAccountChanged(Account? value)
         {
             _ = UpdateSourceAccountBalanceAsync();
+            CheckCurrencyMismatch();
+        }
+
+        partial void OnSelectedDestinationAccountChanged(Account? value)
+        {
+            CheckCurrencyMismatch();
+        }
+
+        private void CheckCurrencyMismatch()
+        {
+            if (SelectedSourceAccount != null && SelectedDestinationAccount != null)
+            {
+                var srcCurrency = string.IsNullOrEmpty(SelectedSourceAccount.CurrencyCode) ? "USD" : SelectedSourceAccount.CurrencyCode;
+                var dstCurrency = string.IsNullOrEmpty(SelectedDestinationAccount.CurrencyCode) ? "USD" : SelectedDestinationAccount.CurrencyCode;
+
+                if (!string.Equals(srcCurrency, dstCurrency, StringComparison.OrdinalIgnoreCase))
+                {
+                    CurrencyMismatchWarningText = string.Format(AppResources.CurrencyMismatchWarning, srcCurrency, dstCurrency);
+                    ShowCurrencyMismatchWarning = true;
+                    return;
+                }
+            }
+
+            ShowCurrencyMismatchWarning = false;
         }
 
         private async Task UpdateSourceAccountBalanceAsync()

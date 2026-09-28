@@ -1,4 +1,5 @@
 using MoneyRecord.Helpers;
+using MoneyRecord.Services;
 using SQLite;
 
 namespace MoneyRecord.Models
@@ -32,9 +33,11 @@ namespace MoneyRecord.Models
         /// </summary>
         public bool AllowNegativeBalance { get; set; } = false;
 
-        /// <summary>
-        /// Gets the displayable icon character from the unicode code
-        /// </summary>
+        public string CurrencyCode { get; set; } = string.Empty;
+
+        [Ignore]
+        public string CurrencySymbol => CurrencyService.GetSymbol(CurrencyCode);
+
         [Ignore]
         public string DisplayIcon => IconHelper.GetAccountDisplayIcon(IconCode);
     }

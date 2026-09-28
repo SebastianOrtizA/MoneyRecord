@@ -32,6 +32,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<INavigationService, NavigationService>();
             builder.Services.AddSingleton<IPreferencesService, PreferencesService>();
             builder.Services.AddSingleton<ICategoryIconService, CategoryIconService>();
+            builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
 
             // Register Database Infrastructure
             builder.Services.AddSingleton<DatabaseInitializer>();

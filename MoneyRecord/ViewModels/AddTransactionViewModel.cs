@@ -94,6 +94,15 @@ namespace MoneyRecord.ViewModels
         private RecurrenceFrequencyItem? selectedFrequencyItem;
 
         [ObservableProperty]
+        private string tagsText = string.Empty;
+
+        [ObservableProperty]
+        private string? receiptPhotoPath;
+
+        [ObservableProperty]
+        private bool hasReceipt;
+
+        [ObservableProperty]
         private bool isMonthlyFrequency;
 
         partial void OnSelectedFrequencyItemChanged(RecurrenceFrequencyItem? value)
@@ -130,6 +139,9 @@ namespace MoneyRecord.ViewModels
             SelectedAccount = null;
             Title = AppResources.AddTransaction;
             IsEditMode = false;
+            TagsText = string.Empty;
+            ReceiptPhotoPath = null;
+            HasReceipt = false;
             IsRecurring = false;
             SelectedFrequencyItem = Frequencies[3];
             HasEndDate = false;
@@ -162,7 +174,10 @@ namespace MoneyRecord.ViewModels
                 SelectedDate = Transaction.Date;
                 Description = Transaction.Description;
                 Amount = Transaction.Amount.ToString();
-                
+                TagsText = Transaction.Tags ?? string.Empty;
+                ReceiptPhotoPath = Transaction.ReceiptPhotoPath;
+                HasReceipt = !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
+
                 Title = TransactionType == TransactionType.Income ? AppResources.EditIncome : AppResources.EditExpense;
                 
                 // Load categories and select the current one
@@ -318,7 +333,9 @@ namespace MoneyRecord.ViewModels
                 Transaction.CategoryId = SelectedCategory.Id;
                 Transaction.Type = TransactionType;
                 Transaction.AccountId = accountId;
-                
+                Transaction.Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim();
+                Transaction.ReceiptPhotoPath = ReceiptPhotoPath;
+
                 await _transactionRepository.SaveAsync(Transaction);
                 await Toast.Make(AppResources.TransactionUpdatedSuccessfully).Show();
             }
@@ -332,7 +349,9 @@ namespace MoneyRecord.ViewModels
                     Amount = amountValue,
                     CategoryId = SelectedCategory.Id,
                     Type = TransactionType,
-                    AccountId = accountId
+                    AccountId = accountId,
+                    Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim(),
+                    ReceiptPhotoPath = ReceiptPhotoPath
                 };
 
                 await _transactionRepository.SaveAsync(newTransaction);
@@ -385,6 +404,66 @@ namespace MoneyRecord.ViewModels
             }
 
             await _navigationService.GoBackAsync();
+        }
+
+        [RelayCommand]
+        private async Task TakePhotoAsync()
+        {
+            try
+            {
+                if (!MediaPicker.Default.IsCaptureSupported)
+                {
+                    await _errorHandler.HandleAsync(AppResources.CameraNotSupported);
+                    return;
+                }
+
+                var photo = await MediaPicker.Default.CapturePhotoAsync();
+                if (photo != null)
+                    await SaveReceiptPhotoAsync(photo);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToTakePhoto);
+            }
+        }
+
+        [RelayCommand]
+        private async Task PickPhotoAsync()
+        {
+            try
+            {
+                var photos = await MediaPicker.Default.PickPhotosAsync();
+                var photo = photos?.FirstOrDefault();
+                if (photo != null)
+                    await SaveReceiptPhotoAsync(photo);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToPickPhoto);
+            }
+        }
+
+        private async Task SaveReceiptPhotoAsync(FileResult photo)
+        {
+            var receiptsDir = Path.Combine(FileSystem.AppDataDirectory, "receipts");
+            Directory.CreateDirectory(receiptsDir);
+
+            var fileName = $"receipt_{DateTime.Now:yyyyMMdd_HHmmss}{Path.GetExtension(photo.FileName)}";
+            var filePath = Path.Combine(receiptsDir, fileName);
+
+            using var stream = await photo.OpenReadAsync();
+            using var fileStream = File.OpenWrite(filePath);
+            await stream.CopyToAsync(fileStream);
+
+            ReceiptPhotoPath = filePath;
+            HasReceipt = true;
+        }
+
+        [RelayCommand]
+        private void RemovePhoto()
+        {
+            ReceiptPhotoPath = null;
+            HasReceipt = false;
         }
 
         [RelayCommand]

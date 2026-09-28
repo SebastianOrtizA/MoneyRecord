@@ -963,4 +963,60 @@ ${1:N2}</value>
     <value>Add transactions to see your spending trends and patterns</value>
   </data>
 
+  <!-- Stage 3: Tags -->
+  <data name="Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="TagsPlaceholder" xml:space="preserve">
+    <value>e.g. groceries, weekly, urgent</value>
+  </data>
+
+  <!-- Stage 3: Receipt Photos -->
+  <data name="Receipt" xml:space="preserve">
+    <value>Receipt</value>
+  </data>
+  <data name="ReceiptAttached" xml:space="preserve">
+    <value>Receipt attached</value>
+  </data>
+  <data name="CameraNotSupported" xml:space="preserve">
+    <value>Camera is not supported on this device</value>
+  </data>
+  <data name="FailedToTakePhoto" xml:space="preserve">
+    <value>Failed to take photo</value>
+  </data>
+  <data name="FailedToPickPhoto" xml:space="preserve">
+    <value>Failed to pick photo</value>
+  </data>
+  <data name="ViewReceipt" xml:space="preserve">
+    <value>View Receipt</value>
+  </data>
+
+  <!-- Stage 3: Multi-Currency -->
+  <data name="Currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="SelectCurrency" xml:space="preserve">
+    <value>Select Currency</value>
+  </data>
+  <data name="CurrencyMismatchWarning" xml:space="preserve">
+    <value>Warning: Transferring between accounts with different currencies ({0} → {1}). No exchange rate conversion is applied.</value>
+  </data>
+  <data name="DefaultCurrency" xml:space="preserve">
+    <value>Default Currency</value>
+  </data>
+
+  <!-- Stage 3: Enhanced Dashboard -->
+  <data name="RecentTransactions" xml:space="preserve">
+    <value>Recent Transactions</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>View All</value>
+  </data>
+  <data name="NetIncome" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>Quick Actions</value>
+  </data>
+
 </root>

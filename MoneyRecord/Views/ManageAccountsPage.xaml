@@ -62,13 +62,25 @@
                         </controls:DecimalEntry.Behaviors>
                     </controls:DecimalEntry>
 
-                    <!-- Icon Selector for Add -->
-                    <Label Text="{ext:Localize SelectIcon}" 
-                           FontSize="14" 
+                    <!-- Currency Selector for Add -->
+                    <Label Text="{ext:Localize Currency}"
+                           FontSize="14"
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
                            Margin="0,4,0,0"/>
-                    <FlexLayout Wrap="Wrap" 
-                                JustifyContent="Start" 
+                    <Picker ItemsSource="{Binding AvailableCurrencies}"
+                            SelectedItem="{Binding NewAccountCurrency}"
+                            Title="{ext:Localize SelectCurrency}"
+                            FontSize="16"
+                            MinimumHeightRequest="44"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"/>
+
+                    <!-- Icon Selector for Add -->
+                    <Label Text="{ext:Localize SelectIcon}"
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           Margin="0,4,0,0"/>
+                    <FlexLayout Wrap="Wrap"
+                                JustifyContent="Start"
                                 AlignItems="Center"
                                 BindableLayout.ItemsSource="{Binding AvailableIcons}">
                         <BindableLayout.ItemTemplate>
@@ -90,7 +102,7 @@
                                         </Binding>
                                     </Border.BackgroundColor>
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer 
+                                        <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectNewIconCommand}"
                                             CommandParameter="{Binding Code}"/>
                                     </Border.GestureRecognizers>
@@ -158,13 +170,25 @@
                         </controls:DecimalEntry.Behaviors>
                     </controls:DecimalEntry>
 
-                    <!-- Icon Selector for Edit -->
-                    <Label Text="{ext:Localize SelectIcon}" 
-                           FontSize="14" 
+                    <!-- Currency Selector for Edit -->
+                    <Label Text="{ext:Localize Currency}"
+                           FontSize="14"
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
                            Margin="0,4,0,0"/>
-                    <FlexLayout Wrap="Wrap" 
-                                JustifyContent="Start" 
+                    <Picker ItemsSource="{Binding AvailableCurrencies}"
+                            SelectedItem="{Binding EditAccountCurrency}"
+                            Title="{ext:Localize SelectCurrency}"
+                            FontSize="16"
+                            MinimumHeightRequest="44"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"/>
+
+                    <!-- Icon Selector for Edit -->
+                    <Label Text="{ext:Localize SelectIcon}"
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           Margin="0,4,0,0"/>
+                    <FlexLayout Wrap="Wrap"
+                                JustifyContent="Start"
                                 AlignItems="Center"
                                 BindableLayout.ItemsSource="{Binding AvailableIcons}">
                         <BindableLayout.ItemTemplate>
@@ -186,7 +210,7 @@
                                         </Binding>
                                     </Border.BackgroundColor>
                                     <Border.GestureRecognizers>
-                                        <TapGestureRecognizer 
+                                        <TapGestureRecognizer
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectEditIconCommand}"
                                             CommandParameter="{Binding Code}"/>
                                     </Border.GestureRecognizers>
@@ -274,11 +298,21 @@
                                        TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
                                        VerticalOptions="Center"/>
 
-                                <Label Grid.Row="2" Grid.Column="1"
-                                       Text="{Binding Account.InitialBalance, StringFormat='Initial: {0:C2}'}"
-                                       FontSize="12"
-                                       TextColor="{AppThemeBinding Light=#999999, Dark=#777777}"
-                                       VerticalOptions="Center"/>
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="8">
+                                    <Label Text="{Binding Account.InitialBalance, StringFormat='Initial: {0:C2}'}"
+                                           FontSize="12"
+                                           TextColor="{AppThemeBinding Light=#999999, Dark=#777777}"
+                                           VerticalOptions="Center"/>
+                                    <Border BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
+                                            StrokeShape="RoundRectangle 8"
+                                            Stroke="Transparent"
+                                            Padding="6,2"
+                                            IsVisible="{Binding Account.CurrencyCode, Converter={StaticResource StringToBoolConverter}}">
+                                        <Label Text="{Binding Account.CurrencyCode}"
+                                               FontSize="11"
+                                               TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
+                                    </Border>
+                                </HorizontalStackLayout>
 
                                 <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
                                         Text="{ext:Localize EditButton}"

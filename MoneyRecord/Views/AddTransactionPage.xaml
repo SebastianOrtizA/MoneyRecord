@@ -49,6 +49,58 @@
                    Title="{ext:Localize SelectCategory}"
                    FontSize="16"/>
 
+            <Label Text="{ext:Localize Tags}" FontSize="16" FontAttributes="Bold"/>
+            <Entry Text="{Binding TagsText}"
+                   Placeholder="{ext:Localize TagsPlaceholder}"
+                   FontSize="16"/>
+
+            <!-- Receipt Photo Section -->
+            <Label Text="{ext:Localize Receipt}" FontSize="16" FontAttributes="Bold"/>
+            <VerticalStackLayout Spacing="8">
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="&#xF0067;"
+                            FontFamily="MaterialDesignIcons"
+                            Command="{Binding TakePhotoCommand}"
+                            FontSize="20"
+                            HeightRequest="44"
+                            WidthRequest="44"
+                            Padding="0"
+                            CornerRadius="8"
+                            BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                            TextColor="White"/>
+                    <Button Text="&#xF0553;"
+                            FontFamily="MaterialDesignIcons"
+                            Command="{Binding PickPhotoCommand}"
+                            FontSize="20"
+                            HeightRequest="44"
+                            WidthRequest="44"
+                            Padding="0"
+                            CornerRadius="8"
+                            BackgroundColor="{AppThemeBinding Light=#7B1FA2, Dark=#AB47BC}"
+                            TextColor="White"/>
+                    <Button Text="&#xF0A7A;"
+                            FontFamily="MaterialDesignIcons"
+                            Command="{Binding RemovePhotoCommand}"
+                            IsVisible="{Binding HasReceipt}"
+                            FontSize="20"
+                            HeightRequest="44"
+                            WidthRequest="44"
+                            Padding="0"
+                            CornerRadius="8"
+                            BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                            TextColor="White"/>
+                </HorizontalStackLayout>
+                <Border IsVisible="{Binding HasReceipt}"
+                        StrokeShape="RoundRectangle 8"
+                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                        HeightRequest="200"
+                        HorizontalOptions="Start">
+                    <Image Source="{Binding ReceiptPhotoPath}"
+                           Aspect="AspectFit"
+                           MaximumHeightRequest="200"/>
+                </Border>
+            </VerticalStackLayout>
+
             <!-- Budget Warning Banner -->
             <Border IsVisible="{Binding ShowBudgetWarning}"
                     BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#3E2723}"

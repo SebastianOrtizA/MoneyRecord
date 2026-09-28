@@ -2471,5 +2471,101 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("AddTransactionsForTrends", resourceCulture);
             }
         }
+
+        internal static string Tags {
+            get {
+                return ResourceManager.GetString("Tags", resourceCulture);
+            }
+        }
+
+        internal static string TagsPlaceholder {
+            get {
+                return ResourceManager.GetString("TagsPlaceholder", resourceCulture);
+            }
+        }
+
+        internal static string Receipt {
+            get {
+                return ResourceManager.GetString("Receipt", resourceCulture);
+            }
+        }
+
+        internal static string ReceiptAttached {
+            get {
+                return ResourceManager.GetString("ReceiptAttached", resourceCulture);
+            }
+        }
+
+        internal static string CameraNotSupported {
+            get {
+                return ResourceManager.GetString("CameraNotSupported", resourceCulture);
+            }
+        }
+
+        internal static string FailedToTakePhoto {
+            get {
+                return ResourceManager.GetString("FailedToTakePhoto", resourceCulture);
+            }
+        }
+
+        internal static string FailedToPickPhoto {
+            get {
+                return ResourceManager.GetString("FailedToPickPhoto", resourceCulture);
+            }
+        }
+
+        internal static string ViewReceipt {
+            get {
+                return ResourceManager.GetString("ViewReceipt", resourceCulture);
+            }
+        }
+
+        internal static string Currency {
+            get {
+                return ResourceManager.GetString("Currency", resourceCulture);
+            }
+        }
+
+        internal static string SelectCurrency {
+            get {
+                return ResourceManager.GetString("SelectCurrency", resourceCulture);
+            }
+        }
+
+        internal static string CurrencyMismatchWarning {
+            get {
+                return ResourceManager.GetString("CurrencyMismatchWarning", resourceCulture);
+            }
+        }
+
+        internal static string DefaultCurrency {
+            get {
+                return ResourceManager.GetString("DefaultCurrency", resourceCulture);
+            }
+        }
+
+        internal static string RecentTransactions {
+            get {
+                return ResourceManager.GetString("RecentTransactions", resourceCulture);
+            }
+        }
+
+        internal static string ViewAll {
+            get {
+                return ResourceManager.GetString("ViewAll", resourceCulture);
+            }
+        }
+
+        internal static string NetIncome {
+            get {
+                return ResourceManager.GetString("NetIncome", resourceCulture);
+            }
+        }
+
+        internal static string QuickActions {
+            get {
+                return ResourceManager.GetString("QuickActions", resourceCulture);
+            }
+        }
     }
 }

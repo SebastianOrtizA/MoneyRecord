@@ -122,6 +122,12 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> filterAccounts = new();
 
+        [ObservableProperty]
+        private ObservableCollection<Transaction> recentTransactions = new();
+
+        [ObservableProperty]
+        private decimal netIncome;
+
         public List<string> FilterTypes { get; } = new() { "All", "Income", "Expense", "Transfer" };
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
@@ -164,12 +170,19 @@ namespace MoneyRecord.ViewModels
                 CurrentBalance = await balanceTask;
                 TotalIncomes = await incomesTask;
                 TotalExpenses = await expensesTask;
+                NetIncome = TotalIncomes - TotalExpenses;
 
                 var transactionList = await transactionsTask ?? new List<Transaction>();
                 var transfers = await transfersTask ?? new List<Transfer>();
                 var transferTransactions = ConvertTransfersToTransactions(transfers, CurrentGroupingMode);
 
                 _allCombinedTransactions = transactionList.Concat(transferTransactions).ToList();
+
+                var recent = _allCombinedTransactions
+                    .OrderByDescending(t => t.Date)
+                    .Take(5)
+                    .ToList();
+                RecentTransactions = new ObservableCollection<Transaction>(recent);
 
                 if (CurrentGroupingMode == GroupingMode.Account)
                 {
@@ -234,7 +247,8 @@ namespace MoneyRecord.ViewModels
                 filtered = filtered.Where(t =>
                     (t.Description?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (t.CategoryName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (t.AccountName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
+                    (t.AccountName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (t.Tags?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
             }
 
             if (SelectedFilterType != "All" && !string.IsNullOrEmpty(SelectedFilterType))

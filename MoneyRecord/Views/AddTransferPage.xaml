@@ -39,6 +39,25 @@
                    Title="{ext:Localize SelectDestinationAccount}"
                    FontSize="16"/>
 
+            <!-- Currency Mismatch Warning -->
+            <Border IsVisible="{Binding ShowCurrencyMismatchWarning}"
+                    BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#3E2723}"
+                    StrokeShape="RoundRectangle 8"
+                    Stroke="{AppThemeBinding Light=#FF9800, Dark=#FF9800}"
+                    StrokeThickness="1"
+                    Padding="12">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="&#xF0026;"
+                           FontFamily="MaterialDesignIcons"
+                           FontSize="20"
+                           TextColor="{AppThemeBinding Light=#E65100, Dark=#FFB74D}"
+                           VerticalOptions="Center"/>
+                    <Label Text="{Binding CurrencyMismatchWarningText}"
+                           FontSize="14"
+                           TextColor="{AppThemeBinding Light=#E65100, Dark=#FFB74D}"/>
+                </HorizontalStackLayout>
+            </Border>
+
             <Label Text="{ext:Localize Amount}" FontSize="16" FontAttributes="Bold"/>
             <controls:DecimalEntry Text="{Binding Amount}" 
                    Placeholder="0.00"

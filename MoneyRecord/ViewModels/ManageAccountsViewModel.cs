@@ -20,6 +20,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITransactionRepository _transactionRepository;
         private readonly ICategoryIconService _categoryIconService;
         private readonly IBalanceService _balanceService;
+        private readonly ICurrencyService _currencyService;
         private readonly IErrorHandler _errorHandler;
 
         [ObservableProperty]
@@ -38,6 +39,9 @@ namespace MoneyRecord.ViewModels
         private bool newAccountAllowNegativeBalance = false;
 
         [ObservableProperty]
+        private Currency? newAccountCurrency;
+
+        [ObservableProperty]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -53,25 +57,35 @@ namespace MoneyRecord.ViewModels
         private bool editAccountAllowNegativeBalance = false;
 
         [ObservableProperty]
+        private Currency? editAccountCurrency;
+
+        [ObservableProperty]
         private Account? editingAccount;
 
         [ObservableProperty]
         private ObservableCollection<AccountIcon> availableIcons = new();
 
-        public ManageAccountsViewModel(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ICategoryIconService categoryIconService, IBalanceService balanceService, IErrorHandler errorHandler)
+        [ObservableProperty]
+        private List<Currency> availableCurrencies = new();
+
+        public ManageAccountsViewModel(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler)
         {
             _accountRepository = accountRepository;
             _transactionRepository = transactionRepository;
             _categoryIconService = categoryIconService;
             _balanceService = balanceService;
+            _currencyService = currencyService;
             _errorHandler = errorHandler;
         }
 
         public async Task InitializeAsync()
         {
             LoadAvailableIcons();
+            AvailableCurrencies = _currencyService.GetAvailableCurrencies();
             NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
             UpdateIconSelection(NewAccountIconCode);
+            var defaultCode = _currencyService.GetDefaultCurrencyCode();
+            NewAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == defaultCode) ?? AvailableCurrencies.First();
             await LoadAccountsAsync();
         }
 
@@ -148,11 +162,12 @@ namespace MoneyRecord.ViewModels
                 Name = NewAccountName.Trim(),
                 InitialBalance = balance,
                 IsDefault = false,
-                IconCode = string.IsNullOrEmpty(NewAccountIconCode) 
-                    ? _categoryIconService.GetDefaultAccountIconCode() 
+                IconCode = string.IsNullOrEmpty(NewAccountIconCode)
+                    ? _categoryIconService.GetDefaultAccountIconCode()
                     : NewAccountIconCode,
                 CreatedDate = DateTime.Now,
-                AllowNegativeBalance = NewAccountAllowNegativeBalance
+                AllowNegativeBalance = NewAccountAllowNegativeBalance,
+                CurrencyCode = NewAccountCurrency?.Code ?? _currencyService.GetDefaultCurrencyCode()
             };
 
             await _accountRepository.SaveAsync(account);
@@ -160,6 +175,7 @@ namespace MoneyRecord.ViewModels
             NewAccountBalance = "0";
             NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
             NewAccountAllowNegativeBalance = false;
+            NewAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == _currencyService.GetDefaultCurrencyCode());
             UpdateIconSelection(NewAccountIconCode);
             await LoadAccountsAsync();
         }
@@ -176,6 +192,8 @@ namespace MoneyRecord.ViewModels
             EditAccountBalance = account.InitialBalance.ToString();
             EditAccountIconCode = account.IconCode;
             EditAccountAllowNegativeBalance = account.AllowNegativeBalance;
+            EditAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == account.CurrencyCode)
+                ?? AvailableCurrencies.FirstOrDefault(c => c.Code == _currencyService.GetDefaultCurrencyCode());
             UpdateIconSelection(account.IconCode);
             IsEditMode = true;
         }
@@ -220,6 +238,7 @@ namespace MoneyRecord.ViewModels
                 ? _categoryIconService.GetDefaultAccountIconCode()
                 : EditAccountIconCode;
             EditingAccount.AllowNegativeBalance = EditAccountAllowNegativeBalance;
+            EditingAccount.CurrencyCode = EditAccountCurrency?.Code ?? _currencyService.GetDefaultCurrencyCode();
 
             await _accountRepository.SaveAsync(EditingAccount);
             
@@ -229,8 +248,9 @@ namespace MoneyRecord.ViewModels
             EditAccountBalance = "0";
             EditAccountIconCode = string.Empty;
             EditAccountAllowNegativeBalance = false;
+            EditAccountCurrency = null;
             UpdateIconSelection(NewAccountIconCode);
-            
+
             await LoadAccountsAsync();
         }
 
