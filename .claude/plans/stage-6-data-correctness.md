@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: In progress — 6.0–6.6 done (2026-10-11)
+**Status**: Done — 6.0–6.7 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -158,10 +158,17 @@ foundation first, because everything later builds on them.
   culture's separator: Stage 8 fast entry), seeded category/account names stay in the language of first run, and
   "transfer(s)" / "transaction(s)" in confirmation messages still use "(s)".
 
-### 6.7 Housekeeping
+### 6.7 Housekeeping — ✅ done
 - Replace FluentAssertions 8.* (Xceed licence, non-commercial only) with AwesomeAssertions (Apache-2.0); pin all test
   package versions.
 - `.gitignore`: add `.codegraph/`; remove committed `AppResources.resources` if it's a build artifact.
+- Done: AwesomeAssertions **9.4.0** (`using AwesomeAssertions;`, no other test changes); every test package has an exact
+  version (Test.Sdk 17.14.1, xunit 2.9.3, runner 2.8.2, NSubstitute 5.3.0: the versions the wildcards resolved to).
+  **Why 9.4.0, not the latest 9.6.0:** Windows Smart App Control on the dev machine refuses to load the unsigned
+  `AwesomeAssertions.dll` of 9.6.0, 9.5.0 and 9.0.0 (0x800711C7, every test fails); 9.4.0 loads. Revisit when bumping.
+  `AppResources.resources` was a stale manual `resgen` output (not referenced; the build compiles its own into `obj/`):
+  deleted and ignored, with `.codegraph/`. Also (from the 6.6 review): the new-transfer description defaulted to the
+  `Transfer` key, a verb in Spanish ("Transferir"); new key `DefaultTransferDescription` ("Transfer" / "Transferencia").
 
 ## Tests
 - `GetBalancesByCurrencyAsync`: USD + EUR + COP accounts → three rows, none summed across currencies; empty code → base.

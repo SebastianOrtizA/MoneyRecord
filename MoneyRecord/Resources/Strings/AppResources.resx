@@ -1076,4 +1076,7 @@ Amount: {2}</value>
   <data name="FailedToLoadData" xml:space="preserve">
     <value>Failed to load data: {0}</value>
   </data>
+  <data name="DefaultTransferDescription" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
 </root>

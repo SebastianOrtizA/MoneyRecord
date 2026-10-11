@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Repositories;

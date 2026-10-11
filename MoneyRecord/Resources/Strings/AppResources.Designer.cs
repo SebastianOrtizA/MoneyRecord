@@ -2717,5 +2717,14 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer.
+        /// </summary>
+        internal static string DefaultTransferDescription {
+            get {
+                return ResourceManager.GetString("DefaultTransferDescription", resourceCulture);
+            }
+        }
+        
     }
 }

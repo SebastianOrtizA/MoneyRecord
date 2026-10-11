@@ -71,7 +71,7 @@ dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android   # instal
 ## Test
 
 ```powershell
-dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 138 pass, ~1 s (Windows only: the test project targets net10.0-windows)
+dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 190 pass, ~2 s (Windows only: the test project targets net10.0-windows)
 ```
 
 ## Gotchas
@@ -91,6 +91,8 @@ dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 138 pass, ~1 s (Wind
 - **`dotnet test` says "Una directiva de Control de aplicaciones bloqueó este archivo" (0x800711C7)**: Smart App Control is on and has blocked
   a freshly built DLL by hash. Builds are deterministic, so plain rebuilds keep the same blocked hash. Force a new one:
   `dotnet build MoneyRecord.Tests/MoneyRecord.Tests.csproj --no-incremental -p:Deterministic=false`, then `dotnet test --no-build`.
+  If the blocked file is a **NuGet package DLL** (the message names e.g. `AwesomeAssertions.dll`), rebuilding can't help: its
+  hash is fixed. Try another version of that package (AwesomeAssertions 9.4.0 loads; 9.0.0, 9.5.0 and 9.6.0 are blocked).
 
 - **`launch` prints `NexusLauncherActivity`** and `crash` shows `No assemblies found in '/data/user/0/com.sebastianortiz.moneyrecord/files/.__override__/x86_64'`: fast-deploy files are gone. Run `$D deploy clean`.
 - **`crash` shows `Invalid packageName: com.sebastianortiz.moneyrecord`**: not installed (fresh boot). Run `$D deploy clean`.

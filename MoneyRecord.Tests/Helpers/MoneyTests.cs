@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using System.Text.Json;
