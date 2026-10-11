@@ -58,9 +58,15 @@ foundation first, because everything later builds on them.
 - Remove every hard-coded `'${0:N2}'` (MainPage, BudgetPage, report pages, TransfersPage, RecurringTransactionsPage,
   `ChartDrawables` axis, `MainViewModel.ShowAccountBalancesAsync`, report detail popups) → `MoneyConverter`
   with the account currency, else the device culture.
-- Totals across accounts: until Stage 10 adds exchange rates, show the total only for accounts in the **base currency**
-  (Settings → base currency, default = device region currency) and list other-currency balances separately
-  ("+ €50.00 in other currencies"). Never add different currencies together.
+- Totals across accounts: never add different currencies together. The Home balance card shows **one subtotal per
+  currency**, each in its own currency, base currency first (Settings → base currency, default = device region currency):
+  ```
+  $1,250.00 USD   (base)
+  €300.00 EUR
+  COP 450.000
+  ```
+  With a single currency, the card looks as it does today. New `IBalanceService.GetBalancesByCurrencyAsync()` returns
+  `(CurrencyCode, BalanceMinor, AccountCount)` rows; accounts with an empty `CurrencyCode` count as the base currency.
 - `CurrencyMaskBehavior` shows the selected account's symbol, not `$`.
 
 ### 6.6 Localization cleanup (P8)
@@ -77,13 +83,15 @@ foundation first, because everything later builds on them.
 - `.gitignore`: add `.codegraph/`; remove committed `AppResources.resources` if it's a build artifact.
 
 ## Tests
+- `GetBalancesByCurrencyAsync`: USD + EUR + COP accounts → three rows, none summed across currencies; empty code → base.
 - Migration tests against a real temp SQLite file: v1 DB with decimals → v3, sums equal to the cent.
 - Cascade tests: delete account with transfers/recurring; delete category with budget/recurring.
 - Restore round-trip incl. receipts; restore failure midway leaves the original data intact.
 - `MoneyConverter` / culture tests for en-US, es-CO, es-ES, ja-JP (0 decimals).
 
 ## Verify on device (`/run-moneyrecord`)
-`fresh` → add a 50 expense on Cash without errors (N1) → accounts show `€`/`$`, never `¤` (N2) → Net shows `-$50.00`
+`fresh` → add a 50 expense on Cash without errors (N1) → add a EUR account with 100 → Home shows a USD row and a
+€100.00 EUR row, not a combined total → accounts show `€`/`$`, never `¤` (N2) → Net shows `-$50.00`
 in red (N3) → receipt buttons show camera/gallery (N4) → menu items all have icons → `locale es-ES` shows Spanish dates and
 "1 transacción".
 

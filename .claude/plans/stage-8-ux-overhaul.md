@@ -19,8 +19,8 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Every tab and More item has a distinct icon (MDI `FontImageSource`).
 
 ### 8.2 Home
-- Balance card shows the base-currency total + "other currencies" line (from Stage 6.5); tapping opens the
-  Accounts screen (not an alert).
+- Balance card shows one subtotal per currency (from Stage 6.5). Tapping a currency row opens the Accounts screen
+  filtered to that currency; tapping the card header opens all accounts (not an alert).
 - Income / Expense / Net cards; Net uses sign + colour.
 - Budget summary uses `IBudgetSummaryService` with readable colours and a "View all" link.
 - Recent 5 entries + "See all" → Transactions tab.
@@ -40,6 +40,8 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 
 ### 8.5 Accounts screen
 - Cards with icon, name, currency badge, balance in its own currency, last activity.
+- Grouped by currency (base first), each group with a subtotal header in that currency ("EUR · €300.00 · 2 accounts").
+  Accepts a currency filter from Home.
 - Add/Edit in a bottom sheet instead of the always-open form on top of the list.
 
 ### 8.6 Budgets

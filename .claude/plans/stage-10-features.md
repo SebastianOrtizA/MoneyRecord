@@ -29,6 +29,9 @@ Close the gap with competing finance apps. Each section can ship on its own.
   Cache daily rates in a `ExchangeRate` table; manual rate override per transaction.
 - Transfers store `SourceAmountMinor` and `DestinationAmountMinor` (+ rate) for cross-currency transfers.
 - Totals and reports convert to base currency at the transaction-date rate; label converted values.
+- **"Show in" switch** on Home and in Reports: *Base currency* (one converted total, values marked "≈", rate date
+  shown on tap) or *Original currencies* (the per-currency subtotals from Stage 6.5, no conversion). Remember the
+  choice in preferences; default = Original until rates have been downloaded once.
 - Needs `INTERNET` (opt-in toggle "Download exchange rates").
 
 ### 10.4 Import from bank statements
