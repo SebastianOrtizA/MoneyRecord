@@ -77,6 +77,8 @@ foundation first, because everything later builds on them.
 - Automatic snapshot (`Backups/pre-restore-{timestamp}.json`) before every restore, with a "Undo restore" option.
 - Backup becomes a `.zip`: `data.json` + `receipts/`. Store receipt paths relative (`receipts/receipt_x.jpg`).
 - Map category IDs by old ID, not by name+type (the current name match breaks on duplicates).
+- (From 6.3 review) Removing or replacing a receipt photo on an existing transaction leaves the old file in `receipts/`;
+  delete it on save with `ReceiptFiles.Delete` (and the unsaved new photo on cancel).
 
 ### 6.5 Currency display everywhere (P1, P2)
 - Remove every hard-coded `'${0:N2}'` (MainPage, BudgetPage, report pages, TransfersPage, RecurringTransactionsPage,

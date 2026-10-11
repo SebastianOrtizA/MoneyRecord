@@ -2612,5 +2612,14 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't delete '{0}' because its data changed in the meantime. Please try again..
+        /// </summary>
+        internal static string DeleteFailedDataChanged {
+            get {
+                return ResourceManager.GetString("DeleteFailedDataChanged", resourceCulture);
+            }
+        }
+        
     }
 }

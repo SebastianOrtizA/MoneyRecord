@@ -316,6 +316,12 @@ namespace MoneyRecord.ViewModels
                 await _accountService.DeleteAsync(account.Id);
                 await LoadAccountsAsync();
             }
+            catch (InvalidOperationException ex)
+            {
+                // A service guard fired because the data changed after the usage check (e.g. a transfer was added)
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.DeleteFailedDataChanged, account.Name));
+                await LoadAccountsAsync();
+            }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, ex.Message);

@@ -74,43 +74,5 @@ namespace MoneyRecord.Services.Repositories
             await EnsureInitializedAsync();
             return await _dbInitializer.Database!.DeleteAsync(entity);
         }
-
-        public async Task<int> ReassignCategoryAsync(int fromCategoryId, int toCategoryId)
-        {
-            await EnsureInitializedAsync();
-            var transactions = await _dbInitializer.Database!.Table<Transaction>()
-                .Where(t => t.CategoryId == fromCategoryId)
-                .ToListAsync();
-
-            await _dbInitializer.Database.RunInTransactionAsync(db =>
-            {
-                foreach (var transaction in transactions)
-                {
-                    transaction.CategoryId = toCategoryId;
-                    db.Update(transaction);
-                }
-            });
-
-            return transactions.Count;
-        }
-
-        public async Task<int> ReassignAccountAsync(int fromAccountId, int toAccountId)
-        {
-            await EnsureInitializedAsync();
-            var transactions = await _dbInitializer.Database!.Table<Transaction>()
-                .Where(t => t.AccountId == fromAccountId)
-                .ToListAsync();
-
-            await _dbInitializer.Database.RunInTransactionAsync(db =>
-            {
-                foreach (var transaction in transactions)
-                {
-                    transaction.AccountId = toAccountId;
-                    db.Update(transaction);
-                }
-            });
-
-            return transactions.Count;
-        }
     }
 }

@@ -209,6 +209,12 @@ namespace MoneyRecord.ViewModels
 
                 await LoadCategoriesAsync();
             }
+            catch (InvalidOperationException ex)
+            {
+                // A service guard fired because the data changed after the usage check
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.DeleteFailedDataChanged, category.Name));
+                await LoadCategoriesAsync();
+            }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, ex.Message);

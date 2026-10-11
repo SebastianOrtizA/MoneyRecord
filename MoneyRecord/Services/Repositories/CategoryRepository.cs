@@ -75,29 +75,5 @@ namespace MoneyRecord.Services.Repositories
             InvalidateCache();
             return result;
         }
-
-        public async Task<bool> HasTransactionsAsync(int categoryId)
-        {
-            await EnsureInitializedAsync();
-            try
-            {
-                var count = await _dbInitializer.Database!.Table<Transaction>()
-                    .Where(t => t.CategoryId == categoryId)
-                    .CountAsync();
-                return count > 0;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public async Task<int> GetTransactionCountAsync(int categoryId)
-        {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Transaction>()
-                .Where(t => t.CategoryId == categoryId)
-                .CountAsync();
-        }
     }
 }

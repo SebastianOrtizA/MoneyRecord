@@ -38,18 +38,19 @@ namespace MoneyRecord.Services
                     var category = db.Find<Category>(categoryId)
                         ?? throw new InvalidOperationException($"Category {categoryId} does not exist.");
 
-                    var transactions = db.Table<Transaction>().Count(t => t.CategoryId == categoryId);
-                    var recurringRules = db.Table<RecurringTransaction>().Count(r => r.CategoryId == categoryId);
-                    var budgets = db.Table<Budget>().Count(b => b.CategoryId == categoryId);
+                    var usage = new CategoryUsage(
+                        db.Table<Transaction>().Count(t => t.CategoryId == categoryId),
+                        db.Table<RecurringTransaction>().Count(r => r.CategoryId == categoryId),
+                        db.Table<Budget>().Count(b => b.CategoryId == categoryId));
 
                     if (replacementId is not { } newId)
                     {
-                        if (transactions > 0 || recurringRules > 0)
+                        if (usage.NeedsReplacement)
                             throw new InvalidOperationException($"Category {categoryId} is in use and needs a replacement.");
 
                         db.Execute("DELETE FROM \"Budget\" WHERE CategoryId = ?", categoryId);
                         db.Delete<Category>(categoryId);
-                        result = new CategoryDeleteResult(0, 0, 0, budgets);
+                        result = new CategoryDeleteResult(0, 0, 0, usage.Budgets);
                         return;
                     }
 
@@ -69,8 +70,8 @@ namespace MoneyRecord.Services
 
                     db.Delete<Category>(categoryId);
                     result = replacementHasBudget
-                        ? new CategoryDeleteResult(transactions, recurringRules, 0, budgets)
-                        : new CategoryDeleteResult(transactions, recurringRules, budgets, 0);
+                        ? new CategoryDeleteResult(usage.Transactions, usage.RecurringRules, 0, usage.Budgets)
+                        : new CategoryDeleteResult(usage.Transactions, usage.RecurringRules, usage.Budgets, 0);
                 });
             }
             finally

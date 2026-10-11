@@ -1032,4 +1032,7 @@ ${1:N2}</value>
   <data name="DeleteCategoryWithBudget" xml:space="preserve">
     <value>¿Está seguro de que desea eliminar '{0}'? Su presupuesto también se eliminará.</value>
   </data>
+  <data name="DeleteFailedDataChanged" xml:space="preserve">
+    <value>No se pudo eliminar '{0}' porque sus datos cambiaron mientras tanto. Inténtalo de nuevo.</value>
+  </data>
 </root>

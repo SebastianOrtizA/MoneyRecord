@@ -11,7 +11,5 @@ namespace MoneyRecord.Services.Interfaces
         Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
         Task<List<Transaction>> GetByAccountIdAsync(int accountId);
         Task<List<Transaction>> GetByCategoryIdAsync(int categoryId);
-        Task<int> ReassignCategoryAsync(int fromCategoryId, int toCategoryId);
-        Task<int> ReassignAccountAsync(int fromAccountId, int toAccountId);
     }
 }
