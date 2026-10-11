@@ -1,5 +1,4 @@
 using MoneyRecord.Helpers;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
@@ -18,6 +17,7 @@ namespace MoneyRecord.ViewModels
         private readonly IBalanceService _balanceService;
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private Transfer? transfer;
@@ -86,13 +86,14 @@ namespace MoneyRecord.ViewModels
         private int? _originalDestinationAccountId;
         private decimal _originalAmount;
 
-        public AddTransferViewModel(IAccountRepository accountRepository, ITransferRepository transferRepository, IBalanceService balanceService, INavigationService navigationService, IErrorHandler errorHandler)
+        public AddTransferViewModel(IAccountRepository accountRepository, ITransferRepository transferRepository, IBalanceService balanceService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _accountRepository = accountRepository;
             _transferRepository = transferRepository;
             _balanceService = balanceService;
             _navigationService = navigationService;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
         }
 
         /// <summary>
@@ -272,7 +273,7 @@ namespace MoneyRecord.ViewModels
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
 
                     await _transferRepository.SaveAsync(Transfer);
-                    await Toast.Make(AppResources.TransferUpdatedSuccessfully).Show();
+                    await _dialogService.ToastAsync(AppResources.TransferUpdatedSuccessfully);
                 }
                 else
                 {

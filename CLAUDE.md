@@ -51,7 +51,8 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
 - `Services/` — BalanceService, TransactionEnrichmentService, AccountService / CategoryService (transactional deletes),
   CurrencyService, RecurringTransactionService, DataExportService (zip backup/restore, CSV), CategoryIconService,
-  LocalizationService, AppPaths (app data folder → database, receipts, backups)
+  LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (via `IDialogService`),
+  NavigationHistory (back-button stack; `//Route` = root)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper, PeriodHelper, ReceiptFiles, ReceiptDraft
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
@@ -63,7 +64,8 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — all value converters in a single file
 - `Models/CategoryReport.cs` — report display models with MAUI `Color` (replaced in Stage 7.4)
-- `Services/` — NavigationService, PreferencesService (MAUI Preferences), ErrorHandler
+- `Services/` — NavigationService, DialogService (Shell alerts/prompts/action sheets + toast), PreferencesService
+  (MAUI Preferences). ViewModels use `IDialogService` / `INavigationService`, never `Shell.Current` or `Toast`
 - `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
 
 `MoneyRecord.Tests/` — xUnit tests on plain `net10.0`, referencing Core only (helpers, models, services, migrations
@@ -87,7 +89,9 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Shell with Flyout menu (`AppShell.xaml`)
 - Root routes: `//MainPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//BudgetPage`, `//RecurringTransactionsPage`, `//TransfersPage`, `//ManageAccounts`, `//ManageIncomeCategories`, `//ManageExpenseCategories`, `//SettingsPage`
 - Push routes: `AddTransactionPage`, `AddTransferPage`
-- Custom `INavigationService` tracks navigation history for back button behavior
+- Custom `INavigationService` tracks navigation history for back button behavior: AppShell's `Navigated` event feeds
+  `NavigationHistory`; Android back → `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed` (previous page,
+  then Home, then close)
 
 ### Database
 - SQLite via `sqlite-net-pcl` with `SQLiteAsyncConnection`

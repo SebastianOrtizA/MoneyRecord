@@ -1,4 +1,5 @@
-﻿using MoneyRecord.Services;
+using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 
 namespace MoneyRecord
@@ -31,10 +32,15 @@ namespace MoneyRecord
             }
         }
 
+        /// <summary>
+        /// Back goes to the previous page, then to Home; on Home with no history the app closes.
+        /// MainActivity routes the Android back gesture here.
+        /// </summary>
         protected override bool OnBackButtonPressed()
         {
-            // If we can go back, navigate to previous page
-            if (_navigationService.CanGoBack)
+            var currentRoute = CurrentState?.Location?.ToString() ?? "";
+
+            if (_navigationService.CanGoBack || !NavigationHistory.IsHome(currentRoute))
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
@@ -43,27 +49,7 @@ namespace MoneyRecord
                 return true;
             }
 
-            // Get the current page route
-            var currentRoute = Current?.CurrentState?.Location?.ToString() ?? "";
-
-            // If we're not on the main page, navigate to it
-            if (!IsMainPage(currentRoute))
-            {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await GoToAsync("//MainPage");
-                });
-                return true;
-            }
-
-            // On main page with no history, allow default behavior (close app)
             return base.OnBackButtonPressed();
-        }
-
-        private static bool IsMainPage(string route)
-        {
-            return !string.IsNullOrEmpty(route) && 
-                (route.EndsWith("MainPage") || route.Contains("//MainPage"));
         }
     }
 }

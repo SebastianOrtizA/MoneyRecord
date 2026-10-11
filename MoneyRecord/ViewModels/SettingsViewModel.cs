@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
@@ -11,6 +10,7 @@ namespace MoneyRecord.ViewModels
     {
         private readonly IDataExportService _dataExportService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
         private readonly ICurrencyService _currencyService;
 
         [ObservableProperty]
@@ -25,10 +25,11 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private Currency? baseCurrency;
 
-        public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, ICurrencyService currencyService)
+        public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService, ICurrencyService currencyService)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
             _currencyService = currencyService;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
@@ -50,7 +51,7 @@ namespace MoneyRecord.ViewModels
                 var filePath = Path.Combine(_dataExportService.BackupsFolder, BackupFileName());
                 await _dataExportService.ExportBackupAsync(filePath);
 
-                await Toast.Make($"{AppResources.BackupCreatedSuccessfully}").Show();
+                await _dialogService.ToastAsync(AppResources.BackupCreatedSuccessfully);
             }
             catch (Exception ex)
             {
@@ -112,7 +113,7 @@ namespace MoneyRecord.ViewModels
                     File = new ShareFile(filePath)
                 });
 
-                await Toast.Make(AppResources.CsvExportedSuccessfully).Show();
+                await _dialogService.ToastAsync(AppResources.CsvExportedSuccessfully);
             }
             catch (Exception ex)
             {
@@ -140,13 +141,12 @@ namespace MoneyRecord.ViewModels
 
                 if (localBackups.Length > 0)
                 {
-                    var options = localBackups.Select(Path.GetFileName).ToList();
+                    var options = localBackups.Select(f => Path.GetFileName(f)).ToList();
                     options.Add(AppResources.SelectBackupFile);
 
-                    var choice = await Shell.Current.DisplayActionSheetAsync(
-                        AppResources.RestoreFromBackup, AppResources.Cancel, null, options.ToArray());
+                    var choice = await _dialogService.ActionSheetAsync(AppResources.RestoreFromBackup, AppResources.Cancel, options);
 
-                    if (choice == null || choice == AppResources.Cancel) return;
+                    if (choice == null) return;
 
                     backupPath = choice == AppResources.SelectBackupFile
                         ? pickedCopy = await PickBackupFileAsync()
@@ -159,7 +159,7 @@ namespace MoneyRecord.ViewModels
 
                 if (backupPath == null) return;
 
-                var confirm = await Shell.Current.DisplayAlertAsync(
+                var confirm = await _dialogService.ConfirmAsync(
                     AppResources.ConfirmRestore,
                     AppResources.RestoreWarning,
                     AppResources.YesRestore,
@@ -171,7 +171,7 @@ namespace MoneyRecord.ViewModels
                 var result = await _dataExportService.RestoreAsync(backupPath);
                 IsImporting = false;
 
-                var undo = await Shell.Current.DisplayAlertAsync(
+                var undo = await _dialogService.ConfirmAsync(
                     AppResources.RestoreComplete,
                     string.Format(AppResources.RestoreSuccessful, result.RecordCount, Path.GetFileName(result.SnapshotPath)),
                     AppResources.UndoRestore,
@@ -181,7 +181,7 @@ namespace MoneyRecord.ViewModels
 
                 IsImporting = true;
                 await _dataExportService.RestoreAsync(result.SnapshotPath);
-                await Toast.Make(AppResources.RestoreUndone).Show();
+                await _dialogService.ToastAsync(AppResources.RestoreUndone);
             }
             catch (Exception ex)
             {

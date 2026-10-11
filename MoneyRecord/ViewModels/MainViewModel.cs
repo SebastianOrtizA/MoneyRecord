@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
@@ -21,6 +20,8 @@ namespace MoneyRecord.ViewModels
         private readonly IBudgetRepository _budgetRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
+        private readonly INavigationService _navigationService;
         private readonly IAppPaths _paths;
 
         private List<Transaction> _allCombinedTransactions = new();
@@ -147,7 +148,7 @@ namespace MoneyRecord.ViewModels
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
-        public MainViewModel(IBalanceService balanceService, ITransactionEnrichmentService enrichmentService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler, IAppPaths paths)
+        public MainViewModel(IBalanceService balanceService, ITransactionEnrichmentService enrichmentService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService, IAppPaths paths)
         {
             _balanceService = balanceService;
             _enrichmentService = enrichmentService;
@@ -157,6 +158,8 @@ namespace MoneyRecord.ViewModels
             _budgetRepository = budgetRepository;
             _categoryRepository = categoryRepository;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
+            _navigationService = navigationService;
             _paths = paths;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
             selectedFilterType = FilterTypes[0];
@@ -389,7 +392,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task AddIncomeAsync()
         {
-            await Shell.Current.GoToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
             {
                 { "TransactionType", TransactionType.Income }
             });
@@ -398,7 +401,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task AddExpenseAsync()
         {
-            await Shell.Current.GoToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
             {
                 { "TransactionType", TransactionType.Expense }
             });
@@ -407,25 +410,25 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task AddTransferAsync()
         {
-            await Shell.Current.GoToAsync(nameof(AddTransferPage));
+            await _navigationService.NavigateToAsync(nameof(AddTransferPage));
         }
 
         [RelayCommand]
         private async Task ManageIncomeCategoriesAsync()
         {
-            await Shell.Current.GoToAsync("//ManageIncomeCategories");
+            await _navigationService.NavigateToAsync("//ManageIncomeCategories");
         }
 
         [RelayCommand]
         private async Task ManageExpenseCategoriesAsync()
         {
-            await Shell.Current.GoToAsync("//ManageExpenseCategories");
+            await _navigationService.NavigateToAsync("//ManageExpenseCategories");
         }
 
         [RelayCommand]
         private async Task ManageAccountsAsync()
         {
-            await Shell.Current.GoToAsync("//ManageAccounts");
+            await _navigationService.NavigateToAsync("//ManageAccounts");
         }
 
         [RelayCommand]
@@ -446,7 +449,7 @@ namespace MoneyRecord.ViewModels
                     message = AppResources.NoAccountsFound;
                 }
 
-                await Shell.Current.DisplayAlertAsync(AppResources.AccountBalances, message, AppResources.OK);
+                await _dialogService.AlertAsync(AppResources.AccountBalances, message);
             }
             catch (Exception ex)
             {
@@ -505,11 +508,11 @@ namespace MoneyRecord.ViewModels
             if (transaction.TransferId.HasValue)
             {
                 // Navigate to edit transfer page - convert to string for Shell query property
-                await Shell.Current.GoToAsync($"{nameof(AddTransferPage)}?TransferId={transaction.TransferId.Value}");
+                await _navigationService.NavigateToAsync($"{nameof(AddTransferPage)}?TransferId={transaction.TransferId.Value}");
             }
             else
             {
-                await Shell.Current.GoToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
+                await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
                 {
                     { "Transaction", transaction }
                 });
@@ -529,7 +532,7 @@ namespace MoneyRecord.ViewModels
                 ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, transaction.Description, MoneyFormatter.Format(transaction.Amount, transaction.CurrencyCode))
                 : string.Format(AppResources.ConfirmDeleteTransactionMessage, transaction.Description, MoneyFormatter.Format(transaction.Amount, transaction.CurrencyCode));
 
-            var confirm = await Shell.Current.DisplayAlertAsync(
+            var confirm = await _dialogService.ConfirmAsync(
                 AppResources.ConfirmDeleteTransactionTitle,
                 confirmMessage,
                 AppResources.YesDelete,
@@ -558,7 +561,7 @@ namespace MoneyRecord.ViewModels
                 await LoadDataAsync();
 
                 var successMessage = isTransfer ? AppResources.TransferDeletedSuccessfully : AppResources.TransactionDeletedSuccessfully;
-                await Toast.Make(successMessage).Show();
+                await _dialogService.ToastAsync(successMessage);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
@@ -15,6 +14,7 @@ namespace MoneyRecord.ViewModels
         private readonly ICategoryService _categoryService;
         private readonly ICategoryIconService _categoryIconService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private CategoryType categoryType;
@@ -46,12 +46,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<CategoryIcon> availableIcons = new();
 
-        public ManageCategoriesViewModel(ICategoryRepository categoryRepository, ICategoryService categoryService, ICategoryIconService categoryIconService, IErrorHandler errorHandler)
+        public ManageCategoriesViewModel(ICategoryRepository categoryRepository, ICategoryService categoryService, ICategoryIconService categoryIconService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _categoryRepository = categoryRepository;
             _categoryService = categoryService;
             _categoryIconService = categoryIconService;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
         }
 
         public async Task InitializeAsync()
@@ -144,21 +145,18 @@ namespace MoneyRecord.ViewModels
 
                     if (availableCategories.Count == 0)
                     {
-                        await Shell.Current.DisplayAlertAsync(AppResources.CannotDelete, 
-                            AppResources.LastCategoryCannotDelete, 
-                            AppResources.OK);
+                        await _dialogService.AlertAsync(AppResources.CannotDelete, AppResources.LastCategoryCannotDelete);
                         return;
                     }
 
                     // Ask user to select a replacement category
                     var categoryNames = availableCategories.Select(c => c.Name).ToArray();
-                    var selectedCategory = await Shell.Current.DisplayActionSheetAsync(
+                    var selectedCategory = await _dialogService.ActionSheetAsync(
                         string.Format(AppResources.CategoryHasTransactions, category.Name),
                         AppResources.Cancel,
-                        null,
                         categoryNames);
 
-                    if (selectedCategory == AppResources.Cancel || selectedCategory == null)
+                    if (selectedCategory == null)
                         return;
 
                     // Find the selected category
@@ -182,7 +180,7 @@ namespace MoneyRecord.ViewModels
                         message += "\n\n" + string.Format(budgetFate, replacementCategory.Name);
                     }
 
-                    var confirmReassign = await Shell.Current.DisplayAlertAsync(
+                    var confirmReassign = await _dialogService.ConfirmAsync(
                         AppResources.Confirm, message, AppResources.Yes, AppResources.Cancel);
 
                     if (!confirmReassign)
@@ -190,8 +188,7 @@ namespace MoneyRecord.ViewModels
 
                     var result = await _categoryService.DeleteAsync(category.Id, replacementCategory.Id);
 
-                    await Toast.Make(
-                        string.Format(AppResources.CategoryDeletedAndTransactionsMoved, category.Name, result.TransactionsMoved, replacementCategory.Name)).Show();
+                    await _dialogService.ToastAsync(string.Format(AppResources.CategoryDeletedAndTransactionsMoved, category.Name, result.TransactionsMoved, replacementCategory.Name));
                 }
                 else
                 {
@@ -199,7 +196,7 @@ namespace MoneyRecord.ViewModels
                         ? string.Format(AppResources.DeleteCategoryWithBudget, category.Name)
                         : string.Format(AppResources.DeleteCategoryConfirmation, category.Name);
 
-                    var confirm = await Shell.Current.DisplayAlertAsync(AppResources.Confirm, message, AppResources.Yes, AppResources.No);
+                    var confirm = await _dialogService.ConfirmAsync(AppResources.Confirm, message, AppResources.Yes, AppResources.No);
 
                     if (!confirm)
                         return;
@@ -267,12 +264,6 @@ namespace MoneyRecord.ViewModels
             EditCategoryName = string.Empty;
             EditCategoryIconCode = string.Empty;
             UpdateIconSelection(NewCategoryIconCode);
-        }
-
-        [RelayCommand]
-        private async Task GoBackAsync()
-        {
-            await Shell.Current.GoToAsync("..");
         }
     }
 }
