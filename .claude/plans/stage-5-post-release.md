@@ -1,8 +1,13 @@
 # Stage 5: Post-Release
 
-**Status**: Pending
+**Status**: Superseded by Stages 6–10 (review of 2026-10-11)
 **Depends on**: Stage 4 (app is released)
 **Complexity**: Variable
+
+> Where each item went: 5.1 crash reporting → Stage 9.4 (opt-in, no analytics);
+> 5.2 cloud sync → Stage 10.5 (cloud backup first; two-way sync deferred);
+> 5.3 more languages → still open, do after Stage 6.6 removes hard-coded strings;
+> 5.4 feedback → still open; 5.5 widget → Stage 10.9.
 
 ## Goal
 Iterate based on real-world usage and add cloud features.
