@@ -259,6 +259,8 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+            var description = string.IsNullOrWhiteSpace(Description) ? AppResources.DefaultTransferDescription : Description;
+
             try
             {
                 if (IsEditMode && Transfer != null)
@@ -266,7 +268,7 @@ namespace MoneyRecord.ViewModels
                     // Update existing transfer
                     Transfer.Date = SelectedDate;
                     Transfer.Amount = amountValue;
-                    Transfer.Description = string.IsNullOrWhiteSpace(Description) ? AppResources.DefaultTransferDescription : Description;
+                    Transfer.Description = description;
                     Transfer.SourceAccountId = SelectedSourceAccount.Id;
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
 
@@ -280,7 +282,7 @@ namespace MoneyRecord.ViewModels
                     {
                         Date = SelectedDate,
                         Amount = amountValue,
-                        Description = string.IsNullOrWhiteSpace(Description) ? AppResources.DefaultTransferDescription : Description,
+                        Description = description,
                         SourceAccountId = SelectedSourceAccount.Id,
                         DestinationAccountId = SelectedDestinationAccount.Id
                     };
