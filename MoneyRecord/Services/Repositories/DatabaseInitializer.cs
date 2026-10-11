@@ -1,6 +1,7 @@
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Services.Repositories.Migrations;
 using SQLite;
 
 namespace MoneyRecord.Services.Repositories
@@ -37,6 +38,8 @@ namespace MoneyRecord.Services.Repositories
                 await Database.CreateTableAsync<Transfer>();
                 await Database.CreateTableAsync<Budget>();
                 await Database.CreateTableAsync<RecurringTransaction>();
+
+                await new MigrationRunner(MigrationRunner.All).RunAsync(Database);
 
                 await SeedDefaultDataAsync();
 

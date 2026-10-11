@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: In progress — 6.0 done (2026-10-11)
+**Status**: In progress — 6.0, 6.1 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -27,13 +27,16 @@ foundation first, because everything later builds on them.
   and income/expense cards now use `MoneyConverter`, and the unused `chart.svg` was removed. Flyout uses
   `FontImageSource` glyphs. Still open for 6.6: "Your Accounts" / "Initial:" untranslated, "octubre 11, 2026" date pattern.
 
-### 6.1 Schema migration runner
+### 6.1 Schema migration runner — ✅ done
 - New `Services/Repositories/Migrations/` with `IMigration { int Version; Task UpAsync(SQLiteConnection) }`.
 - `DatabaseInitializer` reads `PRAGMA user_version`, runs pending migrations in one transaction each,
   then sets `user_version`. Current schema = version 1 (baseline, no-op).
 - Back up `moneyrecord.db3` to `moneyrecord.db3.bak-v{n}` before any migration that rewrites data.
 - Add indexes in v2: `Transaction(Date)`, `Transaction(AccountId)`, `Transaction(CategoryId)`, `Transfer(Date)`,
   `Transfer(SourceAccountId)`, `Transfer(DestinationAccountId)`.
+- Done as `MigrationRunner` + `M001_Baseline` + `M002_Indexes`. `IMigration.Up` is synchronous (`void Up(SQLiteConnection)`)
+  because sqlite-net's `RunInTransactionAsync` hands a sync connection; `user_version` is set in the same transaction.
+  Backups use `VACUUM INTO` and only run for migrations with `RewritesData = true`. New migrations: add to `MigrationRunner.All`.
 
 ### 6.2 Money as integer minor units (v3 migration)
 - sqlite-net stores `decimal` as REAL → rounding drift. Add `long AmountMinor` (and `InitialBalanceMinor`,
