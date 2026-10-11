@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: In progress — 6.0–6.2 done (2026-10-11)
+**Status**: In progress — 6.0–6.3 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -59,13 +59,18 @@ foundation first, because everything later builds on them.
 - Follow-up (once v2 has been out for a few releases): a migration that drops the unused REAL columns
   (`ALTER TABLE … DROP COLUMN`, SQLite 3.35+).
 
-### 6.3 Delete cascades (transactional)
+### 6.3 Delete cascades (transactional) — ✅ done
 - Account delete (`ManageAccountsViewModel.DeleteAccountAsync`): in one `RunInTransactionAsync`, reassign
   transactions **and** transfers (or block deleting when transfers exist, and say why) **and** recurring rules,
   then delete. Move this into a new `IAccountService.DeleteAsync(accountId)`.
 - Category delete: reassign transactions, budgets (merge or delete with confirmation), and recurring rules in one
   transaction → `ICategoryService.DeleteAsync(categoryId, replacementId)`.
 - Transaction delete removes its receipt file.
+- Done as `AccountService` / `CategoryService` (`GetUsageAsync` + `DeleteAsync`, one `RunInTransactionAsync` each).
+  Accounts with transfers are refused (moving a transfer to the default account could make it point at itself); the
+  user deletes those transfers first. Budgets move to the replacement category unless it already has one (then they are
+  deleted). Receipt files are only deleted from inside `receipts/` (`ReceiptFiles`). `DatabaseInitializer(path)` exists
+  for integration tests.
 
 ### 6.4 Safe backup & restore
 - Restore inside a single transaction (delete + insert), or restore into a temp DB file and swap.
@@ -88,6 +93,8 @@ foundation first, because everything later builds on them.
   `(CurrencyCode, BalanceMinor, AccountCount)` rows; accounts with an empty `CurrencyCode` count as the base currency.
 - `CurrencyMaskBehavior` shows the selected account's symbol, not `$`.
 - (From 6.2) `CurrencyService.GetMinorUnits(code)`: JPY/CLP/KRW show and accept 0 decimals; storage stays in cents.
+- (From 6.3) Deleting an account moves its transactions to the default account even when the currencies differ; refuse
+  or ask once accounts can have different currencies. Manage Accounts shows negative balances in green.
 
 ### 6.6 Localization cleanup (P8)
 - Move the ~26 hard-coded strings ("No activity", "Transfers", "Transfer to/from", "Unknown", "Cash",

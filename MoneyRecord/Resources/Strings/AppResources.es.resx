@@ -493,7 +493,7 @@
     <value>Esta es la última categoría de este tipo. No puedes eliminarla mientras tenga transacciones. Por favor crea otra categoría primero.</value>
   </data>
   <data name="CategoryHasTransactions" xml:space="preserve">
-    <value>'{0}' tiene transacciones existentes. Selecciona una categoría para moverlas:</value>
+    <value>Elige una nueva categoría para '{0}':</value>
   </data>
   
   <!-- Account Balance -->
@@ -609,7 +609,7 @@
   <data name="DeleteAccountWithTransactions" xml:space="preserve">
     <value>¿Está seguro de que desea eliminar '{0}'?
 
-Todas las transacciones de esta cuenta se moverán a la cuenta de Efectivo.</value>
+Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   </data>
   <data name="DeleteAccountNoTransactions" xml:space="preserve">
     <value>¿Está seguro de que desea eliminar '{0}'?</value>
@@ -1017,4 +1017,19 @@ ${1:N2}</value>
     <value>Acciones Rápidas</value>
   </data>
 
+  <data name="AccountHasTransfers" xml:space="preserve">
+    <value>'{0}' tiene {1} transferencia(s). Elimínalas primero en la página de Transferencias para que los saldos de las otras cuentas sigan siendo correctos.</value>
+  </data>
+  <data name="ConfirmCategoryMove" xml:space="preserve">
+    <value>¿Mover {0} transacción(es) y {1} regla(s) recurrente(s) de '{2}' a '{3}' y luego eliminar '{2}'?</value>
+  </data>
+  <data name="CategoryBudgetMoves" xml:space="preserve">
+    <value>Su presupuesto pasa a '{0}'.</value>
+  </data>
+  <data name="CategoryBudgetDeleted" xml:space="preserve">
+    <value>Su presupuesto se eliminará, porque '{0}' ya tiene uno.</value>
+  </data>
+  <data name="DeleteCategoryWithBudget" xml:space="preserve">
+    <value>¿Está seguro de que desea eliminar '{0}'? Su presupuesto también se eliminará.</value>
+  </data>
 </root>

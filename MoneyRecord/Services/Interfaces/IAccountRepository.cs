@@ -10,6 +10,11 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<Account?> GetDefaultAsync();
         Task<bool> HasTransactionsAsync(int accountId);
+
+        /// <summary>
+        /// Drops cached rows after another service changed the table directly (inside a multi-table transaction).
+        /// </summary>
+        void InvalidateCache();
         Task<bool> HasTransfersAsync(int accountId);
     }
 }

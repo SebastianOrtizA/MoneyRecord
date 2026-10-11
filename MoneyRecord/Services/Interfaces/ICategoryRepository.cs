@@ -10,6 +10,11 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<List<Category>> GetByTypeAsync(CategoryType type);
         Task<bool> HasTransactionsAsync(int categoryId);
+
+        /// <summary>
+        /// Drops cached rows after another service changed the table directly (inside a multi-table transaction).
+        /// </summary>
+        void InvalidateCache();
         Task<int> GetTransactionCountAsync(int categoryId);
     }
 }

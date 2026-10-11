@@ -19,7 +19,7 @@ namespace MoneyRecord.Services.Repositories
             await _dbInitializer.InitializeAsync();
         }
 
-        private void InvalidateCache()
+        public void InvalidateCache()
         {
             _allCache = null;
             _typeCache.Clear();
