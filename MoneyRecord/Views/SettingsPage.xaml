@@ -74,7 +74,7 @@
                                 CornerRadius="10"/>
 
                         <Button Text="{ext:Localize RestoreFromBackup}"
-                                Command="{Binding ImportJsonCommand}"
+                                Command="{Binding RestoreCommand}"
                                 IsEnabled="{Binding IsImporting, Converter={StaticResource InvertedBoolConverter}}"
                                 BackgroundColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"
                                 TextColor="White"

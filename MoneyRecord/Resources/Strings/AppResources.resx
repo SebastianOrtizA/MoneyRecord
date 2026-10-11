@@ -854,7 +854,7 @@ ${1:N2}</value>
     <value>Export your data or restore from a backup</value>
   </data>
   <data name="ExportFullBackup" xml:space="preserve">
-    <value>Export Full Backup (JSON)</value>
+    <value>Export Full Backup (with receipts)</value>
   </data>
   <data name="SaveBackupLocal" xml:space="preserve">
     <value>Save Backup to Device</value>
@@ -869,7 +869,7 @@ ${1:N2}</value>
     <value>Restore from Backup</value>
   </data>
   <data name="RestoreNote" xml:space="preserve">
-    <value>Warning: Restoring a backup will replace all current data.</value>
+    <value>Restoring a backup replaces all current data. Your current data is saved first, so a restore can be undone.</value>
   </data>
   <data name="ShareBackup" xml:space="preserve">
     <value>Share Backup</value>
@@ -893,7 +893,7 @@ ${1:N2}</value>
     <value>Confirm Restore</value>
   </data>
   <data name="RestoreWarning" xml:space="preserve">
-    <value>This will replace ALL your current data with the backup data. This action cannot be undone. Are you sure?</value>
+    <value>This will replace ALL your current data with the backup data. Your current data is saved first, so you can undo the restore. Continue?</value>
   </data>
   <data name="YesRestore" xml:space="preserve">
     <value>Yes, Restore</value>
@@ -902,7 +902,16 @@ ${1:N2}</value>
     <value>Failed to restore backup</value>
   </data>
   <data name="RestoreSuccessful" xml:space="preserve">
-    <value>Restore successful! {0} records imported.</value>
+    <value>{0} records restored. Your previous data was saved as {1}; you can restore it later from the backup list.</value>
+  </data>
+  <data name="RestoreComplete" xml:space="preserve">
+    <value>Restore complete</value>
+  </data>
+  <data name="UndoRestore" xml:space="preserve">
+    <value>Undo restore</value>
+  </data>
+  <data name="RestoreUndone" xml:space="preserve">
+    <value>Restore undone: your previous data is back</value>
   </data>
   <data name="SelectBackupFile" xml:space="preserve">
     <value>Select Backup File</value>

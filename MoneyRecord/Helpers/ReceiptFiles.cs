@@ -5,7 +5,9 @@ namespace MoneyRecord.Helpers
     /// </summary>
     public static class ReceiptFiles
     {
-        public static string Folder => Path.Combine(FileSystem.AppDataDirectory, "receipts");
+        public const string FolderName = "receipts";
+
+        public static string Folder => Path.Combine(FileSystem.AppDataDirectory, FolderName);
 
         /// <summary>
         /// Deletes a transaction's receipt photo. Best effort: a missing file or an I/O error is not an error.
@@ -18,23 +20,32 @@ namespace MoneyRecord.Helpers
         /// </summary>
         public static bool Delete(string? path, string receiptsFolder)
         {
-            if (string.IsNullOrWhiteSpace(path))
-                return false;
-
-            var file = Path.GetFullPath(path);
-            var folder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(receiptsFolder)) + Path.DirectorySeparatorChar;
-            if (!file.StartsWith(folder, StringComparison.OrdinalIgnoreCase) || !File.Exists(file))
+            if (!IsInFolder(path, receiptsFolder) || !File.Exists(path))
                 return false;
 
             try
             {
-                File.Delete(file);
+                File.Delete(path!);
                 return true;
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// True when <paramref name="path"/> resolves to a file inside <paramref name="receiptsFolder"/>
+        /// ("..", other folders and empty paths are not).
+        /// </summary>
+        public static bool IsInFolder(string? path, string receiptsFolder)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            var file = Path.GetFullPath(path);
+            var folder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(receiptsFolder)) + Path.DirectorySeparatorChar;
+            return file.StartsWith(folder, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
