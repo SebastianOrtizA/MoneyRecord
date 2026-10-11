@@ -49,6 +49,8 @@ no duplicated business rules. Behaviour must not change; the device check before
   twice). `MainActivity` hands the back gesture to `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed`
   (one back path); a pushed page opened from a report now goes back to that report instead of Home. Removed the dead
   `OnBackButtonPressed` overrides on five pages and the unbound `GoBack` commands in ManageAccounts/ManageCategories.
+  A go-back in progress ignores a second back press (`BeginGoBack` returns null) and a failed one is cancelled;
+  AppShell catches back failures (async void). The Android back callback re-enables itself after closing the app.
   Tests: `NavigationHistoryTests`, `ErrorHandlerTests` (fake `IDialogService`).
 - **Deviation:** ViewModel tests with a fake `IDialogService` (plan "Tests") need the ViewModels out of the MAUI
   project; the interfaces are in Core now, so those tests can come once ViewModels move (7.3 `MainViewModel` split is

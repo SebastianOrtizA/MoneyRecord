@@ -31,9 +31,11 @@ namespace MoneyRecord
                 if (Shell.Current?.SendBackButtonPressed() == true)
                     return;
 
-                // On Home with no history, close the app
+                // On Home with no history, let the system close the app. Re-enable afterwards: on Android 12+
+                // the activity survives in the background, and back must reach AppShell again after it resumes
                 Enabled = false;
                 _activity.OnBackPressedDispatcher.OnBackPressed();
+                Enabled = true;
             }
         }
     }

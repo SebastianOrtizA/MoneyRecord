@@ -5,8 +5,6 @@ namespace MoneyRecord.Services.Interfaces
     /// </summary>
     public interface INavigationService
     {
-        bool CanGoBack { get; }
-
         /// <summary>Records where Shell ended up. AppShell calls this from its <c>Navigated</c> event.</summary>
         void RecordNavigation(string location);
 

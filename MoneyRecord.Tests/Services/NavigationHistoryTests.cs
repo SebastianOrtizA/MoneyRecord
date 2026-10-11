@@ -82,6 +82,39 @@ public class NavigationHistoryTests
         history.CanGoBack.Should().BeFalse();
     }
 
+    [Fact]
+    public void A_second_back_before_shell_navigates_is_ignored()
+    {
+        // Back pressed twice quickly: the second ".." would run on a root page and throw
+        var history = new NavigationHistory();
+        history.Record("//MainPage");
+        history.Record("//MainPage/AddTransactionPage");
+
+        history.BeginGoBack().Should().Be("..");
+        history.BeginGoBack().Should().BeNull();
+
+        history.Record("//MainPage");
+        history.CanGoBack.Should().BeFalse();
+        history.CurrentLocation.Should().Be("//MainPage");
+    }
+
+    [Fact]
+    public void A_cancelled_back_does_not_swallow_the_next_navigation()
+    {
+        var history = new NavigationHistory();
+        history.Record("//MainPage");
+        history.Record("//MainPage/AddTransactionPage");
+
+        history.BeginGoBack();
+        history.CancelGoBack();
+
+        // The next push is recorded as a push again, not taken for the end of the failed go-back
+        history.Record("//MainPage/AddTransferPage");
+        history.CurrentLocation.Should().Be("//MainPage/AddTransferPage");
+        history.CanGoBack.Should().BeTrue();
+        history.BeginGoBack().Should().Be("..");
+    }
+
     [Theory]
     [InlineData("//MainPage", true)]
     [InlineData("//mainpage", true)]

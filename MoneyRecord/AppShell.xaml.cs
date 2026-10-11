@@ -15,9 +15,8 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(AddTransactionPage), typeof(AddTransactionPage));
             Routing.RegisterRoute(nameof(AddTransferPage), typeof(AddTransferPage));
 
-            // Get navigation service from DI
-            _navigationService = IPlatformApplication.Current?.Services.GetService<INavigationService>()
-                ?? new NavigationService();
+            // The DI singleton: a private fallback would keep a second history the ViewModels never see
+            _navigationService = IPlatformApplication.Current!.Services.GetRequiredService<INavigationService>();
 
             // Handle navigation events for tracking history
             this.Navigated += OnShellNavigated;
@@ -40,11 +39,20 @@ namespace MoneyRecord
         {
             var currentRoute = CurrentState?.Location?.ToString() ?? "";
 
-            if (_navigationService.CanGoBack || !NavigationHistory.IsHome(currentRoute))
+            // Home is a root, so its history is always empty: anywhere else, back has somewhere to go
+            if (!NavigationHistory.IsHome(currentRoute))
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await _navigationService.GoBackAsync();
+                    // async void: an exception here would crash the app
+                    try
+                    {
+                        await _navigationService.GoBackAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[MoneyRecord] Back failed: {ex}");
+                    }
                 });
                 return true;
             }

@@ -36,14 +36,21 @@ namespace MoneyRecord.Services
 
         /// <summary>
         /// Pops the history and returns the route to hand to Shell: <c>..</c> to leave a pushed page,
-        /// otherwise the previous location (Home when there is none).
+        /// otherwise the previous location (Home when there is none). Returns null while a previous go-back
+        /// has not reached <see cref="Record"/> yet, so a fast double back press pops only once.
         /// </summary>
-        public string BeginGoBack()
+        public string? BeginGoBack()
         {
+            if (_isNavigatingBack)
+                return null;
+
             _isNavigatingBack = true;
             var previous = _history.Count > 0 ? _history.Pop() : HomeRoute;
             return CurrentLocation != null && !IsRoot(CurrentLocation) ? ".." : previous;
         }
+
+        /// <summary>Call when the Shell navigation started by <see cref="BeginGoBack"/> failed.</summary>
+        public void CancelGoBack() => _isNavigatingBack = false;
 
         /// <summary>True for a flyout page: an absolute location with one segment, such as <c>//BudgetPage</c>.</summary>
         public static bool IsRoot(string location)

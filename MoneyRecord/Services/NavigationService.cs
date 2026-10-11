@@ -10,11 +10,26 @@ namespace MoneyRecord.Services
     {
         private readonly NavigationHistory _history = new();
 
-        public bool CanGoBack => _history.CanGoBack;
-
         public void RecordNavigation(string location) => _history.Record(location);
 
-        public Task GoBackAsync() => Shell.Current.GoToAsync(_history.BeginGoBack());
+        public async Task GoBackAsync()
+        {
+            // Null: a go-back is already in progress (back pressed twice quickly)
+            var route = _history.BeginGoBack();
+            if (route == null)
+                return;
+
+            try
+            {
+                await Shell.Current.GoToAsync(route);
+            }
+            catch
+            {
+                // Navigated won't fire, so the next navigation must still be recorded
+                _history.CancelGoBack();
+                throw;
+            }
+        }
 
         public Task NavigateToAsync(string route) => Shell.Current.GoToAsync(route);
 
