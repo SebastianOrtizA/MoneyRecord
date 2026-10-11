@@ -206,7 +206,7 @@
                                                        Margin="8,0,0,0"
                                                        TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
                                                 <Label Grid.Column="2"
-                                                       Text="{Binding NextOccurrence, StringFormat='{0:MMM dd, yyyy}'}"
+                                                       Text="{Binding NextOccurrence, Converter={StaticResource DateTextConverter}, ConverterParameter=Medium}"
                                                        FontSize="14"
                                                        FontAttributes="Bold"
                                                        VerticalOptions="Center"

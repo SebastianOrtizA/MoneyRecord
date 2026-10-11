@@ -54,7 +54,7 @@
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
                                 <!-- Row 0: Date and Amount -->
                                 <Label Grid.Row="0" Grid.Column="0"
-                                       Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
+                                       Text="{Binding Date, Converter={StaticResource DateTextConverter}, ConverterParameter=Medium}"
                                        FontSize="13"
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                 

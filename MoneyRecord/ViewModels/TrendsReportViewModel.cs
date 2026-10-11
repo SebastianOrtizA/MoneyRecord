@@ -169,7 +169,7 @@ namespace MoneyRecord.ViewModels
                 .GroupBy(t => t.CategoryId)
                 .Select(g => new
                 {
-                    Name = categoryMap.TryGetValue(g.Key, out var name) ? name : "Unknown",
+                    Name = categoryMap.TryGetValue(g.Key, out var name) ? name : AppResources.Unknown,
                     Total = g.Sum(t => t.Amount)
                 })
                 .OrderByDescending(x => x.Total)

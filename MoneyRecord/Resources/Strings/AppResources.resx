@@ -594,12 +594,6 @@
   <data name="Total" xml:space="preserve">
     <value>Total</value>
   </data>
-  <data name="TransactionSingular" xml:space="preserve">
-    <value>transaction</value>
-  </data>
-  <data name="TransactionPlural" xml:space="preserve">
-    <value>transactions</value>
-  </data>
   <data name="FailedToLoadCategoryDetails" xml:space="preserve">
     <value>Failed to load category details: {0}</value>
   </data>
@@ -1057,5 +1051,29 @@ Amount: {2}</value>
   </data>
   <data name="DeleteFailedDataChanged" xml:space="preserve">
     <value>Couldn't delete '{0}' because its data changed in the meantime. Please try again.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="NoActivity" xml:space="preserve">
+    <value>No activity</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="TransferToAccount" xml:space="preserve">
+    <value>Transfer to {0}</value>
+  </data>
+  <data name="TransferFromAccount" xml:space="preserve">
+    <value>Transfer from {0}</value>
+  </data>
+  <data name="TransactionCountOne" xml:space="preserve">
+    <value>{0} transaction</value>
+  </data>
+  <data name="TransactionCountOther" xml:space="preserve">
+    <value>{0} transactions</value>
+  </data>
+  <data name="FailedToLoadData" xml:space="preserve">
+    <value>Failed to load data: {0}</value>
   </data>
 </root>

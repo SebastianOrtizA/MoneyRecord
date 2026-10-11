@@ -4,6 +4,7 @@
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:helpers="clr-namespace:MoneyRecord.Helpers"
              xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.IncomeReportPage"
              x:DataType="viewmodels:IncomeReportViewModel"
@@ -56,7 +57,7 @@
                                        MinimumWidthRequest="50"/>
                                 <DatePicker Grid.Row="0" Grid.Column="1"
                                            Date="{Binding CustomStartDate}"
-                                           Format="MMM dd, yyyy"
+                                           Format="{x:Static helpers:DateFormatter.MediumPattern}"
                                            FontSize="16"
                                            MinimumHeightRequest="44"
                                            HorizontalOptions="FillAndExpand"
@@ -69,7 +70,7 @@
                                        MinimumWidthRequest="50"/>
                                 <DatePicker Grid.Row="1" Grid.Column="1"
                                            Date="{Binding CustomEndDate}"
-                                           Format="MMM dd, yyyy"
+                                           Format="{x:Static helpers:DateFormatter.MediumPattern}"
                                            FontSize="16"
                                            MinimumHeightRequest="44"
                                            HorizontalOptions="FillAndExpand"

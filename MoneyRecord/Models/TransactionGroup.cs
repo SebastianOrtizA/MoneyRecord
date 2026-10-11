@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using MoneyRecord.Helpers;
+using MoneyRecord.Resources.Strings;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.Models
@@ -71,8 +72,8 @@ namespace MoneyRecord.Models
         /// </param>
         public TransactionGroup(string groupName, List<Transaction> transactions, GroupingMode mode = GroupingMode.Category, decimal? overrideTotal = null, string? accountIconCode = null, string? currencyCode = null)
         {
-            GroupName = groupName ?? "Unknown";
-            CategoryName = groupName ?? "Unknown"; // Keep for backward compatibility
+            GroupName = groupName ?? AppResources.Unknown;
+            CategoryName = groupName ?? AppResources.Unknown; // Keep for backward compatibility
             TransactionCount = transactions?.Count ?? 0;
             Items = new ObservableCollection<Transaction>(transactions ?? new List<Transaction>());
             IsBalanceMode = mode == GroupingMode.Account;

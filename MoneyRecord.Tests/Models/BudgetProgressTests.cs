@@ -21,7 +21,7 @@ public class BudgetProgressTests
         progress.IsOverBudget.Should().BeFalse();
         progress.RemainingAmount.Should().Be(600m);
         progress.ExceededAmount.Should().Be(0m);
-        progress.ProgressColor.Should().Be(Colors.Green);
+        progress.Level.Should().Be(BudgetLevel.OnTrack);
     }
 
     [Fact]
@@ -39,11 +39,11 @@ public class BudgetProgressTests
         progress.IsOverBudget.Should().BeTrue();
         progress.ExceededAmount.Should().Be(250m);
         progress.RemainingAmount.Should().Be(0m);
-        progress.ProgressColor.Should().Be(Colors.Red);
+        progress.Level.Should().Be(BudgetLevel.Exceeded);
     }
 
     [Fact]
-    public void CalculateProgress_ExactlyAtLimit_SetsRedColor()
+    public void CalculateProgress_ExactlyAtLimit_IsExceeded()
     {
         var progress = new BudgetProgress
         {
@@ -56,11 +56,11 @@ public class BudgetProgressTests
         progress.ProgressPercentage.Should().Be(100);
         progress.IsOverBudget.Should().BeFalse();
         progress.RemainingAmount.Should().Be(0m);
-        progress.ProgressColor.Should().Be(Colors.Red);
+        progress.Level.Should().Be(BudgetLevel.Exceeded);
     }
 
     [Fact]
-    public void CalculateProgress_At80Percent_SetsOrangeColor()
+    public void CalculateProgress_At80Percent_IsHigh()
     {
         var progress = new BudgetProgress
         {
@@ -71,11 +71,11 @@ public class BudgetProgressTests
         progress.CalculateProgress();
 
         progress.ProgressPercentage.Should().Be(85);
-        progress.ProgressColor.Should().Be(Colors.Orange);
+        progress.Level.Should().Be(BudgetLevel.High);
     }
 
     [Fact]
-    public void CalculateProgress_At60Percent_SetsYellowColor()
+    public void CalculateProgress_At60Percent_IsWarning()
     {
         var progress = new BudgetProgress
         {
@@ -86,7 +86,7 @@ public class BudgetProgressTests
         progress.CalculateProgress();
 
         progress.ProgressPercentage.Should().Be(65);
-        progress.ProgressColor.Should().Be(Colors.Yellow);
+        progress.Level.Should().Be(BudgetLevel.Warning);
     }
 
     [Fact]
@@ -106,7 +106,7 @@ public class BudgetProgressTests
     }
 
     [Fact]
-    public void CalculateProgress_NoSpending_SetsGreenColor()
+    public void CalculateProgress_NoSpending_IsOnTrack()
     {
         var progress = new BudgetProgress
         {
@@ -119,6 +119,6 @@ public class BudgetProgressTests
         progress.ProgressPercentage.Should().Be(0);
         progress.IsOverBudget.Should().BeFalse();
         progress.RemainingAmount.Should().Be(500m);
-        progress.ProgressColor.Should().Be(Colors.Green);
+        progress.Level.Should().Be(BudgetLevel.OnTrack);
     }
 }

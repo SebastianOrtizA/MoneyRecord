@@ -110,7 +110,7 @@ namespace MoneyRecord.ViewModels
                     .Select(g => new CategoryIncomeData
                     {
                         CategoryId = g.Key.CategoryId,
-                        CategoryName = g.Key.CategoryName ?? "Unknown",
+                        CategoryName = g.Key.CategoryName ?? AppResources.Unknown,
                         IconCode = g.Key.CategoryIconCode ?? "F0770",
                         Amount = g.Sum(t => Math.Abs(t.Amount)),
                         Percentage = (double)(g.Sum(t => Math.Abs(t.Amount)) / TotalIncome * 100),
@@ -209,7 +209,7 @@ namespace MoneyRecord.ViewModels
                 var totalText = MoneyFormatter.FormatTotals(categoryTransactions.Select(t => (Math.Abs(t.Amount), (string?)t.CurrencyCode)));
                 var transactionCount = categoryTransactions.Count;
 
-                var message = $"{AppResources.Total}: {totalText} ({transactionCount} {(transactionCount > 1 ? AppResources.TransactionPlural : AppResources.TransactionSingular)})\n\n" +
+                var message = $"{AppResources.Total}: {totalText} ({Plurals.Transactions(transactionCount)})\n\n" +
                              string.Join("\n\n", details);
 
                 await Shell.Current.DisplayAlertAsync($"💵 {categoryName}", message, AppResources.Close);

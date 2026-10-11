@@ -1,3 +1,6 @@
+using MoneyRecord.Helpers;
+using MoneyRecord.Resources.Strings;
+
 namespace MoneyRecord.Models
 {
     public class AccountBalanceInfo
@@ -12,7 +15,7 @@ namespace MoneyRecord.Models
         /// </summary>
         public DateTime? LastActivityDate { get; set; }
         public string LastActivityDateDisplay => LastActivityDate.HasValue 
-            ? LastActivityDate.Value.ToString("MMM dd, yyyy") 
-            : "No activity";
+            ? DateFormatter.Format(LastActivityDate.Value, DateStyle.Medium)
+            : AppResources.NoActivity;
     }
 }

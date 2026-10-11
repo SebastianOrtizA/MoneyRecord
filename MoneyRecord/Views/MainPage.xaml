@@ -4,6 +4,7 @@
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:helpers="clr-namespace:MoneyRecord.Helpers"
              xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.MainPage"
              x:DataType="viewmodels:MainViewModel"
@@ -57,7 +58,7 @@
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
-                    <Label Text="{Binding CurrentDate, StringFormat='{0:MMMM dd, yyyy}'}"
+                    <Label Text="{Binding CurrentDate, Converter={StaticResource DateTextConverter}, ConverterParameter=Long}"
                            FontSize="13"
                            TextColor="#FFFFFF99"
                            HorizontalOptions="Center"/>
@@ -87,7 +88,7 @@
                            MinimumWidthRequest="50"/>
                     <DatePicker Grid.Row="0" Grid.Column="1"
                                Date="{Binding CustomStartDate}"
-                               Format="MMM dd, yyyy"
+                               Format="{x:Static helpers:DateFormatter.MediumPattern}"
                                FontSize="16"
                                MinimumHeightRequest="44"
                                HorizontalOptions="FillAndExpand"
@@ -99,7 +100,7 @@
                            MinimumWidthRequest="50"/>
                     <DatePicker Grid.Row="1" Grid.Column="1"
                                Date="{Binding CustomEndDate}"
-                               Format="MMM dd, yyyy"
+                               Format="{x:Static helpers:DateFormatter.MediumPattern}"
                                FontSize="16"
                                MinimumHeightRequest="44"
                                HorizontalOptions="FillAndExpand"
@@ -268,7 +269,7 @@
                                                FontSize="14"
                                                FontAttributes="Bold"
                                                LineBreakMode="TailTruncation"/>
-                                        <Label Text="{Binding Date, StringFormat='{0:MMM dd}'}"
+                                        <Label Text="{Binding Date, Converter={StaticResource DateTextConverter}, ConverterParameter=MonthDay}"
                                                FontSize="12"
                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     </VerticalStackLayout>
@@ -348,11 +349,10 @@
                                     <Label Grid.Row="0" Grid.Column="2"
                                            Text="{Binding SpentAmount, Converter={StaticResource MoneyConverter}}"
                                            FontSize="14"
-                                           FontAttributes="Bold"
-                                           TextColor="{Binding ProgressColor}"/>
+                                           FontAttributes="Bold"/>
                                     <ProgressBar Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                                                  Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
-                                                 ProgressColor="{Binding ProgressColor}"
+                                                 ProgressColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}"
                                                  HeightRequest="4"/>
                                 </Grid>
                             </DataTemplate>
@@ -427,6 +427,7 @@
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"/>
                         <Picker ItemsSource="{Binding FilterTypes}"
+                                ItemDisplayBinding="{Binding Name}"
                                 SelectedItem="{Binding SelectedFilterType}"
                                 FontSize="14"
                                 MinimumHeightRequest="40"
@@ -543,7 +544,7 @@
                                 <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
                                     <!-- Row 0: Date and Amount -->
                                     <Label Grid.Row="0" Grid.Column="0"
-                                           Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
+                                           Text="{Binding Date, Converter={StaticResource DateTextConverter}, ConverterParameter=Medium}"
                                            FontSize="13"
                                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
 
@@ -715,7 +716,7 @@
                                             
                                             <!-- Transaction Count -->
                                             <Label Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
-                                                   Text="{Binding TransactionCount, StringFormat='{0} transactions'}"
+                                                   Text="{Binding TransactionCount, Converter={StaticResource TransactionCountConverter}}"
                                                    FontSize="13"
                                                    TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
                                         </Grid>
@@ -737,7 +738,7 @@
                                                     <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
                                                         <!-- Row 0: Date and Amount -->
                                                         <Label Grid.Row="0" Grid.Column="0"
-                                                               Text="{Binding Date, StringFormat='{0:MMM dd, yyyy}'}"
+                                                               Text="{Binding Date, Converter={StaticResource DateTextConverter}, ConverterParameter=Medium}"
                                                                FontSize="13"
                                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
 

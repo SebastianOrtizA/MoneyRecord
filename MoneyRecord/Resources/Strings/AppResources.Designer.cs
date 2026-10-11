@@ -1891,29 +1891,11 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a transactions.
-        /// </summary>
-        internal static string TransactionPlural {
-            get {
-                return ResourceManager.GetString("TransactionPlural", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Transactions.
         /// </summary>
         internal static string Transactions {
             get {
                 return ResourceManager.GetString("Transactions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a transaction.
-        /// </summary>
-        internal static string TransactionSingular {
-            get {
-                return ResourceManager.GetString("TransactionSingular", resourceCulture);
             }
         }
         
@@ -2660,6 +2642,78 @@ namespace MoneyRecord.Resources.Strings {
         internal static string DeleteFailedDataChanged {
             get {
                 return ResourceManager.GetString("DeleteFailedDataChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        internal static string Unknown {
+            get {
+                return ResourceManager.GetString("Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No activity.
+        /// </summary>
+        internal static string NoActivity {
+            get {
+                return ResourceManager.GetString("NoActivity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        internal static string All {
+            get {
+                return ResourceManager.GetString("All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer to {0}.
+        /// </summary>
+        internal static string TransferToAccount {
+            get {
+                return ResourceManager.GetString("TransferToAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer from {0}.
+        /// </summary>
+        internal static string TransferFromAccount {
+            get {
+                return ResourceManager.GetString("TransferFromAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} transaction.
+        /// </summary>
+        internal static string TransactionCountOne {
+            get {
+                return ResourceManager.GetString("TransactionCountOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} transactions.
+        /// </summary>
+        internal static string TransactionCountOther {
+            get {
+                return ResourceManager.GetString("TransactionCountOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load data: {0}.
+        /// </summary>
+        internal static string FailedToLoadData {
+            get {
+                return ResourceManager.GetString("FailedToLoadData", resourceCulture);
             }
         }
         

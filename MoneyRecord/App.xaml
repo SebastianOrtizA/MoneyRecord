@@ -41,6 +41,9 @@
             <converters:OverBudgetAmountConverter x:Key="OverBudgetAmountConverter" />
             <converters:BudgetPeriodToDisplayConverter x:Key="BudgetPeriodToDisplayConverter" />
             <converters:IntToBoolConverter x:Key="IntToBoolConverter" />
+            <converters:BudgetLevelToColorConverter x:Key="BudgetLevelToColorConverter" />
+            <converters:DateTextConverter x:Key="DateTextConverter" />
+            <converters:TransactionCountConverter x:Key="TransactionCountConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
