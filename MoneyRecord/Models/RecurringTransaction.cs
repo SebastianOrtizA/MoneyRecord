@@ -8,7 +8,21 @@ namespace MoneyRecord.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public decimal Amount { get; set; }
+        /// <summary>
+        /// Money value for view models and JSON v1 backups; stored as <see cref="AmountCents"/>.
+        /// </summary>
+        [Ignore]
+        public decimal Amount
+        {
+            get => Money.FromCents(AmountCents);
+            set => AmountCents = Money.ToCents(value);
+        }
+
+        /// <summary>
+        /// Stored value in cents (see <see cref="Money"/>). Declared after <see cref="Amount"/> so a JSON backup
+        /// that carries both sets the exact value last.
+        /// </summary>
+        public long AmountCents { get; set; }
 
         public string Description { get; set; } = string.Empty;
 

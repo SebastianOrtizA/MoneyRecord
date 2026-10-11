@@ -34,7 +34,8 @@ namespace MoneyRecord.Services
             var backup = new BackupData
             {
                 ExportDate = DateTime.Now,
-                Version = 1,
+                // v2: money is also written as exact cents (AmountCents, ...); v1 files carry decimals only
+                Version = 2,
                 Categories = await db.Table<Category>().ToListAsync(),
                 Accounts = await db.Table<Account>().ToListAsync(),
                 Transactions = await db.Table<Transaction>().ToListAsync(),

@@ -14,7 +14,21 @@ namespace MoneyRecord.Models
 
         public int CategoryId { get; set; }
 
-        public decimal LimitAmount { get; set; }
+        /// <summary>
+        /// Money value for view models and JSON v1 backups; stored as <see cref="LimitAmountCents"/>.
+        /// </summary>
+        [Ignore]
+        public decimal LimitAmount
+        {
+            get => Money.FromCents(LimitAmountCents);
+            set => LimitAmountCents = Money.ToCents(value);
+        }
+
+        /// <summary>
+        /// Stored value in cents (see <see cref="Money"/>). Declared after <see cref="LimitAmount"/> so a JSON backup
+        /// that carries both sets the exact value last.
+        /// </summary>
+        public long LimitAmountCents { get; set; }
 
         /// <summary>
         /// The period type for the budget limit (Day, Month, Year)

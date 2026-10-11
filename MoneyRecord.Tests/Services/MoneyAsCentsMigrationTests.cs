@@ -1,0 +1,107 @@
+using FluentAssertions;
+using MoneyRecord.Models;
+using MoneyRecord.Services.Repositories;
+using MoneyRecord.Services.Repositories.Migrations;
+using SQLite;
+using Xunit;
+
+namespace MoneyRecord.Tests.Services;
+
+/// <summary>
+/// v1 → v2 against a real temp SQLite file whose tables look like the ones older app versions created
+/// (money in REAL columns, user_version 0).
+/// </summary>
+public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
+{
+    private readonly string _dbPath = Path.Combine(Path.GetTempPath(), $"moneyrecord-test-{Guid.NewGuid():N}.db3");
+    private SQLiteAsyncConnection _db = null!;
+
+    public async Task InitializeAsync()
+    {
+        _db = new SQLiteAsyncConnection(_dbPath);
+        await _db.ExecuteAsync("CREATE TABLE \"Account\" (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name VARCHAR, InitialBalance FLOAT)");
+        await _db.ExecuteAsync("CREATE TABLE \"Transaction\" (Id INTEGER PRIMARY KEY AUTOINCREMENT, Description VARCHAR, Amount FLOAT, Type INTEGER, AccountId INTEGER)");
+        await _db.ExecuteAsync("CREATE TABLE \"Transfer\" (Id INTEGER PRIMARY KEY AUTOINCREMENT, Amount FLOAT, SourceAccountId INTEGER, DestinationAccountId INTEGER)");
+        await _db.ExecuteAsync("CREATE TABLE \"Budget\" (Id INTEGER PRIMARY KEY AUTOINCREMENT, CategoryId INTEGER, LimitAmount FLOAT)");
+        await _db.ExecuteAsync("CREATE TABLE \"RecurringTransaction\" (Id INTEGER PRIMARY KEY AUTOINCREMENT, Amount FLOAT)");
+    }
+
+    public async Task DisposeAsync()
+    {
+        await _db.CloseAsync();
+        foreach (var file in Directory.GetFiles(Path.GetDirectoryName(_dbPath)!, Path.GetFileName(_dbPath) + "*"))
+            File.Delete(file);
+    }
+
+    [Fact]
+    public async Task MovesEveryMoneyColumnToCents()
+    {
+        await _db.ExecuteAsync("INSERT INTO \"Account\" (Name, InitialBalance) VALUES ('Bank', 1250.5)");
+        await _db.ExecuteAsync("INSERT INTO \"Transaction\" (Description, Amount) VALUES ('Lunch', 12.34)");
+        await _db.ExecuteAsync("INSERT INTO \"Transfer\" (Amount) VALUES (99.99)");
+        await _db.ExecuteAsync("INSERT INTO \"Budget\" (CategoryId, LimitAmount) VALUES (1, 300)");
+        await _db.ExecuteAsync("INSERT INTO \"RecurringTransaction\" (Amount) VALUES (15.75)");
+
+        await MigrateAsync();
+
+        (await _db.Table<Account>().FirstAsync()).InitialBalanceCents.Should().Be(125050);
+        (await _db.Table<Transaction>().FirstAsync()).AmountCents.Should().Be(1234);
+        (await _db.Table<Transfer>().FirstAsync()).AmountCents.Should().Be(9999);
+        (await _db.Table<Budget>().FirstAsync()).LimitAmountCents.Should().Be(30000);
+        (await _db.Table<RecurringTransaction>().FirstAsync()).AmountCents.Should().Be(1575);
+        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(2);
+    }
+
+    [Fact]
+    public async Task RealDrift_IsRoundedToTheCent_AndSumsMatch()
+    {
+        // Values as REAL storage left them: 0.1 + 0.2 and 1.005 are not exact in binary floating point
+        var stored = new[] { 0.30000000000000004, 1.0049999999999999, 19.999999999999996, -7.125, 0.0 };
+        foreach (var amount in stored)
+            await _db.ExecuteAsync("INSERT INTO \"Transaction\" (Description, Amount) VALUES ('x', ?)", amount);
+        await _db.ExecuteAsync("INSERT INTO \"Transaction\" (Description, Amount) VALUES ('null', NULL)");
+
+        await MigrateAsync();
+
+        var cents = (await _db.Table<Transaction>().OrderBy(t => t.Id).ToListAsync()).Select(t => t.AmountCents).ToList();
+        cents.Should().Equal(30, 100, 2000, -713, 0, 0);
+        (await _db.Table<Transaction>().ToListAsync()).Sum(t => t.Amount).Should().Be(14.17m);
+    }
+
+    [Fact]
+    public async Task BacksUpTheV1DatabaseFirst()
+    {
+        await _db.ExecuteAsync("INSERT INTO \"Transaction\" (Description, Amount) VALUES ('Lunch', 12.34)");
+
+        await MigrateAsync();
+
+        File.Exists(MigrationRunner.GetBackupPath(_dbPath, 2)).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task TableMissingInTheOldInstall_IsSkipped()
+    {
+        // An install that predates budgets: CreateTableAsync makes Budget fresh, without a LimitAmount column
+        await _db.ExecuteAsync("DROP TABLE \"Budget\"");
+        await _db.ExecuteAsync("INSERT INTO \"Transaction\" (Description, Amount) VALUES ('Lunch', 12.34)");
+
+        await MigrateAsync();
+
+        (await _db.Table<Transaction>().FirstAsync()).Amount.Should().Be(12.34m);
+        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(2);
+    }
+
+    [Fact]
+    public async Task NewRowsAfterMigration_AreStoredInCents()
+    {
+        await MigrateAsync();
+
+        await _db.InsertAsync(new Transaction { Description = "Coffee", Amount = 3.5m });
+
+        var cents = await _db.ExecuteScalarAsync<long>("SELECT AmountCents FROM \"Transaction\" WHERE Description = 'Coffee'");
+        cents.Should().Be(350);
+    }
+
+    private Task MigrateAsync() =>
+        DatabaseInitializer.CreateSchemaAsync(_db, new MigrationRunner(MigrationRunner.All));
+}

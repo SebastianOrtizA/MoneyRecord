@@ -11,7 +11,21 @@ namespace MoneyRecord.Models
 
         public string Name { get; set; } = string.Empty;
 
-        public decimal InitialBalance { get; set; }
+        /// <summary>
+        /// Money value for view models and JSON v1 backups; stored as <see cref="InitialBalanceCents"/>.
+        /// </summary>
+        [Ignore]
+        public decimal InitialBalance
+        {
+            get => Money.FromCents(InitialBalanceCents);
+            set => InitialBalanceCents = Money.ToCents(value);
+        }
+
+        /// <summary>
+        /// Stored value in cents (see <see cref="Money"/>). Declared after <see cref="InitialBalance"/> so a JSON backup
+        /// that carries both sets the exact value last.
+        /// </summary>
+        public long InitialBalanceCents { get; set; }
 
         public bool IsDefault { get; set; }
 
