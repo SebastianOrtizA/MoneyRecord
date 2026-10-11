@@ -2364,6 +2364,24 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        internal static string RestoreComplete {
+            get {
+                return ResourceManager.GetString("RestoreComplete", resourceCulture);
+            }
+        }
+
+        internal static string UndoRestore {
+            get {
+                return ResourceManager.GetString("UndoRestore", resourceCulture);
+            }
+        }
+
+        internal static string RestoreUndone {
+            get {
+                return ResourceManager.GetString("RestoreUndone", resourceCulture);
+            }
+        }
+
         internal static string SelectBackupFile {
             get {
                 return ResourceManager.GetString("SelectBackupFile", resourceCulture);

@@ -852,7 +852,7 @@ ${1:N2}</value>
     <value>Exporta tus datos o restaura desde una copia de seguridad</value>
   </data>
   <data name="ExportFullBackup" xml:space="preserve">
-    <value>Exportar Copia Completa (JSON)</value>
+    <value>Exportar Copia Completa (con recibos)</value>
   </data>
   <data name="SaveBackupLocal" xml:space="preserve">
     <value>Guardar Copia en Dispositivo</value>
@@ -867,7 +867,7 @@ ${1:N2}</value>
     <value>Restaurar desde Copia de Seguridad</value>
   </data>
   <data name="RestoreNote" xml:space="preserve">
-    <value>Advertencia: Restaurar una copia de seguridad reemplazará todos los datos actuales.</value>
+    <value>Restaurar una copia de seguridad reemplaza todos los datos actuales. Tus datos actuales se guardan antes, así que la restauración se puede deshacer.</value>
   </data>
   <data name="ShareBackup" xml:space="preserve">
     <value>Compartir Copia de Seguridad</value>
@@ -891,7 +891,7 @@ ${1:N2}</value>
     <value>Confirmar Restauración</value>
   </data>
   <data name="RestoreWarning" xml:space="preserve">
-    <value>Esto reemplazará TODOS tus datos actuales con los datos de la copia de seguridad. Esta acción no se puede deshacer. ¿Estás seguro?</value>
+    <value>Esto reemplazará TODOS tus datos actuales con los datos de la copia de seguridad. Tus datos actuales se guardan antes, así que podrás deshacer la restauración. ¿Continuar?</value>
   </data>
   <data name="YesRestore" xml:space="preserve">
     <value>Sí, Restaurar</value>
@@ -900,7 +900,16 @@ ${1:N2}</value>
     <value>Error al restaurar la copia de seguridad</value>
   </data>
   <data name="RestoreSuccessful" xml:space="preserve">
-    <value>¡Restauración exitosa! {0} registros importados.</value>
+    <value>{0} registros restaurados. Tus datos anteriores se guardaron como {1}; puedes restaurarlos más tarde desde la lista de copias.</value>
+  </data>
+  <data name="RestoreComplete" xml:space="preserve">
+    <value>Restauración completada</value>
+  </data>
+  <data name="UndoRestore" xml:space="preserve">
+    <value>Deshacer restauración</value>
+  </data>
+  <data name="RestoreUndone" xml:space="preserve">
+    <value>Restauración deshecha: tus datos anteriores están de vuelta</value>
   </data>
   <data name="SelectBackupFile" xml:space="preserve">
     <value>Seleccionar Archivo de Copia de Seguridad</value>

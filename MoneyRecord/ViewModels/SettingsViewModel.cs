@@ -30,12 +30,8 @@ namespace MoneyRecord.ViewModels
             {
                 IsExporting = true;
 
-                var json = await _dataExportService.ExportJsonAsync();
-                var fileName = $"MoneyRecord_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.json";
-                var backupDir = Path.Combine(FileSystem.AppDataDirectory, "Backups");
-                Directory.CreateDirectory(backupDir);
-                var filePath = Path.Combine(backupDir, fileName);
-                await File.WriteAllTextAsync(filePath, json);
+                var filePath = Path.Combine(_dataExportService.BackupsFolder, BackupFileName());
+                await _dataExportService.ExportBackupAsync(filePath);
 
                 await Toast.Make($"{AppResources.BackupCreatedSuccessfully}").Show();
             }
@@ -56,10 +52,12 @@ namespace MoneyRecord.ViewModels
             {
                 IsExporting = true;
 
-                var json = await _dataExportService.ExportJsonAsync();
-                var fileName = $"MoneyRecord_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.json";
-                var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
-                await File.WriteAllTextAsync(filePath, json);
+                // Backups include photos, so don't let earlier shared copies pile up in the cache
+                foreach (var old in Directory.GetFiles(FileSystem.CacheDirectory, "MoneyRecord_Backup_*.zip"))
+                    File.Delete(old);
+
+                var filePath = Path.Combine(FileSystem.CacheDirectory, BackupFileName());
+                await _dataExportService.ExportBackupAsync(filePath);
 
                 await Share.Default.RequestAsync(new ShareFileRequest
                 {
@@ -76,6 +74,8 @@ namespace MoneyRecord.ViewModels
                 IsExporting = false;
             }
         }
+
+        private static string BackupFileName() => $"MoneyRecord_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
 
         [RelayCommand]
         private async Task ExportCsvAsync()
@@ -108,15 +108,17 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private async Task ImportJsonAsync()
+        private async Task RestoreAsync()
         {
+            string? pickedCopy = null;
             try
             {
-                string? json = null;
+                string? backupPath;
 
-                var backupDir = Path.Combine(FileSystem.AppDataDirectory, "Backups");
+                var backupDir = _dataExportService.BackupsFolder;
                 var localBackups = Directory.Exists(backupDir)
-                    ? Directory.GetFiles(backupDir, "*.json").OrderByDescending(f => f).ToArray()
+                    ? Directory.GetFiles(backupDir, "*.zip").Concat(Directory.GetFiles(backupDir, "*.json"))
+                        .OrderByDescending(File.GetLastWriteTimeUtc).ToArray()
                     : Array.Empty<string>();
 
                 if (localBackups.Length > 0)
@@ -129,22 +131,16 @@ namespace MoneyRecord.ViewModels
 
                     if (choice == null || choice == AppResources.Cancel) return;
 
-                    if (choice == AppResources.SelectBackupFile)
-                    {
-                        json = await PickBackupFileAsync();
-                    }
-                    else
-                    {
-                        var filePath = localBackups.First(f => Path.GetFileName(f) == choice);
-                        json = await File.ReadAllTextAsync(filePath);
-                    }
+                    backupPath = choice == AppResources.SelectBackupFile
+                        ? pickedCopy = await PickBackupFileAsync()
+                        : localBackups.First(f => Path.GetFileName(f) == choice);
                 }
                 else
                 {
-                    json = await PickBackupFileAsync();
+                    backupPath = pickedCopy = await PickBackupFileAsync();
                 }
 
-                if (string.IsNullOrEmpty(json)) return;
+                if (backupPath == null) return;
 
                 var confirm = await Shell.Current.DisplayAlertAsync(
                     AppResources.ConfirmRestore,
@@ -155,9 +151,20 @@ namespace MoneyRecord.ViewModels
                 if (!confirm) return;
 
                 IsImporting = true;
+                var result = await _dataExportService.RestoreAsync(backupPath);
+                IsImporting = false;
 
-                var count = await _dataExportService.ImportJsonAsync(json);
-                await Toast.Make(string.Format(AppResources.RestoreSuccessful, count)).Show();
+                var undo = await Shell.Current.DisplayAlertAsync(
+                    AppResources.RestoreComplete,
+                    string.Format(AppResources.RestoreSuccessful, result.RecordCount, Path.GetFileName(result.SnapshotPath)),
+                    AppResources.UndoRestore,
+                    AppResources.OK);
+
+                if (!undo) return;
+
+                IsImporting = true;
+                await _dataExportService.RestoreAsync(result.SnapshotPath);
+                await Toast.Make(AppResources.RestoreUndone).Show();
             }
             catch (Exception ex)
             {
@@ -166,9 +173,14 @@ namespace MoneyRecord.ViewModels
             finally
             {
                 IsImporting = false;
+                if (pickedCopy != null)
+                    File.Delete(pickedCopy);
             }
         }
 
+        /// <summary>
+        /// Lets the user pick a backup (.zip, or .json from an older version) and copies it to the cache folder.
+        /// </summary>
         private static async Task<string?> PickBackupFileAsync()
         {
             var result = await FilePicker.Default.PickAsync(new PickOptions
@@ -176,18 +188,20 @@ namespace MoneyRecord.ViewModels
                 PickerTitle = AppResources.SelectBackupFile,
                 FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
-                    { DevicePlatform.Android, new[] { "application/json" } },
-                    { DevicePlatform.iOS, new[] { "public.json" } },
-                    { DevicePlatform.WinUI, new[] { ".json" } },
-                    { DevicePlatform.macOS, new[] { "public.json" } }
+                    { DevicePlatform.Android, new[] { "application/zip", "application/x-zip-compressed", "application/json" } },
+                    { DevicePlatform.iOS, new[] { "public.zip-archive", "public.json" } },
+                    { DevicePlatform.WinUI, new[] { ".zip", ".json" } },
+                    { DevicePlatform.macOS, new[] { "public.zip-archive", "public.json" } }
                 })
             });
 
             if (result == null) return null;
 
-            using var stream = await result.OpenReadAsync();
-            using var reader = new StreamReader(stream);
-            return await reader.ReadToEndAsync();
+            var copy = Path.Combine(FileSystem.CacheDirectory, $"restore_{Guid.NewGuid():N}{Path.GetExtension(result.FileName)}");
+            using (var source = await result.OpenReadAsync())
+            using (var target = File.Create(copy))
+                await source.CopyToAsync(target);
+            return copy;
         }
     }
 }

@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: In progress — 6.0–6.3 done (2026-10-11)
+**Status**: In progress — 6.0–6.4 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -72,13 +72,24 @@ foundation first, because everything later builds on them.
   deleted). Receipt files are only deleted from inside `receipts/` (`ReceiptFiles`). `DatabaseInitializer(path)` exists
   for integration tests.
 
-### 6.4 Safe backup & restore
+### 6.4 Safe backup & restore — ✅ done
 - Restore inside a single transaction (delete + insert), or restore into a temp DB file and swap.
 - Automatic snapshot (`Backups/pre-restore-{timestamp}.json`) before every restore, with a "Undo restore" option.
 - Backup becomes a `.zip`: `data.json` + `receipts/`. Store receipt paths relative (`receipts/receipt_x.jpg`).
 - Map category IDs by old ID, not by name+type (the current name match breaks on duplicates).
 - (From 6.3 review) Removing or replacing a receipt photo on an existing transaction leaves the old file in `receipts/`;
   delete it on save with `ReceiptFiles.Delete` (and the unsaved new photo on cancel).
+- Done as `IDataExportService.ExportBackupAsync(path)` / `RestoreAsync(path)` (backup format v3). The backup is read and
+  validated in full (newer format, duplicate IDs, missing data.json) before anything changes; receipts are unpacked to
+  `receipts.restoring` and swapped in only after the single `RunInTransactionAsync` (delete + insert) commits; account and
+  category caches are invalidated. **Deviations:** rows keep their **original IDs** (`Insert(row, "OR REPLACE")` into the
+  emptied tables) instead of an old→new ID map, so every reference (category, account, transfer) survives as-is; the
+  snapshot is a full `.zip` (`Backups/pre-restore-{timestamp}.zip`, last 5 kept, listed with the other backups), not
+  `.json`, so undo brings receipts back too. Undo = restoring the snapshot, offered in the "Restore complete" dialog.
+  Old `.json` backups (v1/v2) still restore; their receipts are kept only if the file is already in `receipts/`.
+  Paths are relative only inside the zip; the database still stores absolute receipt paths (iOS changes the app
+  folder on reinstall: revisit with Stage 7). Unsaved photos are discarded on Cancel, on leaving the page
+  (`OnNavigatedFrom`) and when replaced; receipt file names now include milliseconds and are written with `File.Create`.
 
 ### 6.5 Currency display everywhere (P1, P2)
 - Remove every hard-coded `'${0:N2}'` (MainPage, BudgetPage, report pages, TransfersPage, RecurringTransactionsPage,

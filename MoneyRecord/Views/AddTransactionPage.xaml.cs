@@ -19,5 +19,12 @@ namespace MoneyRecord.Views
             // Fire-and-forget for non-blocking UI
             _ = _viewModel.InitializeAsync();
         }
+
+        protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+        {
+            base.OnNavigatedFrom(args);
+            // Back button / gesture without saving (not raised while the camera or gallery is open)
+            _viewModel.DiscardUnsavedPhoto();
+        }
     }
 }

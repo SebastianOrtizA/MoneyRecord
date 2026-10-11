@@ -103,6 +103,8 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hasReceipt;
 
+        private readonly ReceiptDraft _receipt = new();
+
         [ObservableProperty]
         private bool isMonthlyFrequency;
 
@@ -131,6 +133,7 @@ namespace MoneyRecord.ViewModels
         /// </summary>
         private void ResetState()
         {
+            _receipt.Load(null);
             Transaction = null;
             TransactionType = TransactionType.Expense;
             SelectedDate = DateTime.Now;
@@ -141,8 +144,7 @@ namespace MoneyRecord.ViewModels
             Title = AppResources.AddTransaction;
             IsEditMode = false;
             TagsText = string.Empty;
-            ReceiptPhotoPath = null;
-            HasReceipt = false;
+            ShowReceipt();
             IsRecurring = false;
             SelectedFrequencyItem = Frequencies[3];
             HasEndDate = false;
@@ -176,8 +178,8 @@ namespace MoneyRecord.ViewModels
                 Description = Transaction.Description;
                 Amount = Transaction.Amount.ToString();
                 TagsText = Transaction.Tags ?? string.Empty;
-                ReceiptPhotoPath = Transaction.ReceiptPhotoPath;
-                HasReceipt = !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
+                _receipt.Load(Transaction.ReceiptPhotoPath);
+                ShowReceipt();
 
                 Title = TransactionType == TransactionType.Income ? AppResources.EditIncome : AppResources.EditExpense;
                 
@@ -338,6 +340,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.ReceiptPhotoPath = ReceiptPhotoPath;
 
                 await _transactionRepository.SaveAsync(Transaction);
+                _receipt.Commit(); // deletes a removed or replaced receipt
                 await Toast.Make(AppResources.TransactionUpdatedSuccessfully).Show();
             }
             else
@@ -356,6 +359,7 @@ namespace MoneyRecord.ViewModels
                 };
 
                 await _transactionRepository.SaveAsync(newTransaction);
+                _receipt.Commit();
 
                 if (IsRecurring && SelectedFrequencyItem != null)
                 {
@@ -449,27 +453,43 @@ namespace MoneyRecord.ViewModels
             var receiptsDir = ReceiptFiles.Folder;
             Directory.CreateDirectory(receiptsDir);
 
-            var fileName = $"receipt_{DateTime.Now:yyyyMMdd_HHmmss}{Path.GetExtension(photo.FileName)}";
+            var fileName = $"receipt_{DateTime.Now:yyyyMMdd_HHmmss_fff}{Path.GetExtension(photo.FileName)}";
             var filePath = Path.Combine(receiptsDir, fileName);
 
-            using var stream = await photo.OpenReadAsync();
-            using var fileStream = File.OpenWrite(filePath);
-            await stream.CopyToAsync(fileStream);
+            using (var stream = await photo.OpenReadAsync())
+            using (var fileStream = File.Create(filePath))
+                await stream.CopyToAsync(fileStream);
 
-            ReceiptPhotoPath = filePath;
-            HasReceipt = true;
+            _receipt.Set(filePath);
+            ShowReceipt();
         }
 
         [RelayCommand]
         private void RemovePhoto()
         {
-            ReceiptPhotoPath = null;
-            HasReceipt = false;
+            _receipt.Remove();
+            ShowReceipt();
+        }
+
+        /// <summary>
+        /// Deletes a photo that was never saved (called on cancel and when the page is left without saving).
+        /// </summary>
+        public void DiscardUnsavedPhoto()
+        {
+            _receipt.Discard();
+            ShowReceipt();
+        }
+
+        private void ShowReceipt()
+        {
+            ReceiptPhotoPath = _receipt.Path;
+            HasReceipt = !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
         }
 
         [RelayCommand]
         private async Task CancelAsync()
         {
+            DiscardUnsavedPhoto();
             await _navigationService.GoBackAsync();
         }
     }
