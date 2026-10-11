@@ -1,7 +1,6 @@
 using MoneyRecord.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
@@ -154,7 +153,7 @@ namespace MoneyRecord.ViewModels
             }
 
             // Always parse with allowNegative=true to detect negative values for validation
-            var balance = CurrencyMaskBehavior.ParseAmount(NewAccountBalance, NewAccountCurrency?.Code, allowNegative: true);
+            var balance = AmountParser.Parse(NewAccountBalance, NewAccountCurrency?.Code, allowNegative: true);
 
             if (!Money.IsInRange(balance))
             {
@@ -236,7 +235,7 @@ namespace MoneyRecord.ViewModels
             }
 
             // Always parse with allowNegative=true to detect negative values for validation
-            var balance = CurrencyMaskBehavior.ParseAmount(EditAccountBalance, EditAccountCurrency?.Code, allowNegative: true);
+            var balance = AmountParser.Parse(EditAccountBalance, EditAccountCurrency?.Code, allowNegative: true);
 
             if (!Money.IsInRange(balance))
             {

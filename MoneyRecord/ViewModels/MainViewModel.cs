@@ -21,6 +21,7 @@ namespace MoneyRecord.ViewModels
         private readonly IBudgetRepository _budgetRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IErrorHandler _errorHandler;
+        private readonly IAppPaths _paths;
 
         private List<Transaction> _allCombinedTransactions = new();
         private Dictionary<string, AccountBalanceInfo>? _cachedAccountBalances;
@@ -146,7 +147,7 @@ namespace MoneyRecord.ViewModels
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
-        public MainViewModel(IBalanceService balanceService, ITransactionEnrichmentService enrichmentService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler)
+        public MainViewModel(IBalanceService balanceService, ITransactionEnrichmentService enrichmentService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler, IAppPaths paths)
         {
             _balanceService = balanceService;
             _enrichmentService = enrichmentService;
@@ -156,6 +157,7 @@ namespace MoneyRecord.ViewModels
             _budgetRepository = budgetRepository;
             _categoryRepository = categoryRepository;
             _errorHandler = errorHandler;
+            _paths = paths;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
             selectedFilterType = FilterTypes[0];
         }
@@ -550,7 +552,7 @@ namespace MoneyRecord.ViewModels
                 else
                 {
                     await _transactionRepository.DeleteAsync(transaction);
-                    ReceiptFiles.Delete(transaction.ReceiptPhotoPath);
+                    ReceiptFiles.Delete(transaction.ReceiptPhotoPath, _paths.ReceiptsFolder);
                 }
                 
                 await LoadDataAsync();

@@ -2,7 +2,6 @@ using MoneyRecord.Helpers;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
@@ -22,6 +21,7 @@ namespace MoneyRecord.ViewModels
         private readonly IRecurringTransactionRepository _recurringTransactionRepository;
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IAppPaths _paths;
 
         [ObservableProperty]
         private TransactionType transactionType;
@@ -103,7 +103,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hasReceipt;
 
-        private readonly ReceiptDraft _receipt = new();
+        private readonly ReceiptDraft _receipt;
 
         [ObservableProperty]
         private bool isMonthlyFrequency;
@@ -115,7 +115,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IAppPaths paths)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -125,6 +125,8 @@ namespace MoneyRecord.ViewModels
             _recurringTransactionRepository = recurringTransactionRepository;
             _navigationService = navigationService;
             _errorHandler = errorHandler;
+            _paths = paths;
+            _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
         }
 
@@ -290,7 +292,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var amountValue = CurrencyMaskBehavior.ParseAmount(Amount, SelectedAccount?.CurrencyCode);
+            var amountValue = AmountParser.Parse(Amount, SelectedAccount?.CurrencyCode);
             if (amountValue <= 0 || !Money.IsInRange(amountValue))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
@@ -452,7 +454,7 @@ namespace MoneyRecord.ViewModels
 
         private async Task SaveReceiptPhotoAsync(FileResult photo)
         {
-            var receiptsDir = ReceiptFiles.Folder;
+            var receiptsDir = _paths.ReceiptsFolder;
             Directory.CreateDirectory(receiptsDir);
 
             var fileName = $"receipt_{DateTime.Now:yyyyMMdd_HHmmss_fff}{Path.GetExtension(photo.FileName)}";

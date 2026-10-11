@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- TODO(7.4): "models:" is the app assembly here (Models/CategoryReport.cs); when CategoryReport moves to Core as
+     CategoryAmount, add ";assembly=MoneyRecord.Core" like the other pages. -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
-             xmlns:helpers="clr-namespace:MoneyRecord.Helpers"
+             xmlns:helpers="clr-namespace:MoneyRecord.Helpers;assembly=MoneyRecord.Core"
              xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.IncomeReportPage"
              x:DataType="viewmodels:IncomeReportViewModel"

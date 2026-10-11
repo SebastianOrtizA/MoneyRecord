@@ -18,7 +18,7 @@ dotnet build MoneyRecord/MoneyRecord.csproj -f net10.0-windows10.0.19041.0
 # Run on Android emulator/device
 dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android
 
-# Run tests (xUnit + NSubstitute + AwesomeAssertions; targets Windows, run from PowerShell)
+# Run tests (xUnit + NSubstitute + AwesomeAssertions; plain net10.0, run from PowerShell)
 dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 ```
 
@@ -38,23 +38,36 @@ Models (SQLite entities, money in cents)
 ```
 
 ### Key Directories
+Two projects: `MoneyRecord.Core/` (plain `net10.0`, no MAUI) and `MoneyRecord/` (the MAUI app). Namespaces are the same
+in both (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...). XAML that uses a Core type needs
+`xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"` — without `assembly=` a Debug build compiles but
+crashes at runtime (XAML is inflated at runtime there).
+
+`MoneyRecord.Core/`
 - `Models/` — 6 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction. Plus display models
-  (AccountBalanceInfo, CurrencyBalance, CategoryReport, TransactionGroup, BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
-- `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service)
+  (AccountBalanceInfo, CurrencyBalance, TransactionGroup, BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
+- `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — SQLite repositories + `DatabaseInitializer` (schema, seed data, runs migrations)
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
 - `Services/` — BalanceService, TransactionEnrichmentService, AccountService / CategoryService (transactional deletes),
   CurrencyService, RecurringTransactionService, DataExportService (zip backup/restore, CSV), CategoryIconService,
-  NavigationService, LocalizationService, PreferencesService, ErrorHandler
+  LocalizationService, AppPaths (app data folder → database, receipts, backups)
+- `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
+  IconHelper, PeriodHelper, ReceiptFiles, ReceiptDraft
+- `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
+
+`MoneyRecord/` (app)
 - `ViewModels/` — 13 ViewModels using [ObservableProperty] and [RelayCommand] source generators
 - `Views/` — 12 XAML pages with code-behind
 - `Controls/` — FloatingActionMenu (draggable FAB, `FabComponents/`), DecimalEntry (numeric keyboard), ChartDrawables (Trends)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — all value converters in a single file
-- `Helpers/` — Money, MoneyFormatter, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper, IconHelper,
-  PeriodHelper, ReceiptFiles, ReceiptDraft
-- `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish)
-- `MoneyRecord.Tests/` — xUnit tests (helpers, models, services, migrations against real temp SQLite files, backup/restore)
+- `Models/CategoryReport.cs` — report display models with MAUI `Color` (replaced in Stage 7.4)
+- `Services/` — NavigationService, PreferencesService (MAUI Preferences), ErrorHandler
+- `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
+
+`MoneyRecord.Tests/` — xUnit tests on plain `net10.0`, referencing Core only (helpers, models, services, migrations
+against real temp SQLite files, backup/restore); they run on Linux too (CI uses ubuntu-latest)
 
 ## Patterns & Conventions
 

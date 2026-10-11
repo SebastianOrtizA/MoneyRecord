@@ -22,7 +22,7 @@ namespace MoneyRecord.Resources.Strings {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class AppResources {
+    public class AppResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace MoneyRecord.Resources.Strings {
         ///   Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MoneyRecord.Resources.Strings.AppResources", typeof(AppResources).Assembly);
@@ -51,7 +51,7 @@ namespace MoneyRecord.Resources.Strings {
         ///   búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Account *.
         /// </summary>
-        internal static string Account {
+        public static string Account {
             get {
                 return ResourceManager.GetString("Account", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Account Balances.
         /// </summary>
-        internal static string AccountBalances {
+        public static string AccountBalances {
             get {
                 return ResourceManager.GetString("AccountBalances", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Account Name.
         /// </summary>
-        internal static string AccountName {
+        public static string AccountName {
             get {
                 return ResourceManager.GetString("AccountName", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a e.g., Bank Account, Cash, Credit Card.
         /// </summary>
-        internal static string AccountNamePlaceholder {
+        public static string AccountNamePlaceholder {
             get {
                 return ResourceManager.GetString("AccountNamePlaceholder", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Accounts.
         /// </summary>
-        internal static string Accounts {
+        public static string Accounts {
             get {
                 return ResourceManager.GetString("Accounts", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add Account.
         /// </summary>
-        internal static string AddAccountButton {
+        public static string AddAccountButton {
             get {
                 return ResourceManager.GetString("AddAccountButton", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add Budget.
         /// </summary>
-        internal static string AddBudgetButton {
+        public static string AddBudgetButton {
             get {
                 return ResourceManager.GetString("AddBudgetButton", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add expense categories to your budget to track spending limits.
         /// </summary>
-        internal static string AddBudgetToStart {
+        public static string AddBudgetToStart {
             get {
                 return ResourceManager.GetString("AddBudgetToStart", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add Category.
         /// </summary>
-        internal static string AddCategoryButton {
+        public static string AddCategoryButton {
             get {
                 return ResourceManager.GetString("AddCategoryButton", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add Category to Budget.
         /// </summary>
-        internal static string AddCategoryToBudget {
+        public static string AddCategoryToBudget {
             get {
                 return ResourceManager.GetString("AddCategoryToBudget", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add Expense.
         /// </summary>
-        internal static string AddExpense {
+        public static string AddExpense {
             get {
                 return ResourceManager.GetString("AddExpense", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add some expenses to see your spending breakdown.
         /// </summary>
-        internal static string AddExpensesToStart {
+        public static string AddExpensesToStart {
             get {
                 return ResourceManager.GetString("AddExpensesToStart", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add some expense transactions to see your spending analysis.
         /// </summary>
-        internal static string AddExpenseTransactionsToSee {
+        public static string AddExpenseTransactionsToSee {
             get {
                 return ResourceManager.GetString("AddExpenseTransactionsToSee", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add Income.
         /// </summary>
-        internal static string AddIncome {
+        public static string AddIncome {
             get {
                 return ResourceManager.GetString("AddIncome", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add some income to see your earnings breakdown.
         /// </summary>
-        internal static string AddIncomeToStart {
+        public static string AddIncomeToStart {
             get {
                 return ResourceManager.GetString("AddIncomeToStart", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add some income transactions to see your earnings analysis.
         /// </summary>
-        internal static string AddIncomeTransactionsToSee {
+        public static string AddIncomeTransactionsToSee {
             get {
                 return ResourceManager.GetString("AddIncomeTransactionsToSee", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add New Account.
         /// </summary>
-        internal static string AddNewAccount {
+        public static string AddNewAccount {
             get {
                 return ResourceManager.GetString("AddNewAccount", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add New Category.
         /// </summary>
-        internal static string AddNewCategory {
+        public static string AddNewCategory {
             get {
                 return ResourceManager.GetString("AddNewCategory", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Add Transaction.
         /// </summary>
-        internal static string AddTransaction {
+        public static string AddTransaction {
             get {
                 return ResourceManager.GetString("AddTransaction", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a All expense categories by percentage.
         /// </summary>
-        internal static string AllExpenseCategoriesByPercentage {
+        public static string AllExpenseCategoriesByPercentage {
             get {
                 return ResourceManager.GetString("AllExpenseCategoriesByPercentage", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a All income categories by percentage.
         /// </summary>
-        internal static string AllIncomeCategoriesByPercentage {
+        public static string AllIncomeCategoriesByPercentage {
             get {
                 return ResourceManager.GetString("AllIncomeCategoriesByPercentage", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Allow negative balance.
         /// </summary>
-        internal static string AllowNegativeBalance {
+        public static string AllowNegativeBalance {
             get {
                 return ResourceManager.GetString("AllowNegativeBalance", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Amount *.
         /// </summary>
-        internal static string Amount {
+        public static string Amount {
             get {
                 return ResourceManager.GetString("Amount", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Money Record.
         /// </summary>
-        internal static string AppTitle {
+        public static string AppTitle {
             get {
                 return ResourceManager.GetString("AppTitle", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Available: ${0:N2}.
         /// </summary>
-        internal static string Available {
+        public static string Available {
             get {
                 return ResourceManager.GetString("Available", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Available: ${0:N2}.
         /// </summary>
-        internal static string AvailableBalance {
+        public static string AvailableBalance {
             get {
                 return ResourceManager.GetString("AvailableBalance", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Back.
         /// </summary>
-        internal static string Back {
+        public static string Back {
             get {
                 return ResourceManager.GetString("Back", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Balance.
         /// </summary>
-        internal static string Balance {
+        public static string Balance {
             get {
                 return ResourceManager.GetString("Balance", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Budget added successfully.
         /// </summary>
-        internal static string BudgetAddedSuccessfully {
+        public static string BudgetAddedSuccessfully {
             get {
                 return ResourceManager.GetString("BudgetAddedSuccessfully", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Budget Limit.
         /// </summary>
-        internal static string BudgetLimit {
+        public static string BudgetLimit {
             get {
                 return ResourceManager.GetString("BudgetLimit", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Budget Mode.
         /// </summary>
-        internal static string BudgetMode {
+        public static string BudgetMode {
             get {
                 return ResourceManager.GetString("BudgetMode", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Budget Period.
         /// </summary>
-        internal static string BudgetPeriod {
+        public static string BudgetPeriod {
             get {
                 return ResourceManager.GetString("BudgetPeriod", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Calendar Month.
         /// </summary>
-        internal static string CalendarMonth {
+        public static string CalendarMonth {
             get {
                 return ResourceManager.GetString("CalendarMonth", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Calendar Year.
         /// </summary>
-        internal static string CalendarYear {
+        public static string CalendarYear {
             get {
                 return ResourceManager.GetString("CalendarYear", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Cancel.
         /// </summary>
-        internal static string Cancel {
+        public static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Cancel Edit.
         /// </summary>
-        internal static string CancelEdit {
+        public static string CancelEdit {
             get {
                 return ResourceManager.GetString("CancelEdit", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Cannot Delete.
         /// </summary>
-        internal static string CannotDelete {
+        public static string CannotDelete {
             get {
                 return ResourceManager.GetString("CannotDelete", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Cannot delete the default Cash account.
         /// </summary>
-        internal static string CannotDeleteDefaultAccount {
+        public static string CannotDeleteDefaultAccount {
             get {
                 return ResourceManager.GetString("CannotDeleteDefaultAccount", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Categories.
         /// </summary>
-        internal static string Categories {
+        public static string Categories {
             get {
                 return ResourceManager.GetString("Categories", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Category *.
         /// </summary>
-        internal static string Category {
+        public static string Category {
             get {
                 return ResourceManager.GetString("Category", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Category Breakdown.
         /// </summary>
-        internal static string CategoryBreakdown {
+        public static string CategoryBreakdown {
             get {
                 return ResourceManager.GetString("CategoryBreakdown", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Category &apos;{0}&apos; deleted and {1} transaction(s) moved to &apos;{2}&apos;.
         /// </summary>
-        internal static string CategoryDeletedAndTransactionsMoved {
+        public static string CategoryDeletedAndTransactionsMoved {
             get {
                 return ResourceManager.GetString("CategoryDeletedAndTransactionsMoved", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Category Details.
         /// </summary>
-        internal static string CategoryDetails {
+        public static string CategoryDetails {
             get {
                 return ResourceManager.GetString("CategoryDetails", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a &apos;{0}&apos; has existing transactions. Select a category to move them to:.
         /// </summary>
-        internal static string CategoryHasTransactions {
+        public static string CategoryHasTransactions {
             get {
                 return ResourceManager.GetString("CategoryHasTransactions", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Category name.
         /// </summary>
-        internal static string CategoryName {
+        public static string CategoryName {
             get {
                 return ResourceManager.GetString("CategoryName", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Close.
         /// </summary>
-        internal static string Close {
+        public static string Close {
             get {
                 return ResourceManager.GetString("Close", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Confirm.
         /// </summary>
-        internal static string Confirm {
+        public static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Confirm Delete.
         /// </summary>
-        internal static string ConfirmDelete {
+        public static string ConfirmDelete {
             get {
                 return ResourceManager.GetString("ConfirmDelete", resourceCulture);
             }
@@ -498,7 +498,7 @@ namespace MoneyRecord.Resources.Strings {
         ///{0}
         ///${1:N2}.
         /// </summary>
-        internal static string ConfirmDeleteTransactionMessage {
+        public static string ConfirmDeleteTransactionMessage {
             get {
                 return ResourceManager.GetString("ConfirmDeleteTransactionMessage", resourceCulture);
             }
@@ -507,7 +507,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Confirm Delete.
         /// </summary>
-        internal static string ConfirmDeleteTransactionTitle {
+        public static string ConfirmDeleteTransactionTitle {
             get {
                 return ResourceManager.GetString("ConfirmDeleteTransactionTitle", resourceCulture);
             }
@@ -519,7 +519,7 @@ namespace MoneyRecord.Resources.Strings {
         ///{0}
         ///${1:N2}.
         /// </summary>
-        internal static string ConfirmDeleteTransferFromListMessage {
+        public static string ConfirmDeleteTransferFromListMessage {
             get {
                 return ResourceManager.GetString("ConfirmDeleteTransferFromListMessage", resourceCulture);
             }
@@ -528,7 +528,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Custom Period.
         /// </summary>
-        internal static string CustomPeriod {
+        public static string CustomPeriod {
             get {
                 return ResourceManager.GetString("CustomPeriod", resourceCulture);
             }
@@ -537,7 +537,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Date *.
         /// </summary>
-        internal static string Date {
+        public static string Date {
             get {
                 return ResourceManager.GetString("Date", resourceCulture);
             }
@@ -546,7 +546,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Cash.
         /// </summary>
-        internal static string DefaultAccountCash {
+        public static string DefaultAccountCash {
             get {
                 return ResourceManager.GetString("DefaultAccountCash", resourceCulture);
             }
@@ -555,7 +555,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Entertainment.
         /// </summary>
-        internal static string DefaultCategoryEntertainment {
+        public static string DefaultCategoryEntertainment {
             get {
                 return ResourceManager.GetString("DefaultCategoryEntertainment", resourceCulture);
             }
@@ -564,7 +564,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Food.
         /// </summary>
-        internal static string DefaultCategoryFood {
+        public static string DefaultCategoryFood {
             get {
                 return ResourceManager.GetString("DefaultCategoryFood", resourceCulture);
             }
@@ -573,7 +573,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Freelance.
         /// </summary>
-        internal static string DefaultCategoryFreelance {
+        public static string DefaultCategoryFreelance {
             get {
                 return ResourceManager.GetString("DefaultCategoryFreelance", resourceCulture);
             }
@@ -582,7 +582,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Home.
         /// </summary>
-        internal static string DefaultCategoryHome {
+        public static string DefaultCategoryHome {
             get {
                 return ResourceManager.GetString("DefaultCategoryHome", resourceCulture);
             }
@@ -591,7 +591,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Investment.
         /// </summary>
-        internal static string DefaultCategoryInvestment {
+        public static string DefaultCategoryInvestment {
             get {
                 return ResourceManager.GetString("DefaultCategoryInvestment", resourceCulture);
             }
@@ -600,7 +600,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Other Expense.
         /// </summary>
-        internal static string DefaultCategoryOtherExpense {
+        public static string DefaultCategoryOtherExpense {
             get {
                 return ResourceManager.GetString("DefaultCategoryOtherExpense", resourceCulture);
             }
@@ -609,7 +609,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Other Income.
         /// </summary>
-        internal static string DefaultCategoryOtherIncome {
+        public static string DefaultCategoryOtherIncome {
             get {
                 return ResourceManager.GetString("DefaultCategoryOtherIncome", resourceCulture);
             }
@@ -618,7 +618,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Salary.
         /// </summary>
-        internal static string DefaultCategorySalary {
+        public static string DefaultCategorySalary {
             get {
                 return ResourceManager.GetString("DefaultCategorySalary", resourceCulture);
             }
@@ -627,7 +627,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Shopping.
         /// </summary>
-        internal static string DefaultCategoryShopping {
+        public static string DefaultCategoryShopping {
             get {
                 return ResourceManager.GetString("DefaultCategoryShopping", resourceCulture);
             }
@@ -636,7 +636,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transportation.
         /// </summary>
-        internal static string DefaultCategoryTransportation {
+        public static string DefaultCategoryTransportation {
             get {
                 return ResourceManager.GetString("DefaultCategoryTransportation", resourceCulture);
             }
@@ -645,7 +645,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Utilities.
         /// </summary>
-        internal static string DefaultCategoryUtilities {
+        public static string DefaultCategoryUtilities {
             get {
                 return ResourceManager.GetString("DefaultCategoryUtilities", resourceCulture);
             }
@@ -654,7 +654,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Delete.
         /// </summary>
-        internal static string Delete {
+        public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
             }
@@ -663,7 +663,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Delete Account.
         /// </summary>
-        internal static string DeleteAccount {
+        public static string DeleteAccount {
             get {
                 return ResourceManager.GetString("DeleteAccount", resourceCulture);
             }
@@ -672,7 +672,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Are you sure you want to delete this account?.
         /// </summary>
-        internal static string DeleteAccountConfirm {
+        public static string DeleteAccountConfirm {
             get {
                 return ResourceManager.GetString("DeleteAccountConfirm", resourceCulture);
             }
@@ -681,7 +681,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Are you sure you want to delete &apos;{0}&apos;?.
         /// </summary>
-        internal static string DeleteAccountNoTransactions {
+        public static string DeleteAccountNoTransactions {
             get {
                 return ResourceManager.GetString("DeleteAccountNoTransactions", resourceCulture);
             }
@@ -692,7 +692,7 @@ namespace MoneyRecord.Resources.Strings {
         ///
         ///All transactions in this account will be moved to the Cash account..
         /// </summary>
-        internal static string DeleteAccountWithTransactions {
+        public static string DeleteAccountWithTransactions {
             get {
                 return ResourceManager.GetString("DeleteAccountWithTransactions", resourceCulture);
             }
@@ -701,7 +701,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Are you sure you want to remove &apos;{0}&apos; from your budget?.
         /// </summary>
-        internal static string DeleteBudgetConfirmation {
+        public static string DeleteBudgetConfirmation {
             get {
                 return ResourceManager.GetString("DeleteBudgetConfirmation", resourceCulture);
             }
@@ -710,7 +710,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Delete.
         /// </summary>
-        internal static string DeleteButton {
+        public static string DeleteButton {
             get {
                 return ResourceManager.GetString("DeleteButton", resourceCulture);
             }
@@ -719,7 +719,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Delete Category.
         /// </summary>
-        internal static string DeleteCategory {
+        public static string DeleteCategory {
             get {
                 return ResourceManager.GetString("DeleteCategory", resourceCulture);
             }
@@ -728,7 +728,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Are you sure you want to delete this category?.
         /// </summary>
-        internal static string DeleteCategoryConfirm {
+        public static string DeleteCategoryConfirm {
             get {
                 return ResourceManager.GetString("DeleteCategoryConfirm", resourceCulture);
             }
@@ -737,7 +737,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Are you sure you want to delete &apos;{0}&apos;?.
         /// </summary>
-        internal static string DeleteCategoryConfirmation {
+        public static string DeleteCategoryConfirmation {
             get {
                 return ResourceManager.GetString("DeleteCategoryConfirmation", resourceCulture);
             }
@@ -746,7 +746,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Delete Transaction.
         /// </summary>
-        internal static string DeleteTransaction {
+        public static string DeleteTransaction {
             get {
                 return ResourceManager.GetString("DeleteTransaction", resourceCulture);
             }
@@ -755,7 +755,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Are you sure you want to delete this transaction?.
         /// </summary>
-        internal static string DeleteTransactionConfirm {
+        public static string DeleteTransactionConfirm {
             get {
                 return ResourceManager.GetString("DeleteTransactionConfirm", resourceCulture);
             }
@@ -764,7 +764,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Delete Transfer.
         /// </summary>
-        internal static string DeleteTransfer {
+        public static string DeleteTransfer {
             get {
                 return ResourceManager.GetString("DeleteTransfer", resourceCulture);
             }
@@ -773,7 +773,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Are you sure you want to delete this transfer?.
         /// </summary>
-        internal static string DeleteTransferConfirm {
+        public static string DeleteTransferConfirm {
             get {
                 return ResourceManager.GetString("DeleteTransferConfirm", resourceCulture);
             }
@@ -786,7 +786,7 @@ namespace MoneyRecord.Resources.Strings {
         ///To: {1}
         ///Amount: ${2:N2}.
         /// </summary>
-        internal static string DeleteTransferConfirmMessage {
+        public static string DeleteTransferConfirmMessage {
             get {
                 return ResourceManager.GetString("DeleteTransferConfirmMessage", resourceCulture);
             }
@@ -795,7 +795,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Description *.
         /// </summary>
-        internal static string Description {
+        public static string Description {
             get {
                 return ResourceManager.GetString("Description", resourceCulture);
             }
@@ -804,7 +804,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit.
         /// </summary>
-        internal static string Edit {
+        public static string Edit {
             get {
                 return ResourceManager.GetString("Edit", resourceCulture);
             }
@@ -813,7 +813,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit Account.
         /// </summary>
-        internal static string EditAccount {
+        public static string EditAccount {
             get {
                 return ResourceManager.GetString("EditAccount", resourceCulture);
             }
@@ -822,7 +822,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit Budget.
         /// </summary>
-        internal static string EditBudget {
+        public static string EditBudget {
             get {
                 return ResourceManager.GetString("EditBudget", resourceCulture);
             }
@@ -831,7 +831,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit.
         /// </summary>
-        internal static string EditButton {
+        public static string EditButton {
             get {
                 return ResourceManager.GetString("EditButton", resourceCulture);
             }
@@ -840,7 +840,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit Category.
         /// </summary>
-        internal static string EditCategory {
+        public static string EditCategory {
             get {
                 return ResourceManager.GetString("EditCategory", resourceCulture);
             }
@@ -849,7 +849,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit Expense.
         /// </summary>
-        internal static string EditExpense {
+        public static string EditExpense {
             get {
                 return ResourceManager.GetString("EditExpense", resourceCulture);
             }
@@ -858,7 +858,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit Income.
         /// </summary>
-        internal static string EditIncome {
+        public static string EditIncome {
             get {
                 return ResourceManager.GetString("EditIncome", resourceCulture);
             }
@@ -867,7 +867,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Edit Transfer.
         /// </summary>
-        internal static string EditTransfer {
+        public static string EditTransfer {
             get {
                 return ResourceManager.GetString("EditTransfer", resourceCulture);
             }
@@ -876,7 +876,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Enter description.
         /// </summary>
-        internal static string EnterDescription {
+        public static string EnterDescription {
             get {
                 return ResourceManager.GetString("EnterDescription", resourceCulture);
             }
@@ -885,7 +885,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Enter new budget limit for {0}:.
         /// </summary>
-        internal static string EnterNewBudgetLimit {
+        public static string EnterNewBudgetLimit {
             get {
                 return ResourceManager.GetString("EnterNewBudgetLimit", resourceCulture);
             }
@@ -894,7 +894,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Error.
         /// </summary>
-        internal static string Error {
+        public static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
             }
@@ -903,7 +903,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Exceeded.
         /// </summary>
-        internal static string Exceeded {
+        public static string Exceeded {
             get {
                 return ResourceManager.GetString("Exceeded", resourceCulture);
             }
@@ -912,7 +912,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Expense.
         /// </summary>
-        internal static string Expense {
+        public static string Expense {
             get {
                 return ResourceManager.GetString("Expense", resourceCulture);
             }
@@ -921,7 +921,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Expense Analysis.
         /// </summary>
-        internal static string ExpenseAnalysis {
+        public static string ExpenseAnalysis {
             get {
                 return ResourceManager.GetString("ExpenseAnalysis", resourceCulture);
             }
@@ -930,7 +930,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Expense Categories.
         /// </summary>
-        internal static string ExpenseCategories {
+        public static string ExpenseCategories {
             get {
                 return ResourceManager.GetString("ExpenseCategories", resourceCulture);
             }
@@ -939,7 +939,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Expense Heatmap.
         /// </summary>
-        internal static string ExpenseHeatmap {
+        public static string ExpenseHeatmap {
             get {
                 return ResourceManager.GetString("ExpenseHeatmap", resourceCulture);
             }
@@ -948,7 +948,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Expense Report.
         /// </summary>
-        internal static string ExpenseReport {
+        public static string ExpenseReport {
             get {
                 return ResourceManager.GetString("ExpenseReport", resourceCulture);
             }
@@ -957,7 +957,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Expenses.
         /// </summary>
-        internal static string Expenses {
+        public static string Expenses {
             get {
                 return ResourceManager.GetString("Expenses", resourceCulture);
             }
@@ -966,7 +966,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to delete budget: {0}.
         /// </summary>
-        internal static string FailedToDeleteBudget {
+        public static string FailedToDeleteBudget {
             get {
                 return ResourceManager.GetString("FailedToDeleteBudget", resourceCulture);
             }
@@ -975,7 +975,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to delete transaction: {0}.
         /// </summary>
-        internal static string FailedToDeleteTransaction {
+        public static string FailedToDeleteTransaction {
             get {
                 return ResourceManager.GetString("FailedToDeleteTransaction", resourceCulture);
             }
@@ -984,7 +984,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to delete transfer: {0}.
         /// </summary>
-        internal static string FailedToDeleteTransfer {
+        public static string FailedToDeleteTransfer {
             get {
                 return ResourceManager.GetString("FailedToDeleteTransfer", resourceCulture);
             }
@@ -993,7 +993,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to load account balances: {0}.
         /// </summary>
-        internal static string FailedToLoadAccountBalances {
+        public static string FailedToLoadAccountBalances {
             get {
                 return ResourceManager.GetString("FailedToLoadAccountBalances", resourceCulture);
             }
@@ -1002,7 +1002,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to load category details: {0}.
         /// </summary>
-        internal static string FailedToLoadCategoryDetails {
+        public static string FailedToLoadCategoryDetails {
             get {
                 return ResourceManager.GetString("FailedToLoadCategoryDetails", resourceCulture);
             }
@@ -1011,7 +1011,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to load report data: {0}.
         /// </summary>
-        internal static string FailedToLoadReportData {
+        public static string FailedToLoadReportData {
             get {
                 return ResourceManager.GetString("FailedToLoadReportData", resourceCulture);
             }
@@ -1020,7 +1020,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to load transactions: {0}.
         /// </summary>
-        internal static string FailedToLoadTransactions {
+        public static string FailedToLoadTransactions {
             get {
                 return ResourceManager.GetString("FailedToLoadTransactions", resourceCulture);
             }
@@ -1029,7 +1029,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to load transfers: {0}.
         /// </summary>
-        internal static string FailedToLoadTransfers {
+        public static string FailedToLoadTransfers {
             get {
                 return ResourceManager.GetString("FailedToLoadTransfers", resourceCulture);
             }
@@ -1038,7 +1038,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to save budget: {0}.
         /// </summary>
-        internal static string FailedToSaveBudget {
+        public static string FailedToSaveBudget {
             get {
                 return ResourceManager.GetString("FailedToSaveBudget", resourceCulture);
             }
@@ -1047,7 +1047,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to save transfer: {0}.
         /// </summary>
-        internal static string FailedToSaveTransfer {
+        public static string FailedToSaveTransfer {
             get {
                 return ResourceManager.GetString("FailedToSaveTransfer", resourceCulture);
             }
@@ -1056,7 +1056,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Failed to toggle view: {0}.
         /// </summary>
-        internal static string FailedToToggleView {
+        public static string FailedToToggleView {
             get {
                 return ResourceManager.GetString("FailedToToggleView", resourceCulture);
             }
@@ -1065,7 +1065,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a From:.
         /// </summary>
-        internal static string From {
+        public static string From {
             get {
                 return ResourceManager.GetString("From", resourceCulture);
             }
@@ -1074,7 +1074,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a From Account *.
         /// </summary>
-        internal static string FromAccount {
+        public static string FromAccount {
             get {
                 return ResourceManager.GetString("FromAccount", resourceCulture);
             }
@@ -1083,7 +1083,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a From:.
         /// </summary>
-        internal static string FromLabel {
+        public static string FromLabel {
             get {
                 return ResourceManager.GetString("FromLabel", resourceCulture);
             }
@@ -1092,7 +1092,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a By Account.
         /// </summary>
-        internal static string GroupByAccount {
+        public static string GroupByAccount {
             get {
                 return ResourceManager.GetString("GroupByAccount", resourceCulture);
             }
@@ -1101,7 +1101,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a By Category.
         /// </summary>
-        internal static string GroupByCategory {
+        public static string GroupByCategory {
             get {
                 return ResourceManager.GetString("GroupByCategory", resourceCulture);
             }
@@ -1110,7 +1110,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Grouped.
         /// </summary>
-        internal static string Grouped {
+        public static string Grouped {
             get {
                 return ResourceManager.GetString("Grouped", resourceCulture);
             }
@@ -1119,7 +1119,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a High.
         /// </summary>
-        internal static string High {
+        public static string High {
             get {
                 return ResourceManager.GetString("High", resourceCulture);
             }
@@ -1128,7 +1128,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Home.
         /// </summary>
-        internal static string Home {
+        public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
             }
@@ -1137,7 +1137,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Identify your most used expense categories.
         /// </summary>
-        internal static string IdentifyExpenseCategories {
+        public static string IdentifyExpenseCategories {
             get {
                 return ResourceManager.GetString("IdentifyExpenseCategories", resourceCulture);
             }
@@ -1146,7 +1146,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Identify your most used income categories.
         /// </summary>
-        internal static string IdentifyIncomeCategories {
+        public static string IdentifyIncomeCategories {
             get {
                 return ResourceManager.GetString("IdentifyIncomeCategories", resourceCulture);
             }
@@ -1155,7 +1155,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Income.
         /// </summary>
-        internal static string Income {
+        public static string Income {
             get {
                 return ResourceManager.GetString("Income", resourceCulture);
             }
@@ -1164,7 +1164,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Income Analysis.
         /// </summary>
-        internal static string IncomeAnalysis {
+        public static string IncomeAnalysis {
             get {
                 return ResourceManager.GetString("IncomeAnalysis", resourceCulture);
             }
@@ -1173,7 +1173,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Income Categories.
         /// </summary>
-        internal static string IncomeCategories {
+        public static string IncomeCategories {
             get {
                 return ResourceManager.GetString("IncomeCategories", resourceCulture);
             }
@@ -1182,7 +1182,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Income Heatmap.
         /// </summary>
-        internal static string IncomeHeatmap {
+        public static string IncomeHeatmap {
             get {
                 return ResourceManager.GetString("IncomeHeatmap", resourceCulture);
             }
@@ -1191,7 +1191,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Income Report.
         /// </summary>
-        internal static string IncomeReport {
+        public static string IncomeReport {
             get {
                 return ResourceManager.GetString("IncomeReport", resourceCulture);
             }
@@ -1200,7 +1200,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Incomes.
         /// </summary>
-        internal static string Incomes {
+        public static string Incomes {
             get {
                 return ResourceManager.GetString("Incomes", resourceCulture);
             }
@@ -1209,7 +1209,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Initial Balance.
         /// </summary>
-        internal static string InitialBalance {
+        public static string InitialBalance {
             get {
                 return ResourceManager.GetString("InitialBalance", resourceCulture);
             }
@@ -1218,7 +1218,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a This expense would result in a negative balance. The account &apos;{0}&apos; does not allow negative balance..
         /// </summary>
-        internal static string InsufficientAccountBalance {
+        public static string InsufficientAccountBalance {
             get {
                 return ResourceManager.GetString("InsufficientAccountBalance", resourceCulture);
             }
@@ -1227,7 +1227,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Insufficient funds in source account.
         /// </summary>
-        internal static string InsufficientFunds {
+        public static string InsufficientFunds {
             get {
                 return ResourceManager.GetString("InsufficientFunds", resourceCulture);
             }
@@ -1236,7 +1236,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Last Activity.
         /// </summary>
-        internal static string LastActivity {
+        public static string LastActivity {
             get {
                 return ResourceManager.GetString("LastActivity", resourceCulture);
             }
@@ -1245,7 +1245,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a This is the last category of this type. You cannot delete it while it has transactions. Please create another category first..
         /// </summary>
-        internal static string LastCategoryCannotDelete {
+        public static string LastCategoryCannotDelete {
             get {
                 return ResourceManager.GetString("LastCategoryCannotDelete", resourceCulture);
             }
@@ -1254,7 +1254,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Last Month.
         /// </summary>
-        internal static string LastMonth {
+        public static string LastMonth {
             get {
                 return ResourceManager.GetString("LastMonth", resourceCulture);
             }
@@ -1263,7 +1263,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Last Week.
         /// </summary>
-        internal static string LastWeek {
+        public static string LastWeek {
             get {
                 return ResourceManager.GetString("LastWeek", resourceCulture);
             }
@@ -1272,7 +1272,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Last Year.
         /// </summary>
-        internal static string LastYear {
+        public static string LastYear {
             get {
                 return ResourceManager.GetString("LastYear", resourceCulture);
             }
@@ -1281,7 +1281,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a List View.
         /// </summary>
-        internal static string ListView {
+        public static string ListView {
             get {
                 return ResourceManager.GetString("ListView", resourceCulture);
             }
@@ -1290,7 +1290,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Low.
         /// </summary>
-        internal static string Low {
+        public static string Low {
             get {
                 return ResourceManager.GetString("Low", resourceCulture);
             }
@@ -1299,7 +1299,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Manage Accounts.
         /// </summary>
-        internal static string ManageAccounts {
+        public static string ManageAccounts {
             get {
                 return ResourceManager.GetString("ManageAccounts", resourceCulture);
             }
@@ -1308,7 +1308,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Manage Categories.
         /// </summary>
-        internal static string ManageCategories {
+        public static string ManageCategories {
             get {
                 return ResourceManager.GetString("ManageCategories", resourceCulture);
             }
@@ -1317,7 +1317,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Manage Expense Categories.
         /// </summary>
-        internal static string ManageExpenseCategories {
+        public static string ManageExpenseCategories {
             get {
                 return ResourceManager.GetString("ManageExpenseCategories", resourceCulture);
             }
@@ -1326,7 +1326,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Manage Income Categories.
         /// </summary>
-        internal static string ManageIncomeCategories {
+        public static string ManageIncomeCategories {
             get {
                 return ResourceManager.GetString("ManageIncomeCategories", resourceCulture);
             }
@@ -1335,7 +1335,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Medium.
         /// </summary>
-        internal static string Medium {
+        public static string Medium {
             get {
                 return ResourceManager.GetString("Medium", resourceCulture);
             }
@@ -1344,7 +1344,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Negative initial balance is not allowed. Enable &apos;Allow negative balance&apos; to use a negative value..
         /// </summary>
-        internal static string NegativeBalanceNotAllowed {
+        public static string NegativeBalanceNotAllowed {
             get {
                 return ResourceManager.GetString("NegativeBalanceNotAllowed", resourceCulture);
             }
@@ -1353,7 +1353,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a New Transfer.
         /// </summary>
-        internal static string NewTransfer {
+        public static string NewTransfer {
             get {
                 return ResourceManager.GetString("NewTransfer", resourceCulture);
             }
@@ -1362,7 +1362,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No.
         /// </summary>
-        internal static string No {
+        public static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
             }
@@ -1371,7 +1371,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No accounts yet. Add your first account above..
         /// </summary>
-        internal static string NoAccounts {
+        public static string NoAccounts {
             get {
                 return ResourceManager.GetString("NoAccounts", resourceCulture);
             }
@@ -1380,7 +1380,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No accounts found..
         /// </summary>
-        internal static string NoAccountsFound {
+        public static string NoAccountsFound {
             get {
                 return ResourceManager.GetString("NoAccountsFound", resourceCulture);
             }
@@ -1389,7 +1389,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No budgets yet.
         /// </summary>
-        internal static string NoBudgetsYet {
+        public static string NoBudgetsYet {
             get {
                 return ResourceManager.GetString("NoBudgetsYet", resourceCulture);
             }
@@ -1398,7 +1398,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No categories yet. Add your first category above..
         /// </summary>
-        internal static string NoCategories {
+        public static string NoCategories {
             get {
                 return ResourceManager.GetString("NoCategories", resourceCulture);
             }
@@ -1407,7 +1407,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No categories yet.
         /// </summary>
-        internal static string NoCategoriesYet {
+        public static string NoCategoriesYet {
             get {
                 return ResourceManager.GetString("NoCategoriesYet", resourceCulture);
             }
@@ -1416,7 +1416,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No description.
         /// </summary>
-        internal static string NoDescription {
+        public static string NoDescription {
             get {
                 return ResourceManager.GetString("NoDescription", resourceCulture);
             }
@@ -1425,7 +1425,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No expense data for this period.
         /// </summary>
-        internal static string NoExpenseData {
+        public static string NoExpenseData {
             get {
                 return ResourceManager.GetString("NoExpenseData", resourceCulture);
             }
@@ -1434,7 +1434,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No expense data found.
         /// </summary>
-        internal static string NoExpenseDataFound {
+        public static string NoExpenseDataFound {
             get {
                 return ResourceManager.GetString("NoExpenseDataFound", resourceCulture);
             }
@@ -1443,7 +1443,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No expense details found..
         /// </summary>
-        internal static string NoExpenseDetailsFound {
+        public static string NoExpenseDetailsFound {
             get {
                 return ResourceManager.GetString("NoExpenseDetailsFound", resourceCulture);
             }
@@ -1452,7 +1452,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No income data for this period.
         /// </summary>
-        internal static string NoIncomeData {
+        public static string NoIncomeData {
             get {
                 return ResourceManager.GetString("NoIncomeData", resourceCulture);
             }
@@ -1461,7 +1461,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No income data found.
         /// </summary>
-        internal static string NoIncomeDataFound {
+        public static string NoIncomeDataFound {
             get {
                 return ResourceManager.GetString("NoIncomeDataFound", resourceCulture);
             }
@@ -1470,7 +1470,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No income details found..
         /// </summary>
-        internal static string NoIncomeDetailsFound {
+        public static string NoIncomeDetailsFound {
             get {
                 return ResourceManager.GetString("NoIncomeDetailsFound", resourceCulture);
             }
@@ -1479,7 +1479,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a There are no transactions to show.
         /// </summary>
-        internal static string NoTransactions {
+        public static string NoTransactions {
             get {
                 return ResourceManager.GetString("NoTransactions", resourceCulture);
             }
@@ -1488,7 +1488,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a No transfers yet.
         /// </summary>
-        internal static string NoTransfers {
+        public static string NoTransfers {
             get {
                 return ResourceManager.GetString("NoTransfers", resourceCulture);
             }
@@ -1497,7 +1497,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a OK.
         /// </summary>
-        internal static string OK {
+        public static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
             }
@@ -1506,7 +1506,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Original Limit.
         /// </summary>
-        internal static string OriginalLimit {
+        public static string OriginalLimit {
             get {
                 return ResourceManager.GetString("OriginalLimit", resourceCulture);
             }
@@ -1515,7 +1515,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Per Day.
         /// </summary>
-        internal static string PerDay {
+        public static string PerDay {
             get {
                 return ResourceManager.GetString("PerDay", resourceCulture);
             }
@@ -1524,7 +1524,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Per Month.
         /// </summary>
-        internal static string PerMonth {
+        public static string PerMonth {
             get {
                 return ResourceManager.GetString("PerMonth", resourceCulture);
             }
@@ -1533,7 +1533,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Per Year.
         /// </summary>
-        internal static string PerYear {
+        public static string PerYear {
             get {
                 return ResourceManager.GetString("PerYear", resourceCulture);
             }
@@ -1542,7 +1542,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please enter an account name.
         /// </summary>
-        internal static string PleaseEnterAccountName {
+        public static string PleaseEnterAccountName {
             get {
                 return ResourceManager.GetString("PleaseEnterAccountName", resourceCulture);
             }
@@ -1551,7 +1551,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please enter a category name.
         /// </summary>
-        internal static string PleaseEnterCategoryName {
+        public static string PleaseEnterCategoryName {
             get {
                 return ResourceManager.GetString("PleaseEnterCategoryName", resourceCulture);
             }
@@ -1560,7 +1560,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please enter a description.
         /// </summary>
-        internal static string PleaseEnterDescription {
+        public static string PleaseEnterDescription {
             get {
                 return ResourceManager.GetString("PleaseEnterDescription", resourceCulture);
             }
@@ -1569,7 +1569,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please enter a valid amount.
         /// </summary>
-        internal static string PleaseEnterValidAmount {
+        public static string PleaseEnterValidAmount {
             get {
                 return ResourceManager.GetString("PleaseEnterValidAmount", resourceCulture);
             }
@@ -1578,7 +1578,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please select an account.
         /// </summary>
-        internal static string PleaseSelectAccount {
+        public static string PleaseSelectAccount {
             get {
                 return ResourceManager.GetString("PleaseSelectAccount", resourceCulture);
             }
@@ -1587,7 +1587,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please select a category.
         /// </summary>
-        internal static string PleaseSelectCategory {
+        public static string PleaseSelectCategory {
             get {
                 return ResourceManager.GetString("PleaseSelectCategory", resourceCulture);
             }
@@ -1596,7 +1596,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please select a destination account.
         /// </summary>
-        internal static string PleaseSelectDestinationAccount {
+        public static string PleaseSelectDestinationAccount {
             get {
                 return ResourceManager.GetString("PleaseSelectDestinationAccount", resourceCulture);
             }
@@ -1605,7 +1605,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Please select a source account.
         /// </summary>
-        internal static string PleaseSelectSourceAccount {
+        public static string PleaseSelectSourceAccount {
             get {
                 return ResourceManager.GetString("PleaseSelectSourceAccount", resourceCulture);
             }
@@ -1614,7 +1614,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Projected Limit.
         /// </summary>
-        internal static string ProjectedLimit {
+        public static string ProjectedLimit {
             get {
                 return ResourceManager.GetString("ProjectedLimit", resourceCulture);
             }
@@ -1623,7 +1623,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Remaining.
         /// </summary>
-        internal static string Remaining {
+        public static string Remaining {
             get {
                 return ResourceManager.GetString("Remaining", resourceCulture);
             }
@@ -1632,7 +1632,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a * Required fields.
         /// </summary>
-        internal static string RequiredFields {
+        public static string RequiredFields {
             get {
                 return ResourceManager.GetString("RequiredFields", resourceCulture);
             }
@@ -1641,7 +1641,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Save.
         /// </summary>
-        internal static string Save {
+        public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
             }
@@ -1650,7 +1650,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Select Account.
         /// </summary>
-        internal static string SelectAccount {
+        public static string SelectAccount {
             get {
                 return ResourceManager.GetString("SelectAccount", resourceCulture);
             }
@@ -1659,7 +1659,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Select Category.
         /// </summary>
-        internal static string SelectCategory {
+        public static string SelectCategory {
             get {
                 return ResourceManager.GetString("SelectCategory", resourceCulture);
             }
@@ -1668,7 +1668,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Select Destination Account.
         /// </summary>
-        internal static string SelectDestinationAccount {
+        public static string SelectDestinationAccount {
             get {
                 return ResourceManager.GetString("SelectDestinationAccount", resourceCulture);
             }
@@ -1677,7 +1677,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Select Icon.
         /// </summary>
-        internal static string SelectIcon {
+        public static string SelectIcon {
             get {
                 return ResourceManager.GetString("SelectIcon", resourceCulture);
             }
@@ -1686,7 +1686,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Select Period.
         /// </summary>
-        internal static string SelectPeriod {
+        public static string SelectPeriod {
             get {
                 return ResourceManager.GetString("SelectPeriod", resourceCulture);
             }
@@ -1695,7 +1695,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Select Source Account.
         /// </summary>
-        internal static string SelectSourceAccount {
+        public static string SelectSourceAccount {
             get {
                 return ResourceManager.GetString("SelectSourceAccount", resourceCulture);
             }
@@ -1704,7 +1704,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Sort.
         /// </summary>
-        internal static string Sort {
+        public static string Sort {
             get {
                 return ResourceManager.GetString("Sort", resourceCulture);
             }
@@ -1713,7 +1713,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Newest First.
         /// </summary>
-        internal static string SortNewestFirst {
+        public static string SortNewestFirst {
             get {
                 return ResourceManager.GetString("SortNewestFirst", resourceCulture);
             }
@@ -1722,7 +1722,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Oldest First.
         /// </summary>
-        internal static string SortOldestFirst {
+        public static string SortOldestFirst {
             get {
                 return ResourceManager.GetString("SortOldestFirst", resourceCulture);
             }
@@ -1731,7 +1731,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Source and destination accounts must be different.
         /// </summary>
-        internal static string SourceDestinationMustBeDifferent {
+        public static string SourceDestinationMustBeDifferent {
             get {
                 return ResourceManager.GetString("SourceDestinationMustBeDifferent", resourceCulture);
             }
@@ -1740,7 +1740,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Spent.
         /// </summary>
-        internal static string Spent {
+        public static string Spent {
             get {
                 return ResourceManager.GetString("Spent", resourceCulture);
             }
@@ -1749,7 +1749,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Start tracking your finances by adding your first transaction.
         /// </summary>
-        internal static string StartTracking {
+        public static string StartTracking {
             get {
                 return ResourceManager.GetString("StartTracking", resourceCulture);
             }
@@ -1758,7 +1758,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Success.
         /// </summary>
-        internal static string Success {
+        public static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
             }
@@ -1767,7 +1767,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Summary.
         /// </summary>
-        internal static string Summary {
+        public static string Summary {
             get {
                 return ResourceManager.GetString("Summary", resourceCulture);
             }
@@ -1776,7 +1776,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a • Tap for details.
         /// </summary>
-        internal static string TapForDetails {
+        public static string TapForDetails {
             get {
                 return ResourceManager.GetString("TapForDetails", resourceCulture);
             }
@@ -1785,7 +1785,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a To:.
         /// </summary>
-        internal static string To {
+        public static string To {
             get {
                 return ResourceManager.GetString("To", resourceCulture);
             }
@@ -1794,7 +1794,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a To Account *.
         /// </summary>
-        internal static string ToAccount {
+        public static string ToAccount {
             get {
                 return ResourceManager.GetString("ToAccount", resourceCulture);
             }
@@ -1803,7 +1803,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Today.
         /// </summary>
-        internal static string Today {
+        public static string Today {
             get {
                 return ResourceManager.GetString("Today", resourceCulture);
             }
@@ -1812,7 +1812,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a To:.
         /// </summary>
-        internal static string ToLabel {
+        public static string ToLabel {
             get {
                 return ResourceManager.GetString("ToLabel", resourceCulture);
             }
@@ -1821,7 +1821,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Total.
         /// </summary>
-        internal static string Total {
+        public static string Total {
             get {
                 return ResourceManager.GetString("Total", resourceCulture);
             }
@@ -1830,7 +1830,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Total Balance (Tap for details).
         /// </summary>
-        internal static string TotalBalance {
+        public static string TotalBalance {
             get {
                 return ResourceManager.GetString("TotalBalance", resourceCulture);
             }
@@ -1839,7 +1839,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Budgeted.
         /// </summary>
-        internal static string TotalBudgeted {
+        public static string TotalBudgeted {
             get {
                 return ResourceManager.GetString("TotalBudgeted", resourceCulture);
             }
@@ -1848,7 +1848,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Total Expenses.
         /// </summary>
-        internal static string TotalExpenses {
+        public static string TotalExpenses {
             get {
                 return ResourceManager.GetString("TotalExpenses", resourceCulture);
             }
@@ -1857,7 +1857,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Total Income.
         /// </summary>
-        internal static string TotalIncome {
+        public static string TotalIncome {
             get {
                 return ResourceManager.GetString("TotalIncome", resourceCulture);
             }
@@ -1866,7 +1866,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Remaining.
         /// </summary>
-        internal static string TotalRemaining {
+        public static string TotalRemaining {
             get {
                 return ResourceManager.GetString("TotalRemaining", resourceCulture);
             }
@@ -1875,7 +1875,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Spent.
         /// </summary>
-        internal static string TotalSpent {
+        public static string TotalSpent {
             get {
                 return ResourceManager.GetString("TotalSpent", resourceCulture);
             }
@@ -1884,7 +1884,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transaction deleted successfully.
         /// </summary>
-        internal static string TransactionDeletedSuccessfully {
+        public static string TransactionDeletedSuccessfully {
             get {
                 return ResourceManager.GetString("TransactionDeletedSuccessfully", resourceCulture);
             }
@@ -1893,7 +1893,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transactions.
         /// </summary>
-        internal static string Transactions {
+        public static string Transactions {
             get {
                 return ResourceManager.GetString("Transactions", resourceCulture);
             }
@@ -1902,7 +1902,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transaction updated successfully.
         /// </summary>
-        internal static string TransactionUpdatedSuccessfully {
+        public static string TransactionUpdatedSuccessfully {
             get {
                 return ResourceManager.GetString("TransactionUpdatedSuccessfully", resourceCulture);
             }
@@ -1911,7 +1911,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transfer.
         /// </summary>
-        internal static string Transfer {
+        public static string Transfer {
             get {
                 return ResourceManager.GetString("Transfer", resourceCulture);
             }
@@ -1920,7 +1920,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transfer money between your accounts.
         /// </summary>
-        internal static string TransferBetweenAccounts {
+        public static string TransferBetweenAccounts {
             get {
                 return ResourceManager.GetString("TransferBetweenAccounts", resourceCulture);
             }
@@ -1929,7 +1929,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transfer.
         /// </summary>
-        internal static string TransferButton {
+        public static string TransferButton {
             get {
                 return ResourceManager.GetString("TransferButton", resourceCulture);
             }
@@ -1938,7 +1938,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transfer deleted successfully.
         /// </summary>
-        internal static string TransferDeletedSuccessfully {
+        public static string TransferDeletedSuccessfully {
             get {
                 return ResourceManager.GetString("TransferDeletedSuccessfully", resourceCulture);
             }
@@ -1947,7 +1947,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Description.
         /// </summary>
-        internal static string TransferDescription {
+        public static string TransferDescription {
             get {
                 return ResourceManager.GetString("TransferDescription", resourceCulture);
             }
@@ -1956,7 +1956,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transfer (optional).
         /// </summary>
-        internal static string TransferOptional {
+        public static string TransferOptional {
             get {
                 return ResourceManager.GetString("TransferOptional", resourceCulture);
             }
@@ -1965,7 +1965,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transfers.
         /// </summary>
-        internal static string Transfers {
+        public static string Transfers {
             get {
                 return ResourceManager.GetString("Transfers", resourceCulture);
             }
@@ -1974,7 +1974,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Transfer updated successfully.
         /// </summary>
-        internal static string TransferUpdatedSuccessfully {
+        public static string TransferUpdatedSuccessfully {
             get {
                 return ResourceManager.GetString("TransferUpdatedSuccessfully", resourceCulture);
             }
@@ -1983,7 +1983,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Ungrouped.
         /// </summary>
-        internal static string Ungrouped {
+        public static string Ungrouped {
             get {
                 return ResourceManager.GetString("Ungrouped", resourceCulture);
             }
@@ -1992,7 +1992,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Update Account.
         /// </summary>
-        internal static string UpdateAccount {
+        public static string UpdateAccount {
             get {
                 return ResourceManager.GetString("UpdateAccount", resourceCulture);
             }
@@ -2001,7 +2001,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Update Category.
         /// </summary>
-        internal static string UpdateCategory {
+        public static string UpdateCategory {
             get {
                 return ResourceManager.GetString("UpdateCategory", resourceCulture);
             }
@@ -2010,7 +2010,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Yes.
         /// </summary>
-        internal static string Yes {
+        public static string Yes {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
             }
@@ -2019,7 +2019,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Yes, Delete.
         /// </summary>
-        internal static string YesDelete {
+        public static string YesDelete {
             get {
                 return ResourceManager.GetString("YesDelete", resourceCulture);
             }
@@ -2028,7 +2028,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Your Accounts.
         /// </summary>
-        internal static string YourAccounts {
+        public static string YourAccounts {
             get {
                 return ResourceManager.GetString("YourAccounts", resourceCulture);
             }
@@ -2037,7 +2037,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Your Budgets.
         /// </summary>
-        internal static string YourBudgets {
+        public static string YourBudgets {
             get {
                 return ResourceManager.GetString("YourBudgets", resourceCulture);
             }
@@ -2046,547 +2046,547 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Busca una cadena traducida similar a Your Categories.
         /// </summary>
-        internal static string YourCategories {
+        public static string YourCategories {
             get {
                 return ResourceManager.GetString("YourCategories", resourceCulture);
             }
         }
 
-        internal static string BudgetExceeded {
+        public static string BudgetExceeded {
             get {
                 return ResourceManager.GetString("BudgetExceeded", resourceCulture);
             }
         }
 
-        internal static string BudgetNearLimit {
+        public static string BudgetNearLimit {
             get {
                 return ResourceManager.GetString("BudgetNearLimit", resourceCulture);
             }
         }
 
-        internal static string BudgetSummary {
+        public static string BudgetSummary {
             get {
                 return ResourceManager.GetString("BudgetSummary", resourceCulture);
             }
         }
 
-        internal static string OnTrack {
+        public static string OnTrack {
             get {
                 return ResourceManager.GetString("OnTrack", resourceCulture);
             }
         }
 
-        internal static string OverBudget {
+        public static string OverBudget {
             get {
                 return ResourceManager.GetString("OverBudget", resourceCulture);
             }
         }
 
-        internal static string RecurringTransactions {
+        public static string RecurringTransactions {
             get {
                 return ResourceManager.GetString("RecurringTransactions", resourceCulture);
             }
         }
 
-        internal static string MakeRecurring {
+        public static string MakeRecurring {
             get {
                 return ResourceManager.GetString("MakeRecurring", resourceCulture);
             }
         }
 
-        internal static string Frequency {
+        public static string Frequency {
             get {
                 return ResourceManager.GetString("Frequency", resourceCulture);
             }
         }
 
-        internal static string SelectFrequency {
+        public static string SelectFrequency {
             get {
                 return ResourceManager.GetString("SelectFrequency", resourceCulture);
             }
         }
 
-        internal static string HasEndDate {
+        public static string HasEndDate {
             get {
                 return ResourceManager.GetString("HasEndDate", resourceCulture);
             }
         }
 
-        internal static string EndDateOptional {
+        public static string EndDateOptional {
             get {
                 return ResourceManager.GetString("EndDateOptional", resourceCulture);
             }
         }
 
-        internal static string FrequencyDaily {
+        public static string FrequencyDaily {
             get {
                 return ResourceManager.GetString("FrequencyDaily", resourceCulture);
             }
         }
 
-        internal static string FrequencyWeekly {
+        public static string FrequencyWeekly {
             get {
                 return ResourceManager.GetString("FrequencyWeekly", resourceCulture);
             }
         }
 
-        internal static string FrequencyBiweekly {
+        public static string FrequencyBiweekly {
             get {
                 return ResourceManager.GetString("FrequencyBiweekly", resourceCulture);
             }
         }
 
-        internal static string FrequencyMonthly {
+        public static string FrequencyMonthly {
             get {
                 return ResourceManager.GetString("FrequencyMonthly", resourceCulture);
             }
         }
 
-        internal static string FrequencyYearly {
+        public static string FrequencyYearly {
             get {
                 return ResourceManager.GetString("FrequencyYearly", resourceCulture);
             }
         }
 
-        internal static string NextOccurrence {
+        public static string NextOccurrence {
             get {
                 return ResourceManager.GetString("NextOccurrence", resourceCulture);
             }
         }
 
-        internal static string NoRecurringTransactions {
+        public static string NoRecurringTransactions {
             get {
                 return ResourceManager.GetString("NoRecurringTransactions", resourceCulture);
             }
         }
 
-        internal static string AddRecurringToStart {
+        public static string AddRecurringToStart {
             get {
                 return ResourceManager.GetString("AddRecurringToStart", resourceCulture);
             }
         }
 
-        internal static string DeleteRecurringConfirmation {
+        public static string DeleteRecurringConfirmation {
             get {
                 return ResourceManager.GetString("DeleteRecurringConfirmation", resourceCulture);
             }
         }
 
-        internal static string RecurringTransactionDeleted {
+        public static string RecurringTransactionDeleted {
             get {
                 return ResourceManager.GetString("RecurringTransactionDeleted", resourceCulture);
             }
         }
 
-        internal static string FailedToLoadRecurringTransactions {
+        public static string FailedToLoadRecurringTransactions {
             get {
                 return ResourceManager.GetString("FailedToLoadRecurringTransactions", resourceCulture);
             }
         }
 
-        internal static string FailedToDeleteRecurringTransaction {
+        public static string FailedToDeleteRecurringTransaction {
             get {
                 return ResourceManager.GetString("FailedToDeleteRecurringTransaction", resourceCulture);
             }
         }
 
-        internal static string FailedToUpdateRecurringTransaction {
+        public static string FailedToUpdateRecurringTransaction {
             get {
                 return ResourceManager.GetString("FailedToUpdateRecurringTransaction", resourceCulture);
             }
         }
 
-        internal static string SpecificDayOfMonth {
+        public static string SpecificDayOfMonth {
             get {
                 return ResourceManager.GetString("SpecificDayOfMonth", resourceCulture);
             }
         }
 
-        internal static string SelectDay {
+        public static string SelectDay {
             get {
                 return ResourceManager.GetString("SelectDay", resourceCulture);
             }
         }
 
-        internal static string DayN {
+        public static string DayN {
             get {
                 return ResourceManager.GetString("DayN", resourceCulture);
             }
         }
 
-        internal static string EditRecurring {
+        public static string EditRecurring {
             get {
                 return ResourceManager.GetString("EditRecurring", resourceCulture);
             }
         }
 
-        internal static string RecurringTransactionUpdated {
+        public static string RecurringTransactionUpdated {
             get {
                 return ResourceManager.GetString("RecurringTransactionUpdated", resourceCulture);
             }
         }
 
-        internal static string Settings {
+        public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
             }
         }
 
-        internal static string BackupRestore {
+        public static string BackupRestore {
             get {
                 return ResourceManager.GetString("BackupRestore", resourceCulture);
             }
         }
 
-        internal static string BackupRestoreDescription {
+        public static string BackupRestoreDescription {
             get {
                 return ResourceManager.GetString("BackupRestoreDescription", resourceCulture);
             }
         }
 
-        internal static string ExportFullBackup {
+        public static string ExportFullBackup {
             get {
                 return ResourceManager.GetString("ExportFullBackup", resourceCulture);
             }
         }
 
-        internal static string SaveBackupLocal {
+        public static string SaveBackupLocal {
             get {
                 return ResourceManager.GetString("SaveBackupLocal", resourceCulture);
             }
         }
 
-        internal static string ShareBackupExternal {
+        public static string ShareBackupExternal {
             get {
                 return ResourceManager.GetString("ShareBackupExternal", resourceCulture);
             }
         }
 
-        internal static string ExportTransactionsCsv {
+        public static string ExportTransactionsCsv {
             get {
                 return ResourceManager.GetString("ExportTransactionsCsv", resourceCulture);
             }
         }
 
-        internal static string RestoreFromBackup {
+        public static string RestoreFromBackup {
             get {
                 return ResourceManager.GetString("RestoreFromBackup", resourceCulture);
             }
         }
 
-        internal static string RestoreNote {
+        public static string RestoreNote {
             get {
                 return ResourceManager.GetString("RestoreNote", resourceCulture);
             }
         }
 
-        internal static string ShareBackup {
+        public static string ShareBackup {
             get {
                 return ResourceManager.GetString("ShareBackup", resourceCulture);
             }
         }
 
-        internal static string ShareTransactions {
+        public static string ShareTransactions {
             get {
                 return ResourceManager.GetString("ShareTransactions", resourceCulture);
             }
         }
 
-        internal static string BackupCreatedSuccessfully {
+        public static string BackupCreatedSuccessfully {
             get {
                 return ResourceManager.GetString("BackupCreatedSuccessfully", resourceCulture);
             }
         }
 
-        internal static string CsvExportedSuccessfully {
+        public static string CsvExportedSuccessfully {
             get {
                 return ResourceManager.GetString("CsvExportedSuccessfully", resourceCulture);
             }
         }
 
-        internal static string FailedToCreateBackup {
+        public static string FailedToCreateBackup {
             get {
                 return ResourceManager.GetString("FailedToCreateBackup", resourceCulture);
             }
         }
 
-        internal static string FailedToExportCsv {
+        public static string FailedToExportCsv {
             get {
                 return ResourceManager.GetString("FailedToExportCsv", resourceCulture);
             }
         }
 
-        internal static string ConfirmRestore {
+        public static string ConfirmRestore {
             get {
                 return ResourceManager.GetString("ConfirmRestore", resourceCulture);
             }
         }
 
-        internal static string RestoreWarning {
+        public static string RestoreWarning {
             get {
                 return ResourceManager.GetString("RestoreWarning", resourceCulture);
             }
         }
 
-        internal static string YesRestore {
+        public static string YesRestore {
             get {
                 return ResourceManager.GetString("YesRestore", resourceCulture);
             }
         }
 
-        internal static string FailedToRestore {
+        public static string FailedToRestore {
             get {
                 return ResourceManager.GetString("FailedToRestore", resourceCulture);
             }
         }
 
-        internal static string RestoreSuccessful {
+        public static string RestoreSuccessful {
             get {
                 return ResourceManager.GetString("RestoreSuccessful", resourceCulture);
             }
         }
 
-        internal static string BaseCurrency {
+        public static string BaseCurrency {
             get {
                 return ResourceManager.GetString("BaseCurrency", resourceCulture);
             }
         }
 
-        internal static string BaseCurrencyDescription {
+        public static string BaseCurrencyDescription {
             get {
                 return ResourceManager.GetString("BaseCurrencyDescription", resourceCulture);
             }
         }
 
-        internal static string AccountCurrencyDiffersFromDefault {
+        public static string AccountCurrencyDiffersFromDefault {
             get {
                 return ResourceManager.GetString("AccountCurrencyDiffersFromDefault", resourceCulture);
             }
         }
 
-        internal static string InitialBalanceAmount {
+        public static string InitialBalanceAmount {
             get {
                 return ResourceManager.GetString("InitialBalanceAmount", resourceCulture);
             }
         }
 
-        internal static string RestoreComplete {
+        public static string RestoreComplete {
             get {
                 return ResourceManager.GetString("RestoreComplete", resourceCulture);
             }
         }
 
-        internal static string UndoRestore {
+        public static string UndoRestore {
             get {
                 return ResourceManager.GetString("UndoRestore", resourceCulture);
             }
         }
 
-        internal static string RestoreUndone {
+        public static string RestoreUndone {
             get {
                 return ResourceManager.GetString("RestoreUndone", resourceCulture);
             }
         }
 
-        internal static string SelectBackupFile {
+        public static string SelectBackupFile {
             get {
                 return ResourceManager.GetString("SelectBackupFile", resourceCulture);
             }
         }
 
-        internal static string SearchTransactions {
+        public static string SearchTransactions {
             get {
                 return ResourceManager.GetString("SearchTransactions", resourceCulture);
             }
         }
 
-        internal static string FilterByType {
+        public static string FilterByType {
             get {
                 return ResourceManager.GetString("FilterByType", resourceCulture);
             }
         }
 
-        internal static string FilterByCategory {
+        public static string FilterByCategory {
             get {
                 return ResourceManager.GetString("FilterByCategory", resourceCulture);
             }
         }
 
-        internal static string FilterByAccount {
+        public static string FilterByAccount {
             get {
                 return ResourceManager.GetString("FilterByAccount", resourceCulture);
             }
         }
 
-        internal static string AllCategories {
+        public static string AllCategories {
             get {
                 return ResourceManager.GetString("AllCategories", resourceCulture);
             }
         }
 
-        internal static string AllAccounts {
+        public static string AllAccounts {
             get {
                 return ResourceManager.GetString("AllAccounts", resourceCulture);
             }
         }
 
-        internal static string AmountRange {
+        public static string AmountRange {
             get {
                 return ResourceManager.GetString("AmountRange", resourceCulture);
             }
         }
 
-        internal static string Min {
+        public static string Min {
             get {
                 return ResourceManager.GetString("Min", resourceCulture);
             }
         }
 
-        internal static string Max {
+        public static string Max {
             get {
                 return ResourceManager.GetString("Max", resourceCulture);
             }
         }
 
-        internal static string ClearFilters {
+        public static string ClearFilters {
             get {
                 return ResourceManager.GetString("ClearFilters", resourceCulture);
             }
         }
 
-        internal static string Trends {
+        public static string Trends {
             get {
                 return ResourceManager.GetString("Trends", resourceCulture);
             }
         }
 
-        internal static string TrendsAnalysis {
+        public static string TrendsAnalysis {
             get {
                 return ResourceManager.GetString("TrendsAnalysis", resourceCulture);
             }
         }
 
-        internal static string MonthlySpending {
+        public static string MonthlySpending {
             get {
                 return ResourceManager.GetString("MonthlySpending", resourceCulture);
             }
         }
 
-        internal static string IncomeVsExpenses {
+        public static string IncomeVsExpenses {
             get {
                 return ResourceManager.GetString("IncomeVsExpenses", resourceCulture);
             }
         }
 
-        internal static string ExpenseCategoryBreakdown {
+        public static string ExpenseCategoryBreakdown {
             get {
                 return ResourceManager.GetString("ExpenseCategoryBreakdown", resourceCulture);
             }
         }
 
-        internal static string NoTrendsData {
+        public static string NoTrendsData {
             get {
                 return ResourceManager.GetString("NoTrendsData", resourceCulture);
             }
         }
 
-        internal static string AddTransactionsForTrends {
+        public static string AddTransactionsForTrends {
             get {
                 return ResourceManager.GetString("AddTransactionsForTrends", resourceCulture);
             }
         }
 
-        internal static string Tags {
+        public static string Tags {
             get {
                 return ResourceManager.GetString("Tags", resourceCulture);
             }
         }
 
-        internal static string TagsPlaceholder {
+        public static string TagsPlaceholder {
             get {
                 return ResourceManager.GetString("TagsPlaceholder", resourceCulture);
             }
         }
 
-        internal static string Receipt {
+        public static string Receipt {
             get {
                 return ResourceManager.GetString("Receipt", resourceCulture);
             }
         }
 
-        internal static string ReceiptAttached {
+        public static string ReceiptAttached {
             get {
                 return ResourceManager.GetString("ReceiptAttached", resourceCulture);
             }
         }
 
-        internal static string CameraNotSupported {
+        public static string CameraNotSupported {
             get {
                 return ResourceManager.GetString("CameraNotSupported", resourceCulture);
             }
         }
 
-        internal static string FailedToTakePhoto {
+        public static string FailedToTakePhoto {
             get {
                 return ResourceManager.GetString("FailedToTakePhoto", resourceCulture);
             }
         }
 
-        internal static string FailedToPickPhoto {
+        public static string FailedToPickPhoto {
             get {
                 return ResourceManager.GetString("FailedToPickPhoto", resourceCulture);
             }
         }
 
-        internal static string ViewReceipt {
+        public static string ViewReceipt {
             get {
                 return ResourceManager.GetString("ViewReceipt", resourceCulture);
             }
         }
 
-        internal static string Currency {
+        public static string Currency {
             get {
                 return ResourceManager.GetString("Currency", resourceCulture);
             }
         }
 
-        internal static string SelectCurrency {
+        public static string SelectCurrency {
             get {
                 return ResourceManager.GetString("SelectCurrency", resourceCulture);
             }
         }
 
-        internal static string CurrencyMismatchWarning {
+        public static string CurrencyMismatchWarning {
             get {
                 return ResourceManager.GetString("CurrencyMismatchWarning", resourceCulture);
             }
         }
 
-        internal static string DefaultCurrency {
+        public static string DefaultCurrency {
             get {
                 return ResourceManager.GetString("DefaultCurrency", resourceCulture);
             }
         }
 
-        internal static string RecentTransactions {
+        public static string RecentTransactions {
             get {
                 return ResourceManager.GetString("RecentTransactions", resourceCulture);
             }
         }
 
-        internal static string ViewAll {
+        public static string ViewAll {
             get {
                 return ResourceManager.GetString("ViewAll", resourceCulture);
             }
         }
 
-        internal static string NetIncome {
+        public static string NetIncome {
             get {
                 return ResourceManager.GetString("NetIncome", resourceCulture);
             }
         }
 
-        internal static string QuickActions {
+        public static string QuickActions {
             get {
                 return ResourceManager.GetString("QuickActions", resourceCulture);
             }
@@ -2594,7 +2594,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to '{0}' has {1} transfer(s). Delete them on the Transfers page first, so the other accounts' balances stay correct..
         /// </summary>
-        internal static string AccountHasTransfers {
+        public static string AccountHasTransfers {
             get {
                 return ResourceManager.GetString("AccountHasTransfers", resourceCulture);
             }
@@ -2603,7 +2603,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Move {0} transaction(s) and {1} recurring rule(s) from '{2}' to '{3}', then delete '{2}'?.
         /// </summary>
-        internal static string ConfirmCategoryMove {
+        public static string ConfirmCategoryMove {
             get {
                 return ResourceManager.GetString("ConfirmCategoryMove", resourceCulture);
             }
@@ -2612,7 +2612,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Its budget moves to '{0}'..
         /// </summary>
-        internal static string CategoryBudgetMoves {
+        public static string CategoryBudgetMoves {
             get {
                 return ResourceManager.GetString("CategoryBudgetMoves", resourceCulture);
             }
@@ -2621,7 +2621,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Its budget will be deleted, because '{0}' already has one..
         /// </summary>
-        internal static string CategoryBudgetDeleted {
+        public static string CategoryBudgetDeleted {
             get {
                 return ResourceManager.GetString("CategoryBudgetDeleted", resourceCulture);
             }
@@ -2630,7 +2630,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete '{0}'? Its budget will be deleted too..
         /// </summary>
-        internal static string DeleteCategoryWithBudget {
+        public static string DeleteCategoryWithBudget {
             get {
                 return ResourceManager.GetString("DeleteCategoryWithBudget", resourceCulture);
             }
@@ -2639,7 +2639,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Couldn't delete '{0}' because its data changed in the meantime. Please try again..
         /// </summary>
-        internal static string DeleteFailedDataChanged {
+        public static string DeleteFailedDataChanged {
             get {
                 return ResourceManager.GetString("DeleteFailedDataChanged", resourceCulture);
             }
@@ -2648,7 +2648,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
-        internal static string Unknown {
+        public static string Unknown {
             get {
                 return ResourceManager.GetString("Unknown", resourceCulture);
             }
@@ -2657,7 +2657,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to No activity.
         /// </summary>
-        internal static string NoActivity {
+        public static string NoActivity {
             get {
                 return ResourceManager.GetString("NoActivity", resourceCulture);
             }
@@ -2666,7 +2666,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
-        internal static string All {
+        public static string All {
             get {
                 return ResourceManager.GetString("All", resourceCulture);
             }
@@ -2675,7 +2675,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Transfer to {0}.
         /// </summary>
-        internal static string TransferToAccount {
+        public static string TransferToAccount {
             get {
                 return ResourceManager.GetString("TransferToAccount", resourceCulture);
             }
@@ -2684,7 +2684,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Transfer from {0}.
         /// </summary>
-        internal static string TransferFromAccount {
+        public static string TransferFromAccount {
             get {
                 return ResourceManager.GetString("TransferFromAccount", resourceCulture);
             }
@@ -2693,7 +2693,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to {0} transaction.
         /// </summary>
-        internal static string TransactionCountOne {
+        public static string TransactionCountOne {
             get {
                 return ResourceManager.GetString("TransactionCountOne", resourceCulture);
             }
@@ -2702,7 +2702,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to {0} transactions.
         /// </summary>
-        internal static string TransactionCountOther {
+        public static string TransactionCountOther {
             get {
                 return ResourceManager.GetString("TransactionCountOther", resourceCulture);
             }
@@ -2711,7 +2711,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Failed to load data: {0}.
         /// </summary>
-        internal static string FailedToLoadData {
+        public static string FailedToLoadData {
             get {
                 return ResourceManager.GetString("FailedToLoadData", resourceCulture);
             }
@@ -2720,7 +2720,7 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to Transfer.
         /// </summary>
-        internal static string DefaultTransferDescription {
+        public static string DefaultTransferDescription {
             get {
                 return ResourceManager.GetString("DefaultTransferDescription", resourceCulture);
             }

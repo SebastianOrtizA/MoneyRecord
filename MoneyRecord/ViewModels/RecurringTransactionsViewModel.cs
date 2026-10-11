@@ -1,4 +1,3 @@
-using MoneyRecord.Behaviors;
 using MoneyRecord.Helpers;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -155,7 +154,7 @@ namespace MoneyRecord.ViewModels
         {
             if (EditingItem == null || EditSelectedFrequency == null) return;
 
-            var newAmount = CurrencyMaskBehavior.ParseAmount(EditAmount, EditingItem.CurrencyCode);
+            var newAmount = AmountParser.Parse(EditAmount, EditingItem.CurrencyCode);
             if (newAmount <= 0 || !Money.IsInRange(newAmount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);

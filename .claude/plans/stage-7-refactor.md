@@ -1,6 +1,6 @@
 # Stage 7: Architecture Refactor
 
-**Status**: Pending
+**Status**: In progress (7.1 done)
 **Depends on**: Stage 6 (money format + migrations must land first)
 **Complexity**: High (wide but mechanical; no user-visible change)
 **Source**: Product & engineering review, 2026-10-11 (engineering findings)
@@ -19,6 +19,19 @@ no duplicated business rules. Behaviour must not change; the device check before
 - `FileSystem.AppDataDirectory` → inject `IAppPaths` (app implements it; tests use a temp dir).
 - Re-target `MoneyRecord.Tests` to plain `net10.0` referencing Core only → tests run on Linux; CI test job drops the
   MAUI workload install.
+- Done as `MoneyRecord.Core` (net10.0, `RootNamespace` MoneyRecord, so namespaces are unchanged). Moved: models, helpers,
+  repositories + migrations, business services, `LocalizationService`, `IPreferencesService` and the `.resx` strings
+  (`AppResources` is now public, `PublicResXFileCodeGenerator`). App keeps NavigationService, PreferencesService,
+  ErrorHandler/`IErrorHandler`, converters and behaviors. `IAppPaths` + `AppPaths(appDataDirectory)` give the database,
+  receipts and backups paths (`DatabaseInitializer`, `DataExportService`, `AddTransactionViewModel`, `MainViewModel`);
+  the static `ReceiptFiles.Folder` is gone. `CurrencyMaskBehavior.ParseAmount` moved to `Helpers/AmountParser.Parse`.
+  `Account.CurrencySymbol` was unused and is deleted. XAML `models:`/`helpers:` xmlns now carry `;assembly=MoneyRecord.Core`.
+  CI test job runs on `ubuntu-latest` without workloads.
+- **Deviations:** (1) Core references `CommunityToolkit.Mvvm` (plain .NET, MIT) so `BudgetProgress`, `TransactionGroup`,
+  `AccountIcon`, `CategoryIcon` move unchanged; 7.3 reshapes `TransactionGroup`. (2) `Models/CategoryReport.cs`
+  (`CategoryExpenseData`/`CategoryIncomeData`/`HeatmapCell`, MAUI `Color`) stays in the app: 7.4 replaces it with
+  `CategoryAmount` + a heatmap level, so converting its colours now would be thrown away. (`BudgetProgress` already uses
+  `BudgetLevel` since 6.6.)
 
 ### 7.2 Dialogs and navigation behind interfaces
 - New `IDialogService` (`AlertAsync`, `ConfirmAsync`, `PromptAsync`, `ActionSheetAsync`, `ToastAsync`).
@@ -37,7 +50,8 @@ no duplicated business rules. Behaviour must not change; the device check before
 
 ### 7.4 Remove duplication
 - One `CategoryReportViewModel(CategoryType)` + one `CategoryReportPage`; delete Expense/Income copies and
-  `CategoryExpenseData`/`CategoryIncomeData` → `CategoryAmount`.
+  `CategoryExpenseData`/`CategoryIncomeData` → `CategoryAmount` (in Core; heatmap colour → a level mapped by a converter,
+  so `Models/CategoryReport.cs` leaves the app — deferred from 7.1).
 - Budget period window: one `DateRangeHelper.GetBudgetWindow(BudgetPeriod, DateTime now)`; used by MainViewModel,
   AddTransactionViewModel, BudgetViewModel.
 - Recurrence: one `RecurrenceCalculator.Next(current, frequency, dayOfMonth)`; `AddTransactionViewModel.cs:366`

@@ -9,10 +9,6 @@ namespace MoneyRecord.Helpers
         private readonly string _receiptsFolder;
         private string? _savedPath;
 
-        public ReceiptDraft() : this(ReceiptFiles.Folder)
-        {
-        }
-
         public ReceiptDraft(string receiptsFolder)
         {
             _receiptsFolder = receiptsFolder;

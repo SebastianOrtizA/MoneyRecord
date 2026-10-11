@@ -1,20 +1,14 @@
 namespace MoneyRecord.Helpers
 {
     /// <summary>
-    /// Receipt photos live in AppDataDirectory/receipts.
+    /// Receipt photos live in AppDataDirectory/receipts (<see cref="Services.Interfaces.IAppPaths.ReceiptsFolder"/>).
     /// </summary>
     public static class ReceiptFiles
     {
         public const string FolderName = "receipts";
 
-        public static string Folder => Path.Combine(FileSystem.AppDataDirectory, FolderName);
-
         /// <summary>
-        /// Deletes a transaction's receipt photo. Best effort: a missing file or an I/O error is not an error.
-        /// </summary>
-        public static bool Delete(string? path) => Delete(path, Folder);
-
-        /// <summary>
+        /// Deletes a receipt photo. Best effort: a missing file or an I/O error is not an error.
         /// Deletes the file only when it is inside <paramref name="receiptsFolder"/>, so a stray path
         /// (e.g. from an imported backup) can never remove anything else.
         /// </summary>
