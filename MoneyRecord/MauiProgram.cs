@@ -35,7 +35,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
 
             // Register Database Infrastructure
-            builder.Services.AddSingleton<DatabaseInitializer>();
+            builder.Services.AddSingleton(_ => new DatabaseInitializer());
 
             // Register Repositories (Interface Segregation)
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
@@ -51,6 +51,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IRecurringTransactionService, RecurringTransactionService>();
             builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
             builder.Services.AddSingleton<IDataExportService, DataExportService>();
+            builder.Services.AddSingleton<IAccountService, AccountService>();
+            builder.Services.AddSingleton<ICategoryService, CategoryService>();
 
             // Register ViewModels
             builder.Services.AddSingleton<MainViewModel>();

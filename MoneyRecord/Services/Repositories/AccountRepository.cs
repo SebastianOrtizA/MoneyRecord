@@ -18,7 +18,7 @@ namespace MoneyRecord.Services.Repositories
             await _dbInitializer.InitializeAsync();
         }
 
-        private void InvalidateCache()
+        public void InvalidateCache()
         {
             _cache = null;
         }
@@ -67,24 +67,6 @@ namespace MoneyRecord.Services.Repositories
             var result = await _dbInitializer.Database!.DeleteAsync(entity);
             InvalidateCache();
             return result;
-        }
-
-        public async Task<bool> HasTransactionsAsync(int accountId)
-        {
-            await EnsureInitializedAsync();
-            var count = await _dbInitializer.Database!.Table<Transaction>()
-                .Where(t => t.AccountId == accountId)
-                .CountAsync();
-            return count > 0;
-        }
-
-        public async Task<bool> HasTransfersAsync(int accountId)
-        {
-            await EnsureInitializedAsync();
-            var count = await _dbInitializer.Database!.Table<Transfer>()
-                .Where(t => t.SourceAccountId == accountId || t.DestinationAccountId == accountId)
-                .CountAsync();
-            return count > 0;
         }
     }
 }

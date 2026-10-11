@@ -446,7 +446,7 @@ namespace MoneyRecord.ViewModels
 
         private async Task SaveReceiptPhotoAsync(FileResult photo)
         {
-            var receiptsDir = Path.Combine(FileSystem.AppDataDirectory, "receipts");
+            var receiptsDir = ReceiptFiles.Folder;
             Directory.CreateDirectory(receiptsDir);
 
             var fileName = $"receipt_{DateTime.Now:yyyyMMdd_HHmmss}{Path.GetExtension(photo.FileName)}";

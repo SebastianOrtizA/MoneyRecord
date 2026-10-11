@@ -9,7 +9,10 @@ namespace MoneyRecord.Services.Interfaces
     public interface ICategoryRepository : IRepository<Category>
     {
         Task<List<Category>> GetByTypeAsync(CategoryType type);
-        Task<bool> HasTransactionsAsync(int categoryId);
-        Task<int> GetTransactionCountAsync(int categoryId);
+
+        /// <summary>
+        /// Drops cached rows after another service changed the table directly (inside a multi-table transaction).
+        /// </summary>
+        void InvalidateCache();
     }
 }

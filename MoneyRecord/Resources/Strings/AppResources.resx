@@ -493,7 +493,7 @@
     <value>This is the last category of this type. You cannot delete it while it has transactions. Please create another category first.</value>
   </data>
   <data name="CategoryHasTransactions" xml:space="preserve">
-    <value>'{0}' has existing transactions. Select a category to move them to:</value>
+    <value>Pick a new category for '{0}':</value>
   </data>
   
   <!-- Account Balance -->
@@ -609,7 +609,7 @@
   <data name="DeleteAccountWithTransactions" xml:space="preserve">
     <value>Are you sure you want to delete '{0}'?
 
-All transactions in this account will be moved to the Cash account.</value>
+{1} transaction(s) and {2} recurring rule(s) will be moved to '{3}'.</value>
   </data>
   <data name="DeleteAccountNoTransactions" xml:space="preserve">
     <value>Are you sure you want to delete '{0}'?</value>
@@ -1019,4 +1019,22 @@ ${1:N2}</value>
     <value>Quick Actions</value>
   </data>
 
+  <data name="AccountHasTransfers" xml:space="preserve">
+    <value>'{0}' has {1} transfer(s). Delete them on the Transfers page first, so the other accounts' balances stay correct.</value>
+  </data>
+  <data name="ConfirmCategoryMove" xml:space="preserve">
+    <value>Move {0} transaction(s) and {1} recurring rule(s) from '{2}' to '{3}', then delete '{2}'?</value>
+  </data>
+  <data name="CategoryBudgetMoves" xml:space="preserve">
+    <value>Its budget moves to '{0}'.</value>
+  </data>
+  <data name="CategoryBudgetDeleted" xml:space="preserve">
+    <value>Its budget will be deleted, because '{0}' already has one.</value>
+  </data>
+  <data name="DeleteCategoryWithBudget" xml:space="preserve">
+    <value>Are you sure you want to delete '{0}'? Its budget will be deleted too.</value>
+  </data>
+  <data name="DeleteFailedDataChanged" xml:space="preserve">
+    <value>Couldn't delete '{0}' because its data changed in the meantime. Please try again.</value>
+  </data>
 </root>

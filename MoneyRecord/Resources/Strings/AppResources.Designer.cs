@@ -2567,5 +2567,59 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("QuickActions", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Looks up a localized string similar to '{0}' has {1} transfer(s). Delete them on the Transfers page first, so the other accounts' balances stay correct..
+        /// </summary>
+        internal static string AccountHasTransfers {
+            get {
+                return ResourceManager.GetString("AccountHasTransfers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move {0} transaction(s) and {1} recurring rule(s) from '{2}' to '{3}', then delete '{2}'?.
+        /// </summary>
+        internal static string ConfirmCategoryMove {
+            get {
+                return ResourceManager.GetString("ConfirmCategoryMove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Its budget moves to '{0}'..
+        /// </summary>
+        internal static string CategoryBudgetMoves {
+            get {
+                return ResourceManager.GetString("CategoryBudgetMoves", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Its budget will be deleted, because '{0}' already has one..
+        /// </summary>
+        internal static string CategoryBudgetDeleted {
+            get {
+                return ResourceManager.GetString("CategoryBudgetDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete '{0}'? Its budget will be deleted too..
+        /// </summary>
+        internal static string DeleteCategoryWithBudget {
+            get {
+                return ResourceManager.GetString("DeleteCategoryWithBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't delete '{0}' because its data changed in the meantime. Please try again..
+        /// </summary>
+        internal static string DeleteFailedDataChanged {
+            get {
+                return ResourceManager.GetString("DeleteFailedDataChanged", resourceCulture);
+            }
+        }
+        
     }
 }

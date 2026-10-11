@@ -518,6 +518,7 @@ namespace MoneyRecord.ViewModels
                 else
                 {
                     await _transactionRepository.DeleteAsync(transaction);
+                    ReceiptFiles.Delete(transaction.ReceiptPhotoPath);
                 }
                 
                 await LoadDataAsync();

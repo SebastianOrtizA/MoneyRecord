@@ -12,11 +12,24 @@ namespace MoneyRecord.Services.Repositories
     /// </summary>
     public sealed class DatabaseInitializer : IDatabaseInitializer
     {
+        private readonly string? _databasePath;
         private readonly SemaphoreSlim _initLock = new(1, 1);
         private bool _isInitialized;
 
         public SQLiteAsyncConnection? Database { get; private set; }
         public bool IsInitialized => _isInitialized;
+
+        public DatabaseInitializer()
+        {
+        }
+
+        /// <summary>
+        /// Uses a specific database file instead of moneyrecord.db3 in the app data folder (tests).
+        /// </summary>
+        public DatabaseInitializer(string databasePath)
+        {
+            _databasePath = databasePath;
+        }
 
         public async Task InitializeAsync()
         {
@@ -29,7 +42,7 @@ namespace MoneyRecord.Services.Repositories
                 if (_isInitialized)
                     return;
 
-                var dbPath = Path.Combine(FileSystem.AppDataDirectory, "moneyrecord.db3");
+                var dbPath = _databasePath ?? Path.Combine(FileSystem.AppDataDirectory, "moneyrecord.db3");
                 Database = new SQLiteAsyncConnection(dbPath);
 
                 await CreateSchemaAsync(Database, new MigrationRunner(MigrationRunner.All));

@@ -18,7 +18,7 @@ namespace MoneyRecord.ViewModels
     public partial class ManageAccountsViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
-        private readonly ITransactionRepository _transactionRepository;
+        private readonly IAccountService _accountService;
         private readonly ICategoryIconService _categoryIconService;
         private readonly IBalanceService _balanceService;
         private readonly ICurrencyService _currencyService;
@@ -69,10 +69,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private List<Currency> availableCurrencies = new();
 
-        public ManageAccountsViewModel(IAccountRepository accountRepository, ITransactionRepository transactionRepository, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler)
+        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler)
         {
             _accountRepository = accountRepository;
-            _transactionRepository = transactionRepository;
+            _accountService = accountService;
             _categoryIconService = categoryIconService;
             _balanceService = balanceService;
             _currencyService = currencyService;
@@ -281,29 +281,51 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var hasTransactions = await _accountRepository.HasTransactionsAsync(account.Id);
-
-            string message = hasTransactions
-                ? string.Format(AppResources.DeleteAccountWithTransactions, account.Name)
-                : string.Format(AppResources.DeleteAccountNoTransactions, account.Name);
-
-            var confirm = await Shell.Current.DisplayAlertAsync(
-                AppResources.ConfirmDelete,
-                message,
-                AppResources.YesDelete,
-                AppResources.Cancel);
-
-            if (!confirm)
-                return;
-
-            var defaultAccount = await _accountRepository.GetDefaultAsync();
-            if (defaultAccount != null && account.Id != defaultAccount.Id)
+            try
             {
-                await _transactionRepository.ReassignAccountAsync(account.Id, defaultAccount.Id);
-            }
+                var usage = await _accountService.GetUsageAsync(account.Id);
 
-            await _accountRepository.DeleteAsync(account);
-            await LoadAccountsAsync();
+                // Moving transfers to the default account could create a transfer from an account to itself
+                if (usage.Transfers > 0)
+                {
+                    await _errorHandler.HandleAsync(string.Format(AppResources.AccountHasTransfers, account.Name, usage.Transfers));
+                    return;
+                }
+
+                string message;
+                if (usage.Transactions > 0 || usage.RecurringRules > 0)
+                {
+                    var defaultAccount = await _accountRepository.GetDefaultAsync();
+                    message = string.Format(AppResources.DeleteAccountWithTransactions,
+                        account.Name, usage.Transactions, usage.RecurringRules, defaultAccount?.Name);
+                }
+                else
+                {
+                    message = string.Format(AppResources.DeleteAccountNoTransactions, account.Name);
+                }
+
+                var confirm = await Shell.Current.DisplayAlertAsync(
+                    AppResources.ConfirmDelete,
+                    message,
+                    AppResources.YesDelete,
+                    AppResources.Cancel);
+
+                if (!confirm)
+                    return;
+
+                await _accountService.DeleteAsync(account.Id);
+                await LoadAccountsAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                // A service guard fired because the data changed after the usage check (e.g. a transfer was added)
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.DeleteFailedDataChanged, account.Name));
+                await LoadAccountsAsync();
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, ex.Message);
+            }
         }
 
         [RelayCommand]

@@ -9,7 +9,10 @@ namespace MoneyRecord.Services.Interfaces
     public interface IAccountRepository : IRepository<Account>
     {
         Task<Account?> GetDefaultAsync();
-        Task<bool> HasTransactionsAsync(int accountId);
-        Task<bool> HasTransfersAsync(int accountId);
+
+        /// <summary>
+        /// Drops cached rows after another service changed the table directly (inside a multi-table transaction).
+        /// </summary>
+        void InvalidateCache();
     }
 }

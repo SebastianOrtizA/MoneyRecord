@@ -12,7 +12,7 @@ namespace MoneyRecord.ViewModels
     public partial class ManageCategoriesViewModel : ObservableObject
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly ITransactionRepository _transactionRepository;
+        private readonly ICategoryService _categoryService;
         private readonly ICategoryIconService _categoryIconService;
         private readonly IErrorHandler _errorHandler;
 
@@ -46,10 +46,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<CategoryIcon> availableIcons = new();
 
-        public ManageCategoriesViewModel(ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ICategoryIconService categoryIconService, IErrorHandler errorHandler)
+        public ManageCategoriesViewModel(ICategoryRepository categoryRepository, ICategoryService categoryService, ICategoryIconService categoryIconService, IErrorHandler errorHandler)
         {
             _categoryRepository = categoryRepository;
-            _transactionRepository = transactionRepository;
+            _categoryService = categoryService;
             _categoryIconService = categoryIconService;
             _errorHandler = errorHandler;
         }
@@ -135,10 +135,9 @@ namespace MoneyRecord.ViewModels
         {
             try
             {
-                // Check if category has transactions
-                var hasTransactions = await _categoryRepository.HasTransactionsAsync(category.Id);
+                var usage = await _categoryService.GetUsageAsync(category.Id);
 
-                if (hasTransactions)
+                if (usage.NeedsReplacement)
                 {
                     // Get other categories of the same type (excluding the one being deleted)
                     var availableCategories = Categories.Where(c => c.Id != category.Id).ToList();
@@ -171,41 +170,49 @@ namespace MoneyRecord.ViewModels
                         return;
                     }
 
-                    // Get transaction count for confirmation message
-                    var transactionCount = await _categoryRepository.GetTransactionCountAsync(category.Id);
-
-                    // Confirm the reassignment
-                    var confirmReassign = await Shell.Current.DisplayAlertAsync(
-                        AppResources.Confirm,
-                        $"{transactionCount} → '{category.Name}' → '{replacementCategory.Name}'",
-                        AppResources.Yes,
-                        AppResources.Cancel);
-
-                    if (!confirmReassign)
+                    var message = string.Format(AppResources.ConfirmCategoryMove,
+                        usage.Transactions, usage.RecurringRules, category.Name, replacementCategory.Name);
+                    if (usage.Budgets > 0)
                     {
-                        return;
+                        // One budget per category: the replacement keeps its own if it has one
+                        var replacementUsage = await _categoryService.GetUsageAsync(replacementCategory.Id);
+                        var budgetFate = replacementUsage.Budgets > 0
+                            ? AppResources.CategoryBudgetDeleted
+                            : AppResources.CategoryBudgetMoves;
+                        message += "\n\n" + string.Format(budgetFate, replacementCategory.Name);
                     }
 
-                    // Reassign transactions
-                    var reassignedCount = await _transactionRepository.ReassignCategoryAsync(category.Id, replacementCategory.Id);
+                    var confirmReassign = await Shell.Current.DisplayAlertAsync(
+                        AppResources.Confirm, message, AppResources.Yes, AppResources.Cancel);
 
-                    await _categoryRepository.DeleteAsync(category);
+                    if (!confirmReassign)
+                        return;
+
+                    var result = await _categoryService.DeleteAsync(category.Id, replacementCategory.Id);
 
                     await Toast.Make(
-                        string.Format(AppResources.CategoryDeletedAndTransactionsMoved, category.Name, reassignedCount, replacementCategory.Name)).Show();
+                        string.Format(AppResources.CategoryDeletedAndTransactionsMoved, category.Name, result.TransactionsMoved, replacementCategory.Name)).Show();
                 }
                 else
                 {
-                    // No transactions, just confirm deletion
-                    var confirm = await Shell.Current.DisplayAlertAsync(AppResources.Confirm, 
-                        string.Format(AppResources.DeleteCategoryConfirmation, category.Name), AppResources.Yes, AppResources.No);
-                    
+                    var message = usage.Budgets > 0
+                        ? string.Format(AppResources.DeleteCategoryWithBudget, category.Name)
+                        : string.Format(AppResources.DeleteCategoryConfirmation, category.Name);
+
+                    var confirm = await Shell.Current.DisplayAlertAsync(AppResources.Confirm, message, AppResources.Yes, AppResources.No);
+
                     if (!confirm)
                         return;
 
-                    await _categoryRepository.DeleteAsync(category);
+                    await _categoryService.DeleteAsync(category.Id, replacementId: null);
                 }
 
+                await LoadCategoriesAsync();
+            }
+            catch (InvalidOperationException ex)
+            {
+                // A service guard fired because the data changed after the usage check
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.DeleteFailedDataChanged, category.Name));
                 await LoadCategoriesAsync();
             }
             catch (Exception ex)
