@@ -8,8 +8,9 @@ namespace MoneyRecord.Services
         private static LocalizationService? _instance;
         public static LocalizationService Instance => _instance ??= new LocalizationService();
 
-        // Captured before SetCulture overwrites CurrentCulture, so the device region is never lost.
-        private static readonly CultureInfo DeviceCulture = CultureInfo.CurrentCulture;
+        // Captured before SetCulture overwrites CurrentCulture, so the device region is never lost
+        // (e.g. a fr-FR device runs the app in en-US but its currency is still EUR).
+        public static readonly CultureInfo DeviceCulture = CultureInfo.CurrentCulture;
 
         public event EventHandler? LanguageChanged;
 

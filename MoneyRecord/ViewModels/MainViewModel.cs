@@ -126,7 +126,10 @@ namespace MoneyRecord.ViewModels
         private ObservableCollection<Transaction> recentTransactions = new();
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNetNegative))]
         private decimal netIncome;
+
+        public bool IsNetNegative => NetIncome < 0;
 
         public List<string> FilterTypes { get; } = new() { "All", "Income", "Expense", "Transfer" };
 

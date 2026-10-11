@@ -209,35 +209,6 @@ namespace MoneyRecord.Converters
     }
 
     /// <summary>
-    /// Colors a signed amount card: negative amounts use the expense (red) palette, others the green palette.
-    /// ConverterParameter picks the element: "Background", "Label" (icon and caption) or "Amount" (default).
-    /// </summary>
-    public class AmountColorConverter : IValueConverter
-    {
-        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-        {
-            var isNegative = value is decimal amount && amount < 0;
-            var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
-
-            var hex = (parameter as string, isNegative) switch
-            {
-                ("Background", true) => isDark ? "#B71C1C" : "#FFEBEE",
-                ("Background", false) => isDark ? "#1B5E20" : "#E8F5E9",
-                ("Label", true) => isDark ? "#FFCDD2" : "#C62828",
-                ("Label", false) => isDark ? "#A5D6A7" : "#2E7D32",
-                (_, true) => isDark ? "#FFCDD2" : "#D32F2F",
-                (_, false) => isDark ? "#81C784" : "#1B5E20"
-            };
-            return Color.FromArgb(hex);
-        }
-
-        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    /// <summary>
     /// Converts transaction amount to display format: negative for expenses, positive for incomes.
     /// For transfers: negative for outgoing, positive for incoming.
     /// Requires Transaction object as binding source.
@@ -265,9 +236,9 @@ namespace MoneyRecord.Converters
                 }
 
                 // Use device's actual culture for currency formatting
-                return FormatCurrency(displayAmount);
+                return MoneyFormatter.Format(displayAmount);
             }
-            return FormatCurrency(0);
+            return MoneyFormatter.Format(0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -275,7 +246,6 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
 
-        private static string FormatCurrency(decimal amount) => MoneyFormatter.Format(amount);
     }
 
     /// <summary>
@@ -293,16 +263,16 @@ namespace MoneyRecord.Converters
                 // Check both emoji version (legacy) and text version
                 if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
                 {
-                    return FormatCurrency(Math.Abs(group.Total));
+                    return MoneyFormatter.Format(Math.Abs(group.Total));
                 }
 
                 // For expense groups, display as negative; for income groups, display as positive
                 var displayAmount = group.Type == TransactionType.Expense
                     ? -Math.Abs(group.Total)
                     : Math.Abs(group.Total);
-                return FormatCurrency(displayAmount);
+                return MoneyFormatter.Format(displayAmount);
             }
-            return FormatCurrency(0);
+            return MoneyFormatter.Format(0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -310,7 +280,6 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
 
-        private static string FormatCurrency(decimal amount) => MoneyFormatter.Format(amount);
     }
 
     /// <summary>

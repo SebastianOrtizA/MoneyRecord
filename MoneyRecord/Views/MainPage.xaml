@@ -144,28 +144,51 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Net Card -->
+                <!-- Net Card: green, or the expense palette when net is negative -->
                 <Frame Grid.Column="2"
-                       BackgroundColor="{Binding NetIncome, Converter={StaticResource AmountColorConverter}, ConverterParameter=Background}"
+                       BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
                        BorderColor="Transparent"
                        CornerRadius="12"
                        Padding="10"
                        HasShadow="False">
+                    <Frame.Triggers>
+                        <DataTrigger TargetType="Frame" Binding="{Binding IsNetNegative}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"/>
+                        </DataTrigger>
+                    </Frame.Triggers>
                     <VerticalStackLayout Spacing="4">
                         <Label Text="&#xF04E1;"
                                FontFamily="MaterialDesignIcons"
                                FontSize="20"
                                HorizontalOptions="Center"
-                               TextColor="{Binding NetIncome, Converter={StaticResource AmountColorConverter}, ConverterParameter=Label}"/>
+                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                         <Label Text="{ext:Localize NetIncome}"
                                FontSize="11"
-                               TextColor="{Binding NetIncome, Converter={StaticResource AmountColorConverter}, ConverterParameter=Label}"
-                               HorizontalOptions="Center"/>
+                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
+                               HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                         <Label Text="{Binding NetIncome, Converter={StaticResource MoneyConverter}}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="{Binding NetIncome, Converter={StaticResource AmountColorConverter}}"/>
+                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#81C784}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
