@@ -26,30 +26,24 @@ namespace MoneyRecord.Services
         private readonly DatabaseInitializer _dbInitializer;
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly string _appDataDirectory;
+        private readonly IAppPaths _paths;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository)
-            : this(dbInitializer, accountRepository, categoryRepository, FileSystem.AppDataDirectory)
-        {
-        }
-
-        /// <summary>For tests: backups and receipts live under <paramref name="appDataDirectory"/>.</summary>
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, string appDataDirectory)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, IAppPaths paths)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
-            _appDataDirectory = appDataDirectory;
+            _paths = paths;
         }
 
-        public string BackupsFolder => Path.Combine(_appDataDirectory, "Backups");
+        public string BackupsFolder => _paths.BackupsFolder;
 
-        private string ReceiptsFolder => Path.Combine(_appDataDirectory, ReceiptFiles.FolderName);
+        private string ReceiptsFolder => _paths.ReceiptsFolder;
 
         private async Task EnsureInitializedAsync()
         {
@@ -129,7 +123,7 @@ namespace MoneyRecord.Services
             var db = _dbInitializer.Database!;
 
             // Receipts are unpacked next to the live folder and only moved in once the database restore succeeded
-            var staging = Path.Combine(_appDataDirectory, ReceiptFiles.FolderName + ".restoring");
+            var staging = ReceiptsFolder + ".restoring";
             DeleteDirectory(staging);
             try
             {

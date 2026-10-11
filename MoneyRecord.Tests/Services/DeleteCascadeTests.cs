@@ -13,7 +13,7 @@ namespace MoneyRecord.Tests.Services;
 /// </summary>
 public sealed class DeleteCascadeTests : IAsyncLifetime
 {
-    private readonly string _dbPath = Path.Combine(Path.GetTempPath(), $"moneyrecord-test-{Guid.NewGuid():N}.db3");
+    private readonly string _appData = Path.Combine(Path.GetTempPath(), $"moneyrecord-cascade-{Guid.NewGuid():N}");
     private DatabaseInitializer _dbInitializer = null!;
     private AccountRepository _accountRepository = null!;
     private CategoryRepository _categoryRepository = null!;
@@ -24,7 +24,8 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        _dbInitializer = new DatabaseInitializer(_dbPath);
+        Directory.CreateDirectory(_appData);
+        _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
         await _dbInitializer.InitializeAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
@@ -35,8 +36,7 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await Db.CloseAsync();
-        foreach (var file in Directory.GetFiles(Path.GetDirectoryName(_dbPath)!, Path.GetFileName(_dbPath) + "*"))
-            File.Delete(file);
+        Directory.Delete(_appData, recursive: true);
     }
 
     // ---- Accounts ----

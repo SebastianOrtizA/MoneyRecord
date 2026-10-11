@@ -1,4 +1,3 @@
-using MoneyRecord.Behaviors;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -199,7 +198,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var amount = CurrencyMaskBehavior.ParseAmount(BudgetAmount, null);
+            var amount = AmountParser.Parse(BudgetAmount, null);
             if (amount <= 0 || !Money.IsInRange(amount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
@@ -274,7 +273,7 @@ namespace MoneyRecord.ViewModels
 
             if (string.IsNullOrEmpty(result)) return;
 
-            var newAmount = CurrencyMaskBehavior.ParseAmount(result, null);
+            var newAmount = AmountParser.Parse(result, null);
             if (newAmount <= 0 || !Money.IsInRange(newAmount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);

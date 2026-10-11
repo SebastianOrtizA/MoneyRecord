@@ -98,7 +98,7 @@ dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android   # deploy
 # Windows
 dotnet build MoneyRecord/MoneyRecord.csproj -f net10.0-windows10.0.19041.0
 
-# Unit tests (xUnit; the test project targets Windows)
+# Unit tests (xUnit; plain net10.0, runs on Windows, Linux and macOS)
 dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 ```
 
@@ -122,35 +122,38 @@ Models (SQLite entities, money in cents)
 ## Project structure
 
 ```
-MoneyRecord/
+MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the app)
+├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
+│                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft
+├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction (tables)
+│                       + display models (AccountBalanceInfo, CurrencyBalance, TransactionGroup, BudgetProgress, ...)
+├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
+└── Services/
+    ├── Interfaces/     Service and repository interfaces, IAppPaths
+    ├── Repositories/   SQLite repositories, DatabaseInitializer (schema + seed data)
+    │   └── Migrations/ IMigration, MigrationRunner, M001_Baseline, M002_MoneyAsCents, M003_AccountCurrencyCodes
+    ├── AccountService, CategoryService          Transactional deletes
+    ├── BalanceService                           Balances, per-currency subtotals
+    ├── TransactionEnrichmentService             Names/icons/currencies for display
+    ├── CurrencyService                          Currencies, base currency, decimals
+    ├── RecurringTransactionService              Creates due recurring transactions
+    ├── DataExportService                        Zip backup, restore + snapshot, CSV export
+    └── AppPaths, LocalizationService, CategoryIconService
+MoneyRecord/            The MAUI app
 ├── Behaviors/          CurrencyMaskBehavior (amount input in the account's currency)
 ├── Controls/           FloatingActionMenu (+ FabComponents/), DecimalEntry, ChartDrawables
 ├── Converters/         Converters.cs: all XAML value converters (money, dates, colours, ...)
 ├── Extensions/         LocalizeExtension ({ext:Localize Key} in XAML)
-├── Helpers/            Money (cents), MoneyFormatter, DateFormatter, Plurals, BudgetProjectionHelper,
-│                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft
-├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction (tables)
-│                       + display models (AccountBalanceInfo, CurrencyBalance, TransactionGroup, CategoryReport, ...)
+├── Models/             CategoryReport.cs: report display models (heatmap colours)
 ├── Platforms/          Android (back button, numeric entry handler), iOS, MacCatalyst, Windows
-├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
-├── Services/
-│   ├── Interfaces/     Service and repository interfaces
-│   ├── Repositories/   SQLite repositories, DatabaseInitializer (schema + seed data)
-│   │   └── Migrations/ IMigration, MigrationRunner, M001_Baseline, M002_MoneyAsCents, M003_AccountCurrencyCodes
-│   ├── AccountService, CategoryService          Transactional deletes
-│   ├── BalanceService                           Balances, per-currency subtotals
-│   ├── TransactionEnrichmentService             Names/icons/currencies for display
-│   ├── CurrencyService                          Currencies, base currency, decimals
-│   ├── RecurringTransactionService              Creates due recurring transactions
-│   ├── DataExportService                        Zip backup, restore + snapshot, CSV export
-│   └── LocalizationService, NavigationService, PreferencesService, CategoryIconService, ErrorHandler
+├── Services/           NavigationService, PreferencesService, ErrorHandler
 ├── ViewModels/         One per page + FloatingMenuViewModel
 ├── Views/              Main, AddTransaction, AddTransfer, Transfers, ManageAccounts, ManageCategories, Budget,
 │                       RecurringTransactions, ExpenseReport, IncomeReport, TrendsReport, Settings
 ├── App.xaml            Converters and styles; processes recurring transactions on start
 ├── AppShell.xaml       Flyout menu and routes
 └── MauiProgram.cs      Dependency injection
-MoneyRecord.Tests/      xUnit tests: helpers, models, services, migrations, backup/restore, resource parity
+MoneyRecord.Tests/      xUnit tests (net10.0, Core only): helpers, models, services, migrations, backup/restore, resource parity
 ```
 
 ## License

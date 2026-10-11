@@ -1,5 +1,4 @@
 using AwesomeAssertions;
-using MoneyRecord.Behaviors;
 using MoneyRecord.Helpers;
 using MoneyRecord.Services;
 using System.Globalization;
@@ -93,21 +92,21 @@ public class CurrencyFormattingTests
     public void ParseAmount_SymbolWithDot_IsNotADecimalSeparator()
     {
         WithCulture("en-US", () =>
-            CurrencyMaskBehavior.ParseAmount("S/.1,250.50", "PEN").Should().Be(1250.50m));
+            AmountParser.Parse("S/.1,250.50", "PEN").Should().Be(1250.50m));
     }
 
     [Fact]
     public void ParseAmount_ZeroDecimalCurrency_RoundsToWholeUnits()
     {
         WithCulture("en-US", () =>
-            CurrencyMaskBehavior.ParseAmount("¥1,500", "JPY").Should().Be(1500m));
+            AmountParser.Parse("¥1,500", "JPY").Should().Be(1500m));
     }
 
     [Fact]
     public void ParseAmount_SpanishDecimalComma()
     {
         WithCulture("es-CO", () =>
-            CurrencyMaskBehavior.ParseAmount("12,50", "COP").Should().Be(12.50m));
+            AmountParser.Parse("12,50", "COP").Should().Be(12.50m));
     }
 
     [Fact]
@@ -116,7 +115,7 @@ public class CurrencyFormattingTests
         WithCulture("es-ES", () =>
         {
             var text = MoneyFormatter.Format(1234.56m, "EUR");
-            CurrencyMaskBehavior.ParseAmount(text, "EUR").Should().Be(1234.56m);
+            AmountParser.Parse(text, "EUR").Should().Be(1234.56m);
         });
     }
 

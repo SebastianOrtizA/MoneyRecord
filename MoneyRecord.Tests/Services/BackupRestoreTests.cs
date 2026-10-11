@@ -26,11 +26,11 @@ public sealed class BackupRestoreTests : IAsyncLifetime
     {
         Directory.CreateDirectory(Receipts);
         Directory.CreateDirectory(Path.Combine(_appData, "out"));
-        _dbInitializer = new DatabaseInitializer(Path.Combine(_appData, "moneyrecord.db3"));
+        _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
         await _dbInitializer.InitializeAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
-        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, _appData);
+        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new AppPaths(_appData));
     }
 
     public async Task DisposeAsync()

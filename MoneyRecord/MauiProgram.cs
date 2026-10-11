@@ -38,7 +38,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
 
             // Register Database Infrastructure
-            builder.Services.AddSingleton(_ => new DatabaseInitializer());
+            builder.Services.AddSingleton<IAppPaths>(new AppPaths(FileSystem.AppDataDirectory));
+            builder.Services.AddSingleton<DatabaseInitializer>();
 
             // Register Repositories (Interface Segregation)
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();
