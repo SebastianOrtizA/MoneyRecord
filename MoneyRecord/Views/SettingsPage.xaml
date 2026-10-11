@@ -12,6 +12,38 @@
         <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="16">
 
+                <!-- Base Currency Section -->
+                <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                       BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                       CornerRadius="12"
+                       Padding="16"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="&#xF0116;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="28"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{ext:Localize BaseCurrency}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Label Text="{ext:Localize BaseCurrencyDescription}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Picker ItemsSource="{Binding AvailableCurrencies}"
+                                SelectedItem="{Binding BaseCurrency}"
+                                Title="{ext:Localize SelectCurrency}"
+                                FontSize="16"
+                                MinimumHeightRequest="44"/>
+                    </VerticalStackLayout>
+                </Frame>
+
                 <!-- Backup Section -->
                 <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                        BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"

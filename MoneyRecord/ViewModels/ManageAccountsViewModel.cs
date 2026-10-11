@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
@@ -149,7 +150,7 @@ namespace MoneyRecord.ViewModels
             }
 
             // Always parse with allowNegative=true to detect negative values for validation
-            var balance = CurrencyMaskBehavior.ParseCurrencyValue(NewAccountBalance, 2, allowNegative: true);
+            var balance = CurrencyMaskBehavior.ParseAmount(NewAccountBalance, NewAccountCurrency?.Code, allowNegative: true);
 
             if (!Money.IsInRange(balance))
             {
@@ -230,7 +231,7 @@ namespace MoneyRecord.ViewModels
             }
 
             // Always parse with allowNegative=true to detect negative values for validation
-            var balance = CurrencyMaskBehavior.ParseCurrencyValue(EditAccountBalance, 2, allowNegative: true);
+            var balance = CurrencyMaskBehavior.ParseAmount(EditAccountBalance, EditAccountCurrency?.Code, allowNegative: true);
 
             if (!Money.IsInRange(balance))
             {
@@ -296,6 +297,14 @@ namespace MoneyRecord.ViewModels
                 if (usage.Transactions > 0 || usage.RecurringRules > 0)
                 {
                     var defaultAccount = await _accountRepository.GetDefaultAsync();
+                    if (defaultAccount != null && !AccountService.HaveSameCurrency(account, defaultAccount))
+                    {
+                        await _errorHandler.HandleAsync(string.Format(AppResources.AccountCurrencyDiffersFromDefault,
+                            account.Name, MoneyFormatter.ResolveCurrencyCode(account.CurrencyCode),
+                            defaultAccount.Name, MoneyFormatter.ResolveCurrencyCode(defaultAccount.CurrencyCode)));
+                        return;
+                    }
+
                     message = string.Format(AppResources.DeleteAccountWithTransactions,
                         account.Name, usage.Transactions, usage.RecurringRules, defaultAccount?.Name);
                 }

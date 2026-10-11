@@ -37,11 +37,26 @@
                                TextColor="#FFFFFFCC"
                                VerticalOptions="Center"/>
                     </HorizontalStackLayout>
-                    <Label Text="{Binding CurrentBalance, Converter={StaticResource MoneyConverter}}"
+                    <Label Text="{Binding BalanceText}"
                            FontSize="36"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"
                            TextColor="White"/>
+                    <!-- One subtotal per other currency: amounts in different currencies are never added together -->
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding OtherCurrencyBalances}"
+                                         IsVisible="{Binding OtherCurrencyBalances.Count, Converter={StaticResource IntToBoolConverter}}"
+                                         Spacing="2">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Label Text="{Binding .}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"
+                                       TextColor="#FFFFFFDD"/>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                     <Label Text="{Binding CurrentDate, StringFormat='{0:MMMM dd, yyyy}'}"
                            FontSize="13"
                            TextColor="#FFFFFF99"
@@ -331,7 +346,7 @@
                                            FontAttributes="Bold"
                                            LineBreakMode="TailTruncation"/>
                                     <Label Grid.Row="0" Grid.Column="2"
-                                           Text="{Binding SpentAmount, StringFormat='${0:N2}'}"
+                                           Text="{Binding SpentAmount, Converter={StaticResource MoneyConverter}}"
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            TextColor="{Binding ProgressColor}"/>

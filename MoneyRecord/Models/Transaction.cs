@@ -58,6 +58,10 @@ namespace MoneyRecord.Models
         [Ignore]
         public string AccountName { get; set; } = string.Empty;
 
+        /// <summary>The account's currency (empty = the base currency), filled in when the transaction is loaded for display.</summary>
+        [Ignore]
+        public string CurrencyCode { get; set; } = string.Empty;
+
         /// <summary>
         /// Icon code for the category (Material Design Icons)
         /// </summary>

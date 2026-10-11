@@ -59,10 +59,16 @@
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                 
                                 <Label Grid.Row="0" Grid.Column="1"
-                                       Text="{Binding Amount, StringFormat='${0:N2}'}"
                                        FontSize="22"
                                        FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"/>
+                                       TextColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}">
+                                    <Label.Text>
+                                        <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
+                                            <Binding Path="Amount"/>
+                                            <Binding Path="CurrencyCode"/>
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
                                 
                                 <!-- Row 1: From Account -->
                                 <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">

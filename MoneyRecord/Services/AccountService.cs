@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
@@ -47,6 +48,13 @@ namespace MoneyRecord.Services
                     var defaultAccount = db.Table<Account>().FirstOrDefault(a => a.IsDefault)
                         ?? throw new InvalidOperationException("There is no default account to move transactions to.");
 
+                    // Moving amounts into another currency would silently change what they are worth
+                    var inUse = db.Table<Transaction>().Count(t => t.AccountId == accountId) > 0
+                        || db.Table<RecurringTransaction>().Count(r => r.AccountId == accountId) > 0;
+                    if (inUse && !HaveSameCurrency(account, defaultAccount))
+                        throw new InvalidOperationException(
+                            $"Account {accountId} ({account.CurrencyCode}) has transactions; the default account is in {defaultAccount.CurrencyCode}.");
+
                     db.Execute("UPDATE \"Transaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
                     db.Execute("UPDATE \"RecurringTransaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
                     db.Delete<Account>(accountId);
@@ -57,5 +65,9 @@ namespace MoneyRecord.Services
                 _accountRepository.InvalidateCache();
             }
         }
+
+        /// <summary>Same currency, counting an empty currency code as the base currency.</summary>
+        public static bool HaveSameCurrency(Account a, Account b) =>
+            MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode) == MoneyFormatter.ResolveCurrencyCode(b.CurrencyCode);
     }
 }

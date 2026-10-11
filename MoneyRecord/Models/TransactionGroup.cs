@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using MoneyRecord.Helpers;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.Models
@@ -39,6 +40,9 @@ namespace MoneyRecord.Models
         [ObservableProperty]
         private string groupIconCode = "F0770"; // Default tag icon
 
+        /// <summary>The currency of the group's total (empty = the base currency).</summary>
+        public string CurrencyCode { get; }
+
         /// <summary>
         /// Gets the displayable icon character from the unicode code
         /// </summary>
@@ -68,6 +72,10 @@ namespace MoneyRecord.Models
             TransactionCount = transactions?.Count ?? 0;
             Items = new ObservableCollection<Transaction>(transactions ?? new List<Transaction>());
             IsBalanceMode = mode == GroupingMode.Account;
+
+            // One currency for the whole group (always so when grouped by account); mixed = the base currency
+            var currencies = Items.Select(t => MoneyFormatter.ResolveCurrencyCode(t.CurrencyCode)).Distinct().ToList();
+            CurrencyCode = currencies.Count == 1 ? currencies[0] : string.Empty;
 
             // Set group icon based on grouping mode
             if (mode == GroupingMode.Category && transactions != null && transactions.Any())

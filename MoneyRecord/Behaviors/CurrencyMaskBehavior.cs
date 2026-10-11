@@ -1,16 +1,20 @@
+using MoneyRecord.Helpers;
+using MoneyRecord.Services;
 using System.Globalization;
 
 namespace MoneyRecord.Behaviors
 {
     /// <summary>
     /// A behavior that applies currency mask formatting to an Entry control.
-    /// Formats input as currency with proper thousand separators and limits to 2 decimal places.
+    /// Formats input in <see cref="CurrencyCode"/> (empty = the base currency) with thousand separators, and limits
+    /// the decimals to the currency's (0 for JPY/CLP/KRW, otherwise 2).
     /// Formatting is applied when the Entry loses focus to avoid Android EmojiCompat conflicts.
     /// Also formats when text is set programmatically (while Entry is not focused).
     /// </summary>
     public class CurrencyMaskBehavior : Behavior<Entry>
     {
         private readonly CultureInfo _culture = CultureInfo.CurrentCulture;
+        private Entry? _entry;
         private bool _isFocused;
         private bool _isFormatting;
 
@@ -19,10 +23,27 @@ namespace MoneyRecord.Behaviors
         /// </summary>
         public bool ShowCurrencySymbol { get; set; } = true;
 
+        public static readonly BindableProperty CurrencyCodeProperty =
+            BindableProperty.Create(
+                nameof(CurrencyCode),
+                typeof(string),
+                typeof(CurrencyMaskBehavior),
+                null,
+                propertyChanged: (bindable, oldValue, newValue) =>
+                {
+                    var behavior = (CurrencyMaskBehavior)bindable;
+                    if (behavior._entry != null)
+                        behavior.Reformat(behavior._entry, (string?)oldValue);
+                });
+
         /// <summary>
-        /// Gets or sets the maximum number of decimal places. Default is 2.
+        /// The currency of the amount (e.g. the selected account's). Empty = the base currency.
         /// </summary>
-        public int DecimalPlaces { get; set; } = 2;
+        public string? CurrencyCode
+        {
+            get => (string?)GetValue(CurrencyCodeProperty);
+            set => SetValue(CurrencyCodeProperty, value);
+        }
 
         /// <summary>
         /// Bindable property for AllowNegativeValues.
@@ -43,9 +64,12 @@ namespace MoneyRecord.Behaviors
             set => SetValue(AllowNegativeValuesProperty, value);
         }
 
+        private int DecimalPlaces => CurrencyService.GetMinorUnits(MoneyFormatter.ResolveCurrencyCode(CurrencyCode));
+
         protected override void OnAttachedTo(Entry entry)
         {
             base.OnAttachedTo(entry);
+            _entry = entry;
             entry.Unfocused += OnEntryUnfocused;
             entry.Focused += OnEntryFocused;
             entry.TextChanged += OnEntryTextChanged;
@@ -64,6 +88,7 @@ namespace MoneyRecord.Behaviors
             entry.Focused -= OnEntryFocused;
             entry.TextChanged -= OnEntryTextChanged;
             entry.BindingContextChanged -= OnEntryBindingContextChanged;
+            _entry = null;
             base.OnDetachingFrom(entry);
         }
 
@@ -82,13 +107,17 @@ namespace MoneyRecord.Behaviors
 
             // Only format if the Entry is not focused (programmatic change from ViewModel)
             if (!_isFocused && !string.IsNullOrEmpty(e.NewTextValue))
-            {
-                // Check if already formatted (contains currency symbol)
-                if (!e.NewTextValue.Contains(_culture.NumberFormat.CurrencySymbol))
-                {
-                    FormatIfNotFocused(entry);
-                }
-            }
+                FormatIfNotFocused(entry);
+        }
+
+        /// <summary>The currency changed (another account was picked): show the amount in the new currency.</summary>
+        private void Reformat(Entry entry, string? previousCurrencyCode)
+        {
+            if (_isFocused || string.IsNullOrEmpty(entry.Text))
+                return;
+
+            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, previousCurrencyCode);
+            SetText(entry, value != 0 ? FormatValue(value) : string.Empty);
         }
 
         private void FormatIfNotFocused(Entry entry)
@@ -100,12 +129,12 @@ namespace MoneyRecord.Behaviors
             if (string.IsNullOrEmpty(text))
                 return;
 
-            var value = ParseCurrencyValue(text, DecimalPlaces, AllowNegativeValues);
+            var value = ParseCurrencyValue(text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
             if (value != 0 || text == "0")
             {
-                _isFormatting = true;
-                entry.Text = FormatValue(value);
-                _isFormatting = false;
+                var formatted = FormatValue(value);
+                if (formatted != text)
+                    SetText(entry, formatted);
             }
         }
 
@@ -117,18 +146,8 @@ namespace MoneyRecord.Behaviors
                 return;
 
             // When focused, show raw numeric value for easier editing
-            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues);
-            if (value != 0)
-            {
-                // Show plain number without currency symbol for editing
-                _isFormatting = true;
-                entry.Text = value.ToString($"F{DecimalPlaces}", _culture);
-                _isFormatting = false;
-            }
-            else
-            {
-                entry.Text = string.Empty;
-            }
+            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
+            SetText(entry, value != 0 ? value.ToString($"F{DecimalPlaces}", _culture) : string.Empty);
         }
 
         private void OnEntryUnfocused(object? sender, FocusEventArgs e)
@@ -139,41 +158,40 @@ namespace MoneyRecord.Behaviors
                 return;
 
             // When unfocused, apply full currency formatting
-            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues);
+            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
+            SetText(entry, value != 0 ? FormatValue(value) : string.Empty);
+        }
 
+        private void SetText(Entry entry, string text)
+        {
             _isFormatting = true;
-            if (value != 0)
-            {
-                entry.Text = FormatValue(value);
-            }
-            else
-            {
-                entry.Text = string.Empty;
-            }
+            entry.Text = text;
             _isFormatting = false;
         }
 
         private string FormatValue(decimal value)
         {
-            if (ShowCurrencySymbol)
-            {
-                // Check if the currency symbol is the generic placeholder (¤)
-                if (_culture.NumberFormat.CurrencySymbol == "¤")
-                {
-                    // Fallback to $ as universal symbol, matching summary list behavior
-                    var formattedNumber = Math.Abs(value).ToString($"N{DecimalPlaces}", _culture);
-                    return value < 0 ? $"-$ {formattedNumber}" : $"$ {formattedNumber}";
-                }
-                return value.ToString("C", _culture);
-            }
-            return value.ToString($"N{DecimalPlaces}", _culture);
+            return ShowCurrencySymbol
+                ? MoneyFormatter.Format(value, CurrencyCode, _culture)
+                : value.ToString($"N{DecimalPlaces}", _culture);
+        }
+
+        /// <summary>
+        /// Parses an amount typed in <paramref name="currencyCode"/> (empty = the base currency), rounded to the
+        /// currency's decimals.
+        /// </summary>
+        public static decimal ParseAmount(string? text, string? currencyCode, bool allowNegative = false)
+        {
+            var decimals = CurrencyService.GetMinorUnits(MoneyFormatter.ResolveCurrencyCode(currencyCode));
+            return ParseCurrencyValue(text, decimals, allowNegative, currencyCode);
         }
 
         /// <summary>
         /// Static helper method to extract the numeric value from a formatted currency string.
-        /// Use this in ViewModels when parsing the bound Amount property.
+        /// Use this in ViewModels when parsing the bound Amount property; pass the amount's currency so its symbol
+        /// (e.g. the "." in "S/.") is not mistaken for a decimal separator.
         /// </summary>
-        public static decimal ParseCurrencyValue(string? text, int decimalPlaces = 2, bool allowNegative = false)
+        public static decimal ParseCurrencyValue(string? text, int decimalPlaces = 2, bool allowNegative = false, string? currencyCode = null)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return 0m;
@@ -183,11 +201,15 @@ namespace MoneyRecord.Behaviors
             var groupSep = culture.NumberFormat.CurrencyGroupSeparator;
             var negativeSign = culture.NumberFormat.NegativeSign;
 
+            // Drop the currency symbol first: some contain separators ("S/.")
+            var symbol = CurrencyService.GetSymbol(MoneyFormatter.ResolveCurrencyCode(currencyCode));
+            text = text.Replace(symbol, string.Empty).Replace(culture.NumberFormat.CurrencySymbol, string.Empty);
+
             // Check for negative value indicators
-            bool isNegative = allowNegative && 
+            bool isNegative = allowNegative &&
                 (text.Contains(negativeSign) || text.Contains('(') || text.Contains(')'));
 
-            // Remove currency symbol and group separators, keep only digits and decimal separator
+            // Remove group separators, keep only digits and decimal separator
             var cleaned = new System.Text.StringBuilder();
             var hasDecimal = false;
             var decimalDigits = 0;

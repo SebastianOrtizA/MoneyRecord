@@ -63,7 +63,7 @@
                    Placeholder="0.00"
                    FontSize="16">
                 <controls:DecimalEntry.Behaviors>
-                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding SelectedSourceAccount.CurrencyCode}"/>
                 </controls:DecimalEntry.Behaviors>
             </controls:DecimalEntry>
 

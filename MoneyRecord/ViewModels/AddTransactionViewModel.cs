@@ -260,12 +260,12 @@ namespace MoneyRecord.ViewModels
 
                 if (remaining <= 0)
                 {
-                    BudgetWarningText = string.Format(AppResources.BudgetExceeded, SelectedCategory.Name, spent, budget.LimitAmount);
+                    BudgetWarningText = string.Format(AppResources.BudgetExceeded, SelectedCategory.Name, MoneyFormatter.Format(spent), MoneyFormatter.Format(budget.LimitAmount));
                     ShowBudgetWarning = true;
                 }
                 else if (remaining < budget.LimitAmount * 0.2m)
                 {
-                    BudgetWarningText = string.Format(AppResources.BudgetNearLimit, SelectedCategory.Name, remaining);
+                    BudgetWarningText = string.Format(AppResources.BudgetNearLimit, SelectedCategory.Name, MoneyFormatter.Format(remaining));
                     ShowBudgetWarning = true;
                 }
                 else
@@ -288,7 +288,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
+            var amountValue = CurrencyMaskBehavior.ParseAmount(Amount, SelectedAccount?.CurrencyCode);
             if (amountValue <= 0 || !Money.IsInRange(amountValue))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);

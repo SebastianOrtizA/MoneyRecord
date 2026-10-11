@@ -1,3 +1,4 @@
+using MoneyRecord.Behaviors;
 using MoneyRecord.Helpers;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -103,6 +104,7 @@ namespace MoneyRecord.ViewModels
                     if (accounts.TryGetValue(item.AccountId, out var account))
                     {
                         item.AccountName = account.Name;
+                        item.CurrencyCode = account.CurrencyCode;
                     }
 
                     item.FrequencyDisplay = GetFrequencyDisplay(item.Frequency, item.DayOfMonth);
@@ -153,7 +155,8 @@ namespace MoneyRecord.ViewModels
         {
             if (EditingItem == null || EditSelectedFrequency == null) return;
 
-            if (!decimal.TryParse(EditAmount.Replace("$", "").Replace(",", ""), out var newAmount) || newAmount <= 0 || !Money.IsInRange(newAmount))
+            var newAmount = CurrencyMaskBehavior.ParseAmount(EditAmount, EditingItem.CurrencyCode);
+            if (newAmount <= 0 || !Money.IsInRange(newAmount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;

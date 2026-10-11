@@ -2364,6 +2364,24 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        internal static string BaseCurrency {
+            get {
+                return ResourceManager.GetString("BaseCurrency", resourceCulture);
+            }
+        }
+
+        internal static string BaseCurrencyDescription {
+            get {
+                return ResourceManager.GetString("BaseCurrencyDescription", resourceCulture);
+            }
+        }
+
+        internal static string AccountCurrencyDiffersFromDefault {
+            get {
+                return ResourceManager.GetString("AccountCurrencyDiffersFromDefault", resourceCulture);
+            }
+        }
+
         internal static string RestoreComplete {
             get {
                 return ResourceManager.GetString("RestoreComplete", resourceCulture);

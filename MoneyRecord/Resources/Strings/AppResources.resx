@@ -501,7 +501,7 @@
     <value>Account Balances</value>
   </data>
   <data name="AvailableBalance" xml:space="preserve">
-    <value>Available: ${0:N2}</value>
+    <value>Available: {0}</value>
   </data>
   <data name="Back" xml:space="preserve">
     <value>Back</value>
@@ -634,7 +634,7 @@
 
 From: {0}
 To: {1}
-Amount: ${2:N2}</value>
+Amount: {2}</value>
   </data>
   <data name="TransferDeletedSuccessfully" xml:space="preserve">
     <value>Transfer deleted successfully</value>
@@ -643,7 +643,7 @@ Amount: ${2:N2}</value>
     <value>Failed to delete transfer: {0}</value>
   </data>
   <data name="Available" xml:space="preserve">
-    <value>Available: ${0:N2}</value>
+    <value>Available: {0}</value>
   </data>
 
   <!-- Budget Mode -->
@@ -717,13 +717,13 @@ Amount: ${2:N2}</value>
     <value>Are you sure you want to delete this transaction?
 
 {0}
-${1:N2}</value>
+{1}</value>
   </data>
   <data name="ConfirmDeleteTransferFromListMessage" xml:space="preserve">
     <value>Are you sure you want to delete this transfer?
 
 {0}
-${1:N2}</value>
+{1}</value>
   </data>
   <data name="TransactionDeletedSuccessfully" xml:space="preserve">
     <value>Transaction deleted successfully</value>
@@ -754,10 +754,10 @@ ${1:N2}</value>
 
   <!-- Budget Warnings -->
   <data name="BudgetExceeded" xml:space="preserve">
-    <value>⚠️ Budget exceeded for '{0}'! Spent ${1:N2} of ${2:N2} limit.</value>
+    <value>⚠️ Budget exceeded for '{0}'! Spent {1} of {2} limit.</value>
   </data>
   <data name="BudgetNearLimit" xml:space="preserve">
-    <value>⚠️ Budget near limit for '{0}'. Only ${1:N2} remaining.</value>
+    <value>⚠️ Budget near limit for '{0}'. Only {1} remaining.</value>
   </data>
   <data name="BudgetSummary" xml:space="preserve">
     <value>Budget Summary</value>
@@ -915,6 +915,15 @@ ${1:N2}</value>
   </data>
   <data name="SelectBackupFile" xml:space="preserve">
     <value>Select Backup File</value>
+  </data>
+  <data name="BaseCurrency" xml:space="preserve">
+    <value>Base Currency</value>
+  </data>
+  <data name="BaseCurrencyDescription" xml:space="preserve">
+    <value>Totals and reports are shown in this currency. Balances in other currencies are listed separately, never added together.</value>
+  </data>
+  <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
+    <value>'{0}' uses {1}, but the default account '{2}' uses {3}. Its transactions and recurring rules can't be moved there without changing what they are worth: delete them first.</value>
   </data>
 
   <!-- Search & Filters -->

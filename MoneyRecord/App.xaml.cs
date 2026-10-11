@@ -4,7 +4,8 @@ namespace MoneyRecord
 {
     public partial class App : Application
     {
-        public App()
+        /// <param name="currencyService">Resolved here so the saved base currency is loaded before any page formats money.</param>
+        public App(ICurrencyService currencyService)
         {
             InitializeComponent();
         }

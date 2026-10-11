@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
 
@@ -10,6 +11,7 @@ namespace MoneyRecord.ViewModels
     {
         private readonly IDataExportService _dataExportService;
         private readonly IErrorHandler _errorHandler;
+        private readonly ICurrencyService _currencyService;
 
         [ObservableProperty]
         private bool isExporting;
@@ -17,10 +19,25 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isImporting;
 
-        public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler)
+        public List<Currency> AvailableCurrencies { get; }
+
+        /// <summary>The base currency: totals and reports are shown in it.</summary>
+        [ObservableProperty]
+        private Currency? baseCurrency;
+
+        public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, ICurrencyService currencyService)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
+            _currencyService = currencyService;
+            AvailableCurrencies = currencyService.GetAvailableCurrencies();
+            baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
+        }
+
+        partial void OnBaseCurrencyChanged(Currency? value)
+        {
+            if (value != null)
+                _currencyService.SetBaseCurrencyCode(value.Code);
         }
 
         [RelayCommand]

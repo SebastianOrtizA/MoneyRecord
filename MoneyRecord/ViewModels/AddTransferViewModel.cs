@@ -212,7 +212,7 @@ namespace MoneyRecord.ViewModels
                 }
 
                 SourceAccountBalance = balance;
-                SourceAccountBalanceText = string.Format(AppResources.Available, balance);
+                SourceAccountBalanceText = string.Format(AppResources.Available, MoneyFormatter.Format(balance, SelectedSourceAccount.CurrencyCode));
             }
             else
             {
@@ -242,7 +242,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
+            var amountValue = CurrencyMaskBehavior.ParseAmount(Amount, SelectedSourceAccount?.CurrencyCode);
             if (amountValue <= 0 || !Money.IsInRange(amountValue))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
