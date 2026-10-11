@@ -279,8 +279,7 @@ namespace MoneyRecord.Converters
             if (value is TransactionGroup group)
             {
                 // For transfer groups, show neutral amount (no sign)
-                // Check both emoji version (legacy) and text version
-                if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
+                if (group.Type == TransactionType.Transfer)
                 {
                     return MoneyFormatter.Format(Math.Abs(group.Total), group.CurrencyCode);
                 }
@@ -310,9 +309,7 @@ namespace MoneyRecord.Converters
         {
             if (value is TransactionGroup group)
             {
-                // Check if this is a transfer group by name or type
-                // Support both emoji version (legacy) and text version
-                if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
+                if (group.Type == TransactionType.Transfer)
                 {
                     // Orange for transfers
                     return Application.Current?.RequestedTheme == AppTheme.Dark
@@ -326,13 +323,6 @@ namespace MoneyRecord.Converters
                     return Application.Current?.RequestedTheme == AppTheme.Dark
                         ? Color.FromArgb("#66BB6A")
                         : Color.FromArgb("#2E7D32");
-                }
-                else if (group.Type == TransactionType.Transfer)
-                {
-                    // Orange for transfers
-                    return Application.Current?.RequestedTheme == AppTheme.Dark
-                        ? Color.FromArgb("#FFB74D")
-                        : Color.FromArgb("#FF9800");
                 }
                 else
                 {
@@ -738,6 +728,7 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
     }
+
     /// <summary>
     /// Budget progress colour. Amber instead of yellow, which has no contrast on a light background
     /// (#B26A00 light / #F2B65C dark). Only for the bar: amounts keep the normal text colour.

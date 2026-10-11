@@ -700,7 +700,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>
         /// Converts Transfer objects to Transaction objects for unified display.
-        /// When grouping by Category: creates one transaction per transfer in the "Transfers" category.
+        /// When grouping by Category: creates one transaction per transfer in the localized Transfers category (AppResources.Transfers).
         /// When grouping by Account: creates two transactions per transfer (outgoing and incoming).
         /// When not grouped: creates one transaction per transfer showing the transfer details.
         /// </summary>
