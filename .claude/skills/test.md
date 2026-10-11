@@ -22,14 +22,10 @@ triggers:
 
 ## Test Project Setup
 
-If the test project doesn't exist yet:
-```bash
-dotnet new xunit -n MoneyRecord.Tests -o MoneyRecord.Tests
-dotnet sln MoneyRecord.slnx add MoneyRecord.Tests/MoneyRecord.Tests.csproj
-dotnet add MoneyRecord.Tests/MoneyRecord.Tests.csproj reference MoneyRecord/MoneyRecord.csproj
-dotnet add MoneyRecord.Tests/MoneyRecord.Tests.csproj package NSubstitute
-dotnet add MoneyRecord.Tests/MoneyRecord.Tests.csproj package FluentAssertions
-```
+`MoneyRecord.Tests/` exists (xUnit, NSubstitute, **AwesomeAssertions**: `using AwesomeAssertions;`). It targets
+`net10.0-windows10.0.19041.0`, so run it from PowerShell on Windows. Package versions are pinned: don't use wildcards,
+and never add FluentAssertions (v8 is non-commercial only; this project is AGPL). If tests fail with `0x800711C7`, see the
+Smart App Control note in the `run-moneyrecord` skill.
 
 ## Test Conventions
 
@@ -61,15 +57,19 @@ public async Task MethodName_ShouldDoX_WhenY()
 - `IPreferencesService` for settings
 - `INavigationService` for navigation calls
 - Do NOT mock `BalanceService`, `TransactionEnrichmentService` — test them with mocked repos
+- Database code (repositories, migrations, cascades, backup/restore): use a real temp SQLite file through
+  `new DatabaseInitializer(path)` instead of mocks (see `MigrationRunnerTests`, `DeleteCascadeTests`, `BackupRestoreTests`)
+- Culture-dependent code: pass an explicit `CultureInfo` (en-US, es-ES, es-CO, ja-JP) rather than relying on the machine's
+- Localized text: compare with `LocalizationService.Instance.GetString(key)`, not an English literal
 
 ### Priority Test Targets
-1. **BalanceService** — All balance calculations (most critical business logic)
-2. **BudgetProjectionHelper** — Pure static methods, easy to test, complex math
-3. **DateRangeHelper** — Pure static methods, date edge cases
-4. **TransactionEnrichmentService** — Enrichment/join logic
-5. **Validators** (when created) — Input validation rules
-6. **CurrencyMaskBehavior.ParseCurrencyValue** — Currency parsing edge cases
-7. **ViewModels** — Command behavior with mocked dependencies
+1. **Money and currency**: `Money`, `MoneyFormatter`, `CurrencyService` (cents, symbols, zero-decimal currencies)
+2. **Migrations**: every new `IMigration`, against a real database from the previous schema version
+3. **Data safety**: delete cascades, backup/restore round trips and failure paths
+4. **BalanceService** / **TransactionEnrichmentService**: balances, per-currency subtotals, joins
+5. **Pure helpers**: `BudgetProjectionHelper`, `DateRangeHelper`, `DateFormatter`, `Plurals`
+6. **CurrencyMaskBehavior.ParseAmount**: parsing per culture and currency
+7. **ViewModels**: command behavior with mocked dependencies (Stage 7 makes this easier)
 
 ### Running Tests
 ```bash
