@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
-using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 
 namespace MoneyRecord.ViewModels

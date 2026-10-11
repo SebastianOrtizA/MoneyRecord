@@ -27,29 +27,15 @@ namespace MoneyRecord
 
             public override void HandleOnBackPressed()
             {
-                var shell = Shell.Current;
-                if (shell != null)
-                {
-                    var currentRoute = shell.CurrentState?.Location?.ToString() ?? "";
+                // AppShell goes to the previous page or Home (INavigationService history)
+                if (Shell.Current?.SendBackButtonPressed() == true)
+                    return;
 
-                    // Check if we're on the main page
-                    bool isMainPage = !string.IsNullOrEmpty(currentRoute) &&
-                        (currentRoute.EndsWith("MainPage") || currentRoute.Contains("//MainPage"));
-
-                    if (!isMainPage)
-                    {
-                        // Navigate to main page instead of closing
-                        MainThread.BeginInvokeOnMainThread(async () =>
-                        {
-                            await shell.GoToAsync("//MainPage");
-                        });
-                        return;
-                    }
-                }
-
-                // On main page, close the app
+                // On Home with no history, let the system close the app. Re-enable afterwards: on Android 12+
+                // the activity survives in the background, and back must reach AppShell again after it resumes
                 Enabled = false;
                 _activity.OnBackPressedDispatcher.OnBackPressed();
+                Enabled = true;
             }
         }
     }

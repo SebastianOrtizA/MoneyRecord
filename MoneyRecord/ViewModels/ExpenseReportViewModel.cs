@@ -12,6 +12,7 @@ namespace MoneyRecord.ViewModels
     {
         private readonly ITransactionEnrichmentService _enrichmentService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
 
         private const double OthersThreshold = 10.0; // Categories below 10% go into "Others"
 
@@ -64,10 +65,11 @@ namespace MoneyRecord.ViewModels
             Color.FromArgb("#B71C1C"), // Deep red (highest)
         };
 
-        public ExpenseReportViewModel(ITransactionEnrichmentService enrichmentService, IErrorHandler errorHandler)
+        public ExpenseReportViewModel(ITransactionEnrichmentService enrichmentService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _enrichmentService = enrichmentService;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
         }
 
@@ -194,7 +196,7 @@ namespace MoneyRecord.ViewModels
 
                 if (!categoryTransactions.Any())
                 {
-                    await Shell.Current.DisplayAlertAsync(categoryName, AppResources.NoExpenseDetailsFound, AppResources.OK);
+                    await _dialogService.AlertAsync(categoryName, AppResources.NoExpenseDetailsFound);
                     return;
                 }
 
@@ -212,7 +214,7 @@ namespace MoneyRecord.ViewModels
                 var message = $"{AppResources.Total}: {totalText} ({Plurals.Transactions(transactionCount)})\n\n" +
                              string.Join("\n\n", details);
 
-                await Shell.Current.DisplayAlertAsync($"📊 {categoryName}", message, AppResources.Close);
+                await _dialogService.AlertAsync($"📊 {categoryName}", message, AppResources.Close);
             }
             catch (Exception ex)
             {

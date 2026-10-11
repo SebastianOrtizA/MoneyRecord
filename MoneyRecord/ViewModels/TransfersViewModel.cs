@@ -1,5 +1,4 @@
 using MoneyRecord.Helpers;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
@@ -15,6 +14,8 @@ namespace MoneyRecord.ViewModels
         private readonly ITransactionEnrichmentService _enrichmentService;
         private readonly ITransferRepository _transferRepository;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private ObservableCollection<Transfer> transfers = new();
@@ -25,11 +26,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hasTransfers = false;
 
-        public TransfersViewModel(ITransactionEnrichmentService enrichmentService, ITransferRepository transferRepository, IErrorHandler errorHandler)
+        public TransfersViewModel(ITransactionEnrichmentService enrichmentService, ITransferRepository transferRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService)
         {
             _enrichmentService = enrichmentService;
             _transferRepository = transferRepository;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
+            _navigationService = navigationService;
         }
 
         public async Task InitializeAsync()
@@ -70,7 +73,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task AddTransferAsync()
         {
-            await Shell.Current.GoToAsync(nameof(AddTransferPage));
+            await _navigationService.NavigateToAsync(nameof(AddTransferPage));
         }
 
         [RelayCommand]
@@ -79,7 +82,7 @@ namespace MoneyRecord.ViewModels
             if (transfer == null)
                 return;
 
-            await Shell.Current.GoToAsync(nameof(AddTransferPage), new Dictionary<string, object>
+            await _navigationService.NavigateToAsync(nameof(AddTransferPage), new Dictionary<string, object>
             {
                 { "Transfer", transfer }
             });
@@ -91,7 +94,7 @@ namespace MoneyRecord.ViewModels
             if (transfer == null)
                 return;
 
-            var confirm = await Shell.Current.DisplayAlertAsync(
+            var confirm = await _dialogService.ConfirmAsync(
                 AppResources.ConfirmDelete,
                 string.Format(AppResources.DeleteTransferConfirmMessage, transfer.SourceAccountName, transfer.DestinationAccountName, MoneyFormatter.Format(transfer.Amount, transfer.CurrencyCode)),
                 AppResources.YesDelete,
@@ -104,7 +107,7 @@ namespace MoneyRecord.ViewModels
             {
                 await _transferRepository.DeleteAsync(transfer);
                 await LoadTransfersAsync();
-                await Toast.Make(AppResources.TransferDeletedSuccessfully).Show();
+                await _dialogService.ToastAsync(AppResources.TransferDeletedSuccessfully);
             }
             catch (Exception ex)
             {

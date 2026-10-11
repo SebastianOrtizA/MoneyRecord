@@ -1,5 +1,4 @@
 using MoneyRecord.Helpers;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
@@ -21,6 +20,7 @@ namespace MoneyRecord.ViewModels
         private readonly IRecurringTransactionRepository _recurringTransactionRepository;
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
         private readonly IAppPaths _paths;
 
         [ObservableProperty]
@@ -115,7 +115,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IAppPaths paths)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -125,6 +125,7 @@ namespace MoneyRecord.ViewModels
             _recurringTransactionRepository = recurringTransactionRepository;
             _navigationService = navigationService;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
             _paths = paths;
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
@@ -345,7 +346,7 @@ namespace MoneyRecord.ViewModels
 
                 await _transactionRepository.SaveAsync(Transaction);
                 _receipt.Commit(); // deletes a removed or replaced receipt
-                await Toast.Make(AppResources.TransactionUpdatedSuccessfully).Show();
+                await _dialogService.ToastAsync(AppResources.TransactionUpdatedSuccessfully);
             }
             else
             {

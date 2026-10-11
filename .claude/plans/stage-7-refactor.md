@@ -1,6 +1,6 @@
 # Stage 7: Architecture Refactor
 
-**Status**: In progress (7.1 done)
+**Status**: In progress (7.1, 7.2 done)
 **Depends on**: Stage 6 (money format + migrations must land first)
 **Complexity**: High (wide but mechanical; no user-visible change)
 **Source**: Product & engineering review, 2026-10-11 (engineering findings)
@@ -39,6 +39,22 @@ no duplicated business rules. Behaviour must not change; the device check before
 - All navigation through `INavigationService`; remove direct `Shell.Current.GoToAsync` from ViewModels.
 - Fix `NavigationService.RootRoutes` (`NavigationService.cs:16`): add BudgetPage, TrendsReportPage,
   RecurringTransactionsPage, SettingsPage, or derive root routes from `AppShell` items.
+- Done as `IDialogService` + `INavigationService` in Core (`Services/Interfaces`, no MAUI types; the prompt takes
+  `numeric: bool` instead of `Keyboard`, the action sheet returns null on cancel). App: `DialogService` (Shell dialogs +
+  CommunityToolkit toast, on the main thread) and a thin `NavigationService`. `ErrorHandler`/`IErrorHandler` moved to
+  Core and show errors through `IDialogService`. No ViewModel uses `Shell.Current` or `Toast` any more.
+  Root routes are derived instead of listed: Core `NavigationHistory` treats any one-segment absolute location
+  (`//BudgetPage`) as a root, so every flyout page clears the history and new flyout pages need no list entry.
+  Only AppShell's `Navigated` event records history (`NavigateToAsync` recorded it too, so each push was stored
+  twice). `MainActivity` hands the back gesture to `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed`
+  (one back path); a pushed page opened from a report now goes back to that report instead of Home. Removed the dead
+  `OnBackButtonPressed` overrides on five pages and the unbound `GoBack` commands in ManageAccounts/ManageCategories.
+  A go-back in progress ignores a second back press (`BeginGoBack` returns null) and a failed one is cancelled;
+  AppShell catches back failures (async void). The Android back callback re-enables itself after closing the app.
+  Tests: `NavigationHistoryTests`, `ErrorHandlerTests` (fake `IDialogService`).
+- **Deviation:** ViewModel tests with a fake `IDialogService` (plan "Tests") need the ViewModels out of the MAUI
+  project; the interfaces are in Core now, so those tests can come once ViewModels move (7.3 `MainViewModel` split is
+  the first candidate).
 
 ### 7.3 Split `MainViewModel` (747 lines)
 - `ILedgerQueryService` → returns `LedgerEntry` records (transactions + transfers, already enriched) for a range.

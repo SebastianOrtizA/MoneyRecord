@@ -1,0 +1,24 @@
+namespace MoneyRecord.Services.Interfaces
+{
+    /// <summary>
+    /// Alerts, questions and toasts, so ViewModels never touch <c>Shell.Current</c> and tests can answer them.
+    /// </summary>
+    public interface IDialogService
+    {
+        /// <summary>Shows a message with a single button (<paramref name="close"/>, OK by default).</summary>
+        Task AlertAsync(string title, string message, string? close = null);
+
+        /// <summary>Asks a yes/no question; true when the user picks <paramref name="accept"/>.</summary>
+        Task<bool> ConfirmAsync(string title, string message, string accept, string cancel);
+
+        /// <summary>Asks for a line of text; null when the user cancels.</summary>
+        Task<string?> PromptAsync(string title, string message, string accept, string cancel,
+            string? initialValue = null, bool numeric = false);
+
+        /// <summary>Lets the user pick one of <paramref name="options"/>; null when the user cancels.</summary>
+        Task<string?> ActionSheetAsync(string title, string cancel, IReadOnlyList<string> options);
+
+        /// <summary>Shows a short message that disappears on its own.</summary>
+        Task ToastAsync(string message);
+    }
+}

@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
@@ -15,6 +14,7 @@ namespace MoneyRecord.ViewModels
         private readonly IBudgetRepository _budgetRepository;
         private readonly IBalanceService _balanceService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private PeriodItem selectedPeriod;
@@ -70,12 +70,13 @@ namespace MoneyRecord.ViewModels
             new BudgetPeriodItem { Period = BudgetPeriod.Year }
         ];
 
-        public BudgetViewModel(ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBalanceService balanceService, IErrorHandler errorHandler)
+        public BudgetViewModel(ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBalanceService balanceService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _categoryRepository = categoryRepository;
             _budgetRepository = budgetRepository;
             _balanceService = balanceService;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
             selectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
         }
@@ -225,7 +226,7 @@ namespace MoneyRecord.ViewModels
 
                 await LoadBudgetsAsync();
 
-                await Toast.Make(AppResources.BudgetAddedSuccessfully).Show();
+                await _dialogService.ToastAsync(AppResources.BudgetAddedSuccessfully);
             }
             catch (Exception ex)
             {
@@ -238,7 +239,7 @@ namespace MoneyRecord.ViewModels
         {
             if (budget == null) return;
 
-            var confirm = await Shell.Current.DisplayAlertAsync(
+            var confirm = await _dialogService.ConfirmAsync(
                 AppResources.ConfirmDelete,
                 string.Format(AppResources.DeleteBudgetConfirmation, budget.CategoryName),
                 AppResources.YesDelete,
@@ -263,13 +264,13 @@ namespace MoneyRecord.ViewModels
             if (budget == null) return;
 
             // Simple edit using prompt - could be enhanced with a proper edit form
-            var result = await Shell.Current.DisplayPromptAsync(
+            var result = await _dialogService.PromptAsync(
                 AppResources.EditBudget,
                 string.Format(AppResources.EnterNewBudgetLimit, budget.CategoryName),
                 AppResources.Save,
                 AppResources.Cancel,
                 initialValue: budget.LimitAmount.ToString("N2"),
-                keyboard: Keyboard.Numeric);
+                numeric: true);
 
             if (string.IsNullOrEmpty(result)) return;
 

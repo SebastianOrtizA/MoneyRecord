@@ -1,5 +1,4 @@
 using MoneyRecord.Helpers;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
@@ -15,6 +14,7 @@ namespace MoneyRecord.ViewModels
         private readonly ICategoryRepository _categoryRepo;
         private readonly IAccountRepository _accountRepo;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private ObservableCollection<RecurringTransaction> recurringTransactions = [];
@@ -61,12 +61,13 @@ namespace MoneyRecord.ViewModels
             IRecurringTransactionRepository recurringRepo,
             ICategoryRepository categoryRepo,
             IAccountRepository accountRepo,
-            IErrorHandler errorHandler)
+            IErrorHandler errorHandler, IDialogService dialogService)
         {
             _recurringRepo = recurringRepo;
             _categoryRepo = categoryRepo;
             _accountRepo = accountRepo;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
         }
 
         public async Task InitializeAsync()
@@ -185,7 +186,7 @@ namespace MoneyRecord.ViewModels
                 EditingItem = null;
 
                 await LoadRecurringTransactionsAsync();
-                await Toast.Make(AppResources.RecurringTransactionUpdated).Show();
+                await _dialogService.ToastAsync(AppResources.RecurringTransactionUpdated);
             }
             catch (Exception ex)
             {
@@ -218,7 +219,7 @@ namespace MoneyRecord.ViewModels
         {
             if (item == null) return;
 
-            var confirm = await Shell.Current.DisplayAlertAsync(
+            var confirm = await _dialogService.ConfirmAsync(
                 AppResources.ConfirmDelete,
                 string.Format(AppResources.DeleteRecurringConfirmation, item.Description),
                 AppResources.YesDelete,
@@ -230,7 +231,7 @@ namespace MoneyRecord.ViewModels
             {
                 await _recurringRepo.DeleteByIdAsync(item.Id);
                 await LoadRecurringTransactionsAsync();
-                await Toast.Make(AppResources.RecurringTransactionDeleted).Show();
+                await _dialogService.ToastAsync(AppResources.RecurringTransactionDeleted);
             }
             catch (Exception ex)
             {

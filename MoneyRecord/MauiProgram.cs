@@ -33,6 +33,7 @@ namespace MoneyRecord
             // Register Infrastructure Services
             builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);
             builder.Services.AddSingleton<INavigationService, NavigationService>();
+            builder.Services.AddSingleton<IDialogService, DialogService>();
             builder.Services.AddSingleton<IPreferencesService, PreferencesService>();
             builder.Services.AddSingleton<ICategoryIconService, CategoryIconService>();
             builder.Services.AddSingleton<ICurrencyService, CurrencyService>();

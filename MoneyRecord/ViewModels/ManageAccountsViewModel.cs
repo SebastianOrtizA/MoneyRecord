@@ -27,6 +27,7 @@ namespace MoneyRecord.ViewModels
         private readonly IBalanceService _balanceService;
         private readonly ICurrencyService _currencyService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IDialogService _dialogService;
 
         [ObservableProperty]
         private ObservableCollection<AccountDisplayItem> accounts = new();
@@ -73,7 +74,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private List<Currency> availableCurrencies = new();
 
-        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler)
+        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _accountRepository = accountRepository;
             _accountService = accountService;
@@ -81,6 +82,7 @@ namespace MoneyRecord.ViewModels
             _balanceService = balanceService;
             _currencyService = currencyService;
             _errorHandler = errorHandler;
+            _dialogService = dialogService;
         }
 
         public async Task InitializeAsync()
@@ -317,7 +319,7 @@ namespace MoneyRecord.ViewModels
                     message = string.Format(AppResources.DeleteAccountNoTransactions, account.Name);
                 }
 
-                var confirm = await Shell.Current.DisplayAlertAsync(
+                var confirm = await _dialogService.ConfirmAsync(
                     AppResources.ConfirmDelete,
                     message,
                     AppResources.YesDelete,
@@ -339,12 +341,6 @@ namespace MoneyRecord.ViewModels
             {
                 await _errorHandler.HandleAsync(ex, ex.Message);
             }
-        }
-
-        [RelayCommand]
-        private async Task GoBackAsync()
-        {
-            await Shell.Current.GoToAsync("..");
         }
     }
 }

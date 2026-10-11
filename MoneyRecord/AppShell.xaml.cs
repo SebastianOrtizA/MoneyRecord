@@ -1,4 +1,5 @@
-﻿using MoneyRecord.Services;
+using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 
 namespace MoneyRecord
@@ -14,9 +15,8 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(AddTransactionPage), typeof(AddTransactionPage));
             Routing.RegisterRoute(nameof(AddTransferPage), typeof(AddTransferPage));
 
-            // Get navigation service from DI
-            _navigationService = IPlatformApplication.Current?.Services.GetService<INavigationService>()
-                ?? new NavigationService();
+            // The DI singleton: a private fallback would keep a second history the ViewModels never see
+            _navigationService = IPlatformApplication.Current!.Services.GetRequiredService<INavigationService>();
 
             // Handle navigation events for tracking history
             this.Navigated += OnShellNavigated;
@@ -31,39 +31,33 @@ namespace MoneyRecord
             }
         }
 
+        /// <summary>
+        /// Back goes to the previous page, then to Home; on Home with no history the app closes.
+        /// MainActivity routes the Android back gesture here.
+        /// </summary>
         protected override bool OnBackButtonPressed()
         {
-            // If we can go back, navigate to previous page
-            if (_navigationService.CanGoBack)
+            var currentRoute = CurrentState?.Location?.ToString() ?? "";
+
+            // Home is a root, so its history is always empty: anywhere else, back has somewhere to go
+            if (!NavigationHistory.IsHome(currentRoute))
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await _navigationService.GoBackAsync();
+                    // async void: an exception here would crash the app
+                    try
+                    {
+                        await _navigationService.GoBackAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[MoneyRecord] Back failed: {ex}");
+                    }
                 });
                 return true;
             }
 
-            // Get the current page route
-            var currentRoute = Current?.CurrentState?.Location?.ToString() ?? "";
-
-            // If we're not on the main page, navigate to it
-            if (!IsMainPage(currentRoute))
-            {
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await GoToAsync("//MainPage");
-                });
-                return true;
-            }
-
-            // On main page with no history, allow default behavior (close app)
             return base.OnBackButtonPressed();
-        }
-
-        private static bool IsMainPage(string route)
-        {
-            return !string.IsNullOrEmpty(route) && 
-                (route.EndsWith("MainPage") || route.Contains("//MainPage"));
         }
     }
 }

@@ -5,24 +5,23 @@ namespace MoneyRecord.Services
 {
     public sealed class ErrorHandler : IErrorHandler
     {
+        private readonly IDialogService _dialogService;
+
+        public ErrorHandler(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+        }
+
         public async Task HandleAsync(Exception ex, string userMessage)
         {
             System.Diagnostics.Debug.WriteLine($"[MoneyRecord Error] {userMessage}: {ex}");
-            await ShowErrorAsync(userMessage);
+            await _dialogService.AlertAsync(AppResources.Error, userMessage);
         }
 
         public async Task HandleAsync(string userMessage)
         {
             System.Diagnostics.Debug.WriteLine($"[MoneyRecord Error] {userMessage}");
-            await ShowErrorAsync(userMessage);
-        }
-
-        private static async Task ShowErrorAsync(string message)
-        {
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                await Shell.Current.DisplayAlertAsync(AppResources.Error, message, AppResources.OK);
-            });
+            await _dialogService.AlertAsync(AppResources.Error, userMessage);
         }
     }
 }
