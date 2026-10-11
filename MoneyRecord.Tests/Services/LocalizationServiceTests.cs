@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using MoneyRecord.Services;
 using System.Globalization;
 using Xunit;

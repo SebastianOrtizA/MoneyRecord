@@ -420,3 +420,9 @@ FodyWeavers.xsd
 # Android keystore files
 *.keystore
 *.jks
+
+# CodeGraph index (local tool)
+.codegraph/
+
+# Compiled resources: the build makes its own from the .resx in obj/
+MoneyRecord/Resources/Strings/*.resources
