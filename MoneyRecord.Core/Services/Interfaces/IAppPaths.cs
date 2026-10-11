@@ -5,8 +5,6 @@ namespace MoneyRecord.Services.Interfaces
     /// </summary>
     public interface IAppPaths
     {
-        string AppDataDirectory { get; }
-
         /// <summary>The SQLite database (moneyrecord.db3).</summary>
         string DatabasePath { get; }
 

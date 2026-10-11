@@ -20,8 +20,7 @@ namespace MoneyRecord.Helpers
         }
 
         /// <summary>
-        /// Static helper method to extract the numeric value from a formatted currency string.
-        /// Pass the amount's currency so its symbol
+        /// Parses a formatted amount with an explicit number of decimals. Pass the amount's currency so its symbol
         /// (e.g. the "." in "S/.") is not mistaken for a decimal separator.
         /// </summary>
         public static decimal ParseCurrencyValue(string? text, int decimalPlaces = 2, bool allowNegative = false, string? currencyCode = null)

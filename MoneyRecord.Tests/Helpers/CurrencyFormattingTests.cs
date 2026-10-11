@@ -3,11 +3,12 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Services;
 using System.Globalization;
 using Xunit;
+using static MoneyRecord.Tests.TestCulture;
 
 namespace MoneyRecord.Tests.Helpers;
 
 /// <summary>
-/// Formatting and parsing in an explicit currency (no test here depends on the app-wide base currency).
+/// Formatting in an explicit currency (no test here depends on the app-wide base currency).
 /// </summary>
 public class CurrencyFormattingTests
 {
@@ -86,44 +87,5 @@ public class CurrencyFormattingTests
         var group = new MoneyRecord.Models.TransactionGroup("Euros", items, MoneyRecord.Models.GroupingMode.Account, 500m, currencyCode: "EUR");
 
         group.CurrencyCode.Should().Be("EUR");
-    }
-
-    [Fact]
-    public void ParseAmount_SymbolWithDot_IsNotADecimalSeparator()
-    {
-        WithCulture("en-US", () =>
-            AmountParser.Parse("S/.1,250.50", "PEN").Should().Be(1250.50m));
-    }
-
-    [Fact]
-    public void ParseAmount_ZeroDecimalCurrency_RoundsToWholeUnits()
-    {
-        WithCulture("en-US", () =>
-            AmountParser.Parse("¥1,500", "JPY").Should().Be(1500m));
-    }
-
-    [Fact]
-    public void ParseAmount_SpanishDecimalComma()
-    {
-        WithCulture("es-CO", () =>
-            AmountParser.Parse("12,50", "COP").Should().Be(12.50m));
-    }
-
-    [Fact]
-    public void ParseAmount_RoundTripsFormattedText()
-    {
-        WithCulture("es-ES", () =>
-        {
-            var text = MoneyFormatter.Format(1234.56m, "EUR");
-            AmountParser.Parse(text, "EUR").Should().Be(1234.56m);
-        });
-    }
-
-    private static void WithCulture(string name, Action action)
-    {
-        var previous = CultureInfo.CurrentCulture;
-        CultureInfo.CurrentCulture = new CultureInfo(name);
-        try { action(); }
-        finally { CultureInfo.CurrentCulture = previous; }
     }
 }

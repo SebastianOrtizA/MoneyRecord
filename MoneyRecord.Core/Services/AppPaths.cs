@@ -6,13 +6,12 @@ namespace MoneyRecord.Services
     public sealed class AppPaths(string appDataDirectory) : IAppPaths
     {
         public const string DatabaseFileName = "moneyrecord.db3";
+        public const string BackupsFolderName = "Backups";
 
-        public string AppDataDirectory { get; } = appDataDirectory;
+        public string DatabasePath => Path.Combine(appDataDirectory, DatabaseFileName);
 
-        public string DatabasePath => Path.Combine(AppDataDirectory, DatabaseFileName);
+        public string ReceiptsFolder => Path.Combine(appDataDirectory, ReceiptFiles.FolderName);
 
-        public string ReceiptsFolder => Path.Combine(AppDataDirectory, ReceiptFiles.FolderName);
-
-        public string BackupsFolder => Path.Combine(AppDataDirectory, "Backups");
+        public string BackupsFolder => Path.Combine(appDataDirectory, BackupsFolderName);
     }
 }
