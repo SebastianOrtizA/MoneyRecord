@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: In progress — 6.0–6.4 done (2026-10-11)
+**Status**: In progress — 6.0–6.5 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -91,7 +91,7 @@ foundation first, because everything later builds on them.
   folder on reinstall: revisit with Stage 7). Unsaved photos are discarded on Cancel, on leaving the page
   (`OnNavigatedFrom`) and when replaced; receipt file names now include milliseconds and are written with `File.Create`.
 
-### 6.5 Currency display everywhere (P1, P2)
+### 6.5 Currency display everywhere (P1, P2) — ✅ done
 - Remove every hard-coded `'${0:N2}'` (MainPage, BudgetPage, report pages, TransfersPage, RecurringTransactionsPage,
   `ChartDrawables` axis, `MainViewModel.ShowAccountBalancesAsync`, report detail popups) → `MoneyConverter`
   with the account currency, else the device culture.
@@ -108,6 +108,29 @@ foundation first, because everything later builds on them.
 - (From 6.2) `CurrencyService.GetMinorUnits(code)`: JPY/CLP/KRW show and accept 0 decimals; storage stays in cents.
 - (From 6.3) Deleting an account moves its transactions to the default account even when the currencies differ; refuse
   or ask once accounts can have different currencies. Manage Accounts shows negative balances in green.
+- Done as `MoneyFormatter.Format(amount, currencyCode?)` (null/empty = base currency; the culture's own symbol when
+  the currency is the culture region's, otherwise `CurrencyService` symbols such as `COL$`), `MoneyConverter` (base) and
+  `CurrencyMoneyConverter` (MultiBinding amount + `CurrencyCode`). Display-only `[Ignore] CurrencyCode` on Transaction,
+  Transfer (source account), RecurringTransaction, plus `AccountBalanceInfo.CurrencyCode` and
+  `TransactionGroup.CurrencyCode` (its single currency, else base). Base currency: preference `BaseCurrencyCode`,
+  `ICurrencyService.Get/SetBaseCurrencyCode`, Settings picker; new accounts default to it. Home card:
+  `GetBalancesByCurrencyAsync` → `CurrencyBalance(CurrencyCode, Balance, AccountCount)` (decimal from exact cents, not
+  minor units), code suffix only when there are several currencies. `CurrencyMaskBehavior.CurrencyCode` (bindable,
+  reformats when the account changes) and `ParseAmount(text, currencyCode)` replace `DecimalPlaces` and the
+  `Replace("$", "").Replace(",", "")` parsing (which broke "12,50" in Spanish). Resource strings take preformatted
+  amounts. Account delete is refused when transactions/rules would move into another currency.
+- **Known limitation (needs exchange rates, moved to Stage 10.3):** totals that span accounts (Home income/expense/net,
+  reports, budgets, category groups, charts) still add amounts across currencies and show them in the base currency.
+  The report detail popup already lists one subtotal per currency (`MoneyFormatter.FormatTotals`). A transfer between
+  accounts in different currencies (already warned on entry) shows in the source account's currency.
+- Review fixes (PR #9): migration **v3 `M003_AccountCurrencyCodes`** stamps accounts with an empty `CurrencyCode` with
+  the base currency at upgrade time (restore does the same for old backups), so changing the base currency can't
+  relabel them or change `HaveSameCurrency`. The base currency is loaded explicitly in `MauiProgram`
+  (`CurrencyService.LoadBaseCurrency`) before the database opens. `CurrencyMaskBehavior` keeps the exact (cents) value,
+  so a zero-decimal currency on the way (USD → KRW → USD) or an amount loaded before its account keeps its cents; the
+  add/edit ViewModels also set the account before the amount. Account groups take the account's currency.
+  `CurrencyBalance.FromAccounts` + `MoneyFormatter.ResolveCurrencyCode(code, base)` are the single grouping/resolving rule;
+  Home computes account balances once. Region currency lookups are cached per culture. "Initial:" is localized.
 
 ### 6.6 Localization cleanup (P8)
 - Move the ~26 hard-coded strings ("No activity", "Transfers", "Transfer to/from", "Unknown", "Cash",

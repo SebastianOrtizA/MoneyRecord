@@ -89,7 +89,7 @@
                                        FontSize="14"
                                        TextColor="{AppThemeBinding Light=#2E7D32, Dark=#C8E6C9}"
                                        HorizontalOptions="Center"/>
-                                <Label Text="{Binding TotalIncome, StringFormat='${0:N2}'}" 
+                                <Label Text="{Binding TotalIncome, Converter={StaticResource MoneyConverter}}" 
                                        FontSize="28"
                                        FontAttributes="Bold"
                                        HorizontalOptions="Center"
@@ -278,7 +278,7 @@
                                                            FontAttributes="Bold"
                                                            LineBreakMode="TailTruncation"/>
                                                     <HorizontalStackLayout Spacing="4">
-                                                        <Label Text="{Binding Amount, StringFormat='${0:N2}'}"
+                                                        <Label Text="{Binding Amount, Converter={StaticResource MoneyConverter}}"
                                                                FontSize="12"
                                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                                         <Label Text="{ext:Localize TapForDetails}"

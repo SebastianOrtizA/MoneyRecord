@@ -176,7 +176,6 @@ namespace MoneyRecord.ViewModels
                 TransactionType = Transaction.Type;
                 SelectedDate = Transaction.Date;
                 Description = Transaction.Description;
-                Amount = Transaction.Amount.ToString();
                 TagsText = Transaction.Tags ?? string.Empty;
                 _receipt.Load(Transaction.ReceiptPhotoPath);
                 ShowReceipt();
@@ -196,6 +195,9 @@ namespace MoneyRecord.ViewModels
                 {
                     SelectedAccount = Accounts.FirstOrDefault(a => a.IsDefault);
                 }
+
+                // After the account: the amount field formats in the account's currency
+                Amount = Transaction.Amount.ToString();
             }
             else
             {
@@ -260,12 +262,12 @@ namespace MoneyRecord.ViewModels
 
                 if (remaining <= 0)
                 {
-                    BudgetWarningText = string.Format(AppResources.BudgetExceeded, SelectedCategory.Name, spent, budget.LimitAmount);
+                    BudgetWarningText = string.Format(AppResources.BudgetExceeded, SelectedCategory.Name, MoneyFormatter.Format(spent), MoneyFormatter.Format(budget.LimitAmount));
                     ShowBudgetWarning = true;
                 }
                 else if (remaining < budget.LimitAmount * 0.2m)
                 {
-                    BudgetWarningText = string.Format(AppResources.BudgetNearLimit, SelectedCategory.Name, remaining);
+                    BudgetWarningText = string.Format(AppResources.BudgetNearLimit, SelectedCategory.Name, MoneyFormatter.Format(remaining));
                     ShowBudgetWarning = true;
                 }
                 else
@@ -288,7 +290,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
+            var amountValue = CurrencyMaskBehavior.ParseAmount(Amount, SelectedAccount?.CurrencyCode);
             if (amountValue <= 0 || !Money.IsInRange(amountValue))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);

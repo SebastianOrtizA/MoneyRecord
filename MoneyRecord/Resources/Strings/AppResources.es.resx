@@ -501,7 +501,7 @@
     <value>Balances de Cuentas</value>
   </data>
   <data name="AvailableBalance" xml:space="preserve">
-    <value>Disponible: ${0:N2}</value>
+    <value>Disponible: {0}</value>
   </data>
   <data name="Back" xml:space="preserve">
     <value>Volver</value>
@@ -634,7 +634,7 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
 
 De: {0}
 A: {1}
-Monto: ${2:N2}</value>
+Monto: {2}</value>
   </data>
   <data name="TransferDeletedSuccessfully" xml:space="preserve">
     <value>Transferencia eliminada exitosamente</value>
@@ -643,7 +643,7 @@ Monto: ${2:N2}</value>
     <value>Error al eliminar la transferencia: {0}</value>
   </data>
   <data name="Available" xml:space="preserve">
-    <value>Disponible: ${0:N2}</value>
+    <value>Disponible: {0}</value>
   </data>
 
   <!-- Budget Mode -->
@@ -735,13 +735,13 @@ Monto: ${2:N2}</value>
     <value>¿Estás seguro de que deseas eliminar esta transacción?
 
 {0}
-${1:N2}</value>
+{1}</value>
   </data>
   <data name="ConfirmDeleteTransferFromListMessage" xml:space="preserve">
     <value>¿Estás seguro de que deseas eliminar esta transferencia?
 
 {0}
-${1:N2}</value>
+{1}</value>
   </data>
   <data name="TransactionDeletedSuccessfully" xml:space="preserve">
     <value>Transacción eliminada exitosamente</value>
@@ -752,10 +752,10 @@ ${1:N2}</value>
 
   <!-- Budget Warnings -->
   <data name="BudgetExceeded" xml:space="preserve">
-    <value>⚠️ ¡Presupuesto excedido para '{0}'! Gastado ${1:N2} de ${2:N2} límite.</value>
+    <value>⚠️ ¡Presupuesto excedido para '{0}'! Gastado {1} de {2} límite.</value>
   </data>
   <data name="BudgetNearLimit" xml:space="preserve">
-    <value>⚠️ Presupuesto cerca del límite para '{0}'. Solo ${1:N2} restante.</value>
+    <value>⚠️ Presupuesto cerca del límite para '{0}'. Solo {1} restante.</value>
   </data>
   <data name="BudgetSummary" xml:space="preserve">
     <value>Resumen de Presupuesto</value>
@@ -913,6 +913,18 @@ ${1:N2}</value>
   </data>
   <data name="SelectBackupFile" xml:space="preserve">
     <value>Seleccionar Archivo de Copia de Seguridad</value>
+  </data>
+  <data name="BaseCurrency" xml:space="preserve">
+    <value>Moneda Base</value>
+  </data>
+  <data name="BaseCurrencyDescription" xml:space="preserve">
+    <value>Los totales y reportes se muestran en esta moneda. Los saldos en otras monedas se muestran por separado, nunca se suman.</value>
+  </data>
+  <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
+    <value>'{0}' usa {1}, pero la cuenta predeterminada '{2}' usa {3}. Sus transacciones y reglas recurrentes no se pueden mover allí sin cambiar su valor: elimínalas primero.</value>
+  </data>
+  <data name="InitialBalanceAmount" xml:space="preserve">
+    <value>Inicial: {0}</value>
   </data>
 
   <!-- Search & Filters -->

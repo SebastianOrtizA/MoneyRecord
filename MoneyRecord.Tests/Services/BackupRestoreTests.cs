@@ -197,7 +197,10 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         lunch.ReceiptPhotoPath.Should().Be(Path.Combine(Receipts, "receipt_old.jpg"));
         (await Db.FindAsync<Transaction>(2)).ReceiptPhotoPath.Should().BeNull("the photo isn't on this device");
         File.Exists(orphan).Should().BeFalse("no restored transaction uses it (it is in the snapshot)");
-        (await _accountRepository.GetAllAsync()).Should().ContainSingle().Which.Name.Should().Be("Bank", "the repository cache is refreshed");
+        var bank = (await _accountRepository.GetAllAsync()).Should().ContainSingle().Which;
+        bank.Name.Should().Be("Bank", "the repository cache is refreshed");
+        bank.CurrencyCode.Should().Be(MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null),
+            "an account from before currencies gets a fixed one, so changing the base currency can't relabel it");
     }
 
     [Fact]
@@ -249,7 +252,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
 
     private async Task<Account> AddAccountAsync(string name)
     {
-        var account = new Account { Name = name };
+        var account = new Account { Name = name, CurrencyCode = "USD" };
         await Db.InsertAsync(account);
         return account;
     }

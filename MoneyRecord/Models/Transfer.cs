@@ -40,5 +40,9 @@ namespace MoneyRecord.Models
 
         [Ignore]
         public string DestinationAccountName { get; set; } = string.Empty;
+
+        /// <summary>The source account's currency (empty = the base currency), filled in for display.</summary>
+        [Ignore]
+        public string CurrencyCode { get; set; } = string.Empty;
     }
 }

@@ -33,6 +33,11 @@ Close the gap with competing finance apps. Each section can ship on its own.
   shown on tap) or *Original currencies* (the per-currency subtotals from Stage 6.5, no conversion). Remember the
   choice in preferences; default = Original until rates have been downloaded once.
 - Needs `INTERNET` (opt-in toggle "Download exchange rates").
+- **Moved here from the 6.5 review (PR #9, item 5):** these totals still add amounts across currencies and label the sum
+  in the base currency: Home Incomes/Expenses/Net (`BalanceService.GetTotalIncomesAsync`/`GetTotalExpensesAsync`),
+  report category amounts and totals, budget spent/remaining, category group totals (`TransactionGroup` with mixed
+  currencies) and chart values. Until rates exist they should at least show per-currency subtotals the way
+  `MoneyFormatter.FormatTotals` does in the report detail popup (already fixed in 6.5).
 
 ### 10.4 Import from bank statements
 - CSV import with CsvHelper (use its Apache-2.0 licence): pick file → map columns (date, description, amount,

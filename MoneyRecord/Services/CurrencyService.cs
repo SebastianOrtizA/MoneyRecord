@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 using System.Globalization;
@@ -38,6 +39,32 @@ namespace MoneyRecord.Services
         private static readonly Dictionary<string, Currency> _currencyMap =
             _currencies.ToDictionary(c => c.Code, StringComparer.OrdinalIgnoreCase);
 
+        public const string BaseCurrencyPreferenceKey = "BaseCurrencyCode";
+
+        private readonly IPreferencesService _preferences;
+
+        public CurrencyService(IPreferencesService preferences)
+        {
+            _preferences = preferences;
+        }
+
+        /// <summary>
+        /// Loads the saved base currency into <see cref="MoneyFormatter"/>. Called once at startup, before the database
+        /// is opened or any page formats money.
+        /// </summary>
+        public static void LoadBaseCurrency(IPreferencesService preferences)
+        {
+            MoneyFormatter.BaseCurrencyCode = preferences.Get(BaseCurrencyPreferenceKey, string.Empty);
+        }
+
+        public string GetBaseCurrencyCode() => MoneyFormatter.ResolveCurrencyCode(null);
+
+        public void SetBaseCurrencyCode(string code)
+        {
+            _preferences.Set(BaseCurrencyPreferenceKey, code);
+            MoneyFormatter.BaseCurrencyCode = code;
+        }
+
         public List<Currency> GetAvailableCurrencies() => _currencies;
 
         public Currency? GetCurrency(string code)
@@ -47,15 +74,30 @@ namespace MoneyRecord.Services
             return currency;
         }
 
-        public static string GetSymbol(string code)
+        /// <summary>
+        /// The currency's symbol; the base currency's for an empty code, the code itself for an unknown currency.
+        /// </summary>
+        public static string GetSymbol(string? code)
         {
-            if (string.IsNullOrEmpty(code)) return "$";
-            return _currencyMap.TryGetValue(code, out var currency) ? currency.Symbol : "$";
+            if (string.IsNullOrEmpty(code))
+                code = MoneyFormatter.ResolveCurrencyCode(null);
+            return _currencyMap.TryGetValue(code, out var currency) ? currency.Symbol : code;
         }
+
+        /// <summary>
+        /// Decimal places shown and accepted for a currency: 0 for JPY, CLP and KRW, otherwise 2.
+        /// Storage is always in cents (see <see cref="Money"/>).
+        /// </summary>
+        public static int GetMinorUnits(string? code) => code?.ToUpperInvariant() switch
+        {
+            "JPY" or "CLP" or "KRW" => 0,
+            _ => 2
+        };
 
         string ICurrencyService.GetSymbol(string code) => GetSymbol(code);
 
-        public string GetDefaultCurrencyCode() => GetDeviceCurrencyCode();
+        /// <summary>The currency new accounts start with: the base currency.</summary>
+        public string GetDefaultCurrencyCode() => GetBaseCurrencyCode();
 
         /// <summary>
         /// The currency of the device region (e.g. es-CO → COP), even when the app runs in another
@@ -85,8 +127,7 @@ namespace MoneyRecord.Services
 
         public string FormatAmount(decimal amount, string currencyCode)
         {
-            var symbol = GetSymbol(currencyCode);
-            return $"{symbol}{amount:N2}";
+            return MoneyFormatter.Format(amount, currencyCode);
         }
     }
 }

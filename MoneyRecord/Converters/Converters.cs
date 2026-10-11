@@ -193,16 +193,36 @@ namespace MoneyRecord.Converters
     }
 
     /// <summary>
-    /// Formats a decimal amount as money in the current culture, with the sign before the symbol (-$50.00).
+    /// Formats a decimal amount as money in the base currency, with the sign before the symbol (-$50.00).
+    /// For totals and other amounts that belong to no single account.
     /// </summary>
     public class MoneyConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            return value is decimal amount ? MoneyFormatter.Format(amount) : MoneyFormatter.Format(0);
+            return MoneyFormatter.Format(value is decimal amount ? amount : 0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Formats an amount in its account's currency: MultiBinding of (decimal amount, string currencyCode).
+    /// An empty currency code means the base currency.
+    /// </summary>
+    public class CurrencyMoneyConverter : IMultiValueConverter
+    {
+        public object? Convert(object?[] values, Type targetType, object? parameter, CultureInfo culture)
+        {
+            var amount = values.Length > 0 && values[0] is decimal d ? d : 0;
+            var currencyCode = values.Length > 1 ? values[1] as string : null;
+            return MoneyFormatter.Format(amount, currencyCode);
+        }
+
+        public object?[] ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -235,8 +255,7 @@ namespace MoneyRecord.Converters
                         : Math.Abs(transaction.Amount);
                 }
 
-                // Use device's actual culture for currency formatting
-                return MoneyFormatter.Format(displayAmount);
+                return MoneyFormatter.Format(displayAmount, transaction.CurrencyCode);
             }
             return MoneyFormatter.Format(0);
         }
@@ -263,14 +282,14 @@ namespace MoneyRecord.Converters
                 // Check both emoji version (legacy) and text version
                 if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
                 {
-                    return MoneyFormatter.Format(Math.Abs(group.Total));
+                    return MoneyFormatter.Format(Math.Abs(group.Total), group.CurrencyCode);
                 }
 
                 // For expense groups, display as negative; for income groups, display as positive
                 var displayAmount = group.Type == TransactionType.Expense
                     ? -Math.Abs(group.Total)
                     : Math.Abs(group.Total);
-                return MoneyFormatter.Format(displayAmount);
+                return MoneyFormatter.Format(displayAmount, group.CurrencyCode);
             }
             return MoneyFormatter.Format(0);
         }
@@ -668,9 +687,9 @@ namespace MoneyRecord.Converters
                 values[2] is decimal remainingAmount)
             {
                 var amount = isOverBudget ? exceededAmount : remainingAmount;
-                return $"${amount:N2}";
+                return MoneyFormatter.Format(amount);
             }
-            return "$0.00";
+            return MoneyFormatter.Format(0);
         }
 
         public object?[] ConvertBack(object? value, Type[] targetTypes, object? parameter, CultureInfo culture)

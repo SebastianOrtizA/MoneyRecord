@@ -1,3 +1,5 @@
+using MoneyRecord.Helpers;
+
 namespace MoneyRecord.Controls
 {
     public sealed class BarChartData
@@ -67,7 +69,7 @@ namespace MoneyRecord.Controls
 
                 string label = Data.YLabelFormat != null
                     ? string.Format(Data.YLabelFormat, val)
-                    : $"${val:N0}";
+                    : MoneyFormatter.FormatWhole(val);
                 canvas.DrawString(label, 2, y - 7, leftMargin - 6, 14, HorizontalAlignment.Right, VerticalAlignment.Center);
             }
 

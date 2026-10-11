@@ -15,7 +15,8 @@ namespace MoneyRecord.Services.Repositories.Migrations
         public static readonly IReadOnlyList<IMigration> All =
         [
             new M001_Baseline(),
-            new M002_MoneyAsCents()
+            new M002_MoneyAsCents(),
+            new M003_AccountCurrencyCodes()
         ];
 
         private readonly IReadOnlyList<IMigration> _migrations;

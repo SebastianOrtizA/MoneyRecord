@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 
@@ -35,6 +36,13 @@ namespace MoneyRecord.Services
 
             return totalInitialBalance + totalIncomes - totalExpenses;
         }
+
+        public Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync() =>
+            GetBalancesByCurrencyAsync(MoneyFormatter.ResolveCurrencyCode(null));
+
+        /// <summary>For tests: <paramref name="baseCurrencyCode"/> instead of the app-wide base currency.</summary>
+        public async Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync(string baseCurrencyCode) =>
+            CurrencyBalance.FromAccounts(await GetAllAccountBalancesAsync(), baseCurrencyCode);
 
         public async Task<decimal> GetAccountBalanceAsync(int accountId)
         {
@@ -150,6 +158,7 @@ namespace MoneyRecord.Services
                 {
                     AccountId = account.Id,
                     AccountName = account.Name ?? string.Empty,
+                    CurrencyCode = account.CurrencyCode,
                     CurrentBalance = balance,
                     LastActivityDate = activityDates.Count > 0 ? activityDates.Max() : account.CreatedDate
                 });

@@ -84,7 +84,7 @@
                                    HorizontalTextAlignment="Center"
                                    TextColor="{AppThemeBinding Light=#1565C0, Dark=#BBDEFB}"/>
                             <Label Grid.Row="1" Grid.Column="0"
-                                   Text="{Binding TotalBudgeted, StringFormat='${0:N2}'}"
+                                   Text="{Binding TotalBudgeted, Converter={StaticResource MoneyConverter}}"
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    HorizontalTextAlignment="Center"
@@ -96,7 +96,7 @@
                                    HorizontalTextAlignment="Center"
                                    TextColor="{AppThemeBinding Light=#1565C0, Dark=#BBDEFB}"/>
                             <Label Grid.Row="1" Grid.Column="1"
-                                   Text="{Binding TotalSpent, StringFormat='${0:N2}'}"
+                                   Text="{Binding TotalSpent, Converter={StaticResource MoneyConverter}}"
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    HorizontalTextAlignment="Center"
@@ -108,7 +108,7 @@
                                    HorizontalTextAlignment="Center"
                                    TextColor="{AppThemeBinding Light=#1565C0, Dark=#BBDEFB}"/>
                             <Label Grid.Row="1" Grid.Column="2"
-                                   Text="{Binding TotalRemaining, StringFormat='${0:N2}'}"
+                                   Text="{Binding TotalRemaining, Converter={StaticResource MoneyConverter}}"
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    HorizontalTextAlignment="Center"
@@ -169,7 +169,7 @@
                                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                                                    FontSize="16">
                                 <controls:DecimalEntry.Behaviors>
-                                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2"/>
+                                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True"/>
                                 </controls:DecimalEntry.Behaviors>
                             </controls:DecimalEntry>
 
@@ -273,7 +273,7 @@
                                                    FontSize="12"
                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                             <Label Grid.Row="1" Grid.Column="0"
-                                                   Text="{Binding SpentAmount, StringFormat='${0:N2}'}"
+                                                   Text="{Binding SpentAmount, Converter={StaticResource MoneyConverter}}"
                                                    FontSize="14"
                                                    FontAttributes="Bold"
                                                    TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"/>
@@ -284,7 +284,7 @@
                                                    HorizontalTextAlignment="Center"
                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                             <Label Grid.Row="1" Grid.Column="1"
-                                                   Text="{Binding OriginalLimitAmount, StringFormat='${0:N2}'}"
+                                                   Text="{Binding OriginalLimitAmount, Converter={StaticResource MoneyConverter}}"
                                                    FontSize="14"
                                                    FontAttributes="Bold"
                                                    HorizontalTextAlignment="Center"
@@ -296,7 +296,7 @@
                                                    HorizontalTextAlignment="End"
                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                             <Label Grid.Row="1" Grid.Column="2"
-                                                   Text="{Binding LimitAmount, StringFormat='${0:N2}'}"
+                                                   Text="{Binding LimitAmount, Converter={StaticResource MoneyConverter}}"
                                                    FontSize="14"
                                                    FontAttributes="Bold"
                                                    HorizontalTextAlignment="End"

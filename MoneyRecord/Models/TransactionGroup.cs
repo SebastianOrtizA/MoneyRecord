@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using MoneyRecord.Helpers;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.Models
@@ -39,6 +40,9 @@ namespace MoneyRecord.Models
         [ObservableProperty]
         private string groupIconCode = "F0770"; // Default tag icon
 
+        /// <summary>The currency of the group's total (empty = the base currency).</summary>
+        public string CurrencyCode { get; }
+
         /// <summary>
         /// Gets the displayable icon character from the unicode code
         /// </summary>
@@ -61,13 +65,27 @@ namespace MoneyRecord.Models
             }
         }
 
-        public TransactionGroup(string groupName, List<Transaction> transactions, GroupingMode mode = GroupingMode.Category, decimal? overrideTotal = null, string? accountIconCode = null)
+        /// <param name="currencyCode">
+        /// The group's currency when known (an account group: the account's). Otherwise it is the items' single
+        /// currency, or the base currency when they are mixed.
+        /// </param>
+        public TransactionGroup(string groupName, List<Transaction> transactions, GroupingMode mode = GroupingMode.Category, decimal? overrideTotal = null, string? accountIconCode = null, string? currencyCode = null)
         {
             GroupName = groupName ?? "Unknown";
             CategoryName = groupName ?? "Unknown"; // Keep for backward compatibility
             TransactionCount = transactions?.Count ?? 0;
             Items = new ObservableCollection<Transaction>(transactions ?? new List<Transaction>());
             IsBalanceMode = mode == GroupingMode.Account;
+
+            if (currencyCode != null)
+            {
+                CurrencyCode = currencyCode;
+            }
+            else
+            {
+                var currencies = Items.Select(t => MoneyFormatter.ResolveCurrencyCode(t.CurrencyCode)).Distinct().ToList();
+                CurrencyCode = currencies.Count == 1 ? currencies[0] : string.Empty;
+            }
 
             // Set group icon based on grouping mode
             if (mode == GroupingMode.Category && transactions != null && transactions.Any())

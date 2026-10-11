@@ -1,25 +1,98 @@
 using MoneyRecord.Services;
+using System.Collections.Concurrent;
 using System.Globalization;
 
 namespace MoneyRecord.Helpers
 {
     /// <summary>
-    /// Formats money amounts with the culture's currency format, always putting the minus sign
-    /// before the currency symbol (-$50.00, never ($50.00) or $-50.00).
+    /// Formats money amounts in a currency, with the culture's separators and symbol placement, always putting the
+    /// minus sign before the currency symbol (-$50.00, never ($50.00) or $-50.00).
     /// </summary>
     public static class MoneyFormatter
     {
-        public static string Format(decimal amount, CultureInfo? culture = null)
+        /// <summary>
+        /// The base currency (Settings): used for amounts that belong to no single account, e.g. totals and reports.
+        /// Empty = the device region's currency. Set at startup and when the user changes it.
+        /// </summary>
+        public static string BaseCurrencyCode { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Formats <paramref name="amount"/> in <paramref name="currencyCode"/> (an account's currency; null or empty
+        /// = the base currency) using <paramref name="culture"/> (default: the current culture).
+        /// </summary>
+        public static string Format(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
+        {
+            var code = ResolveCurrencyCode(currencyCode);
+            return Format(amount, code, CurrencyService.GetMinorUnits(code), culture);
+        }
+
+        /// <summary>Like <see cref="Format(decimal, string?, CultureInfo?)"/> without decimals (chart axes).</summary>
+        public static string FormatWhole(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
+        {
+            return Format(amount, ResolveCurrencyCode(currencyCode), 0, culture);
+        }
+
+        private static string Format(decimal amount, string code, int decimals, CultureInfo? culture)
         {
             culture ??= CultureInfo.CurrentCulture;
             var format = (NumberFormatInfo)culture.NumberFormat.Clone();
 
-            // Neutral cultures have no currency; "¤" is the generic placeholder.
-            if (format.CurrencySymbol == "¤")
-                format.CurrencySymbol = CurrencyService.GetSymbol(CurrencyService.GetDeviceCurrencyCode());
-
+            format.CurrencySymbol = GetSymbol(code, culture);
+            format.CurrencyDecimalDigits = decimals;
             format.CurrencyNegativePattern = GetLeadingSignPattern(format.CurrencyPositivePattern);
             return amount.ToString("C", format);
+        }
+
+        /// <summary>The currency an amount is shown in: its own, else the base currency, else the device's.</summary>
+        public static string ResolveCurrencyCode(string? currencyCode) =>
+            ResolveCurrencyCode(currencyCode, !string.IsNullOrEmpty(BaseCurrencyCode) ? BaseCurrencyCode : CurrencyService.GetDeviceCurrencyCode());
+
+        /// <summary>The one rule for an amount's currency: its own code (upper case), else <paramref name="baseCurrencyCode"/>.</summary>
+        public static string ResolveCurrencyCode(string? currencyCode, string baseCurrencyCode) =>
+            (!string.IsNullOrEmpty(currencyCode) ? currencyCode : baseCurrencyCode).ToUpperInvariant();
+
+        /// <summary>
+        /// Sums amounts per currency and lists the subtotals ("¥10,000 + $20.00"): amounts in different currencies are
+        /// never added together. One currency gives a single amount.
+        /// </summary>
+        public static string FormatTotals(IEnumerable<(decimal Amount, string? CurrencyCode)> amounts)
+        {
+            var totals = amounts
+                .GroupBy(a => ResolveCurrencyCode(a.CurrencyCode))
+                .Select(g => Format(g.Sum(a => a.Amount), g.Key))
+                .ToList();
+            return totals.Count > 0 ? string.Join(" + ", totals) : Format(0);
+        }
+
+        /// <summary>The ISO currency of each culture's region (null = none), looked up once per culture.</summary>
+        private static readonly ConcurrentDictionary<string, string?> RegionCurrencies = new();
+
+        /// <summary>
+        /// The culture's own symbol when the currency is the culture region's currency ("$" for COP in es-CO);
+        /// otherwise an unambiguous symbol for the currency ("COL$" for COP in en-US).
+        /// </summary>
+        private static string GetSymbol(string code, CultureInfo culture)
+        {
+            var cultureSymbol = culture.NumberFormat.CurrencySymbol;
+            if (cultureSymbol != "¤" && !culture.IsNeutralCulture && !string.IsNullOrEmpty(culture.Name))
+            {
+                var regionCurrency = RegionCurrencies.GetOrAdd(culture.Name, GetRegionCurrency);
+                if (string.Equals(regionCurrency, code, StringComparison.OrdinalIgnoreCase))
+                    return cultureSymbol;
+            }
+            return CurrencyService.GetSymbol(code);
+        }
+
+        private static string? GetRegionCurrency(string cultureName)
+        {
+            try
+            {
+                return new RegionInfo(cultureName).ISOCurrencySymbol;
+            }
+            catch (ArgumentException)
+            {
+                return null; // No region for this culture: the currency's own symbol is used
+            }
         }
 
         /// <summary>

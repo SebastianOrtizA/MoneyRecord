@@ -23,11 +23,16 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
 
         private List<Transaction> _allCombinedTransactions = new();
-        private Dictionary<string, decimal>? _cachedAccountBalances;
+        private Dictionary<string, AccountBalanceInfo>? _cachedAccountBalances;
         private Dictionary<string, string>? _cachedAccountIcons;
 
+        /// <summary>Home balance card: the first currency's total (base currency first), with its code when there are several.</summary>
         [ObservableProperty]
-        private decimal currentBalance;
+        private string balanceText = string.Empty;
+
+        /// <summary>Totals in the other currencies, one line each ("€300.00 EUR"); never added to the first.</summary>
+        [ObservableProperty]
+        private List<string> otherCurrencyBalances = [];
 
         [ObservableProperty]
         private decimal totalIncomes;
@@ -153,6 +158,22 @@ namespace MoneyRecord.ViewModels
             await LoadDataAsync();
         }
 
+        private void ShowBalances(List<CurrencyBalance> balances)
+        {
+            if (balances.Count <= 1)
+            {
+                BalanceText = balances.Count == 1
+                    ? MoneyFormatter.Format(balances[0].Balance, balances[0].CurrencyCode)
+                    : MoneyFormatter.Format(0);
+                OtherCurrencyBalances = [];
+                return;
+            }
+
+            var lines = balances.Select(b => $"{MoneyFormatter.Format(b.Balance, b.CurrencyCode)} {b.CurrencyCode}").ToList();
+            BalanceText = lines[0];
+            OtherCurrencyBalances = lines.Skip(1).ToList();
+        }
+
         [RelayCommand]
         private async Task LoadDataAsync()
         {
@@ -162,18 +183,24 @@ namespace MoneyRecord.ViewModels
 
                 var (startDate, endDate) = GetDateRange();
 
-                var balanceTask = _balanceService.GetTotalBalanceAsync();
+                var accountBalancesTask = _balanceService.GetAllAccountBalancesAsync();
                 var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
                 var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
                 var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 var transfersTask = _enrichmentService.GetEnrichedTransfersAsync(startDate, endDate);
 
-                await Task.WhenAll(balanceTask, incomesTask, expensesTask, transactionsTask, transfersTask);
+                await Task.WhenAll(accountBalancesTask, incomesTask, expensesTask, transactionsTask, transfersTask);
 
-                CurrentBalance = await balanceTask;
+                // Computed once: the balance card and the account groups both use them
+                var accountBalances = await accountBalancesTask ?? new List<AccountBalanceInfo>();
+                ShowBalances(CurrencyBalance.FromAccounts(accountBalances, MoneyFormatter.ResolveCurrencyCode(null)));
                 TotalIncomes = await incomesTask;
                 TotalExpenses = await expensesTask;
                 NetIncome = TotalIncomes - TotalExpenses;
+                // Re-format even when the values didn't change: the base currency may have (Settings)
+                OnPropertyChanged(nameof(TotalIncomes));
+                OnPropertyChanged(nameof(TotalExpenses));
+                OnPropertyChanged(nameof(NetIncome));
 
                 var transactionList = await transactionsTask ?? new List<Transaction>();
                 var transfers = await transfersTask ?? new List<Transfer>();
@@ -189,14 +216,9 @@ namespace MoneyRecord.ViewModels
 
                 if (CurrentGroupingMode == GroupingMode.Account)
                 {
-                    var balanceInfosTask = _balanceService.GetAllAccountBalancesAsync();
-                    var accountsTask = _accountRepository.GetAllAsync();
-                    await Task.WhenAll(balanceInfosTask, accountsTask);
+                    _cachedAccountBalances = accountBalances.ToDictionary(b => b.AccountName ?? string.Empty);
 
-                    var balanceInfos = await balanceInfosTask ?? new List<AccountBalanceInfo>();
-                    _cachedAccountBalances = balanceInfos.ToDictionary(b => b.AccountName ?? string.Empty, b => b.CurrentBalance);
-
-                    var accounts = await accountsTask ?? new List<Account>();
+                    var accounts = await _accountRepository.GetAllAsync() ?? new List<Account>();
                     _cachedAccountIcons = accounts.ToDictionary(a => a.Name ?? string.Empty, a => a.IconCode ?? "F0070");
                 }
                 else
@@ -323,16 +345,25 @@ namespace MoneyRecord.ViewModels
                     {
                         decimal? overrideTotal = null;
                         string? accountIconCode = null;
+                        string? currencyCode = null;
 
                         if (CurrentGroupingMode == GroupingMode.Account)
                         {
-                            if (_cachedAccountBalances != null)
-                                overrideTotal = _cachedAccountBalances.GetValueOrDefault(g.Key, 0);
+                            // The account's own currency: a transfer row from another currency must not change it
+                            if (_cachedAccountBalances != null && _cachedAccountBalances.TryGetValue(g.Key, out var balance))
+                            {
+                                overrideTotal = balance.CurrentBalance;
+                                currencyCode = balance.CurrencyCode;
+                            }
+                            else if (_cachedAccountBalances != null)
+                            {
+                                overrideTotal = 0;
+                            }
                             if (_cachedAccountIcons != null)
                                 accountIconCode = _cachedAccountIcons.GetValueOrDefault(g.Key, "F0070");
                         }
 
-                        groups.Add(new TransactionGroup(g.Key, g.ToList(), CurrentGroupingMode, overrideTotal, accountIconCode));
+                        groups.Add(new TransactionGroup(g.Key, g.ToList(), CurrentGroupingMode, overrideTotal, accountIconCode, currencyCode));
                     }
 
                     groups = groups.OrderBy(g => g.GroupName).ToList();
@@ -404,7 +435,7 @@ namespace MoneyRecord.ViewModels
                 // Build the message to display
                 var message = string.Join("\n\n", balances.Select(b => 
                     $"🏦 {b.AccountName}\n" +
-                    $"   {AppResources.Balance}: ${b.CurrentBalance:N2}\n" +
+                    $"   {AppResources.Balance}: {MoneyFormatter.Format(b.CurrentBalance, b.CurrencyCode)}\n" +
                     $"   {AppResources.LastActivity}: {b.LastActivityDateDisplay}"));
 
                 if (string.IsNullOrEmpty(message))
@@ -492,8 +523,8 @@ namespace MoneyRecord.ViewModels
             var isTransfer = transaction.TransferId.HasValue;
 
             var confirmMessage = isTransfer 
-                ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, transaction.Description, transaction.Amount)
-                : string.Format(AppResources.ConfirmDeleteTransactionMessage, transaction.Description, transaction.Amount);
+                ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, transaction.Description, MoneyFormatter.Format(transaction.Amount, transaction.CurrencyCode))
+                : string.Format(AppResources.ConfirmDeleteTransactionMessage, transaction.Description, MoneyFormatter.Format(transaction.Amount, transaction.CurrencyCode));
 
             var confirm = await Shell.Current.DisplayAlertAsync(
                 AppResources.ConfirmDeleteTransactionTitle,
@@ -693,6 +724,7 @@ namespace MoneyRecord.ViewModels
                         Description = $"Transfer to {transfer.DestinationAccountName}: {transfer.Description}",
                         Amount = transfer.Amount,
                         Type = TransactionType.Transfer,
+                        CurrencyCode = transfer.CurrencyCode,
                         AccountId = transfer.SourceAccountId,
                         AccountName = transfer.SourceAccountName,
                         AccountIconCode = transferIconCode,
@@ -711,6 +743,7 @@ namespace MoneyRecord.ViewModels
                         Description = $"Transfer from {transfer.SourceAccountName}: {transfer.Description}",
                         Amount = transfer.Amount,
                         Type = TransactionType.Transfer,
+                        CurrencyCode = transfer.CurrencyCode,
                         AccountId = transfer.DestinationAccountId,
                         AccountName = transfer.DestinationAccountName,
                         AccountIconCode = transferIconCode,
@@ -733,6 +766,7 @@ namespace MoneyRecord.ViewModels
                             : transfer.Description,
                         Amount = transfer.Amount,
                         Type = TransactionType.Transfer,
+                        CurrencyCode = transfer.CurrencyCode,
                         AccountId = transfer.SourceAccountId,
                         AccountName = $"{transfer.SourceAccountName} → {transfer.DestinationAccountName}",
                         AccountIconCode = transferIconCode,

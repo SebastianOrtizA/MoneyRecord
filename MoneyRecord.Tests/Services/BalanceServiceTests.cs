@@ -155,6 +155,47 @@ public class BalanceServiceTests
     }
 
     [Fact]
+    public async Task GetBalancesByCurrencyAsync_NeverAddsDifferentCurrencies_BaseFirst()
+    {
+        _accountRepo.GetAllAsync().Returns(new List<Account>
+        {
+            new() { Id = 1, InitialBalance = 100m, CurrencyCode = "EUR" },
+            new() { Id = 2, InitialBalance = 1000m, CurrencyCode = "USD" },
+            new() { Id = 3, InitialBalance = 250m, CurrencyCode = "" },       // no currency = the base currency
+            new() { Id = 4, InitialBalance = 450000m, CurrencyCode = "COP" },
+            new() { Id = 5, InitialBalance = 200m, CurrencyCode = "eur" }
+        });
+        _transactionRepo.GetAllAsync().Returns(new List<Transaction>
+        {
+            new() { Amount = 50m, Type = TransactionType.Expense, AccountId = 1 }
+        });
+        _transferRepo.GetAllAsync().Returns(new List<Transfer>());
+
+        var result = await _sut.GetBalancesByCurrencyAsync("USD");
+
+        result.Should().Equal(
+            new CurrencyBalance("USD", 1250m, 2),
+            new CurrencyBalance("COP", 450000m, 1),
+            new CurrencyBalance("EUR", 250m, 2));
+    }
+
+    [Fact]
+    public async Task GetBalancesByCurrencyAsync_SingleCurrency_OneRow()
+    {
+        _accountRepo.GetAllAsync().Returns(new List<Account>
+        {
+            new() { Id = 1, InitialBalance = 10m, CurrencyCode = "EUR" },
+            new() { Id = 2, InitialBalance = 5m, CurrencyCode = "EUR" }
+        });
+        _transactionRepo.GetAllAsync().Returns(new List<Transaction>());
+        _transferRepo.GetAllAsync().Returns(new List<Transfer>());
+
+        var result = await _sut.GetBalancesByCurrencyAsync("USD");
+
+        result.Should().ContainSingle().Which.Should().Be(new CurrencyBalance("EUR", 15m, 2));
+    }
+
+    [Fact]
     public async Task GetAllAccountBalancesAsync_CalculatesEachAccountCorrectly()
     {
         _accountRepo.GetAllAsync().Returns(new List<Account>

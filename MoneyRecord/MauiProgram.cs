@@ -15,6 +15,9 @@ namespace MoneyRecord
             // Initialize localization based on system language
             _ = LocalizationService.Instance;
 
+            // Before anything formats money or opens the database (migration 3 stamps old accounts with it)
+            CurrencyService.LoadBaseCurrency(new PreferencesService());
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()

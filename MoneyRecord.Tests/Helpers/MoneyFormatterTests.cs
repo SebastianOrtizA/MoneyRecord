@@ -10,19 +10,19 @@ public class MoneyFormatterTests
     [Fact]
     public void EnUs_Negative_PutsSignBeforeSymbol()
     {
-        MoneyFormatter.Format(-50m, new CultureInfo("en-US")).Should().Be("-$50.00");
+        MoneyFormatter.Format(-50m, "USD", new CultureInfo("en-US")).Should().Be("-$50.00");
     }
 
     [Fact]
     public void EnUs_Positive_HasNoSign()
     {
-        MoneyFormatter.Format(1250.5m, new CultureInfo("en-US")).Should().Be("$1,250.50");
+        MoneyFormatter.Format(1250.5m, "USD", new CultureInfo("en-US")).Should().Be("$1,250.50");
     }
 
     [Fact]
     public void EsCo_UsesPesoSymbolAndLocalSeparators()
     {
-        var text = MoneyFormatter.Format(-50000m, new CultureInfo("es-CO"));
+        var text = MoneyFormatter.Format(-50000m, "COP", new CultureInfo("es-CO"));
 
         text.Should().StartWith("-$");
         text.Should().Contain("50.000");
@@ -32,7 +32,7 @@ public class MoneyFormatterTests
     [Fact]
     public void EsEs_Negative_KeepsSymbolAfterAmount()
     {
-        var text = MoneyFormatter.Format(-50m, new CultureInfo("es-ES"));
+        var text = MoneyFormatter.Format(-50m, "EUR", new CultureInfo("es-ES"));
 
         text.Should().StartWith("-50,00");
         text.Should().EndWith("€");
@@ -41,7 +41,7 @@ public class MoneyFormatterTests
     [Fact]
     public void JaJp_HasNoDecimals()
     {
-        var text = MoneyFormatter.Format(-500m, new CultureInfo("ja-JP"));
+        var text = MoneyFormatter.Format(-500m, "JPY", new CultureInfo("ja-JP"));
 
         text.Should().StartWith("-");
         text.Should().EndWith("500");
@@ -50,6 +50,6 @@ public class MoneyFormatterTests
     [Fact]
     public void NeutralCulture_NeverShowsGenericCurrencySign()
     {
-        MoneyFormatter.Format(10m, new CultureInfo("es")).Should().NotContain("¤");
+        MoneyFormatter.Format(10m, culture: new CultureInfo("es")).Should().NotContain("¤");
     }
 }

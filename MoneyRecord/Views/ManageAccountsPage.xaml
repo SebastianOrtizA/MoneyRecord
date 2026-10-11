@@ -58,7 +58,7 @@
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16">
                         <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2" AllowNegativeValues="{Binding NewAccountAllowNegativeBalance}"/>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding NewAccountCurrency.Code}" AllowNegativeValues="{Binding NewAccountAllowNegativeBalance}"/>
                         </controls:DecimalEntry.Behaviors>
                     </controls:DecimalEntry>
 
@@ -166,7 +166,7 @@
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                            FontSize="16">
                         <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" DecimalPlaces="2" AllowNegativeValues="{Binding EditAccountAllowNegativeBalance}"/>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding EditAccountCurrency.Code}" AllowNegativeValues="{Binding EditAccountAllowNegativeBalance}"/>
                         </controls:DecimalEntry.Behaviors>
                     </controls:DecimalEntry>
 
@@ -292,14 +292,20 @@
                                        VerticalOptions="Center"/>
 
                                 <Label Grid.Row="1" Grid.Column="1"
-                                       Text="{Binding CurrentBalance, StringFormat='{0:C2}'}"
                                        FontSize="15"
                                        FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
-                                       VerticalOptions="Center"/>
+                                       TextColor="{Binding CurrentBalance, Converter={StaticResource BalanceToColorConverter}}"
+                                       VerticalOptions="Center">
+                                    <Label.Text>
+                                        <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
+                                            <Binding Path="CurrentBalance"/>
+                                            <Binding Path="Account.CurrencyCode"/>
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
 
                                 <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="8">
-                                    <Label Text="{Binding Account.InitialBalance, StringFormat='Initial: {0:C2}'}"
+                                    <Label Text="{Binding InitialBalanceText}"
                                            FontSize="12"
                                            TextColor="{AppThemeBinding Light=#999999, Dark=#777777}"
                                            VerticalOptions="Center"/>

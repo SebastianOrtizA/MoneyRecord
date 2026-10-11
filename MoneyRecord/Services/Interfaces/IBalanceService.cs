@@ -14,6 +14,12 @@ namespace MoneyRecord.Services.Interfaces
         Task<decimal> GetTotalExpensesAsync(DateTime startDate, DateTime endDate);
         Task<decimal> GetBalanceAsync(DateTime? startDate = null, DateTime? endDate = null);
         Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync();
+
+        /// <summary>
+        /// One balance per currency, base currency first; accounts without a currency count as the base currency.
+        /// Different currencies are never added together.
+        /// </summary>
+        Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync();
         Task<DateTime?> GetLastTransactionDateForAccountAsync(int accountId);
         Task<decimal> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate);
     }

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
@@ -13,6 +14,10 @@ namespace MoneyRecord.ViewModels
     {
         public Account Account { get; init; } = null!;
         public decimal CurrentBalance { get; init; }
+
+        /// <summary>"Initial: €100.00", localized, in the account's currency.</summary>
+        public string InitialBalanceText =>
+            string.Format(AppResources.InitialBalanceAmount, MoneyFormatter.Format(Account.InitialBalance, Account.CurrencyCode));
     }
 
     public partial class ManageAccountsViewModel : ObservableObject
@@ -149,7 +154,7 @@ namespace MoneyRecord.ViewModels
             }
 
             // Always parse with allowNegative=true to detect negative values for validation
-            var balance = CurrencyMaskBehavior.ParseCurrencyValue(NewAccountBalance, 2, allowNegative: true);
+            var balance = CurrencyMaskBehavior.ParseAmount(NewAccountBalance, NewAccountCurrency?.Code, allowNegative: true);
 
             if (!Money.IsInRange(balance))
             {
@@ -196,11 +201,12 @@ namespace MoneyRecord.ViewModels
             var account = item.Account;
             EditingAccount = account;
             EditAccountName = account.Name;
-            EditAccountBalance = account.InitialBalance.ToString();
             EditAccountIconCode = account.IconCode;
             EditAccountAllowNegativeBalance = account.AllowNegativeBalance;
             EditAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == account.CurrencyCode)
                 ?? AvailableCurrencies.FirstOrDefault(c => c.Code == _currencyService.GetDefaultCurrencyCode());
+            // After the currency: the balance field formats in it
+            EditAccountBalance = account.InitialBalance.ToString();
             UpdateIconSelection(account.IconCode);
             IsEditMode = true;
         }
@@ -230,7 +236,7 @@ namespace MoneyRecord.ViewModels
             }
 
             // Always parse with allowNegative=true to detect negative values for validation
-            var balance = CurrencyMaskBehavior.ParseCurrencyValue(EditAccountBalance, 2, allowNegative: true);
+            var balance = CurrencyMaskBehavior.ParseAmount(EditAccountBalance, EditAccountCurrency?.Code, allowNegative: true);
 
             if (!Money.IsInRange(balance))
             {
@@ -296,6 +302,14 @@ namespace MoneyRecord.ViewModels
                 if (usage.Transactions > 0 || usage.RecurringRules > 0)
                 {
                     var defaultAccount = await _accountRepository.GetDefaultAsync();
+                    if (defaultAccount != null && !AccountService.HaveSameCurrency(account, defaultAccount))
+                    {
+                        await _errorHandler.HandleAsync(string.Format(AppResources.AccountCurrencyDiffersFromDefault,
+                            account.Name, MoneyFormatter.ResolveCurrencyCode(account.CurrencyCode),
+                            defaultAccount.Name, MoneyFormatter.ResolveCurrencyCode(defaultAccount.CurrencyCode)));
+                        return;
+                    }
+
                     message = string.Format(AppResources.DeleteAccountWithTransactions,
                         account.Name, usage.Transactions, usage.RecurringRules, defaultAccount?.Name);
                 }

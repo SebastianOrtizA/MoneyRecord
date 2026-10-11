@@ -103,6 +103,7 @@ namespace MoneyRecord.Services
             if (transaction.AccountId.HasValue && accounts.TryGetValue(transaction.AccountId.Value, out var account))
             {
                 transaction.AccountName = account.Name ?? "Cash";
+                transaction.CurrencyCode = account.CurrencyCode;
                 transaction.AccountIconCode = account.IconCode ?? "F0070";
             }
             else
@@ -117,6 +118,7 @@ namespace MoneyRecord.Services
             if (accounts.TryGetValue(transfer.SourceAccountId, out var sourceAccount))
             {
                 transfer.SourceAccountName = sourceAccount.Name ?? "Unknown";
+                transfer.CurrencyCode = sourceAccount.CurrencyCode;
             }
             else
             {

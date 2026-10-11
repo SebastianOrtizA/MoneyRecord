@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -92,7 +93,7 @@ namespace MoneyRecord.ViewModels
 
             var confirm = await Shell.Current.DisplayAlertAsync(
                 AppResources.ConfirmDelete,
-                string.Format(AppResources.DeleteTransferConfirmMessage, transfer.SourceAccountName, transfer.DestinationAccountName, transfer.Amount),
+                string.Format(AppResources.DeleteTransferConfirmMessage, transfer.SourceAccountName, transfer.DestinationAccountName, MoneyFormatter.Format(transfer.Amount, transfer.CurrencyCode)),
                 AppResources.YesDelete,
                 AppResources.Cancel);
 

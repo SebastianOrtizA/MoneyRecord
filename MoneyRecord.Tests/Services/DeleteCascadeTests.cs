@@ -84,6 +84,34 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task DeleteAccount_OtherCurrencyWithTransactions_IsRefusedAndChangesNothing()
+    {
+        var cash = await DefaultAccountAsync();
+        var euros = await AddAccountAsync("Euros", OtherCurrencyThan(cash));
+        await Db.InsertAsync(new Transaction { Description = "Croissant", Amount = 3m, AccountId = euros.Id });
+
+        var act = () => _accountService.DeleteAsync(euros.Id);
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        (await Db.FindAsync<Account>(euros.Id)).Should().NotBeNull();
+        (await Db.Table<Transaction>().FirstAsync()).AccountId.Should().Be(euros.Id);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_OtherCurrencyUnused_IsDeleted()
+    {
+        var cash = await DefaultAccountAsync();
+        var euros = await AddAccountAsync("Euros", OtherCurrencyThan(cash));
+
+        await _accountService.DeleteAsync(euros.Id);
+
+        (await Db.FindAsync<Account>(euros.Id)).Should().BeNull();
+    }
+
+    private static string OtherCurrencyThan(Account account) =>
+        MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(account.CurrencyCode) == "EUR" ? "USD" : "EUR";
+
+    [Fact]
     public async Task DeleteAccount_RefreshesTheRepositoryCache()
     {
         var bank = await AddAccountAsync("Bank");
@@ -189,9 +217,10 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
 
     private async Task<Account> DefaultAccountAsync() => (await _accountRepository.GetDefaultAsync())!;
 
-    private async Task<Account> AddAccountAsync(string name)
+    private async Task<Account> AddAccountAsync(string name, string currencyCode = "")
     {
-        var account = new Account { Name = name };
+        // No currency code = the base currency, the same as the seeded Cash account's
+        var account = new Account { Name = name, CurrencyCode = currencyCode };
         await _accountRepository.SaveAsync(account);
         return account;
     }
