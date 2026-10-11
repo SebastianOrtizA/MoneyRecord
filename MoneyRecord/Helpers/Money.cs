@@ -10,10 +10,23 @@ namespace MoneyRecord.Helpers
         public const int CentsPerUnit = 100;
 
         /// <summary>
-        /// Rounds to the nearest cent (half away from zero, like the v2 migration's ROUND).
+        /// Largest amount the app accepts (just under a trillion). Far below where cents would overflow a long.
         /// </summary>
-        public static long ToCents(decimal amount) =>
-            (long)Math.Round(amount * CentsPerUnit, MidpointRounding.AwayFromZero);
+        public const decimal MaxAmount = 999_999_999_999.99m;
+
+        public static bool IsInRange(decimal amount) => Math.Abs(amount) <= MaxAmount;
+
+        /// <summary>
+        /// Rounds to the nearest cent, half away from zero.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">Beyond <see cref="MaxAmount"/>; validate input with <see cref="IsInRange"/>.</exception>
+        public static long ToCents(decimal amount)
+        {
+            if (!IsInRange(amount))
+                throw new ArgumentOutOfRangeException(nameof(amount), amount, $"Amounts are limited to {MaxAmount}.");
+
+            return (long)Math.Round(amount * CentsPerUnit, MidpointRounding.AwayFromZero);
+        }
 
         public static decimal FromCents(long cents) => cents / (decimal)CentsPerUnit;
     }

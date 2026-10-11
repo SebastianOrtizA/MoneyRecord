@@ -53,7 +53,11 @@ foundation first, because everything later builds on them.
   so a per-currency scale would make every model depend on its account and would rescale amounts when an account's currency
   changes. JPY stores multiples of 100; zero-decimal display/input rounding (`GetMinorUnits`) moves to 6.5.
   The migration skips tables that an old install never had (no legacy column). Backup JSON v2 carries both the decimal and
-  the cents property; cents is declared last, so it wins on import, and v1 files import through the decimal setter.
+  the cents property; cents is written later in the file, so it wins on import, and v1 files import through the decimal setter.
+  The migration converts in C# through `(decimal)double` (how the app used to read REAL), not SQL `ROUND`, so a stored
+  1.0049999999999999 keeps the $1.01 the user saw. Input above `Money.MaxAmount` (just under 1e12) is rejected.
+- Follow-up (once v2 has been out for a few releases): a migration that drops the unused REAL columns
+  (`ALTER TABLE … DROP COLUMN`, SQLite 3.35+).
 
 ### 6.3 Delete cascades (transactional)
 - Account delete (`ManageAccountsViewModel.DeleteAccountAsync`): in one `RunInTransactionAsync`, reassign

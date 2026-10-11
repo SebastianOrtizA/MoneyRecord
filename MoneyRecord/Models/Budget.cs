@@ -25,8 +25,8 @@ namespace MoneyRecord.Models
         }
 
         /// <summary>
-        /// Stored value in cents (see <see cref="Money"/>). Declared after <see cref="LimitAmount"/> so a JSON backup
-        /// that carries both sets the exact value last.
+        /// Stored value in cents (see <see cref="Money"/>). Declared after <see cref="LimitAmount"/>, so a JSON backup writes it
+        /// later in the file; on import System.Text.Json applies values in file order, so the exact value wins.
         /// </summary>
         public long LimitAmountCents { get; set; }
 

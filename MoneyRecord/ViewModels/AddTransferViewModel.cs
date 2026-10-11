@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -242,7 +243,7 @@ namespace MoneyRecord.ViewModels
             }
 
             var amountValue = CurrencyMaskBehavior.ParseCurrencyValue(Amount);
-            if (amountValue <= 0)
+            if (amountValue <= 0 || !Money.IsInRange(amountValue))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;

@@ -20,6 +20,25 @@ public class MoneyTests
     }
 
     [Fact]
+    public void ToCents_BeyondMaxAmount_ThrowsClearError()
+    {
+        var act = () => Money.ToCents(Money.MaxAmount + 1);
+
+        act.Should().Throw<ArgumentOutOfRangeException>();
+        Money.ToCents(-Money.MaxAmount).Should().Be(-99_999_999_999_999);
+    }
+
+    [Theory]
+    [InlineData("999999999999.99", true)]
+    [InlineData("-999999999999.99", true)]
+    [InlineData("1000000000000", false)]
+    [InlineData("79228162514264337593543950335", false)]
+    public void IsInRange_GuardsInput(string amount, bool expected)
+    {
+        Money.IsInRange(decimal.Parse(amount, System.Globalization.CultureInfo.InvariantCulture)).Should().Be(expected);
+    }
+
+    [Fact]
     public void FromCents_IsExact()
     {
         Money.FromCents(1234).Should().Be(12.34m);
@@ -58,7 +77,7 @@ public class MoneyTests
     [Fact]
     public void BackupJson_CentsWinOverDecimal()
     {
-        // The cents property is declared (and so serialized) after the decimal one
+        // Cents comes later in the file, and System.Text.Json applies values in file order
         var transaction = JsonSerializer.Deserialize<Transaction>("{\"Amount\":12.339999,\"AmountCents\":1234}")!;
 
         transaction.Amount.Should().Be(12.34m);

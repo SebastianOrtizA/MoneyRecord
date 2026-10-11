@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -152,7 +153,7 @@ namespace MoneyRecord.ViewModels
         {
             if (EditingItem == null || EditSelectedFrequency == null) return;
 
-            if (!decimal.TryParse(EditAmount.Replace("$", "").Replace(",", ""), out var newAmount) || newAmount <= 0)
+            if (!decimal.TryParse(EditAmount.Replace("$", "").Replace(",", ""), out var newAmount) || newAmount <= 0 || !Money.IsInRange(newAmount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;

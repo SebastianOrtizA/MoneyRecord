@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Behaviors;
@@ -150,6 +151,12 @@ namespace MoneyRecord.ViewModels
             // Always parse with allowNegative=true to detect negative values for validation
             var balance = CurrencyMaskBehavior.ParseCurrencyValue(NewAccountBalance, 2, allowNegative: true);
 
+            if (!Money.IsInRange(balance))
+            {
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
+                return;
+            }
+
             // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
             if (balance < 0 && !NewAccountAllowNegativeBalance)
             {
@@ -224,6 +231,12 @@ namespace MoneyRecord.ViewModels
 
             // Always parse with allowNegative=true to detect negative values for validation
             var balance = CurrencyMaskBehavior.ParseCurrencyValue(EditAccountBalance, 2, allowNegative: true);
+
+            if (!Money.IsInRange(balance))
+            {
+                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
+                return;
+            }
 
             // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
             if (balance < 0 && !EditAccountAllowNegativeBalance)

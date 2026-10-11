@@ -64,8 +64,9 @@ public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
         await MigrateAsync();
 
         var cents = (await _db.Table<Transaction>().OrderBy(t => t.Id).ToListAsync()).Select(t => t.AmountCents).ToList();
-        cents.Should().Equal(30, 100, 2000, -713, 0, 0);
-        (await _db.Table<Transaction>().ToListAsync()).Sum(t => t.Amount).Should().Be(14.17m);
+        // Same cents as the old app showed: it read REAL through (decimal)double (15 significant digits)
+        cents.Should().Equal(30, 101, 2000, -713, 0, 0);
+        (await _db.Table<Transaction>().ToListAsync()).Sum(t => t.Amount).Should().Be(14.18m);
     }
 
     [Fact]
@@ -104,4 +105,33 @@ public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
 
     private Task MigrateAsync() =>
         DatabaseInitializer.CreateSchemaAsync(_db, new MigrationRunner(MigrationRunner.All));
+}
+
+public class MoneyAsCentsConversionTests
+{
+    [Theory]
+    [InlineData(1.0049999999999999)]
+    [InlineData(0.30000000000000004)]
+    [InlineData(2.675)]
+    [InlineData(-7.125)]
+    [InlineData(1250.5)]
+    public void ToCents_MatchesWhatTheOldAppShowed(double stored)
+    {
+        // The old read path was (decimal)double; new input of that value must get the same cents
+        M002_MoneyAsCents.ToCents(stored).Should().Be(MoneyRecord.Helpers.Money.ToCents((decimal)stored));
+    }
+
+    [Fact]
+    public void ToCents_NullAndNaN_AreZero()
+    {
+        M002_MoneyAsCents.ToCents(null).Should().Be(0);
+        M002_MoneyAsCents.ToCents(double.NaN).Should().Be(0);
+    }
+
+    [Fact]
+    public void ToCents_AbsurdLegacyValues_AreClampedInsteadOfFailing()
+    {
+        M002_MoneyAsCents.ToCents(1e30).Should().Be(99_999_999_999_999);
+        M002_MoneyAsCents.ToCents(double.NegativeInfinity).Should().Be(-99_999_999_999_999);
+    }
 }

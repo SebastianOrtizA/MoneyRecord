@@ -198,7 +198,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            if (!decimal.TryParse(BudgetAmount.Replace("$", "").Replace(",", ""), out var amount) || amount <= 0)
+            if (!decimal.TryParse(BudgetAmount.Replace("$", "").Replace(",", ""), out var amount) || amount <= 0 || !Money.IsInRange(amount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;
@@ -272,7 +272,7 @@ namespace MoneyRecord.ViewModels
 
             if (string.IsNullOrEmpty(result)) return;
 
-            if (!decimal.TryParse(result.Replace("$", "").Replace(",", ""), out var newAmount) || newAmount <= 0)
+            if (!decimal.TryParse(result.Replace("$", "").Replace(",", ""), out var newAmount) || newAmount <= 0 || !Money.IsInRange(newAmount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;
