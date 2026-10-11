@@ -19,6 +19,7 @@
             <converters:GroupingModeToIsGroupedConverter x:Key="GroupingModeToIsGroupedConverter" />
             <converters:GroupingModeToIsNotGroupedConverter x:Key="GroupingModeToIsNotGroupedConverter" />
             <converters:BalanceToColorConverter x:Key="BalanceToColorConverter" />
+            <converters:MoneyConverter x:Key="MoneyConverter" />
             <converters:TransactionAmountConverter x:Key="TransactionAmountConverter" />
             <converters:GroupTotalConverter x:Key="GroupTotalConverter" />
             <converters:GroupTypeToColorConverter x:Key="GroupTypeToColorConverter" />

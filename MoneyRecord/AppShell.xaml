@@ -8,63 +8,90 @@
     Title="MoneyRecord"
     FlyoutBehavior="Flyout">
 
-    <FlyoutItem Title="{ext:Localize Home}" Icon="home">
+    <FlyoutItem Title="{ext:Localize Home}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF02DC;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize Home}"
             ContentTemplate="{DataTemplate views:MainPage}"
             Route="MainPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize ExpenseReport}" Icon="chart">
+    <FlyoutItem Title="{ext:Localize ExpenseReport}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF1260;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize ExpenseReport}"
             ContentTemplate="{DataTemplate views:ExpenseReportPage}"
             Route="ExpenseReportPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize IncomeReport}" Icon="chart">
+    <FlyoutItem Title="{ext:Localize IncomeReport}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF1261;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize IncomeReport}"
             ContentTemplate="{DataTemplate views:IncomeReportPage}"
             Route="IncomeReportPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize Trends}" Icon="chart">
+    <FlyoutItem Title="{ext:Localize Trends}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF012A;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize Trends}"
             ContentTemplate="{DataTemplate views:TrendsReportPage}"
             Route="TrendsReportPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize BudgetMode}" Icon="wallet">
+    <FlyoutItem Title="{ext:Localize BudgetMode}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF0584;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize BudgetMode}"
             ContentTemplate="{DataTemplate views:BudgetPage}"
             Route="BudgetPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize RecurringTransactions}" Icon="swap">
+    <FlyoutItem Title="{ext:Localize RecurringTransactions}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF0456;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize RecurringTransactions}"
             ContentTemplate="{DataTemplate views:RecurringTransactionsPage}"
             Route="RecurringTransactionsPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize Transfers}" Icon="swap">
+    <FlyoutItem Title="{ext:Localize Transfers}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF04E1;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize Transfers}"
             ContentTemplate="{DataTemplate views:TransfersPage}"
             Route="TransfersPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize ManageAccounts}" Icon="wallet">
+    <FlyoutItem Title="{ext:Localize ManageAccounts}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF0070;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize Accounts}"
             ContentTemplate="{DataTemplate views:ManageAccountsPage}"
             Route="ManageAccounts" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize ManageCategories}" Icon="folder">
+    <FlyoutItem Title="{ext:Localize ManageCategories}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF0831;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize IncomeCategories}"
             ContentTemplate="{DataTemplate views:ManageCategoriesPage}"
@@ -75,7 +102,10 @@
             Route="ManageExpenseCategories" />
     </FlyoutItem>
 
-    <FlyoutItem Title="{ext:Localize Settings}" Icon="folder">
+    <FlyoutItem Title="{ext:Localize Settings}">
+        <FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF0493;" Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </FlyoutItem.Icon>
         <ShellContent
             Title="{ext:Localize Settings}"
             ContentTemplate="{DataTemplate views:SettingsPage}"

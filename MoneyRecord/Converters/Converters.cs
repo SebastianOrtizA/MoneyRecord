@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using System.Globalization;
@@ -192,6 +193,22 @@ namespace MoneyRecord.Converters
     }
 
     /// <summary>
+    /// Formats a decimal amount as money in the current culture, with the sign before the symbol (-$50.00).
+    /// </summary>
+    public class MoneyConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return value is decimal amount ? MoneyFormatter.Format(amount) : MoneyFormatter.Format(0);
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
     /// Converts transaction amount to display format: negative for expenses, positive for incomes.
     /// For transfers: negative for outgoing, positive for incoming.
     /// Requires Transaction object as binding source.
@@ -219,9 +236,9 @@ namespace MoneyRecord.Converters
                 }
 
                 // Use device's actual culture for currency formatting
-                return FormatCurrency(displayAmount);
+                return MoneyFormatter.Format(displayAmount);
             }
-            return FormatCurrency(0);
+            return MoneyFormatter.Format(0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -229,19 +246,6 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
 
-        private static string FormatCurrency(decimal amount)
-        {
-            var deviceCulture = CultureInfo.CurrentCulture;
-
-            // Check if the currency symbol is the generic placeholder (¤)
-            if (deviceCulture.NumberFormat.CurrencySymbol == "¤")
-            {
-                // Fallback to a reasonable default based on region or use $ as universal symbol
-                return $"$ {amount:N2}";
-            }
-
-            return amount.ToString("C2", deviceCulture);
-        }
     }
 
     /// <summary>
@@ -259,16 +263,16 @@ namespace MoneyRecord.Converters
                 // Check both emoji version (legacy) and text version
                 if (group.GroupName == "🔄 Transfers" || group.GroupName == "Transfers" || group.Type == TransactionType.Transfer)
                 {
-                    return FormatCurrency(Math.Abs(group.Total));
+                    return MoneyFormatter.Format(Math.Abs(group.Total));
                 }
 
                 // For expense groups, display as negative; for income groups, display as positive
                 var displayAmount = group.Type == TransactionType.Expense
                     ? -Math.Abs(group.Total)
                     : Math.Abs(group.Total);
-                return FormatCurrency(displayAmount);
+                return MoneyFormatter.Format(displayAmount);
             }
-            return FormatCurrency(0);
+            return MoneyFormatter.Format(0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -276,19 +280,6 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
 
-        private static string FormatCurrency(decimal amount)
-        {
-            var deviceCulture = CultureInfo.CurrentCulture;
-
-            // Check if the currency symbol is the generic placeholder (¤)
-            if (deviceCulture.NumberFormat.CurrencySymbol == "¤")
-            {
-                // Fallback to a reasonable default
-                return $"$ {amount:N2}";
-            }
-
-            return amount.ToString("C2", deviceCulture);
-        }
     }
 
     /// <summary>

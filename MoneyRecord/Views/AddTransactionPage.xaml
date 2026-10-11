@@ -58,7 +58,7 @@
             <Label Text="{ext:Localize Receipt}" FontSize="16" FontAttributes="Bold"/>
             <VerticalStackLayout Spacing="8">
                 <HorizontalStackLayout Spacing="10">
-                    <Button Text="&#xF0067;"
+                    <Button Text="&#xF0100;"
                             FontFamily="MaterialDesignIcons"
                             Command="{Binding TakePhotoCommand}"
                             FontSize="20"
@@ -68,7 +68,7 @@
                             CornerRadius="8"
                             BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
                             TextColor="White"/>
-                    <Button Text="&#xF0553;"
+                    <Button Text="&#xF02E9;"
                             FontFamily="MaterialDesignIcons"
                             Command="{Binding PickPhotoCommand}"
                             FontSize="20"

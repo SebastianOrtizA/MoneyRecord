@@ -99,7 +99,10 @@ namespace MoneyRecord.Services.Repositories
                 Name = AppResources.DefaultAccountCash,
                 InitialBalance = 0,
                 IsDefault = true,
-                IconCode = "F0115"
+                IconCode = "F0115",
+                // Cash starts at 0, so a new user's first expense must not be blocked
+                AllowNegativeBalance = true,
+                CurrencyCode = CurrencyService.GetDeviceCurrencyCode()
             };
             await Database!.InsertAsync(cashAccount);
         }

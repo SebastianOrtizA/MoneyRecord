@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: Pending
+**Status**: In progress — 6.0 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -11,7 +11,7 @@ foundation first, because everything later builds on them.
 
 ## Tasks
 
-### 6.0 Quick wins (ship first, independent of the migration)
+### 6.0 Quick wins (ship first, independent of the migration) — ✅ done
 - **N1 — first expense blocked**: seed Cash with `AllowNegativeBalance = true` in
   `DatabaseInitializer.AddDefaultAccountAsync`, and set the seeded Cash `CurrencyCode` to the device currency
   (it is empty today). Existing installs are left alone: those users have already worked around it.
@@ -23,6 +23,9 @@ foundation first, because everything later builds on them.
 - **N4 — receipt icons**: `AddTransactionPage.xaml:61,71`: camera `F0100`, gallery `F02E9`.
 - **P6 — menu icons**: add `home`, `wallet`, `swap`, `folder`, `settings`, `repeat` SVGs to `Resources/Images`
   (only `chart.svg` exists) or switch the flyout to `FontImageSource` with MDI glyphs. Give every item a distinct icon.
+- Done: also fixed the Home "receipt attached" glyph (was book-music `F0067` → `F0449`), the Home balance
+  and income/expense cards now use `MoneyConverter`, and the unused `chart.svg` was removed. Flyout uses
+  `FontImageSource` glyphs. Still open for 6.6: "Your Accounts" / "Initial:" untranslated, "octubre 11, 2026" date pattern.
 
 ### 6.1 Schema migration runner
 - New `Services/Repositories/Migrations/` with `IMigration { int Version; Task UpAsync(SQLiteConnection) }`.

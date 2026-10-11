@@ -71,7 +71,7 @@ dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android   # instal
 ## Test
 
 ```powershell
-dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 62 pass, ~1 s (Windows only: the test project targets net10.0-windows)
+dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 76 pass, ~1 s (Windows only: the test project targets net10.0-windows)
 ```
 
 ## Gotchas
@@ -84,7 +84,6 @@ dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 62 pass, ~1 s (Windo
 - **The screen starts asleep**, so a screenshot is all black. `boot` and `launch` wake it.
 - **`dotnet` isn't on the Bash tool's PATH** (it's the devkitPro msys bash). The driver calls `/c/Program Files/dotnet/dotnet.exe`; run `dotnet test` from PowerShell.
 - **`adb logcat -d -b crash,main` can hang.** The driver uses `-b crash -b main -t 3000` with a 20 s timeout.
-- **New installs can't save an expense on Cash.** The seeded Cash account has a $0 balance and doesn't allow negative balances (a known bug, N1 in the review). Create a funded account first, or tick "Allow negative balance".
 - After `locale es-ES`, a "keyboard language changed" toast covers the bottom of the screen for a few seconds.
 
 ## Troubleshooting

@@ -37,7 +37,7 @@
                                TextColor="#FFFFFFCC"
                                VerticalOptions="Center"/>
                     </HorizontalStackLayout>
-                    <Label Text="{Binding CurrentBalance, StringFormat='${0:N2}'}"
+                    <Label Text="{Binding CurrentBalance, Converter={StaticResource MoneyConverter}}"
                            FontSize="36"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
@@ -111,7 +111,7 @@
                                FontSize="11"
                                TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"
                                HorizontalOptions="Center"/>
-                        <Label Text="{Binding TotalIncomes, StringFormat='${0:N2}'}"
+                        <Label Text="{Binding TotalIncomes, Converter={StaticResource MoneyConverter}}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
@@ -136,7 +136,7 @@
                                FontSize="11"
                                TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"
                                HorizontalOptions="Center"/>
-                        <Label Text="{Binding TotalExpenses, StringFormat='${0:N2}'}"
+                        <Label Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
@@ -144,28 +144,51 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Net Card -->
+                <!-- Net Card: green, or the expense palette when net is negative -->
                 <Frame Grid.Column="2"
                        BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
                        BorderColor="Transparent"
                        CornerRadius="12"
                        Padding="10"
                        HasShadow="False">
+                    <Frame.Triggers>
+                        <DataTrigger TargetType="Frame" Binding="{Binding IsNetNegative}" Value="True">
+                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"/>
+                        </DataTrigger>
+                    </Frame.Triggers>
                     <VerticalStackLayout Spacing="4">
                         <Label Text="&#xF04E1;"
                                FontFamily="MaterialDesignIcons"
                                FontSize="20"
                                HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"/>
+                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                         <Label Text="{ext:Localize NetIncome}"
                                FontSize="11"
                                TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
-                               HorizontalOptions="Center"/>
-                        <Label Text="{Binding NetIncome, StringFormat='${0:N2}'}"
+                               HorizontalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
+                        <Label Text="{Binding NetIncome, Converter={StaticResource MoneyConverter}}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#81C784}"/>
+                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#81C784}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
@@ -559,7 +582,7 @@
                                     <HorizontalStackLayout Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
                                                           Spacing="6"
                                                           IsVisible="{Binding HasReceipt}">
-                                        <Label Text="&#xF0067;"
+                                        <Label Text="&#xF0449;"
                                                FontFamily="MaterialDesignIcons"
                                                FontSize="14"
                                                TextColor="{AppThemeBinding Light=#4CAF50, Dark=#81C784}"/>
@@ -753,7 +776,7 @@
                                                         <HorizontalStackLayout Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
                                                                               Spacing="6"
                                                                               IsVisible="{Binding HasReceipt}">
-                                                            <Label Text="&#xF0067;"
+                                                            <Label Text="&#xF0449;"
                                                                    FontFamily="MaterialDesignIcons"
                                                                    FontSize="12"
                                                                    TextColor="{AppThemeBinding Light=#4CAF50, Dark=#81C784}"/>

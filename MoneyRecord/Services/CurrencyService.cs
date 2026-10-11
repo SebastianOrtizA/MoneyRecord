@@ -55,16 +55,29 @@ namespace MoneyRecord.Services
 
         string ICurrencyService.GetSymbol(string code) => GetSymbol(code);
 
-        public string GetDefaultCurrencyCode()
+        public string GetDefaultCurrencyCode() => GetDeviceCurrencyCode();
+
+        /// <summary>
+        /// The currency of the device region (e.g. es-CO → COP), even when the app runs in another
+        /// language (a fr-FR device shown in English still gets EUR).
+        /// </summary>
+        public static string GetDeviceCurrencyCode() => GetCurrencyCode(LocalizationService.DeviceCulture);
+
+        /// <summary>
+        /// The currency of a culture's region, or USD when the culture has no region
+        /// or its currency is not supported.
+        /// </summary>
+        public static string GetCurrencyCode(CultureInfo culture)
         {
+            if (culture.IsNeutralCulture || string.IsNullOrEmpty(culture.Name))
+                return "USD";
+
             try
             {
-                var culture = CultureInfo.CurrentCulture;
-                var region = new RegionInfo(culture.Name);
-                var isoCode = region.ISOCurrencySymbol;
+                var isoCode = new RegionInfo(culture.Name).ISOCurrencySymbol;
                 return _currencyMap.ContainsKey(isoCode) ? isoCode : "USD";
             }
-            catch
+            catch (ArgumentException)
             {
                 return "USD";
             }
