@@ -55,16 +55,23 @@ namespace MoneyRecord.Services
 
         string ICurrencyService.GetSymbol(string code) => GetSymbol(code);
 
-        public string GetDefaultCurrencyCode()
+        public string GetDefaultCurrencyCode() => GetDeviceCurrencyCode();
+
+        /// <summary>
+        /// The currency of the device region (e.g. es-CO → COP), or USD when the region is unknown
+        /// or its currency is not supported.
+        /// </summary>
+        public static string GetDeviceCurrencyCode()
         {
             try
             {
                 var culture = CultureInfo.CurrentCulture;
-                var region = new RegionInfo(culture.Name);
-                var isoCode = region.ISOCurrencySymbol;
+                if (culture.IsNeutralCulture || string.IsNullOrEmpty(culture.Name))
+                    return "USD";
+                var isoCode = new RegionInfo(culture.Name).ISOCurrencySymbol;
                 return _currencyMap.ContainsKey(isoCode) ? isoCode : "USD";
             }
-            catch
+            catch (ArgumentException)
             {
                 return "USD";
             }

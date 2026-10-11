@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using System.Globalization;
@@ -192,6 +193,51 @@ namespace MoneyRecord.Converters
     }
 
     /// <summary>
+    /// Formats a decimal amount as money in the current culture, with the sign before the symbol (-$50.00).
+    /// </summary>
+    public class MoneyConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return value is decimal amount ? MoneyFormatter.Format(amount) : MoneyFormatter.Format(0);
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Colors a signed amount card: negative amounts use the expense (red) palette, others the green palette.
+    /// ConverterParameter picks the element: "Background", "Label" (icon and caption) or "Amount" (default).
+    /// </summary>
+    public class AmountColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            var isNegative = value is decimal amount && amount < 0;
+            var isDark = Application.Current?.RequestedTheme == AppTheme.Dark;
+
+            var hex = (parameter as string, isNegative) switch
+            {
+                ("Background", true) => isDark ? "#B71C1C" : "#FFEBEE",
+                ("Background", false) => isDark ? "#1B5E20" : "#E8F5E9",
+                ("Label", true) => isDark ? "#FFCDD2" : "#C62828",
+                ("Label", false) => isDark ? "#A5D6A7" : "#2E7D32",
+                (_, true) => isDark ? "#FFCDD2" : "#D32F2F",
+                (_, false) => isDark ? "#81C784" : "#1B5E20"
+            };
+            return Color.FromArgb(hex);
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
     /// Converts transaction amount to display format: negative for expenses, positive for incomes.
     /// For transfers: negative for outgoing, positive for incoming.
     /// Requires Transaction object as binding source.
@@ -229,19 +275,7 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
 
-        private static string FormatCurrency(decimal amount)
-        {
-            var deviceCulture = CultureInfo.CurrentCulture;
-
-            // Check if the currency symbol is the generic placeholder (¤)
-            if (deviceCulture.NumberFormat.CurrencySymbol == "¤")
-            {
-                // Fallback to a reasonable default based on region or use $ as universal symbol
-                return $"$ {amount:N2}";
-            }
-
-            return amount.ToString("C2", deviceCulture);
-        }
+        private static string FormatCurrency(decimal amount) => MoneyFormatter.Format(amount);
     }
 
     /// <summary>
@@ -276,19 +310,7 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
 
-        private static string FormatCurrency(decimal amount)
-        {
-            var deviceCulture = CultureInfo.CurrentCulture;
-
-            // Check if the currency symbol is the generic placeholder (¤)
-            if (deviceCulture.NumberFormat.CurrencySymbol == "¤")
-            {
-                // Fallback to a reasonable default
-                return $"$ {amount:N2}";
-            }
-
-            return amount.ToString("C2", deviceCulture);
-        }
+        private static string FormatCurrency(decimal amount) => MoneyFormatter.Format(amount);
     }
 
     /// <summary>
