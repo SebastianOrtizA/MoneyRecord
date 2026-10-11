@@ -102,7 +102,7 @@ public sealed class MigrationRunnerTests : IAsyncLifetime
     [Fact]
     public async Task RunAsync_NonRewritingMigration_DoesNotBackUp()
     {
-        await new MigrationRunner(MigrationRunner.All).RunAsync(_db);
+        await new MigrationRunner([new M001_Baseline()]).RunAsync(_db);
 
         Directory.GetFiles(Path.GetDirectoryName(_dbPath)!, Path.GetFileName(_dbPath) + ".bak-v*").Should().BeEmpty();
     }

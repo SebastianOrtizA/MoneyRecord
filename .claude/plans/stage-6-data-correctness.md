@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: In progress — 6.0, 6.1 done (2026-10-11)
+**Status**: In progress — 6.0–6.2 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -41,13 +41,23 @@ foundation first, because everything later builds on them.
   transaction. Backups use `VACUUM INTO`, only for `RewritesData = true`. A DB newer than the app throws. New migrations:
   add to `MigrationRunner.All`.
 
-### 6.2 Money as integer minor units (v2 migration)
+### 6.2 Money as integer minor units (v2 migration) — ✅ done
 - sqlite-net stores `decimal` as REAL → rounding drift. Add `long AmountMinor` (and `InitialBalanceMinor`,
   `LimitAmountMinor`) columns; migrate with `ROUND(Amount * 100)`; keep `decimal Amount` as an `[Ignore]`
   property computed from the minor value so ViewModels don't change.
 - Minor-unit scale per currency (JPY/CLP/KRW = 0 decimals) via `CurrencyService.GetMinorUnits(code)`.
 - Tables: Transaction, Transfer, Account, Budget, RecurringTransaction.
 - Backup JSON format bumps to `Version = 2`; import accepts v1 (decimal) and v2 (minor).
+- Done as `M002_MoneyAsCents` + `Helpers/Money`. **Deviation: fixed scale of 100 (cents) for every currency**, columns
+  `AmountCents` / `InitialBalanceCents` / `LimitAmountCents`. Rows have no currency of their own (it comes from the account),
+  so a per-currency scale would make every model depend on its account and would rescale amounts when an account's currency
+  changes. JPY stores multiples of 100; zero-decimal display/input rounding (`GetMinorUnits`) moves to 6.5.
+  The migration skips tables that an old install never had (no legacy column). Backup JSON v2 carries both the decimal and
+  the cents property; cents is written later in the file, so it wins on import, and v1 files import through the decimal setter.
+  The migration converts in C# through `(decimal)double` (how the app used to read REAL), not SQL `ROUND`, so a stored
+  1.0049999999999999 keeps the $1.01 the user saw. Input above `Money.MaxAmount` (just under 1e12) is rejected.
+- Follow-up (once v2 has been out for a few releases): a migration that drops the unused REAL columns
+  (`ALTER TABLE … DROP COLUMN`, SQLite 3.35+).
 
 ### 6.3 Delete cascades (transactional)
 - Account delete (`ManageAccountsViewModel.DeleteAccountAsync`): in one `RunInTransactionAsync`, reassign
@@ -77,6 +87,7 @@ foundation first, because everything later builds on them.
   With a single currency, the card looks as it does today. New `IBalanceService.GetBalancesByCurrencyAsync()` returns
   `(CurrencyCode, BalanceMinor, AccountCount)` rows; accounts with an empty `CurrencyCode` count as the base currency.
 - `CurrencyMaskBehavior` shows the selected account's symbol, not `$`.
+- (From 6.2) `CurrencyService.GetMinorUnits(code)`: JPY/CLP/KRW show and accept 0 decimals; storage stays in cents.
 
 ### 6.6 Localization cleanup (P8)
 - Move the ~26 hard-coded strings ("No activity", "Transfers", "Transfer to/from", "Unknown", "Cash",
