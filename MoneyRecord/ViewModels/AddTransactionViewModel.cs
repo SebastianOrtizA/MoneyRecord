@@ -103,8 +103,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hasReceipt;
 
-        /// <summary>The receipt the saved transaction points at; any other photo on this page is not saved yet.</summary>
-        private string? _savedReceiptPath;
+        private readonly ReceiptDraft _receipt = new();
 
         [ObservableProperty]
         private bool isMonthlyFrequency;
@@ -134,8 +133,7 @@ namespace MoneyRecord.ViewModels
         /// </summary>
         private void ResetState()
         {
-            DiscardUnsavedPhoto();
-            _savedReceiptPath = null;
+            _receipt.Load(null);
             Transaction = null;
             TransactionType = TransactionType.Expense;
             SelectedDate = DateTime.Now;
@@ -146,8 +144,7 @@ namespace MoneyRecord.ViewModels
             Title = AppResources.AddTransaction;
             IsEditMode = false;
             TagsText = string.Empty;
-            ReceiptPhotoPath = null;
-            HasReceipt = false;
+            ShowReceipt();
             IsRecurring = false;
             SelectedFrequencyItem = Frequencies[3];
             HasEndDate = false;
@@ -181,8 +178,8 @@ namespace MoneyRecord.ViewModels
                 Description = Transaction.Description;
                 Amount = Transaction.Amount.ToString();
                 TagsText = Transaction.Tags ?? string.Empty;
-                ReceiptPhotoPath = _savedReceiptPath = Transaction.ReceiptPhotoPath;
-                HasReceipt = !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
+                _receipt.Load(Transaction.ReceiptPhotoPath);
+                ShowReceipt();
 
                 Title = TransactionType == TransactionType.Income ? AppResources.EditIncome : AppResources.EditExpense;
                 
@@ -343,9 +340,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.ReceiptPhotoPath = ReceiptPhotoPath;
 
                 await _transactionRepository.SaveAsync(Transaction);
-                if (_savedReceiptPath != ReceiptPhotoPath)
-                    ReceiptFiles.Delete(_savedReceiptPath); // removed or replaced
-                _savedReceiptPath = ReceiptPhotoPath;
+                _receipt.Commit(); // deletes a removed or replaced receipt
                 await Toast.Make(AppResources.TransactionUpdatedSuccessfully).Show();
             }
             else
@@ -364,7 +359,7 @@ namespace MoneyRecord.ViewModels
                 };
 
                 await _transactionRepository.SaveAsync(newTransaction);
-                _savedReceiptPath = ReceiptPhotoPath;
+                _receipt.Commit();
 
                 if (IsRecurring && SelectedFrequencyItem != null)
                 {
@@ -465,27 +460,30 @@ namespace MoneyRecord.ViewModels
             using (var fileStream = File.Create(filePath))
                 await stream.CopyToAsync(fileStream);
 
-            DiscardUnsavedPhoto(); // a photo taken earlier on this page and now replaced
-            ReceiptPhotoPath = filePath;
-            HasReceipt = true;
+            _receipt.Set(filePath);
+            ShowReceipt();
         }
 
         [RelayCommand]
         private void RemovePhoto()
         {
-            DiscardUnsavedPhoto();
-            ReceiptPhotoPath = null;
-            HasReceipt = false;
+            _receipt.Remove();
+            ShowReceipt();
         }
 
         /// <summary>
-        /// Deletes the photo shown on the page when it isn't the saved transaction's receipt
-        /// (called on cancel and when the page is left without saving). The saved receipt is only deleted on save.
+        /// Deletes a photo that was never saved (called on cancel and when the page is left without saving).
         /// </summary>
         public void DiscardUnsavedPhoto()
         {
-            if (ReceiptPhotoPath != _savedReceiptPath)
-                ReceiptFiles.Delete(ReceiptPhotoPath);
+            _receipt.Discard();
+            ShowReceipt();
+        }
+
+        private void ShowReceipt()
+        {
+            ReceiptPhotoPath = _receipt.Path;
+            HasReceipt = !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
         }
 
         [RelayCommand]

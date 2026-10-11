@@ -171,6 +171,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
     public async Task Restore_LegacyJson_MapsCategoriesByIdAndKeepsExistingReceipts()
     {
         WriteReceipt("receipt_old.jpg", "old-photo");
+        var orphan = WriteReceipt("receipt_current.jpg", "belongs to the replaced data");
         var path = BackupPath("legacy.json");
         await File.WriteAllTextAsync(path, """
             {
@@ -195,6 +196,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         lunch.AmountCents.Should().Be(1234);
         lunch.ReceiptPhotoPath.Should().Be(Path.Combine(Receipts, "receipt_old.jpg"));
         (await Db.FindAsync<Transaction>(2)).ReceiptPhotoPath.Should().BeNull("the photo isn't on this device");
+        File.Exists(orphan).Should().BeFalse("no restored transaction uses it (it is in the snapshot)");
         (await _accountRepository.GetAllAsync()).Should().ContainSingle().Which.Name.Should().Be("Bank", "the repository cache is refreshed");
     }
 
@@ -214,6 +216,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
 
         File.Exists(Path.Combine(_appData, "evil.txt")).Should().BeFalse();
         File.Exists(Path.Combine(Path.GetDirectoryName(_appData)!, "evil.txt")).Should().BeFalse();
+        Directory.GetFiles(Receipts).Should().BeEmpty("no restored transaction uses it");
     }
 
     [Fact]

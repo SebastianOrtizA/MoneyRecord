@@ -52,6 +52,10 @@ namespace MoneyRecord.ViewModels
             {
                 IsExporting = true;
 
+                // Backups include photos, so don't let earlier shared copies pile up in the cache
+                foreach (var old in Directory.GetFiles(FileSystem.CacheDirectory, "MoneyRecord_Backup_*.zip"))
+                    File.Delete(old);
+
                 var filePath = Path.Combine(FileSystem.CacheDirectory, BackupFileName());
                 await _dataExportService.ExportBackupAsync(filePath);
 

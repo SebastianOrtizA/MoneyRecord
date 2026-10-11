@@ -62,17 +62,19 @@ namespace MoneyRecord.Services
             await EnsureInitializedAsync();
             var db = _dbInitializer.Database!;
 
-            var backup = new BackupData
+            // One transaction: a point-in-time copy, even if recurring processing writes meanwhile
+            BackupData backup = null!;
+            await db.RunInTransactionAsync(conn => backup = new BackupData
             {
                 ExportDate = DateTime.Now,
                 Version = BackupVersion,
-                Categories = await db.Table<Category>().ToListAsync(),
-                Accounts = await db.Table<Account>().ToListAsync(),
-                Transactions = await db.Table<Transaction>().ToListAsync(),
-                Transfers = await db.Table<Transfer>().ToListAsync(),
-                Budgets = await db.Table<Budget>().ToListAsync(),
-                RecurringTransactions = await db.Table<RecurringTransaction>().ToListAsync()
-            };
+                Categories = conn.Table<Category>().ToList(),
+                Accounts = conn.Table<Account>().ToList(),
+                Transactions = conn.Table<Transaction>().ToList(),
+                Transfers = conn.Table<Transfer>().ToList(),
+                Budgets = conn.Table<Budget>().ToList(),
+                RecurringTransactions = conn.Table<RecurringTransaction>().ToList()
+            });
 
             await Task.Run(() => WriteZip(backup, destinationPath));
         }
@@ -142,9 +144,16 @@ namespace MoneyRecord.Services
                 _accountRepository.InvalidateCache();
                 _categoryRepository.InvalidateCache();
 
-                if (hasReceipts)
-                    await Task.Run(() => ReplaceReceipts(staging));
-                PruneSnapshots();
+                // The data is restored: from here on it's cleanup, which must not turn the restore into a failure
+                try
+                {
+                    await Task.Run(() => ReplaceReceipts(hasReceipts ? staging : null, backup));
+                    PruneSnapshots();
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                    // Some photos may be missing; the snapshot still has the old ones and allows undo
+                }
 
                 return new RestoreResult(count, snapshotPath);
             }
@@ -264,22 +273,26 @@ namespace MoneyRecord.Services
         }
 
         /// <summary>
-        /// Swaps in the restored receipts. The old photos are not lost: they are in the pre-restore snapshot.
+        /// Moves in the zip's receipts (if any) and leaves only the photos the restored transactions point at.
+        /// The old photos are not lost: they are in the pre-restore snapshot.
         /// </summary>
-        private void ReplaceReceipts(string staging)
+        private void ReplaceReceipts(string? staging, BackupData backup)
         {
+            var referenced = backup.Transactions
+                .Select(t => Path.GetFileName(t.ReceiptPhotoPath))
+                .Where(name => !string.IsNullOrEmpty(name))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
             Directory.CreateDirectory(ReceiptsFolder);
-            var restored = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var file in Directory.GetFiles(staging))
+            if (staging != null)
             {
-                var name = Path.GetFileName(file);
-                File.Move(file, Path.Combine(ReceiptsFolder, name), overwrite: true);
-                restored.Add(name);
+                foreach (var file in Directory.GetFiles(staging).Where(f => referenced.Contains(Path.GetFileName(f))))
+                    File.Move(file, Path.Combine(ReceiptsFolder, Path.GetFileName(file)), overwrite: true);
             }
 
             foreach (var file in Directory.GetFiles(ReceiptsFolder))
             {
-                if (!restored.Contains(Path.GetFileName(file)))
+                if (!referenced.Contains(Path.GetFileName(file)))
                     ReceiptFiles.Delete(file, ReceiptsFolder);
             }
         }
