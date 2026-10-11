@@ -1,6 +1,7 @@
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Services.Repositories.Migrations;
 using SQLite;
 
 namespace MoneyRecord.Services.Repositories
@@ -31,12 +32,7 @@ namespace MoneyRecord.Services.Repositories
                 var dbPath = Path.Combine(FileSystem.AppDataDirectory, "moneyrecord.db3");
                 Database = new SQLiteAsyncConnection(dbPath);
 
-                await Database.CreateTableAsync<Category>();
-                await Database.CreateTableAsync<Transaction>();
-                await Database.CreateTableAsync<Account>();
-                await Database.CreateTableAsync<Transfer>();
-                await Database.CreateTableAsync<Budget>();
-                await Database.CreateTableAsync<RecurringTransaction>();
+                await CreateSchemaAsync(Database, new MigrationRunner(MigrationRunner.All));
 
                 await SeedDefaultDataAsync();
 
@@ -46,6 +42,28 @@ namespace MoneyRecord.Services.Repositories
             {
                 _initLock.Release();
             }
+        }
+
+        /// <summary>
+        /// Creates or updates the tables from the models (latest schema). A new database is stamped with
+        /// the latest version; a database from an older app version runs its pending migrations.
+        /// </summary>
+        public static async Task CreateSchemaAsync(SQLiteAsyncConnection db, MigrationRunner migrations)
+        {
+            var isNewDatabase = await db.ExecuteScalarAsync<int>(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table'") == 0;
+
+            await db.CreateTableAsync<Category>();
+            await db.CreateTableAsync<Transaction>();
+            await db.CreateTableAsync<Account>();
+            await db.CreateTableAsync<Transfer>();
+            await db.CreateTableAsync<Budget>();
+            await db.CreateTableAsync<RecurringTransaction>();
+
+            if (isNewDatabase)
+                await migrations.StampLatestAsync(db);
+            else
+                await migrations.RunAsync(db);
         }
 
         private async Task SeedDefaultDataAsync()
