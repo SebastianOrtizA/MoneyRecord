@@ -141,7 +141,6 @@ namespace MoneyRecord.ViewModels
                 IsEditMode = true;
                 Title = AppResources.EditTransfer;
                 SelectedDate = Transfer.Date;
-                Amount = Transfer.Amount.ToString();
                 Description = Transfer.Description;
 
                 // Store original values
@@ -152,6 +151,9 @@ namespace MoneyRecord.ViewModels
                 // Select accounts
                 SelectedSourceAccount = Accounts.FirstOrDefault(a => a.Id == Transfer.SourceAccountId);
                 SelectedDestinationAccount = Accounts.FirstOrDefault(a => a.Id == Transfer.DestinationAccountId);
+
+                // After the source account: the amount field formats in its currency
+                Amount = Transfer.Amount.ToString();
             }
             else
             {
@@ -184,10 +186,10 @@ namespace MoneyRecord.ViewModels
         {
             if (SelectedSourceAccount != null && SelectedDestinationAccount != null)
             {
-                var srcCurrency = string.IsNullOrEmpty(SelectedSourceAccount.CurrencyCode) ? "USD" : SelectedSourceAccount.CurrencyCode;
-                var dstCurrency = string.IsNullOrEmpty(SelectedDestinationAccount.CurrencyCode) ? "USD" : SelectedDestinationAccount.CurrencyCode;
+                var srcCurrency = MoneyFormatter.ResolveCurrencyCode(SelectedSourceAccount.CurrencyCode);
+                var dstCurrency = MoneyFormatter.ResolveCurrencyCode(SelectedDestinationAccount.CurrencyCode);
 
-                if (!string.Equals(srcCurrency, dstCurrency, StringComparison.OrdinalIgnoreCase))
+                if (srcCurrency != dstCurrency)
                 {
                     CurrencyMismatchWarningText = string.Format(AppResources.CurrencyMismatchWarning, srcCurrency, dstCurrency);
                     ShowCurrencyMismatchWarning = true;

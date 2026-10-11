@@ -925,6 +925,9 @@ Amount: {2}</value>
   <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
     <value>'{0}' uses {1}, but the default account '{2}' uses {3}. Its transactions and recurring rules can't be moved there without changing what they are worth: delete them first.</value>
   </data>
+  <data name="InitialBalanceAmount" xml:space="preserve">
+    <value>Initial: {0}</value>
+  </data>
 
   <!-- Search & Filters -->
   <data name="SearchTransactions" xml:space="preserve">

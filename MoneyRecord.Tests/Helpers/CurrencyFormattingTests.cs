@@ -61,6 +61,35 @@ public class CurrencyFormattingTests
     }
 
     [Fact]
+    public void FormatTotals_NeverAddsDifferentCurrencies()
+    {
+        WithCulture("en-US", () =>
+            MoneyFormatter.FormatTotals([(10000m, "JPY"), (12.5m, "USD"), (7.5m, "usd")])
+                .Should().Be("¥10,000 + $20.00"));
+    }
+
+    [Fact]
+    public void FormatTotals_OneCurrency_IsASingleAmount()
+    {
+        WithCulture("en-US", () =>
+            MoneyFormatter.FormatTotals([(1m, "EUR"), (2m, "EUR")]).Should().Be("€3.00"));
+    }
+
+    [Fact]
+    public void AccountGroup_UsesTheAccountsCurrency_EvenWithATransferFromAnotherCurrency()
+    {
+        var items = new List<MoneyRecord.Models.Transaction>
+        {
+            new() { CurrencyCode = "EUR", Type = MoneyRecord.Models.TransactionType.Expense },
+            new() { CurrencyCode = "USD", Type = MoneyRecord.Models.TransactionType.Transfer } // incoming, source in USD
+        };
+
+        var group = new MoneyRecord.Models.TransactionGroup("Euros", items, MoneyRecord.Models.GroupingMode.Account, 500m, currencyCode: "EUR");
+
+        group.CurrencyCode.Should().Be("EUR");
+    }
+
+    [Fact]
     public void ParseAmount_SymbolWithDot_IsNotADecimalSeparator()
     {
         WithCulture("en-US", () =>

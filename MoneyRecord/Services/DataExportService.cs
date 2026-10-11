@@ -2,6 +2,7 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
+using MoneyRecord.Services.Repositories.Migrations;
 using SQLite;
 using System.Globalization;
 using System.IO.Compression;
@@ -253,12 +254,16 @@ namespace MoneyRecord.Services
             conn.DeleteAll<Account>();
             conn.DeleteAll<Category>();
 
-            return InsertKeepingIds(conn, backup.Categories, c => c.Id)
+            var count = InsertKeepingIds(conn, backup.Categories, c => c.Id)
                 + InsertKeepingIds(conn, backup.Accounts, a => a.Id)
                 + InsertKeepingIds(conn, backup.Transactions, t => t.Id)
                 + InsertKeepingIds(conn, backup.Transfers, t => t.Id)
                 + InsertKeepingIds(conn, backup.Budgets, b => b.Id)
                 + InsertKeepingIds(conn, backup.RecurringTransactions, r => r.Id);
+
+            // A backup from before account currencies: give its accounts a fixed currency, as migration 3 does
+            M003_AccountCurrencyCodes.FillMissing(conn, MoneyFormatter.ResolveCurrencyCode(null));
+            return count;
         }
 
         private static int InsertKeepingIds<T>(SQLiteConnection conn, List<T> rows, Func<T, int> id) where T : notnull

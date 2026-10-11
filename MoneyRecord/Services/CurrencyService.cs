@@ -43,10 +43,17 @@ namespace MoneyRecord.Services
 
         private readonly IPreferencesService _preferences;
 
-        /// <summary>Loads the saved base currency, so all amounts are formatted with it from the start.</summary>
         public CurrencyService(IPreferencesService preferences)
         {
             _preferences = preferences;
+        }
+
+        /// <summary>
+        /// Loads the saved base currency into <see cref="MoneyFormatter"/>. Called once at startup, before the database
+        /// is opened or any page formats money.
+        /// </summary>
+        public static void LoadBaseCurrency(IPreferencesService preferences)
+        {
             MoneyFormatter.BaseCurrencyCode = preferences.Get(BaseCurrencyPreferenceKey, string.Empty);
         }
 

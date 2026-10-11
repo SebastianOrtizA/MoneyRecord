@@ -23,7 +23,7 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
 
         private List<Transaction> _allCombinedTransactions = new();
-        private Dictionary<string, decimal>? _cachedAccountBalances;
+        private Dictionary<string, AccountBalanceInfo>? _cachedAccountBalances;
         private Dictionary<string, string>? _cachedAccountIcons;
 
         /// <summary>Home balance card: the first currency's total (base currency first), with its code when there are several.</summary>
@@ -183,15 +183,17 @@ namespace MoneyRecord.ViewModels
 
                 var (startDate, endDate) = GetDateRange();
 
-                var balanceTask = _balanceService.GetBalancesByCurrencyAsync();
+                var accountBalancesTask = _balanceService.GetAllAccountBalancesAsync();
                 var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
                 var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
                 var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 var transfersTask = _enrichmentService.GetEnrichedTransfersAsync(startDate, endDate);
 
-                await Task.WhenAll(balanceTask, incomesTask, expensesTask, transactionsTask, transfersTask);
+                await Task.WhenAll(accountBalancesTask, incomesTask, expensesTask, transactionsTask, transfersTask);
 
-                ShowBalances(await balanceTask);
+                // Computed once: the balance card and the account groups both use them
+                var accountBalances = await accountBalancesTask ?? new List<AccountBalanceInfo>();
+                ShowBalances(CurrencyBalance.FromAccounts(accountBalances, MoneyFormatter.ResolveCurrencyCode(null)));
                 TotalIncomes = await incomesTask;
                 TotalExpenses = await expensesTask;
                 NetIncome = TotalIncomes - TotalExpenses;
@@ -214,14 +216,9 @@ namespace MoneyRecord.ViewModels
 
                 if (CurrentGroupingMode == GroupingMode.Account)
                 {
-                    var balanceInfosTask = _balanceService.GetAllAccountBalancesAsync();
-                    var accountsTask = _accountRepository.GetAllAsync();
-                    await Task.WhenAll(balanceInfosTask, accountsTask);
+                    _cachedAccountBalances = accountBalances.ToDictionary(b => b.AccountName ?? string.Empty);
 
-                    var balanceInfos = await balanceInfosTask ?? new List<AccountBalanceInfo>();
-                    _cachedAccountBalances = balanceInfos.ToDictionary(b => b.AccountName ?? string.Empty, b => b.CurrentBalance);
-
-                    var accounts = await accountsTask ?? new List<Account>();
+                    var accounts = await _accountRepository.GetAllAsync() ?? new List<Account>();
                     _cachedAccountIcons = accounts.ToDictionary(a => a.Name ?? string.Empty, a => a.IconCode ?? "F0070");
                 }
                 else
@@ -348,16 +345,25 @@ namespace MoneyRecord.ViewModels
                     {
                         decimal? overrideTotal = null;
                         string? accountIconCode = null;
+                        string? currencyCode = null;
 
                         if (CurrentGroupingMode == GroupingMode.Account)
                         {
-                            if (_cachedAccountBalances != null)
-                                overrideTotal = _cachedAccountBalances.GetValueOrDefault(g.Key, 0);
+                            // The account's own currency: a transfer row from another currency must not change it
+                            if (_cachedAccountBalances != null && _cachedAccountBalances.TryGetValue(g.Key, out var balance))
+                            {
+                                overrideTotal = balance.CurrentBalance;
+                                currencyCode = balance.CurrencyCode;
+                            }
+                            else if (_cachedAccountBalances != null)
+                            {
+                                overrideTotal = 0;
+                            }
                             if (_cachedAccountIcons != null)
                                 accountIconCode = _cachedAccountIcons.GetValueOrDefault(g.Key, "F0070");
                         }
 
-                        groups.Add(new TransactionGroup(g.Key, g.ToList(), CurrentGroupingMode, overrideTotal, accountIconCode));
+                        groups.Add(new TransactionGroup(g.Key, g.ToList(), CurrentGroupingMode, overrideTotal, accountIconCode, currencyCode));
                     }
 
                     groups = groups.OrderBy(g => g.GroupName).ToList();

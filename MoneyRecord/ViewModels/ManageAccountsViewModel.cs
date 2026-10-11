@@ -14,6 +14,10 @@ namespace MoneyRecord.ViewModels
     {
         public Account Account { get; init; } = null!;
         public decimal CurrentBalance { get; init; }
+
+        /// <summary>"Initial: €100.00", localized, in the account's currency.</summary>
+        public string InitialBalanceText =>
+            string.Format(AppResources.InitialBalanceAmount, MoneyFormatter.Format(Account.InitialBalance, Account.CurrencyCode));
     }
 
     public partial class ManageAccountsViewModel : ObservableObject
@@ -197,11 +201,12 @@ namespace MoneyRecord.ViewModels
             var account = item.Account;
             EditingAccount = account;
             EditAccountName = account.Name;
-            EditAccountBalance = account.InitialBalance.ToString();
             EditAccountIconCode = account.IconCode;
             EditAccountAllowNegativeBalance = account.AllowNegativeBalance;
             EditAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == account.CurrencyCode)
                 ?? AvailableCurrencies.FirstOrDefault(c => c.Code == _currencyService.GetDefaultCurrencyCode());
+            // After the currency: the balance field formats in it
+            EditAccountBalance = account.InitialBalance.ToString();
             UpdateIconSelection(account.IconCode);
             IsEditMode = true;
         }

@@ -923,6 +923,9 @@ Monto: {2}</value>
   <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
     <value>'{0}' usa {1}, pero la cuenta predeterminada '{2}' usa {3}. Sus transacciones y reglas recurrentes no se pueden mover allí sin cambiar su valor: elimínalas primero.</value>
   </data>
+  <data name="InitialBalanceAmount" xml:space="preserve">
+    <value>Inicial: {0}</value>
+  </data>
 
   <!-- Search & Filters -->
   <data name="SearchTransactions" xml:space="preserve">

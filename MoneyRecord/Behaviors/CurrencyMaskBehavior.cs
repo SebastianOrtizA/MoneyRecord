@@ -18,6 +18,9 @@ namespace MoneyRecord.Behaviors
         private bool _isFocused;
         private bool _isFormatting;
 
+        /// <summary>The amount to the cent; the text may show fewer decimals (0 for JPY/CLP/KRW).</summary>
+        private decimal? _exactValue;
+
         /// <summary>
         /// Gets or sets whether to show the currency symbol. Default is true.
         /// </summary>
@@ -110,16 +113,23 @@ namespace MoneyRecord.Behaviors
                 FormatIfNotFocused(entry);
         }
 
-        /// <summary>The currency changed (another account was picked): show the amount in the new currency.</summary>
+        /// <summary>
+        /// The currency changed (another account was picked): show the amount in the new currency. Uses the exact
+        /// value, not the shown text, so passing through a zero-decimal currency (USD → JPY → USD) keeps the cents.
+        /// </summary>
         private void Reformat(Entry entry, string? previousCurrencyCode)
         {
             if (_isFocused || string.IsNullOrEmpty(entry.Text))
                 return;
 
-            var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, previousCurrencyCode);
+            var value = _exactValue ?? ParseCurrencyValue(entry.Text, Money.Decimals, AllowNegativeValues, previousCurrencyCode);
             SetText(entry, value != 0 ? FormatValue(value) : string.Empty);
         }
 
+        /// <summary>
+        /// A value set by the ViewModel (e.g. a loaded amount). It is read to the cent, whatever the current currency,
+        /// because the account (and with it the currency) may only be selected after the amount.
+        /// </summary>
         private void FormatIfNotFocused(Entry entry)
         {
             if (_isFocused || _isFormatting)
@@ -127,11 +137,15 @@ namespace MoneyRecord.Behaviors
 
             var text = entry.Text;
             if (string.IsNullOrEmpty(text))
+            {
+                _exactValue = null;
                 return;
+            }
 
-            var value = ParseCurrencyValue(text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
+            var value = ParseCurrencyValue(text, Money.Decimals, AllowNegativeValues, CurrencyCode);
             if (value != 0 || text == "0")
             {
+                _exactValue = value;
                 var formatted = FormatValue(value);
                 if (formatted != text)
                     SetText(entry, formatted);
@@ -157,8 +171,9 @@ namespace MoneyRecord.Behaviors
             if (sender is not Entry entry)
                 return;
 
-            // When unfocused, apply full currency formatting
+            // When unfocused, apply full currency formatting; what the user typed is the exact value
             var value = ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
+            _exactValue = value != 0 ? value : null;
             SetText(entry, value != 0 ? FormatValue(value) : string.Empty);
         }
 

@@ -305,16 +305,10 @@
                                 </Label>
 
                                 <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="8">
-                                    <Label FontSize="12"
+                                    <Label Text="{Binding InitialBalanceText}"
+                                           FontSize="12"
                                            TextColor="{AppThemeBinding Light=#999999, Dark=#777777}"
-                                           VerticalOptions="Center">
-                                        <Label.Text>
-                                            <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}" StringFormat="Initial: {0}">
-                                                <Binding Path="Account.InitialBalance"/>
-                                                <Binding Path="Account.CurrencyCode"/>
-                                            </MultiBinding>
-                                        </Label.Text>
-                                    </Label>
+                                           VerticalOptions="Center"/>
                                     <Border BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
                                             StrokeShape="RoundRectangle 8"
                                             Stroke="Transparent"

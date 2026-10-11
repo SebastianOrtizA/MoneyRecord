@@ -9,6 +9,9 @@ namespace MoneyRecord.Helpers
     {
         public const int CentsPerUnit = 100;
 
+        /// <summary>Decimal places stored for every currency (cents).</summary>
+        public const int Decimals = 2;
+
         /// <summary>
         /// Largest amount the app accepts (just under a trillion). Far below where cents would overflow a long.
         /// </summary>

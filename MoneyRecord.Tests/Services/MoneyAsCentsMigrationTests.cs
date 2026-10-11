@@ -49,7 +49,7 @@ public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
         (await _db.Table<Transfer>().FirstAsync()).AmountCents.Should().Be(9999);
         (await _db.Table<Budget>().FirstAsync()).LimitAmountCents.Should().Be(30000);
         (await _db.Table<RecurringTransaction>().FirstAsync()).AmountCents.Should().Be(1575);
-        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(2);
+        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(MigrationRunner.All.Count);
     }
 
     [Fact]
@@ -89,7 +89,7 @@ public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
         await MigrateAsync();
 
         (await _db.Table<Transaction>().FirstAsync()).Amount.Should().Be(12.34m);
-        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(2);
+        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(MigrationRunner.All.Count);
     }
 
     [Fact]
@@ -101,6 +101,33 @@ public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
 
         var cents = await _db.ExecuteScalarAsync<long>("SELECT AmountCents FROM \"Transaction\" WHERE Description = 'Coffee'");
         cents.Should().Be(350);
+    }
+
+    [Fact]
+    public async Task AccountsWithoutCurrency_GetTheBaseCurrency_OthersKeepTheirs()
+    {
+        await _db.ExecuteAsync("INSERT INTO \"Account\" (Name, InitialBalance) VALUES ('Old', 10)");
+        await MigrateAsync(); // adds the CurrencyCode column (NULL for the old row) and runs migration 3
+        await _db.ExecuteAsync("INSERT INTO \"Account\" (Name, CurrencyCode) VALUES ('Euros', 'EUR')");
+        await _db.ExecuteAsync("UPDATE \"Account\" SET CurrencyCode = '' WHERE Name = 'Old'");
+
+        await _db.RunInTransactionAsync(conn => M003_AccountCurrencyCodes.FillMissing(conn, "COP"));
+
+        var accounts = await _db.Table<Account>().ToListAsync();
+        accounts.Single(a => a.Name == "Old").CurrencyCode.Should().Be("COP");
+        accounts.Single(a => a.Name == "Euros").CurrencyCode.Should().Be("EUR");
+    }
+
+    [Fact]
+    public async Task Migration3_StampsOldAccounts()
+    {
+        await _db.ExecuteAsync("INSERT INTO \"Account\" (Name, InitialBalance) VALUES ('Old', 10)");
+
+        await MigrateAsync();
+
+        var old = await _db.Table<Account>().FirstAsync();
+        old.CurrencyCode.Should().NotBeNullOrEmpty()
+            .And.Be(MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null));
     }
 
     private Task MigrateAsync() =>

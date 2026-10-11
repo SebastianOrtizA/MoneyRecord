@@ -65,7 +65,11 @@ namespace MoneyRecord.Models
             }
         }
 
-        public TransactionGroup(string groupName, List<Transaction> transactions, GroupingMode mode = GroupingMode.Category, decimal? overrideTotal = null, string? accountIconCode = null)
+        /// <param name="currencyCode">
+        /// The group's currency when known (an account group: the account's). Otherwise it is the items' single
+        /// currency, or the base currency when they are mixed.
+        /// </param>
+        public TransactionGroup(string groupName, List<Transaction> transactions, GroupingMode mode = GroupingMode.Category, decimal? overrideTotal = null, string? accountIconCode = null, string? currencyCode = null)
         {
             GroupName = groupName ?? "Unknown";
             CategoryName = groupName ?? "Unknown"; // Keep for backward compatibility
@@ -73,9 +77,15 @@ namespace MoneyRecord.Models
             Items = new ObservableCollection<Transaction>(transactions ?? new List<Transaction>());
             IsBalanceMode = mode == GroupingMode.Account;
 
-            // One currency for the whole group (always so when grouped by account); mixed = the base currency
-            var currencies = Items.Select(t => MoneyFormatter.ResolveCurrencyCode(t.CurrencyCode)).Distinct().ToList();
-            CurrencyCode = currencies.Count == 1 ? currencies[0] : string.Empty;
+            if (currencyCode != null)
+            {
+                CurrencyCode = currencyCode;
+            }
+            else
+            {
+                var currencies = Items.Select(t => MoneyFormatter.ResolveCurrencyCode(t.CurrencyCode)).Distinct().ToList();
+                CurrencyCode = currencies.Count == 1 ? currencies[0] : string.Empty;
+            }
 
             // Set group icon based on grouping mode
             if (mode == GroupingMode.Category && transactions != null && transactions.Any())

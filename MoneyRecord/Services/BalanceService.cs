@@ -41,16 +41,8 @@ namespace MoneyRecord.Services
             GetBalancesByCurrencyAsync(MoneyFormatter.ResolveCurrencyCode(null));
 
         /// <summary>For tests: <paramref name="baseCurrencyCode"/> instead of the app-wide base currency.</summary>
-        public async Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync(string baseCurrencyCode)
-        {
-            var balances = await GetAllAccountBalancesAsync();
-            return balances
-                .GroupBy(b => string.IsNullOrEmpty(b.CurrencyCode) ? baseCurrencyCode : b.CurrencyCode.ToUpperInvariant())
-                .Select(g => new CurrencyBalance(g.Key, g.Sum(b => b.CurrentBalance), g.Count()))
-                .OrderBy(c => c.CurrencyCode == baseCurrencyCode ? 0 : 1)
-                .ThenBy(c => c.CurrencyCode, StringComparer.Ordinal)
-                .ToList();
-        }
+        public async Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync(string baseCurrencyCode) =>
+            CurrencyBalance.FromAccounts(await GetAllAccountBalancesAsync(), baseCurrencyCode);
 
         public async Task<decimal> GetAccountBalanceAsync(int accountId)
         {

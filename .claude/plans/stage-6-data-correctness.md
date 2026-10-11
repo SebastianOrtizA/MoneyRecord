@@ -119,9 +119,18 @@ foundation first, because everything later builds on them.
   reformats when the account changes) and `ParseAmount(text, currencyCode)` replace `DecimalPlaces` and the
   `Replace("$", "").Replace(",", "")` parsing (which broke "12,50" in Spanish). Resource strings take preformatted
   amounts. Account delete is refused when transactions/rules would move into another currency.
-- **Known limitation (needs exchange rates, Stage 10):** totals that span accounts (Home income/expense/net, reports,
-  budgets, category groups, charts) still add amounts across currencies and show them in the base currency. A transfer
-  between accounts in different currencies (already warned on entry) shows in the source account's currency.
+- **Known limitation (needs exchange rates, moved to Stage 10.3):** totals that span accounts (Home income/expense/net,
+  reports, budgets, category groups, charts) still add amounts across currencies and show them in the base currency.
+  The report detail popup already lists one subtotal per currency (`MoneyFormatter.FormatTotals`). A transfer between
+  accounts in different currencies (already warned on entry) shows in the source account's currency.
+- Review fixes (PR #9): migration **v3 `M003_AccountCurrencyCodes`** stamps accounts with an empty `CurrencyCode` with
+  the base currency at upgrade time (restore does the same for old backups), so changing the base currency can't
+  relabel them or change `HaveSameCurrency`. The base currency is loaded explicitly in `MauiProgram`
+  (`CurrencyService.LoadBaseCurrency`) before the database opens. `CurrencyMaskBehavior` keeps the exact (cents) value,
+  so a zero-decimal currency on the way (USD → KRW → USD) or an amount loaded before its account keeps its cents; the
+  add/edit ViewModels also set the account before the amount. Account groups take the account's currency.
+  `CurrencyBalance.FromAccounts` + `MoneyFormatter.ResolveCurrencyCode(code, base)` are the single grouping/resolving rule;
+  Home computes account balances once. Region currency lookups are cached per culture. "Initial:" is localized.
 
 ### 6.6 Localization cleanup (P8)
 - Move the ~26 hard-coded strings ("No activity", "Transfers", "Transfer to/from", "Unknown", "Cash",

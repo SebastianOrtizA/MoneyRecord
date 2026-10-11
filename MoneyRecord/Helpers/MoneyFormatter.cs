@@ -1,4 +1,5 @@
 using MoneyRecord.Services;
+using System.Collections.Concurrent;
 using System.Globalization;
 
 namespace MoneyRecord.Helpers
@@ -43,12 +44,28 @@ namespace MoneyRecord.Helpers
         }
 
         /// <summary>The currency an amount is shown in: its own, else the base currency, else the device's.</summary>
-        public static string ResolveCurrencyCode(string? currencyCode)
+        public static string ResolveCurrencyCode(string? currencyCode) =>
+            ResolveCurrencyCode(currencyCode, !string.IsNullOrEmpty(BaseCurrencyCode) ? BaseCurrencyCode : CurrencyService.GetDeviceCurrencyCode());
+
+        /// <summary>The one rule for an amount's currency: its own code (upper case), else <paramref name="baseCurrencyCode"/>.</summary>
+        public static string ResolveCurrencyCode(string? currencyCode, string baseCurrencyCode) =>
+            (!string.IsNullOrEmpty(currencyCode) ? currencyCode : baseCurrencyCode).ToUpperInvariant();
+
+        /// <summary>
+        /// Sums amounts per currency and lists the subtotals ("¥10,000 + $20.00"): amounts in different currencies are
+        /// never added together. One currency gives a single amount.
+        /// </summary>
+        public static string FormatTotals(IEnumerable<(decimal Amount, string? CurrencyCode)> amounts)
         {
-            if (!string.IsNullOrEmpty(currencyCode))
-                return currencyCode.ToUpperInvariant();
-            return !string.IsNullOrEmpty(BaseCurrencyCode) ? BaseCurrencyCode : CurrencyService.GetDeviceCurrencyCode();
+            var totals = amounts
+                .GroupBy(a => ResolveCurrencyCode(a.CurrencyCode))
+                .Select(g => Format(g.Sum(a => a.Amount), g.Key))
+                .ToList();
+            return totals.Count > 0 ? string.Join(" + ", totals) : Format(0);
         }
+
+        /// <summary>The ISO currency of each culture's region (null = none), looked up once per culture.</summary>
+        private static readonly ConcurrentDictionary<string, string?> RegionCurrencies = new();
 
         /// <summary>
         /// The culture's own symbol when the currency is the culture region's currency ("$" for COP in es-CO);
@@ -59,17 +76,23 @@ namespace MoneyRecord.Helpers
             var cultureSymbol = culture.NumberFormat.CurrencySymbol;
             if (cultureSymbol != "¤" && !culture.IsNeutralCulture && !string.IsNullOrEmpty(culture.Name))
             {
-                try
-                {
-                    if (string.Equals(new RegionInfo(culture.Name).ISOCurrencySymbol, code, StringComparison.OrdinalIgnoreCase))
-                        return cultureSymbol;
-                }
-                catch (ArgumentException)
-                {
-                    // No region for this culture: fall through to the currency's own symbol
-                }
+                var regionCurrency = RegionCurrencies.GetOrAdd(culture.Name, GetRegionCurrency);
+                if (string.Equals(regionCurrency, code, StringComparison.OrdinalIgnoreCase))
+                    return cultureSymbol;
             }
             return CurrencyService.GetSymbol(code);
+        }
+
+        private static string? GetRegionCurrency(string cultureName)
+        {
+            try
+            {
+                return new RegionInfo(cultureName).ISOCurrencySymbol;
+            }
+            catch (ArgumentException)
+            {
+                return null; // No region for this culture: the currency's own symbol is used
+            }
         }
 
         /// <summary>

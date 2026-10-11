@@ -2382,6 +2382,12 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        internal static string InitialBalanceAmount {
+            get {
+                return ResourceManager.GetString("InitialBalanceAmount", resourceCulture);
+            }
+        }
+
         internal static string RestoreComplete {
             get {
                 return ResourceManager.GetString("RestoreComplete", resourceCulture);

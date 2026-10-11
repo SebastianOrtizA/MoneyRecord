@@ -205,10 +205,11 @@ namespace MoneyRecord.ViewModels
                     $"   📝 {(string.IsNullOrEmpty(t.Description) ? AppResources.NoDescription : t.Description)}"
                 );
 
-                var totalAmount = categoryTransactions.Sum(t => Math.Abs(t.Amount));
+                // One subtotal per currency: never "¥10,000 + $20.00 = $10,020.00"
+                var totalText = MoneyFormatter.FormatTotals(categoryTransactions.Select(t => (Math.Abs(t.Amount), (string?)t.CurrencyCode)));
                 var transactionCount = categoryTransactions.Count;
 
-                var message = $"{AppResources.Total}: {MoneyFormatter.Format(totalAmount)} ({transactionCount} {(transactionCount > 1 ? AppResources.TransactionPlural : AppResources.TransactionSingular)})\n\n" +
+                var message = $"{AppResources.Total}: {totalText} ({transactionCount} {(transactionCount > 1 ? AppResources.TransactionPlural : AppResources.TransactionSingular)})\n\n" +
                              string.Join("\n\n", details);
 
                 await Shell.Current.DisplayAlertAsync($"💵 {categoryName}", message, AppResources.Close);

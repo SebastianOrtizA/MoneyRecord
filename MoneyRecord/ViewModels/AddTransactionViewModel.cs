@@ -176,7 +176,6 @@ namespace MoneyRecord.ViewModels
                 TransactionType = Transaction.Type;
                 SelectedDate = Transaction.Date;
                 Description = Transaction.Description;
-                Amount = Transaction.Amount.ToString();
                 TagsText = Transaction.Tags ?? string.Empty;
                 _receipt.Load(Transaction.ReceiptPhotoPath);
                 ShowReceipt();
@@ -196,6 +195,9 @@ namespace MoneyRecord.ViewModels
                 {
                     SelectedAccount = Accounts.FirstOrDefault(a => a.IsDefault);
                 }
+
+                // After the account: the amount field formats in the account's currency
+                Amount = Transaction.Amount.ToString();
             }
             else
             {
