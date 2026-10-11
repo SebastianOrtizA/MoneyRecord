@@ -3,8 +3,9 @@ using SQLite;
 namespace MoneyRecord.Services.Repositories.Migrations
 {
     /// <summary>
-    /// Brings the database schema up to date. Each pending migration runs in its own transaction
-    /// together with the PRAGMA user_version update, so a failed step leaves the database untouched.
+    /// Brings a database created by an older app version up to date. Each pending migration runs in
+    /// its own transaction together with the PRAGMA user_version update, so a failed step leaves the
+    /// database untouched. New databases are built from the models and only stamped with the latest version.
     /// </summary>
     public sealed class MigrationRunner
     {
@@ -13,8 +14,7 @@ namespace MoneyRecord.Services.Repositories.Migrations
         /// </summary>
         public static readonly IReadOnlyList<IMigration> All =
         [
-            new M001_Baseline(),
-            new M002_Indexes()
+            new M001_Baseline()
         ];
 
         private readonly IReadOnlyList<IMigration> _migrations;
@@ -36,9 +36,14 @@ namespace MoneyRecord.Services.Repositories.Migrations
         /// <summary>
         /// Applies every pending migration and returns the resulting schema version.
         /// </summary>
+        /// <exception cref="InvalidOperationException">The database was written by a newer app version.</exception>
         public async Task<int> RunAsync(SQLiteAsyncConnection db)
         {
             var version = await GetVersionAsync(db);
+            if (version > LatestVersion)
+                throw new InvalidOperationException(
+                    $"The database is at schema version {version}, but this app only knows up to {LatestVersion}. " +
+                    "It was probably restored from a newer app version.");
 
             foreach (var migration in _migrations.Where(m => m.Version > version))
             {
@@ -55,6 +60,12 @@ namespace MoneyRecord.Services.Repositories.Migrations
 
             return version;
         }
+
+        /// <summary>
+        /// Marks a database freshly built from the current models as fully migrated.
+        /// </summary>
+        public Task StampLatestAsync(SQLiteAsyncConnection db) =>
+            db.ExecuteAsync($"PRAGMA user_version = {LatestVersion}");
 
         public static Task<int> GetVersionAsync(SQLiteAsyncConnection db) =>
             db.ExecuteScalarAsync<int>("PRAGMA user_version");

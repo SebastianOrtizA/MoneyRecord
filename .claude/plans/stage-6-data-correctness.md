@@ -32,13 +32,16 @@ foundation first, because everything later builds on them.
 - `DatabaseInitializer` reads `PRAGMA user_version`, runs pending migrations in one transaction each,
   then sets `user_version`. Current schema = version 1 (baseline, no-op).
 - Back up `moneyrecord.db3` to `moneyrecord.db3.bak-v{n}` before any migration that rewrites data.
-- Add indexes in v2: `Transaction(Date)`, `Transaction(AccountId)`, `Transaction(CategoryId)`, `Transfer(Date)`,
+- Add indexes (done via `[Indexed]` on the models, see below): `Transaction(Date)`, `Transaction(AccountId)`, `Transaction(CategoryId)`, `Transfer(Date)`,
   `Transfer(SourceAccountId)`, `Transfer(DestinationAccountId)`.
-- Done as `MigrationRunner` + `M001_Baseline` + `M002_Indexes`. `IMigration.Up` is synchronous (`void Up(SQLiteConnection)`)
-  because sqlite-net's `RunInTransactionAsync` hands a sync connection; `user_version` is set in the same transaction.
-  Backups use `VACUUM INTO` and only run for migrations with `RewritesData = true`. New migrations: add to `MigrationRunner.All`.
+- Done as `MigrationRunner` + `M001_Baseline`. **Contract: models describe the latest schema.** A new database is created
+  from the models and stamped with the latest version (migrations never run on it); a migration only transforms a database
+  from an older app version, after `CreateTableAsync` has added new columns/indexes. Indexes are `[Indexed(Name = "IX_…")]`
+  on the models, not a migration. `IMigration.Up` is sync (`void Up(SQLiteConnection)`); `user_version` is set in the same
+  transaction. Backups use `VACUUM INTO`, only for `RewritesData = true`. A DB newer than the app throws. New migrations:
+  add to `MigrationRunner.All`.
 
-### 6.2 Money as integer minor units (v3 migration)
+### 6.2 Money as integer minor units (v2 migration)
 - sqlite-net stores `decimal` as REAL → rounding drift. Add `long AmountMinor` (and `InitialBalanceMinor`,
   `LimitAmountMinor`) columns; migrate with `ROUND(Amount * 100)`; keep `decimal Amount` as an `[Ignore]`
   property computed from the minor value so ViewModels don't change.
@@ -90,7 +93,7 @@ foundation first, because everything later builds on them.
 
 ## Tests
 - `GetBalancesByCurrencyAsync`: USD + EUR + COP accounts → three rows, none summed across currencies; empty code → base.
-- Migration tests against a real temp SQLite file: v1 DB with decimals → v3, sums equal to the cent.
+- Migration tests against a real temp SQLite file: v1 DB with decimals → v2, sums equal to the cent.
 - Cascade tests: delete account with transfers/recurring; delete category with budget/recurring.
 - Restore round-trip incl. receipts; restore failure midway leaves the original data intact.
 - `MoneyConverter` / culture tests for en-US, es-CO, es-ES, ja-JP (0 decimals).

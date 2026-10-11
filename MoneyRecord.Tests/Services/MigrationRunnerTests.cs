@@ -53,19 +53,6 @@ public sealed class MigrationRunnerTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task V2_CreatesLookupIndexes()
-    {
-        await new MigrationRunner(MigrationRunner.All).RunAsync(_db);
-
-        var indexes = await _db.QueryScalarsAsync<string>("SELECT name FROM sqlite_master WHERE type = 'index'");
-        indexes.Should().Contain(
-        [
-            "IX_Transaction_Date", "IX_Transaction_AccountId", "IX_Transaction_CategoryId",
-            "IX_Transfer_Date", "IX_Transfer_SourceAccountId", "IX_Transfer_DestinationAccountId"
-        ]);
-    }
-
-    [Fact]
     public async Task RunAsync_Twice_IsANoOp()
     {
         var runner = new MigrationRunner(MigrationRunner.All);
@@ -118,6 +105,27 @@ public sealed class MigrationRunnerTests : IAsyncLifetime
         await new MigrationRunner(MigrationRunner.All).RunAsync(_db);
 
         Directory.GetFiles(Path.GetDirectoryName(_dbPath)!, Path.GetFileName(_dbPath) + ".bak-v*").Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task RunAsync_DatabaseFromNewerApp_Throws()
+    {
+        await _db.ExecuteAsync("PRAGMA user_version = 99");
+
+        var act = () => new MigrationRunner(MigrationRunner.All).RunAsync(_db);
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(99);
+    }
+
+    [Fact]
+    public async Task StampLatestAsync_SetsLatestVersionWithoutRunningMigrations()
+    {
+        var runner = new MigrationRunner([new M001_Baseline(), new FakeMigration(2, fail: true)]);
+
+        await runner.StampLatestAsync(_db);
+
+        (await MigrationRunner.GetVersionAsync(_db)).Should().Be(2);
     }
 
     [Fact]
