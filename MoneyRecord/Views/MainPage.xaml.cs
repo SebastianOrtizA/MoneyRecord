@@ -1,3 +1,4 @@
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
@@ -33,7 +34,7 @@ namespace MoneyRecord.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlertAsync("Error", $"Failed to load data: {ex.Message}", "OK");
+                await DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadData, ex.Message), AppResources.OK);
             }
         }
     }

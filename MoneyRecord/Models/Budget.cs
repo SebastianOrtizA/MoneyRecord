@@ -40,6 +40,15 @@ namespace MoneyRecord.Models
         public bool IsActive { get; set; } = true;
     }
 
+    /// <summary>How much of a budget is used: OnTrack < 60% <= Warning < 80% <= High < 100% <= Exceeded.</summary>
+    public enum BudgetLevel
+    {
+        OnTrack,
+        Warning,
+        High,
+        Exceeded
+    }
+
     /// <summary>
     /// ViewModel-friendly representation of a budget with progress information
     /// </summary>
@@ -83,7 +92,7 @@ namespace MoneyRecord.Models
         private decimal remainingAmount;
 
         [ObservableProperty]
-        private Color progressColor = Colors.Green;
+        private BudgetLevel level = BudgetLevel.OnTrack;
 
         public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
 
@@ -102,13 +111,13 @@ namespace MoneyRecord.Models
             ExceededAmount = IsOverBudget ? SpentAmount - LimitAmount : 0;
             RemainingAmount = IsOverBudget ? 0 : LimitAmount - SpentAmount;
 
-            // Set progress bar color based on percentage
-            ProgressColor = ProgressPercentage switch
+            // The progress bar colour comes from the level (BudgetLevelToColorConverter, light/dark aware)
+            Level = ProgressPercentage switch
             {
-                >= 100 => Colors.Red,
-                >= 80 => Colors.Orange,
-                >= 60 => Colors.Yellow,
-                _ => Colors.Green
+                >= 100 => BudgetLevel.Exceeded,
+                >= 80 => BudgetLevel.High,
+                >= 60 => BudgetLevel.Warning,
+                _ => BudgetLevel.OnTrack
             };
         }
     }

@@ -1,6 +1,6 @@
 # Stage 6: Data Correctness & Trust
 
-**Status**: In progress — 6.0–6.5 done (2026-10-11)
+**Status**: In progress — 6.0–6.6 done (2026-10-11)
 **Depends on**: Stage 4 (complete). Blocks Stages 7–10.
 **Complexity**: High (schema migration of user data)
 **Source**: Product & engineering review, 2026-10-11 (P1–P5, P8, P12, N1–N4)
@@ -132,13 +132,31 @@ foundation first, because everything later builds on them.
   `CurrencyBalance.FromAccounts` + `MoneyFormatter.ResolveCurrencyCode(code, base)` are the single grouping/resolving rule;
   Home computes account balances once. Region currency lookups are cached per culture. "Initial:" is localized.
 
-### 6.6 Localization cleanup (P8)
+### 6.6 Localization cleanup (P8) — ✅ done
 - Move the ~26 hard-coded strings ("No activity", "Transfers", "Transfer to/from", "Unknown", "Cash",
   "1 transactions" plural, "All/Income/Expense/Transfer") into both `.resx` files.
 - Filters use enums/IDs, not display strings (`MainViewModel.ApplyFilters`).
 - Dates: use culture patterns (`D`, `MMM d`) instead of `"MMM dd, yyyy"`; check "11 de octubre de 2026" in Spanish.
 - Budget colours (P12): replace `Colors.Yellow` with an accessible amber (`#B26A00` light / `#F2B65C` dark) and
   never use the progress colour for the amount text.
+- Done: new keys `Unknown`, `NoActivity`, `All`, `TransferToAccount` / `TransferFromAccount` (`{0}` = account; the
+  ": description" suffix is dropped when there is none), `TransactionCountOne` / `TransactionCountOther` (replace
+  `TransactionSingular` / `TransactionPlural`, which treated 0 as singular), `FailedToLoadData`; the transfer category is
+  `AppResources.Transfers`, a missing account falls back to `DefaultAccountCash`. `Helpers/Plurals.Transactions(count)` +
+  `TransactionCountConverter`. ManageAccountsPage's "Your Accounts", "No accounts yet", "Initial Balance" and the
+  "Account name" placeholder use existing keys. The Home type filter is `TypeFilterOption(TransactionType? Type, string Name)`
+  (`ItemDisplayBinding="{Binding Name}"`; labels are the plural keys: Todos / Ingresos / Gastos / Transferencias).
+  Dates: `Helpers/DateFormatter` derives patterns from the culture (`DateStyle.Long` = long date without weekday,
+  `Medium` = same with `MMM`, `MonthDay` = `MonthDayPattern` with `MMM`), used through `DateTextConverter`
+  (ConverterParameter = style) and `{x:Static helpers:DateFormatter.MediumPattern}` for DatePickers; es-ES shows
+  "11 de octubre de 2026" / "11 de oct". Budgets: `BudgetProgress.Level` (`BudgetLevel` OnTrack/Warning/High/Exceeded)
+  replaces the `Color ProgressColor`; `BudgetLevelToColorConverter` is light/dark aware (amber `#B26A00` / `#F2B65C`), and
+  the Home budget summary amount no longer takes the progress colour.
+- **Deviation:** category and account filters still match by name. Transfer rows carry synthetic names
+  ("A → B", the localized "Transfers" category), so moving them to IDs belongs with Stage 7's `LedgerEntry` split.
+- Left for later: amount placeholders are a hard-coded "0.00" (6 places; should follow the currency's decimals and the
+  culture's separator: Stage 8 fast entry), seeded category/account names stay in the language of first run, and
+  "transfer(s)" / "transaction(s)" in confirmation messages still use "(s)".
 
 ### 6.7 Housekeeping
 - Replace FluentAssertions 8.* (Xceed licence, non-commercial only) with AwesomeAssertions (Apache-2.0); pin all test

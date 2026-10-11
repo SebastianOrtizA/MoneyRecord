@@ -98,7 +98,7 @@ namespace MoneyRecord.ViewModels
         private bool isFilterVisible = false;
 
         [ObservableProperty]
-        private string selectedFilterType = "All";
+        private TypeFilterOption? selectedFilterType;
 
         [ObservableProperty]
         private string? selectedFilterCategory;
@@ -136,7 +136,13 @@ namespace MoneyRecord.ViewModels
 
         public bool IsNetNegative => NetIncome < 0;
 
-        public List<string> FilterTypes { get; } = new() { "All", "Income", "Expense", "Transfer" };
+        public List<TypeFilterOption> FilterTypes { get; } =
+        [
+            new(null, AppResources.All),
+            new(TransactionType.Income, AppResources.Incomes),
+            new(TransactionType.Expense, AppResources.Expenses),
+            new(TransactionType.Transfer, AppResources.Transfers)
+        ];
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
@@ -151,6 +157,7 @@ namespace MoneyRecord.ViewModels
             _categoryRepository = categoryRepository;
             _errorHandler = errorHandler;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
+            selectedFilterType = FilterTypes[0];
         }
 
         public async Task InitializeAsync()
@@ -276,15 +283,9 @@ namespace MoneyRecord.ViewModels
                     (t.Tags?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
             }
 
-            if (SelectedFilterType != "All" && !string.IsNullOrEmpty(SelectedFilterType))
+            if (SelectedFilterType?.Type is TransactionType type)
             {
-                filtered = SelectedFilterType switch
-                {
-                    "Income" => filtered.Where(t => t.Type == TransactionType.Income),
-                    "Expense" => filtered.Where(t => t.Type == TransactionType.Expense),
-                    "Transfer" => filtered.Where(t => t.Type == TransactionType.Transfer),
-                    _ => filtered
-                };
+                filtered = filtered.Where(t => t.Type == type);
             }
 
             if (!string.IsNullOrEmpty(SelectedFilterCategory))
@@ -314,7 +315,7 @@ namespace MoneyRecord.ViewModels
             TotalCount = _allCombinedTransactions.Count;
             FilteredCount = combinedList.Count;
             HasActiveFilters = !string.IsNullOrWhiteSpace(SearchText) ||
-                               (SelectedFilterType != "All" && !string.IsNullOrEmpty(SelectedFilterType)) ||
+                               SelectedFilterType?.Type != null ||
                                !string.IsNullOrEmpty(SelectedFilterCategory) ||
                                !string.IsNullOrEmpty(SelectedFilterAccount) ||
                                !string.IsNullOrEmpty(MinAmountText) ||
@@ -576,7 +577,7 @@ namespace MoneyRecord.ViewModels
         private void ClearFilters()
         {
             SearchText = string.Empty;
-            SelectedFilterType = "All";
+            SelectedFilterType = FilterTypes[0];
             SelectedFilterCategory = null;
             SelectedFilterAccount = null;
             MinAmountText = string.Empty;
@@ -595,7 +596,7 @@ namespace MoneyRecord.ViewModels
             ApplyFilters();
         }
 
-        partial void OnSelectedFilterTypeChanged(string value)
+        partial void OnSelectedFilterTypeChanged(TypeFilterOption? value)
         {
             ApplyFilters();
         }
@@ -699,18 +700,15 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>
         /// Converts Transfer objects to Transaction objects for unified display.
-        /// When grouping by Category: creates one transaction per transfer with "Transfer" category.
+        /// When grouping by Category: creates one transaction per transfer in the "Transfers" category.
         /// When grouping by Account: creates two transactions per transfer (outgoing and incoming).
         /// When not grouped: creates one transaction per transfer showing the transfer details.
         /// </summary>
         private List<Transaction> ConvertTransfersToTransactions(List<Transfer> transfers, GroupingMode groupingMode)
         {
             var result = new List<Transaction>();
-            const string transferCategoryName = "Transfers";
+            var transferCategoryName = AppResources.Transfers;
             const string transferIconCode = "F0A27"; // bank-transfer icon
-
-
-
 
             foreach (var transfer in transfers)
             {
@@ -721,7 +719,7 @@ namespace MoneyRecord.ViewModels
                     {
                         Id = -transfer.Id, // Use negative ID to avoid conflicts with real transactions
                         Date = transfer.Date,
-                        Description = $"Transfer to {transfer.DestinationAccountName}: {transfer.Description}",
+                        Description = TransferLabel(AppResources.TransferToAccount, transfer.DestinationAccountName, transfer.Description),
                         Amount = transfer.Amount,
                         Type = TransactionType.Transfer,
                         CurrencyCode = transfer.CurrencyCode,
@@ -740,7 +738,7 @@ namespace MoneyRecord.ViewModels
                     {
                         Id = -transfer.Id - 1000000, // Use offset to ensure unique ID
                         Date = transfer.Date,
-                        Description = $"Transfer from {transfer.SourceAccountName}: {transfer.Description}",
+                        Description = TransferLabel(AppResources.TransferFromAccount, transfer.SourceAccountName, transfer.Description),
                         Amount = transfer.Amount,
                         Type = TransactionType.Transfer,
                         CurrencyCode = transfer.CurrencyCode,
@@ -780,6 +778,13 @@ namespace MoneyRecord.ViewModels
             }
 
             return result;
+        }
+
+        /// <summary>"Transfer to Savings: rent", or just "Transfer to Savings" without a description.</summary>
+        private static string TransferLabel(string format, string accountName, string? description)
+        {
+            var label = string.Format(format, accountName);
+            return string.IsNullOrEmpty(description) ? label : $"{label}: {description}";
         }
     }
 }

@@ -63,7 +63,7 @@ public class TransactionEnrichmentServiceTests
 
         var result = await _sut.GetEnrichedTransactionsAsync(start, end);
 
-        result[0].CategoryName.Should().Be("Unknown");
+        result[0].CategoryName.Should().Be(LocalizationService.Instance.GetString("Unknown"));
         result[0].CategoryIconCode.Should().Be("F0770");
     }
 
@@ -85,7 +85,7 @@ public class TransactionEnrichmentServiceTests
 
         var result = await _sut.GetEnrichedTransactionsAsync(start, end);
 
-        result[0].AccountName.Should().Be("Cash");
+        result[0].AccountName.Should().Be(LocalizationService.Instance.GetString("DefaultAccountCash"));
         result[0].AccountIconCode.Should().Be("F0115");
     }
 
@@ -126,8 +126,8 @@ public class TransactionEnrichmentServiceTests
 
         var result = await _sut.GetEnrichedTransfersAsync(start, end);
 
-        result[0].SourceAccountName.Should().Be("Unknown");
-        result[0].DestinationAccountName.Should().Be("Unknown");
+        result[0].SourceAccountName.Should().Be(LocalizationService.Instance.GetString("Unknown"));
+        result[0].DestinationAccountName.Should().Be(LocalizationService.Instance.GetString("Unknown"));
     }
 
     [Fact]
@@ -204,9 +204,9 @@ public class TransactionEnrichmentServiceTests
 
         var result = await _sut.GetEnrichedTransactionsAsync(start, end);
 
-        result[0].CategoryName.Should().Be("Unknown");
+        result[0].CategoryName.Should().Be(LocalizationService.Instance.GetString("Unknown"));
         result[0].CategoryIconCode.Should().Be("F0770");
-        result[0].AccountName.Should().Be("Cash");
+        result[0].AccountName.Should().Be(LocalizationService.Instance.GetString("DefaultAccountCash"));
         result[0].AccountIconCode.Should().Be("F0070");
     }
 }

@@ -141,7 +141,7 @@
 
                     <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <Entry Text="{Binding EditAccountName}" 
-                           Placeholder="Account name"
+                           Placeholder="{ext:Localize AccountNamePlaceholder}"
                            PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
                            TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
@@ -157,7 +157,7 @@
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     </HorizontalStackLayout>
 
-                    <Label Text="Initial Balance" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    <Label Text="{ext:Localize InitialBalance}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     <controls:DecimalEntry Text="{Binding EditAccountBalance}"
                            AllowNegative="{Binding EditAccountAllowNegativeBalance}"
                            Placeholder="0.00"
@@ -247,7 +247,7 @@
             </Frame>
 
             <!-- Accounts List Header -->
-            <Label Text="Your Accounts" 
+            <Label Text="{ext:Localize YourAccounts}" 
                    FontSize="20" 
                    FontAttributes="Bold"
                    TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
@@ -261,7 +261,7 @@
                                    FontSize="48"
                                    HorizontalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        <Label Text="No accounts yet"
+                        <Label Text="{ext:Localize NoAccounts}"
                                FontSize="16"
                                HorizontalOptions="Center"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>

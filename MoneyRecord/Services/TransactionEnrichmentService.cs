@@ -1,4 +1,5 @@
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services
@@ -91,24 +92,24 @@ namespace MoneyRecord.Services
         {
             if (categories.TryGetValue(transaction.CategoryId, out var category))
             {
-                transaction.CategoryName = category.Name ?? "Unknown";
+                transaction.CategoryName = category.Name ?? AppResources.Unknown;
                 transaction.CategoryIconCode = category.IconCode ?? "F0770";
             }
             else
             {
-                transaction.CategoryName = "Unknown";
+                transaction.CategoryName = AppResources.Unknown;
                 transaction.CategoryIconCode = "F0770";
             }
 
             if (transaction.AccountId.HasValue && accounts.TryGetValue(transaction.AccountId.Value, out var account))
             {
-                transaction.AccountName = account.Name ?? "Cash";
+                transaction.AccountName = account.Name ?? AppResources.DefaultAccountCash;
                 transaction.CurrencyCode = account.CurrencyCode;
                 transaction.AccountIconCode = account.IconCode ?? "F0070";
             }
             else
             {
-                transaction.AccountName = "Cash";
+                transaction.AccountName = AppResources.DefaultAccountCash;
                 transaction.AccountIconCode = "F0115";
             }
         }
@@ -117,21 +118,21 @@ namespace MoneyRecord.Services
         {
             if (accounts.TryGetValue(transfer.SourceAccountId, out var sourceAccount))
             {
-                transfer.SourceAccountName = sourceAccount.Name ?? "Unknown";
+                transfer.SourceAccountName = sourceAccount.Name ?? AppResources.Unknown;
                 transfer.CurrencyCode = sourceAccount.CurrencyCode;
             }
             else
             {
-                transfer.SourceAccountName = "Unknown";
+                transfer.SourceAccountName = AppResources.Unknown;
             }
 
             if (accounts.TryGetValue(transfer.DestinationAccountId, out var destAccount))
             {
-                transfer.DestinationAccountName = destAccount.Name ?? "Unknown";
+                transfer.DestinationAccountName = destAccount.Name ?? AppResources.Unknown;
             }
             else
             {
-                transfer.DestinationAccountName = "Unknown";
+                transfer.DestinationAccountName = AppResources.Unknown;
             }
         }
     }

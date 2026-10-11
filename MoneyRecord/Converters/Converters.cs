@@ -738,4 +738,59 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
     }
+    /// <summary>
+    /// Budget progress colour. Amber instead of yellow, which has no contrast on a light background
+    /// (#B26A00 light / #F2B65C dark). Only for the bar: amounts keep the normal text colour.
+    /// </summary>
+    public class BudgetLevelToColorConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            var dark = Application.Current?.RequestedTheme == AppTheme.Dark;
+            return (value as BudgetLevel? ?? BudgetLevel.OnTrack) switch
+            {
+                BudgetLevel.Exceeded => Color.FromArgb(dark ? "#EF5350" : "#D32F2F"),
+                BudgetLevel.High => Color.FromArgb(dark ? "#FF8A65" : "#E65100"),
+                BudgetLevel.Warning => Color.FromArgb(dark ? "#F2B65C" : "#B26A00"),
+                _ => Color.FromArgb(dark ? "#66BB6A" : "#2E7D32")
+            };
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>Formats a DateTime in the current culture's word order; ConverterParameter is a <see cref="DateStyle"/>.</summary>
+    public class DateTextConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is not DateTime date)
+                return string.Empty;
+
+            var style = Enum.TryParse<DateStyle>(parameter as string, out var parsed) ? parsed : DateStyle.Medium;
+            return DateFormatter.Format(date, style);
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>A transaction count with the right plural: "1 transaction", "3 transactions".</summary>
+    public class TransactionCountConverter : IValueConverter
+    {
+        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return Plurals.Transactions(value is int count ? count : 0);
+        }
+
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
