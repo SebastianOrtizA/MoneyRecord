@@ -7,7 +7,7 @@
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.ManageCategoriesPage"
              x:DataType="viewmodels:ManageCategoriesViewModel"
-             Title="{Binding Title}">
+             Title="{ext:Localize Categories}">
 
     <Grid>
         <ScrollView>

@@ -25,6 +25,8 @@ namespace MoneyRecord.ViewModels
         private List<AccountBalanceInfo> _accountBalances = [];
         private List<Account> _accounts = [];
 
+        // TODO(8.7): Home and Transactions each keep their own period (same picker and logic as MainViewModel);
+        // the shared period picker replaces both
         [ObservableProperty]
         private PeriodItem selectedPeriod;
 

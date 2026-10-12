@@ -42,7 +42,7 @@
                         <TapGestureRecognizer Command="{Binding AddExpenseCommand}"/>
                     </Grid.GestureRecognizers>
                     <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
-                            BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}">
+                            BackgroundColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}">
                         <Label Text="&#xF0374;" FontFamily="MaterialDesignIcons" FontSize="24" TextColor="White"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
@@ -54,7 +54,7 @@
                         <TapGestureRecognizer Command="{Binding AddIncomeCommand}"/>
                     </Grid.GestureRecognizers>
                     <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
-                            BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}">
+                            BackgroundColor="{AppThemeBinding Light={StaticResource IncomeColor}, Dark={StaticResource IncomeColorDark}}">
                         <Label Text="&#xF0415;" FontFamily="MaterialDesignIcons" FontSize="24" TextColor="White"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>
@@ -66,7 +66,7 @@
                         <TapGestureRecognizer Command="{Binding AddTransferCommand}"/>
                     </Grid.GestureRecognizers>
                     <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
-                            BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}">
+                            BackgroundColor="{AppThemeBinding Light={StaticResource TransferColor}, Dark={StaticResource TransferColorDark}}">
                         <Label Text="&#xF04E1;" FontFamily="MaterialDesignIcons" FontSize="24" TextColor="White"
                                HorizontalOptions="Center" VerticalOptions="Center"/>
                     </Border>

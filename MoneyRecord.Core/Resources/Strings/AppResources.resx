@@ -91,9 +91,6 @@
   <data name="ManageAccounts" xml:space="preserve">
     <value>Manage Accounts</value>
   </data>
-  <data name="ManageCategories" xml:space="preserve">
-    <value>Manage Categories</value>
-  </data>
   <data name="Accounts" xml:space="preserve">
     <value>Accounts</value>
   </data>
@@ -341,12 +338,6 @@
   </data>
   <data name="UpdateCategory" xml:space="preserve">
     <value>Update Category</value>
-  </data>
-  <data name="ManageIncomeCategories" xml:space="preserve">
-    <value>Manage Income Categories</value>
-  </data>
-  <data name="ManageExpenseCategories" xml:space="preserve">
-    <value>Manage Expense Categories</value>
   </data>
   <data name="YourCategories" xml:space="preserve">
     <value>Your Categories</value>

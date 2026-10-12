@@ -1297,33 +1297,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Manage Categories.
-        /// </summary>
-        public static string ManageCategories {
-            get {
-                return ResourceManager.GetString("ManageCategories", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Manage Expense Categories.
-        /// </summary>
-        public static string ManageExpenseCategories {
-            get {
-                return ResourceManager.GetString("ManageExpenseCategories", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Manage Income Categories.
-        /// </summary>
-        public static string ManageIncomeCategories {
-            get {
-                return ResourceManager.GetString("ManageIncomeCategories", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Medium.
         /// </summary>
         public static string Medium {

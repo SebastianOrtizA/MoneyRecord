@@ -31,9 +31,6 @@ namespace MoneyRecord.ViewModels
         private string newCategoryIconCode = string.Empty;
 
         [ObservableProperty]
-        private string title = string.Empty;
-
-        [ObservableProperty]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -59,7 +56,6 @@ namespace MoneyRecord.ViewModels
 
         public async Task InitializeAsync()
         {
-            Title = CategoryType == CategoryType.Income ? AppResources.ManageIncomeCategories : AppResources.ManageExpenseCategories;
             LoadAvailableIcons();
             NewCategoryIconCode = _categoryIconService.GetDefaultIconCode(CategoryType);
             UpdateIconSelection(NewCategoryIconCode);
