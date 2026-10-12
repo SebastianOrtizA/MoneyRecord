@@ -1,6 +1,6 @@
 # Stage 7: Architecture Refactor
 
-**Status**: In progress (7.1, 7.2 done; 7.3 in review)
+**Status**: In progress (7.1–7.3 done)
 **Depends on**: Stage 6 (money format + migrations must land first)
 **Complexity**: High (wide but mechanical; no user-visible change)
 **Source**: Product & engineering review, 2026-10-11 (engineering findings)
@@ -94,6 +94,26 @@ no duplicated business rules. Behaviour must not change; the device check before
 - Icon hex parsing only in `IconHelper`.
 - Split `Converters/Converters.cs` (731 lines) one-per-file; replace duplicates with CommunityToolkit converters
   (`InvertedBoolConverter`, `IsStringNotNullOrEmptyConverter`, `IsNotNullConverter`, …).
+- Done as: **Reports** — Core `CategoryReportBuilder.Build(transactions, CategoryType)` → `CategoryReport(Total,
+  Categories)` of `CategoryAmount` (type, ID, name, icon, amount, share, `HeatLevel` 0–11, `IsMinorShare` < 10%); groups by
+  category ID. One `CategoryReportViewModel` (`Type` → `Texts`, `IsIncome`) and one `CategoryReportPage`;
+  `ExpenseReportPage`/`IncomeReportPage` are code-only subclasses that set the type, so AppShell routes and DI keys stay.
+  Type-dependent colours are page styles with an `IsIncome` DataTrigger; `HeatmapColorConverter` maps a level (or the
+  legend's Low/Medium/High) to the expense or income palette, `Text=True` gives the contrast colour. One details command
+  instead of two; the popup dates use `DateFormatter` (was a fixed `MMM dd, yyyy`). `Models/CategoryReport.cs` and the
+  app's `Models/` folder are gone. **Budget window** — `DateRangeHelper.GetBudgetWindow(period, now)` (year now ends at
+  the last tick, not 23:59:59); only `AddTransactionViewModel` still needed one (7.3 moved the others to
+  `BudgetSummaryService`, which uses the selected period). **Recurrence** — `RecurrenceCalculator.Next` (service, new
+  recurring) and `NextAfter` (editing a due recurrence); occurrences are dates at 00:00, and a clamped day (31 → Feb 28)
+  returns to the 31st next month (`NextAfter` used `AddMonths` on the clamped date and stayed on the 28th).
+  **Icons** — no hex parsing outside `IconHelper`. **Converters** — one file each; unused `StringEquals`,
+  `IconSelectionColor`, `IconSelectionBackground` deleted; `InvertedBool`, `IntToBool`, `StringToBool` →
+  CommunityToolkit (`InvertedBoolConverter`, `IntToBoolConverter`, `IsStringNotNullOrEmptyConverter`) with
+  `SetShouldSuppressExceptionsInConverters(true)` so a null input doesn't throw. Tests: `CategoryReportBuilderTests`,
+  `RecurrenceCalculatorTests`, `GetBudgetWindow` (266 pass).
+- **Visible changes:** the income legend's "Medium" label is black (contrast rule) instead of white; the expense legend's
+  border now also frames the income "Low" swatch; heatmap tiles no longer keep a selection highlight (they open the
+  details on tap, as before). Transactions created by a recurrence get 00:00 instead of the original time of day.
 
 ### 7.5 Data access
 - `RepositoryBase<T>` holding `EnsureInitializedAsync` + CRUD; `DataExportService` uses repositories.

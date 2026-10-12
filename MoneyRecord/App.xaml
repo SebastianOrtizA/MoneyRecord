@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:MoneyRecord"
              xmlns:converters="clr-namespace:MoneyRecord.Converters"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="MoneyRecord.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -13,7 +14,7 @@
             
             <converters:TransactionTypeToColorConverter x:Key="TransactionTypeToColorConverter" />
             <converters:BoolToSortTextConverter x:Key="BoolToSortTextConverter" />
-            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
+            <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:BoolToGroupTextConverter x:Key="BoolToGroupTextConverter" />
             <converters:BoolToExpandIconConverter x:Key="BoolToExpandIconConverter" />
             <converters:GroupingModeToIsGroupedConverter x:Key="GroupingModeToIsGroupedConverter" />
@@ -24,10 +25,7 @@
             <converters:TransactionAmountConverter x:Key="TransactionAmountConverter" />
             <converters:GroupTotalConverter x:Key="GroupTotalConverter" />
             <converters:GroupTypeToColorConverter x:Key="GroupTypeToColorConverter" />
-            <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
-            <converters:StringEqualsConverter x:Key="StringEqualsConverter" />
-            <converters:IconSelectionColorConverter x:Key="IconSelectionColorConverter" />
-            <converters:IconSelectionBackgroundConverter x:Key="IconSelectionBackgroundConverter" />
+            <toolkit:IsStringNotNullOrEmptyConverter x:Key="IsStringNotNullOrEmptyConverter" />
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToSelectedBackgroundConverter x:Key="BoolToSelectedBackgroundConverter" />
             <converters:BoolToIconColorConverter x:Key="BoolToIconColorConverter" />
@@ -40,7 +38,7 @@
             <converters:BoolToOverBudgetTextColorConverter x:Key="BoolToOverBudgetTextColorConverter" />
             <converters:OverBudgetAmountConverter x:Key="OverBudgetAmountConverter" />
             <converters:BudgetPeriodToDisplayConverter x:Key="BudgetPeriodToDisplayConverter" />
-            <converters:IntToBoolConverter x:Key="IntToBoolConverter" />
+            <toolkit:IntToBoolConverter x:Key="IntToBoolConverter" />
             <converters:BudgetLevelToColorConverter x:Key="BudgetLevelToColorConverter" />
             <converters:DateTextConverter x:Key="DateTextConverter" />
             <converters:TransactionCountConverter x:Key="TransactionCountConverter" />

@@ -27,7 +27,8 @@ namespace MoneyRecord
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("materialdesignicons-webfont.ttf", "MaterialDesignIcons");
                 })
-                .UseMauiCommunityToolkit()
+                // Toolkit converters return a default instead of throwing on unexpected input, like ours did
+                .UseMauiCommunityToolkit(options => options.SetShouldSuppressExceptionsInConverters(true))
                 .ConfigureDecimalEntry();
 
             // Register Infrastructure Services
@@ -68,8 +69,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<ManageAccountsViewModel>();
             builder.Services.AddTransient<TransfersViewModel>();
             builder.Services.AddTransient<AddTransferViewModel>();
-            builder.Services.AddTransient<ExpenseReportViewModel>();
-            builder.Services.AddTransient<IncomeReportViewModel>();
+            builder.Services.AddTransient<CategoryReportViewModel>();
             builder.Services.AddTransient<FloatingMenuViewModel>();
             builder.Services.AddTransient<BudgetViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();

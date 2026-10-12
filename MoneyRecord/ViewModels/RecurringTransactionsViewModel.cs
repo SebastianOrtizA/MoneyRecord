@@ -177,7 +177,7 @@ namespace MoneyRecord.ViewModels
                 var now = DateTime.Now;
                 if (EditingItem.NextOccurrence <= now)
                 {
-                    EditingItem.NextOccurrence = CalculateNextFromNow(now, frequency, dayOfMonth);
+                    EditingItem.NextOccurrence = RecurrenceCalculator.NextAfter(now, frequency, dayOfMonth);
                 }
 
                 await _recurringRepo.SaveAsync(EditingItem);
@@ -192,26 +192,6 @@ namespace MoneyRecord.ViewModels
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToUpdateRecurringTransaction);
             }
-        }
-
-        private static DateTime CalculateNextFromNow(DateTime now, RecurrenceFrequency frequency, int? dayOfMonth)
-        {
-            if (frequency == RecurrenceFrequency.Monthly && dayOfMonth.HasValue)
-            {
-                var day = Math.Min(dayOfMonth.Value, DateTime.DaysInMonth(now.Year, now.Month));
-                var candidate = new DateTime(now.Year, now.Month, day);
-                return candidate > now ? candidate : candidate.AddMonths(1);
-            }
-
-            return frequency switch
-            {
-                RecurrenceFrequency.Daily => now.Date.AddDays(1),
-                RecurrenceFrequency.Weekly => now.Date.AddDays(7),
-                RecurrenceFrequency.Biweekly => now.Date.AddDays(14),
-                RecurrenceFrequency.Monthly => now.Date.AddMonths(1),
-                RecurrenceFrequency.Yearly => now.Date.AddYears(1),
-                _ => now.Date.AddMonths(1)
-            };
         }
 
         [RelayCommand]

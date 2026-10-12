@@ -11,10 +11,6 @@
              x:DataType="viewmodels:ManageAccountsViewModel"
              Title="{ext:Localize ManageAccounts}">
 
-    <ContentPage.Resources>
-        <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
-    </ContentPage.Resources>
-
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
@@ -313,7 +309,7 @@
                                             StrokeShape="RoundRectangle 8"
                                             Stroke="Transparent"
                                             Padding="6,2"
-                                            IsVisible="{Binding Account.CurrencyCode, Converter={StaticResource StringToBoolConverter}}">
+                                            IsVisible="{Binding Account.CurrencyCode, Converter={StaticResource IsStringNotNullOrEmptyConverter}}">
                                         <Label Text="{Binding Account.CurrencyCode}"
                                                FontSize="11"
                                                TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
