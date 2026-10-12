@@ -214,7 +214,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, ex.Message);
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteCategory);
             }
         }
 

@@ -574,13 +574,10 @@
     <value>Última Actividad</value>
   </data>
   <data name="FailedToLoadAccountBalances" xml:space="preserve">
-    <value>Error al cargar los balances de cuentas: {0}</value>
-  </data>
-  <data name="FailedToToggleView" xml:space="preserve">
-    <value>Error al cambiar la vista: {0}</value>
+    <value>Error al cargar los balances de cuentas</value>
   </data>
   <data name="FailedToLoadReportData" xml:space="preserve">
-    <value>Error al cargar los datos del reporte: {0}</value>
+    <value>Error al cargar los datos del reporte</value>
   </data>
   <data name="NoIncomeDetailsFound" xml:space="preserve">
     <value>No se encontraron detalles de ingresos.</value>
@@ -595,7 +592,7 @@
     <value>Total</value>
   </data>
   <data name="FailedToLoadCategoryDetails" xml:space="preserve">
-    <value>Error al cargar los detalles de la categoría: {0}</value>
+    <value>Error al cargar los detalles de la categoría</value>
   </data>
   <data name="CannotDeleteDefaultAccount" xml:space="preserve">
     <value>No se puede eliminar la cuenta de Efectivo predeterminada</value>
@@ -618,10 +615,10 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
     <value>Transferencia actualizada exitosamente</value>
   </data>
   <data name="FailedToSaveTransfer" xml:space="preserve">
-    <value>Error al guardar la transferencia: {0}</value>
+    <value>Error al guardar la transferencia</value>
   </data>
   <data name="FailedToLoadTransfers" xml:space="preserve">
-    <value>Error al cargar las transferencias: {0}</value>
+    <value>Error al cargar las transferencias</value>
   </data>
   <data name="DeleteTransferConfirmMessage" xml:space="preserve">
     <value>¿Está seguro de que desea eliminar esta transferencia?
@@ -634,7 +631,7 @@ Monto: {2}</value>
     <value>Transferencia eliminada exitosamente</value>
   </data>
   <data name="FailedToDeleteTransfer" xml:space="preserve">
-    <value>Error al eliminar la transferencia: {0}</value>
+    <value>Error al eliminar la transferencia</value>
   </data>
   <data name="Available" xml:space="preserve">
     <value>Disponible: {0}</value>
@@ -684,13 +681,13 @@ Monto: {2}</value>
     <value>Presupuesto agregado exitosamente</value>
   </data>
   <data name="FailedToSaveBudget" xml:space="preserve">
-    <value>Error al guardar el presupuesto: {0}</value>
+    <value>Error al guardar el presupuesto</value>
   </data>
   <data name="DeleteBudgetConfirmation" xml:space="preserve">
     <value>¿Está seguro de que desea eliminar '{0}' de su presupuesto?</value>
   </data>
   <data name="FailedToDeleteBudget" xml:space="preserve">
-    <value>Error al eliminar el presupuesto: {0}</value>
+    <value>Error al eliminar el presupuesto</value>
   </data>
   <data name="BudgetPeriod" xml:space="preserve">
     <value>Período de Presupuesto</value>
@@ -720,7 +717,7 @@ Monto: {2}</value>
     <value>Transacción actualizada exitosamente</value>
   </data>
   <data name="FailedToLoadTransactions" xml:space="preserve">
-    <value>Error al cargar las transacciones: {0}</value>
+    <value>Error al cargar las transacciones</value>
   </data>
   <data name="ConfirmDeleteTransactionTitle" xml:space="preserve">
     <value>Confirmar Eliminación</value>
@@ -741,7 +738,7 @@ Monto: {2}</value>
     <value>Transacción eliminada exitosamente</value>
   </data>
   <data name="FailedToDeleteTransaction" xml:space="preserve">
-    <value>Error al eliminar la transacción: {0}</value>
+    <value>Error al eliminar la transacción</value>
   </data>
 
   <!-- Budget Warnings -->
@@ -1071,10 +1068,13 @@ Monto: {2}</value>
   <data name="TransactionCountOther" xml:space="preserve">
     <value>{0} transacciones</value>
   </data>
-  <data name="FailedToLoadData" xml:space="preserve">
-    <value>No se pudieron cargar los datos: {0}</value>
-  </data>
   <data name="DefaultTransferDescription" xml:space="preserve">
     <value>Transferencia</value>
+  </data>
+  <data name="FailedToDeleteAccount" xml:space="preserve">
+    <value>Error al eliminar la cuenta</value>
+  </data>
+  <data name="FailedToDeleteCategory" xml:space="preserve">
+    <value>Error al eliminar la categoría</value>
   </data>
 </root>

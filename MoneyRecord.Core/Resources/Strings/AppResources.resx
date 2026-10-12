@@ -574,13 +574,10 @@
     <value>Last Activity</value>
   </data>
   <data name="FailedToLoadAccountBalances" xml:space="preserve">
-    <value>Failed to load account balances: {0}</value>
-  </data>
-  <data name="FailedToToggleView" xml:space="preserve">
-    <value>Failed to toggle view: {0}</value>
+    <value>Failed to load account balances</value>
   </data>
   <data name="FailedToLoadReportData" xml:space="preserve">
-    <value>Failed to load report data: {0}</value>
+    <value>Failed to load report data</value>
   </data>
   <data name="NoIncomeDetailsFound" xml:space="preserve">
     <value>No income details found.</value>
@@ -595,7 +592,7 @@
     <value>Total</value>
   </data>
   <data name="FailedToLoadCategoryDetails" xml:space="preserve">
-    <value>Failed to load category details: {0}</value>
+    <value>Failed to load category details</value>
   </data>
   <data name="CannotDeleteDefaultAccount" xml:space="preserve">
     <value>Cannot delete the default Cash account</value>
@@ -618,10 +615,10 @@
     <value>Transfer updated successfully</value>
   </data>
   <data name="FailedToSaveTransfer" xml:space="preserve">
-    <value>Failed to save transfer: {0}</value>
+    <value>Failed to save transfer</value>
   </data>
   <data name="FailedToLoadTransfers" xml:space="preserve">
-    <value>Failed to load transfers: {0}</value>
+    <value>Failed to load transfers</value>
   </data>
   <data name="DeleteTransferConfirmMessage" xml:space="preserve">
     <value>Are you sure you want to delete this transfer?
@@ -634,7 +631,7 @@ Amount: {2}</value>
     <value>Transfer deleted successfully</value>
   </data>
   <data name="FailedToDeleteTransfer" xml:space="preserve">
-    <value>Failed to delete transfer: {0}</value>
+    <value>Failed to delete transfer</value>
   </data>
   <data name="Available" xml:space="preserve">
     <value>Available: {0}</value>
@@ -684,13 +681,13 @@ Amount: {2}</value>
     <value>Budget added successfully</value>
   </data>
   <data name="FailedToSaveBudget" xml:space="preserve">
-    <value>Failed to save budget: {0}</value>
+    <value>Failed to save budget</value>
   </data>
   <data name="DeleteBudgetConfirmation" xml:space="preserve">
     <value>Are you sure you want to remove '{0}' from your budget?</value>
   </data>
   <data name="FailedToDeleteBudget" xml:space="preserve">
-    <value>Failed to delete budget: {0}</value>
+    <value>Failed to delete budget</value>
   </data>
   <data name="EditBudget" xml:space="preserve">
     <value>Edit Budget</value>
@@ -702,7 +699,7 @@ Amount: {2}</value>
     <value>Transaction updated successfully</value>
   </data>
   <data name="FailedToLoadTransactions" xml:space="preserve">
-    <value>Failed to load transactions: {0}</value>
+    <value>Failed to load transactions</value>
   </data>
   <data name="ConfirmDeleteTransactionTitle" xml:space="preserve">
     <value>Confirm Delete</value>
@@ -723,7 +720,7 @@ Amount: {2}</value>
     <value>Transaction deleted successfully</value>
   </data>
   <data name="FailedToDeleteTransaction" xml:space="preserve">
-    <value>Failed to delete transaction: {0}</value>
+    <value>Failed to delete transaction</value>
   </data>
 
   <!-- Budget Period Options -->
@@ -1073,10 +1070,13 @@ Amount: {2}</value>
   <data name="TransactionCountOther" xml:space="preserve">
     <value>{0} transactions</value>
   </data>
-  <data name="FailedToLoadData" xml:space="preserve">
-    <value>Failed to load data: {0}</value>
-  </data>
   <data name="DefaultTransferDescription" xml:space="preserve">
     <value>Transfer</value>
+  </data>
+  <data name="FailedToDeleteAccount" xml:space="preserve">
+    <value>Failed to delete account</value>
+  </data>
+  <data name="FailedToDeleteCategory" xml:space="preserve">
+    <value>Failed to delete category</value>
   </data>
 </root>

@@ -39,18 +39,13 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
         }
 
-        public async Task InitializeAsync()
-        {
-            await LoadChartsAsync();
-        }
+        public Task InitializeAsync() => LoadChartsCommand.ExecuteAsync(null);
 
-        partial void OnSelectedMonthCountChanged(int value)
-        {
-            _ = LoadChartsAsync();
-        }
+        partial void OnSelectedMonthCountChanged(int value) => LoadChartsCommand.Execute(null);
 
-        [RelayCommand]
-        private async Task LoadChartsAsync()
+        /// <summary>Each run cancels the one in progress, so an older month count's charts never overwrite a newer one's.</summary>
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private async Task LoadChartsAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -62,13 +57,19 @@ namespace MoneyRecord.ViewModels
                 var endDate = new DateTime(now.Year, now.Month, 1).AddMonths(1).AddTicks(-1);
 
                 var transactions = await _transactionRepository.GetByDateRangeAsync(startDate, endDate);
-                HasData = transactions.Count > 0;
+                var categories = await _categoryRepository.GetAllAsync();
+                cancellationToken.ThrowIfCancellationRequested();
 
+                HasData = transactions.Count > 0;
                 if (!HasData) return;
 
                 BuildMonthlySpendingChart(transactions, startDate, months);
                 BuildIncomeVsExpenseChart(transactions, startDate, months);
-                await BuildCategoryPieChartAsync(transactions);
+                BuildCategoryPieChart(transactions, categories);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // A newer load replaced this one
             }
             catch (Exception ex)
             {
@@ -76,7 +77,9 @@ namespace MoneyRecord.ViewModels
             }
             finally
             {
-                IsLoading = false;
+                // The newer load owns the spinner
+                if (!cancellationToken.IsCancellationRequested)
+                    IsLoading = false;
             }
         }
 
@@ -153,7 +156,7 @@ namespace MoneyRecord.ViewModels
             };
         }
 
-        private async Task BuildCategoryPieChartAsync(List<Models.Transaction> transactions)
+        private void BuildCategoryPieChart(List<Models.Transaction> transactions, List<Models.Category> categories)
         {
             var expenseTransactions = transactions.Where(t => t.Type == Models.TransactionType.Expense).ToList();
             if (expenseTransactions.Count == 0)
@@ -162,7 +165,6 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var categories = await _categoryRepository.GetAllAsync();
             var categoryMap = categories.ToDictionary(c => c.Id, c => c.Name);
 
             var byCategory = expenseTransactions

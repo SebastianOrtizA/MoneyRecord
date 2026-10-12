@@ -202,24 +202,34 @@ namespace MoneyRecord.ViewModels
 
         private async Task UpdateSourceAccountBalanceAsync()
         {
-            if (SelectedSourceAccount != null)
+            var account = SelectedSourceAccount;
+            if (account == null)
             {
-                // Get base balance
-                var balance = await _balanceService.GetAccountBalanceAsync(SelectedSourceAccount.Id);
+                SourceAccountBalance = 0;
+                SourceAccountBalanceText = string.Empty;
+                return;
+            }
+
+            try
+            {
+                var balance = await _balanceService.GetAccountBalanceAsync(account.Id);
+
+                // Another account was picked meanwhile: its own update shows its balance
+                if (account != SelectedSourceAccount)
+                    return;
 
                 // If editing, add back the original transfer amount if this was the source
-                if (IsEditMode && _originalSourceAccountId == SelectedSourceAccount.Id)
+                if (IsEditMode && _originalSourceAccountId == account.Id)
                 {
                     balance += _originalAmount;
                 }
 
                 SourceAccountBalance = balance;
-                SourceAccountBalanceText = string.Format(AppResources.Available, MoneyFormatter.Format(balance, SelectedSourceAccount.CurrencyCode));
+                SourceAccountBalanceText = string.Format(AppResources.Available, MoneyFormatter.Format(balance, account.CurrencyCode));
             }
-            else
+            catch (Exception ex)
             {
-                SourceAccountBalance = 0;
-                SourceAccountBalanceText = string.Empty;
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadAccountBalances);
             }
         }
 
@@ -244,7 +254,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var amountValue = AmountParser.Parse(Amount, SelectedSourceAccount?.CurrencyCode);
+            var amountValue = AmountParser.Parse(Amount, SelectedSourceAccount.CurrencyCode);
             if (amountValue <= 0 || !Money.IsInRange(amountValue))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
@@ -294,7 +304,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToSaveTransfer, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToSaveTransfer);
             }
         }
 

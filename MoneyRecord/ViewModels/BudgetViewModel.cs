@@ -81,13 +81,9 @@ namespace MoneyRecord.ViewModels
             selectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
         }
 
-        public async Task InitializeAsync()
-        {
-            await LoadAvailableCategoriesAsync();
-            await LoadBudgetsAsync();
-        }
+        public Task InitializeAsync() => LoadBudgetsCommand.ExecuteAsync(null);
 
-        private async Task LoadAvailableCategoriesAsync()
+        private async Task<List<Category>> GetAvailableCategoriesAsync()
         {
             var expenseCategories = await _categoryRepository.GetByTypeAsync(CategoryType.Expense);
             var existingBudgetCategoryIds = (await _budgetRepository.GetActiveBudgetsAsync())
@@ -95,20 +91,27 @@ namespace MoneyRecord.ViewModels
                 .ToHashSet();
 
             // Filter out categories that already have a budget
-            AvailableCategories = expenseCategories
+            return expenseCategories
                 .Where(c => !existingBudgetCategoryIds.Contains(c.Id))
                 .ToList();
         }
 
-        [RelayCommand]
-        private async Task LoadBudgetsAsync()
+        /// <summary>Each run cancels the one in progress, so an older period's results never overwrite a newer one's.</summary>
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private async Task LoadBudgetsAsync(CancellationToken cancellationToken)
         {
             try
             {
                 IsLoading = true;
 
-                var budgetProgressList = await _budgetSummaryService.GetSummaryAsync(
+                var summaryTask = _budgetSummaryService.GetSummaryAsync(
                     SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
+                var categoriesTask = GetAvailableCategoriesAsync();
+                await Task.WhenAll(summaryTask, categoriesTask);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var budgetProgressList = await summaryTask;
+                var availableCategories = await categoriesTask;
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
@@ -125,16 +128,21 @@ namespace MoneyRecord.ViewModels
                     TotalRemaining = TotalBudgeted - TotalSpent;
                 });
 
-                // Refresh available categories
-                await LoadAvailableCategoriesAsync();
+                AvailableCategories = availableCategories;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // A newer load replaced this one
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadReportData, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadReportData);
             }
             finally
             {
-                IsLoading = false;
+                // The newer load owns the spinner
+                if (!cancellationToken.IsCancellationRequested)
+                    IsLoading = false;
             }
         }
 
@@ -190,13 +198,13 @@ namespace MoneyRecord.ViewModels
                 SelectedBudgetPeriod = BudgetPeriods[1]; // Reset to Month
                 BudgetAmount = string.Empty;
 
-                await LoadBudgetsAsync();
+                await LoadBudgetsCommand.ExecuteAsync(null);
 
                 await _dialogService.ToastAsync(AppResources.BudgetAddedSuccessfully);
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToSaveBudget, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToSaveBudget);
             }
         }
 
@@ -216,11 +224,11 @@ namespace MoneyRecord.ViewModels
             try
             {
                 await _budgetRepository.DeleteByIdAsync(budget.BudgetId);
-                await LoadBudgetsAsync();
+                await LoadBudgetsCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToDeleteBudget, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteBudget);
             }
         }
 
@@ -250,25 +258,25 @@ namespace MoneyRecord.ViewModels
             try
             {
                 await _budgetRepository.UpdateAmountAsync(budget.BudgetId, newAmount);
-                await LoadBudgetsAsync();
+                await LoadBudgetsCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToSaveBudget, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToSaveBudget);
             }
         }
 
         partial void OnSelectedPeriodChanged(PeriodItem value)
         {
             IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
-            _ = LoadBudgetsAsync();
+            LoadBudgetsCommand.Execute(null);
         }
 
         partial void OnCustomStartDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
             {
-                _ = LoadBudgetsAsync();
+                LoadBudgetsCommand.Execute(null);
             }
         }
 
@@ -276,7 +284,7 @@ namespace MoneyRecord.ViewModels
         {
             if (IsCustomPeriodSelected)
             {
-                _ = LoadBudgetsAsync();
+                LoadBudgetsCommand.Execute(null);
             }
         }
     }

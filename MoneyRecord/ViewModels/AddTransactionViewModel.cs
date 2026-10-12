@@ -236,7 +236,8 @@ namespace MoneyRecord.ViewModels
 
         private async Task CheckBudgetAsync()
         {
-            if (TransactionType != TransactionType.Expense || SelectedCategory == null)
+            var category = SelectedCategory;
+            if (TransactionType != TransactionType.Expense || category == null)
             {
                 ShowBudgetWarning = false;
                 return;
@@ -244,26 +245,34 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                var budget = await _budgetRepository.GetByCategoryIdAsync(SelectedCategory.Id);
+                var budget = await _budgetRepository.GetByCategoryIdAsync(category.Id);
+                var spent = 0m;
+                if (budget != null)
+                {
+                    var (startDate, endDate) = DateRangeHelper.GetBudgetWindow(budget.Period, DateTime.Now);
+                    spent = await _balanceService.GetCategoryExpensesAsync(category.Id, startDate, endDate);
+                }
+
+                // Another category was picked meanwhile: its own check shows its warning
+                if (category != SelectedCategory)
+                    return;
+
                 if (budget == null)
                 {
                     ShowBudgetWarning = false;
                     return;
                 }
 
-                var (startDate, endDate) = DateRangeHelper.GetBudgetWindow(budget.Period, DateTime.Now);
-
-                var spent = await _balanceService.GetCategoryExpensesAsync(SelectedCategory.Id, startDate, endDate);
                 var remaining = budget.LimitAmount - spent;
 
                 if (remaining <= 0)
                 {
-                    BudgetWarningText = string.Format(AppResources.BudgetExceeded, SelectedCategory.Name, MoneyFormatter.Format(spent), MoneyFormatter.Format(budget.LimitAmount));
+                    BudgetWarningText = string.Format(AppResources.BudgetExceeded, category.Name, MoneyFormatter.Format(spent), MoneyFormatter.Format(budget.LimitAmount));
                     ShowBudgetWarning = true;
                 }
                 else if (remaining < budget.LimitAmount * 0.2m)
                 {
-                    BudgetWarningText = string.Format(AppResources.BudgetNearLimit, SelectedCategory.Name, MoneyFormatter.Format(remaining));
+                    BudgetWarningText = string.Format(AppResources.BudgetNearLimit, category.Name, MoneyFormatter.Format(remaining));
                     ShowBudgetWarning = true;
                 }
                 else

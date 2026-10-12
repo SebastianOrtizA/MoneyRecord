@@ -1,4 +1,3 @@
-using MoneyRecord.Resources.Strings;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
@@ -14,28 +13,11 @@ namespace MoneyRecord.Views
             BindingContext = _viewModel;
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
-
-            // Fire-and-forget pattern for non-blocking UI
-            // This allows the page to render immediately while data loads in background
-            _ = LoadDataAsync();
-        }
-
-        private async Task LoadDataAsync()
-        {
-            try
-            {
-                // Always show loading indicator immediately to prevent UI appearing stuck
-                _viewModel.IsRefreshing = true;
-
-                await _viewModel.InitializeAsync();
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlertAsync(AppResources.Error, string.Format(AppResources.FailedToLoadData, ex.Message), AppResources.OK);
-            }
+            // The load shows its own spinner and errors; the page renders right away
+            await _viewModel.InitializeAsync();
         }
     }
 }

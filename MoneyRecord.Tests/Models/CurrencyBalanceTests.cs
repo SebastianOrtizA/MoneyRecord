@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using Xunit;
 
@@ -32,5 +33,25 @@ public class CurrencyBalanceTests
     {
         CurrencyBalance.FromAccounts([Balance(10m, "EUR"), Balance(5m, "EUR")], "USD")
             .Should().ContainSingle().Which.Should().Be(new CurrencyBalance("EUR", 15m, 2));
+    }
+
+    [Fact]
+    public void One_currency_is_shown_without_its_code()
+    {
+        CurrencyBalance.DisplayLines([new CurrencyBalance("EUR", 15m, 2)])
+            .Should().Equal(MoneyFormatter.Format(15m, "EUR"));
+    }
+
+    [Fact]
+    public void Several_currencies_are_one_line_each_with_their_code()
+    {
+        CurrencyBalance.DisplayLines([new CurrencyBalance("USD", 1250m, 2), new CurrencyBalance("EUR", 250m, 2)])
+            .Should().Equal($"{MoneyFormatter.Format(1250m, "USD")} USD", $"{MoneyFormatter.Format(250m, "EUR")} EUR");
+    }
+
+    [Fact]
+    public void No_accounts_show_zero()
+    {
+        CurrencyBalance.DisplayLines([]).Should().Equal(MoneyFormatter.Format(0));
     }
 }

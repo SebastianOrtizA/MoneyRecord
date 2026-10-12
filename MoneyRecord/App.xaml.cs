@@ -1,12 +1,18 @@
-﻿using MoneyRecord.Services.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord
 {
     public partial class App : Application
     {
-        public App()
+        private readonly IRecurringTransactionService _recurringTransactionService;
+        private readonly ILogger<App> _logger;
+
+        public App(IRecurringTransactionService recurringTransactionService, ILogger<App> logger)
         {
             InitializeComponent();
+            _recurringTransactionService = recurringTransactionService;
+            _logger = logger;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
@@ -25,15 +31,11 @@ namespace MoneyRecord
         {
             try
             {
-                var service = IPlatformApplication.Current?.Services.GetService<IRecurringTransactionService>();
-                if (service != null)
-                {
-                    await service.ProcessDueTransactionsAsync();
-                }
+                await _recurringTransactionService.ProcessDueTransactionsAsync();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to process recurring transactions: {ex.Message}");
+                _logger.LogError(ex, "Failed to process recurring transactions");
             }
         }
     }

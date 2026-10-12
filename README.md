@@ -125,37 +125,40 @@ Models (SQLite entities, money in cents)
 MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the app)
 ├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
 │                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping,
-│                       CategoryReportBuilder, RecurrenceCalculator
+│                       LedgerTransfers, CategoryReportBuilder, RecurrenceCalculator, Debouncer
 ├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction (tables)
 │                       + display models (LedgerEntry, TransactionGroup, CategoryAmount, AccountBalanceInfo, BudgetProgress, ...)
 ├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
-└── Services/
-    ├── Interfaces/     Service and repository interfaces, IAppPaths
-    ├── Repositories/   RepositoryBase<T> + SQLite repositories (SQL totals), DatabaseInitializer (schema + seed data)
-    │   └── Migrations/ IMigration, MigrationRunner, M001_Baseline, M002_MoneyAsCents, M003_AccountCurrencyCodes
-    ├── AccountService, CategoryService          Transactional deletes
-    ├── BalanceService                           Account balances and period totals (SQL sums)
-    ├── TransactionEnrichmentService             Names/icons/currencies for display
-    ├── LedgerQueryService                       Home list rows (transactions + transfers)
-    ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
-    ├── CurrencyService                          Currencies, base currency, decimals
-    ├── RecurringTransactionService              Creates due recurring transactions
-    ├── DataExportService                        Zip backup, restore + snapshot, CSV export
-    └── AppPaths, LocalizationService, CategoryIconService
+├── Services/
+│   ├── Interfaces/     Service and repository interfaces, IAppPaths
+│   ├── Repositories/   RepositoryBase<T> + SQLite repositories (SQL totals), DatabaseInitializer (schema + seed data)
+│   │   └── Migrations/ IMigration, MigrationRunner, M001_Baseline, M002_MoneyAsCents, M003_AccountCurrencyCodes
+│   ├── AccountService, CategoryService          Transactional deletes
+│   ├── BalanceService                           Account balances and period totals (SQL sums)
+│   ├── TransactionEnrichmentService             Names/icons/currencies for display
+│   ├── LedgerService                            Home list rows (transactions + whole transfers), delete one
+│   ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
+│   ├── CurrencyService                          Currencies, base currency, decimals
+│   ├── RecurringTransactionService              Creates due recurring transactions
+│   ├── DataExportService                        Zip backup, restore + snapshot, CSV export
+│   ├── ErrorHandler                             Friendly message to the user, exception to ILogger
+│   └── AppPaths, LocalizationService, CategoryIconService
+└── ViewModels/         TransactionFilterViewModel (Home search + filter panel, debounced typing)
 MoneyRecord/            The MAUI app
 ├── Behaviors/          CurrencyMaskBehavior (amount input in the account's currency)
 ├── Controls/           FloatingActionMenu (+ FabComponents/), DecimalEntry, ChartDrawables
 ├── Converters/         One XAML value converter per file (money, dates, colours, heatmap, ...)
 ├── Extensions/         LocalizeExtension ({ext:Localize Key} in XAML)
 ├── Platforms/          Android (back button, numeric entry handler), iOS, MacCatalyst, Windows
-├── Services/           NavigationService, PreferencesService, ErrorHandler
+├── Services/           NavigationService, DialogService, PreferencesService
 ├── ViewModels/         One per page + FloatingMenuViewModel
 ├── Views/              Main, AddTransaction, AddTransfer, Transfers, ManageAccounts, ManageCategories, Budget,
 │                       RecurringTransactions, CategoryReport (Expense/Income), TrendsReport, Settings
 ├── App.xaml            Converters and styles; processes recurring transactions on start
 ├── AppShell.xaml       Flyout menu and routes
 └── MauiProgram.cs      Dependency injection
-MoneyRecord.Tests/      xUnit tests (net10.0, Core only): helpers, models, services, migrations, backup/restore, resource parity
+MoneyRecord.Tests/      xUnit tests (net10.0, Core only): helpers, models, services, view models, migrations, backup/restore,
+                        resource parity
 ```
 
 ## License

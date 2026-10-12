@@ -28,6 +28,9 @@ namespace MoneyRecord.Models
 
         public string Description { get; init; } = string.Empty;
 
+        /// <summary>A transfer's own description (empty when it has none); <see cref="Description"/> adds the account names.</summary>
+        public string TransferNote { get; init; } = string.Empty;
+
         /// <summary>The stored amount in cents (see <see cref="Money"/>); <see cref="SignedAmount"/> carries the direction.</summary>
         public long AmountCents { get; init; }
 

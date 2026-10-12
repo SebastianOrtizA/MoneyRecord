@@ -52,17 +52,20 @@ crashes at runtime (XAML is inflated at runtime there).
   `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
   `GetConnectionAsync`, `RunInTransactionAsync`)
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
-- `Services/` — BalanceService, TransactionEnrichmentService, LedgerQueryService (Home rows: transactions + transfers
-  as `LedgerEntry`), BudgetSummaryService (budget progress for a period: Home card + Budget page),
+- `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
+  as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page),
   AccountService / CategoryService (transactional deletes),
   CurrencyService, RecurringTransactionService, DataExportService (zip backup/restore, CSV), CategoryIconService,
-  LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (via `IDialogService`),
+  LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (localized message via
+  `IDialogService`, exception to `ILogger`; never show `ex.Message`),
   NavigationHistory (back-button stack; `//Route` = root)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, ReceiptFiles, ReceiptDraft, LedgerFilter (search/filter/sort
-  by IDs), LedgerGrouping, CategoryReportBuilder, RecurrenceCalculator (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow`
+  by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the account view), Debouncer, CategoryReportBuilder,
+  RecurrenceCalculator (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow`
   for a budget's current day/month/year)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
+- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Home search + filter panel)
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 12 ViewModels using [ObservableProperty] and [RelayCommand] source generators
@@ -86,6 +89,9 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Properties: `[ObservableProperty]` source generator (generates `PropertyName` from `propertyName` field)
 - Commands: `[RelayCommand]` source generator (generates `XxxCommand` from `XxxAsync` method)
 - Partial methods: `partial void OnPropertyNameChanged(T value)` for property change reactions
+- Reloads: one `[RelayCommand(AllowConcurrentExecutions = true)]` load taking a `CancellationToken`; a new run cancels
+  the previous one (check the token after the awaits, catch the cancellation, only the last run clears the spinner).
+  Property-changed handlers call `LoadXCommand.Execute(null)`, never `_ = LoadXAsync()`
 - Views set `BindingContext` in constructor via DI, call `ViewModel.InitializeAsync()` in `OnAppearing()`
 
 ### Dependency Injection (MauiProgram.cs)
