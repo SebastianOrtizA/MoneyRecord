@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
-using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 using System.Collections.ObjectModel;
@@ -13,20 +12,19 @@ namespace MoneyRecord.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         private readonly IBalanceService _balanceService;
-        private readonly ITransactionEnrichmentService _enrichmentService;
+        private readonly ILedgerQueryService _ledgerQueryService;
+        private readonly IBudgetSummaryService _budgetSummaryService;
         private readonly ITransactionRepository _transactionRepository;
         private readonly ITransferRepository _transferRepository;
         private readonly IAccountRepository _accountRepository;
-        private readonly IBudgetRepository _budgetRepository;
-        private readonly ICategoryRepository _categoryRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
         private readonly IAppPaths _paths;
 
-        private List<Transaction> _allCombinedTransactions = new();
-        private Dictionary<string, AccountBalanceInfo>? _cachedAccountBalances;
-        private Dictionary<string, string>? _cachedAccountIcons;
+        private List<LedgerEntry> _entries = [];
+        private List<AccountBalanceInfo> _accountBalances = [];
+        private List<Account> _accounts = [];
 
         /// <summary>Home balance card: the first currency's total (base currency first), with its code when there are several.</summary>
         [ObservableProperty]
@@ -43,6 +41,12 @@ namespace MoneyRecord.ViewModels
         private decimal totalExpenses;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNetNegative))]
+        private decimal netIncome;
+
+        public bool IsNetNegative => NetIncome < 0;
+
+        [ObservableProperty]
         private PeriodItem selectedPeriod;
 
         [ObservableProperty]
@@ -55,37 +59,34 @@ namespace MoneyRecord.ViewModels
         private DateTime customEndDate = DateTime.Now;
 
         [ObservableProperty]
-        private bool isCustomPeriodSelected = false;
+        private bool isCustomPeriodSelected;
 
         [ObservableProperty]
         private GroupingMode currentGroupingMode = GroupingMode.Category;
 
         [ObservableProperty]
-        private bool isGroupedByCategory = true;
+        private bool isAscending;
 
         [ObservableProperty]
-        private bool isAscending = false;
+        private bool isRefreshing;
 
         [ObservableProperty]
-        private bool isRefreshing = false;
+        private bool hasTransactions;
 
         [ObservableProperty]
-        private bool hasTransactions = false;
+        private ObservableCollection<LedgerEntry> transactions = [];
 
         [ObservableProperty]
-        private ObservableCollection<Transaction> transactions = new();
+        private ObservableCollection<TransactionGroup> groupedTransactions = [];
 
         [ObservableProperty]
-        private ObservableCollection<TransactionGroup> groupedTransactions = new();
+        private ObservableCollection<LedgerEntry> recentTransactions = [];
 
         [ObservableProperty]
-        private ObservableCollection<AccountBalanceInfo> accountBalances = new();
+        private ObservableCollection<BudgetProgress> budgetSummaries = [];
 
         [ObservableProperty]
-        private ObservableCollection<BudgetProgress> budgetSummaries = new();
-
-        [ObservableProperty]
-        private bool hasBudgets = false;
+        private bool hasBudgets;
 
         [ObservableProperty]
         private int budgetsOnTrack;
@@ -97,16 +98,16 @@ namespace MoneyRecord.ViewModels
         private string searchText = string.Empty;
 
         [ObservableProperty]
-        private bool isFilterVisible = false;
+        private bool isFilterVisible;
 
         [ObservableProperty]
         private TypeFilterOption? selectedFilterType;
 
         [ObservableProperty]
-        private string? selectedFilterCategory;
+        private FilterOption? selectedFilterCategory;
 
         [ObservableProperty]
-        private string? selectedFilterAccount;
+        private FilterOption? selectedFilterAccount;
 
         [ObservableProperty]
         private string minAmountText = string.Empty;
@@ -115,7 +116,7 @@ namespace MoneyRecord.ViewModels
         private string maxAmountText = string.Empty;
 
         [ObservableProperty]
-        private bool hasActiveFilters = false;
+        private bool hasActiveFilters;
 
         [ObservableProperty]
         private int filteredCount;
@@ -124,19 +125,10 @@ namespace MoneyRecord.ViewModels
         private int totalCount;
 
         [ObservableProperty]
-        private ObservableCollection<string> filterCategories = new();
+        private List<FilterOption> filterCategories = [];
 
         [ObservableProperty]
-        private ObservableCollection<string> filterAccounts = new();
-
-        [ObservableProperty]
-        private ObservableCollection<Transaction> recentTransactions = new();
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsNetNegative))]
-        private decimal netIncome;
-
-        public bool IsNetNegative => NetIncome < 0;
+        private List<FilterOption> filterAccounts = [];
 
         public List<TypeFilterOption> FilterTypes { get; } =
         [
@@ -148,15 +140,14 @@ namespace MoneyRecord.ViewModels
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
-        public MainViewModel(IBalanceService balanceService, ITransactionEnrichmentService enrichmentService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService, IAppPaths paths)
+        public MainViewModel(IBalanceService balanceService, ILedgerQueryService ledgerQueryService, IBudgetSummaryService budgetSummaryService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService, IAppPaths paths)
         {
             _balanceService = balanceService;
-            _enrichmentService = enrichmentService;
+            _ledgerQueryService = ledgerQueryService;
+            _budgetSummaryService = budgetSummaryService;
             _transactionRepository = transactionRepository;
             _transferRepository = transferRepository;
             _accountRepository = accountRepository;
-            _budgetRepository = budgetRepository;
-            _categoryRepository = categoryRepository;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _navigationService = navigationService;
@@ -168,6 +159,51 @@ namespace MoneyRecord.ViewModels
         public async Task InitializeAsync()
         {
             await LoadDataAsync();
+        }
+
+        [RelayCommand]
+        private async Task LoadDataAsync()
+        {
+            try
+            {
+                IsRefreshing = true;
+
+                var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
+                var byAccount = CurrentGroupingMode == GroupingMode.Account;
+
+                var balancesTask = _balanceService.GetAllAccountBalancesAsync();
+                var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
+                var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
+                var entriesTask = _ledgerQueryService.GetEntriesAsync(startDate, endDate, transfersPerAccount: byAccount);
+                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask);
+
+                _accountBalances = await balancesTask;
+                ShowBalances(CurrencyBalance.FromAccounts(_accountBalances, MoneyFormatter.ResolveCurrencyCode(null)));
+                TotalIncomes = await incomesTask;
+                TotalExpenses = await expensesTask;
+                NetIncome = TotalIncomes - TotalExpenses;
+                // Re-format even when the values didn't change: the base currency may have (Settings)
+                OnPropertyChanged(nameof(TotalIncomes));
+                OnPropertyChanged(nameof(TotalExpenses));
+                OnPropertyChanged(nameof(NetIncome));
+
+                _entries = await entriesTask;
+                _accounts = byAccount ? await _accountRepository.GetAllAsync() : [];
+                RecentTransactions = new(_entries.OrderByDescending(e => e.Date).Take(5));
+                FilterCategories = LedgerFilter.CategoryOptions(_entries);
+                FilterAccounts = LedgerFilter.AccountOptions(_entries);
+                ApplyFilters();
+
+                await LoadBudgetSummaryAsync();
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadTransactions, ex.Message));
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private void ShowBalances(List<CurrencyBalance> balances)
@@ -186,250 +222,63 @@ namespace MoneyRecord.ViewModels
             OtherCurrencyBalances = lines.Skip(1).ToList();
         }
 
-        [RelayCommand]
-        private async Task LoadDataAsync()
+        /// <summary>The budget card uses the Home period, like the Budget page does with its own.</summary>
+        private async Task LoadBudgetSummaryAsync()
         {
-            try
-            {
-                IsRefreshing = true;
+            var summary = await _budgetSummaryService.GetSummaryAsync(
+                SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
 
-                var (startDate, endDate) = GetDateRange();
-
-                var accountBalancesTask = _balanceService.GetAllAccountBalancesAsync();
-                var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
-                var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
-                var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
-                var transfersTask = _enrichmentService.GetEnrichedTransfersAsync(startDate, endDate);
-
-                await Task.WhenAll(accountBalancesTask, incomesTask, expensesTask, transactionsTask, transfersTask);
-
-                // Computed once: the balance card and the account groups both use them
-                var accountBalances = await accountBalancesTask ?? new List<AccountBalanceInfo>();
-                ShowBalances(CurrencyBalance.FromAccounts(accountBalances, MoneyFormatter.ResolveCurrencyCode(null)));
-                TotalIncomes = await incomesTask;
-                TotalExpenses = await expensesTask;
-                NetIncome = TotalIncomes - TotalExpenses;
-                // Re-format even when the values didn't change: the base currency may have (Settings)
-                OnPropertyChanged(nameof(TotalIncomes));
-                OnPropertyChanged(nameof(TotalExpenses));
-                OnPropertyChanged(nameof(NetIncome));
-
-                var transactionList = await transactionsTask ?? new List<Transaction>();
-                var transfers = await transfersTask ?? new List<Transfer>();
-                var transferTransactions = ConvertTransfersToTransactions(transfers, CurrentGroupingMode);
-
-                _allCombinedTransactions = transactionList.Concat(transferTransactions).ToList();
-
-                var recent = _allCombinedTransactions
-                    .OrderByDescending(t => t.Date)
-                    .Take(5)
-                    .ToList();
-                RecentTransactions = new ObservableCollection<Transaction>(recent);
-
-                if (CurrentGroupingMode == GroupingMode.Account)
-                {
-                    _cachedAccountBalances = accountBalances.ToDictionary(b => b.AccountName ?? string.Empty);
-
-                    var accounts = await _accountRepository.GetAllAsync() ?? new List<Account>();
-                    _cachedAccountIcons = accounts.ToDictionary(a => a.Name ?? string.Empty, a => a.IconCode ?? "F0070");
-                }
-                else
-                {
-                    _cachedAccountBalances = null;
-                    _cachedAccountIcons = null;
-                }
-
-                UpdateFilterOptions();
-                ApplyFilters();
-
-                await LoadBudgetSummaryAsync();
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadTransactions, ex.Message));
-            }
-            finally
-            {
-                IsRefreshing = false;
-            }
+            BudgetsOnTrack = summary.Count(b => !b.IsOverBudget);
+            BudgetsOverBudget = summary.Count(b => b.IsOverBudget);
+            BudgetSummaries = new(summary.Take(3));
+            HasBudgets = summary.Count > 0;
         }
 
-        private void UpdateFilterOptions()
-        {
-            var categories = _allCombinedTransactions
-                .Select(t => t.CategoryName)
-                .Where(n => !string.IsNullOrEmpty(n))
-                .Distinct()
-                .OrderBy(n => n)
-                .ToList();
-
-            var accounts = _allCombinedTransactions
-                .Select(t => t.AccountName)
-                .Where(n => !string.IsNullOrEmpty(n))
-                .Distinct()
-                .OrderBy(n => n)
-                .ToList();
-
-            FilterCategories = new ObservableCollection<string>(categories!);
-            FilterAccounts = new ObservableCollection<string>(accounts!);
-        }
+        private TransactionFilter CurrentFilter() => new(
+            SearchText,
+            SelectedFilterType?.Type,
+            SelectedFilterCategory?.Id,
+            SelectedFilterAccount?.Id,
+            decimal.TryParse(MinAmountText, out var min) ? min : null,
+            decimal.TryParse(MaxAmountText, out var max) ? max : null,
+            IsAscending);
 
         private void ApplyFilters()
         {
-            var filtered = _allCombinedTransactions.AsEnumerable();
+            var filter = CurrentFilter();
+            var filtered = LedgerFilter.Apply(_entries, filter);
 
-            if (!string.IsNullOrWhiteSpace(SearchText))
-            {
-                var search = SearchText.Trim();
-                filtered = filtered.Where(t =>
-                    (t.Description?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (t.CategoryName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (t.AccountName?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false) ||
-                    (t.Tags?.Contains(search, StringComparison.OrdinalIgnoreCase) ?? false));
-            }
-
-            if (SelectedFilterType?.Type is TransactionType type)
-            {
-                filtered = filtered.Where(t => t.Type == type);
-            }
-
-            if (!string.IsNullOrEmpty(SelectedFilterCategory))
-            {
-                filtered = filtered.Where(t => t.CategoryName == SelectedFilterCategory);
-            }
-
-            if (!string.IsNullOrEmpty(SelectedFilterAccount))
-            {
-                filtered = filtered.Where(t => t.AccountName == SelectedFilterAccount);
-            }
-
-            if (decimal.TryParse(MinAmountText, out var minAmount))
-            {
-                filtered = filtered.Where(t => t.Amount >= minAmount);
-            }
-
-            if (decimal.TryParse(MaxAmountText, out var maxAmount))
-            {
-                filtered = filtered.Where(t => t.Amount <= maxAmount);
-            }
-
-            var combinedList = IsAscending
-                ? filtered.OrderBy(t => t.Date).ToList()
-                : filtered.OrderByDescending(t => t.Date).ToList();
-
-            TotalCount = _allCombinedTransactions.Count;
-            FilteredCount = combinedList.Count;
-            HasActiveFilters = !string.IsNullOrWhiteSpace(SearchText) ||
-                               SelectedFilterType?.Type != null ||
-                               !string.IsNullOrEmpty(SelectedFilterCategory) ||
-                               !string.IsNullOrEmpty(SelectedFilterAccount) ||
-                               !string.IsNullOrEmpty(MinAmountText) ||
-                               !string.IsNullOrEmpty(MaxAmountText);
+            TotalCount = _entries.Count;
+            FilteredCount = filtered.Count;
+            HasActiveFilters = filter.IsActive;
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                if (CurrentGroupingMode != GroupingMode.None)
+                if (CurrentGroupingMode == GroupingMode.None)
                 {
-                    IEnumerable<IGrouping<string, Transaction>> groupedList;
-
-                    if (CurrentGroupingMode == GroupingMode.Category)
-                    {
-                        groupedList = combinedList
-                            .Where(t => !string.IsNullOrEmpty(t.CategoryName))
-                            .GroupBy(t => t.CategoryName ?? string.Empty);
-                    }
-                    else
-                    {
-                        groupedList = combinedList
-                            .Where(t => !string.IsNullOrEmpty(t.AccountName))
-                            .GroupBy(t => t.AccountName ?? string.Empty);
-                    }
-
-                    var groups = new List<TransactionGroup>();
-
-                    foreach (var g in groupedList)
-                    {
-                        decimal? overrideTotal = null;
-                        string? accountIconCode = null;
-                        string? currencyCode = null;
-
-                        if (CurrentGroupingMode == GroupingMode.Account)
-                        {
-                            // The account's own currency: a transfer row from another currency must not change it
-                            if (_cachedAccountBalances != null && _cachedAccountBalances.TryGetValue(g.Key, out var balance))
-                            {
-                                overrideTotal = balance.CurrentBalance;
-                                currencyCode = balance.CurrencyCode;
-                            }
-                            else if (_cachedAccountBalances != null)
-                            {
-                                overrideTotal = 0;
-                            }
-                            if (_cachedAccountIcons != null)
-                                accountIconCode = _cachedAccountIcons.GetValueOrDefault(g.Key, "F0070");
-                        }
-
-                        groups.Add(new TransactionGroup(g.Key, g.ToList(), CurrentGroupingMode, overrideTotal, accountIconCode, currencyCode));
-                    }
-
-                    groups = groups.OrderBy(g => g.GroupName).ToList();
-                    GroupedTransactions = new ObservableCollection<TransactionGroup>(groups);
-                    OnPropertyChanged(nameof(GroupedTransactions));
-                    Transactions.Clear();
+                    Transactions = new(filtered);
+                    GroupedTransactions = [];
                 }
                 else
                 {
-                    Transactions.Clear();
-                    foreach (var transaction in combinedList)
-                        Transactions.Add(transaction);
-                    GroupedTransactions.Clear();
+                    GroupedTransactions = new(LedgerGrouping.Group(filtered, CurrentGroupingMode, _accountBalances, _accounts));
+                    Transactions = [];
                 }
 
-                HasTransactions = combinedList.Any();
+                HasTransactions = filtered.Count > 0;
             });
         }
 
         [RelayCommand]
-        private async Task AddIncomeAsync()
-        {
-            await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
-            {
-                { "TransactionType", TransactionType.Income }
-            });
-        }
+        private Task AddIncomeAsync() => _navigationService.NavigateToAsync(nameof(AddTransactionPage),
+            new Dictionary<string, object> { { "TransactionType", TransactionType.Income } });
 
         [RelayCommand]
-        private async Task AddExpenseAsync()
-        {
-            await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
-            {
-                { "TransactionType", TransactionType.Expense }
-            });
-        }
+        private Task AddExpenseAsync() => _navigationService.NavigateToAsync(nameof(AddTransactionPage),
+            new Dictionary<string, object> { { "TransactionType", TransactionType.Expense } });
 
         [RelayCommand]
-        private async Task AddTransferAsync()
-        {
-            await _navigationService.NavigateToAsync(nameof(AddTransferPage));
-        }
-
-        [RelayCommand]
-        private async Task ManageIncomeCategoriesAsync()
-        {
-            await _navigationService.NavigateToAsync("//ManageIncomeCategories");
-        }
-
-        [RelayCommand]
-        private async Task ManageExpenseCategoriesAsync()
-        {
-            await _navigationService.NavigateToAsync("//ManageExpenseCategories");
-        }
-
-        [RelayCommand]
-        private async Task ManageAccountsAsync()
-        {
-            await _navigationService.NavigateToAsync("//ManageAccounts");
-        }
+        private Task AddTransferAsync() => _navigationService.NavigateToAsync(nameof(AddTransferPage));
 
         [RelayCommand]
         private async Task ShowAccountBalancesAsync()
@@ -438,16 +287,13 @@ namespace MoneyRecord.ViewModels
             {
                 var balances = await _balanceService.GetAllAccountBalancesAsync();
 
-                // Build the message to display
-                var message = string.Join("\n\n", balances.Select(b => 
+                var message = string.Join("\n\n", balances.Select(b =>
                     $"🏦 {b.AccountName}\n" +
                     $"   {AppResources.Balance}: {MoneyFormatter.Format(b.CurrentBalance, b.CurrencyCode)}\n" +
                     $"   {AppResources.LastActivity}: {b.LastActivityDateDisplay}"));
 
                 if (string.IsNullOrEmpty(message))
-                {
                     message = AppResources.NoAccountsFound;
-                }
 
                 await _dialogService.AlertAsync(AppResources.AccountBalances, message);
             }
@@ -458,114 +304,91 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private async Task ToggleSortOrderAsync()
+        private void ToggleSortOrder()
         {
             IsAscending = !IsAscending;
-            await LoadDataAsync();
+            ApplyFilters();
         }
 
         [RelayCommand]
         private async Task ToggleGroupingAsync()
         {
-            try
+            // None -> Category -> Account -> None; the account view splits transfers, so it reloads
+            CurrentGroupingMode = CurrentGroupingMode switch
             {
-                // Cycle through: None -> Category -> Account -> None
-                CurrentGroupingMode = CurrentGroupingMode switch
-                {
-                    GroupingMode.None => GroupingMode.Category,
-                    GroupingMode.Category => GroupingMode.Account,
-                    GroupingMode.Account => GroupingMode.None,
-                    _ => GroupingMode.None
-                };
-                
-                // Update legacy property for backward compatibility
-                IsGroupedByCategory = CurrentGroupingMode != GroupingMode.None;
-                
-                await LoadDataAsync();
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToToggleView, ex.Message));
-            }
+                GroupingMode.None => GroupingMode.Category,
+                GroupingMode.Category => GroupingMode.Account,
+                _ => GroupingMode.None
+            };
+
+            await LoadDataAsync();
         }
 
         [RelayCommand]
-        private void ToggleGroupExpanded(TransactionGroup group)
-        {
-            if (group != null)
-            {
-                group.ToggleExpanded();
-            }
-        }
+        private void ToggleGroupExpanded(TransactionGroup group) => group?.ToggleExpanded();
 
         [RelayCommand]
-        private async Task EditTransactionAsync(Transaction transaction)
+        private async Task EditTransactionAsync(LedgerEntry entry)
         {
-            if (transaction == null)
+            if (entry == null)
                 return;
 
-            // Check if this is a transfer (has TransferId set)
-            if (transaction.TransferId.HasValue)
+            if (entry.IsTransfer)
             {
-                // Navigate to edit transfer page - convert to string for Shell query property
-                await _navigationService.NavigateToAsync($"{nameof(AddTransferPage)}?TransferId={transaction.TransferId.Value}");
+                await _navigationService.NavigateToAsync($"{nameof(AddTransferPage)}?TransferId={entry.SourceId}");
+                return;
             }
-            else
+
+            var transaction = await _transactionRepository.GetByIdAsync(entry.SourceId);
+            if (transaction != null)
             {
-                await _navigationService.NavigateToAsync(nameof(AddTransactionPage), new Dictionary<string, object>
-                {
-                    { "Transaction", transaction }
-                });
+                await _navigationService.NavigateToAsync(nameof(AddTransactionPage),
+                    new Dictionary<string, object> { { "Transaction", transaction } });
             }
         }
 
         [RelayCommand]
-        private async Task DeleteTransactionAsync(Transaction transaction)
+        private async Task DeleteTransactionAsync(LedgerEntry entry)
         {
-            if (transaction == null)
+            if (entry == null)
                 return;
 
-            // Check if this is a transfer
-            var isTransfer = transaction.TransferId.HasValue;
+            var amount = MoneyFormatter.Format(entry.Amount, entry.CurrencyCode);
+            var confirmMessage = entry.IsTransfer
+                ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, entry.Description, amount)
+                : string.Format(AppResources.ConfirmDeleteTransactionMessage, entry.Description, amount);
 
-            var confirmMessage = isTransfer 
-                ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, transaction.Description, MoneyFormatter.Format(transaction.Amount, transaction.CurrencyCode))
-                : string.Format(AppResources.ConfirmDeleteTransactionMessage, transaction.Description, MoneyFormatter.Format(transaction.Amount, transaction.CurrencyCode));
-
-            var confirm = await _dialogService.ConfirmAsync(
-                AppResources.ConfirmDeleteTransactionTitle,
-                confirmMessage,
-                AppResources.YesDelete,
-                AppResources.Cancel);
-
-            if (!confirm)
+            if (!await _dialogService.ConfirmAsync(AppResources.ConfirmDeleteTransactionTitle, confirmMessage,
+                    AppResources.YesDelete, AppResources.Cancel))
                 return;
 
             try
             {
-                if (isTransfer)
+                if (entry.IsTransfer)
                 {
-                    // Delete the transfer
-                    var transfer = await _transferRepository.GetByIdAsync(transaction.TransferId!.Value);
+                    var transfer = await _transferRepository.GetByIdAsync(entry.SourceId);
                     if (transfer != null)
-                    {
                         await _transferRepository.DeleteAsync(transfer);
-                    }
                 }
                 else
                 {
-                    await _transactionRepository.DeleteAsync(transaction);
-                    ReceiptFiles.Delete(transaction.ReceiptPhotoPath, _paths.ReceiptsFolder);
+                    var transaction = await _transactionRepository.GetByIdAsync(entry.SourceId);
+                    if (transaction != null)
+                    {
+                        await _transactionRepository.DeleteAsync(transaction);
+                        ReceiptFiles.Delete(transaction.ReceiptPhotoPath, _paths.ReceiptsFolder);
+                    }
                 }
-                
+
                 await LoadDataAsync();
 
-                var successMessage = isTransfer ? AppResources.TransferDeletedSuccessfully : AppResources.TransactionDeletedSuccessfully;
-                await _dialogService.ToastAsync(successMessage);
+                await _dialogService.ToastAsync(entry.IsTransfer
+                    ? AppResources.TransferDeletedSuccessfully
+                    : AppResources.TransactionDeletedSuccessfully);
             }
             catch (Exception ex)
             {
-                var errorMessage = isTransfer
+                var errorMessage = entry.IsTransfer
                     ? string.Format(AppResources.FailedToDeleteTransfer, ex.Message)
                     : string.Format(AppResources.FailedToDeleteTransaction, ex.Message);
                 await _errorHandler.HandleAsync(ex, errorMessage);
@@ -573,10 +396,7 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private void ToggleFilters()
-        {
-            IsFilterVisible = !IsFilterVisible;
-        }
+        private void ToggleFilters() => IsFilterVisible = !IsFilterVisible;
 
         [RelayCommand]
         private void ClearFilters()
@@ -591,40 +411,19 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private void PerformSearch()
-        {
-            ApplyFilters();
-        }
+        private void PerformSearch() => ApplyFilters();
 
-        partial void OnSearchTextChanged(string value)
-        {
-            ApplyFilters();
-        }
+        partial void OnSearchTextChanged(string value) => ApplyFilters();
 
-        partial void OnSelectedFilterTypeChanged(TypeFilterOption? value)
-        {
-            ApplyFilters();
-        }
+        partial void OnSelectedFilterTypeChanged(TypeFilterOption? value) => ApplyFilters();
 
-        partial void OnSelectedFilterCategoryChanged(string? value)
-        {
-            ApplyFilters();
-        }
+        partial void OnSelectedFilterCategoryChanged(FilterOption? value) => ApplyFilters();
 
-        partial void OnSelectedFilterAccountChanged(string? value)
-        {
-            ApplyFilters();
-        }
+        partial void OnSelectedFilterAccountChanged(FilterOption? value) => ApplyFilters();
 
-        partial void OnMinAmountTextChanged(string value)
-        {
-            ApplyFilters();
-        }
+        partial void OnMinAmountTextChanged(string value) => ApplyFilters();
 
-        partial void OnMaxAmountTextChanged(string value)
-        {
-            ApplyFilters();
-        }
+        partial void OnMaxAmountTextChanged(string value) => ApplyFilters();
 
         partial void OnSelectedPeriodChanged(PeriodItem value)
         {
@@ -642,154 +441,6 @@ namespace MoneyRecord.ViewModels
         {
             if (IsCustomPeriodSelected)
                 _ = LoadDataAsync();
-        }
-
-        private async Task LoadBudgetSummaryAsync()
-        {
-            var activeBudgets = await _budgetRepository.GetActiveBudgetsAsync();
-            if (activeBudgets.Count == 0)
-            {
-                HasBudgets = false;
-                BudgetSummaries = new ObservableCollection<BudgetProgress>();
-                return;
-            }
-
-            var now = DateTime.Now;
-            var monthStart = new DateTime(now.Year, now.Month, 1);
-            var monthEnd = monthStart.AddMonths(1).AddTicks(-1);
-
-            var progressList = new List<BudgetProgress>();
-
-            foreach (var budget in activeBudgets)
-            {
-                var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
-                if (category == null) continue;
-
-                var (start, end) = budget.Period switch
-                {
-                    BudgetPeriod.Day => (now.Date, now.Date.AddDays(1).AddTicks(-1)),
-                    BudgetPeriod.Month => (monthStart, monthEnd),
-                    BudgetPeriod.Year => (new DateTime(now.Year, 1, 1), new DateTime(now.Year, 12, 31, 23, 59, 59)),
-                    _ => (monthStart, monthEnd)
-                };
-
-                var spent = await _balanceService.GetCategoryExpensesAsync(budget.CategoryId, start, end);
-
-                var progress = new BudgetProgress
-                {
-                    BudgetId = budget.Id,
-                    CategoryId = budget.CategoryId,
-                    CategoryName = category.Name,
-                    CategoryIconCode = category.IconCode,
-                    Period = budget.Period,
-                    OriginalLimitAmount = budget.LimitAmount,
-                    LimitAmount = budget.LimitAmount,
-                    SpentAmount = spent
-                };
-                progress.CalculateProgress();
-                progressList.Add(progress);
-            }
-
-            var sorted = progressList.OrderByDescending(b => b.ProgressPercentage).ToList();
-
-            BudgetsOnTrack = sorted.Count(b => !b.IsOverBudget);
-            BudgetsOverBudget = sorted.Count(b => b.IsOverBudget);
-            BudgetSummaries = new ObservableCollection<BudgetProgress>(sorted.Take(3));
-            HasBudgets = true;
-        }
-
-        private (DateTime startDate, DateTime endDate) GetDateRange()
-        {
-            return DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
-        }
-
-        /// <summary>
-        /// Converts Transfer objects to Transaction objects for unified display.
-        /// When grouping by Category: creates one transaction per transfer in the localized Transfers category (AppResources.Transfers).
-        /// When grouping by Account: creates two transactions per transfer (outgoing and incoming).
-        /// When not grouped: creates one transaction per transfer showing the transfer details.
-        /// </summary>
-        private List<Transaction> ConvertTransfersToTransactions(List<Transfer> transfers, GroupingMode groupingMode)
-        {
-            var result = new List<Transaction>();
-            var transferCategoryName = AppResources.Transfers;
-            const string transferIconCode = "F0A27"; // bank-transfer icon
-
-            foreach (var transfer in transfers)
-            {
-                if (groupingMode == GroupingMode.Account)
-                {
-                    // Create outgoing transaction for source account (negative)
-                    result.Add(new Transaction
-                    {
-                        Id = -transfer.Id, // Use negative ID to avoid conflicts with real transactions
-                        Date = transfer.Date,
-                        Description = TransferLabel(AppResources.TransferToAccount, transfer.DestinationAccountName, transfer.Description),
-                        Amount = transfer.Amount,
-                        Type = TransactionType.Transfer,
-                        CurrencyCode = transfer.CurrencyCode,
-                        AccountId = transfer.SourceAccountId,
-                        AccountName = transfer.SourceAccountName,
-                        AccountIconCode = transferIconCode,
-                        CategoryName = transferCategoryName,
-                        CategoryIconCode = transferIconCode,
-                        TransferId = transfer.Id,
-                        IsOutgoingTransfer = true,
-                        TransferCounterpartAccount = transfer.DestinationAccountName
-                    });
-
-                    // Create incoming transaction for destination account (positive)
-                    result.Add(new Transaction
-                    {
-                        Id = -transfer.Id - 1000000, // Use offset to ensure unique ID
-                        Date = transfer.Date,
-                        Description = TransferLabel(AppResources.TransferFromAccount, transfer.SourceAccountName, transfer.Description),
-                        Amount = transfer.Amount,
-                        Type = TransactionType.Transfer,
-                        CurrencyCode = transfer.CurrencyCode,
-                        AccountId = transfer.DestinationAccountId,
-                        AccountName = transfer.DestinationAccountName,
-                        AccountIconCode = transferIconCode,
-                        CategoryName = transferCategoryName,
-                        CategoryIconCode = transferIconCode,
-                        TransferId = transfer.Id,
-                        IsOutgoingTransfer = false,
-                        TransferCounterpartAccount = transfer.SourceAccountName
-                    });
-                }
-                else
-                {
-                    // For Category grouping or flat list: single entry showing the transfer
-                    result.Add(new Transaction
-                    {
-                        Id = -transfer.Id,
-                        Date = transfer.Date,
-                        Description = string.IsNullOrEmpty(transfer.Description) 
-                            ? $"{transfer.SourceAccountName} → {transfer.DestinationAccountName}"
-                            : transfer.Description,
-                        Amount = transfer.Amount,
-                        Type = TransactionType.Transfer,
-                        CurrencyCode = transfer.CurrencyCode,
-                        AccountId = transfer.SourceAccountId,
-                        AccountName = $"{transfer.SourceAccountName} → {transfer.DestinationAccountName}",
-                        AccountIconCode = transferIconCode,
-                        CategoryName = transferCategoryName,
-                        CategoryIconCode = transferIconCode,
-                        TransferId = transfer.Id,
-                        IsOutgoingTransfer = false,
-                        TransferCounterpartAccount = transfer.DestinationAccountName
-                    });
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>"Transfer to Savings: rent", or just "Transfer to Savings" without a description.</summary>
-        private static string TransferLabel(string format, string accountName, string? description)
-        {
-            var label = string.Format(format, accountName);
-            return string.IsNullOrEmpty(description) ? label : $"{label}: {description}";
         }
     }
 }

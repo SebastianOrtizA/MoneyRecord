@@ -12,7 +12,7 @@ namespace MoneyRecord.ViewModels
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IBudgetRepository _budgetRepository;
-        private readonly IBalanceService _balanceService;
+        private readonly IBudgetSummaryService _budgetSummaryService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
 
@@ -70,11 +70,11 @@ namespace MoneyRecord.ViewModels
             new BudgetPeriodItem { Period = BudgetPeriod.Year }
         ];
 
-        public BudgetViewModel(ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBalanceService balanceService, IErrorHandler errorHandler, IDialogService dialogService)
+        public BudgetViewModel(ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBudgetSummaryService budgetSummaryService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _categoryRepository = categoryRepository;
             _budgetRepository = budgetRepository;
-            _balanceService = balanceService;
+            _budgetSummaryService = budgetSummaryService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
@@ -107,47 +107,13 @@ namespace MoneyRecord.ViewModels
             {
                 IsLoading = true;
 
-                var (startDate, endDate) = GetDateRange();
-
-                var activeBudgets = await _budgetRepository.GetActiveBudgetsAsync();
-
-                var budgetProgressList = new List<BudgetProgress>();
-
-                foreach (var budget in activeBudgets)
-                {
-                    var category = await _categoryRepository.GetByIdAsync(budget.CategoryId);
-                    if (category == null) continue;
-
-                    var spentAmount = await _balanceService.GetCategoryExpensesAsync(budget.CategoryId, startDate, endDate);
-
-                    // Calculate projected limit based on budget period and selected date range
-                    var projectedLimit = BudgetProjectionHelper.CalculateProjectedLimit(
-                        budget.LimitAmount,
-                        budget.Period,
-                        SelectedPeriod?.Type ?? PeriodType.CalendarMonth,
-                        CustomStartDate,
-                        CustomEndDate);
-
-                    var progress = new BudgetProgress
-                    {
-                        BudgetId = budget.Id,
-                        CategoryId = budget.CategoryId,
-                        CategoryName = category.Name,
-                        CategoryIconCode = category.IconCode,
-                        Period = budget.Period,
-                        OriginalLimitAmount = budget.LimitAmount,
-                        LimitAmount = projectedLimit,
-                        SpentAmount = spentAmount
-                    };
-                    progress.CalculateProgress();
-
-                    budgetProgressList.Add(progress);
-                }
+                var budgetProgressList = await _budgetSummaryService.GetSummaryAsync(
+                    SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     Budgets.Clear();
-                    foreach (var progress in budgetProgressList.OrderByDescending(b => b.ProgressPercentage))
+                    foreach (var progress in budgetProgressList)
                     {
                         Budgets.Add(progress);
                     }
@@ -312,11 +278,6 @@ namespace MoneyRecord.ViewModels
             {
                 _ = LoadBudgetsAsync();
             }
-        }
-
-        private (DateTime startDate, DateTime endDate) GetDateRange()
-        {
-            return DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
         }
     }
 }

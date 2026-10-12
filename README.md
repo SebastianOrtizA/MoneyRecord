@@ -124,9 +124,9 @@ Models (SQLite entities, money in cents)
 ```
 MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the app)
 ├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
-│                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft
+│                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping
 ├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction (tables)
-│                       + display models (AccountBalanceInfo, CurrencyBalance, TransactionGroup, BudgetProgress, ...)
+│                       + display models (LedgerEntry, TransactionGroup, AccountBalanceInfo, BudgetProgress, ...)
 ├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
 └── Services/
     ├── Interfaces/     Service and repository interfaces, IAppPaths
@@ -135,6 +135,8 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
     ├── AccountService, CategoryService          Transactional deletes
     ├── BalanceService                           Balances, per-currency subtotals
     ├── TransactionEnrichmentService             Names/icons/currencies for display
+    ├── LedgerQueryService                       Home list rows (transactions + transfers)
+    ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
     ├── CurrencyService                          Currencies, base currency, decimals
     ├── RecurringTransactionService              Creates due recurring transactions
     ├── DataExportService                        Zip backup, restore + snapshot, CSV export

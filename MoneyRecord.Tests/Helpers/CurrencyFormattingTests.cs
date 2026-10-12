@@ -74,18 +74,4 @@ public class CurrencyFormattingTests
         WithCulture("en-US", () =>
             MoneyFormatter.FormatTotals([(1m, "EUR"), (2m, "EUR")]).Should().Be("€3.00"));
     }
-
-    [Fact]
-    public void AccountGroup_UsesTheAccountsCurrency_EvenWithATransferFromAnotherCurrency()
-    {
-        var items = new List<MoneyRecord.Models.Transaction>
-        {
-            new() { CurrencyCode = "EUR", Type = MoneyRecord.Models.TransactionType.Expense },
-            new() { CurrencyCode = "USD", Type = MoneyRecord.Models.TransactionType.Transfer } // incoming, source in USD
-        };
-
-        var group = new MoneyRecord.Models.TransactionGroup("Euros", items, MoneyRecord.Models.GroupingMode.Account, 500m, currencyCode: "EUR");
-
-        group.CurrencyCode.Should().Be("EUR");
-    }
 }

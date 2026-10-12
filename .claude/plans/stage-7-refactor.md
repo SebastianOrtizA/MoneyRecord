@@ -1,6 +1,6 @@
 # Stage 7: Architecture Refactor
 
-**Status**: In progress (7.1, 7.2 done)
+**Status**: In progress (7.1, 7.2 done; 7.3 in review)
 **Depends on**: Stage 6 (money format + migrations must land first)
 **Complexity**: High (wide but mechanical; no user-visible change)
 **Source**: Product & engineering review, 2026-10-11 (engineering findings)
@@ -63,6 +63,23 @@ no duplicated business rules. Behaviour must not change; the device check before
 - `TransactionFilter` (record) + pure `LedgerFilter.Apply(entries, filter)`, filtering by IDs/enums.
 - `IBudgetSummaryService.GetSummaryAsync(period)` shared by Home and the Budget page (fixes P5: Home must use
   the same period as the Budget page, or say "this month").
+- Done as `LedgerEntry` (Core record: `Kind`, `SourceId` = the real Transaction/Transfer ID, `AmountCents`,
+  `SignedAmount`, category/account IDs + names, `CounterpartAccountId` for transfers) and `LedgerQueryService`
+  (on top of `TransactionEnrichmentService`; `transfersPerAccount` splits a transfer into TransferOut/TransferIn for
+  the account view). No more fake negative IDs: Edit/Delete use `SourceId`, and Edit loads the `Transaction` by ID.
+  `TransactionFilter` record + `LedgerFilter.Apply/CategoryOptions/AccountOptions`: category and account pickers hold
+  `FilterOption(Id, Name)`, an account filter matches both accounts of a whole transfer but only the own half of a split one.
+  `LedgerGrouping.Group` builds `TransactionGroup`s (now a plain container; account groups keyed by account ID, balance
+  and icon looked up by ID). `BudgetSummaryService` (one category query instead of one per budget) is used by the Budget
+  page and the Home card; the Home card uses **Home's period** with projected limits, so on the default "Calendar
+  month" both pages show the same numbers (a $10/day budget was compared with today's spending only on Home).
+  Removed `Transaction.TransferId/IsOutgoingTransfer/TransferCounterpartAccount` and three unused Manage* commands.
+  Sorting no longer reloads from the database. Tests: `LedgerFilterTests`, `LedgerGroupingTests`,
+  `LedgerQueryServiceTests`, `BudgetSummaryServiceTests` (246 pass).
+- **Deviations:** (1) "Transfers" is no longer an entry in the Home category filter (transfers have no category ID;
+  the Type filter selects them). (2) `MainViewModel` is 446 lines (was 795): what is left is mostly
+  `[ObservableProperty]` fields and the commands; the ~300 target is for the end of the stage (7.6 replaces the
+  property-changed reloads). ViewModel tests still wait for ViewModels to move to Core (they use `MainThread` and page types).
 
 ### 7.4 Remove duplication
 - One `CategoryReportViewModel(CategoryType)` + one `CategoryReportPage`; delete Expense/Income copies and

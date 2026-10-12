@@ -53,6 +53,8 @@ namespace MoneyRecord
             // Register Business Services
             builder.Services.AddSingleton<IBalanceService, BalanceService>();
             builder.Services.AddSingleton<ITransactionEnrichmentService, TransactionEnrichmentService>();
+            builder.Services.AddSingleton<ILedgerQueryService, LedgerQueryService>();
+            builder.Services.AddSingleton<IBudgetSummaryService, BudgetSummaryService>();
             builder.Services.AddSingleton<IRecurringTransactionService, RecurringTransactionService>();
             builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
             builder.Services.AddSingleton<IDataExportService, DataExportService>();
