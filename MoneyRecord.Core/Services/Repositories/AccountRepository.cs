@@ -1,72 +1,23 @@
 using MoneyRecord.Models;
-using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services.Repositories
 {
-    public sealed class AccountRepository : IAccountRepository
+    /// <summary>Accounts are few and read on every screen, so they are cached until the next write.</summary>
+    public sealed class AccountRepository(DatabaseInitializer database)
+        : RepositoryBase<Account>(database), Interfaces.IAccountRepository
     {
-        private readonly DatabaseInitializer _dbInitializer;
         private List<Account>? _cache;
 
-        public AccountRepository(DatabaseInitializer dbInitializer)
-        {
-            _dbInitializer = dbInitializer;
-        }
+        public void InvalidateCache() => _cache = null;
 
-        private async Task EnsureInitializedAsync()
-        {
-            await _dbInitializer.InitializeAsync();
-        }
+        protected override void OnChanged() => InvalidateCache();
 
-        public void InvalidateCache()
-        {
-            _cache = null;
-        }
+        public override async Task<List<Account>> GetAllAsync() => _cache ??= await base.GetAllAsync();
 
-        public async Task<List<Account>> GetAllAsync()
-        {
-            if (_cache != null)
-                return _cache;
+        public override async Task<Account?> GetByIdAsync(int id) =>
+            (await GetAllAsync()).FirstOrDefault(a => a.Id == id);
 
-            await EnsureInitializedAsync();
-            _cache = await _dbInitializer.Database!.Table<Account>().ToListAsync() ?? [];
-            return _cache;
-        }
-
-        public async Task<Account?> GetByIdAsync(int id)
-        {
-            var all = await GetAllAsync();
-            return all.FirstOrDefault(a => a.Id == id);
-        }
-
-        public async Task<Account?> GetDefaultAsync()
-        {
-            var all = await GetAllAsync();
-            return all.FirstOrDefault(a => a.IsDefault);
-        }
-
-        public async Task<int> SaveAsync(Account entity)
-        {
-            await EnsureInitializedAsync();
-            int result;
-            if (entity.Id != 0)
-            {
-                result = await _dbInitializer.Database!.UpdateAsync(entity);
-            }
-            else
-            {
-                result = await _dbInitializer.Database!.InsertAsync(entity);
-            }
-            InvalidateCache();
-            return result;
-        }
-
-        public async Task<int> DeleteAsync(Account entity)
-        {
-            await EnsureInitializedAsync();
-            var result = await _dbInitializer.Database!.DeleteAsync(entity);
-            InvalidateCache();
-            return result;
-        }
+        public async Task<Account?> GetDefaultAsync() =>
+            (await GetAllAsync()).FirstOrDefault(a => a.IsDefault);
     }
 }

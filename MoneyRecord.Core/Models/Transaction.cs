@@ -3,7 +3,7 @@ using SQLite;
 
 namespace MoneyRecord.Models
 {
-    public class Transaction
+    public class Transaction : IEntity
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

@@ -7,7 +7,7 @@ namespace MoneyRecord.Models
     /// <summary>
     /// Represents a budget limit for a specific expense category
     /// </summary>
-    public class Budget
+    public class Budget : IEntity
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

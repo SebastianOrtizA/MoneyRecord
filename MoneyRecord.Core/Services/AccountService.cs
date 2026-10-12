@@ -18,8 +18,7 @@ namespace MoneyRecord.Services
 
         public async Task<AccountUsage> GetUsageAsync(int accountId)
         {
-            await _dbInitializer.InitializeAsync();
-            var db = _dbInitializer.Database!;
+            var db = await _dbInitializer.GetConnectionAsync();
 
             return new AccountUsage(
                 await db.Table<Transaction>().CountAsync(t => t.AccountId == accountId),
@@ -29,11 +28,9 @@ namespace MoneyRecord.Services
 
         public async Task DeleteAsync(int accountId)
         {
-            await _dbInitializer.InitializeAsync();
-
             try
             {
-                await _dbInitializer.Database!.RunInTransactionAsync(db =>
+                await _dbInitializer.RunInTransactionAsync(db =>
                 {
                     var account = db.Find<Account>(accountId)
                         ?? throw new InvalidOperationException($"Account {accountId} does not exist.");

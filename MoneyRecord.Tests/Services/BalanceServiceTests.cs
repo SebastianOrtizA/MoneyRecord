@@ -1,309 +1,135 @@
 using AwesomeAssertions;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
-using MoneyRecord.Services.Interfaces;
-using NSubstitute;
+using MoneyRecord.Services.Repositories;
+using SQLite;
 using Xunit;
 
 namespace MoneyRecord.Tests.Services;
 
-public class BalanceServiceTests
+/// <summary>
+/// BalanceService against a real temp SQLite file: the totals are SQL (SUM ... GROUP BY), so only a database
+/// can check them. The seed data adds the default Cash account with no transactions.
+/// </summary>
+public sealed class BalanceServiceTests : IAsyncLifetime
 {
-    private readonly IAccountRepository _accountRepo = Substitute.For<IAccountRepository>();
-    private readonly ITransactionRepository _transactionRepo = Substitute.For<ITransactionRepository>();
-    private readonly ITransferRepository _transferRepo = Substitute.For<ITransferRepository>();
-    private readonly BalanceService _sut;
+    private static readonly DateTime March1 = new(2026, 3, 1);
+    private static readonly DateTime March31End = new DateTime(2026, 4, 1).AddTicks(-1);
 
-    public BalanceServiceTests()
+    private readonly string _appData = Path.Combine(Path.GetTempPath(), $"moneyrecord-balance-{Guid.NewGuid():N}");
+    private DatabaseInitializer _dbInitializer = null!;
+    private BalanceService _sut = null!;
+
+    private SQLiteAsyncConnection Db { get; set; } = null!;
+
+    public async Task InitializeAsync()
     {
-        _sut = new BalanceService(_accountRepo, _transactionRepo, _transferRepo);
+        Directory.CreateDirectory(_appData);
+        _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
+        Db = await _dbInitializer.GetConnectionAsync();
+        _sut = new BalanceService(
+            new AccountRepository(_dbInitializer),
+            new TransactionRepository(_dbInitializer),
+            new TransferRepository(_dbInitializer));
+    }
+
+    public async Task DisposeAsync()
+    {
+        await Db.CloseAsync();
+        Directory.Delete(_appData, recursive: true);
+    }
+
+    private async Task<Account> AddAccountAsync(string name, decimal initial = 0, DateTime? created = null)
+    {
+        var account = new Account { Name = name, InitialBalance = initial, CreatedDate = created ?? new DateTime(2026, 1, 1) };
+        await Db.InsertAsync(account);
+        return account;
+    }
+
+    private Task AddAsync(TransactionType type, decimal amount, DateTime date, int? accountId = null, int categoryId = 1) =>
+        Db.InsertAsync(new Transaction { Type = type, Amount = amount, Date = date, AccountId = accountId, CategoryId = categoryId });
+
+    private Task TransferAsync(int from, int to, decimal amount, DateTime date) =>
+        Db.InsertAsync(new Transfer { SourceAccountId = from, DestinationAccountId = to, Amount = amount, Date = date });
+
+    [Fact]
+    public async Task Account_balance_is_initial_plus_incomes_minus_expenses_and_transfers()
+    {
+        var bank = await AddAccountAsync("Bank", initial: 500m);
+        var savings = await AddAccountAsync("Savings", initial: 100m);
+        await AddAsync(TransactionType.Income, 200m, March1, bank.Id);
+        await AddAsync(TransactionType.Expense, 50.25m, March1, bank.Id);
+        await AddAsync(TransactionType.Expense, -30m, March1, bank.Id); // stored negative by an old version: still an expense
+        await TransferAsync(bank.Id, savings.Id, 120m, March1);
+
+        var balances = (await _sut.GetAllAccountBalancesAsync()).ToDictionary(b => b.AccountName);
+
+        balances["Bank"].CurrentBalance.Should().Be(500m + 200m - 50.25m - 30m - 120m);
+        balances["Savings"].CurrentBalance.Should().Be(220m);
+        (await _sut.GetAccountBalanceAsync(savings.Id)).Should().Be(220m);
     }
 
     [Fact]
-    public async Task GetTotalBalanceAsync_NoTransactions_ReturnsInitialBalances()
+    public async Task An_unknown_account_has_no_balance()
     {
-        _accountRepo.GetAllAsync().Returns(new List<Account>
-        {
-            new() { Id = 1, InitialBalance = 100m },
-            new() { Id = 2, InitialBalance = 200m }
-        });
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>());
-
-        var result = await _sut.GetTotalBalanceAsync();
-
-        result.Should().Be(300m);
+        (await _sut.GetAccountBalanceAsync(999)).Should().Be(0);
     }
 
     [Fact]
-    public async Task GetTotalBalanceAsync_WithIncomesAndExpenses_CalculatesCorrectly()
+    public async Task Transactions_without_an_account_are_in_no_account_balance()
     {
-        _accountRepo.GetAllAsync().Returns(new List<Account>
-        {
-            new() { Id = 1, InitialBalance = 500m }
-        });
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 200m, Type = TransactionType.Income },
-            new() { Id = 2, Amount = -150m, Type = TransactionType.Expense },
-            new() { Id = 3, Amount = 50m, Type = TransactionType.Income }
-        });
+        var bank = await AddAccountAsync("Bank", initial: 10m);
+        await AddAsync(TransactionType.Income, 99m, March1, accountId: null);
 
-        var result = await _sut.GetTotalBalanceAsync();
-
-        // 500 + |200| + |50| - |-150| = 500 + 250 - 150 = 600
-        result.Should().Be(600m);
+        (await _sut.GetAccountBalanceAsync(bank.Id)).Should().Be(10m);
     }
 
     [Fact]
-    public async Task GetAccountBalanceAsync_NonExistentAccount_ReturnsZero()
+    public async Task Last_activity_is_the_latest_transaction_or_transfer_else_the_creation_date()
     {
-        _accountRepo.GetByIdAsync(999).Returns((Account?)null);
+        var created = new DateTime(2025, 6, 1);
+        var bank = await AddAccountAsync("Bank", created: created);
+        var savings = await AddAccountAsync("Savings", created: created);
+        var idle = await AddAccountAsync("Idle", created: created);
+        await AddAsync(TransactionType.Expense, 1m, new DateTime(2026, 2, 10, 9, 30, 0), bank.Id);
+        await TransferAsync(bank.Id, savings.Id, 1m, new DateTime(2026, 3, 5, 18, 0, 0));
 
-        var result = await _sut.GetAccountBalanceAsync(999);
+        var balances = (await _sut.GetAllAccountBalancesAsync()).ToDictionary(b => b.AccountId);
 
-        result.Should().Be(0m);
+        balances[bank.Id].LastActivityDate.Should().Be(new DateTime(2026, 3, 5, 18, 0, 0));
+        balances[savings.Id].LastActivityDate.Should().Be(new DateTime(2026, 3, 5, 18, 0, 0));
+        balances[idle.Id].LastActivityDate.Should().Be(created);
     }
 
     [Fact]
-    public async Task GetAccountBalanceAsync_WithTransactionsAndTransfers_CalculatesCorrectly()
+    public async Task Period_totals_include_both_ends_of_the_range_and_only_their_type()
     {
-        _accountRepo.GetByIdAsync(1).Returns(new Account { Id = 1, InitialBalance = 1000m });
-        _transactionRepo.GetByAccountIdAsync(1).Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 300m, Type = TransactionType.Income, AccountId = 1 },
-            new() { Id = 2, Amount = -200m, Type = TransactionType.Expense, AccountId = 1 }
-        });
-        _transferRepo.GetBySourceAccountIdAsync(1).Returns(new List<Transfer>
-        {
-            new() { Id = 1, Amount = 100m, SourceAccountId = 1, DestinationAccountId = 2 }
-        });
-        _transferRepo.GetByDestinationAccountIdAsync(1).Returns(new List<Transfer>
-        {
-            new() { Id = 2, Amount = 50m, SourceAccountId = 2, DestinationAccountId = 1 }
-        });
+        await AddAsync(TransactionType.Income, 100m, March1);
+        await AddAsync(TransactionType.Income, 50m, March31End);
+        await AddAsync(TransactionType.Income, 7m, March31End.AddTicks(1)); // April
+        await AddAsync(TransactionType.Expense, 30m, March1.AddDays(3));
 
-        var result = await _sut.GetAccountBalanceAsync(1);
-
-        // 1000 + |300| - |-200| - |100| + |50| = 1000 + 300 - 200 - 100 + 50 = 1050
-        result.Should().Be(1050m);
+        (await _sut.GetTotalIncomesAsync(March1, March31End)).Should().Be(150m);
+        (await _sut.GetTotalExpensesAsync(March1, March31End)).Should().Be(30m);
     }
 
     [Fact]
-    public async Task GetTotalIncomesAsync_FiltersCorrectly()
+    public async Task An_empty_period_totals_zero()
     {
-        var start = new DateTime(2026, 1, 1);
-        var end = new DateTime(2026, 1, 31);
-        _transactionRepo.GetByDateRangeAsync(start, end).Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 500m, Type = TransactionType.Income },
-            new() { Id = 2, Amount = -300m, Type = TransactionType.Expense },
-            new() { Id = 3, Amount = 200m, Type = TransactionType.Income }
-        });
-
-        var result = await _sut.GetTotalIncomesAsync(start, end);
-
-        result.Should().Be(700m);
+        (await _sut.GetTotalExpensesAsync(March1, March31End)).Should().Be(0);
     }
 
     [Fact]
-    public async Task GetTotalExpensesAsync_FiltersCorrectly()
+    public async Task Category_expenses_count_only_that_category_and_type()
     {
-        var start = new DateTime(2026, 1, 1);
-        var end = new DateTime(2026, 1, 31);
-        _transactionRepo.GetByDateRangeAsync(start, end).Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 500m, Type = TransactionType.Income },
-            new() { Id = 2, Amount = -300m, Type = TransactionType.Expense },
-            new() { Id = 3, Amount = -100m, Type = TransactionType.Expense }
-        });
+        await AddAsync(TransactionType.Expense, 12.5m, March1, categoryId: 5);
+        await AddAsync(TransactionType.Expense, 7.5m, March1.AddDays(1), categoryId: 5);
+        await AddAsync(TransactionType.Expense, 100m, March1, categoryId: 6);
+        await AddAsync(TransactionType.Income, 40m, March1, categoryId: 5);
 
-        var result = await _sut.GetTotalExpensesAsync(start, end);
+        (await _sut.GetCategoryExpensesAsync(5, March1, March31End)).Should().Be(20m);
 
-        result.Should().Be(400m);
-    }
-
-    [Fact]
-    public async Task GetBalanceAsync_WithDateRange_ReturnsNetIncome()
-    {
-        var start = new DateTime(2026, 1, 1);
-        var end = new DateTime(2026, 1, 31);
-        _transactionRepo.GetByDateRangeAsync(start, end).Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 500m, Type = TransactionType.Income },
-            new() { Id = 2, Amount = -300m, Type = TransactionType.Expense }
-        });
-
-        var result = await _sut.GetBalanceAsync(start, end);
-
-        // incomes (500) - expenses (-300 sum = -300) => 500 - (-300) = 800
-        result.Should().Be(800m);
-    }
-
-    [Fact]
-    public async Task GetBalanceAsync_WithoutDateRange_UsesAllTransactions()
-    {
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 1000m, Type = TransactionType.Income },
-            new() { Id = 2, Amount = -400m, Type = TransactionType.Expense }
-        });
-
-        var result = await _sut.GetBalanceAsync();
-
-        // incomes (1000) - expenses (-400) => 1000 - (-400) = 1400
-        result.Should().Be(1400m);
-    }
-
-    [Fact]
-    public async Task GetBalancesByCurrencyAsync_NeverAddsDifferentCurrencies_BaseFirst()
-    {
-        _accountRepo.GetAllAsync().Returns(new List<Account>
-        {
-            new() { Id = 1, InitialBalance = 100m, CurrencyCode = "EUR" },
-            new() { Id = 2, InitialBalance = 1000m, CurrencyCode = "USD" },
-            new() { Id = 3, InitialBalance = 250m, CurrencyCode = "" },       // no currency = the base currency
-            new() { Id = 4, InitialBalance = 450000m, CurrencyCode = "COP" },
-            new() { Id = 5, InitialBalance = 200m, CurrencyCode = "eur" }
-        });
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>
-        {
-            new() { Amount = 50m, Type = TransactionType.Expense, AccountId = 1 }
-        });
-        _transferRepo.GetAllAsync().Returns(new List<Transfer>());
-
-        var result = await _sut.GetBalancesByCurrencyAsync("USD");
-
-        result.Should().Equal(
-            new CurrencyBalance("USD", 1250m, 2),
-            new CurrencyBalance("COP", 450000m, 1),
-            new CurrencyBalance("EUR", 250m, 2));
-    }
-
-    [Fact]
-    public async Task GetBalancesByCurrencyAsync_SingleCurrency_OneRow()
-    {
-        _accountRepo.GetAllAsync().Returns(new List<Account>
-        {
-            new() { Id = 1, InitialBalance = 10m, CurrencyCode = "EUR" },
-            new() { Id = 2, InitialBalance = 5m, CurrencyCode = "EUR" }
-        });
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>());
-        _transferRepo.GetAllAsync().Returns(new List<Transfer>());
-
-        var result = await _sut.GetBalancesByCurrencyAsync("USD");
-
-        result.Should().ContainSingle().Which.Should().Be(new CurrencyBalance("EUR", 15m, 2));
-    }
-
-    [Fact]
-    public async Task GetAllAccountBalancesAsync_CalculatesEachAccountCorrectly()
-    {
-        _accountRepo.GetAllAsync().Returns(new List<Account>
-        {
-            new() { Id = 1, Name = "Checking", InitialBalance = 1000m, CreatedDate = new DateTime(2026, 1, 1) },
-            new() { Id = 2, Name = "Savings", InitialBalance = 5000m, CreatedDate = new DateTime(2026, 1, 1) }
-        });
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 200m, Type = TransactionType.Income, AccountId = 1, Date = new DateTime(2026, 3, 1) },
-            new() { Id = 2, Amount = -100m, Type = TransactionType.Expense, AccountId = 1, Date = new DateTime(2026, 3, 15) },
-            new() { Id = 3, Amount = 500m, Type = TransactionType.Income, AccountId = 2, Date = new DateTime(2026, 2, 1) }
-        });
-        _transferRepo.GetAllAsync().Returns(new List<Transfer>
-        {
-            new() { Id = 1, Amount = 300m, SourceAccountId = 1, DestinationAccountId = 2, Date = new DateTime(2026, 4, 1) }
-        });
-
-        var result = await _sut.GetAllAccountBalancesAsync();
-
-        result.Should().HaveCount(2);
-
-        var checking = result.First(b => b.AccountId == 1);
-        // 1000 + 200 - 100 - 300 + 0 = 800
-        checking.CurrentBalance.Should().Be(800m);
-
-        var savings = result.First(b => b.AccountId == 2);
-        // 5000 + 500 - 0 - 0 + 300 = 5800
-        savings.CurrentBalance.Should().Be(5800m);
-    }
-
-    [Fact]
-    public async Task GetAllAccountBalancesAsync_LastActivityDate_UsesLatestTransaction()
-    {
-        var latestDate = new DateTime(2026, 6, 15);
-        _accountRepo.GetAllAsync().Returns(new List<Account>
-        {
-            new() { Id = 1, Name = "Test", InitialBalance = 0m, CreatedDate = new DateTime(2026, 1, 1) }
-        });
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = 100m, Type = TransactionType.Income, AccountId = 1, Date = new DateTime(2026, 3, 1) },
-            new() { Id = 2, Amount = -50m, Type = TransactionType.Expense, AccountId = 1, Date = latestDate }
-        });
-        _transferRepo.GetAllAsync().Returns(new List<Transfer>());
-
-        var result = await _sut.GetAllAccountBalancesAsync();
-
-        result.First().LastActivityDate.Should().Be(latestDate);
-    }
-
-    [Fact]
-    public async Task GetAllAccountBalancesAsync_NoActivity_FallsBackToCreatedDate()
-    {
-        var createdDate = new DateTime(2026, 1, 15);
-        _accountRepo.GetAllAsync().Returns(new List<Account>
-        {
-            new() { Id = 1, Name = "Empty", InitialBalance = 100m, CreatedDate = createdDate }
-        });
-        _transactionRepo.GetAllAsync().Returns(new List<Transaction>());
-        _transferRepo.GetAllAsync().Returns(new List<Transfer>());
-
-        var result = await _sut.GetAllAccountBalancesAsync();
-
-        result.First().LastActivityDate.Should().Be(createdDate);
-    }
-
-    [Fact]
-    public async Task GetLastTransactionDateForAccountAsync_ReturnsLatestDate()
-    {
-        _transactionRepo.GetByAccountIdAsync(1).Returns(new List<Transaction>
-        {
-            new() { Id = 1, Date = new DateTime(2026, 1, 1), AccountId = 1 },
-            new() { Id = 2, Date = new DateTime(2026, 6, 15), AccountId = 1 },
-            new() { Id = 3, Date = new DateTime(2026, 3, 10), AccountId = 1 }
-        });
-
-        var result = await _sut.GetLastTransactionDateForAccountAsync(1);
-
-        result.Should().Be(new DateTime(2026, 6, 15));
-    }
-
-    [Fact]
-    public async Task GetLastTransactionDateForAccountAsync_NoTransactions_ReturnsNull()
-    {
-        _transactionRepo.GetByAccountIdAsync(1).Returns(new List<Transaction>());
-
-        var result = await _sut.GetLastTransactionDateForAccountAsync(1);
-
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task GetCategoryExpensesAsync_FiltersByCategoryAndType()
-    {
-        var start = new DateTime(2026, 1, 1);
-        var end = new DateTime(2026, 1, 31);
-        _transactionRepo.GetByDateRangeAsync(start, end).Returns(new List<Transaction>
-        {
-            new() { Id = 1, Amount = -200m, Type = TransactionType.Expense, CategoryId = 5 },
-            new() { Id = 2, Amount = -100m, Type = TransactionType.Expense, CategoryId = 5 },
-            new() { Id = 3, Amount = 500m, Type = TransactionType.Income, CategoryId = 5 },
-            new() { Id = 4, Amount = -300m, Type = TransactionType.Expense, CategoryId = 10 }
-        });
-
-        var result = await _sut.GetCategoryExpensesAsync(5, start, end);
-
-        // Only expenses for category 5: |-200| + |-100| = 300
-        result.Should().Be(300m);
+        var byCategory = await _sut.GetExpensesByCategoryAsync(March1, March31End);
+        byCategory.Should().BeEquivalentTo(new Dictionary<int, decimal> { [5] = 20m, [6] = 100m });
     }
 }

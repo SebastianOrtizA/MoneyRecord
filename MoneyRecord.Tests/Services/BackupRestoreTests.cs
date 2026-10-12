@@ -19,7 +19,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
     private CategoryRepository _categoryRepository = null!;
     private DataExportService _service = null!;
 
-    private SQLiteAsyncConnection Db => _dbInitializer.Database!;
+    private SQLiteAsyncConnection Db { get; set; } = null!;
     private string Receipts => Path.Combine(_appData, "receipts");
 
     public async Task InitializeAsync()
@@ -27,10 +27,10 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Directory.CreateDirectory(Receipts);
         Directory.CreateDirectory(Path.Combine(_appData, "out"));
         _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
-        await _dbInitializer.InitializeAsync();
+        Db = await _dbInitializer.GetConnectionAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
-        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new AppPaths(_appData));
+        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new AppPaths(_appData));
     }
 
     public async Task DisposeAsync()

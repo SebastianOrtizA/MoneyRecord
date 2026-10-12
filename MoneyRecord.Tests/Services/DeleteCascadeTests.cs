@@ -20,13 +20,13 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
     private AccountService _accountService = null!;
     private CategoryService _categoryService = null!;
 
-    private SQLiteAsyncConnection Db => _dbInitializer.Database!;
+    private SQLiteAsyncConnection Db { get; set; } = null!;
 
     public async Task InitializeAsync()
     {
         Directory.CreateDirectory(_appData);
         _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
-        await _dbInitializer.InitializeAsync();
+        Db = await _dbInitializer.GetConnectionAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
         _accountService = new AccountService(_dbInitializer, _accountRepository);

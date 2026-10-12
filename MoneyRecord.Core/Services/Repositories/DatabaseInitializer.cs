@@ -7,46 +7,55 @@ using SQLite;
 namespace MoneyRecord.Services.Repositories
 {
     /// <summary>
-    /// SQLite implementation of the database initializer.
-    /// Handles database creation, table setup, and default data seeding.
+    /// The app database: opens it on first use (creating the schema, running migrations and seeding default data)
+    /// and hands out the connection. All access goes through <see cref="GetConnectionAsync"/> or
+    /// <see cref="RunInTransactionAsync"/>, so nothing can use the database before it is ready.
     /// </summary>
-    public sealed class DatabaseInitializer : IDatabaseInitializer
+    public sealed class DatabaseInitializer
     {
         private readonly string _databasePath;
         private readonly SemaphoreSlim _initLock = new(1, 1);
-        private bool _isInitialized;
-
-        public SQLiteAsyncConnection? Database { get; private set; }
-        public bool IsInitialized => _isInitialized;
+        private SQLiteAsyncConnection? _database;
 
         public DatabaseInitializer(IAppPaths paths)
         {
             _databasePath = paths.DatabasePath;
         }
 
-        public async Task InitializeAsync()
+        /// <summary>The open connection, initializing the database on the first call.</summary>
+        public async Task<SQLiteAsyncConnection> GetConnectionAsync()
         {
-            if (_isInitialized)
-                return;
+            if (_database != null)
+                return _database;
 
             await _initLock.WaitAsync();
             try
             {
-                if (_isInitialized)
-                    return;
+                if (_database != null)
+                    return _database;
 
-                Database = new SQLiteAsyncConnection(_databasePath);
+                var db = new SQLiteAsyncConnection(_databasePath);
+                await CreateSchemaAsync(db, new MigrationRunner(MigrationRunner.All));
+                await SeedDefaultDataAsync(db);
 
-                await CreateSchemaAsync(Database, new MigrationRunner(MigrationRunner.All));
-
-                await SeedDefaultDataAsync();
-
-                _isInitialized = true;
+                // Published only when ready: a concurrent caller never sees a half-initialized database
+                _database = db;
+                return db;
             }
             finally
             {
                 _initLock.Release();
             }
+        }
+
+        /// <summary>
+        /// Runs <paramref name="work"/> in one SQLite transaction: all of it is written, or nothing when it throws.
+        /// For changes that span tables (delete cascades, restore) or a consistent read of several tables.
+        /// </summary>
+        public async Task RunInTransactionAsync(Action<SQLiteConnection> work)
+        {
+            var db = await GetConnectionAsync();
+            await db.RunInTransactionAsync(work);
         }
 
         /// <summary>
@@ -71,24 +80,16 @@ namespace MoneyRecord.Services.Repositories
                 await migrations.RunAsync(db);
         }
 
-        private async Task SeedDefaultDataAsync()
+        private static async Task SeedDefaultDataAsync(SQLiteAsyncConnection db)
         {
-            if (Database == null) return;
+            if (await db.Table<Category>().CountAsync() == 0)
+                await AddDefaultCategoriesAsync(db);
 
-            var categoryCount = await Database.Table<Category>().CountAsync();
-            if (categoryCount == 0)
-            {
-                await AddDefaultCategoriesAsync();
-            }
-
-            var accountCount = await Database.Table<Account>().CountAsync();
-            if (accountCount == 0)
-            {
-                await AddDefaultAccountAsync();
-            }
+            if (await db.Table<Account>().CountAsync() == 0)
+                await AddDefaultAccountAsync(db);
         }
 
-        private async Task AddDefaultCategoriesAsync()
+        private static async Task AddDefaultCategoriesAsync(SQLiteAsyncConnection db)
         {
             var defaultIncomeCategories = new[]
             {
@@ -111,11 +112,11 @@ namespace MoneyRecord.Services.Repositories
 
             foreach (var category in defaultIncomeCategories.Concat(defaultExpenseCategories))
             {
-                await Database!.InsertAsync(category);
+                await db.InsertAsync(category);
             }
         }
 
-        private async Task AddDefaultAccountAsync()
+        private static async Task AddDefaultAccountAsync(SQLiteAsyncConnection db)
         {
             var cashAccount = new Account
             {
@@ -127,7 +128,7 @@ namespace MoneyRecord.Services.Repositories
                 AllowNegativeBalance = true,
                 CurrencyCode = CurrencyService.GetDeviceCurrencyCode()
             };
-            await Database!.InsertAsync(cashAccount);
+            await db.InsertAsync(cashAccount);
         }
     }
 }

@@ -4,6 +4,7 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services
 {
+    /// <summary>Balances and totals, summed by SQLite (no transaction rows are loaded).</summary>
     public sealed class BalanceService : IBalanceService
     {
         private readonly IAccountRepository _accountRepository;
@@ -20,167 +21,62 @@ namespace MoneyRecord.Services
             _transferRepository = transferRepository;
         }
 
-        public async Task<decimal> GetTotalBalanceAsync()
-        {
-            var accounts = await _accountRepository.GetAllAsync();
-            decimal totalInitialBalance = accounts.Sum(a => a.InitialBalance);
+        // Deliberately reuses the all-accounts calculation: four indexed GROUP BY queries over a handful of accounts
+        // cost about the same as per-account ones, and the balance rule then lives in one place.
+        public async Task<decimal> GetAccountBalanceAsync(int accountId) =>
+            (await GetAllAccountBalancesAsync()).FirstOrDefault(b => b.AccountId == accountId)?.CurrentBalance ?? 0;
 
-            var allTransactions = await _transactionRepository.GetAllAsync();
+        public async Task<decimal> GetTotalIncomesAsync(DateTime startDate, DateTime endDate) =>
+            Money.FromCents(await _transactionRepository.SumCentsAsync(TransactionType.Income, startDate, endDate));
 
-            var totalIncomes = allTransactions
-                .Where(t => t.Type == TransactionType.Income)
-                .Sum(t => Math.Abs(t.Amount));
-            var totalExpenses = allTransactions
-                .Where(t => t.Type == TransactionType.Expense)
-                .Sum(t => Math.Abs(t.Amount));
+        public async Task<decimal> GetTotalExpensesAsync(DateTime startDate, DateTime endDate) =>
+            Money.FromCents(await _transactionRepository.SumCentsAsync(TransactionType.Expense, startDate, endDate));
 
-            return totalInitialBalance + totalIncomes - totalExpenses;
-        }
+        public async Task<decimal> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate) =>
+            Money.FromCents(await _transactionRepository.SumCentsAsync(TransactionType.Expense, startDate, endDate, categoryId));
 
-        public Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync() =>
-            GetBalancesByCurrencyAsync(MoneyFormatter.ResolveCurrencyCode(null));
-
-        /// <summary>For tests: <paramref name="baseCurrencyCode"/> instead of the app-wide base currency.</summary>
-        public async Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync(string baseCurrencyCode) =>
-            CurrencyBalance.FromAccounts(await GetAllAccountBalancesAsync(), baseCurrencyCode);
-
-        public async Task<decimal> GetAccountBalanceAsync(int accountId)
-        {
-            var account = await _accountRepository.GetByIdAsync(accountId);
-            if (account == null)
-                return 0;
-
-            var transactions = await _transactionRepository.GetByAccountIdAsync(accountId);
-
-            var incomes = transactions
-                .Where(t => t.Type == TransactionType.Income)
-                .Sum(t => Math.Abs(t.Amount));
-            var expenses = transactions
-                .Where(t => t.Type == TransactionType.Expense)
-                .Sum(t => Math.Abs(t.Amount));
-
-            var outgoingTransfers = await _transferRepository.GetBySourceAccountIdAsync(accountId);
-            var incomingTransfers = await _transferRepository.GetByDestinationAccountIdAsync(accountId);
-
-            var transfersOut = outgoingTransfers.Sum(t => Math.Abs(t.Amount));
-            var transfersIn = incomingTransfers.Sum(t => Math.Abs(t.Amount));
-
-            return account.InitialBalance + incomes - expenses - transfersOut + transfersIn;
-        }
-
-        public async Task<decimal> GetTotalIncomesAsync(DateTime startDate, DateTime endDate)
-        {
-            var transactions = await _transactionRepository.GetByDateRangeAsync(startDate, endDate);
-            return transactions
-                .Where(t => t.Type == TransactionType.Income)
-                .Sum(t => Math.Abs(t.Amount));
-        }
-
-        public async Task<decimal> GetTotalExpensesAsync(DateTime startDate, DateTime endDate)
-        {
-            var transactions = await _transactionRepository.GetByDateRangeAsync(startDate, endDate);
-            return transactions
-                .Where(t => t.Type == TransactionType.Expense)
-                .Sum(t => Math.Abs(t.Amount));
-        }
-
-        public async Task<decimal> GetBalanceAsync(DateTime? startDate = null, DateTime? endDate = null)
-        {
-            List<Transaction> transactions;
-
-            if (startDate.HasValue && endDate.HasValue)
-            {
-                transactions = await _transactionRepository.GetByDateRangeAsync(startDate.Value, endDate.Value);
-            }
-            else
-            {
-                transactions = await _transactionRepository.GetAllAsync();
-            }
-
-            var incomes = transactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
-            var expenses = transactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
-
-            return incomes - expenses;
-        }
+        public async Task<Dictionary<int, decimal>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate) =>
+            (await _transactionRepository.SumCentsByCategoryAsync(TransactionType.Expense, startDate, endDate))
+                .ToDictionary(kv => kv.Key, kv => Money.FromCents(kv.Value));
 
         public async Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync()
         {
             var accountsTask = _accountRepository.GetAllAsync();
-            var allTransactionsTask = _transactionRepository.GetAllAsync();
-            var allTransfersTask = _transferRepository.GetAllAsync();
+            var incomesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Income);
+            var expensesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Expense);
+            var outgoingTask = _transferRepository.SumCentsBySourceAsync();
+            var incomingTask = _transferRepository.SumCentsByDestinationAsync();
+            await Task.WhenAll(accountsTask, incomesTask, expensesTask, outgoingTask, incomingTask);
 
-            await Task.WhenAll(accountsTask, allTransactionsTask, allTransfersTask);
+            var incomes = (await incomesTask).ToDictionary(t => t.AccountId);
+            var expenses = (await expensesTask).ToDictionary(t => t.AccountId);
+            var outgoing = (await outgoingTask).ToDictionary(t => t.AccountId);
+            var incoming = (await incomingTask).ToDictionary(t => t.AccountId);
 
-            var accounts = await accountsTask;
-            var allTransactions = await allTransactionsTask;
-            var allTransfers = await allTransfersTask;
-
-            var transactionsByAccount = allTransactions
-                .Where(t => t.AccountId.HasValue)
-                .GroupBy(t => t.AccountId!.Value)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            var transfersBySource = allTransfers
-                .GroupBy(t => t.SourceAccountId)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            var transfersByDest = allTransfers
-                .GroupBy(t => t.DestinationAccountId)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            var result = new List<AccountBalanceInfo>(accounts.Count);
-
-            foreach (var account in accounts)
+            return (await accountsTask).Select(account =>
             {
-                var accountTransactions = transactionsByAccount.GetValueOrDefault(account.Id, []);
-                var incomes = accountTransactions
-                    .Where(t => t.Type == TransactionType.Income)
-                    .Sum(t => Math.Abs(t.Amount));
-                var expenses = accountTransactions
-                    .Where(t => t.Type == TransactionType.Expense)
-                    .Sum(t => Math.Abs(t.Amount));
+                var income = incomes.GetValueOrDefault(account.Id);
+                var expense = expenses.GetValueOrDefault(account.Id);
+                var transferOut = outgoing.GetValueOrDefault(account.Id);
+                var transferIn = incoming.GetValueOrDefault(account.Id);
 
-                var outgoing = transfersBySource.GetValueOrDefault(account.Id, []);
-                var incoming = transfersByDest.GetValueOrDefault(account.Id, []);
-                var transfersOut = outgoing.Sum(t => Math.Abs(t.Amount));
-                var transfersIn = incoming.Sum(t => Math.Abs(t.Amount));
-
-                var balance = account.InitialBalance + incomes - expenses - transfersOut + transfersIn;
-
-                var activityDates = new List<DateTime>();
-                if (accountTransactions.Count > 0)
-                    activityDates.Add(accountTransactions.Max(t => t.Date));
-                var accountTransfers = outgoing.Concat(incoming).ToList();
-                if (accountTransfers.Count > 0)
-                    activityDates.Add(accountTransfers.Max(t => t.Date));
-
-                result.Add(new AccountBalanceInfo
+                return new AccountBalanceInfo
                 {
                     AccountId = account.Id,
                     AccountName = account.Name ?? string.Empty,
                     CurrencyCode = account.CurrencyCode,
-                    CurrentBalance = balance,
-                    LastActivityDate = activityDates.Count > 0 ? activityDates.Max() : account.CreatedDate
-                });
-            }
-
-            return result;
+                    CurrentBalance = account.InitialBalance
+                        + Amount(income) - Amount(expense) - Amount(transferOut) + Amount(transferIn),
+                    // The latest transaction or transfer; the creation date for an account without any
+                    LastActivityDate = new[] { income, expense, transferOut, transferIn }
+                        .OfType<AccountTotal>()
+                        .Select(t => t.LastDate)
+                        .DefaultIfEmpty(account.CreatedDate)
+                        .Max()
+                };
+            }).ToList();
         }
 
-        public async Task<DateTime?> GetLastTransactionDateForAccountAsync(int accountId)
-        {
-            var transactions = await _transactionRepository.GetByAccountIdAsync(accountId);
-            return transactions
-                .OrderByDescending(t => t.Date)
-                .FirstOrDefault()?.Date;
-        }
-
-        public async Task<decimal> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate)
-        {
-            var transactions = await _transactionRepository.GetByDateRangeAsync(startDate, endDate);
-            return transactions
-                .Where(t => t.CategoryId == categoryId && t.Type == TransactionType.Expense)
-                .Sum(t => Math.Abs(t.Amount));
-        }
+        private static decimal Amount(AccountTotal? total) => total?.Amount ?? 0;
     }
 }

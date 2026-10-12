@@ -3,24 +3,21 @@ using MoneyRecord.Models;
 namespace MoneyRecord.Services.Interfaces
 {
     /// <summary>
-    /// Service interface for balance calculations.
-    /// Single responsibility: calculating financial balances.
+    /// Balances and totals. Amounts are unsigned sums per type; a total across accounts is in the base currency
+    /// until exchange rates exist (Stage 10.3).
     /// </summary>
     public interface IBalanceService
     {
-        Task<decimal> GetTotalBalanceAsync();
         Task<decimal> GetAccountBalanceAsync(int accountId);
         Task<decimal> GetTotalIncomesAsync(DateTime startDate, DateTime endDate);
         Task<decimal> GetTotalExpensesAsync(DateTime startDate, DateTime endDate);
-        Task<decimal> GetBalanceAsync(DateTime? startDate = null, DateTime? endDate = null);
+
+        /// <summary>Every account's balance in its own currency and its latest activity (or creation) date.</summary>
         Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync();
 
-        /// <summary>
-        /// One balance per currency, base currency first; accounts without a currency count as the base currency.
-        /// Different currencies are never added together.
-        /// </summary>
-        Task<List<CurrencyBalance>> GetBalancesByCurrencyAsync();
-        Task<DateTime?> GetLastTransactionDateForAccountAsync(int accountId);
         Task<decimal> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate);
+
+        /// <summary>Expenses in the range per category ID, in one query; categories without any are absent.</summary>
+        Task<Dictionary<int, decimal>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate);
     }
 }

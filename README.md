@@ -131,10 +131,10 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 ├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
 └── Services/
     ├── Interfaces/     Service and repository interfaces, IAppPaths
-    ├── Repositories/   SQLite repositories, DatabaseInitializer (schema + seed data)
+    ├── Repositories/   RepositoryBase<T> + SQLite repositories (SQL totals), DatabaseInitializer (schema + seed data)
     │   └── Migrations/ IMigration, MigrationRunner, M001_Baseline, M002_MoneyAsCents, M003_AccountCurrencyCodes
     ├── AccountService, CategoryService          Transactional deletes
-    ├── BalanceService                           Balances, per-currency subtotals
+    ├── BalanceService                           Account balances and period totals (SQL sums)
     ├── TransactionEnrichmentService             Names/icons/currencies for display
     ├── LedgerQueryService                       Home list rows (transactions + transfers)
     ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
