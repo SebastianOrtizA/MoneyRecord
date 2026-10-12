@@ -36,22 +36,24 @@ public class CurrencyBalanceTests
     }
 
     [Fact]
-    public void One_currency_is_shown_without_its_code()
+    public void One_currency_is_shown_without_its_code_and_opens_all_accounts()
     {
         CurrencyBalance.DisplayLines([new CurrencyBalance("EUR", 15m, 2)])
-            .Should().Equal(MoneyFormatter.Format(15m, "EUR"));
+            .Should().Equal(new BalanceLine(MoneyFormatter.Format(15m, "EUR"), null));
     }
 
     [Fact]
     public void Several_currencies_are_one_line_each_with_their_code()
     {
         CurrencyBalance.DisplayLines([new CurrencyBalance("USD", 1250m, 2), new CurrencyBalance("EUR", 250m, 2)])
-            .Should().Equal($"{MoneyFormatter.Format(1250m, "USD")} USD", $"{MoneyFormatter.Format(250m, "EUR")} EUR");
+            .Should().Equal(
+                new BalanceLine($"{MoneyFormatter.Format(1250m, "USD")} USD", "USD"),
+                new BalanceLine($"{MoneyFormatter.Format(250m, "EUR")} EUR", "EUR"));
     }
 
     [Fact]
-    public void No_accounts_show_zero()
+    public void No_accounts_show_zero_for_all_currencies()
     {
-        CurrencyBalance.DisplayLines([]).Should().Equal(MoneyFormatter.Format(0));
+        CurrencyBalance.DisplayLines([]).Should().Equal(new BalanceLine(MoneyFormatter.Format(0), null));
     }
 }

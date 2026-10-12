@@ -25,7 +25,8 @@
                    Padding="20"
                    HasShadow="True">
                 <Frame.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ShowAccountBalancesCommand}"/>
+                    <!-- The card opens all accounts; each currency line below opens that currency's accounts -->
+                    <TapGestureRecognizer Command="{Binding OpenAccountsCommand}"/>
                 </Frame.GestureRecognizers>
                 <VerticalStackLayout Spacing="8">
                     <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
@@ -39,23 +40,32 @@
                                TextColor="#FFFFFFCC"
                                VerticalOptions="Center"/>
                     </HorizontalStackLayout>
-                    <Label Text="{Binding BalanceText}"
+                    <Label Text="{Binding PrimaryBalance.Text}"
                            FontSize="36"
                            FontAttributes="Bold"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
-                           TextColor="White"/>
+                           TextColor="White">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenAccountsCommand}" CommandParameter="{Binding PrimaryBalance}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                     <!-- One subtotal per other currency: amounts in different currencies are never added together -->
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding OtherCurrencyBalances}"
-                                         IsVisible="{Binding OtherCurrencyBalances.Count, Converter={StaticResource IntToBoolConverter}}"
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding OtherBalances}"
+                                         IsVisible="{Binding OtherBalances.Count, Converter={StaticResource IntToBoolConverter}}"
                                          Spacing="2">
                         <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="x:String">
-                                <Label Text="{Binding .}"
+                            <DataTemplate x:DataType="models:BalanceLine">
+                                <Label Text="{Binding Text}"
                                        FontSize="20"
                                        FontAttributes="Bold"
                                        HorizontalOptions="Center"
-                                       TextColor="#FFFFFFDD"/>
+                                       TextColor="#FFFFFFDD">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=OpenAccountsCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Label.GestureRecognizers>
+                                </Label>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
@@ -132,7 +142,7 @@
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -157,7 +167,7 @@
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"/>
+                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFEBEE}"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -195,11 +205,11 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
-                        <Label Text="{Binding NetIncome, Converter={StaticResource MoneyConverter}}"
+                        <Label Text="{Binding NetIncome, Converter={StaticResource SignedMoneyConverter}}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#81C784}">
+                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#E8F5E9}">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
                                     <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
@@ -218,9 +228,19 @@
                    HasShadow="True"
                    IsVisible="{Binding HasRecentTransactions}">
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="{ext:Localize RecentTransactions}"
-                           FontSize="18"
-                           FontAttributes="Bold"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ext:Localize RecentTransactions}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="{ext:Localize SeeAll}"
+                               Style="{StaticResource CardLink}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SeeAllTransactionsCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecentTransactions}" Spacing="6">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:LedgerEntry">
@@ -313,10 +333,19 @@
                                            FontSize="14"
                                            FontAttributes="Bold"
                                            LineBreakMode="TailTruncation"/>
-                                    <Label Grid.Row="0" Grid.Column="2"
-                                           Text="{Binding SpentAmount, Converter={StaticResource MoneyConverter}}"
-                                           FontSize="14"
-                                           FontAttributes="Bold"/>
+                                    <!-- Spent of the limit, so the bar colour has context -->
+                                    <Label Grid.Row="0" Grid.Column="2" FontSize="14">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding SpentAmount, Converter={StaticResource MoneyConverter}}"
+                                                      FontAttributes="Bold"/>
+                                                <Span Text=" / "
+                                                      TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                                <Span Text="{Binding LimitAmount, Converter={StaticResource MoneyConverter}}"
+                                                      TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
                                     <ProgressBar Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
                                                  Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
                                                  ProgressColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}"
@@ -325,6 +354,14 @@
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
+
+                    <Label Text="{ext:Localize SeeAll}"
+                           Style="{StaticResource CardLink}"
+                           HorizontalOptions="End">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ViewAllBudgetsCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
                 </VerticalStackLayout>
             </Frame>
 

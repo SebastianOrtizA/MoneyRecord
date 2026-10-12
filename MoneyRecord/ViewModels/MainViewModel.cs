@@ -4,6 +4,7 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Views;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
@@ -14,15 +15,15 @@ namespace MoneyRecord.ViewModels
         private readonly ILedgerService _ledgerService;
         private readonly IBudgetSummaryService _budgetSummaryService;
         private readonly IErrorHandler _errorHandler;
-        private readonly IDialogService _dialogService;
+        private readonly INavigationService _navigationService;
 
         /// <summary>Home balance card: the first currency's total (base currency first), with its code when there are several.</summary>
         [ObservableProperty]
-        private string balanceText = string.Empty;
+        private BalanceLine primaryBalance = new(string.Empty, null);
 
         /// <summary>Totals in the other currencies, one line each ("€300.00 EUR"); never added to the first.</summary>
         [ObservableProperty]
-        private List<string> otherCurrencyBalances = [];
+        private List<BalanceLine> otherBalances = [];
 
         [ObservableProperty]
         private decimal totalIncomes;
@@ -75,13 +76,13 @@ namespace MoneyRecord.ViewModels
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
         public MainViewModel(IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
-            IErrorHandler errorHandler, IDialogService dialogService)
+            IErrorHandler errorHandler, INavigationService navigationService)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
             _budgetSummaryService = budgetSummaryService;
             _errorHandler = errorHandler;
-            _dialogService = dialogService;
+            _navigationService = navigationService;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
         }
 
@@ -110,8 +111,8 @@ namespace MoneyRecord.ViewModels
 
                 var balanceLines = CurrencyBalance.DisplayLines(
                     CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.ResolveCurrencyCode(null)));
-                BalanceText = balanceLines[0];
-                OtherCurrencyBalances = balanceLines.Skip(1).ToList();
+                PrimaryBalance = balanceLines[0];
+                OtherBalances = balanceLines.Skip(1).ToList();
 
                 TotalIncomes = await incomesTask;
                 TotalExpenses = await expensesTask;
@@ -149,28 +150,17 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>The balance card opens all accounts; a currency line opens the accounts in that currency.</summary>
         [RelayCommand]
-        private async Task ShowAccountBalancesAsync()
-        {
-            try
-            {
-                var balances = await _balanceService.GetAllAccountBalancesAsync();
+        private Task OpenAccountsAsync(BalanceLine? line) => line?.CurrencyCode is { } code
+            ? _navigationService.NavigateToAsync($"{nameof(ManageAccountsPage)}?CurrencyCode={code}")
+            : _navigationService.NavigateToAsync(nameof(ManageAccountsPage));
 
-                var message = string.Join("\n\n", balances.Select(b =>
-                    $"🏦 {b.AccountName}\n" +
-                    $"   {AppResources.Balance}: {MoneyFormatter.Format(b.CurrentBalance, b.CurrencyCode)}\n" +
-                    $"   {AppResources.LastActivity}: {b.LastActivityDateDisplay}"));
+        [RelayCommand]
+        private Task SeeAllTransactionsAsync() => _navigationService.NavigateToAsync($"//{nameof(TransactionsPage)}");
 
-                if (string.IsNullOrEmpty(message))
-                    message = AppResources.NoAccountsFound;
-
-                await _dialogService.AlertAsync(AppResources.AccountBalances, message);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadAccountBalances);
-            }
-        }
+        [RelayCommand]
+        private Task ViewAllBudgetsAsync() => _navigationService.NavigateToAsync($"//{nameof(BudgetPage)}");
 
         partial void OnSelectedPeriodChanged(PeriodItem value)
         {

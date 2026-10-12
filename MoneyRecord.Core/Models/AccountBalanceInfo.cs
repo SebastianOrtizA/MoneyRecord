@@ -1,6 +1,3 @@
-using MoneyRecord.Helpers;
-using MoneyRecord.Resources.Strings;
-
 namespace MoneyRecord.Models
 {
     public class AccountBalanceInfo
@@ -14,8 +11,5 @@ namespace MoneyRecord.Models
         /// This is the latest of: last transaction date, last transfer date, or account created date.
         /// </summary>
         public DateTime? LastActivityDate { get; set; }
-        public string LastActivityDateDisplay => LastActivityDate.HasValue 
-            ? DateFormatter.Format(LastActivityDate.Value, DateStyle.Medium)
-            : AppResources.NoActivity;
     }
 }

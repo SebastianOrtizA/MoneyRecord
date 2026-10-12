@@ -19,6 +19,7 @@ namespace MoneyRecord.ViewModels
             string.Format(AppResources.InitialBalanceAmount, MoneyFormatter.Format(Account.InitialBalance, Account.CurrencyCode));
     }
 
+    [QueryProperty(nameof(CurrencyFilter), "CurrencyCode")]
     public partial class ManageAccountsViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -31,6 +32,15 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<AccountDisplayItem> accounts = new();
+
+        /// <summary>From a Home currency line: only the accounts in this currency are listed (null = all).</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasCurrencyFilter), nameof(CurrencyFilterText))]
+        private string? currencyFilter;
+
+        public bool HasCurrencyFilter => !string.IsNullOrEmpty(CurrencyFilter);
+
+        public string CurrencyFilterText => string.Format(AppResources.ShowingCurrencyAccounts, CurrencyFilter);
 
         [ObservableProperty]
         private string newAccountName = string.Empty;
@@ -91,9 +101,18 @@ namespace MoneyRecord.ViewModels
             AvailableCurrencies = _currencyService.GetAvailableCurrencies();
             NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
             UpdateIconSelection(NewAccountIconCode);
-            var defaultCode = _currencyService.GetDefaultCurrencyCode();
-            NewAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == defaultCode) ?? AvailableCurrencies.First();
+            NewAccountCurrency = DefaultNewAccountCurrency();
             await LoadAccountsAsync();
+        }
+
+        /// <summary>
+        /// The add form's currency: the filter's when the list is filtered (a new account would otherwise vanish from the
+        /// list right after saving), else the base currency.
+        /// </summary>
+        private Currency DefaultNewAccountCurrency()
+        {
+            var code = HasCurrencyFilter ? CurrencyFilter : _currencyService.GetDefaultCurrencyCode();
+            return AvailableCurrencies.FirstOrDefault(c => c.Code == code) ?? AvailableCurrencies.First();
         }
 
         private void LoadAvailableIcons()
@@ -121,7 +140,9 @@ namespace MoneyRecord.ViewModels
             var balanceMap = balances.ToDictionary(b => b.AccountId, b => b.CurrentBalance);
 
             Accounts.Clear();
-            foreach (var account in accountList)
+            // An account without a currency is in the base currency
+            foreach (var account in accountList.Where(a => !HasCurrencyFilter
+                         || MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode) == CurrencyFilter))
             {
                 Accounts.Add(new AccountDisplayItem
                 {
@@ -129,6 +150,14 @@ namespace MoneyRecord.ViewModels
                     CurrentBalance = balanceMap.GetValueOrDefault(account.Id)
                 });
             }
+        }
+
+        [RelayCommand]
+        private async Task ClearCurrencyFilterAsync()
+        {
+            CurrencyFilter = null;
+            NewAccountCurrency = DefaultNewAccountCurrency();
+            await LoadAccountsAsync();
         }
 
         [RelayCommand]
@@ -188,7 +217,7 @@ namespace MoneyRecord.ViewModels
             NewAccountBalance = "0";
             NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
             NewAccountAllowNegativeBalance = false;
-            NewAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == _currencyService.GetDefaultCurrencyCode());
+            NewAccountCurrency = DefaultNewAccountCurrency();
             UpdateIconSelection(NewAccountIconCode);
             await LoadAccountsAsync();
         }

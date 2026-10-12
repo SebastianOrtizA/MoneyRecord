@@ -51,7 +51,7 @@ Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/mon
 **Coordinates:** screenshots read back at 900x2000 in the Read tool, so multiply what you see by **1.2** to get the value for `tap`. Known spots (device pixels):
 - Bottom tabs at y=2262 (`tab NAME`). More page rows (x≈300): Accounts 374, Categories 513, Recurring 652, Transfers 791, Settings 930.
 - Add button (959,2069) opens the sheet: Expense (300,1621), Income (300,1801), Transfer (300,1980). Back closes it.
-- Home: total balance card (540,504) opens the account balances popup. Reports tab: Expenses / Incomes / Trends top tabs at y≈358.
+- Home: total balance card (540,504) opens Manage Accounts (a currency line, with several currencies, filters it); Recent "See all" is at the card's top right. Reports tab: Expenses / Incomes / Trends top tabs at y≈358.
 - Add Expense form: description (540,780), amount (540,1058); swipe up for Save (790,2227).
 - Alert OK button: about (906, alert bottom − 70).
 

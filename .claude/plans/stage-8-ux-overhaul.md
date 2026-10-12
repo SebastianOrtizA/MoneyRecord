@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1 in review)
+**Status**: In progress (8.1 done; 8.2 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -38,6 +38,14 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Budget summary uses `IBudgetSummaryService` with readable colours and a "View all" link.
 - Recent 5 entries + "See all" → Transactions tab.
 - Clear-filters button appears only when a filter is active (N7).
+- Done as: the balance card opens Manage Accounts (the old balances alert and its strings are gone); with several
+  currencies each line opens the accounts in that currency (`ManageAccountsPage?CurrencyCode=EUR`, a "EUR accounts ·
+  Show all" chip on the page). `CurrencyBalance.DisplayLines` returns `BalanceLine(Text, CurrencyCode)`. Net uses
+  `MoneyFormatter.FormatSigned` (+$85.00) via `SignedMoneyConverter`. Recent has "See all" →
+  `//TransactionsPage`, Budget summary "See all" → `//BudgetPage` (`CardLink` style), and its rows show "spent /
+  limit". Dark-mode amounts on the Income / Expense / Net cards are near-white (red on red was unreadable). N7: the
+  filter toggle used the filter-remove icon, so it looked like a clear button; it is a plain filter icon now and the
+  Clear button only shows with an active filter.
 
 ### 8.3 Transactions tab
 - Full list moved off Home: search, filter chips (type, category, account, amount, tags), group by none/category/account.

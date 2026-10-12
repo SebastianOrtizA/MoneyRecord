@@ -19,6 +19,15 @@ public class MoneyFormatterTests
         MoneyFormatter.Format(1250.5m, "USD", new CultureInfo("en-US")).Should().Be("$1,250.50");
     }
 
+    [Theory]
+    [InlineData(5, "+$5.00")]
+    [InlineData(-5, "-$5.00")]
+    [InlineData(0, "$0.00")]
+    public void FormatSigned_PutsAPlusOnlyOnPositiveAmounts(int amount, string expected)
+    {
+        MoneyFormatter.FormatSigned(amount, "USD", new CultureInfo("en-US")).Should().Be(expected);
+    }
+
     [Fact]
     public void EsCo_UsesPesoSymbolAndLocalSeparators()
     {

@@ -26,6 +26,16 @@ namespace MoneyRecord.Helpers
             return Format(amount, code, CurrencyService.GetMinorUnits(code), culture);
         }
 
+        /// <summary>
+        /// Like <see cref="Format(decimal, string?, CultureInfo?)"/> with an explicit plus sign on a positive amount
+        /// (+$5.00, -$5.00, $0.00): for a net amount where the sign carries the meaning, not only the colour.
+        /// </summary>
+        public static string FormatSigned(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
+        {
+            var text = Format(amount, currencyCode, culture);
+            return amount > 0 ? (culture ?? CultureInfo.CurrentCulture).NumberFormat.PositiveSign + text : text;
+        }
+
         /// <summary>Like <see cref="Format(decimal, string?, CultureInfo?)"/> without decimals (chart axes).</summary>
         public static string FormatWhole(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
         {
