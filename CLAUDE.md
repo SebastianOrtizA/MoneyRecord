@@ -45,16 +45,19 @@ crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
 - `Models/` — 6 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction. Plus display models
-  (AccountBalanceInfo, CurrencyBalance, TransactionGroup, BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
+  (AccountBalanceInfo, CurrencyBalance, LedgerEntry, TransactionGroup, TransactionFilter/FilterOption,
+  BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — SQLite repositories + `DatabaseInitializer` (schema, seed data, runs migrations)
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
-- `Services/` — BalanceService, TransactionEnrichmentService, AccountService / CategoryService (transactional deletes),
+- `Services/` — BalanceService, TransactionEnrichmentService, LedgerQueryService (Home rows: transactions + transfers
+  as `LedgerEntry`), BudgetSummaryService (budget progress for a period: Home card + Budget page),
+  AccountService / CategoryService (transactional deletes),
   CurrencyService, RecurringTransactionService, DataExportService (zip backup/restore, CSV), CategoryIconService,
   LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (via `IDialogService`),
   NavigationHistory (back-button stack; `//Route` = root)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
-  IconHelper, PeriodHelper, ReceiptFiles, ReceiptDraft
+  IconHelper, PeriodHelper, ReceiptFiles, ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 
 `MoneyRecord/` (app)

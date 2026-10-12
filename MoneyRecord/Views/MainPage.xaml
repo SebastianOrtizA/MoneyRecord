@@ -256,7 +256,7 @@
                            FontAttributes="Bold"/>
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecentTransactions}" Spacing="6">
                         <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:Transaction">
+                            <DataTemplate x:DataType="models:LedgerEntry">
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" Padding="4,6">
                                     <Label Grid.Column="0"
                                            Text="{Binding CategoryDisplayIcon}"
@@ -439,6 +439,7 @@
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"/>
                         <Picker ItemsSource="{Binding FilterCategories}"
+                                ItemDisplayBinding="{Binding Name}"
                                 SelectedItem="{Binding SelectedFilterCategory}"
                                 Title="{ext:Localize AllCategories}"
                                 FontSize="14"
@@ -451,6 +452,7 @@
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"/>
                         <Picker ItemsSource="{Binding FilterAccounts}"
+                                ItemDisplayBinding="{Binding Name}"
                                 SelectedItem="{Binding SelectedFilterAccount}"
                                 Title="{ext:Localize AllAccounts}"
                                 FontSize="14"
@@ -534,7 +536,7 @@
                         </VerticalStackLayout>
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:Transaction">
+                        <DataTemplate x:DataType="models:LedgerEntry">
                             <Frame Margin="0,6"
                                    Padding="16"
                                    BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
@@ -575,7 +577,7 @@
                                     <!-- Row 3: Account -->
                                     <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
                                         <Label Text="{Binding AccountDisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="14" TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
-                                        <Label Text="{Binding AccountName}"
+                                        <Label Text="{Binding AccountDisplayName}"
                                                FontSize="13"
                                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     </HorizontalStackLayout>
@@ -728,7 +730,7 @@
                                                         BindableLayout.ItemsSource="{Binding Items}"
                                                         Margin="16,0,0,0">
                                         <BindableLayout.ItemTemplate>
-                                            <DataTemplate x:DataType="models:Transaction">
+                                            <DataTemplate x:DataType="models:LedgerEntry">
                                                 <Frame Margin="0,6,0,0" 
                                                        Padding="14"
                                                        BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
@@ -769,7 +771,7 @@
                                                         <!-- Row 3: Account -->
                                                         <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
                                                             <Label Text="{Binding AccountDisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="12" TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
-                                                            <Label Text="{Binding AccountName}"
+                                                            <Label Text="{Binding AccountDisplayName}"
                                                                    FontSize="12"
                                                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                                         </HorizontalStackLayout>

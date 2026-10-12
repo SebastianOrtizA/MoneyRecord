@@ -229,35 +229,15 @@ namespace MoneyRecord.Converters
     }
 
     /// <summary>
-    /// Converts transaction amount to display format: negative for expenses, positive for incomes.
-    /// For transfers: negative for outgoing, positive for incoming.
-    /// Requires Transaction object as binding source.
+    /// Formats a <see cref="LedgerEntry"/>'s signed amount in its currency: negative for expenses and outgoing transfers.
     /// </summary>
     public class TransactionAmountConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value is Transaction transaction)
-            {
-                decimal displayAmount;
-
-                if (transaction.Type == TransactionType.Transfer)
-                {
-                    // For transfers: negative if outgoing, positive if incoming
-                    displayAmount = transaction.IsOutgoingTransfer
-                        ? -Math.Abs(transaction.Amount)
-                        : Math.Abs(transaction.Amount);
-                }
-                else
-                {
-                    displayAmount = transaction.Type == TransactionType.Expense
-                        ? -Math.Abs(transaction.Amount)
-                        : Math.Abs(transaction.Amount);
-                }
-
-                return MoneyFormatter.Format(displayAmount, transaction.CurrencyCode);
-            }
-            return MoneyFormatter.Format(0);
+            return value is LedgerEntry entry
+                ? MoneyFormatter.Format(entry.SignedAmount, entry.CurrencyCode)
+                : MoneyFormatter.Format(0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
