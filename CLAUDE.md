@@ -65,13 +65,15 @@ crashes at runtime (XAML is inflated at runtime there).
   RecurrenceCalculator (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow`
   for a budget's current day/month/year)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
-- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Home search + filter panel)
+- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter panel)
 
 `MoneyRecord/` (app)
-- `ViewModels/` — 12 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 11 XAML pages with code-behind; `CategoryReportPage` serves both reports (`ExpenseReportPage` /
-  `IncomeReportPage` are code-only subclasses that set the type)
-- `Controls/` — FloatingActionMenu (draggable FAB, `FabComponents/`), DecimalEntry (numeric keyboard), ChartDrawables (Trends)
+- `ViewModels/` — 14 ViewModels using [ObservableProperty] and [RelayCommand] source generators
+- `Views/` — 13 XAML pages with code-behind. Home keeps the summary cards; the full list is on `TransactionsPage`.
+  `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
+  the type). `MorePage` lists the screens without a tab
+- `Controls/` — AddEntryButton (the one add button: opens an Expense / Income / Transfer sheet; on Home and
+  Transactions, named `AddEntry` so Android back closes the sheet), DecimalEntry (numeric keyboard), ChartDrawables (Trends)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
@@ -100,9 +102,11 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - All registrations use interface → implementation mapping
 
 ### Navigation
-- Shell with Flyout menu (`AppShell.xaml`)
-- Root routes: `//MainPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//BudgetPage`, `//RecurringTransactionsPage`, `//TransfersPage`, `//ManageAccounts`, `//ManageIncomeCategories`, `//ManageExpenseCategories`, `//SettingsPage`
-- Push routes: `AddTransactionPage`, `AddTransferPage`
+- Shell `TabBar` (`AppShell.xaml`): Home · Transactions · Reports (Expenses / Incomes / Trends top tabs) · Budgets · More.
+  Tabs keep implicit routes, so each tab page is a root at `//MainPage`, `//TransactionsPage`, `//ExpenseReportPage`,
+  `//IncomeReportPage`, `//TrendsReportPage`, `//BudgetPage`, `//MorePage`
+- Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
+  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `TransfersPage`, `SettingsPage`
 - Custom `INavigationService` tracks navigation history for back button behavior: AppShell's `Navigated` event feeds
   `NavigationHistory`; Android back → `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed` (previous page,
   then Home, then close)

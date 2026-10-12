@@ -1,7 +1,7 @@
 namespace MoneyRecord.Services
 {
     /// <summary>
-    /// Back-button history over Shell locations. A flyout page (<c>//Route</c>) is a root and clears the history;
+    /// Back-button history over Shell locations. A tab page (<c>//Route</c>) is a root and clears the history;
     /// a pushed page (<c>//Route/Page</c>) remembers where it came from.
     /// </summary>
     public sealed class NavigationHistory
@@ -52,7 +52,7 @@ namespace MoneyRecord.Services
         /// <summary>Call when the Shell navigation started by <see cref="BeginGoBack"/> failed.</summary>
         public void CancelGoBack() => _isNavigatingBack = false;
 
-        /// <summary>True for a flyout page: an absolute location with one segment, such as <c>//BudgetPage</c>.</summary>
+        /// <summary>True for a tab page: an absolute location with one segment, such as <c>//BudgetPage</c>.</summary>
         public static bool IsRoot(string location)
         {
             if (!location.StartsWith("//", StringComparison.Ordinal) || location.Length == 2)

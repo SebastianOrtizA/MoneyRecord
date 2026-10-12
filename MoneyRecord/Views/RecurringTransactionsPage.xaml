@@ -243,8 +243,6 @@
             </ScrollView>
         </RefreshView>
 
-        <!-- Floating Action Menu -->
-        <controls:FloatingActionMenu />
     </Grid>
 
 </ContentPage>

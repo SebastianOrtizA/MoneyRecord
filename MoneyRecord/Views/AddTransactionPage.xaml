@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.AddTransactionPage"
+             Shell.TabBarIsVisible="False"
              x:DataType="viewmodels:AddTransactionViewModel"
              Title="{Binding Title}">
 

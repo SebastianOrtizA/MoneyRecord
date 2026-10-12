@@ -29,7 +29,6 @@
             <converters:BoolToColorConverter x:Key="BoolToColorConverter" />
             <converters:BoolToSelectedBackgroundConverter x:Key="BoolToSelectedBackgroundConverter" />
             <converters:BoolToIconColorConverter x:Key="BoolToIconColorConverter" />
-            <converters:BoolToFabIconConverter x:Key="BoolToFabIconConverter" />
             <converters:PercentageToProgressConverter x:Key="PercentageToProgressConverter" />
             <converters:BoolToOverBudgetColorConverter x:Key="BoolToOverBudgetColorConverter" />
             <converters:BoolToOverBudgetBorderConverter x:Key="BoolToOverBudgetBorderConverter" />

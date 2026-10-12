@@ -431,4 +431,14 @@
         <Setter Property="SelectedTabColor" Value="{AppThemeBinding Light={StaticResource Gray950}, Dark={StaticResource Gray200}}" />
     </Style>
 
+    <!-- One option of a two-option switch (Income / Expense); the page colours the active one with a DataTrigger -->
+    <Style x:Key="SegmentButton" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EEEEEE, Dark=#2D2D2D}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light=#424242, Dark=#E0E0E0}" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="Padding" Value="12,0" />
+    </Style>
+
 </ResourceDictionary>

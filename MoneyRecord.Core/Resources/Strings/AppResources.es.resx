@@ -91,9 +91,6 @@
   <data name="ManageAccounts" xml:space="preserve">
     <value>Administrar Cuentas</value>
   </data>
-  <data name="ManageCategories" xml:space="preserve">
-    <value>Administrar Categorías</value>
-  </data>
   <data name="Accounts" xml:space="preserve">
     <value>Cuentas</value>
   </data>
@@ -341,12 +338,6 @@
   </data>
   <data name="UpdateCategory" xml:space="preserve">
     <value>Actualizar Categoría</value>
-  </data>
-  <data name="ManageIncomeCategories" xml:space="preserve">
-    <value>Administrar Categorías de Ingresos</value>
-  </data>
-  <data name="ManageExpenseCategories" xml:space="preserve">
-    <value>Administrar Categorías de Gastos</value>
   </data>
   <data name="YourCategories" xml:space="preserve">
     <value>Tus Categorías</value>
@@ -1076,5 +1067,17 @@ Monto: {2}</value>
   </data>
   <data name="FailedToDeleteCategory" xml:space="preserve">
     <value>Error al eliminar la categoría</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reportes</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Presupuestos</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Más</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Agregar</value>
   </data>
 </root>

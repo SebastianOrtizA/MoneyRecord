@@ -10,33 +10,33 @@ public class NavigationHistoryTests
     [InlineData("//MainPage", true)]
     [InlineData("//BudgetPage", true)]
     [InlineData("//TrendsReportPage", true)]
-    [InlineData("//RecurringTransactionsPage", true)]
-    [InlineData("//SettingsPage", true)]
-    [InlineData("//ManageIncomeCategories", true)]
+    [InlineData("//TransactionsPage", true)]
+    [InlineData("//MorePage", true)]
     [InlineData("//MainPage?x=1", true)]
     [InlineData("//MainPage/AddTransactionPage", false)]
     [InlineData("//MainPage/AddTransferPage?TransferId=5", false)]
+    [InlineData("//MorePage/SettingsPage", false)]
     [InlineData("AddTransactionPage", false)]
     [InlineData("//", false)]
     [InlineData("", false)]
-    public void IsRoot_is_true_only_for_flyout_pages(string location, bool expected)
+    public void IsRoot_is_true_only_for_tab_pages(string location, bool expected)
     {
         NavigationHistory.IsRoot(location).Should().Be(expected);
     }
 
     [Fact]
-    public void Every_flyout_page_clears_the_history()
+    public void Every_tab_page_clears_the_history()
     {
         // 7.2 fix: BudgetPage, TrendsReportPage, RecurringTransactionsPage and SettingsPage used to pile up
         var history = new NavigationHistory();
         history.Record("//MainPage");
         history.Record("//BudgetPage");
         history.Record("//TrendsReportPage");
-        history.Record("//RecurringTransactionsPage");
-        history.Record("//SettingsPage");
+        history.Record("//TransactionsPage");
+        history.Record("//MorePage");
 
         history.CanGoBack.Should().BeFalse();
-        history.CurrentLocation.Should().Be("//SettingsPage");
+        history.CurrentLocation.Should().Be("//MorePage");
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class NavigationHistoryTests
     }
 
     [Fact]
-    public void Going_back_from_a_flyout_page_without_history_goes_home()
+    public void Going_back_from_a_tab_page_without_history_goes_home()
     {
         var history = new NavigationHistory();
         history.Record("//BudgetPage");
@@ -113,6 +113,21 @@ public class NavigationHistoryTests
         history.CurrentLocation.Should().Be("//MainPage/AddTransferPage");
         history.CanGoBack.Should().BeTrue();
         history.BeginGoBack().Should().Be("..");
+    }
+
+    [Fact]
+    public void Back_from_a_More_screen_returns_to_More_then_Home()
+    {
+        var history = new NavigationHistory();
+        history.Record("//MainPage");
+        history.Record("//MorePage");
+        history.Record("//MorePage/SettingsPage");
+
+        history.BeginGoBack().Should().Be("..");
+        history.Record("//MorePage");
+
+        // Switching tabs cleared the history, so the next back goes Home
+        history.BeginGoBack().Should().Be(NavigationHistory.HomeRoute);
     }
 
     [Theory]

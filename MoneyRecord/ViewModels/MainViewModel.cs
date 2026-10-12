@@ -4,7 +4,6 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
-using MoneyRecord.Views;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
@@ -14,16 +13,8 @@ namespace MoneyRecord.ViewModels
         private readonly IBalanceService _balanceService;
         private readonly ILedgerService _ledgerService;
         private readonly IBudgetSummaryService _budgetSummaryService;
-        private readonly ITransactionRepository _transactionRepository;
-        private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
-        private readonly INavigationService _navigationService;
-
-        private List<LedgerEntry> _entries = [];
-        private List<LedgerEntry> _accountEntries = [];
-        private List<AccountBalanceInfo> _accountBalances = [];
-        private List<Account> _accounts = [];
 
         /// <summary>Home balance card: the first currency's total (base currency first), with its code when there are several.</summary>
         [ObservableProperty]
@@ -61,22 +52,10 @@ namespace MoneyRecord.ViewModels
         private bool isCustomPeriodSelected;
 
         [ObservableProperty]
-        private GroupingMode currentGroupingMode = GroupingMode.Category;
-
-        [ObservableProperty]
-        private bool isAscending;
-
-        [ObservableProperty]
         private bool isRefreshing;
 
         [ObservableProperty]
-        private bool hasTransactions;
-
-        [ObservableProperty]
-        private ObservableCollection<LedgerEntry> transactions = [];
-
-        [ObservableProperty]
-        private ObservableCollection<TransactionGroup> groupedTransactions = [];
+        private bool hasRecentTransactions;
 
         [ObservableProperty]
         private ObservableCollection<LedgerEntry> recentTransactions = [];
@@ -93,38 +72,23 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private int budgetsOverBudget;
 
-        [ObservableProperty]
-        private bool hasActiveFilters;
-
-        [ObservableProperty]
-        private int filteredCount;
-
-        [ObservableProperty]
-        private int totalCount;
-
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
-        public TransactionFilterViewModel Filters { get; } = new();
-
-        public MainViewModel(IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService, ITransactionRepository transactionRepository,
-            IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService)
+        public MainViewModel(IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
+            IErrorHandler errorHandler, IDialogService dialogService)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
             _budgetSummaryService = budgetSummaryService;
-            _transactionRepository = transactionRepository;
-            _accountRepository = accountRepository;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
-            _navigationService = navigationService;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
-            Filters.Changed += ApplyFilters;
         }
 
         public Task InitializeAsync() => LoadDataCommand.ExecuteAsync(null);
 
         /// <summary>
-        /// Reloads Home. Each run cancels the one in progress (period changes, pull to refresh, a delete), so the
+        /// Reloads Home. Each run cancels the one in progress (period changes, pull to refresh), so the
         /// results of an older period never overwrite the newer ones.
         /// </summary>
         [RelayCommand(AllowConcurrentExecutions = true)]
@@ -139,15 +103,13 @@ namespace MoneyRecord.ViewModels
                 var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
                 var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
                 var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
-                var accountsTask = _accountRepository.GetAllAsync();
                 var budgetsTask = _budgetSummaryService.GetSummaryAsync(
                     SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
-                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask, accountsTask, budgetsTask);
+                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask, budgetsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                _accountBalances = await balancesTask;
                 var balanceLines = CurrencyBalance.DisplayLines(
-                    CurrencyBalance.FromAccounts(_accountBalances, MoneyFormatter.ResolveCurrencyCode(null)));
+                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.ResolveCurrencyCode(null)));
                 BalanceText = balanceLines[0];
                 OtherCurrencyBalances = balanceLines.Skip(1).ToList();
 
@@ -159,14 +121,10 @@ namespace MoneyRecord.ViewModels
                 OnPropertyChanged(nameof(TotalExpenses));
                 OnPropertyChanged(nameof(NetIncome));
 
-                // Whole transfers for the Recent card and the other views; split once for the account view, so
-                // switching the grouping never reloads
-                _entries = await entriesTask;
-                _accountEntries = LedgerTransfers.PerAccount(_entries);
-                _accounts = await accountsTask;
-                RecentTransactions = new(_entries.OrderByDescending(e => e.Date).Take(5));
-                Filters.SetOptions(_entries);
-                ApplyFilters();
+                // Whole transfers: the Recent card lists a transfer once
+                var entries = await entriesTask;
+                RecentTransactions = new(entries.OrderByDescending(e => e.Date).Take(5));
+                HasRecentTransactions = RecentTransactions.Count > 0;
 
                 // The budget card uses the Home period, like the Budget page does with its own
                 var budgets = await budgetsTask;
@@ -191,45 +149,6 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private void ApplyFilters()
-        {
-            // Only the account view lists a transfer under both of its accounts
-            var entries = CurrentGroupingMode == GroupingMode.Account ? _accountEntries : _entries;
-            var filter = Filters.ToFilter(IsAscending);
-            var filtered = LedgerFilter.Apply(entries, filter);
-
-            TotalCount = entries.Count;
-            FilteredCount = filtered.Count;
-            HasActiveFilters = filter.IsActive;
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                if (CurrentGroupingMode == GroupingMode.None)
-                {
-                    Transactions = new(filtered);
-                    GroupedTransactions = [];
-                }
-                else
-                {
-                    GroupedTransactions = new(LedgerGrouping.Group(filtered, CurrentGroupingMode, _accountBalances, _accounts));
-                    Transactions = [];
-                }
-
-                HasTransactions = filtered.Count > 0;
-            });
-        }
-
-        [RelayCommand]
-        private Task AddIncomeAsync() => _navigationService.NavigateToAsync(nameof(AddTransactionPage),
-            new Dictionary<string, object> { { "TransactionType", TransactionType.Income } });
-
-        [RelayCommand]
-        private Task AddExpenseAsync() => _navigationService.NavigateToAsync(nameof(AddTransactionPage),
-            new Dictionary<string, object> { { "TransactionType", TransactionType.Expense } });
-
-        [RelayCommand]
-        private Task AddTransferAsync() => _navigationService.NavigateToAsync(nameof(AddTransferPage));
-
         [RelayCommand]
         private async Task ShowAccountBalancesAsync()
         {
@@ -250,82 +169,6 @@ namespace MoneyRecord.ViewModels
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadAccountBalances);
-            }
-        }
-
-        [RelayCommand]
-        private void ToggleSortOrder()
-        {
-            IsAscending = !IsAscending;
-            ApplyFilters();
-        }
-
-        [RelayCommand]
-        private void ToggleGrouping()
-        {
-            // None -> Category -> Account -> None
-            CurrentGroupingMode = CurrentGroupingMode switch
-            {
-                GroupingMode.None => GroupingMode.Category,
-                GroupingMode.Category => GroupingMode.Account,
-                _ => GroupingMode.None
-            };
-            ApplyFilters();
-        }
-
-        [RelayCommand]
-        private void ToggleGroupExpanded(TransactionGroup group) => group?.ToggleExpanded();
-
-        [RelayCommand]
-        private async Task EditTransactionAsync(LedgerEntry entry)
-        {
-            if (entry == null)
-                return;
-
-            if (entry.IsTransfer)
-            {
-                await _navigationService.NavigateToAsync($"{nameof(AddTransferPage)}?TransferId={entry.SourceId}");
-                return;
-            }
-
-            var transaction = await _transactionRepository.GetByIdAsync(entry.SourceId);
-            if (transaction != null)
-            {
-                await _navigationService.NavigateToAsync(nameof(AddTransactionPage),
-                    new Dictionary<string, object> { { "Transaction", transaction } });
-            }
-        }
-
-        [RelayCommand]
-        private async Task DeleteTransactionAsync(LedgerEntry entry)
-        {
-            if (entry == null)
-                return;
-
-            var amount = MoneyFormatter.Format(entry.Amount, entry.CurrencyCode);
-            var confirmMessage = entry.IsTransfer
-                ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, entry.Description, amount)
-                : string.Format(AppResources.ConfirmDeleteTransactionMessage, entry.Description, amount);
-
-            if (!await _dialogService.ConfirmAsync(AppResources.ConfirmDeleteTransactionTitle, confirmMessage,
-                    AppResources.YesDelete, AppResources.Cancel))
-                return;
-
-            try
-            {
-                await _ledgerService.DeleteAsync(entry);
-                await LoadDataCommand.ExecuteAsync(null);
-
-                await _dialogService.ToastAsync(entry.IsTransfer
-                    ? AppResources.TransferDeletedSuccessfully
-                    : AppResources.TransactionDeletedSuccessfully);
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = entry.IsTransfer
-                    ? AppResources.FailedToDeleteTransfer
-                    : AppResources.FailedToDeleteTransaction;
-                await _errorHandler.HandleAsync(ex, errorMessage);
             }
         }
 

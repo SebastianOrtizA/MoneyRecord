@@ -1,4 +1,3 @@
-using MoneyRecord.Models;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
@@ -14,34 +13,10 @@ namespace MoneyRecord.Views
             BindingContext = _viewModel;
         }
 
-        protected override async void OnNavigatedTo(NavigatedToEventArgs args)
-        {
-            base.OnNavigatedTo(args);
-
-            // Detect route and set CategoryType accordingly
-            var currentRoute = Shell.Current.CurrentState.Location.ToString();
-            
-            if (currentRoute.Contains("ManageExpenseCategories"))
-            {
-                _viewModel.CategoryType = CategoryType.Expense;
-            }
-            else if (currentRoute.Contains("ManageIncomeCategories"))
-            {
-                _viewModel.CategoryType = CategoryType.Income;
-            }
-            
-            await _viewModel.InitializeAsync();
-        }
-
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            
-            // Only initialize if CategoryType hasn't been set yet (navigated from MainPage)
-            if (_viewModel.CategoryType == default)
-            {
-                await _viewModel.InitializeAsync();
-            }
+            await _viewModel.InitializeAsync();
         }
     }
 }

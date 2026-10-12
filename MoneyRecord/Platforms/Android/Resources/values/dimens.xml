@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bottom tabs: the selected label keeps the normal size, so "Transacciones" and "Presupuestos" aren't cut off -->
+    <dimen name="design_bottom_navigation_active_text_size">12sp</dimen>
+    <dimen name="design_bottom_navigation_text_size">12sp</dimen>
+</resources>

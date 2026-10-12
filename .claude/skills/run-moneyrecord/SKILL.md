@@ -42,22 +42,24 @@ Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/mon
 | `tap X Y` / `swipe X1 Y1 X2 Y2 [ms]` | input in device pixels (1080x2400) |
 | `text "STR"` | type into the focused field (spaces are handled) |
 | `key CODE` / `back` | key events, e.g. `key 67` (backspace), `key 123` (move to end) |
-| `menu` | open the Shell flyout (hamburger at 72,210) |
+| `tab NAME` | tap a bottom tab: `home`, `transactions`, `reports`, `budgets`, `more` |
 | `locale es-ES` / `locale reset` | per-app language, then relaunch |
 | `fresh` | delete `moneyrecord.db3*`, receipts, backups and prefs (keeps the install working) |
 | `crash [N]` | last N fatal/exception lines from logcat |
 | `stop` | kill the emulator |
 
 **Coordinates:** screenshots read back at 900x2000 in the Read tool, so multiply what you see by **1.2** to get the value for `tap`. Known spots (device pixels):
-- Menu items: Home y=203, Expense Report 335, Income Report 467, Trends 599, Budget 731, Recurring 863, Transfers 995, Manage Accounts 1127, Manage Categories 1259, Settings 1391 (x≈300).
-- Home: total balance card (540,504) opens the account balances popup. Round buttons: income (319,1249), transfer (540,1249), expense (761,1249).
+- Bottom tabs at y=2262 (`tab NAME`). More page rows (x≈300): Accounts 374, Categories 513, Recurring 652, Transfers 791, Settings 930.
+- Add button (959,2069) opens the sheet: Expense (300,1621), Income (300,1801), Transfer (300,1980). Back closes it.
+- Home: total balance card (540,504) opens the account balances popup. Reports tab: Expenses / Incomes / Trends top tabs at y≈358.
+- Add Expense form: description (540,780), amount (540,1058); swipe up for Save (790,2227).
 - Alert OK button: about (906, alert bottom − 70).
 
 `uiautomator dump` returns nothing useful for MAUI views, so drive from screenshots.
 
 Example flow (verified): add an account.
 ```bash
-$D menu; sleep 2; $D tap 340 1127; sleep 3   # Manage Accounts
+$D tab more; sleep 2; $D tap 300 374; sleep 3   # Accounts
 $D tap 540 615; $D text "My Bank"; $D back    # name field
 $D shot accounts
 ```

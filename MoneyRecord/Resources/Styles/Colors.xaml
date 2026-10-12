@@ -12,6 +12,14 @@
     <Color x:Key="SecondaryDarkText">#9880e5</Color>
     <Color x:Key="Tertiary">#2B0B98</Color>
 
+    <!-- Entry types (add sheet); the Dark variants are lighter for dark backgrounds -->
+    <Color x:Key="ExpenseColor">#D32F2F</Color>
+    <Color x:Key="ExpenseColorDark">#EF5350</Color>
+    <Color x:Key="IncomeColor">#1976D2</Color>
+    <Color x:Key="IncomeColorDark">#42A5F5</Color>
+    <Color x:Key="TransferColor">#FF9800</Color>
+    <Color x:Key="TransferColorDark">#FFB74D</Color>
+
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
