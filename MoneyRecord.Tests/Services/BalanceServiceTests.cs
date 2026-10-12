@@ -20,13 +20,13 @@ public sealed class BalanceServiceTests : IAsyncLifetime
     private DatabaseInitializer _dbInitializer = null!;
     private BalanceService _sut = null!;
 
-    private SQLiteAsyncConnection Db => _dbInitializer.Database!;
+    private SQLiteAsyncConnection Db { get; set; } = null!;
 
     public async Task InitializeAsync()
     {
         Directory.CreateDirectory(_appData);
         _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
-        await _dbInitializer.InitializeAsync();
+        Db = await _dbInitializer.GetConnectionAsync();
         _sut = new BalanceService(
             new AccountRepository(_dbInitializer),
             new TransactionRepository(_dbInitializer),

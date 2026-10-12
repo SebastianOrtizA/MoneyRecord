@@ -21,6 +21,8 @@ namespace MoneyRecord.Services
             _transferRepository = transferRepository;
         }
 
+        // Deliberately reuses the all-accounts calculation: four indexed GROUP BY queries over a handful of accounts
+        // cost about the same as per-account ones, and the balance rule then lives in one place.
         public async Task<decimal> GetAccountBalanceAsync(int accountId) =>
             (await GetAllAccountBalancesAsync()).FirstOrDefault(b => b.AccountId == accountId)?.CurrentBalance ?? 0;
 

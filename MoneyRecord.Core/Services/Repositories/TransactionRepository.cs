@@ -12,14 +12,15 @@ namespace MoneyRecord.Services.Repositories
 
         public async Task<long> SumCentsAsync(TransactionType type, DateTime startDate, DateTime endDate, int? categoryId = null)
         {
-            var db = await ConnectionAsync();
-            return categoryId is int id
-                ? await db.ExecuteScalarAsync<long>(
-                    "SELECT COALESCE(SUM(ABS(AmountCents)), 0) FROM \"Transaction\" WHERE Type = ? AND Date >= ? AND Date <= ? AND CategoryId = ?",
-                    type, startDate, endDate, id)
-                : await db.ExecuteScalarAsync<long>(
-                    "SELECT COALESCE(SUM(ABS(AmountCents)), 0) FROM \"Transaction\" WHERE Type = ? AND Date >= ? AND Date <= ?",
-                    type, startDate, endDate);
+            var sql = "SELECT COALESCE(SUM(ABS(AmountCents)), 0) FROM \"Transaction\" WHERE Type = ? AND Date >= ? AND Date <= ?";
+            var args = new List<object> { type, startDate, endDate };
+            if (categoryId is int id)
+            {
+                sql += " AND CategoryId = ?";
+                args.Add(id);
+            }
+
+            return await (await ConnectionAsync()).ExecuteScalarAsync<long>(sql, args.ToArray());
         }
 
         public async Task<Dictionary<int, long>> SumCentsByCategoryAsync(TransactionType type, DateTime startDate, DateTime endDate)

@@ -126,8 +126,9 @@ no duplicated business rules. Behaviour must not change; the device check before
   else update)/Delete/DeleteById, each initializing the database first; `OnChanged` lets the cached Account and Category
   repositories drop their cache. All six repositories derive from it (−200 lines). `DatabaseInitializer` gained
   `GetConnectionAsync()` and `RunInTransactionAsync(work)`, used by AccountService/CategoryService (cascades),
-  DataExportService (backup snapshot + restore) and the repositories; nothing reads `Database!` after `InitializeAsync()`
-  any more. **SQL totals**: `TransactionRepository.SumCentsAsync` (period total by type, optional category),
+  DataExportService (backup snapshot + restore) and the repositories. The connection is private (no public
+  `Database` or `InitializeAsync` any more; the first `GetConnectionAsync` opens, migrates and seeds the database), and
+  the unused `IDatabaseInitializer` / `IsInitialized` are gone. **SQL totals**: `TransactionRepository.SumCentsAsync` (period total by type, optional category),
   `SumCentsByCategoryAsync`, `SumCentsByAccountAsync`; `TransferRepository.SumCentsBySource/DestinationAsync` — all
   `SUM(ABS(AmountCents)) … GROUP BY` with `MAX(Date)` for last activity. `BalanceService.GetAllAccountBalancesAsync` runs
   four grouped queries instead of loading every transaction and transfer; `GetAccountBalanceAsync` reuses it.

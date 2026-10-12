@@ -16,12 +16,12 @@ public sealed class RepositoryBaseTests : IAsyncLifetime
     {
         Directory.CreateDirectory(_appData);
         _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
-        await _dbInitializer.InitializeAsync();
+        await _dbInitializer.GetConnectionAsync();
     }
 
     public async Task DisposeAsync()
     {
-        await _dbInitializer.Database!.CloseAsync();
+        await (await _dbInitializer.GetConnectionAsync()).CloseAsync();
         Directory.Delete(_appData, recursive: true);
     }
 
