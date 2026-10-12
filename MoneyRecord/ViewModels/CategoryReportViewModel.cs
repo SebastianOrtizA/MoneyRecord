@@ -60,13 +60,11 @@ namespace MoneyRecord.ViewModels
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
         }
 
-        public async Task InitializeAsync()
-        {
-            await LoadReportDataAsync();
-        }
+        public Task InitializeAsync() => LoadReportDataCommand.ExecuteAsync(null);
 
-        [RelayCommand]
-        private async Task LoadReportDataAsync()
+        /// <summary>Each run cancels the one in progress, so an older period's results never overwrite a newer one's.</summary>
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private async Task LoadReportDataAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -74,20 +72,28 @@ namespace MoneyRecord.ViewModels
 
                 var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
                 // All types: the builder keeps the report's type, and the popup filters by category ID
-                _transactions = await _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
+                var transactions = await _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
+                cancellationToken.ThrowIfCancellationRequested();
 
+                _transactions = transactions;
                 var report = CategoryReportBuilder.Build(_transactions, Type);
                 Total = report.Total;
                 HasData = report.Total > 0;
                 await MainThread.InvokeOnMainThreadAsync(() => Categories = new(report.Categories));
             }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // A newer load replaced this one
+            }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadReportData, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadReportData);
             }
             finally
             {
-                IsLoading = false;
+                // The newer load owns the spinner
+                if (!cancellationToken.IsCancellationRequested)
+                    IsLoading = false;
             }
         }
 
@@ -123,26 +129,26 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadCategoryDetails, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadCategoryDetails);
             }
         }
 
         partial void OnSelectedPeriodChanged(PeriodItem value)
         {
             IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
-            _ = LoadReportDataAsync();
+            LoadReportDataCommand.Execute(null);
         }
 
         partial void OnCustomStartDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
-                _ = LoadReportDataAsync();
+                LoadReportDataCommand.Execute(null);
         }
 
         partial void OnCustomEndDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
-                _ = LoadReportDataAsync();
+                LoadReportDataCommand.Execute(null);
         }
     }
 

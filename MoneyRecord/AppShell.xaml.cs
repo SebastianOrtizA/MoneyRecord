@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
@@ -7,6 +8,7 @@ namespace MoneyRecord
     public partial class AppShell : Shell
     {
         private readonly INavigationService _navigationService;
+        private readonly ILogger<AppShell> _logger;
 
         public AppShell()
         {
@@ -16,7 +18,9 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(AddTransferPage), typeof(AddTransferPage));
 
             // The DI singleton: a private fallback would keep a second history the ViewModels never see
-            _navigationService = IPlatformApplication.Current!.Services.GetRequiredService<INavigationService>();
+            var services = IPlatformApplication.Current!.Services;
+            _navigationService = services.GetRequiredService<INavigationService>();
+            _logger = services.GetRequiredService<ILogger<AppShell>>();
 
             // Handle navigation events for tracking history
             this.Navigated += OnShellNavigated;
@@ -51,7 +55,7 @@ namespace MoneyRecord
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"[MoneyRecord] Back failed: {ex}");
+                        _logger.LogError(ex, "Back navigation failed");
                     }
                 });
                 return true;

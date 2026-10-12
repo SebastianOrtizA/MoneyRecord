@@ -369,8 +369,8 @@
 
                 <!-- Search Bar -->
                 <SearchBar Placeholder="{ext:Localize SearchTransactions}"
-                           Text="{Binding SearchText}"
-                           SearchCommand="{Binding PerformSearchCommand}"
+                           Text="{Binding Filters.SearchText}"
+                           SearchCommand="{Binding Filters.SearchCommand}"
                            FontSize="14"
                            HeightRequest="44"
                            BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"/>
@@ -380,7 +380,7 @@
                     <Button Grid.Column="0"
                             Text="&#xF0234;"
                             FontFamily="MaterialDesignIcons"
-                            Command="{Binding ToggleFiltersCommand}"
+                            Command="{Binding Filters.ToggleCommand}"
                             FontSize="20"
                             HeightRequest="44"
                             WidthRequest="44"
@@ -404,7 +404,7 @@
                     <Button Grid.Column="2"
                             Text="{ext:Localize ClearFilters}"
                             IsVisible="{Binding HasActiveFilters}"
-                            Command="{Binding ClearFiltersCommand}"
+                            Command="{Binding Filters.ClearCommand}"
                             FontSize="13"
                             HeightRequest="36"
                             Padding="12,0"
@@ -414,7 +414,7 @@
                 </Grid>
 
                 <!-- Filter Panel (Collapsible) -->
-                <Frame IsVisible="{Binding IsFilterVisible}"
+                <Frame IsVisible="{Binding Filters.IsVisible}"
                        BackgroundColor="{AppThemeBinding Light=#F3E5F5, Dark=#2A1A2E}"
                        BorderColor="{AppThemeBinding Light=#CE93D8, Dark=#7B1FA2}"
                        CornerRadius="10"
@@ -426,9 +426,9 @@
                                FontSize="13"
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"/>
-                        <Picker ItemsSource="{Binding FilterTypes}"
+                        <Picker ItemsSource="{Binding Filters.Types}"
                                 ItemDisplayBinding="{Binding Name}"
-                                SelectedItem="{Binding SelectedFilterType}"
+                                SelectedItem="{Binding Filters.SelectedType}"
                                 FontSize="14"
                                 MinimumHeightRequest="40"
                                 BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"/>
@@ -438,9 +438,9 @@
                                FontSize="13"
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"/>
-                        <Picker ItemsSource="{Binding FilterCategories}"
+                        <Picker ItemsSource="{Binding Filters.Categories}"
                                 ItemDisplayBinding="{Binding Name}"
-                                SelectedItem="{Binding SelectedFilterCategory}"
+                                SelectedItem="{Binding Filters.SelectedCategory}"
                                 Title="{ext:Localize AllCategories}"
                                 FontSize="14"
                                 MinimumHeightRequest="40"
@@ -451,9 +451,9 @@
                                FontSize="13"
                                FontAttributes="Bold"
                                TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"/>
-                        <Picker ItemsSource="{Binding FilterAccounts}"
+                        <Picker ItemsSource="{Binding Filters.Accounts}"
                                 ItemDisplayBinding="{Binding Name}"
-                                SelectedItem="{Binding SelectedFilterAccount}"
+                                SelectedItem="{Binding Filters.SelectedAccount}"
                                 Title="{ext:Localize AllAccounts}"
                                 FontSize="14"
                                 MinimumHeightRequest="40"
@@ -466,7 +466,7 @@
                                TextColor="{AppThemeBinding Light=#4A148C, Dark=#CE93D8}"/>
                         <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="8">
                             <Entry Grid.Column="0"
-                                   Text="{Binding MinAmountText}"
+                                   Text="{Binding Filters.MinAmountText}"
                                    Placeholder="{ext:Localize Min}"
                                    Keyboard="Numeric"
                                    FontSize="14"
@@ -477,7 +477,7 @@
                                    VerticalOptions="Center"
                                    FontSize="14"/>
                             <Entry Grid.Column="2"
-                                   Text="{Binding MaxAmountText}"
+                                   Text="{Binding Filters.MaxAmountText}"
                                    Placeholder="{ext:Localize Max}"
                                    Keyboard="Numeric"
                                    FontSize="14"

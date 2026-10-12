@@ -12,17 +12,16 @@ namespace MoneyRecord.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         private readonly IBalanceService _balanceService;
-        private readonly ILedgerQueryService _ledgerQueryService;
+        private readonly ILedgerService _ledgerService;
         private readonly IBudgetSummaryService _budgetSummaryService;
         private readonly ITransactionRepository _transactionRepository;
-        private readonly ITransferRepository _transferRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
-        private readonly IAppPaths _paths;
 
         private List<LedgerEntry> _entries = [];
+        private List<LedgerEntry> _accountEntries = [];
         private List<AccountBalanceInfo> _accountBalances = [];
         private List<Account> _accounts = [];
 
@@ -95,27 +94,6 @@ namespace MoneyRecord.ViewModels
         private int budgetsOverBudget;
 
         [ObservableProperty]
-        private string searchText = string.Empty;
-
-        [ObservableProperty]
-        private bool isFilterVisible;
-
-        [ObservableProperty]
-        private TypeFilterOption? selectedFilterType;
-
-        [ObservableProperty]
-        private FilterOption? selectedFilterCategory;
-
-        [ObservableProperty]
-        private FilterOption? selectedFilterAccount;
-
-        [ObservableProperty]
-        private string minAmountText = string.Empty;
-
-        [ObservableProperty]
-        private string maxAmountText = string.Empty;
-
-        [ObservableProperty]
         private bool hasActiveFilters;
 
         [ObservableProperty]
@@ -124,61 +102,55 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private int totalCount;
 
-        [ObservableProperty]
-        private List<FilterOption> filterCategories = [];
-
-        [ObservableProperty]
-        private List<FilterOption> filterAccounts = [];
-
-        public List<TypeFilterOption> FilterTypes { get; } =
-        [
-            new(null, AppResources.All),
-            new(TransactionType.Income, AppResources.Incomes),
-            new(TransactionType.Expense, AppResources.Expenses),
-            new(TransactionType.Transfer, AppResources.Transfers)
-        ];
-
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
 
-        public MainViewModel(IBalanceService balanceService, ILedgerQueryService ledgerQueryService, IBudgetSummaryService budgetSummaryService, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService, IAppPaths paths)
+        public TransactionFilterViewModel Filters { get; } = new();
+
+        public MainViewModel(IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService, ITransactionRepository transactionRepository,
+            IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService)
         {
             _balanceService = balanceService;
-            _ledgerQueryService = ledgerQueryService;
+            _ledgerService = ledgerService;
             _budgetSummaryService = budgetSummaryService;
             _transactionRepository = transactionRepository;
-            _transferRepository = transferRepository;
             _accountRepository = accountRepository;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _navigationService = navigationService;
-            _paths = paths;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
-            selectedFilterType = FilterTypes[0];
+            Filters.Changed += ApplyFilters;
         }
 
-        public async Task InitializeAsync()
-        {
-            await LoadDataAsync();
-        }
+        public Task InitializeAsync() => LoadDataCommand.ExecuteAsync(null);
 
-        [RelayCommand]
-        private async Task LoadDataAsync()
+        /// <summary>
+        /// Reloads Home. Each run cancels the one in progress (period changes, pull to refresh, a delete), so the
+        /// results of an older period never overwrite the newer ones.
+        /// </summary>
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private async Task LoadDataAsync(CancellationToken cancellationToken)
         {
             try
             {
                 IsRefreshing = true;
 
                 var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
-                var byAccount = CurrentGroupingMode == GroupingMode.Account;
-
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
                 var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
                 var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
-                var entriesTask = _ledgerQueryService.GetEntriesAsync(startDate, endDate, transfersPerAccount: byAccount);
-                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask);
+                var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
+                var accountsTask = _accountRepository.GetAllAsync();
+                var budgetsTask = _budgetSummaryService.GetSummaryAsync(
+                    SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
+                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask, accountsTask, budgetsTask);
+                cancellationToken.ThrowIfCancellationRequested();
 
                 _accountBalances = await balancesTask;
-                ShowBalances(CurrencyBalance.FromAccounts(_accountBalances, MoneyFormatter.ResolveCurrencyCode(null)));
+                var balanceLines = CurrencyBalance.DisplayLines(
+                    CurrencyBalance.FromAccounts(_accountBalances, MoneyFormatter.ResolveCurrencyCode(null)));
+                BalanceText = balanceLines[0];
+                OtherCurrencyBalances = balanceLines.Skip(1).ToList();
+
                 TotalIncomes = await incomesTask;
                 TotalExpenses = await expensesTask;
                 NetIncome = TotalIncomes - TotalExpenses;
@@ -187,72 +159,46 @@ namespace MoneyRecord.ViewModels
                 OnPropertyChanged(nameof(TotalExpenses));
                 OnPropertyChanged(nameof(NetIncome));
 
+                // Whole transfers for the Recent card and the other views; split once for the account view, so
+                // switching the grouping never reloads
                 _entries = await entriesTask;
-                _accounts = byAccount ? await _accountRepository.GetAllAsync() : [];
+                _accountEntries = LedgerTransfers.PerAccount(_entries);
+                _accounts = await accountsTask;
                 RecentTransactions = new(_entries.OrderByDescending(e => e.Date).Take(5));
-                FilterCategories = LedgerFilter.CategoryOptions(_entries);
-                FilterAccounts = LedgerFilter.AccountOptions(_entries);
+                Filters.SetOptions(_entries);
                 ApplyFilters();
 
-                await LoadBudgetSummaryAsync();
+                // The budget card uses the Home period, like the Budget page does with its own
+                var budgets = await budgetsTask;
+                BudgetsOnTrack = budgets.Count(b => !b.IsOverBudget);
+                BudgetsOverBudget = budgets.Count(b => b.IsOverBudget);
+                BudgetSummaries = new(budgets.Take(3));
+                HasBudgets = budgets.Count > 0;
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // A newer load replaced this one
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadTransactions, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadTransactions);
             }
             finally
             {
-                IsRefreshing = false;
+                // The newer load owns the spinner
+                if (!cancellationToken.IsCancellationRequested)
+                    IsRefreshing = false;
             }
         }
-
-        private void ShowBalances(List<CurrencyBalance> balances)
-        {
-            if (balances.Count <= 1)
-            {
-                BalanceText = balances.Count == 1
-                    ? MoneyFormatter.Format(balances[0].Balance, balances[0].CurrencyCode)
-                    : MoneyFormatter.Format(0);
-                OtherCurrencyBalances = [];
-                return;
-            }
-
-            var lines = balances.Select(b => $"{MoneyFormatter.Format(b.Balance, b.CurrencyCode)} {b.CurrencyCode}").ToList();
-            BalanceText = lines[0];
-            OtherCurrencyBalances = lines.Skip(1).ToList();
-        }
-
-        /// <summary>The budget card uses the Home period, like the Budget page does with its own.</summary>
-        private async Task LoadBudgetSummaryAsync()
-        {
-            var summary = await _budgetSummaryService.GetSummaryAsync(
-                SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
-
-            BudgetsOnTrack = summary.Count(b => !b.IsOverBudget);
-            BudgetsOverBudget = summary.Count(b => b.IsOverBudget);
-            BudgetSummaries = new(summary.Take(3));
-            HasBudgets = summary.Count > 0;
-        }
-
-        private TransactionFilter CurrentFilter() => new(
-            SearchText,
-            SelectedFilterType?.Type,
-            SelectedFilterCategory?.Id,
-            SelectedFilterAccount?.Id,
-            ParseAmountLimit(MinAmountText),
-            ParseAmountLimit(MaxAmountText),
-            IsAscending);
-
-        /// <summary>Empty = no limit; otherwise read like amount entry (base currency).</summary>
-        private static decimal? ParseAmountLimit(string text) =>
-            string.IsNullOrWhiteSpace(text) ? null : AmountParser.Parse(text, null);
 
         private void ApplyFilters()
         {
-            var filter = CurrentFilter();
-            var filtered = LedgerFilter.Apply(_entries, filter);
+            // Only the account view lists a transfer under both of its accounts
+            var entries = CurrentGroupingMode == GroupingMode.Account ? _accountEntries : _entries;
+            var filter = Filters.ToFilter(IsAscending);
+            var filtered = LedgerFilter.Apply(entries, filter);
 
-            TotalCount = _entries.Count;
+            TotalCount = entries.Count;
             FilteredCount = filtered.Count;
             HasActiveFilters = filter.IsActive;
 
@@ -303,7 +249,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadAccountBalances, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadAccountBalances);
             }
         }
 
@@ -315,22 +261,16 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private async Task ToggleGroupingAsync()
+        private void ToggleGrouping()
         {
             // None -> Category -> Account -> None
-            var previous = CurrentGroupingMode;
-            CurrentGroupingMode = previous switch
+            CurrentGroupingMode = CurrentGroupingMode switch
             {
                 GroupingMode.None => GroupingMode.Category,
                 GroupingMode.Category => GroupingMode.Account,
                 _ => GroupingMode.None
             };
-
-            // Only the account view splits transfers into two rows, so only entering or leaving it reloads
-            if (previous == GroupingMode.Account || CurrentGroupingMode == GroupingMode.Account)
-                await LoadDataAsync();
-            else
-                ApplyFilters();
+            ApplyFilters();
         }
 
         [RelayCommand]
@@ -373,23 +313,8 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                if (entry.IsTransfer)
-                {
-                    var transfer = await _transferRepository.GetByIdAsync(entry.SourceId);
-                    if (transfer != null)
-                        await _transferRepository.DeleteAsync(transfer);
-                }
-                else
-                {
-                    var transaction = await _transactionRepository.GetByIdAsync(entry.SourceId);
-                    if (transaction != null)
-                    {
-                        await _transactionRepository.DeleteAsync(transaction);
-                        ReceiptFiles.Delete(transaction.ReceiptPhotoPath, _paths.ReceiptsFolder);
-                    }
-                }
-
-                await LoadDataAsync();
+                await _ledgerService.DeleteAsync(entry);
+                await LoadDataCommand.ExecuteAsync(null);
 
                 await _dialogService.ToastAsync(entry.IsTransfer
                     ? AppResources.TransferDeletedSuccessfully
@@ -398,58 +323,28 @@ namespace MoneyRecord.ViewModels
             catch (Exception ex)
             {
                 var errorMessage = entry.IsTransfer
-                    ? string.Format(AppResources.FailedToDeleteTransfer, ex.Message)
-                    : string.Format(AppResources.FailedToDeleteTransaction, ex.Message);
+                    ? AppResources.FailedToDeleteTransfer
+                    : AppResources.FailedToDeleteTransaction;
                 await _errorHandler.HandleAsync(ex, errorMessage);
             }
         }
 
-        [RelayCommand]
-        private void ToggleFilters() => IsFilterVisible = !IsFilterVisible;
-
-        [RelayCommand]
-        private void ClearFilters()
-        {
-            SearchText = string.Empty;
-            SelectedFilterType = FilterTypes[0];
-            SelectedFilterCategory = null;
-            SelectedFilterAccount = null;
-            MinAmountText = string.Empty;
-            MaxAmountText = string.Empty;
-            ApplyFilters();
-        }
-
-        [RelayCommand]
-        private void PerformSearch() => ApplyFilters();
-
-        partial void OnSearchTextChanged(string value) => ApplyFilters();
-
-        partial void OnSelectedFilterTypeChanged(TypeFilterOption? value) => ApplyFilters();
-
-        partial void OnSelectedFilterCategoryChanged(FilterOption? value) => ApplyFilters();
-
-        partial void OnSelectedFilterAccountChanged(FilterOption? value) => ApplyFilters();
-
-        partial void OnMinAmountTextChanged(string value) => ApplyFilters();
-
-        partial void OnMaxAmountTextChanged(string value) => ApplyFilters();
-
         partial void OnSelectedPeriodChanged(PeriodItem value)
         {
             IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
-            _ = LoadDataAsync();
+            LoadDataCommand.Execute(null);
         }
 
         partial void OnCustomStartDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
-                _ = LoadDataAsync();
+                LoadDataCommand.Execute(null);
         }
 
         partial void OnCustomEndDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
-                _ = LoadDataAsync();
+                LoadDataCommand.Execute(null);
         }
     }
 }

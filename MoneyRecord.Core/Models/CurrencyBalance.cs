@@ -21,5 +21,16 @@ namespace MoneyRecord.Models
                 .ThenBy(c => c.CurrencyCode, StringComparer.Ordinal)
                 .ToList();
         }
+
+        /// <summary>
+        /// The Home balance card's lines: one currency is just its total; several are "€300.00 EUR", one line each,
+        /// in the order given (base currency first). Never empty: no accounts shows a zero.
+        /// </summary>
+        public static List<string> DisplayLines(IReadOnlyList<CurrencyBalance> balances) => balances.Count switch
+        {
+            0 => [MoneyFormatter.Format(0)],
+            1 => [MoneyFormatter.Format(balances[0].Balance, balances[0].CurrencyCode)],
+            _ => balances.Select(b => $"{MoneyFormatter.Format(b.Balance, b.CurrencyCode)} {b.CurrencyCode}").ToList()
+        };
     }
 }

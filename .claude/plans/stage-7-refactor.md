@@ -1,6 +1,6 @@
 # Stage 7: Architecture Refactor
 
-**Status**: In progress (7.1–7.4 done)
+**Status**: Done (7.1–7.6; 7.6 in review)
 **Depends on**: Stage 6 (money format + migrations must land first)
 **Complexity**: High (wide but mechanical; no user-visible change)
 **Source**: Product & engineering review, 2026-10-11 (engineering findings)
@@ -151,6 +151,31 @@ no duplicated business rules. Behaviour must not change; the device check before
   and changes with the grouping mode. Build it from whole transfers, e.g. split transfers in Core after loading
   (`LedgerQueryService` returns whole transfers only) so the grouping toggle never reloads.
 - `ErrorHandler`: log with `ILogger` (Serilog file sink in Stage 9); show friendly messages, not `ex.Message`.
+- Done as: **Loads** — Home, Budget, the category reports and Trends each have one
+  `[RelayCommand(AllowConcurrentExecutions = true)]` load taking a `CancellationToken`: the toolkit cancels the previous
+  run's token when a new one starts, the load checks it after its awaits (sqlite-net takes no token) and drops its
+  results, and only the last run clears the spinner. Period / month-count handlers call `LoadXCommand.Execute(null)`;
+  `InitializeAsync`, deletes and edits await `ExecuteAsync`. Budget's initialize no longer loads the categories twice;
+  Trends loads the categories with the transactions. The two non-load races got a "latest selection wins" guard: the
+  transfer page's available balance (also used by the insufficient-funds check) and the expense page's budget warning.
+  **Search** — Home's filter state moved to `TransactionFilterViewModel` (Core, MAUI-free, bound as `Filters.*`): typed
+  text and the min/max amounts apply after 300 ms (`Helpers/Debouncer`), pickers at once, the search key and Clear at
+  once and only once (Clear used to filter six times). **Recent card** — `LedgerService` (was `LedgerQueryService`)
+  returns whole transfers only; `LedgerTransfers.PerAccount` splits them once per load for the account view
+  (`LedgerEntry.TransferNote` keeps the transfer's own description for the halves' labels), so the Recent card shows one
+  row per transfer in every view and the grouping toggle never reloads. `LedgerService.DeleteAsync` (transaction +
+  receipt, or the whole transfer) moved out of `MainViewModel`; `CurrencyBalance.DisplayLines` formats the balance card.
+  **Errors** — `ErrorHandler` logs the exception with `ILogger<ErrorHandler>` (Core references
+  `Microsoft.Extensions.Logging.Abstractions`, MIT) and shows only the localized message; the 11 `FailedTo…: {0}` strings
+  lost their `{0}` (no more `ex.Message` in dialogs, Trends showed a literal "{0}"), two new keys for account/category
+  deletes, unused `FailedToLoadData`/`FailedToToggleView` removed. A cancellation is never shown. App/AppShell log
+  through `ILogger` instead of `Debug.WriteLine`; `MainPage` lost its own try/catch. Tests: `DebouncerTests`,
+  `LedgerTransfersTests`, `TransactionFilterViewModelTests` (first ViewModel tests), `LedgerServiceTests` (delete),
+  `CurrencyBalanceTests`, `ErrorHandlerTests` (284 pass).
+- **Deviations:** (1) No `IncludeCancelCommand`: nothing in the UI cancels a load, and `AllowConcurrentExecutions`
+  already cancels the previous run. (2) `MainViewModel` is 350 lines (was 455), not ~300: what is left is ~22
+  one-line bindable properties, the load and the commands; Stage 8's Home redesign (bottom tabs) is the natural next split.
+  (3) Release builds still log nowhere (only `AddDebug` in Debug) until the Serilog file sink (Stage 9).
 
 ## Tests
 - Core unit tests for LedgerFilter, RecurrenceCalculator, GetBudgetWindow, BalanceService SQL sums (temp SQLite).

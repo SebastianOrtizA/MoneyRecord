@@ -62,7 +62,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToLoadTransfers, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadTransfers);
             }
             finally
             {
@@ -111,7 +111,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, string.Format(AppResources.FailedToDeleteTransfer, ex.Message));
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteTransfer);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using MoneyRecord.Services.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord
 {
@@ -33,7 +34,7 @@ namespace MoneyRecord
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to process recurring transactions: {ex.Message}");
+                IPlatformApplication.Current?.Services.GetService<ILogger<App>>()?.LogError(ex, "Failed to process recurring transactions");
             }
         }
     }

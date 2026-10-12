@@ -8,17 +8,20 @@ using Xunit;
 
 namespace MoneyRecord.Tests.Services;
 
-public class LedgerQueryServiceTests
+public sealed class LedgerServiceTests : IDisposable
 {
     private static readonly DateTime Start = new(2026, 3, 1);
     private static readonly DateTime End = new(2026, 3, 31);
 
     private readonly ITransactionEnrichmentService _enrichment = Substitute.For<ITransactionEnrichmentService>();
-    private readonly LedgerQueryService _sut;
+    private readonly ITransactionRepository _transactions = Substitute.For<ITransactionRepository>();
+    private readonly ITransferRepository _transfers = Substitute.For<ITransferRepository>();
+    private readonly AppPaths _paths = new(Path.Combine(Path.GetTempPath(), "mr-ledger-" + Guid.NewGuid().ToString("N")));
+    private readonly LedgerService _sut;
 
-    public LedgerQueryServiceTests()
+    public LedgerServiceTests()
     {
-        _sut = new LedgerQueryService(_enrichment);
+        _sut = new LedgerService(_enrichment, _transactions, _transfers, _paths);
         _enrichment.GetEnrichedTransactionsAsync(Start, End).Returns(new List<Transaction>());
         _enrichment.GetEnrichedTransfersAsync(Start, End).Returns(new List<Transfer>());
     }
@@ -45,7 +48,7 @@ public class LedgerQueryServiceTests
             }
         });
 
-        var entry = (await _sut.GetEntriesAsync(Start, End, transfersPerAccount: false)).Single();
+        var entry = (await _sut.GetEntriesAsync(Start, End)).Single();
 
         entry.Kind.Should().Be(LedgerEntryKind.Expense);
         entry.SourceId.Should().Be(42);
@@ -62,11 +65,12 @@ public class LedgerQueryServiceTests
     {
         GivenTransfer();
 
-        var entry = (await _sut.GetEntriesAsync(Start, End, transfersPerAccount: false)).Single();
+        var entry = (await _sut.GetEntriesAsync(Start, End)).Single();
 
         entry.Kind.Should().Be(LedgerEntryKind.Transfer);
         entry.SourceId.Should().Be(7);
         entry.Description.Should().Be("rent");
+        entry.TransferNote.Should().Be("rent");
         entry.AccountId.Should().Be(1);
         entry.CounterpartAccountId.Should().Be(2);
         entry.AccountDisplayName.Should().Be("Checking → Savings");
@@ -81,31 +85,53 @@ public class LedgerQueryServiceTests
     {
         GivenTransfer(description: "");
 
-        var entry = (await _sut.GetEntriesAsync(Start, End, transfersPerAccount: false)).Single();
+        var entry = (await _sut.GetEntriesAsync(Start, End)).Single();
 
         entry.Description.Should().Be("Checking → Savings");
+        entry.TransferNote.Should().BeEmpty();
     }
 
     [Fact]
-    public async Task Per_account_a_transfer_is_an_outgoing_and_an_incoming_half()
+    public async Task Deleting_a_transaction_also_deletes_its_receipt()
     {
-        GivenTransfer();
+        Directory.CreateDirectory(_paths.ReceiptsFolder);
+        var receipt = Path.Combine(_paths.ReceiptsFolder, "r.jpg");
+        File.WriteAllText(receipt, "photo");
+        var transaction = new Transaction { Id = 42, ReceiptPhotoPath = receipt };
+        _transactions.GetByIdAsync(42).Returns(transaction);
 
-        var entries = await _sut.GetEntriesAsync(Start, End, transfersPerAccount: true);
+        await _sut.DeleteAsync(new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 42 });
 
-        entries.Should().HaveCount(2);
-        entries.Should().AllSatisfy(e => e.SourceId.Should().Be(7));
+        await _transactions.Received(1).DeleteAsync(transaction);
+        File.Exists(receipt).Should().BeFalse();
+    }
 
-        var outgoing = entries.Single(e => e.Kind == LedgerEntryKind.TransferOut);
-        outgoing.AccountId.Should().Be(1);
-        outgoing.SignedAmount.Should().Be(-200m);
-        outgoing.Description.Should().Be($"{string.Format(AppResources.TransferToAccount, "Savings")}: rent");
+    [Theory]
+    [InlineData(LedgerEntryKind.Transfer)]
+    [InlineData(LedgerEntryKind.TransferIn)]
+    public async Task Deleting_either_half_deletes_the_whole_transfer(LedgerEntryKind kind)
+    {
+        var transfer = new Transfer { Id = 7 };
+        _transfers.GetByIdAsync(7).Returns(transfer);
 
-        var incoming = entries.Single(e => e.Kind == LedgerEntryKind.TransferIn);
-        incoming.AccountId.Should().Be(2);
-        incoming.AccountName.Should().Be("Savings");
-        incoming.CounterpartAccountName.Should().Be("Checking");
-        incoming.SignedAmount.Should().Be(200m);
-        incoming.Description.Should().Be($"{string.Format(AppResources.TransferFromAccount, "Checking")}: rent");
+        await _sut.DeleteAsync(new LedgerEntry { Kind = kind, SourceId = 7 });
+
+        await _transfers.Received(1).DeleteAsync(transfer);
+        await _transactions.DidNotReceiveWithAnyArgs().DeleteAsync(default!);
+    }
+
+    [Fact]
+    public async Task An_entry_that_is_already_gone_is_ignored()
+    {
+        await _sut.DeleteAsync(new LedgerEntry { Kind = LedgerEntryKind.Income, SourceId = 99 });
+
+        await _transactions.DidNotReceiveWithAnyArgs().DeleteAsync(default!);
+    }
+
+    public void Dispose()
+    {
+        var root = Path.GetDirectoryName(_paths.ReceiptsFolder)!;
+        if (Directory.Exists(root))
+            Directory.Delete(root, recursive: true);
     }
 }

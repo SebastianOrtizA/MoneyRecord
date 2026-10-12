@@ -964,7 +964,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to delete budget: {0}.
+        ///   Busca una cadena traducida similar a Failed to delete budget.
         /// </summary>
         public static string FailedToDeleteBudget {
             get {
@@ -973,7 +973,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to delete transaction: {0}.
+        ///   Busca una cadena traducida similar a Failed to delete transaction.
         /// </summary>
         public static string FailedToDeleteTransaction {
             get {
@@ -982,7 +982,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to delete transfer: {0}.
+        ///   Busca una cadena traducida similar a Failed to delete transfer.
         /// </summary>
         public static string FailedToDeleteTransfer {
             get {
@@ -991,7 +991,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to load account balances: {0}.
+        ///   Busca una cadena traducida similar a Failed to load account balances.
         /// </summary>
         public static string FailedToLoadAccountBalances {
             get {
@@ -1000,7 +1000,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to load category details: {0}.
+        ///   Busca una cadena traducida similar a Failed to load category details.
         /// </summary>
         public static string FailedToLoadCategoryDetails {
             get {
@@ -1009,7 +1009,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to load report data: {0}.
+        ///   Busca una cadena traducida similar a Failed to load report data.
         /// </summary>
         public static string FailedToLoadReportData {
             get {
@@ -1018,7 +1018,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to load transactions: {0}.
+        ///   Busca una cadena traducida similar a Failed to load transactions.
         /// </summary>
         public static string FailedToLoadTransactions {
             get {
@@ -1027,7 +1027,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to load transfers: {0}.
+        ///   Busca una cadena traducida similar a Failed to load transfers.
         /// </summary>
         public static string FailedToLoadTransfers {
             get {
@@ -1036,7 +1036,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to save budget: {0}.
+        ///   Busca una cadena traducida similar a Failed to save budget.
         /// </summary>
         public static string FailedToSaveBudget {
             get {
@@ -1045,20 +1045,11 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to save transfer: {0}.
+        ///   Busca una cadena traducida similar a Failed to save transfer.
         /// </summary>
         public static string FailedToSaveTransfer {
             get {
                 return ResourceManager.GetString("FailedToSaveTransfer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Failed to toggle view: {0}.
-        /// </summary>
-        public static string FailedToToggleView {
-            get {
-                return ResourceManager.GetString("FailedToToggleView", resourceCulture);
             }
         }
         
@@ -2709,15 +2700,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load data: {0}.
-        /// </summary>
-        public static string FailedToLoadData {
-            get {
-                return ResourceManager.GetString("FailedToLoadData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Transfer.
         /// </summary>
         public static string DefaultTransferDescription {
@@ -2726,5 +2708,22 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete account.
+        /// </summary>
+        public static string FailedToDeleteAccount {
+            get {
+                return ResourceManager.GetString("FailedToDeleteAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete category.
+        /// </summary>
+        public static string FailedToDeleteCategory {
+            get {
+                return ResourceManager.GetString("FailedToDeleteCategory", resourceCulture);
+            }
+        }
     }
 }
