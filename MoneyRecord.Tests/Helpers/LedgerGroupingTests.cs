@@ -7,10 +7,11 @@ namespace MoneyRecord.Tests.Helpers;
 
 public class LedgerGroupingTests
 {
+    // One category ID per category name
     private static LedgerEntry Expense(int id, string category, long cents, string currency = "EUR", int accountId = 1, string account = "Wallet") => new()
     {
         Kind = LedgerEntryKind.Expense, SourceId = id, AmountCents = cents, CurrencyCode = currency,
-        CategoryId = id, CategoryName = category, CategoryIconCode = "F0001", AccountId = accountId, AccountName = account
+        CategoryId = category.GetHashCode(), CategoryName = category, CategoryIconCode = "F0001", AccountId = accountId, AccountName = account
     };
 
     [Fact]
@@ -44,6 +45,31 @@ public class LedgerGroupingTests
 
         group.Type.Should().Be(TransactionType.Transfer);
         group.Total.Should().Be(200m);
+    }
+
+    [Fact]
+    public void Same_named_income_and_expense_categories_stay_apart()
+    {
+        var giftReceived = new LedgerEntry
+        {
+            Kind = LedgerEntryKind.Income, SourceId = 9, AmountCents = 5_000, CategoryId = 7, CategoryName = "Gifts"
+        };
+
+        var groups = LedgerGrouping.Group([Expense(1, "Gifts", 2_000), giftReceived], GroupingMode.Category);
+
+        groups.Should().HaveCount(2);
+        groups.Should().ContainSingle(g => g.Type == TransactionType.Expense && g.Total == 20m);
+        groups.Should().ContainSingle(g => g.Type == TransactionType.Income && g.Total == 50m);
+    }
+
+    [Fact]
+    public void A_user_category_named_like_the_transfers_group_is_not_mixed_with_transfers()
+    {
+        var transfer = new LedgerEntry { Kind = LedgerEntryKind.Transfer, SourceId = 1, AmountCents = 10_000, CategoryName = "Transfers" };
+
+        var groups = LedgerGrouping.Group([transfer, Expense(1, "Transfers", 300)], GroupingMode.Category);
+
+        groups.Select(g => g.Type).Should().BeEquivalentTo([TransactionType.Transfer, TransactionType.Expense]);
     }
 
     [Fact]

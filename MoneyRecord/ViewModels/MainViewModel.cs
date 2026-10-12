@@ -239,9 +239,13 @@ namespace MoneyRecord.ViewModels
             SelectedFilterType?.Type,
             SelectedFilterCategory?.Id,
             SelectedFilterAccount?.Id,
-            decimal.TryParse(MinAmountText, out var min) ? min : null,
-            decimal.TryParse(MaxAmountText, out var max) ? max : null,
+            ParseAmountLimit(MinAmountText),
+            ParseAmountLimit(MaxAmountText),
             IsAscending);
+
+        /// <summary>Empty = no limit; otherwise read like amount entry (base currency).</summary>
+        private static decimal? ParseAmountLimit(string text) =>
+            string.IsNullOrWhiteSpace(text) ? null : AmountParser.Parse(text, null);
 
         private void ApplyFilters()
         {
@@ -313,15 +317,20 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task ToggleGroupingAsync()
         {
-            // None -> Category -> Account -> None; the account view splits transfers, so it reloads
-            CurrentGroupingMode = CurrentGroupingMode switch
+            // None -> Category -> Account -> None
+            var previous = CurrentGroupingMode;
+            CurrentGroupingMode = previous switch
             {
                 GroupingMode.None => GroupingMode.Category,
                 GroupingMode.Category => GroupingMode.Account,
                 _ => GroupingMode.None
             };
 
-            await LoadDataAsync();
+            // Only the account view splits transfers into two rows, so only entering or leaving it reloads
+            if (previous == GroupingMode.Account || CurrentGroupingMode == GroupingMode.Account)
+                await LoadDataAsync();
+            else
+                ApplyFilters();
         }
 
         [RelayCommand]

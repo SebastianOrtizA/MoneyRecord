@@ -39,14 +39,14 @@ namespace MoneyRecord.Models
 
         public string CategoryName { get; init; } = string.Empty;
 
-        public string CategoryIconCode { get; init; } = "F0770";
+        public string CategoryIconCode { get; init; } = IconHelper.DefaultCategoryIconCode;
 
         /// <summary>The entry's account: a transfer's source, or the account of a transfer half.</summary>
         public int? AccountId { get; init; }
 
         public string AccountName { get; init; } = string.Empty;
 
-        public string AccountIconCode { get; init; } = "F0070";
+        public string AccountIconCode { get; init; } = IconHelper.DefaultAccountIconCode;
 
         /// <summary>The other account of a transfer (its destination, or the source of a <see cref="LedgerEntryKind.TransferIn"/>).</summary>
         public int? CounterpartAccountId { get; init; }

@@ -6,8 +6,8 @@ namespace MoneyRecord.Helpers
     /// </summary>
     public static class IconHelper
     {
-        private const string DefaultCategoryIconCode = "F0770";
-        private const string DefaultAccountIconCode = "F0070";
+        public const string DefaultCategoryIconCode = "F0770";
+        public const string DefaultAccountIconCode = "F0070";
 
         /// <summary>
         /// Converts a hex icon code to its displayable Unicode character.

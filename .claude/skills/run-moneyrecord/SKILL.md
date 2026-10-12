@@ -71,7 +71,7 @@ dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android   # instal
 ## Test
 
 ```powershell
-dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 246 pass, ~2 s (plain net10.0, references MoneyRecord.Core only)
+dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 248 pass, ~2 s (plain net10.0, references MoneyRecord.Core only)
 ```
 
 ## Gotchas
