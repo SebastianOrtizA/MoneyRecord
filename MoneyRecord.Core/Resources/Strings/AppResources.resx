@@ -488,9 +488,6 @@
   </data>
   
   <!-- Account Balance -->
-  <data name="AccountBalances" xml:space="preserve">
-    <value>Account Balances</value>
-  </data>
   <data name="AvailableBalance" xml:space="preserve">
     <value>Available: {0}</value>
   </data>
@@ -555,14 +552,8 @@
   <data name="YesDelete" xml:space="preserve">
     <value>Yes, Delete</value>
   </data>
-  <data name="NoAccountsFound" xml:space="preserve">
-    <value>No accounts found.</value>
-  </data>
   <data name="Balance" xml:space="preserve">
     <value>Balance</value>
-  </data>
-  <data name="LastActivity" xml:space="preserve">
-    <value>Last Activity</value>
   </data>
   <data name="FailedToLoadAccountBalances" xml:space="preserve">
     <value>Failed to load account balances</value>
@@ -1013,7 +1004,7 @@ Amount: {2}</value>
     <value>Recent Transactions</value>
   </data>
   <data name="ViewAll" xml:space="preserve">
-    <value>View All</value>
+    <value>View all</value>
   </data>
   <data name="NetIncome" xml:space="preserve">
     <value>Net</value>
@@ -1081,5 +1072,14 @@ Amount: {2}</value>
   </data>
   <data name="AddNew" xml:space="preserve">
     <value>Add new</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>See all</value>
+  </data>
+  <data name="ShowingCurrencyAccounts" xml:space="preserve">
+    <value>{0} accounts</value>
+  </data>
+  <data name="ShowAllAccounts" xml:space="preserve">
+    <value>Show all</value>
   </data>
 </root>

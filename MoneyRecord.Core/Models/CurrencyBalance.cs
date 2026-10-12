@@ -2,6 +2,9 @@ using MoneyRecord.Helpers;
 
 namespace MoneyRecord.Models
 {
+    /// <summary>One line of the Home balance card; tapping it opens the accounts in <see cref="CurrencyCode"/> (null = all).</summary>
+    public sealed record BalanceLine(string Text, string? CurrencyCode);
+
     /// <summary>
     /// The total balance of all accounts in one currency (amounts in different currencies are never added together).
     /// </summary>
@@ -24,13 +27,15 @@ namespace MoneyRecord.Models
 
         /// <summary>
         /// The Home balance card's lines: one currency is just its total; several are "€300.00 EUR", one line each,
-        /// in the order given (base currency first). Never empty: no accounts shows a zero.
+        /// in the order given (base currency first). Never empty: no accounts shows a zero with no currency.
         /// </summary>
-        public static List<string> DisplayLines(IReadOnlyList<CurrencyBalance> balances) => balances.Count switch
+        public static List<BalanceLine> DisplayLines(IReadOnlyList<CurrencyBalance> balances) => balances.Count switch
         {
-            0 => [MoneyFormatter.Format(0)],
-            1 => [MoneyFormatter.Format(balances[0].Balance, balances[0].CurrencyCode)],
-            _ => balances.Select(b => $"{MoneyFormatter.Format(b.Balance, b.CurrencyCode)} {b.CurrencyCode}").ToList()
+            0 => [new BalanceLine(MoneyFormatter.Format(0), null)],
+            1 => [new BalanceLine(
+                MoneyFormatter.Format(balances[0].Balance, balances[0].CurrencyCode), balances[0].CurrencyCode)],
+            _ => balances.Select(b => new BalanceLine(
+                $"{MoneyFormatter.Format(b.Balance, b.CurrencyCode)} {b.CurrencyCode}", b.CurrencyCode)).ToList()
         };
     }
 }

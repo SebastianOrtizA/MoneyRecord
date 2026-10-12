@@ -19,6 +19,7 @@ namespace MoneyRecord.ViewModels
             string.Format(AppResources.InitialBalanceAmount, MoneyFormatter.Format(Account.InitialBalance, Account.CurrencyCode));
     }
 
+    [QueryProperty(nameof(CurrencyFilter), "CurrencyCode")]
     public partial class ManageAccountsViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -31,6 +32,15 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<AccountDisplayItem> accounts = new();
+
+        /// <summary>From a Home currency line: only the accounts in this currency are listed (null = all).</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasCurrencyFilter), nameof(CurrencyFilterText))]
+        private string? currencyFilter;
+
+        public bool HasCurrencyFilter => !string.IsNullOrEmpty(CurrencyFilter);
+
+        public string CurrencyFilterText => string.Format(AppResources.ShowingCurrencyAccounts, CurrencyFilter);
 
         [ObservableProperty]
         private string newAccountName = string.Empty;
@@ -121,7 +131,9 @@ namespace MoneyRecord.ViewModels
             var balanceMap = balances.ToDictionary(b => b.AccountId, b => b.CurrentBalance);
 
             Accounts.Clear();
-            foreach (var account in accountList)
+            // An account without a currency is in the base currency
+            foreach (var account in accountList.Where(a => !HasCurrencyFilter
+                         || MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode) == CurrencyFilter))
             {
                 Accounts.Add(new AccountDisplayItem
                 {
@@ -129,6 +141,13 @@ namespace MoneyRecord.ViewModels
                     CurrentBalance = balanceMap.GetValueOrDefault(account.Id)
                 });
             }
+        }
+
+        [RelayCommand]
+        private async Task ClearCurrencyFilterAsync()
+        {
+            CurrencyFilter = null;
+            await LoadAccountsAsync();
         }
 
         [RelayCommand]

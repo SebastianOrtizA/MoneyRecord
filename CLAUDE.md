@@ -107,6 +107,8 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   `//IncomeReportPage`, `//TrendsReportPage`, `//BudgetPage`, `//MorePage`
 - Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
   `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `TransfersPage`, `SettingsPage`
+- Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See
+  all" → `//TransactionsPage`, budgets "View all" → `//BudgetPage`
 - Custom `INavigationService` tracks navigation history for back button behavior: AppShell's `Navigated` event feeds
   `NavigationHistory`; Android back → `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed` (previous page,
   then Home, then close)

@@ -73,7 +73,7 @@
                 <!-- Filter Toggle + Active Filter Indicator -->
                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
                     <Button Grid.Column="0"
-                            Text="&#xF0234;"
+                            Text="&#xF0232;"
                             FontFamily="MaterialDesignIcons"
                             Command="{Binding Filters.ToggleCommand}"
                             FontSize="20"

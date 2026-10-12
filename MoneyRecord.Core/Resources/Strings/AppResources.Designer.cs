@@ -70,15 +70,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Account Balances.
-        /// </summary>
-        public static string AccountBalances {
-            get {
-                return ResourceManager.GetString("AccountBalances", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Account Name.
         /// </summary>
         public static string AccountName {
@@ -1225,15 +1216,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Last Activity.
-        /// </summary>
-        public static string LastActivity {
-            get {
-                return ResourceManager.GetString("LastActivity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a This is the last category of this type. You cannot delete it while it has transactions. Please create another category first..
         /// </summary>
         public static string LastCategoryCannotDelete {
@@ -1338,15 +1320,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string NoAccounts {
             get {
                 return ResourceManager.GetString("NoAccounts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a No accounts found..
-        /// </summary>
-        public static string NoAccountsFound {
-            get {
-                return ResourceManager.GetString("NoAccountsFound", resourceCulture);
             }
         }
         
@@ -2732,6 +2705,34 @@ namespace MoneyRecord.Resources.Strings {
         public static string AddNew {
             get {
                 return ResourceManager.GetString("AddNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See all.
+        /// </summary>
+        public static string SeeAll {
+            get {
+                return ResourceManager.GetString("SeeAll", resourceCulture);
+            }
+        }
+
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} accounts.
+        /// </summary>
+        public static string ShowingCurrencyAccounts {
+            get {
+                return ResourceManager.GetString("ShowingCurrencyAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all.
+        /// </summary>
+        public static string ShowAllAccounts {
+            get {
+                return ResourceManager.GetString("ShowAllAccounts", resourceCulture);
             }
         }
     }

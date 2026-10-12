@@ -248,6 +248,28 @@
                    FontAttributes="Bold"
                    TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
             
+            <!-- Currency filter from a Home balance line -->
+            <Border IsVisible="{Binding HasCurrencyFilter}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 18"
+                    Padding="14,4,4,4"
+                    HorizontalOptions="Start"
+                    BackgroundColor="{AppThemeBinding Light=#EDE7F6, Dark=#311B92}">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="{Binding CurrencyFilterText}"
+                           FontSize="14"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#311B92, Dark=#EDE7F6}"/>
+                    <Button Text="{ext:Localize ShowAllAccounts}"
+                            Command="{Binding ClearCurrencyFilterCommand}"
+                            FontSize="13"
+                            Padding="12,0"
+                            HeightRequest="32"
+                            MinimumHeightRequest="32"
+                            CornerRadius="16"/>
+                </HorizontalStackLayout>
+            </Border>
+
             <!-- Accounts List -->
             <CollectionView ItemsSource="{Binding Accounts}">
                 <CollectionView.EmptyView>
