@@ -27,13 +27,13 @@ namespace MoneyRecord.Models
 
         /// <summary>
         /// The Home balance card's lines: one currency is just its total; several are "€300.00 EUR", one line each,
-        /// in the order given (base currency first). Never empty: no accounts shows a zero with no currency.
+        /// in the order given (base currency first). Never empty: no accounts shows a zero. A line's currency is what
+        /// a tap filters by, so with one currency (or none) it is null: the amount opens all accounts.
         /// </summary>
         public static List<BalanceLine> DisplayLines(IReadOnlyList<CurrencyBalance> balances) => balances.Count switch
         {
             0 => [new BalanceLine(MoneyFormatter.Format(0), null)],
-            1 => [new BalanceLine(
-                MoneyFormatter.Format(balances[0].Balance, balances[0].CurrencyCode), balances[0].CurrencyCode)],
+            1 => [new BalanceLine(MoneyFormatter.Format(balances[0].Balance, balances[0].CurrencyCode), null)],
             _ => balances.Select(b => new BalanceLine(
                 $"{MoneyFormatter.Format(b.Balance, b.CurrencyCode)} {b.CurrencyCode}", b.CurrencyCode)).ToList()
         };

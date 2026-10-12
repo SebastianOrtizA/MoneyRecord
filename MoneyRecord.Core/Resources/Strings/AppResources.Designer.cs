@@ -295,15 +295,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Balance.
-        /// </summary>
-        public static string Balance {
-            get {
-                return ResourceManager.GetString("Balance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Budget added successfully.
         /// </summary>
         public static string BudgetAddedSuccessfully {
@@ -2511,12 +2502,6 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
-        public static string ViewAll {
-            get {
-                return ResourceManager.GetString("ViewAll", resourceCulture);
-            }
-        }
-
         public static string NetIncome {
             get {
                 return ResourceManager.GetString("NetIncome", resourceCulture);
@@ -2588,15 +2573,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string Unknown {
             get {
                 return ResourceManager.GetString("Unknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No activity.
-        /// </summary>
-        public static string NoActivity {
-            get {
-                return ResourceManager.GetString("NoActivity", resourceCulture);
             }
         }
         

@@ -36,10 +36,10 @@ public class CurrencyBalanceTests
     }
 
     [Fact]
-    public void One_currency_is_shown_without_its_code()
+    public void One_currency_is_shown_without_its_code_and_opens_all_accounts()
     {
         CurrencyBalance.DisplayLines([new CurrencyBalance("EUR", 15m, 2)])
-            .Should().Equal(new BalanceLine(MoneyFormatter.Format(15m, "EUR"), "EUR"));
+            .Should().Equal(new BalanceLine(MoneyFormatter.Format(15m, "EUR"), null));
     }
 
     [Fact]

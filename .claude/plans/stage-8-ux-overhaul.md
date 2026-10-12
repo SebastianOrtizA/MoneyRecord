@@ -41,8 +41,8 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Done as: the balance card opens Manage Accounts (the old balances alert and its strings are gone); with several
   currencies each line opens the accounts in that currency (`ManageAccountsPage?CurrencyCode=EUR`, a "EUR accounts ·
   Show all" chip on the page). `CurrencyBalance.DisplayLines` returns `BalanceLine(Text, CurrencyCode)`. Net uses
-  `MoneyFormatter.FormatSigned` (+$85.00) via `MoneyConverter` `ConverterParameter=Signed`. Recent has "See all" →
-  `//TransactionsPage`, Budget summary "View all" → `//BudgetPage` (`CardLink` style), and its rows show "spent /
+  `MoneyFormatter.FormatSigned` (+$85.00) via `SignedMoneyConverter`. Recent has "See all" →
+  `//TransactionsPage`, Budget summary "See all" → `//BudgetPage` (`CardLink` style), and its rows show "spent /
   limit". Dark-mode amounts on the Income / Expense / Net cards are near-white (red on red was unreadable). N7: the
   filter toggle used the filter-remove icon, so it looked like a clear button; it is a plain filter icon now and the
   Clear button only shows with an active filter.

@@ -111,8 +111,7 @@ namespace MoneyRecord.ViewModels
 
                 var balanceLines = CurrencyBalance.DisplayLines(
                     CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.ResolveCurrencyCode(null)));
-                // With one currency the amount opens all accounts, like the card; with several, its own currency
-                PrimaryBalance = balanceLines.Count == 1 ? balanceLines[0] with { CurrencyCode = null } : balanceLines[0];
+                PrimaryBalance = balanceLines[0];
                 OtherBalances = balanceLines.Skip(1).ToList();
 
                 TotalIncomes = await incomesTask;

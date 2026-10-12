@@ -5,15 +5,13 @@ namespace MoneyRecord.Converters
 {
     /// <summary>
     /// Formats a decimal amount as money in the base currency, with the sign before the symbol (-$50.00).
-    /// For totals and other amounts that belong to no single account. ConverterParameter=Signed adds a plus sign to a
-    /// positive amount (+$50.00), for net amounts.
+    /// For totals and other amounts that belong to no single account.
     /// </summary>
     public class MoneyConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            var amount = value is decimal d ? d : 0;
-            return parameter as string == "Signed" ? MoneyFormatter.FormatSigned(amount) : MoneyFormatter.Format(amount);
+            return MoneyFormatter.Format(value is decimal amount ? amount : 0);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -552,9 +552,6 @@
   <data name="YesDelete" xml:space="preserve">
     <value>Yes, Delete</value>
   </data>
-  <data name="Balance" xml:space="preserve">
-    <value>Balance</value>
-  </data>
   <data name="FailedToLoadAccountBalances" xml:space="preserve">
     <value>Failed to load account balances</value>
   </data>
@@ -1003,9 +1000,6 @@ Amount: {2}</value>
   <data name="RecentTransactions" xml:space="preserve">
     <value>Recent Transactions</value>
   </data>
-  <data name="ViewAll" xml:space="preserve">
-    <value>View all</value>
-  </data>
   <data name="NetIncome" xml:space="preserve">
     <value>Net</value>
   </data>
@@ -1033,9 +1027,6 @@ Amount: {2}</value>
   </data>
   <data name="Unknown" xml:space="preserve">
     <value>Unknown</value>
-  </data>
-  <data name="NoActivity" xml:space="preserve">
-    <value>No activity</value>
   </data>
   <data name="All" xml:space="preserve">
     <value>All</value>

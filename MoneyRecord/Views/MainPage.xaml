@@ -205,7 +205,7 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
-                        <Label Text="{Binding NetIncome, Converter={StaticResource MoneyConverter}, ConverterParameter=Signed}"
+                        <Label Text="{Binding NetIncome, Converter={StaticResource SignedMoneyConverter}}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
@@ -355,7 +355,7 @@
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
 
-                    <Label Text="{ext:Localize ViewAll}"
+                    <Label Text="{ext:Localize SeeAll}"
                            Style="{StaticResource CardLink}"
                            HorizontalOptions="End">
                         <Label.GestureRecognizers>
