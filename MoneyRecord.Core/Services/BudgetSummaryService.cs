@@ -25,6 +25,7 @@ namespace MoneyRecord.Services
 
             var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id);
             var (startDate, endDate) = DateRangeHelper.GetDateRange(period, customStartDate, customEndDate);
+            var spentByCategory = await _balanceService.GetExpensesByCategoryAsync(startDate, endDate);
             var progressList = new List<BudgetProgress>();
 
             foreach (var budget in budgets)
@@ -42,7 +43,7 @@ namespace MoneyRecord.Services
                     OriginalLimitAmount = budget.LimitAmount,
                     LimitAmount = BudgetProjectionHelper.CalculateProjectedLimit(
                         budget.LimitAmount, budget.Period, period, customStartDate, customEndDate),
-                    SpentAmount = await _balanceService.GetCategoryExpensesAsync(budget.CategoryId, startDate, endDate)
+                    SpentAmount = spentByCategory.GetValueOrDefault(budget.CategoryId)
                 };
                 progress.CalculateProgress();
                 progressList.Add(progress);

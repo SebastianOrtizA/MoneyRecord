@@ -1,6 +1,6 @@
 # Stage 7: Architecture Refactor
 
-**Status**: In progress (7.1–7.3 done)
+**Status**: In progress (7.1–7.4 done)
 **Depends on**: Stage 6 (money format + migrations must land first)
 **Complexity**: High (wide but mechanical; no user-visible change)
 **Source**: Product & engineering review, 2026-10-11 (engineering findings)
@@ -122,6 +122,25 @@ no duplicated business rules. Behaviour must not change; the device check before
 - SQL aggregates in `BalanceService`: `SELECT AccountId, Type, SUM(AmountMinor) … GROUP BY` instead of loading all rows.
 - Budget loading: one query for categories + one grouped spend query (no per-budget round trips).
 - `IUnitOfWork` / `RunInTransactionAsync` helper used by the Stage 6 cascades.
+- Done as `RepositoryBase<T>` (models implement `IEntity`): GetAll/GetById (`FindAsync`)/Save (insert when ID 0,
+  else update)/Delete/DeleteById, each initializing the database first; `OnChanged` lets the cached Account and Category
+  repositories drop their cache. All six repositories derive from it (−200 lines). `DatabaseInitializer` gained
+  `GetConnectionAsync()` and `RunInTransactionAsync(work)`, used by AccountService/CategoryService (cascades),
+  DataExportService (backup snapshot + restore) and the repositories; nothing reads `Database!` after `InitializeAsync()`
+  any more. **SQL totals**: `TransactionRepository.SumCentsAsync` (period total by type, optional category),
+  `SumCentsByCategoryAsync`, `SumCentsByAccountAsync`; `TransferRepository.SumCentsBySource/DestinationAsync` — all
+  `SUM(ABS(AmountCents)) … GROUP BY` with `MAX(Date)` for last activity. `BalanceService.GetAllAccountBalancesAsync` runs
+  four grouped queries instead of loading every transaction and transfer; `GetAccountBalanceAsync` reuses it.
+  **Budgets**: `BalanceService.GetExpensesByCategoryAsync` (one grouped query) feeds `BudgetSummaryService` (it already
+  loaded categories once since 7.3). The CSV export reads through the repositories. Removed (unused outside tests):
+  `GetTotalBalanceAsync`, `GetBalanceAsync`, `GetLastTransactionDateForAccountAsync`, `GetBalancesByCurrencyAsync` (the
+  Home card uses `CurrencyBalance.FromAccounts`, now tested directly) and the per-account/category list queries they used.
+  Tests: `BalanceServiceTests` now run against a temp SQLite file (the sums are SQL), `RepositoryBaseTests`,
+  `CurrencyBalanceTests` (265 pass).
+- **Deviation:** no separate `IUnitOfWork` type — `DatabaseInitializer.RunInTransactionAsync` is that helper (the services
+  already depended on `DatabaseInitializer`, and a sqlite-net transaction needs the raw connection anyway). The backup
+  still reads the six tables directly inside one transaction rather than through the repositories, because it must be a
+  point-in-time copy.
 
 ### 7.6 Async correctness
 - Property-changed handlers stop calling `_ = LoadDataAsync()`; use a single `AsyncRelayCommand` with

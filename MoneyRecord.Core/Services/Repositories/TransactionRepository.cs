@@ -1,78 +1,47 @@
 using MoneyRecord.Models;
-using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services.Repositories
 {
-    /// <summary>
-    /// SQLite implementation of Transaction repository.
-    /// Single responsibility: Transaction CRUD operations.
-    /// </summary>
-    public sealed class TransactionRepository : ITransactionRepository
+    public sealed class TransactionRepository(DatabaseInitializer database)
+        : RepositoryBase<Transaction>(database), Interfaces.ITransactionRepository
     {
-        private readonly DatabaseInitializer _dbInitializer;
-
-        public TransactionRepository(DatabaseInitializer dbInitializer)
-        {
-            _dbInitializer = dbInitializer;
-        }
-
-        private async Task EnsureInitializedAsync()
-        {
-            await _dbInitializer.InitializeAsync();
-        }
-
-        public async Task<List<Transaction>> GetAllAsync()
-        {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Transaction>().ToListAsync();
-        }
-
-        public async Task<Transaction?> GetByIdAsync(int id)
-        {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Transaction>()
-                .Where(t => t.Id == id)
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
-        {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Transaction>()
+        public async Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate) =>
+            await (await TableAsync())
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
+
+        public async Task<long> SumCentsAsync(TransactionType type, DateTime startDate, DateTime endDate, int? categoryId = null)
+        {
+            var db = await ConnectionAsync();
+            return categoryId is int id
+                ? await db.ExecuteScalarAsync<long>(
+                    "SELECT COALESCE(SUM(ABS(AmountCents)), 0) FROM \"Transaction\" WHERE Type = ? AND Date >= ? AND Date <= ? AND CategoryId = ?",
+                    type, startDate, endDate, id)
+                : await db.ExecuteScalarAsync<long>(
+                    "SELECT COALESCE(SUM(ABS(AmountCents)), 0) FROM \"Transaction\" WHERE Type = ? AND Date >= ? AND Date <= ?",
+                    type, startDate, endDate);
         }
 
-        public async Task<List<Transaction>> GetByAccountIdAsync(int accountId)
+        public async Task<Dictionary<int, long>> SumCentsByCategoryAsync(TransactionType type, DateTime startDate, DateTime endDate)
         {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Transaction>()
-                .Where(t => t.AccountId == accountId)
-                .ToListAsync();
+            var rows = await (await ConnectionAsync()).QueryAsync<CategoryTotal>(
+                "SELECT CategoryId, SUM(ABS(AmountCents)) AS Cents FROM \"Transaction\" " +
+                "WHERE Type = ? AND Date >= ? AND Date <= ? GROUP BY CategoryId",
+                type, startDate, endDate);
+            return rows.ToDictionary(r => r.CategoryId, r => r.Cents);
         }
 
-        public async Task<List<Transaction>> GetByCategoryIdAsync(int categoryId)
-        {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.Table<Transaction>()
-                .Where(t => t.CategoryId == categoryId)
-                .ToListAsync();
-        }
+        public async Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type) =>
+            await (await ConnectionAsync()).QueryAsync<AccountTotal>(
+                "SELECT AccountId, SUM(ABS(AmountCents)) AS Cents, MAX(Date) AS LastDateTicks FROM \"Transaction\" " +
+                "WHERE Type = ? AND AccountId IS NOT NULL GROUP BY AccountId",
+                type);
 
-        public async Task<int> SaveAsync(Transaction entity)
+        private sealed class CategoryTotal
         {
-            await EnsureInitializedAsync();
-            if (entity.Id != 0)
-            {
-                return await _dbInitializer.Database!.UpdateAsync(entity);
-            }
-            return await _dbInitializer.Database!.InsertAsync(entity);
-        }
+            public int CategoryId { get; set; }
 
-        public async Task<int> DeleteAsync(Transaction entity)
-        {
-            await EnsureInitializedAsync();
-            return await _dbInitializer.Database!.DeleteAsync(entity);
+            public long Cents { get; set; }
         }
     }
 }

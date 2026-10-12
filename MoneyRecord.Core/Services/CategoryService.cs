@@ -17,8 +17,7 @@ namespace MoneyRecord.Services
 
         public async Task<CategoryUsage> GetUsageAsync(int categoryId)
         {
-            await _dbInitializer.InitializeAsync();
-            var db = _dbInitializer.Database!;
+            var db = await _dbInitializer.GetConnectionAsync();
 
             return new CategoryUsage(
                 await db.Table<Transaction>().CountAsync(t => t.CategoryId == categoryId),
@@ -28,12 +27,11 @@ namespace MoneyRecord.Services
 
         public async Task<CategoryDeleteResult> DeleteAsync(int categoryId, int? replacementId)
         {
-            await _dbInitializer.InitializeAsync();
             CategoryDeleteResult? result = null;
 
             try
             {
-                await _dbInitializer.Database!.RunInTransactionAsync(db =>
+                await _dbInitializer.RunInTransactionAsync(db =>
                 {
                     var category = db.Find<Category>(categoryId)
                         ?? throw new InvalidOperationException($"Category {categoryId} does not exist.");

@@ -49,6 +49,23 @@ namespace MoneyRecord.Services.Repositories
             }
         }
 
+        /// <summary>The open connection, initializing the database first if needed.</summary>
+        public async Task<SQLiteAsyncConnection> GetConnectionAsync()
+        {
+            await InitializeAsync();
+            return Database!;
+        }
+
+        /// <summary>
+        /// Runs <paramref name="work"/> in one SQLite transaction: all of it is written, or nothing when it throws.
+        /// For changes that span tables (delete cascades, restore) or a consistent read of several tables.
+        /// </summary>
+        public async Task RunInTransactionAsync(Action<SQLiteConnection> work)
+        {
+            var db = await GetConnectionAsync();
+            await db.RunInTransactionAsync(work);
+        }
+
         /// <summary>
         /// Creates or updates the tables from the models (latest schema). A new database is stamped with
         /// the latest version; a database from an older app version runs its pending migrations.

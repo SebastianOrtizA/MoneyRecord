@@ -18,6 +18,7 @@ public class BudgetSummaryServiceTests
     public BudgetSummaryServiceTests()
     {
         _sut = new BudgetSummaryService(_budgets, _categories, _balance);
+        _balance.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, decimal>());
         _categories.GetAllAsync().Returns(new List<Category>
         {
             new() { Id = 1, Name = "Food", IconCode = "F0001" },
@@ -42,8 +43,7 @@ public class BudgetSummaryServiceTests
             new() { Id = 11, CategoryId = 2, LimitAmount = 100m, Period = BudgetPeriod.Month }
         });
         var (start, end) = DateRangeHelper.GetDateRange(PeriodType.CalendarMonth);
-        _balance.GetCategoryExpensesAsync(1, start, end).Returns(20m);
-        _balance.GetCategoryExpensesAsync(2, start, end).Returns(120m);
+        _balance.GetExpensesByCategoryAsync(start, end).Returns(new Dictionary<int, decimal> { [1] = 20m, [2] = 120m });
 
         var summary = await _sut.GetSummaryAsync(PeriodType.CalendarMonth);
 

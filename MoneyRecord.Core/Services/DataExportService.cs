@@ -26,6 +26,7 @@ namespace MoneyRecord.Services
         private readonly DatabaseInitializer _dbInitializer;
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly ITransactionRepository _transactionRepository;
         private readonly IAppPaths _paths;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
@@ -33,11 +34,12 @@ namespace MoneyRecord.Services
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, IAppPaths paths)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, IAppPaths paths)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
+            _transactionRepository = transactionRepository;
             _paths = paths;
         }
 
@@ -45,21 +47,13 @@ namespace MoneyRecord.Services
 
         private string ReceiptsFolder => _paths.ReceiptsFolder;
 
-        private async Task EnsureInitializedAsync()
-        {
-            await _dbInitializer.InitializeAsync();
-        }
-
         // ---- Backup ----
 
         public async Task ExportBackupAsync(string destinationPath)
         {
-            await EnsureInitializedAsync();
-            var db = _dbInitializer.Database!;
-
             // One transaction: a point-in-time copy, even if recurring processing writes meanwhile
             BackupData backup = null!;
-            await db.RunInTransactionAsync(conn => backup = new BackupData
+            await _dbInitializer.RunInTransactionAsync(conn => backup = new BackupData
             {
                 ExportDate = DateTime.Now,
                 Version = BackupVersion,
@@ -119,9 +113,6 @@ namespace MoneyRecord.Services
 
         public async Task<RestoreResult> RestoreAsync(string backupPath)
         {
-            await EnsureInitializedAsync();
-            var db = _dbInitializer.Database!;
-
             // Receipts are unpacked next to the live folder and only moved in once the database restore succeeded
             var staging = ReceiptsFolder + ".restoring";
             DeleteDirectory(staging);
@@ -135,7 +126,7 @@ namespace MoneyRecord.Services
                 await ExportBackupAsync(snapshotPath);
 
                 var count = 0;
-                await db.RunInTransactionAsync(conn => count = ReplaceAll(conn, backup));
+                await _dbInitializer.RunInTransactionAsync(conn => count = ReplaceAll(conn, backup));
                 _accountRepository.InvalidateCache();
                 _categoryRepository.InvalidateCache();
 
@@ -322,12 +313,9 @@ namespace MoneyRecord.Services
 
         public async Task<string> ExportCsvAsync()
         {
-            await EnsureInitializedAsync();
-            var db = _dbInitializer.Database!;
-
-            var transactions = await db.Table<Transaction>().ToListAsync();
-            var categories = (await db.Table<Category>().ToListAsync()).ToDictionary(c => c.Id);
-            var accounts = (await db.Table<Account>().ToListAsync()).ToDictionary(a => a.Id);
+            var transactions = await _transactionRepository.GetAllAsync();
+            var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id);
+            var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
 
             var sb = new StringBuilder();
             sb.AppendLine("Date,Description,Amount,Type,Category,Account");

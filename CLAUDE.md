@@ -48,7 +48,9 @@ crashes at runtime (XAML is inflated at runtime there).
   (AccountBalanceInfo, CurrencyBalance, LedgerEntry, TransactionGroup, TransactionFilter/FilterOption,
   CategoryAmount/CategoryReport (report shares + heat level), BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
-- `Services/Repositories/` — SQLite repositories + `DatabaseInitializer` (schema, seed data, runs migrations)
+- `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
+  `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
+  `GetConnectionAsync`, `RunInTransactionAsync`)
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerQueryService (Home rows: transactions + transfers
   as `LedgerEntry`), BudgetSummaryService (budget progress for a period: Home card + Budget page),
@@ -112,7 +114,9 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   and stamped with the latest version; a migration only transforms a database from an older app version (after
   `CreateTableAsync` has added new columns/indexes). Add new migrations at the end of `MigrationRunner.All`; set
   `RewritesData = true` to get a `moneyrecord.db3.bak-v{n}` backup first. Indexes are `[Indexed(Name = "IX_…")]` on the models
-- Multi-row changes go through `RunInTransactionAsync` (deletes in AccountService/CategoryService, restore)
+- Multi-row changes go through `DatabaseInitializer.RunInTransactionAsync` (deletes in AccountService/CategoryService,
+  backup snapshot, restore)
+- Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row
 - Backups: `.zip` with `data.json` (format v3, rows keep their IDs) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization
