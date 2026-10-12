@@ -171,7 +171,10 @@ no duplicated business rules. Behaviour must not change; the device check before
   deletes, unused `FailedToLoadData`/`FailedToToggleView` removed. A cancellation is never shown. App/AppShell log
   through `ILogger` instead of `Debug.WriteLine`; `MainPage` lost its own try/catch. Tests: `DebouncerTests`,
   `LedgerTransfersTests`, `TransactionFilterViewModelTests` (first ViewModel tests), `LedgerServiceTests` (delete),
-  `CurrencyBalanceTests`, `ErrorHandlerTests` (284 pass).
+  `CurrencyBalanceTests`, `ErrorHandlerTests` (285 pass). Review: a cancellation reaching `ErrorHandler` is logged at Debug;
+  `Debouncer`/`TransactionFilterViewModel` take a `TimeProvider` and their tests use `FakeTimeProvider`
+  (`Microsoft.Extensions.TimeProvider.Testing`, MIT); only the latest debounced call runs; Budget runs its two queries
+  together; `App` gets its service and logger by constructor injection.
 - **Deviations:** (1) No `IncludeCancelCommand`: nothing in the UI cancels a load, and `AllowConcurrentExecutions`
   already cancels the previous run. (2) `MainViewModel` is 350 lines (was 455), not ~300: what is left is ~22
   one-line bindable properties, the load and the commands; Stage 8's Home redesign (bottom tabs) is the natural next split.

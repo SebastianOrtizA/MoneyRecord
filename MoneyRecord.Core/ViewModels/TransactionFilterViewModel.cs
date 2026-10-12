@@ -52,9 +52,9 @@ namespace MoneyRecord.ViewModels
             new(TransactionType.Transfer, AppResources.Transfers)
         ];
 
-        public TransactionFilterViewModel(TimeSpan? typingDelay = null)
+        public TransactionFilterViewModel(TimeSpan? typingDelay = null, TimeProvider? timeProvider = null)
         {
-            _typingDebouncer = new Debouncer(typingDelay ?? DefaultTypingDelay);
+            _typingDebouncer = new Debouncer(typingDelay ?? DefaultTypingDelay, timeProvider);
             selectedType = Types[0];
         }
 

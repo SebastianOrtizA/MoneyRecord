@@ -5,9 +5,14 @@ namespace MoneyRecord
 {
     public partial class App : Application
     {
-        public App()
+        private readonly IRecurringTransactionService _recurringTransactionService;
+        private readonly ILogger<App> _logger;
+
+        public App(IRecurringTransactionService recurringTransactionService, ILogger<App> logger)
         {
             InitializeComponent();
+            _recurringTransactionService = recurringTransactionService;
+            _logger = logger;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
@@ -26,15 +31,11 @@ namespace MoneyRecord
         {
             try
             {
-                var service = IPlatformApplication.Current?.Services.GetService<IRecurringTransactionService>();
-                if (service != null)
-                {
-                    await service.ProcessDueTransactionsAsync();
-                }
+                await _recurringTransactionService.ProcessDueTransactionsAsync();
             }
             catch (Exception ex)
             {
-                IPlatformApplication.Current?.Services.GetService<ILogger<App>>()?.LogError(ex, "Failed to process recurring transactions");
+                _logger.LogError(ex, "Failed to process recurring transactions");
             }
         }
     }

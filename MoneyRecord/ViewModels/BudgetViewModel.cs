@@ -104,10 +104,14 @@ namespace MoneyRecord.ViewModels
             {
                 IsLoading = true;
 
-                var budgetProgressList = await _budgetSummaryService.GetSummaryAsync(
+                var summaryTask = _budgetSummaryService.GetSummaryAsync(
                     SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
-                var availableCategories = await GetAvailableCategoriesAsync();
+                var categoriesTask = GetAvailableCategoriesAsync();
+                await Task.WhenAll(summaryTask, categoriesTask);
                 cancellationToken.ThrowIfCancellationRequested();
+
+                var budgetProgressList = await summaryTask;
+                var availableCategories = await categoriesTask;
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {

@@ -36,12 +36,12 @@ public class ErrorHandlerTests
     }
 
     [Fact]
-    public async Task Ignores_a_cancelled_load()
+    public async Task A_cancellation_is_not_shown_but_logged_at_debug_level()
     {
         await CreateHandler().HandleAsync(new OperationCanceledException(), "Could not load");
 
         await _dialogs.DidNotReceiveWithAnyArgs().AlertAsync(default!, default!);
-        _logger.Entries.Should().BeEmpty();
+        _logger.Entries.Should().ContainSingle(e => e.Level == LogLevel.Debug && e.Exception is OperationCanceledException);
     }
 
     private sealed class RecordingLogger : ILogger<ErrorHandler>

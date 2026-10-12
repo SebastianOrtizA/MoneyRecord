@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Microsoft.Extensions.Time.Testing;
 using MoneyRecord.Models;
 using MoneyRecord.ViewModels;
 using Xunit;
@@ -7,27 +8,28 @@ namespace MoneyRecord.Tests.ViewModels;
 
 public class TransactionFilterViewModelTests
 {
-    private static readonly TimeSpan TypingDelay = TimeSpan.FromMilliseconds(50);
+    private readonly FakeTimeProvider _clock = new();
 
-    private readonly TransactionFilterViewModel _sut = new(TypingDelay);
+    private readonly TransactionFilterViewModel _sut;
     private int _changes;
 
     public TransactionFilterViewModelTests()
     {
+        _sut = new TransactionFilterViewModel(timeProvider: _clock);
         _sut.Changed += () => _changes++;
     }
 
-    private static Task TypingPause() => Task.Delay(TypingDelay * 4);
+    private void TypingPause() => _clock.Advance(TransactionFilterViewModel.DefaultTypingDelay);
 
     [Fact]
-    public async Task Typing_changes_the_filter_once_after_the_pause()
+    public void Typing_changes_the_filter_once_after_the_pause()
     {
         _sut.SearchText = "c";
         _sut.SearchText = "co";
         _sut.SearchText = "coffee";
         _changes.Should().Be(0);
 
-        await TypingPause();
+        TypingPause();
 
         _changes.Should().Be(1);
         _sut.ToFilter(ascending: false).SearchText.Should().Be("coffee");
@@ -43,27 +45,27 @@ public class TransactionFilterViewModelTests
     }
 
     [Fact]
-    public async Task The_search_key_does_not_wait_and_drops_the_pending_change()
+    public void The_search_key_does_not_wait_and_drops_the_pending_change()
     {
         _sut.SearchText = "rent";
         _sut.SearchCommand.Execute(null);
         _changes.Should().Be(1);
 
-        await TypingPause();
+        TypingPause();
 
         _changes.Should().Be(1);
     }
 
     [Fact]
-    public async Task Clear_resets_everything_with_one_change()
+    public void Clear_resets_everything_with_one_change()
     {
         _sut.SelectedCategory = new FilterOption(3, "Food");
         _sut.MinAmountText = "10";
-        await TypingPause();
+        TypingPause();
         _changes = 0;
 
         _sut.ClearCommand.Execute(null);
-        await TypingPause();
+        TypingPause();
 
         _changes.Should().Be(1);
         var filter = _sut.ToFilter(ascending: false);
