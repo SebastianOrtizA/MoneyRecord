@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
-             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.TrendsReportPage"
              x:DataType="viewmodels:TrendsReportViewModel"
              Title="{ext:Localize Trends}">
@@ -106,8 +105,6 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Floating Action Menu -->
-        <controls:FloatingActionMenu />
     </Grid>
 
 </ContentPage>

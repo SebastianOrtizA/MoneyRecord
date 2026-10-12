@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: Pending
+**Status**: In progress (8.1 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -17,6 +17,19 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
   point: a single FAB that opens a bottom sheet (Expense / Income / Transfer). Removes the overlap with Edit and sort
   buttons (N5) and the duplicate add buttons (N6).
 - Every tab and More item has a distinct icon (MDI `FontImageSource`).
+- Done as a Shell `TabBar` with implicit tab routes, so tab pages stay one-segment roots (`//MainPage`, `//MorePage`)
+  and `NavigationHistory` needed no logic change. Reports is one tab with Expenses / Incomes / Trends as top tabs until
+  the hub (8.7). More (`MorePage` + `MoreViewModel`) pushes Accounts, Categories, Recurring, Transfers and Settings as
+  registered routes, so back returns to More. Categories is one page with an Income / Expense switch
+  (`SelectCategoryTypeCommand`) instead of two Shell routes. The draggable `FloatingActionMenu` + `FabComponents` and
+  Home's three round add buttons are gone; `Controls/AddEntryButton` is a fixed FAB that opens an Expense / Income /
+  Transfer bottom sheet (in-page overlay, slides up; Android back closes it first via `AppShell`), on Home and
+  Transactions only. Add pages hide the tab bar. Android `dimens.xml` keeps the active tab label at 12sp so
+  "Transacciones" / "Presupuestos" aren't cut off.
+  **Deviation:** the full list (search, filters, grouping, sort, edit/delete) moved from Home to a new
+  `TransactionsPage` + `TransactionsViewModel` now, so the Transactions tab isn't empty; that is the first bullet of
+  8.3 (chips, swipe, detail sheet and empty state stay in 8.3). Home lost the list and the quick add buttons;
+  `MainViewModel` is down to the cards, Recent and budgets. The Recent card's "See all" link is still 8.2.
 
 ### 8.2 Home
 - Balance card shows one subtotal per currency (from Stage 6.5). Tapping a currency row opens the Accounts screen

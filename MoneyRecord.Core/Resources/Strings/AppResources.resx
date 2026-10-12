@@ -1079,4 +1079,16 @@ Amount: {2}</value>
   <data name="FailedToDeleteCategory" xml:space="preserve">
     <value>Failed to delete category</value>
   </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Budgets</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>More</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Add new</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using MoneyRecord.Controls;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
@@ -16,6 +17,13 @@ namespace MoneyRecord
 
             Routing.RegisterRoute(nameof(AddTransactionPage), typeof(AddTransactionPage));
             Routing.RegisterRoute(nameof(AddTransferPage), typeof(AddTransferPage));
+
+            // Opened from the More tab
+            Routing.RegisterRoute(nameof(ManageAccountsPage), typeof(ManageAccountsPage));
+            Routing.RegisterRoute(nameof(ManageCategoriesPage), typeof(ManageCategoriesPage));
+            Routing.RegisterRoute(nameof(RecurringTransactionsPage), typeof(RecurringTransactionsPage));
+            Routing.RegisterRoute(nameof(TransfersPage), typeof(TransfersPage));
+            Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
 
             // The DI singleton: a private fallback would keep a second history the ViewModels never see
             var services = IPlatformApplication.Current!.Services;
@@ -36,11 +44,15 @@ namespace MoneyRecord
         }
 
         /// <summary>
-        /// Back goes to the previous page, then to Home; on Home with no history the app closes.
+        /// Back closes an open add sheet first, then goes to the previous page, then to Home; on Home with no
+        /// history the app closes.
         /// MainActivity routes the Android back gesture here.
         /// </summary>
         protected override bool OnBackButtonPressed()
         {
+            if (CurrentPage?.FindByName<AddEntryButton>("AddEntry")?.TryClose() == true)
+                return true;
+
             var currentRoute = CurrentState?.Location?.ToString() ?? "";
 
             // Home is a root, so its history is always empty: anywhere else, back has somewhere to go

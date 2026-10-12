@@ -347,8 +347,6 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- Floating Action Menu -->
-        <controls:FloatingActionMenu />
     </Grid>
 
 </ContentPage>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Place as the last child of a page's root Grid: the button sits bottom-right and the sheet covers the page -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Controls.AddEntryButton"
+             x:DataType="viewmodels:AddEntryViewModel">
+
+    <Grid>
+        <!-- Dimmed page behind the sheet; tapping it closes the sheet -->
+        <BoxView x:Name="Scrim"
+                 BackgroundColor="#80000000"
+                 IsVisible="{Binding IsOpen}">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseCommand}"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <Border x:Name="Sheet"
+                IsVisible="{Binding IsOpen}"
+                VerticalOptions="End"
+                Padding="16,12,16,24"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 20,20,0,0"
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+            <VerticalStackLayout Spacing="4">
+                <Border WidthRequest="36"
+                        HeightRequest="4"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 2"
+                        HorizontalOptions="Center"
+                        Margin="0,0,0,8"
+                        BackgroundColor="{AppThemeBinding Light=#BDBDBD, Dark=#616161}"/>
+                <Label Text="{ext:Localize AddNew}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       Margin="4,0,0,8"/>
+
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16" Padding="4,10">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddExpenseCommand}"/>
+                    </Grid.GestureRecognizers>
+                    <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
+                            BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}">
+                        <Label Text="&#xF0374;" FontFamily="MaterialDesignIcons" FontSize="24" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Grid.Column="1" Text="{ext:Localize Expense}" FontSize="16" VerticalOptions="Center"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16" Padding="4,10">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddIncomeCommand}"/>
+                    </Grid.GestureRecognizers>
+                    <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
+                            BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}">
+                        <Label Text="&#xF0415;" FontFamily="MaterialDesignIcons" FontSize="24" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Grid.Column="1" Text="{ext:Localize Income}" FontSize="16" VerticalOptions="Center"/>
+                </Grid>
+
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16" Padding="4,10">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddTransferCommand}"/>
+                    </Grid.GestureRecognizers>
+                    <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
+                            BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}">
+                        <Label Text="&#xF04E1;" FontFamily="MaterialDesignIcons" FontSize="24" TextColor="White"
+                               HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <Label Grid.Column="1" Text="{ext:Localize Transfer}" FontSize="16" VerticalOptions="Center"/>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize AddNew}"
+                IsVisible="{Binding IsOpen, Converter={StaticResource InvertedBoolConverter}}"
+                Command="{Binding OpenCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}"/>
+    </Grid>
+</ContentView>

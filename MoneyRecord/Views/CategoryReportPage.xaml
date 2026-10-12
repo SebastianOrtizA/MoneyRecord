@@ -8,7 +8,6 @@
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              xmlns:helpers="clr-namespace:MoneyRecord.Helpers;assembly=MoneyRecord.Core"
-             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:converters="clr-namespace:MoneyRecord.Converters"
              x:Class="MoneyRecord.Views.CategoryReportPage"
              x:DataType="viewmodels:CategoryReportViewModel"
@@ -396,7 +395,5 @@
             </ScrollView>
         </RefreshView>
 
-        <!-- Floating Action Menu -->
-        <controls:FloatingActionMenu />
     </Grid>
 </ContentPage>

@@ -1077,4 +1077,16 @@ Monto: {2}</value>
   <data name="FailedToDeleteCategory" xml:space="preserve">
     <value>Error al eliminar la categoría</value>
   </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reportes</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Presupuestos</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Más</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Agregar</value>
+  </data>
 </root>

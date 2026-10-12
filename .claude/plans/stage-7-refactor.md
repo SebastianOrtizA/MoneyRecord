@@ -1,6 +1,6 @@
 # Stage 7: Architecture Refactor
 
-**Status**: Done (7.1–7.6; 7.6 in review)
+**Status**: Done (7.1–7.6)
 **Depends on**: Stage 6 (money format + migrations must land first)
 **Complexity**: High (wide but mechanical; no user-visible change)
 **Source**: Product & engineering review, 2026-10-11 (engineering findings)

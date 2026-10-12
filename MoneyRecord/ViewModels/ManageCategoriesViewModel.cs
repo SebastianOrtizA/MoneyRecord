@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
-    [QueryProperty(nameof(CategoryType), "CategoryType")]
     public partial class ManageCategoriesViewModel : ObservableObject
     {
         private readonly ICategoryRepository _categoryRepository;
@@ -17,7 +16,10 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
 
         [ObservableProperty]
-        private CategoryType categoryType;
+        [NotifyPropertyChangedFor(nameof(IsExpenseType))]
+        private CategoryType categoryType = CategoryType.Expense;
+
+        public bool IsExpenseType => CategoryType == CategoryType.Expense;
 
         [ObservableProperty]
         private ObservableCollection<Category> categories = new();
@@ -62,6 +64,18 @@ namespace MoneyRecord.ViewModels
             NewCategoryIconCode = _categoryIconService.GetDefaultIconCode(CategoryType);
             UpdateIconSelection(NewCategoryIconCode);
             await LoadCategoriesAsync();
+        }
+
+        /// <summary>The Income / Expense switch at the top of the page.</summary>
+        [RelayCommand]
+        private async Task SelectCategoryTypeAsync(CategoryType type)
+        {
+            if (type == CategoryType)
+                return;
+
+            CancelEdit();
+            CategoryType = type;
+            await InitializeAsync();
         }
 
         private void LoadAvailableIcons()

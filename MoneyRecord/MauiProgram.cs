@@ -64,13 +64,15 @@ namespace MoneyRecord
 
             // Register ViewModels
             builder.Services.AddSingleton<MainViewModel>();
+            builder.Services.AddTransient<TransactionsViewModel>();
+            builder.Services.AddTransient<MoreViewModel>();
             builder.Services.AddTransient<AddTransactionViewModel>();
             builder.Services.AddTransient<ManageCategoriesViewModel>();
             builder.Services.AddTransient<ManageAccountsViewModel>();
             builder.Services.AddTransient<TransfersViewModel>();
             builder.Services.AddTransient<AddTransferViewModel>();
             builder.Services.AddTransient<CategoryReportViewModel>();
-            builder.Services.AddTransient<FloatingMenuViewModel>();
+            builder.Services.AddTransient<AddEntryViewModel>();
             builder.Services.AddTransient<BudgetViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
@@ -78,6 +80,8 @@ namespace MoneyRecord
 
             // Register Views
             builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddTransient<TransactionsPage>();
+            builder.Services.AddTransient<MorePage>();
             builder.Services.AddTransient<AddTransactionPage>();
             builder.Services.AddTransient<ManageCategoriesPage>();
             builder.Services.AddTransient<ManageAccountsPage>();

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.MorePage"
+             x:DataType="viewmodels:MoreViewModel"
+             Title="{ext:Localize More}">
+
+    <ContentPage.Resources>
+        <Style x:Key="MoreIcon" TargetType="Label">
+            <Setter Property="FontFamily" Value="MaterialDesignIcons"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+        </Style>
+        <Style x:Key="MoreChevron" TargetType="Label">
+            <Setter Property="FontFamily" Value="MaterialDesignIcons"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="0,8">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="ManageAccountsPage"/>
+                </Grid.GestureRecognizers>
+                <Label Text="&#xF0070;" Style="{StaticResource MoreIcon}"/>
+                <Label Grid.Column="1" Text="{ext:Localize Accounts}" FontSize="16" VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="&#xF0142;" Style="{StaticResource MoreChevron}"/>
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="ManageCategoriesPage"/>
+                </Grid.GestureRecognizers>
+                <Label Text="&#xF0831;" Style="{StaticResource MoreIcon}"/>
+                <Label Grid.Column="1" Text="{ext:Localize Categories}" FontSize="16" VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="&#xF0142;" Style="{StaticResource MoreChevron}"/>
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="RecurringTransactionsPage"/>
+                </Grid.GestureRecognizers>
+                <Label Text="&#xF0456;" Style="{StaticResource MoreIcon}"/>
+                <Label Grid.Column="1" Text="{ext:Localize RecurringTransactions}" FontSize="16" VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="&#xF0142;" Style="{StaticResource MoreChevron}"/>
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="TransfersPage"/>
+                </Grid.GestureRecognizers>
+                <Label Text="&#xF04E1;" Style="{StaticResource MoreIcon}"/>
+                <Label Grid.Column="1" Text="{ext:Localize Transfers}" FontSize="16" VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="&#xF0142;" Style="{StaticResource MoreChevron}"/>
+            </Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenCommand}" CommandParameter="SettingsPage"/>
+                </Grid.GestureRecognizers>
+                <Label Text="&#xF0493;" Style="{StaticResource MoreIcon}"/>
+                <Label Grid.Column="1" Text="{ext:Localize Settings}" FontSize="16" VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="&#xF0142;" Style="{StaticResource MoreChevron}"/>
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

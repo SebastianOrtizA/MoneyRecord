@@ -66,7 +66,12 @@ case "$cmd" in
   text)  adb shell input text "${1// /%s}" ;;
   key)   adb shell input keyevent "$1" ;;
   back)  adb shell input keyevent KEYCODE_BACK ;;
-  menu)  adb shell input tap 72 210 ;;   # Shell flyout hamburger (1080x2400 screen)
+  tab)   # Bottom tab bar (1080x2400 screen)
+    case "$1" in
+      home) x=108 ;; transactions) x=323 ;; reports) x=539 ;; budgets) x=755 ;; more) x=971 ;;
+      *) echo "tab: home|transactions|reports|budgets|more" >&2; exit 2 ;;
+    esac
+    adb shell input tap "$x" 2262 ;;
   locale)
     # Per-app language (Android 13+). "reset" returns to the system language. Relaunches the app.
     if [ "${1:-}" = "reset" ]; then adb shell cmd locale set-app-locales "$PKG" --locales ""
@@ -89,6 +94,6 @@ case "$cmd" in
     adb emu kill
     ;;
   help|*)
-    sed -n '2,4p' "$0"; echo "commands: boot deploy launch shot tap swipe text key back menu locale fresh crash stop"
+    sed -n '2,4p' "$0"; echo "commands: boot deploy launch shot tap swipe text key back tab locale fresh crash stop"
     ;;
 esac
