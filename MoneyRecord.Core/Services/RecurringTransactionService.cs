@@ -53,7 +53,7 @@ namespace MoneyRecord.Services
                     created++;
 
                     recurring.LastProcessedDate = recurring.NextOccurrence;
-                    recurring.NextOccurrence = RecurrenceCalculator.Next(recurring.NextOccurrence, recurring.Frequency, recurring.DayOfMonth);
+                    recurring.NextOccurrence = RecurrenceCalculator.Next(recurring.NextOccurrence, recurring.Frequency, recurring.EffectiveDayOfMonth);
                 }
 
                 await _recurringRepo.SaveAsync(recurring);

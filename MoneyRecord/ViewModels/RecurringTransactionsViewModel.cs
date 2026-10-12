@@ -177,7 +177,7 @@ namespace MoneyRecord.ViewModels
                 var now = DateTime.Now;
                 if (EditingItem.NextOccurrence <= now)
                 {
-                    EditingItem.NextOccurrence = RecurrenceCalculator.NextAfter(now, frequency, dayOfMonth);
+                    EditingItem.NextOccurrence = RecurrenceCalculator.NextAfter(now, frequency, EditingItem.EffectiveDayOfMonth);
                 }
 
                 await _recurringRepo.SaveAsync(EditingItem);

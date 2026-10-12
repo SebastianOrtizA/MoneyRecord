@@ -46,7 +46,11 @@ namespace MoneyRecord.Converters
             throw new NotImplementedException();
         }
 
-        /// <summary>The legend's "Medium" swatch is a mid shade of each palette.</summary>
+        /// <summary>
+        /// The legend's "Medium" swatch, as the two report pages had it: the expense palette starts with four near-white
+        /// pinks, so its first clearly pink shade (#FFCDD2, level 3) reads as medium; the income palette is evenly
+        /// spread, so its middle green (#4CAF50, level 5) does.
+        /// </summary>
         private static int LegendLevel(CategoryType type, string? swatch) => swatch switch
         {
             "Low" => 0,

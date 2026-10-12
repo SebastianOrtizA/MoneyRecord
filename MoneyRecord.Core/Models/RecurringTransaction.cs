@@ -36,6 +36,13 @@ namespace MoneyRecord.Models
 
         public int? DayOfMonth { get; set; }
 
+        /// <summary>
+        /// The day a monthly recurrence falls on: <see cref="DayOfMonth"/> when set, otherwise the start date's day,
+        /// so one starting on the 31st goes Feb 28 → Mar 31 instead of staying on the 28th.
+        /// </summary>
+        [Ignore]
+        public int? EffectiveDayOfMonth => Frequency == RecurrenceFrequency.Monthly ? DayOfMonth ?? StartDate.Day : DayOfMonth;
+
         public DateTime StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }

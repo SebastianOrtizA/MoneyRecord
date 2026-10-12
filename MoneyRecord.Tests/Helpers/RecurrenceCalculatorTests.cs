@@ -32,6 +32,27 @@ public class RecurrenceCalculatorTests
     }
 
     [Fact]
+    public void A_monthly_recurrence_without_a_day_keeps_its_start_day()
+    {
+        var recurring = new RecurringTransaction { Frequency = RecurrenceFrequency.Monthly, StartDate = new DateTime(2026, 1, 31, 10, 0, 0) };
+
+        var feb = RecurrenceCalculator.Next(recurring.StartDate, recurring.Frequency, recurring.EffectiveDayOfMonth);
+        var mar = RecurrenceCalculator.Next(feb, recurring.Frequency, recurring.EffectiveDayOfMonth);
+
+        feb.Should().Be(new DateTime(2026, 2, 28));
+        mar.Should().Be(new DateTime(2026, 3, 31));
+    }
+
+    [Fact]
+    public void EffectiveDayOfMonth_prefers_the_chosen_day_and_is_null_for_other_frequencies()
+    {
+        new RecurringTransaction { Frequency = RecurrenceFrequency.Monthly, DayOfMonth = 5, StartDate = new DateTime(2026, 1, 31) }
+            .EffectiveDayOfMonth.Should().Be(5);
+        new RecurringTransaction { Frequency = RecurrenceFrequency.Weekly, StartDate = new DateTime(2026, 1, 31) }
+            .EffectiveDayOfMonth.Should().BeNull();
+    }
+
+    [Fact]
     public void The_day_of_month_only_applies_to_monthly()
     {
         RecurrenceCalculator.Next(new DateTime(2026, 3, 10), RecurrenceFrequency.Weekly, 31)

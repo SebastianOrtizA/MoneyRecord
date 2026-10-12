@@ -105,12 +105,14 @@ no duplicated business rules. Behaviour must not change; the device check before
   the last tick, not 23:59:59); only `AddTransactionViewModel` still needed one (7.3 moved the others to
   `BudgetSummaryService`, which uses the selected period). **Recurrence** — `RecurrenceCalculator.Next` (service, new
   recurring) and `NextAfter` (editing a due recurrence); occurrences are dates at 00:00, and a clamped day (31 → Feb 28)
-  returns to the 31st next month (`NextAfter` used `AddMonths` on the clamped date and stayed on the 28th).
+  returns to the 31st next month (`NextAfter` used `AddMonths` on the clamped date and stayed on the 28th). A monthly
+  recurrence without a chosen day keeps its start date's day (`RecurringTransaction.EffectiveDayOfMonth`), so it no
+  longer drifts Jan 31 → Feb 28 → Mar 28.
   **Icons** — no hex parsing outside `IconHelper`. **Converters** — one file each; unused `StringEquals`,
   `IconSelectionColor`, `IconSelectionBackground` deleted; `InvertedBool`, `IntToBool`, `StringToBool` →
   CommunityToolkit (`InvertedBoolConverter`, `IntToBoolConverter`, `IsStringNotNullOrEmptyConverter`) with
   `SetShouldSuppressExceptionsInConverters(true)` so a null input doesn't throw. Tests: `CategoryReportBuilderTests`,
-  `RecurrenceCalculatorTests`, `GetBudgetWindow` (266 pass).
+  `RecurrenceCalculatorTests`, `GetBudgetWindow` (268 pass).
 - **Visible changes:** the income legend's "Medium" label is black (contrast rule) instead of white; the expense legend's
   border now also frames the income "Low" swatch; heatmap tiles no longer keep a selection highlight (they open the
   details on tap, as before). Transactions created by a recurrence get 00:00 instead of the original time of day.

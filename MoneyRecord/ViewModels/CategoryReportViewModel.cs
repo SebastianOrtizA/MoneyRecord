@@ -73,10 +73,8 @@ namespace MoneyRecord.ViewModels
                 IsLoading = true;
 
                 var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
-                var transactionType = IsIncome ? TransactionType.Income : TransactionType.Expense;
-                _transactions = (await _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate))
-                    .Where(t => t.Type == transactionType)
-                    .ToList();
+                // All types: the builder keeps the report's type, and the popup filters by category ID
+                _transactions = await _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
 
                 var report = CategoryReportBuilder.Build(_transactions, Type);
                 Total = report.Total;
