@@ -46,7 +46,7 @@ crashes at runtime (XAML is inflated at runtime there).
 `MoneyRecord.Core/`
 - `Models/` — 6 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction. Plus display models
   (AccountBalanceInfo, CurrencyBalance, LedgerEntry, TransactionGroup, TransactionFilter/FilterOption,
-  BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
+  CategoryAmount/CategoryReport (report shares + heat level), BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — SQLite repositories + `DatabaseInitializer` (schema, seed data, runs migrations)
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
@@ -57,16 +57,19 @@ crashes at runtime (XAML is inflated at runtime there).
   LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (via `IDialogService`),
   NavigationHistory (back-button stack; `//Route` = root)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
-  IconHelper, PeriodHelper, ReceiptFiles, ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping
+  IconHelper (only place that parses icon hex codes), PeriodHelper, ReceiptFiles, ReceiptDraft, LedgerFilter (search/filter/sort
+  by IDs), LedgerGrouping, CategoryReportBuilder, RecurrenceCalculator (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow`
+  for a budget's current day/month/year)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 
 `MoneyRecord/` (app)
-- `ViewModels/` — 13 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 12 XAML pages with code-behind
+- `ViewModels/` — 12 ViewModels using [ObservableProperty] and [RelayCommand] source generators
+- `Views/` — 11 XAML pages with code-behind; `CategoryReportPage` serves both reports (`ExpenseReportPage` /
+  `IncomeReportPage` are code-only subclasses that set the type)
 - `Controls/` — FloatingActionMenu (draggable FAB, `FabComponents/`), DecimalEntry (numeric keyboard), ChartDrawables (Trends)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
-- `Converters/` — all value converters in a single file
-- `Models/CategoryReport.cs` — report display models with MAUI `Color` (replaced in Stage 7.4)
+- `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
+  IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
 - `Services/` — NavigationService, DialogService (Shell alerts/prompts/action sheets + toast), PreferencesService
   (MAUI Preferences). ViewModels use `IDialogService` / `INavigationService`, never `Shell.Current` or `Toast`
 - `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`

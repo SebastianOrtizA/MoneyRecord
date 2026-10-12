@@ -251,14 +251,7 @@ namespace MoneyRecord.ViewModels
                     return;
                 }
 
-                var now = DateTime.Now;
-                var (startDate, endDate) = budget.Period switch
-                {
-                    BudgetPeriod.Day => (now.Date, now.Date.AddDays(1).AddTicks(-1)),
-                    BudgetPeriod.Month => (new DateTime(now.Year, now.Month, 1), new DateTime(now.Year, now.Month, 1).AddMonths(1).AddTicks(-1)),
-                    BudgetPeriod.Year => (new DateTime(now.Year, 1, 1), new DateTime(now.Year, 12, 31, 23, 59, 59)),
-                    _ => (new DateTime(now.Year, now.Month, 1), new DateTime(now.Year, now.Month, 1).AddMonths(1).AddTicks(-1))
-                };
+                var (startDate, endDate) = DateRangeHelper.GetBudgetWindow(budget.Period, DateTime.Now);
 
                 var spent = await _balanceService.GetCategoryExpensesAsync(SelectedCategory.Id, startDate, endDate);
                 var remaining = budget.LimitAmount - spent;
@@ -373,25 +366,7 @@ namespace MoneyRecord.ViewModels
                         ? SelectedDayOfMonth
                         : null;
 
-                    DateTime nextOccurrence;
-                    if (dayOfMonth.HasValue)
-                    {
-                        var next = SelectedDate.AddMonths(1);
-                        var day = Math.Min(dayOfMonth.Value, DateTime.DaysInMonth(next.Year, next.Month));
-                        nextOccurrence = new DateTime(next.Year, next.Month, day);
-                    }
-                    else
-                    {
-                        nextOccurrence = frequency switch
-                        {
-                            RecurrenceFrequency.Daily => SelectedDate.AddDays(1),
-                            RecurrenceFrequency.Weekly => SelectedDate.AddDays(7),
-                            RecurrenceFrequency.Biweekly => SelectedDate.AddDays(14),
-                            RecurrenceFrequency.Monthly => SelectedDate.AddMonths(1),
-                            RecurrenceFrequency.Yearly => SelectedDate.AddYears(1),
-                            _ => SelectedDate.AddMonths(1)
-                        };
-                    }
+                    var nextOccurrence = RecurrenceCalculator.Next(SelectedDate, frequency, dayOfMonth);
 
                     var recurring = new RecurringTransaction
                     {

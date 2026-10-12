@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 
@@ -52,7 +53,7 @@ namespace MoneyRecord.Services
                     created++;
 
                     recurring.LastProcessedDate = recurring.NextOccurrence;
-                    recurring.NextOccurrence = CalculateNextOccurrence(recurring.NextOccurrence, recurring.Frequency, recurring.DayOfMonth);
+                    recurring.NextOccurrence = RecurrenceCalculator.Next(recurring.NextOccurrence, recurring.Frequency, recurring.EffectiveDayOfMonth);
                 }
 
                 await _recurringRepo.SaveAsync(recurring);
@@ -61,24 +62,5 @@ namespace MoneyRecord.Services
             return created;
         }
 
-        private static DateTime CalculateNextOccurrence(DateTime current, RecurrenceFrequency frequency, int? dayOfMonth)
-        {
-            if (frequency == RecurrenceFrequency.Monthly && dayOfMonth.HasValue)
-            {
-                var next = current.AddMonths(1);
-                var day = Math.Min(dayOfMonth.Value, DateTime.DaysInMonth(next.Year, next.Month));
-                return new DateTime(next.Year, next.Month, day, current.Hour, current.Minute, current.Second);
-            }
-
-            return frequency switch
-            {
-                RecurrenceFrequency.Daily => current.AddDays(1),
-                RecurrenceFrequency.Weekly => current.AddDays(7),
-                RecurrenceFrequency.Biweekly => current.AddDays(14),
-                RecurrenceFrequency.Monthly => current.AddMonths(1),
-                RecurrenceFrequency.Yearly => current.AddYears(1),
-                _ => current.AddMonths(1)
-            };
-        }
     }
 }

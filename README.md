@@ -124,9 +124,10 @@ Models (SQLite entities, money in cents)
 ```
 MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the app)
 ├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
-│                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping
+│                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping,
+│                       CategoryReportBuilder, RecurrenceCalculator
 ├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction (tables)
-│                       + display models (LedgerEntry, TransactionGroup, AccountBalanceInfo, BudgetProgress, ...)
+│                       + display models (LedgerEntry, TransactionGroup, CategoryAmount, AccountBalanceInfo, BudgetProgress, ...)
 ├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
 └── Services/
     ├── Interfaces/     Service and repository interfaces, IAppPaths
@@ -144,14 +145,13 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 MoneyRecord/            The MAUI app
 ├── Behaviors/          CurrencyMaskBehavior (amount input in the account's currency)
 ├── Controls/           FloatingActionMenu (+ FabComponents/), DecimalEntry, ChartDrawables
-├── Converters/         Converters.cs: all XAML value converters (money, dates, colours, ...)
+├── Converters/         One XAML value converter per file (money, dates, colours, heatmap, ...)
 ├── Extensions/         LocalizeExtension ({ext:Localize Key} in XAML)
-├── Models/             CategoryReport.cs: report display models (heatmap colours)
 ├── Platforms/          Android (back button, numeric entry handler), iOS, MacCatalyst, Windows
 ├── Services/           NavigationService, PreferencesService, ErrorHandler
 ├── ViewModels/         One per page + FloatingMenuViewModel
 ├── Views/              Main, AddTransaction, AddTransfer, Transfers, ManageAccounts, ManageCategories, Budget,
-│                       RecurringTransactions, ExpenseReport, IncomeReport, TrendsReport, Settings
+│                       RecurringTransactions, CategoryReport (Expense/Income), TrendsReport, Settings
 ├── App.xaml            Converters and styles; processes recurring transactions on start
 ├── AppShell.xaml       Flyout menu and routes
 └── MauiProgram.cs      Dependency injection

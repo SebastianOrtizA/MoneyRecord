@@ -108,4 +108,16 @@ public class DateRangeHelperTests
             start.Should().BeBefore(end, $"PeriodType.{period} should have start < end");
         }
     }
+
+    [Theory]
+    [InlineData(BudgetPeriod.Day, "2024-02-29", "2024-03-01")]
+    [InlineData(BudgetPeriod.Month, "2024-02-01", "2024-03-01")]
+    [InlineData(BudgetPeriod.Year, "2024-01-01", "2025-01-01")]
+    public void GetBudgetWindow_covers_the_whole_period_up_to_its_last_tick(BudgetPeriod period, string start, string nextStart)
+    {
+        var (startDate, endDate) = DateRangeHelper.GetBudgetWindow(period, new DateTime(2024, 2, 29, 18, 30, 0));
+
+        startDate.Should().Be(DateTime.Parse(start, System.Globalization.CultureInfo.InvariantCulture));
+        endDate.Should().Be(DateTime.Parse(nextStart, System.Globalization.CultureInfo.InvariantCulture).AddTicks(-1));
+    }
 }

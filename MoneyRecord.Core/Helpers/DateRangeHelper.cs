@@ -58,5 +58,27 @@ namespace MoneyRecord.Helpers
 
             return (startDate, endDate);
         }
+
+        /// <summary>
+        /// The budget period containing <paramref name="now"/>: its day, calendar month or calendar year, up to the
+        /// last tick of it.
+        /// </summary>
+        public static (DateTime startDate, DateTime endDate) GetBudgetWindow(BudgetPeriod period, DateTime now)
+        {
+            var start = period switch
+            {
+                BudgetPeriod.Day => now.Date,
+                BudgetPeriod.Year => new DateTime(now.Year, 1, 1),
+                _ => new DateTime(now.Year, now.Month, 1)
+            };
+            var next = period switch
+            {
+                BudgetPeriod.Day => start.AddDays(1),
+                BudgetPeriod.Year => start.AddYears(1),
+                _ => start.AddMonths(1)
+            };
+
+            return (start, next.AddTicks(-1));
+        }
     }
 }

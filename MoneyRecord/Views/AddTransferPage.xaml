@@ -30,7 +30,7 @@
             <Label Text="{Binding SourceAccountBalanceText}" 
                    FontSize="14" 
                    TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
-                   IsVisible="{Binding SourceAccountBalanceText, Converter={StaticResource StringToBoolConverter}}"/>
+                   IsVisible="{Binding SourceAccountBalanceText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"/>
 
             <Label Text="{ext:Localize ToAccount}" FontSize="16" FontAttributes="Bold"/>
             <Picker ItemsSource="{Binding Accounts}"
