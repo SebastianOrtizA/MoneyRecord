@@ -28,9 +28,10 @@
         <RefreshView IsRefreshing="{Binding IsLoading}"
                      Command="{Binding LoadBudgetsCommand}">
             <!-- Header = period and totals, items = one card per budget (a tap opens the edit sheet), footer = empty state -->
-            <CollectionView ItemsSource="{Binding Budgets}" Margin="16,0">
+            <!-- The 16px gutter is inside the header, rows and footer, so the scrollbar sits at the screen edge -->
+            <CollectionView ItemsSource="{Binding Budgets}">
                 <CollectionView.Header>
-                    <VerticalStackLayout Spacing="12" Padding="0,12,0,4">
+                    <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
                         <controls:PeriodPicker BindingContext="{Binding Period}" />
 
                         <!-- Totals -->
@@ -61,7 +62,7 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:BudgetProgress">
-                        <Border Margin="0,6"
+                        <Border Margin="16,6"
                                 Padding="14"
                                 StrokeThickness="1"
                                 StrokeShape="RoundRectangle 12"

@@ -17,9 +17,10 @@
 
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadReportDataCommand}">
-        <CollectionView ItemsSource="{Binding Categories}" Margin="16,0">
+        <!-- The 16px gutter is inside the header, rows and footer, so the scrollbar sits at the screen edge -->
+        <CollectionView ItemsSource="{Binding Categories}">
             <CollectionView.Header>
-                <VerticalStackLayout Spacing="12" Padding="0,12,0,4">
+                <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
                     <controls:PeriodPicker BindingContext="{Binding Period}" />
 
                     <!-- Donut with the total in the middle -->
@@ -56,7 +57,7 @@
             <!-- Ranked list: a row opens its transactions -->
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:CategoryAmount">
-                    <Grid Padding="4,10" ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="6">
+                    <Grid Padding="20,10,16,10" ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="6">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategoryReportViewModel}}, Path=OpenCategoryCommand}"
                                                   CommandParameter="{Binding .}" />

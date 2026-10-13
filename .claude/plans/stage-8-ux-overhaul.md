@@ -150,8 +150,9 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
     Budgets and Spending / Income all bind `Controls/PeriodPicker` to it (the four copies of the picker markup and
     their `OnSelectedPeriodChanged` handlers are gone, as the 8.3 TODO asked). A page follows `Changed` only while it
     is shown (`WatchChanges` in `InitializeAsync`, disposed in `Deactivate` on disappearing; review: every hidden tab
-    reloaded on each change) and reloads anyway when it appears. Home now also offers "Today" (one period list for all). The time-series tabs (Trends, Cash flow, Net
-    worth) need whole months, so they share `MonthCount` (3 / 6 / 12, `Controls/MonthCountPicker`) instead.
+    reloaded on each change) and reloads anyway when it appears. Home now also offers "Today" (one period list for
+    all). The time-series tabs (Trends, Cash flow, Net worth) need whole months, so they share `MonthCount`
+    (3 / 6 / 12, `Controls/MonthCountPicker`) instead.
   - **"vs previous period"**: `DateRangeHelper.GetPreviousRange` (whole calendar months move back by months, any
     other range by its length) and `PeriodDelta` ("▲ 12% vs previous period", "Same as…", "Nothing in…", ">999%"
     past ten times) under every headline: Spending / Income totals, Trends spending, Cash flow net, Net worth.
@@ -165,12 +166,15 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
     type and category ("Other" = the type only); a bar or point opens that month (it becomes the shared period) and
     type. Core `TransactionsDrillDown` hands the request over (taken once on the next load) and
     `TransactionFilterViewModel.ShowOnly` applies it; the category transactions popup and its strings are gone.
-    `Charts/ChartTapBehavior` hit-tests on a real tap and runs the handler kept on the series' `Tag` (the chart's own pointer-down also fired when a scroll started
-    on a chart and navigated away).
+    `Charts/ChartTapBehavior` hit-tests on a real tap and runs the handler kept on the series' `Tag` (the chart's
+    own pointer-down also fired when a scroll started on a chart and navigated away).
   - **Also**: `BudgetProjectionHelper` counts a custom range of whole calendar months in months (a drill-down sets
     one, and October showed a $50 monthly budget as $51.67), with the same rule as the previous range
     (`DateRangeHelper.WholeMonths`). Removed `PeriodHelper.GetPeriods` /
     `GetDefaultPeriod` and 8 unused strings.
+  - The four list pages (Spending / Income, Budgets, Accounts, Transactions) keep their 16px gutter inside the
+    header, rows and footer instead of the CollectionView's margin, so the scrollbar sits at the screen edge like the
+    ScrollView pages (user feedback on 8.7b).
   - Known, unchanged: totals across accounts still add currencies in the base currency (the Spending total adds USD
     expenses to a COP base) until Stage 10.3.
 
