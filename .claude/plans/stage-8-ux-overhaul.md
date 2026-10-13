@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.8 done; 8.9 in review)
+**Status**: Complete
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
