@@ -24,6 +24,9 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
 
+        // While the page is shown: a period change (here or on another tab) reloads it
+        private IDisposable? _periodWatch;
+
         private List<LedgerEntry> _entries = [];
         private List<LedgerEntry> _accountEntries = [];
         private List<AccountBalanceInfo> _accountBalances = [];
@@ -89,11 +92,21 @@ namespace MoneyRecord.ViewModels
             Filters = new TransactionFilterViewModel(dialogService);
             Filters.Changed += ApplyFilters;
             Period = period;
-            // The shared period changed (here or on another tab): show the new one
-            Period.Changed += () => LoadDataCommand.Execute(null);
         }
 
-        public Task InitializeAsync() => LoadDataCommand.ExecuteAsync(null);
+        /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>
+        public Task InitializeAsync()
+        {
+            _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
+            return LoadDataCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>The page disappeared: stop following the period (it reloads when it appears again).</summary>
+        public void Deactivate()
+        {
+            _periodWatch?.Dispose();
+            _periodWatch = null;
+        }
 
         /// <summary>Reloads the list. Each run cancels the one in progress, so an older period never wins.</summary>
         [RelayCommand(AllowConcurrentExecutions = true)]

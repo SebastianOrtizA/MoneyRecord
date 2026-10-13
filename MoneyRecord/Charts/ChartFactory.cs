@@ -3,7 +3,6 @@ using LiveChartsCore.Kernel;
 using LiveChartsCore.SkiaSharpView;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
-using System.Runtime.CompilerServices;
 
 namespace MoneyRecord.Charts
 {
@@ -16,18 +15,16 @@ namespace MoneyRecord.Charts
     {
         private const float TextSize = 11;
 
-        // What a tap on each series does (with the tapped point's index); ChartTapBehavior looks it up after a real tap,
-        // so a scroll that starts on a chart never navigates
-        private static readonly ConditionalWeakTable<ISeries, Action<int>> TapHandlers = new();
-
-        private static void OnTap(ISeries series, Action<int> handler) => TapHandlers.AddOrUpdate(series, handler);
+        // What a tap on a series does (with the tapped point's index) rides on the series itself; ChartTapBehavior runs it
+        // after a real tap, so a scroll that starts on a chart never navigates
+        private static void OnTap(ISeries series, Action<int> handler) => series.Tag = handler;
 
         /// <summary>Runs the tap handler of the first tapped point's series (see <see cref="ChartTapBehavior"/>).</summary>
         public static void HandleTap(IEnumerable<ChartPoint> points)
         {
             foreach (var point in points)
             {
-                if (TapHandlers.TryGetValue(point.Context.Series, out var handler))
+                if (point.Context.Series.Tag is Action<int> handler)
                 {
                     handler(point.Index);
                     return;

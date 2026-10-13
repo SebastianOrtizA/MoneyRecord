@@ -152,4 +152,33 @@ public class ReportsHubTests
         (changes, monthChanges).Should().Be((1, 1));
         period.SelectedPeriod.Type.Should().Be(PeriodType.CalendarYear);
     }
+
+    [Fact]
+    public void Whole_months_is_one_rule_for_dates_from_a_first_to_a_last_day()
+    {
+        DateRangeHelper.WholeMonths(new DateTime(2026, 10, 1), new DateTime(2026, 10, 31)).Should().Be(1);
+        DateRangeHelper.WholeMonths(new DateTime(2026, 1, 1), MonthEnd(2026, 12)).Should().Be(12);
+        DateRangeHelper.WholeMonths(new DateTime(2026, 10, 2), new DateTime(2026, 10, 31)).Should().BeNull();
+        DateRangeHelper.WholeMonths(new DateTime(2026, 10, 1), new DateTime(2026, 10, 30)).Should().BeNull();
+        DateRangeHelper.WholeMonths(default, default).Should().BeNull();
+    }
+
+    [Fact]
+    public void A_watch_follows_the_period_until_it_is_disposed()
+    {
+        var period = new PeriodViewModel();
+        var (changes, months) = (0, 0);
+        var watch = period.WatchChanges(() => changes++);
+        var monthsWatch = period.WatchMonthCount(() => months++);
+
+        period.ShowMonth(new DateTime(2026, 5, 1));
+        period.MonthCount = 3;
+        watch.Dispose();
+        monthsWatch.Dispose();
+        watch.Dispose();
+        period.ShowMonth(new DateTime(2026, 6, 1));
+        period.MonthCount = 12;
+
+        (changes, months).Should().Be((1, 1));
+    }
 }

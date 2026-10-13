@@ -17,6 +17,9 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
 
+        // While the page is shown: a period change (here or on another tab) reloads it
+        private IDisposable? _periodWatch;
+
         /// <summary>Home balance card: the first currency's total (base currency first), with its code when there are several.</summary>
         [ObservableProperty]
         private BalanceLine primaryBalance = new(string.Empty, null);
@@ -73,11 +76,21 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _navigationService = navigationService;
             Period = period;
-            // The shared period changed (here or on another tab): show the new one
-            Period.Changed += () => LoadDataCommand.Execute(null);
         }
 
-        public Task InitializeAsync() => LoadDataCommand.ExecuteAsync(null);
+        /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>
+        public Task InitializeAsync()
+        {
+            _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
+            return LoadDataCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>The page disappeared: stop following the period (it reloads when it appears again).</summary>
+        public void Deactivate()
+        {
+            _periodWatch?.Dispose();
+            _periodWatch = null;
+        }
 
         /// <summary>
         /// Reloads Home. Each run cancels the one in progress (period changes, pull to refresh), so the

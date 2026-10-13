@@ -20,6 +20,9 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
 
+        // While the page is shown: a month count change (here or on another report) reloads it
+        private IDisposable? _monthsWatch;
+
         [ObservableProperty]
         private bool isLoading;
 
@@ -47,7 +50,6 @@ namespace MoneyRecord.ViewModels
             _navigationService = navigationService;
             _drillDown = drillDown;
             Period = period;
-            Period.MonthCountChanged += () => LoadCommand.Execute(null);
         }
 
         /// <summary>The shared period; these reports use its <see cref="PeriodViewModel.MonthCount"/>.</summary>
@@ -56,7 +58,19 @@ namespace MoneyRecord.ViewModels
         /// <summary>The first month shown, in the order the report's rows come in.</summary>
         protected DateTime FirstMonth { get; private set; }
 
-        public Task InitializeAsync() => LoadCommand.ExecuteAsync(null);
+        /// <summary>The page appeared: load, and follow the shared month count until <see cref="Deactivate"/>.</summary>
+        public Task InitializeAsync()
+        {
+            _monthsWatch ??= Period.WatchMonthCount(() => LoadCommand.Execute(null));
+            return LoadCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>The page disappeared: stop following the month count (it reloads when it appears again).</summary>
+        public void Deactivate()
+        {
+            _monthsWatch?.Dispose();
+            _monthsWatch = null;
+        }
 
         /// <summary>Loads the window [<paramref name="firstMonth"/>, this month]; charts are built here, so they follow the theme.</summary>
         protected abstract Task BuildAsync(DateTime firstMonth, int months, CancellationToken cancellationToken);

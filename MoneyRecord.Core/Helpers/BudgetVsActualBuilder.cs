@@ -14,7 +14,7 @@ namespace MoneyRecord.Helpers
     {
         /// <summary>
         /// A budget's limit for one calendar month: a monthly limit as is, a daily one times the month's days, a yearly
-        /// one a twelfth (exact per month, unlike the period projection, which counts a month as 30 days).
+        /// one a twelfth.
         /// </summary>
         public static decimal MonthlyLimit(Budget budget, DateTime month) => budget.Period switch
         {

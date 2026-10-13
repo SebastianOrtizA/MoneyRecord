@@ -16,6 +16,9 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
 
+        // While the page is shown: a period change (here or on another tab) reloads it
+        private IDisposable? _periodWatch;
+
         [ObservableProperty]
         private bool isLoading = false;
 
@@ -80,11 +83,21 @@ namespace MoneyRecord.ViewModels
             _dialogService = dialogService;
             selectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
             Period = period;
-            // The shared period changed (here or on another tab): show the new one
-            Period.Changed += () => LoadBudgetsCommand.Execute(null);
         }
 
-        public Task InitializeAsync() => LoadBudgetsCommand.ExecuteAsync(null);
+        /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>
+        public Task InitializeAsync()
+        {
+            _periodWatch ??= Period.WatchChanges(() => LoadBudgetsCommand.Execute(null));
+            return LoadBudgetsCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>The page disappeared: stop following the period (it reloads when it appears again).</summary>
+        public void Deactivate()
+        {
+            _periodWatch?.Dispose();
+            _periodWatch = null;
+        }
 
         private async Task<List<Category>> GetAvailableCategoriesAsync()
         {

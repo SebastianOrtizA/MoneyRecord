@@ -24,6 +24,7 @@ namespace MoneyRecord.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
+            _viewModel.Deactivate();
             // Another tab or a pushed page: come back to the list, not a stale sheet
             _viewModel.CloseDetailsCommand.Execute(null);
         }

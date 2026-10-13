@@ -45,6 +45,34 @@ namespace MoneyRecord.ViewModels
         /// <summary><see cref="MonthCount"/> changed.</summary>
         public event Action? MonthCountChanged;
 
+        /// <summary>
+        /// Runs <paramref name="onChanged"/> on every period change until the result is disposed: a page listens only
+        /// while it is shown (it reloads anyway when it appears), so a change never reloads the hidden tabs.
+        /// </summary>
+        public IDisposable WatchChanges(Action onChanged)
+        {
+            Changed += onChanged;
+            return new Subscription(() => Changed -= onChanged);
+        }
+
+        /// <summary>Like <see cref="WatchChanges"/>, for <see cref="MonthCount"/>.</summary>
+        public IDisposable WatchMonthCount(Action onChanged)
+        {
+            MonthCountChanged += onChanged;
+            return new Subscription(() => MonthCountChanged -= onChanged);
+        }
+
+        private sealed class Subscription(Action unsubscribe) : IDisposable
+        {
+            private Action? _unsubscribe = unsubscribe;
+
+            public void Dispose()
+            {
+                _unsubscribe?.Invoke();
+                _unsubscribe = null;
+            }
+        }
+
         public (DateTime Start, DateTime End) Range =>
             DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
 
