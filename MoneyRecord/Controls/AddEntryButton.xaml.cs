@@ -30,9 +30,7 @@ namespace MoneyRecord.Controls
             if (e.PropertyName != nameof(AddEntryViewModel.IsOpen) || !_viewModel.IsOpen)
                 return;
 
-            // Slide the sheet up from below the screen once it has a size
-            Sheet.TranslationY = Sheet.Height > 0 ? Sheet.Height : 400;
-            await Sheet.TranslateTo(0, 0, 200, Easing.CubicOut);
+            await Sheet.SlideUpAsync(400);
         }
     }
 }

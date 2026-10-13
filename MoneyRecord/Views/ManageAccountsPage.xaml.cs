@@ -6,6 +6,9 @@ namespace MoneyRecord.Views
 {
     public partial class ManageAccountsPage : ContentPage, IOverlayHost
     {
+        /// <summary>The sheet's share of the page height; the top of the list stays visible above it.</summary>
+        private const double MaxSheetShare = 0.85;
+
         private readonly ManageAccountsViewModel _viewModel;
 
         public ManageAccountsPage(ManageAccountsViewModel viewModel)
@@ -13,6 +16,7 @@ namespace MoneyRecord.Views
             InitializeComponent();
             _viewModel = viewModel;
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            FormSheet.SizeChanged += (_, _) => UpdateFormMaxHeight();
             BindingContext = _viewModel;
         }
 
@@ -31,8 +35,20 @@ namespace MoneyRecord.Views
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            // The form scrolls inside the sheet (title and buttons stay put); the sheet leaves the top of the list visible
-            FormScroll.MaximumHeightRequest = Math.Max(0, height * 0.85 - 200);
+            UpdateFormMaxHeight();
+        }
+
+        /// <summary>
+        /// The form scrolls inside the sheet while the handle, title and buttons stay put: it gets what is left of
+        /// <see cref="MaxSheetShare"/> after their measured height (which grows with the system font size).
+        /// </summary>
+        private void UpdateFormMaxHeight()
+        {
+            if (Height <= 0)
+                return;
+
+            var chrome = FormSheet.Height > 0 ? FormSheet.Height - FormScroll.Height : 0;
+            FormScroll.MaximumHeightRequest = Math.Max(0, Height * MaxSheetShare - chrome);
         }
 
         public bool TryCloseOverlay() => _viewModel.CloseTopOverlay();
@@ -42,10 +58,10 @@ namespace MoneyRecord.Views
             if (e.PropertyName != nameof(ManageAccountsViewModel.IsFormOpen) || !_viewModel.IsFormOpen)
                 return;
 
-            // Slide the sheet up from below the screen, starting at the top of its form
+            // Below the screen before the first await, so the sheet is never drawn in place first; the form starts at the top
+            var slideUp = FormSheet.SlideUpAsync(600);
             await FormScroll.ScrollToAsync(0, 0, false);
-            FormSheet.TranslationY = FormSheet.Height > 0 ? FormSheet.Height : 600;
-            await FormSheet.TranslateToAsync(0, 0, 200, Easing.CubicOut);
+            await slideUp;
         }
     }
 }

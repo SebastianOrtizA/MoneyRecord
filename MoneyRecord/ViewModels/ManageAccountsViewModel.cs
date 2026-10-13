@@ -230,6 +230,7 @@ namespace MoneyRecord.ViewModels
             if (account == null)
                 return;
 
+            // The sheet hides Delete for the default account; this guards the command itself
             if (account.IsDefault)
             {
                 await _errorHandler.HandleAsync(AppResources.CannotDeleteDefaultAccount);
