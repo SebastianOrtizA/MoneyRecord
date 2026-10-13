@@ -323,8 +323,7 @@
 
         <!-- Detail sheet -->
         <controls:BottomSheet IsOpen="{Binding IsDetailsOpen}"
-                              CloseCommand="{Binding CloseDetailsCommand}"
-                              SheetPadding="20,12,20,24">
+                              CloseCommand="{Binding CloseDetailsCommand}">
             <VerticalStackLayout Spacing="12">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                     <Border WidthRequest="48" HeightRequest="48" StrokeThickness="0" StrokeShape="Ellipse"

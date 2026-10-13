@@ -45,7 +45,7 @@ public class BudgetProgressTests
     }
 
     [Fact]
-    public void CalculateProgress_ExactlyAtLimit_IsExceeded()
+    public void CalculateProgress_ExactlyAtLimit_IsHighNotExceeded()
     {
         var progress = new BudgetProgress
         {
@@ -58,7 +58,7 @@ public class BudgetProgressTests
         progress.ProgressPercentage.Should().Be(100);
         progress.IsOverBudget.Should().BeFalse();
         progress.RemainingAmount.Should().Be(0m);
-        progress.Level.Should().Be(BudgetLevel.Exceeded);
+        progress.Level.Should().Be(BudgetLevel.High);
     }
 
     [Fact]
@@ -128,10 +128,12 @@ public class BudgetProgressTests
     [InlineData(400, "OnTrack")]
     [InlineData(650, "NearLimit")]
     [InlineData(850, "NearLimit")]
+    [InlineData(1000, "NearLimit")]  // exactly the limit: not over, "Remaining $0.00"
+    [InlineData(1000.01, "OverBudget")]
     [InlineData(1200, "OverBudget")]
-    public void Status_label_follows_the_level(int spent, string key)
+    public void Status_label_follows_the_level(double spent, string key)
     {
-        var progress = new BudgetProgress { LimitAmount = 1000m, SpentAmount = spent };
+        var progress = new BudgetProgress { LimitAmount = 1000m, SpentAmount = (decimal)spent };
 
         progress.CalculateProgress();
 

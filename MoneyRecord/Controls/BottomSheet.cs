@@ -21,10 +21,6 @@ namespace MoneyRecord.Controls
             BindableProperty.Create(nameof(SheetContent), typeof(View), typeof(BottomSheet),
                 propertyChanged: (bindable, _, newValue) => ((BottomSheet)bindable)._contentHost.Content = (View?)newValue);
 
-        public static readonly BindableProperty SheetPaddingProperty =
-            BindableProperty.Create(nameof(SheetPadding), typeof(Thickness), typeof(BottomSheet), new Thickness(20, 12, 20, 20),
-                propertyChanged: (bindable, _, newValue) => ((BottomSheet)bindable).Panel.Padding = (Thickness)newValue);
-
         private readonly ContentView _contentHost = new();
 
         public BottomSheet()
@@ -54,7 +50,7 @@ namespace MoneyRecord.Controls
             Panel = new Border
             {
                 VerticalOptions = LayoutOptions.End,
-                Padding = SheetPadding,
+                Padding = new Thickness(20, 12, 20, 20),
                 StrokeThickness = 0,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(20, 20, 0, 0) },
                 Content = new VerticalStackLayout { Children = { handle, _contentHost } }
@@ -86,12 +82,6 @@ namespace MoneyRecord.Controls
         {
             get => (View?)GetValue(SheetContentProperty);
             set => SetValue(SheetContentProperty, value);
-        }
-
-        public Thickness SheetPadding
-        {
-            get => (Thickness)GetValue(SheetPaddingProperty);
-            set => SetValue(SheetPaddingProperty, value);
         }
 
         /// <summary>Raised when the sheet opens, before it slides up (e.g. to scroll its form back to the top).</summary>

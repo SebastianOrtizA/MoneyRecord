@@ -10,8 +10,7 @@
 
     <Grid>
         <controls:BottomSheet IsOpen="{Binding IsOpen}"
-                              CloseCommand="{Binding CloseCommand}"
-                              SheetPadding="16,12,16,24">
+                              CloseCommand="{Binding CloseCommand}">
             <VerticalStackLayout Spacing="4">
                 <Label Text="{ext:Localize AddNew}"
                        FontSize="18"

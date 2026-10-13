@@ -221,6 +221,7 @@ namespace MoneyRecord.ViewModels
             }
 
             var period = SelectedBudgetPeriod?.Period ?? BudgetPeriod.Month;
+            var adding = !IsEditMode;
             try
             {
                 if (EditingBudget is { } editing)
@@ -239,11 +240,10 @@ namespace MoneyRecord.ViewModels
                     });
                 }
 
-                var added = !IsEditMode;
                 CloseForm();
                 await LoadBudgetsCommand.ExecuteAsync(null);
 
-                if (added)
+                if (adding)
                     await _dialogService.ToastAsync(AppResources.BudgetAddedSuccessfully);
             }
             catch (Exception ex)

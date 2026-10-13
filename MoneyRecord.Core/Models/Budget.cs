@@ -41,7 +41,7 @@ namespace MoneyRecord.Models
         public bool IsActive { get; set; } = true;
     }
 
-    /// <summary>How much of a budget is used: OnTrack < 60% <= Warning < 80% <= High < 100% <= Exceeded.</summary>
+    /// <summary>How much of a budget is used: OnTrack < 60% <= Warning < 80% <= High <= 100% < Exceeded (strictly over).</summary>
     public enum BudgetLevel
     {
         OnTrack,
@@ -99,8 +99,8 @@ namespace MoneyRecord.Models
         private BudgetLevel level = BudgetLevel.OnTrack;
 
         /// <summary>
-        /// "On track" below 60%, "Near limit" from 60%, "Over budget" at the limit: a text label next to the status colour,
-        /// so colour isn't the only signal.
+        /// "On track" below 60%, "Near limit" from 60% up to the limit, "Over budget" once spending passes it: a text
+        /// label next to the status colour, so colour isn't the only signal.
         /// </summary>
         public string StatusText => Level switch
         {
@@ -138,10 +138,10 @@ namespace MoneyRecord.Models
             ExceededAmount = IsOverBudget ? SpentAmount - LimitAmount : 0;
             RemainingAmount = IsOverBudget ? 0 : LimitAmount - SpentAmount;
 
-            // The progress bar colour comes from the level (BudgetLevelToColorConverter, light/dark aware)
-            Level = ProgressPercentage switch
+            // The progress bar colour comes from the level (BudgetLevelToColorConverter, light/dark aware). Exceeded means
+            // strictly over, like IsOverBudget: spending exactly the limit is High ("Near limit", "Remaining $0.00")
+            Level = IsOverBudget ? BudgetLevel.Exceeded : ProgressPercentage switch
             {
-                >= 100 => BudgetLevel.Exceeded,
                 >= 80 => BudgetLevel.High,
                 >= 60 => BudgetLevel.Warning,
                 _ => BudgetLevel.OnTrack

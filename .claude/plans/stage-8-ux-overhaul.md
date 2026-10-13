@@ -106,13 +106,14 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Empty state with a budget/target icon instead of "#" (N8).
 - Done as: one `CollectionView` (header = period picker and totals, footer = empty state) of cards: category icon,
   name, "Per Month · $100.00", a status label with its own icon and colour (`BudgetProgress.StatusText` /
-  `StatusIcon` from `Level`: On track < 60% ≤ Near limit < 100% ≤ Over budget), the bar, "$70.00 of $100.00" and
+  `StatusIcon` from `Level`: On track < 60% ≤ Near limit ≤ the limit < Over budget; review: `Exceeded` now means
+  strictly over, like `IsOverBudget`, so exactly the limit is "Near limit" + "Remaining $0.00"), the bar, "$70.00 of $100.00" and
   Remaining / Exceeded. A + button opens the add sheet (category, limit, period; a toast when every expense category
   already has a budget); tapping a card opens the edit sheet, which now edits the period too
   (`IBudgetRepository.UpdateLimitAsync` replaces `UpdateAmountAsync`) and holds Delete. N8: `F117F` rendered as a boxed
   "#"; the empty state uses bullseye-arrow (`F08C9`). The page title is "Budgets" (was "Budget Mode").
   **Also:** the 8.5 review asked for a shared sheet once a fourth appeared, so `Controls/BottomSheet` (dim + rounded
-  panel + handle + slide-up, `IsOpen` / `CloseCommand` / `Opened`) now hosts all four sheets (add entry, transaction
+  panel + handle + slide-up, one padding, `IsOpen` / `CloseCommand` / `Opened`) now hosts all four sheets (add entry, transaction
   details, account form, budget form) and `SheetAnimation` is gone. Removed the four `BoolToOverBudget*` colour/icon
   converters and the `BudgetMode`, `YourBudgets`, `EnterNewBudgetLimit`, `OriginalLimit`, `ProjectedLimit`, `Spent`
   strings.
