@@ -194,8 +194,11 @@ namespace MoneyRecord.ViewModels
                 
                 SelectedCategory = CategoryChoices.FirstOrDefault(c => c.Category.Id == Transaction.CategoryId)?.Category;
 
+                // An automatic description (the category name) shows as the placeholder, so it follows a category change
+                Description = EntryDescription.ForEditing(Transaction.Description, SelectedCategory?.Name);
+
                 // Open the details when they hold something beyond the defaults
-                IsMoreDetailsOpen = Description != SelectedCategory?.Name || Transaction.HasTags || Transaction.HasReceipt;
+                IsMoreDetailsOpen = Description.Length > 0 || Transaction.HasTags || Transaction.HasReceipt;
                 
                 // Select the current account
                 if (Transaction.AccountId.HasValue)
@@ -220,8 +223,7 @@ namespace MoneyRecord.ViewModels
 
                 // The account and category last used for this type
                 SelectedAccount = _entryDefaults.DefaultAccount(TransactionType, Accounts);
-                SelectedCategory = _entryDefaults.DefaultCategory(TransactionType,
-                    CategoryChoices.Select(c => c.Category).ToList());
+                SelectedCategory = _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
             }
         }
 

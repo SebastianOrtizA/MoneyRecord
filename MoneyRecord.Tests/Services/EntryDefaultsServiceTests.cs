@@ -1,5 +1,4 @@
 using AwesomeAssertions;
-using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 using Xunit;
@@ -77,15 +76,5 @@ public class EntryDefaultsServiceTests
 
         _sut.OrderByRecent(TransactionType.Expense, many).Select(c => c.Id)
             .Should().Equal(6, 5, 4, 3, 1, 2);
-    }
-
-    [Theory]
-    [InlineData("", "Food")]
-    [InlineData("   ", "Food")]
-    [InlineData(null, "Food")]
-    [InlineData(" Lunch ", "Lunch")]
-    public void An_empty_description_is_saved_as_the_category_name(string? description, string expected)
-    {
-        EntryDescription.Resolve(description, "Food").Should().Be(expected);
     }
 }

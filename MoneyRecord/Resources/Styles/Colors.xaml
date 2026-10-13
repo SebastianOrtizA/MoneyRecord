@@ -20,6 +20,11 @@
     <Color x:Key="TransferColor">#FF9800</Color>
     <Color x:Key="TransferColorDark">#FFB74D</Color>
 
+    <!-- Purple tints: icon circles and group headers (PrimaryTint), a selected chip or cell in dark mode (light uses Secondary) -->
+    <Color x:Key="PrimaryTint">#F0EDFA</Color>
+    <Color x:Key="PrimaryTintDark">#2D2840</Color>
+    <Color x:Key="SelectedDark">#3A3060</Color>
+
     <Color x:Key="White">White</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>

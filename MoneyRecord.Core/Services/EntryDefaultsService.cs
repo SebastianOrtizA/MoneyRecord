@@ -16,7 +16,7 @@ namespace MoneyRecord.Services
             _preferences = preferences;
         }
 
-        public Account? DefaultAccount(TransactionType type, IReadOnlyList<Account> accounts)
+        public Account? DefaultAccount(TransactionType type, IEnumerable<Account> accounts)
         {
             var lastId = _preferences.Get(AccountKey(type), 0);
             return accounts.FirstOrDefault(a => a.Id == lastId)
@@ -24,10 +24,11 @@ namespace MoneyRecord.Services
                    ?? accounts.FirstOrDefault();
         }
 
-        public Category? DefaultCategory(TransactionType type, IReadOnlyList<Category> categories)
+        public Category? DefaultCategory(TransactionType type, IEnumerable<Category> categories)
         {
             var recent = RecentCategoryIds(type);
-            return categories.FirstOrDefault(c => recent.Count > 0 && c.Id == recent[0]) ?? categories.FirstOrDefault();
+            var last = recent.Count > 0 ? categories.FirstOrDefault(c => c.Id == recent[0]) : null;
+            return last ?? categories.FirstOrDefault();
         }
 
         public List<Category> OrderByRecent(TransactionType type, IEnumerable<Category> categories)

@@ -74,7 +74,9 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Done as: `AddTransactionPage` is a `Grid` (scrolling form + pinned Save bar; back cancels, so the Cancel button is
   gone). Amount first, large, focused with the numeric keypad on a new entry (not when editing). Category is an icon
   grid (`FlexLayout`, 4 per row, `CategoryChoice.IsSelected` highlight). Account and Date follow; Description (its
-  placeholder is the category name), Tags, Receipt and Recurring sit under "More details", which opens by itself when
+  placeholder is the category name; when editing, one equal to the category name shows empty via
+  `EntryDescription.ForEditing`, so it follows a category change), Tags, Receipt and Recurring sit under "More
+  details", which opens by itself when
   editing an entry that has a custom description, tags or a receipt. Core `IEntryDefaultsService` (over the
   so-far-unused `IPreferencesService`) keeps per type the last account and the 4 most recent categories by ID:
   recent ones lead the grid and the last one is preselected (deleted ones fall back to the default account / first

@@ -43,7 +43,7 @@
                                     BackgroundColor="Transparent">
                                 <Border.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark=#3A3060}"/>
+                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark={StaticResource SelectedDark}}"/>
                                     </DataTrigger>
                                 </Border.Triggers>
                                 <Border.GestureRecognizers>
@@ -53,7 +53,7 @@
                                 <VerticalStackLayout Spacing="4">
                                     <Border WidthRequest="48" HeightRequest="48" StrokeThickness="0" StrokeShape="Ellipse"
                                             HorizontalOptions="Center"
-                                            BackgroundColor="{AppThemeBinding Light=#F0EDFA, Dark=#2D2840}">
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
                                         <Label Text="{Binding Category.DisplayIcon}"
                                                FontFamily="MaterialDesignIcons"
                                                FontSize="24"
