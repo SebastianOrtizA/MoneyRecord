@@ -1,4 +1,5 @@
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using System.ComponentModel;
 
 namespace MoneyRecord.Extensions
@@ -30,6 +31,12 @@ namespace MoneyRecord.Extensions
         public static LocalizedStrings Instance => _instance ??= new LocalizedStrings();
 
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        // Every {ext:Localize} binding re-reads its string when the language changes
+        private LocalizedStrings()
+        {
+            LocalizationService.Instance.LanguageChanged += (_, _) => RaisePropertyChanged();
+        }
 
         public string this[string key]
         {

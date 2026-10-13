@@ -13,7 +13,8 @@ namespace MoneyRecord.Behaviors
     /// </summary>
     public class CurrencyMaskBehavior : Behavior<Entry>
     {
-        private readonly CultureInfo _culture = CultureInfo.CurrentCulture;
+        // Read on each use: the language (and with it the separators) can change while the page is open
+        private static CultureInfo Culture => CultureInfo.CurrentCulture;
         private Entry? _entry;
         private bool _isFocused;
         private bool _isFormatting;
@@ -161,7 +162,7 @@ namespace MoneyRecord.Behaviors
 
             // When focused, show raw numeric value for easier editing
             var value = AmountParser.ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
-            SetText(entry, value != 0 ? value.ToString($"F{DecimalPlaces}", _culture) : string.Empty);
+            SetText(entry, value != 0 ? value.ToString($"F{DecimalPlaces}", Culture) : string.Empty);
         }
 
         private void OnEntryUnfocused(object? sender, FocusEventArgs e)
@@ -187,8 +188,8 @@ namespace MoneyRecord.Behaviors
         private string FormatValue(decimal value)
         {
             return ShowCurrencySymbol
-                ? MoneyFormatter.Format(value, CurrencyCode, _culture)
-                : value.ToString($"N{DecimalPlaces}", _culture);
+                ? MoneyFormatter.Format(value, CurrencyCode, Culture)
+                : value.ToString($"N{DecimalPlaces}", Culture);
         }
     }
 }

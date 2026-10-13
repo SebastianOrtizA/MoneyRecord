@@ -7,17 +7,6 @@ namespace MoneyRecord.Tests.Services;
 
 public class EntryDefaultsServiceTests
 {
-    /// <summary>Preferences kept in memory.</summary>
-    private sealed class FakePreferences : IPreferencesService
-    {
-        private readonly Dictionary<string, object?> _values = [];
-
-        public T Get<T>(string key, T defaultValue) =>
-            _values.TryGetValue(key, out var value) && value is T typed ? typed : defaultValue;
-
-        public void Set<T>(string key, T value) => _values[key] = value;
-    }
-
     private static readonly Account Cash = new() { Id = 1, Name = "Cash", IsDefault = true };
     private static readonly Account Bank = new() { Id = 2, Name = "Bank" };
     private static readonly List<Account> Accounts = [Cash, Bank];

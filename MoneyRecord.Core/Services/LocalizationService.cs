@@ -14,9 +14,44 @@ namespace MoneyRecord.Services
 
         public event EventHandler? LanguageChanged;
 
+        public const string LanguagePreferenceKey = "Language";
+
+        /// <summary>The languages the app is translated to; the language setting is one of these or empty (the device's).</summary>
+        public static IReadOnlyList<string> SupportedLanguages { get; } = ["en", "es"];
+
+        /// <summary>A language's name in that language ("English", "Español"), for a language picker.</summary>
+        public static string GetLanguageName(string code)
+        {
+            var culture = CultureInfo.GetCultureInfo(code);
+            return culture.TextInfo.ToUpper(culture.NativeName[0]) + culture.NativeName[1..];
+        }
+
+        /// <summary>The chosen language ("en", "es"), or empty to follow the device.</summary>
+        public string LanguageSetting { get; private set; } = string.Empty;
+
         private LocalizationService()
         {
             SetCultureFromSystem();
+        }
+
+        /// <summary>Applies the saved language. Called once at startup, before any page is created.</summary>
+        public void LoadLanguage(IPreferencesService preferences) =>
+            ApplyLanguage(preferences.Get(LanguagePreferenceKey, string.Empty));
+
+        /// <summary>Saves and applies a language ("en", "es", or empty for the device's).</summary>
+        public void SetLanguage(string language, IPreferencesService preferences)
+        {
+            preferences.Set(LanguagePreferenceKey, language);
+            ApplyLanguage(language);
+        }
+
+        private void ApplyLanguage(string language)
+        {
+            LanguageSetting = SupportedLanguages.Contains(language) ? language : string.Empty;
+            if (LanguageSetting.Length == 0)
+                SetCultureFromSystem();
+            else
+                SetCulture(LanguageSetting);
         }
 
         public void SetCultureFromSystem()

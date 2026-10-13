@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Views;
 
 namespace MoneyRecord.ViewModels
 {
@@ -12,6 +13,7 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly ICurrencyService _currencyService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private bool isExporting;
@@ -25,14 +27,22 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private Currency? baseCurrency;
 
-        public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService, ICurrencyService currencyService)
+        public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService,
+            ICurrencyService currencyService, INavigationService navigationService)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _currencyService = currencyService;
+            _navigationService = navigationService;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
+        }
+
+        /// <summary>Shows the base currency again: the setup assistant may have changed it.</summary>
+        public void Refresh()
+        {
+            BaseCurrency = _currencyService.GetCurrency(_currencyService.GetBaseCurrencyCode());
         }
 
         partial void OnBaseCurrencyChanged(Currency? value)
@@ -40,6 +50,9 @@ namespace MoneyRecord.ViewModels
             if (value != null)
                 _currencyService.SetBaseCurrencyCode(value.Code);
         }
+
+        [RelayCommand]
+        private Task OpenSetupAsync() => _navigationService.NavigateToAsync(nameof(SetupPage));
 
         [RelayCommand]
         private async Task SaveBackupLocalAsync()

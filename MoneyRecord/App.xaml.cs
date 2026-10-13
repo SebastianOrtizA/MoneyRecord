@@ -1,23 +1,33 @@
 ﻿using Microsoft.Extensions.Logging;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Views;
 
 namespace MoneyRecord
 {
     public partial class App : Application
     {
         private readonly IRecurringTransactionService _recurringTransactionService;
+        private readonly ISetupService _setupService;
+        private readonly Func<SetupPage> _createSetupPage;
         private readonly ILogger<App> _logger;
 
-        public App(IRecurringTransactionService recurringTransactionService, ILogger<App> logger)
+        public App(IRecurringTransactionService recurringTransactionService, ISetupService setupService,
+            Func<SetupPage> createSetupPage, ILogger<App> logger)
         {
             InitializeComponent();
             _recurringTransactionService = recurringTransactionService;
+            _setupService = setupService;
+            _createSetupPage = createSetupPage;
             _logger = logger;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            var window = new Window(new AppShell());
+            // A new install starts with the setup; it swaps itself for the Shell when finished
+            Page page = _setupService.ResolveFirstRunPending()
+                ? _createSetupPage().AsFirstRun()
+                : new AppShell();
+            var window = new Window(page);
 
             window.Created += (s, e) =>
             {

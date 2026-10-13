@@ -2666,5 +2666,185 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("TotalSpending", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup assistant.
+        /// </summary>
+        public static string SetupAssistant {
+            get {
+                return ResourceManager.GetString("SetupAssistant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language, base currency, starting accounts and categories.
+        /// </summary>
+        public static string SetupAssistantDescription {
+            get {
+                return ResourceManager.GetString("SetupAssistantDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to MoneyRecord.
+        /// </summary>
+        public static string SetupWelcome {
+            get {
+                return ResourceManager.GetString("SetupWelcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Step {0} of {1}.
+        /// </summary>
+        public static string SetupStepOf {
+            get {
+                return ResourceManager.GetString("SetupStepOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language and currency.
+        /// </summary>
+        public static string SetupLanguageTitle {
+            get {
+                return ResourceManager.GetString("SetupLanguageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick the app language and the currency your totals are shown in..
+        /// </summary>
+        public static string SetupLanguageDescription {
+            get {
+                return ResourceManager.GetString("SetupLanguageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System default.
+        /// </summary>
+        public static string LanguageSystem {
+            get {
+                return ResourceManager.GetString("LanguageSystem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting accounts.
+        /// </summary>
+        public static string SetupAccountsTitle {
+            get {
+                return ResourceManager.GetString("SetupAccountsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where do you keep your money? Enter what each account holds today, in {0}..
+        /// </summary>
+        public static string SetupAccountsDescription {
+            get {
+                return ResourceManager.GetString("SetupAccountsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New accounts are added to the ones you already have, in {0}..
+        /// </summary>
+        public static string SetupAccountsAddDescription {
+            get {
+                return ResourceManager.GetString("SetupAccountsAddDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick your categories.
+        /// </summary>
+        public static string SetupCategoriesTitle {
+            get {
+                return ResourceManager.GetString("SetupCategoriesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uncheck the ones you won't use. You can add your own later..
+        /// </summary>
+        public static string SetupCategoriesDescription {
+            get {
+                return ResourceManager.GetString("SetupCategoriesDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The checked categories you don't have yet are added..
+        /// </summary>
+        public static string SetupCategoriesAddDescription {
+            get {
+                return ResourceManager.GetString("SetupCategoriesAddDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add at least one account with a name..
+        /// </summary>
+        public static string SetupNeedsAccount {
+            get {
+                return ResourceManager.GetString("SetupNeedsAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't save the setup. Please try again..
+        /// </summary>
+        public static string SetupFailed {
+            get {
+                return ResourceManager.GetString("SetupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get started.
+        /// </summary>
+        public static string SetupGetStarted {
+            get {
+                return ResourceManager.GetString("SetupGetStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove account.
+        /// </summary>
+        public static string RemoveAccount {
+            get {
+                return ResourceManager.GetString("RemoveAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string Next {
+            get {
+                return ResourceManager.GetString("Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        public static string Skip {
+            get {
+                return ResourceManager.GetString("Skip", resourceCulture);
+            }
+        }
     }
 }
