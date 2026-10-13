@@ -63,6 +63,11 @@ namespace MoneyRecord.ViewModels
         public void Refresh()
         {
             BaseCurrency = _currencyService.GetCurrency(_currencyService.GetBaseCurrencyCode());
+            SelectPickers();
+        }
+
+        private void SelectPickers()
+        {
             SelectedLanguage = Languages.First(l => l.Code == _localization.LanguageSetting);
             SelectedTheme = Themes.First(t => t.Choice == _themeService.Current);
         }
@@ -77,7 +82,7 @@ namespace MoneyRecord.ViewModels
             // The pickers' "System default" / theme names are translated too
             Languages = LanguageOption.All();
             Themes = ThemeOption.All();
-            Refresh();
+            SelectPickers();
         }
 
         partial void OnSelectedThemeChanged(ThemeOption? value)

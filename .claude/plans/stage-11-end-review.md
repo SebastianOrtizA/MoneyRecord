@@ -32,5 +32,10 @@
   (and add) form in the shared `Controls/BottomSheet`, like Accounts (8.5) and Budgets (8.6), so it never depends on
   the scroll position.
 
+### 11.5 `Frame` → `Border` sweep
+- `Frame` is obsolete since .NET 9. Settings (and other older pages) still use it for cards, while newer pages
+  (About, Accounts, Budgets) use `Border`. Replace the remaining `Frame`s with `Border` + a shared card style so
+  every card looks the same (raised in the 8.9 review).
+
 ## Done when
 Each item is fixed or consciously dropped with the user.

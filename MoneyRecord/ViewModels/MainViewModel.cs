@@ -78,13 +78,9 @@ namespace MoneyRecord.ViewModels
             _navigationService = navigationService;
             Period = period;
 
-            // Home and the shared period live as long as the app: after a language change in Settings, the period
-            // pickers get translated items and the date is formatted again
-            LocalizationService.Instance.LanguageChanged += (_, _) =>
-            {
-                Period.RefreshNames();
-                CurrentDate = DateTime.Now;
-            };
+            // Home lives as long as the app: after a language change in Settings, a new value makes the bound date
+            // text format again (the period pickers refresh themselves)
+            LocalizationService.Instance.LanguageChanged += (_, _) => CurrentDate = DateTime.Now;
         }
 
         /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>

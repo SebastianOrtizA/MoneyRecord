@@ -172,5 +172,8 @@ Third-party components:
 - Material Design Icons: Apache-2.0 (font and icons, Pictogrammers Free License); Open Sans: Apache-2.0
 - Test-only: xUnit (Apache-2.0), NSubstitute (BSD-3-Clause), AwesomeAssertions (Apache-2.0)
 
-The app lists the shipped ones with their full licence texts under Settings → About
-(`MoneyRecord/Resources/Raw/Licenses/`).
+The Android app also ships the .NET runtime and .NET for Android (MIT, with their third-party notices), the AndroidX,
+Material Components, Kotlin, Guava and Tink libraries pulled in by MAUI (Apache-2.0), and Glide (BSD-2-Clause, with MIT
+and Apache-2.0 parts). Settings → About lists everything shipped with the full licence texts
+(`MoneyRecord/Resources/Raw/Licenses/`). A test checks that every direct package reference is listed; transitive
+Android dependencies are checked by hand after a MAUI or SkiaSharp update.

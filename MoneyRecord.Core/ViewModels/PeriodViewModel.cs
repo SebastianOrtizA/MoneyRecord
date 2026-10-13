@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Services;
 
 namespace MoneyRecord.ViewModels
 {
@@ -38,6 +39,8 @@ namespace MoneyRecord.ViewModels
         public PeriodViewModel()
         {
             selectedPeriod = periods.First(p => p.Type == PeriodType.CalendarMonth);
+            // Lives as long as the app (singleton): the pickers follow a language change
+            LocalizationService.Instance.LanguageChanged += (_, _) => RefreshNames();
         }
 
         /// <summary>The period changed (not <see cref="MonthCount"/>).</summary>
