@@ -29,9 +29,11 @@ jobs:
         run: dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj --no-build -c Release --verbosity normal
 
   build-android:
-    name: Build Android APK
+    name: Build Android APK + AAB
     runs-on: windows-latest
     needs: test
+    env:
+      ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
     steps:
       - uses: actions/checkout@v4
 
@@ -43,18 +45,44 @@ jobs:
       - name: Install MAUI workloads
         run: dotnet workload install maui-android
 
-      - name: Build Android APK (Release)
+      # The csproj signs Release builds when MoneyRecord/moneyrecord.keystore exists. Tag builds are published,
+      # so they fail without the keystore instead of shipping an APK signed with the debug key.
+      - name: Decode signing keystore
+        shell: pwsh
+        run: |
+          if ($env:ANDROID_KEYSTORE_B64) {
+            [IO.File]::WriteAllBytes("MoneyRecord/moneyrecord.keystore", [Convert]::FromBase64String($env:ANDROID_KEYSTORE_B64))
+            Write-Host "Signing with the release keystore."
+          } elseif ($env:GITHUB_REF -like 'refs/tags/v*') {
+            Write-Error "ANDROID_KEYSTORE_B64 is not set: tag builds must be signed with the release keystore."
+            exit 1
+          } else {
+            Write-Host "::notice::No release keystore: this build is signed with the debug key."
+          }
+
+      # Release builds produce both formats: the .apk for GitHub Releases / F-Droid, the .aab for the Play Store.
+      - name: Build Android APK + AAB (Release)
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: >
           dotnet publish MoneyRecord/MoneyRecord.csproj
           -f net10.0-android
           -c Release
-          -p:AndroidPackageFormat=apk
+          -o publish
 
-      - name: Upload APK artifact
+      - name: Remove signing keystore
+        if: always()
+        shell: pwsh
+        run: Remove-Item MoneyRecord/moneyrecord.keystore -ErrorAction Ignore
+
+      - name: Upload Android artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: MoneyRecord-Android-APK
-          path: MoneyRecord/bin/Release/net10.0-android/publish/*.apk
+          name: MoneyRecord-Android
+          path: |
+            publish/*-Signed.apk
+            publish/*-Signed.aab
           if-no-files-found: error
 
   release:
@@ -65,16 +93,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Download APK artifact
+      - name: Download Android artifacts
         uses: actions/download-artifact@v4
         with:
-          name: MoneyRecord-Android-APK
-          path: release-apk
+          name: MoneyRecord-Android
+          path: release
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: release-apk/*.apk
+          files: |
+            release/*.apk
+            release/*.aab
           generate_release_notes: true

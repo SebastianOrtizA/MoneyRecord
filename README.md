@@ -102,6 +102,30 @@ dotnet build MoneyRecord/MoneyRecord.csproj -f net10.0-windows10.0.19041.0
 dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 ```
 
+## Releases
+
+CI (`.github/workflows/build-android.yml`) builds a Release `.apk` (GitHub Releases / F-Droid) and `.aab` (Play
+Store) on every push. A `v*` tag publishes them as a GitHub Release, and that build fails unless the release keystore
+is configured, so a published APK is never signed with the debug key.
+
+The release key signs every update: an APK signed with another key can't be installed over the app without losing its
+data. Create it once and keep a backup of the file and both passwords outside the repository (`*.keystore` is ignored):
+
+```bash
+keytool -genkeypair -keystore moneyrecord.keystore -alias moneyrecord -keyalg RSA -keysize 4096 -validity 10000
+```
+
+Then store it in the repository secrets (PowerShell):
+
+```powershell
+gh secret set ANDROID_KEYSTORE_B64 --body ([Convert]::ToBase64String([IO.File]::ReadAllBytes("moneyrecord.keystore")))
+gh secret set KEYSTORE_PASSWORD
+gh secret set KEY_PASSWORD   # the same as the store password for keytool's default PKCS12 keystore
+```
+
+To sign a local Release build, put the file at `MoneyRecord/moneyrecord.keystore` and set `KEYSTORE_PASSWORD` and
+`KEY_PASSWORD` in the environment.
+
 ## Technology stack
 - **.NET 10 / .NET MAUI** (Android, iOS, Mac Catalyst, Windows)
 - **CommunityToolkit.Mvvm** (MVVM source generators) and **CommunityToolkit.Maui** (toasts, behaviours)

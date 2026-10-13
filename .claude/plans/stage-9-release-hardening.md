@@ -1,6 +1,6 @@
 # Stage 9: Release Hardening
 
-**Status**: Pending
+**Status**: In progress (9.1 in review)
 **Depends on**: Stage 6 (can run in parallel with Stages 7–8)
 **Complexity**: Medium
 **Source**: Product & engineering review, 2026-10-11 (Tests & CI, P11) + parts of Stage 5.1
@@ -16,6 +16,14 @@ Public releases users can install and update, with enough logging to debug field
   signs when the file exists).
 - Fail the `release` job (tag builds) if the keystore is missing, so unsigned APKs are never published.
 - Publish both `.apk` (GitHub Releases / F-Droid) and `.aab` (Play Store).
+- Done as: the `build-android` job decodes the secret when it is set (any build) and fails on `v*` tags when it
+  isn't, so the check runs before the build instead of in the `release` job. Release builds already produce both
+  formats (`*-Signed.apk` + `*-Signed.aab`), so `-p:AndroidPackageFormat=apk` was dropped; both are uploaded as one
+  `MoneyRecord-Android` artifact and attached to the release. The decoded keystore is deleted after the build.
+  Key creation + `gh secret set` steps are in the README ("Releases"). Checked locally with a throwaway keystore:
+  `apksigner` shows its certificate on the APK, `keytool -printcert` on the AAB, and `-p:ApplicationVersion` /
+  `-p:ApplicationDisplayVersion` overrides reach the manifest (input for 9.2). The secrets themselves are created by
+  the owner; the `v0.9.0-rc1` verify waits for them.
 
 ### 9.2 Versioning from tags
 - `ApplicationDisplayVersion` from the tag (`v1.2.0` → `1.2.0`), `ApplicationVersion` from `github.run_number`;
