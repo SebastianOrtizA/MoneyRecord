@@ -24,5 +24,13 @@
 - Idea: an `Account.ShowCents` flag (migration + backup format) feeding the minor units `MoneyFormatter` /
   `CurrencyMaskBehavior` use for that account's amounts. Decide how totals that mix accounts are shown.
 
+### 11.4 Editing a category low in the list shows nothing
+- Categories: scroll down, tap Edit on a category near the bottom → nothing seems to happen. The edit form is the
+  inline card at the top of the page's `ScrollView` (`IsEditMode` swaps it in for the add card), so it opens off
+  screen and the user has to scroll back up.
+- Requested: after Edit, the page scrolls to the top so the form is visible. Alternative to weigh: open the edit
+  (and add) form in the shared `Controls/BottomSheet`, like Accounts (8.5) and Budgets (8.6), so it never depends on
+  the scroll position.
+
 ## Done when
 Each item is fixed or consciously dropped with the user.
