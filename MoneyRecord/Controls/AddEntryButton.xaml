@@ -4,34 +4,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Controls.AddEntryButton"
              x:DataType="viewmodels:AddEntryViewModel">
 
     <Grid>
-        <!-- Dimmed page behind the sheet; tapping it closes the sheet -->
-        <BoxView x:Name="Scrim"
-                 BackgroundColor="#80000000"
-                 IsVisible="{Binding IsOpen}">
-            <BoxView.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding CloseCommand}"/>
-            </BoxView.GestureRecognizers>
-        </BoxView>
-
-        <Border x:Name="Sheet"
-                IsVisible="{Binding IsOpen}"
-                VerticalOptions="End"
-                Padding="16,12,16,24"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 20,20,0,0"
-                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+        <controls:BottomSheet IsOpen="{Binding IsOpen}"
+                              CloseCommand="{Binding CloseCommand}">
             <VerticalStackLayout Spacing="4">
-                <Border WidthRequest="36"
-                        HeightRequest="4"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 2"
-                        HorizontalOptions="Center"
-                        Margin="0,0,0,8"
-                        BackgroundColor="{AppThemeBinding Light=#BDBDBD, Dark=#616161}"/>
                 <Label Text="{ext:Localize AddNew}"
                        FontSize="18"
                        FontAttributes="Bold"
@@ -73,7 +53,7 @@
                     <Label Grid.Column="1" Text="{ext:Localize Transfer}" FontSize="16" VerticalOptions="Center"/>
                 </Grid>
             </VerticalStackLayout>
-        </Border>
+        </controls:BottomSheet>
 
         <Button Text="&#xF0415;"
                 FontFamily="MaterialDesignIcons"

@@ -602,9 +602,6 @@ Amount: {2}</value>
   </data>
 
   <!-- Budget Mode -->
-  <data name="BudgetMode" xml:space="preserve">
-    <value>Budget Mode</value>
-  </data>
   <data name="AddCategoryToBudget" xml:space="preserve">
     <value>Add Category to Budget</value>
   </data>
@@ -614,17 +611,11 @@ Amount: {2}</value>
   <data name="AddBudgetButton" xml:space="preserve">
     <value>Add Budget</value>
   </data>
-  <data name="YourBudgets" xml:space="preserve">
-    <value>Your Budgets</value>
-  </data>
   <data name="NoBudgetsYet" xml:space="preserve">
     <value>No budgets yet</value>
   </data>
   <data name="AddBudgetToStart" xml:space="preserve">
-    <value>Add expense categories to your budget to track spending limits</value>
-  </data>
-  <data name="Spent" xml:space="preserve">
-    <value>Spent</value>
+    <value>Tap + to set a spending limit for an expense category.</value>
   </data>
   <data name="Remaining" xml:space="preserve">
     <value>Remaining</value>
@@ -655,9 +646,6 @@ Amount: {2}</value>
   </data>
   <data name="EditBudget" xml:space="preserve">
     <value>Edit Budget</value>
-  </data>
-  <data name="EnterNewBudgetLimit" xml:space="preserve">
-    <value>Enter new budget limit for {0}:</value>
   </data>
   <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
     <value>Transaction updated successfully</value>
@@ -700,12 +688,6 @@ Amount: {2}</value>
   <data name="BudgetPeriod" xml:space="preserve">
     <value>Budget Period</value>
   </data>
-  <data name="OriginalLimit" xml:space="preserve">
-    <value>Original Limit</value>
-  </data>
-  <data name="ProjectedLimit" xml:space="preserve">
-    <value>Projected Limit</value>
-  </data>
 
   <!-- Budget Warnings -->
   <data name="BudgetExceeded" xml:space="preserve">
@@ -718,10 +700,10 @@ Amount: {2}</value>
     <value>Budget Summary</value>
   </data>
   <data name="OnTrack" xml:space="preserve">
-    <value>On Track</value>
+    <value>On track</value>
   </data>
   <data name="OverBudget" xml:space="preserve">
-    <value>Over Budget</value>
+    <value>Over budget</value>
   </data>
 
   <!-- Recurring Transactions -->
@@ -1087,5 +1069,14 @@ Amount: {2}</value>
   </data>
   <data name="AccountCountOther" xml:space="preserve">
     <value>{0} accounts</value>
+  </data>
+  <data name="NearLimit" xml:space="preserve">
+    <value>Near limit</value>
+  </data>
+  <data name="NoCategoriesLeftForBudget" xml:space="preserve">
+    <value>Every expense category already has a budget.</value>
+  </data>
+  <data name="BudgetSpentOfLimit" xml:space="preserve">
+    <value>{0} of {1}</value>
   </data>
 </root>

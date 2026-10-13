@@ -37,8 +37,20 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<BudgetProgress> budgets = new();
 
+        /// <summary>The add/edit sheet is open.</summary>
         [ObservableProperty]
-        private bool isAddFormVisible = false;
+        private bool isFormOpen;
+
+        /// <summary>The budget the sheet edits; null when it adds one.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEditMode), nameof(FormTitle), nameof(SaveText))]
+        private BudgetProgress? editingBudget;
+
+        public bool IsEditMode => EditingBudget != null;
+
+        public string FormTitle => IsEditMode ? AppResources.EditBudget : AppResources.AddCategoryToBudget;
+
+        public string SaveText => IsEditMode ? AppResources.Save : AppResources.AddBudgetButton;
 
         [ObservableProperty]
         private List<Category> availableCategories = new();
@@ -146,28 +158,56 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        [RelayCommand]
-        private void ShowAddForm()
-        {
-            IsAddFormVisible = true;
-            SelectedCategory = AvailableCategories.FirstOrDefault();
-            SelectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
-            BudgetAmount = string.Empty;
-        }
-
-        [RelayCommand]
-        private void CancelAddForm()
-        {
-            IsAddFormVisible = false;
-            SelectedCategory = null;
-            SelectedBudgetPeriod = BudgetPeriods[1]; // Reset to Month
-            BudgetAmount = string.Empty;
-        }
-
+        /// <summary>Opens the sheet for a new budget on the first expense category without one.</summary>
         [RelayCommand]
         private async Task AddBudgetAsync()
         {
-            if (SelectedCategory == null)
+            if (AvailableCategories.Count == 0)
+            {
+                await _dialogService.ToastAsync(AppResources.NoCategoriesLeftForBudget);
+                return;
+            }
+
+            EditingBudget = null;
+            SelectedCategory = AvailableCategories[0];
+            SelectedBudgetPeriod = BudgetPeriods[1]; // Month
+            BudgetAmount = string.Empty;
+            IsFormOpen = true;
+        }
+
+        [RelayCommand]
+        private void EditBudget(BudgetProgress? budget)
+        {
+            if (budget == null)
+                return;
+
+            EditingBudget = budget;
+            SelectedBudgetPeriod = BudgetPeriods.First(p => p.Period == budget.Period);
+            BudgetAmount = budget.OriginalLimitAmount.ToString();
+            IsFormOpen = true;
+        }
+
+        [RelayCommand]
+        private void CloseForm()
+        {
+            IsFormOpen = false;
+            EditingBudget = null;
+        }
+
+        /// <summary>Closes the add/edit sheet; false when it wasn't open.</summary>
+        public bool CloseTopOverlay()
+        {
+            if (!IsFormOpen)
+                return false;
+
+            CloseForm();
+            return true;
+        }
+
+        [RelayCommand]
+        private async Task SaveBudgetAsync()
+        {
+            if (!IsEditMode && SelectedCategory == null)
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseSelectCategory);
                 return;
@@ -180,27 +220,31 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+            var period = SelectedBudgetPeriod?.Period ?? BudgetPeriod.Month;
+            var adding = !IsEditMode;
             try
             {
-                var budget = new Budget
+                if (EditingBudget is { } editing)
                 {
-                    CategoryId = SelectedCategory.Id,
-                    LimitAmount = amount,
-                    Period = SelectedBudgetPeriod?.Period ?? BudgetPeriod.Month,
-                    CreatedDate = DateTime.Now,
-                    IsActive = true
-                };
+                    await _budgetRepository.UpdateLimitAsync(editing.BudgetId, amount, period);
+                }
+                else
+                {
+                    await _budgetRepository.SaveAsync(new Budget
+                    {
+                        CategoryId = SelectedCategory!.Id,
+                        LimitAmount = amount,
+                        Period = period,
+                        CreatedDate = DateTime.Now,
+                        IsActive = true
+                    });
+                }
 
-                await _budgetRepository.SaveAsync(budget);
-
-                IsAddFormVisible = false;
-                SelectedCategory = null;
-                SelectedBudgetPeriod = BudgetPeriods[1]; // Reset to Month
-                BudgetAmount = string.Empty;
-
+                CloseForm();
                 await LoadBudgetsCommand.ExecuteAsync(null);
 
-                await _dialogService.ToastAsync(AppResources.BudgetAddedSuccessfully);
+                if (adding)
+                    await _dialogService.ToastAsync(AppResources.BudgetAddedSuccessfully);
             }
             catch (Exception ex)
             {
@@ -208,10 +252,13 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>Deletes the budget in the sheet; the sheet stays open behind the question, so cancelling returns to it.</summary>
         [RelayCommand]
-        private async Task DeleteBudgetAsync(BudgetProgress budget)
+        private async Task DeleteBudgetAsync()
         {
-            if (budget == null) return;
+            var budget = EditingBudget;
+            if (budget == null)
+                return;
 
             var confirm = await _dialogService.ConfirmAsync(
                 AppResources.ConfirmDelete,
@@ -219,50 +266,18 @@ namespace MoneyRecord.ViewModels
                 AppResources.YesDelete,
                 AppResources.Cancel);
 
-            if (!confirm) return;
+            if (!confirm)
+                return;
 
             try
             {
                 await _budgetRepository.DeleteByIdAsync(budget.BudgetId);
+                CloseForm();
                 await LoadBudgetsCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteBudget);
-            }
-        }
-
-        [RelayCommand]
-        private async Task EditBudgetAsync(BudgetProgress budget)
-        {
-            if (budget == null) return;
-
-            // Simple edit using prompt - could be enhanced with a proper edit form
-            var result = await _dialogService.PromptAsync(
-                AppResources.EditBudget,
-                string.Format(AppResources.EnterNewBudgetLimit, budget.CategoryName),
-                AppResources.Save,
-                AppResources.Cancel,
-                initialValue: budget.LimitAmount.ToString("N2"),
-                numeric: true);
-
-            if (string.IsNullOrEmpty(result)) return;
-
-            var newAmount = AmountParser.Parse(result, null);
-            if (newAmount <= 0 || !Money.IsInRange(newAmount))
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
-                return;
-            }
-
-            try
-            {
-                await _budgetRepository.UpdateAmountAsync(budget.BudgetId, newAmount);
-                await LoadBudgetsCommand.ExecuteAsync(null);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToSaveBudget);
             }
         }
 

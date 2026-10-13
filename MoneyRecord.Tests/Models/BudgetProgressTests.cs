@@ -1,5 +1,7 @@
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Services;
 using Xunit;
 
 namespace MoneyRecord.Tests.Models;
@@ -43,7 +45,7 @@ public class BudgetProgressTests
     }
 
     [Fact]
-    public void CalculateProgress_ExactlyAtLimit_IsExceeded()
+    public void CalculateProgress_ExactlyAtLimit_IsHighNotExceeded()
     {
         var progress = new BudgetProgress
         {
@@ -56,7 +58,7 @@ public class BudgetProgressTests
         progress.ProgressPercentage.Should().Be(100);
         progress.IsOverBudget.Should().BeFalse();
         progress.RemainingAmount.Should().Be(0m);
-        progress.Level.Should().Be(BudgetLevel.Exceeded);
+        progress.Level.Should().Be(BudgetLevel.High);
     }
 
     [Fact]
@@ -120,5 +122,42 @@ public class BudgetProgressTests
         progress.IsOverBudget.Should().BeFalse();
         progress.RemainingAmount.Should().Be(500m);
         progress.Level.Should().Be(BudgetLevel.OnTrack);
+    }
+
+    [Theory]
+    [InlineData(400, "OnTrack")]
+    [InlineData(650, "NearLimit")]
+    [InlineData(850, "NearLimit")]
+    [InlineData(1000, "NearLimit")]  // exactly the limit: not over, "Remaining $0.00"
+    [InlineData(1000.01, "OverBudget")]
+    [InlineData(1200, "OverBudget")]
+    public void Status_label_follows_the_level(double spent, string key)
+    {
+        var progress = new BudgetProgress { LimitAmount = 1000m, SpentAmount = (decimal)spent };
+
+        progress.CalculateProgress();
+
+        progress.StatusText.Should().Be(LocalizationService.Instance.GetString(key));
+    }
+
+    [Fact]
+    public void Status_icon_differs_per_status_so_colour_is_not_the_only_signal()
+    {
+        string IconFor(decimal spent)
+        {
+            var progress = new BudgetProgress { LimitAmount = 100m, SpentAmount = spent };
+            progress.CalculateProgress();
+            return progress.StatusIcon;
+        }
+
+        new[] { IconFor(10m), IconFor(70m), IconFor(150m) }.Should().OnlyHaveUniqueItems();
+    }
+
+    [Fact]
+    public void Spent_of_limit_text_shows_both_amounts()
+    {
+        var progress = new BudgetProgress { LimitAmount = 500m, SpentAmount = 400m };
+
+        progress.SpentOfLimitText.Should().Contain(MoneyFormatter.Format(400m)).And.Contain(MoneyFormatter.Format(500m));
     }
 }

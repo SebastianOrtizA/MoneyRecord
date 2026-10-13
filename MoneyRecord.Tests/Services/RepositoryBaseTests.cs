@@ -66,7 +66,7 @@ public sealed class RepositoryBaseTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task UpdateAmount_and_Deactivate_change_one_field_of_an_existing_row()
+    public async Task UpdateLimit_and_Deactivate_change_one_field_of_an_existing_row()
     {
         var budgets = new BudgetRepository(_dbInitializer);
         var budget = new Budget { CategoryId = 3, LimitAmount = 100m, IsActive = true };
@@ -75,11 +75,13 @@ public sealed class RepositoryBaseTests : IAsyncLifetime
         var rule = new RecurringTransaction { Description = "Gym", IsActive = true };
         await rules.SaveAsync(rule);
 
-        (await budgets.UpdateAmountAsync(budget.Id, 60m)).Should().Be(1);
-        (await budgets.UpdateAmountAsync(999, 60m)).Should().Be(0);
+        (await budgets.UpdateLimitAsync(budget.Id, 60m, BudgetPeriod.Year)).Should().Be(1);
+        (await budgets.UpdateLimitAsync(999, 60m, BudgetPeriod.Year)).Should().Be(0);
         (await rules.DeactivateAsync(rule.Id)).Should().Be(1);
 
-        (await budgets.GetByIdAsync(budget.Id))!.LimitAmount.Should().Be(60m);
+        var updated = (await budgets.GetByIdAsync(budget.Id))!;
+        updated.LimitAmount.Should().Be(60m);
+        updated.Period.Should().Be(BudgetPeriod.Year);
         (await rules.GetActiveAsync()).Should().BeEmpty();
     }
 }
