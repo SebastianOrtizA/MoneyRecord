@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Services;
 
 namespace MoneyRecord.ViewModels
 {
@@ -30,13 +31,16 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private int monthCount = 6;
 
-        public List<PeriodItem> Periods { get; } = PeriodHelper.GetReportPeriods();
+        [ObservableProperty]
+        private List<PeriodItem> periods = PeriodHelper.GetReportPeriods();
 
         public List<int> MonthCountOptions { get; } = [3, 6, 12];
 
         public PeriodViewModel()
         {
-            selectedPeriod = Periods.First(p => p.Type == PeriodType.CalendarMonth);
+            selectedPeriod = periods.First(p => p.Type == PeriodType.CalendarMonth);
+            // Lives as long as the app (singleton): the pickers follow a language change
+            LocalizationService.Instance.LanguageChanged += (_, _) => RefreshNames();
         }
 
         /// <summary>The period changed (not <see cref="MonthCount"/>).</summary>
@@ -96,6 +100,25 @@ namespace MoneyRecord.ViewModels
             }
 
             Changed?.Invoke();
+        }
+
+        /// <summary>
+        /// The language changed: new items, so the pickers show the translated names. The period itself stays, so
+        /// nothing reloads.
+        /// </summary>
+        public void RefreshNames()
+        {
+            var type = SelectedPeriod?.Type ?? PeriodType.CalendarMonth;
+            _batching = true;
+            try
+            {
+                Periods = PeriodHelper.GetReportPeriods();
+                SelectedPeriod = Periods.First(p => p.Type == type);
+            }
+            finally
+            {
+                _batching = false;
+            }
         }
 
         partial void OnSelectedPeriodChanged(PeriodItem value)

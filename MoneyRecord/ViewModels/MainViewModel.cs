@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 using System.Collections.ObjectModel;
@@ -76,6 +77,10 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _navigationService = navigationService;
             Period = period;
+
+            // Home lives as long as the app: after a language change in Settings, a new value makes the bound date
+            // text format again (the period pickers refresh themselves)
+            LocalizationService.Instance.LanguageChanged += (_, _) => CurrentDate = DateTime.Now;
         }
 
         /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>

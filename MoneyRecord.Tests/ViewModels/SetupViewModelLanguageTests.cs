@@ -58,7 +58,7 @@ public sealed class SetupViewModelLanguageTests : LanguageTestBase
 
         SelectSpanish();
 
-        _sut.Languages[0].Name.Should().Be(InSpanish(nameof(AppResources.LanguageSystem)));
+        _sut.Languages[0].Name.Should().Be(InSpanish(nameof(AppResources.SystemDefault)));
         _sut.SelectedLanguage.Should().Be(_sut.Languages.Single(l => l.Code == "es"), "the picker finds it by value");
     }
 

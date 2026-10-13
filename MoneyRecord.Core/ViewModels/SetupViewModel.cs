@@ -9,9 +9,6 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
 {
-    /// <summary>A language the app can run in; an empty code follows the device.</summary>
-    public sealed record LanguageOption(string Code, string Name);
-
     /// <summary>A starting account typed in the setup.</summary>
     public partial class SetupAccountRow : ObservableObject
     {
@@ -83,7 +80,7 @@ namespace MoneyRecord.ViewModels
 
             Currencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
-            Languages = BuildLanguages();
+            Languages = LanguageOption.All();
             selectedLanguage = Languages.First(l => l.Code == localization.LanguageSetting);
         }
 
@@ -173,7 +170,7 @@ namespace MoneyRecord.ViewModels
                 option.RefreshName();
 
             // The "System default" label is translated too; keep the choice selected
-            Languages = BuildLanguages();
+            Languages = LanguageOption.All();
             SelectedLanguage = Languages.First(l => l.Code == value.Code);
 
             // Every localized text (step, buttons, descriptions)
@@ -185,12 +182,6 @@ namespace MoneyRecord.ViewModels
             if (value != null)
                 _currencyService.SetBaseCurrencyCode(value.Code);
         }
-
-        private static List<LanguageOption> BuildLanguages() =>
-        [
-            new(string.Empty, AppResources.LanguageSystem),
-            .. LocalizationService.SupportedLanguages.Select(code => new LanguageOption(code, LocalizationService.GetLanguageName(code))),
-        ];
 
         [RelayCommand]
         private Task NextAsync()
