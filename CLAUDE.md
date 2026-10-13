@@ -45,7 +45,7 @@ crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
 - `Models/` — 6 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction. Plus display models
-  (AccountBalanceInfo, CurrencyBalance, LedgerEntry, TransactionGroup, TransactionFilter/FilterOption,
+  (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance, LedgerEntry, TransactionGroup, TransactionFilter/FilterOption,
   CategoryAmount/CategoryReport (report shares + heat level), BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override

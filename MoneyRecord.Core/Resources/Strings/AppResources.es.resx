@@ -298,11 +298,8 @@
   <data name="CancelEdit" xml:space="preserve">
     <value>Cancelar Edición</value>
   </data>
-  <data name="YourAccounts" xml:space="preserve">
-    <value>Tus Cuentas</value>
-  </data>
   <data name="NoAccounts" xml:space="preserve">
-    <value>Aún no hay cuentas. Agrega tu primera cuenta arriba.</value>
+    <value>Aún no hay cuentas. Toca + para agregar la primera.</value>
   </data>
   <data name="AllowNegativeBalance" xml:space="preserve">
     <value>Permitir saldo negativo</value>
@@ -881,9 +878,6 @@ Monto: {2}</value>
   <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
     <value>'{0}' usa {1}, pero la cuenta predeterminada '{2}' usa {3}. Sus transacciones y reglas recurrentes no se pueden mover allí sin cambiar su valor: elimínalas primero.</value>
   </data>
-  <data name="InitialBalanceAmount" xml:space="preserve">
-    <value>Inicial: {0}</value>
-  </data>
 
   <!-- Search & Filters -->
   <data name="SearchTransactions" xml:space="preserve">
@@ -1082,5 +1076,14 @@ Monto: {2}</value>
   </data>
   <data name="MoreDetails" xml:space="preserve">
     <value>Más detalles</value>
+  </data>
+  <data name="LastActivityDate" xml:space="preserve">
+    <value>Última actividad: {0}</value>
+  </data>
+  <data name="AccountCountOne" xml:space="preserve">
+    <value>{0} cuenta</value>
+  </data>
+  <data name="AccountCountOther" xml:space="preserve">
+    <value>{0} cuentas</value>
   </data>
 </root>

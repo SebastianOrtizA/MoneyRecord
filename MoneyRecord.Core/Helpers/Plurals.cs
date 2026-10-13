@@ -7,5 +7,8 @@ namespace MoneyRecord.Helpers
     {
         public static string Transactions(int count) =>
             string.Format(count == 1 ? AppResources.TransactionCountOne : AppResources.TransactionCountOther, count);
+
+        public static string Accounts(int count) =>
+            string.Format(count == 1 ? AppResources.AccountCountOne : AppResources.AccountCountOther, count);
     }
 }

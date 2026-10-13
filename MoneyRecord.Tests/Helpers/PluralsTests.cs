@@ -21,4 +21,11 @@ public class PluralsTests
     {
         Plurals.Transactions(count).Should().Be(string.Format(LocalizationService.Instance.GetString("TransactionCountOther"), count));
     }
+
+    [Fact]
+    public void Accounts_UseSingularAndPlural()
+    {
+        Plurals.Accounts(1).Should().Be(string.Format(LocalizationService.Instance.GetString("AccountCountOne"), 1));
+        Plurals.Accounts(3).Should().Be(string.Format(LocalizationService.Instance.GetString("AccountCountOther"), 3));
+    }
 }

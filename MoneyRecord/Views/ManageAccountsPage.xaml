@@ -3,372 +3,271 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
-             xmlns:converters="clr-namespace:MoneyRecord.Converters"
              xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
              xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.ManageAccountsPage"
              x:DataType="viewmodels:ManageAccountsViewModel"
              Title="{ext:Localize ManageAccounts}">
+    <Grid RowDefinitions="Auto,*">
+        <!-- Currency filter from a Home balance line -->
+        <Border IsVisible="{Binding HasCurrencyFilter}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 18"
+                Padding="14,4,4,4"
+                Margin="16,12,16,0"
+                HorizontalOptions="Start"
+                BackgroundColor="{AppThemeBinding Light=#EDE7F6, Dark=#311B92}">
+            <HorizontalStackLayout Spacing="8">
+                <Label Text="{Binding CurrencyFilterText}"
+                       FontSize="14"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light=#311B92, Dark=#EDE7F6}" />
+                <Button Text="{ext:Localize ShowAllAccounts}"
+                        Command="{Binding ClearCurrencyFilterCommand}"
+                        FontSize="13"
+                        Padding="12,0"
+                        HeightRequest="32"
+                        MinimumHeightRequest="32"
+                        CornerRadius="16" />
+            </HorizontalStackLayout>
+        </Border>
 
-    <Grid>
-        <ScrollView>
-            <VerticalStackLayout Padding="20" Spacing="20">
+        <!-- Accounts grouped by currency (base first); a tap opens the edit sheet -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Groups}"
+                        IsGrouped="True"
+                        Margin="16,0">
 
-            <!-- Add Account Section -->
-            <Frame BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" 
-                   BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                   CornerRadius="12"
-                   Padding="16"
-                   IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="{ext:Localize AddNewAccount}" 
-                           FontSize="18" 
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="models:AccountGroup">
+                    <Label Text="{Binding HeaderText}"
+                           Margin="4,20,0,4"
+                           FontSize="14"
                            FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-                    
-                    <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <Entry Text="{Binding NewAccountName}" 
-                           Placeholder="{ext:Localize AccountNamePlaceholder}"
-                           PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
-                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
-                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                           FontSize="16"/>
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
 
-                    <!-- Allow Negative Balance Checkbox - placed before Initial Balance for better UX -->
-                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
-                        <CheckBox IsChecked="{Binding NewAccountAllowNegativeBalance}" 
-                                  Color="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
-                        <Label Text="{ext:Localize AllowNegativeBalance}" 
-                               FontSize="14" 
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    </HorizontalStackLayout>
-
-                    <Label Text="{ext:Localize InitialBalance}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <controls:DecimalEntry Text="{Binding NewAccountBalance}"
-                           AllowNegative="{Binding NewAccountAllowNegativeBalance}"
-                           Placeholder="0.00"
-                           PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
-                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
-                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                           FontSize="16">
-                        <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding NewAccountCurrency.Code}" AllowNegativeValues="{Binding NewAccountAllowNegativeBalance}"/>
-                        </controls:DecimalEntry.Behaviors>
-                    </controls:DecimalEntry>
-
-                    <!-- Currency Selector for Add -->
-                    <Label Text="{ext:Localize Currency}"
-                           FontSize="14"
-                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
-                           Margin="0,4,0,0"/>
-                    <Picker ItemsSource="{Binding AvailableCurrencies}"
-                            SelectedItem="{Binding NewAccountCurrency}"
-                            Title="{ext:Localize SelectCurrency}"
-                            FontSize="16"
-                            MinimumHeightRequest="44"
-                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"/>
-
-                    <!-- Icon Selector for Add -->
-                    <Label Text="{ext:Localize SelectIcon}"
-                           FontSize="14"
-                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
-                           Margin="0,4,0,0"/>
-                    <FlexLayout Wrap="Wrap"
-                                JustifyContent="Start"
-                                AlignItems="Center"
-                                BindableLayout.ItemsSource="{Binding AvailableIcons}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:AccountIcon">
-                                <Border StrokeThickness="3"
-                                        Padding="10"
-                                        Margin="4"
-                                        WidthRequest="52"
-                                        HeightRequest="52"
-                                        StrokeShape="RoundRectangle 10">
-                                    <Border.Stroke>
-                                        <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"/>
-                                    </Border.Stroke>
-                                    <Border.BackgroundColor>
-                                        <Binding Path="IsSelected">
-                                            <Binding.Converter>
-                                                <converters:BoolToSelectedBackgroundConverter/>
-                                            </Binding.Converter>
-                                        </Binding>
-                                    </Border.BackgroundColor>
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectNewIconCommand}"
-                                            CommandParameter="{Binding Code}"/>
-                                    </Border.GestureRecognizers>
-                                    <Label Text="{Binding DisplayIcon}"
-                                           FontFamily="MaterialDesignIcons"
-                                           FontSize="24"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"
-                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}"/>
-                                </Border>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </FlexLayout>
-
-                    <Button Text="{ext:Localize AddAccountButton}"
-                           Command="{Binding AddAccountCommand}"
-                           HeightRequest="44"
-                           CornerRadius="8"
-                           FontSize="16"
-                           BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
-                           TextColor="White"/>
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- Edit Account Section -->
-            <Frame BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#3D3D1F}" 
-                   BorderColor="{AppThemeBinding Light=#FFD54F, Dark=#FFD54F}"
-                   CornerRadius="12"
-                   Padding="16"
-                   IsVisible="{Binding IsEditMode}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="{ext:Localize EditAccount}" 
-                           FontSize="18" 
-                           FontAttributes="Bold"
-                           TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
-
-                    <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <Entry Text="{Binding EditAccountName}" 
-                           Placeholder="{ext:Localize AccountNamePlaceholder}"
-                           PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
-                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
-                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                           FontSize="16"/>
-
-                    <!-- Allow Negative Balance Checkbox - placed before Initial Balance for better UX -->
-                    <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
-                        <CheckBox IsChecked="{Binding EditAccountAllowNegativeBalance}" 
-                                  Color="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
-                        <Label Text="{ext:Localize AllowNegativeBalance}" 
-                               FontSize="14" 
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    </HorizontalStackLayout>
-
-                    <Label Text="{ext:Localize InitialBalance}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    <controls:DecimalEntry Text="{Binding EditAccountBalance}"
-                           AllowNegative="{Binding EditAccountAllowNegativeBalance}"
-                           Placeholder="0.00"
-                           PlaceholderColor="{AppThemeBinding Light=#999999, Dark=#888888}"
-                           TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
-                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                           FontSize="16">
-                        <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding EditAccountCurrency.Code}" AllowNegativeValues="{Binding EditAccountAllowNegativeBalance}"/>
-                        </controls:DecimalEntry.Behaviors>
-                    </controls:DecimalEntry>
-
-                    <!-- Currency Selector for Edit -->
-                    <Label Text="{ext:Localize Currency}"
-                           FontSize="14"
-                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
-                           Margin="0,4,0,0"/>
-                    <Picker ItemsSource="{Binding AvailableCurrencies}"
-                            SelectedItem="{Binding EditAccountCurrency}"
-                            Title="{ext:Localize SelectCurrency}"
-                            FontSize="16"
-                            MinimumHeightRequest="44"
-                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"/>
-
-                    <!-- Icon Selector for Edit -->
-                    <Label Text="{ext:Localize SelectIcon}"
-                           FontSize="14"
-                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
-                           Margin="0,4,0,0"/>
-                    <FlexLayout Wrap="Wrap"
-                                JustifyContent="Start"
-                                AlignItems="Center"
-                                BindableLayout.ItemsSource="{Binding AvailableIcons}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="models:AccountIcon">
-                                <Border StrokeThickness="3"
-                                        Padding="10"
-                                        Margin="4"
-                                        WidthRequest="52"
-                                        HeightRequest="52"
-                                        StrokeShape="RoundRectangle 10">
-                                    <Border.Stroke>
-                                        <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}"/>
-                                    </Border.Stroke>
-                                    <Border.BackgroundColor>
-                                        <Binding Path="IsSelected">
-                                            <Binding.Converter>
-                                                <converters:BoolToSelectedBackgroundConverter/>
-                                            </Binding.Converter>
-                                        </Binding>
-                                    </Border.BackgroundColor>
-                                    <Border.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectEditIconCommand}"
-                                            CommandParameter="{Binding Code}"/>
-                                    </Border.GestureRecognizers>
-                                    <Label Text="{Binding DisplayIcon}"
-                                           FontFamily="MaterialDesignIcons"
-                                           FontSize="24"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center"
-                                           TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}"/>
-                                </Border>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </FlexLayout>
-
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                        <Button Grid.Column="0"
-                               Text="{ext:Localize Cancel}" 
-                               Command="{Binding CancelEditCommand}"
-                               HeightRequest="44"
-                               CornerRadius="8"
-                               FontSize="16"
-                               BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
-                               TextColor="White"/>
-                        <Button Grid.Column="1"
-                               Text="{ext:Localize Save}" 
-                               Command="{Binding SaveEditCommand}"
-                               HeightRequest="44"
-                               CornerRadius="8"
-                               FontSize="16"
-                               BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
-                               TextColor="White"/>
-                    </Grid>
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- Accounts List Header -->
-            <Label Text="{ext:Localize YourAccounts}" 
-                   FontSize="20" 
-                   FontAttributes="Bold"
-                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-            
-            <!-- Currency filter from a Home balance line -->
-            <Border IsVisible="{Binding HasCurrencyFilter}"
-                    StrokeThickness="0"
-                    StrokeShape="RoundRectangle 18"
-                    Padding="14,4,4,4"
-                    HorizontalOptions="Start"
-                    BackgroundColor="{AppThemeBinding Light=#EDE7F6, Dark=#311B92}">
-                <HorizontalStackLayout Spacing="8">
-                    <Label Text="{Binding CurrencyFilterText}"
-                           FontSize="14"
-                           VerticalOptions="Center"
-                           TextColor="{AppThemeBinding Light=#311B92, Dark=#EDE7F6}"/>
-                    <Button Text="{ext:Localize ShowAllAccounts}"
-                            Command="{Binding ClearCurrencyFilterCommand}"
-                            FontSize="13"
-                            Padding="12,0"
-                            HeightRequest="32"
-                            MinimumHeightRequest="32"
-                            CornerRadius="16"/>
-                </HorizontalStackLayout>
-            </Border>
-
-            <!-- Accounts List -->
-            <CollectionView ItemsSource="{Binding Accounts}">
-                <CollectionView.EmptyView>
-                        <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
-                            <Label Text="&#xF0070;"
-                                   FontFamily="MaterialDesignIcons"
-                                   FontSize="48"
-                                   HorizontalOptions="Center"
-                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        <Label Text="{ext:Localize NoAccounts}"
-                               FontSize="16"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="viewmodels:AccountDisplayItem">
-                        <Frame Margin="0,6"
-                               Padding="16"
-                               BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                               BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                               CornerRadius="10"
-                               HasShadow="False">
-                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="2">
-                                <!-- Account Icon -->
-                                <Label Grid.Row="0" Grid.RowSpan="3" Grid.Column="0"
-                                       Text="{Binding Account.DisplayIcon}"
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:AccountListItem">
+                    <Border Margin="0,4"
+                            Padding="12"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditAccountCommand}"
+                                                  CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
+                                    VerticalOptions="Center"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                <Label Text="{Binding Account.DisplayIcon}"
                                        FontFamily="MaterialDesignIcons"
-                                       FontSize="28"
+                                       FontSize="22"
+                                       HorizontalOptions="Center"
                                        VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            </Border>
 
-                                <Label Grid.Row="0" Grid.Column="1"
-                                       Text="{Binding Account.Name}"
-                                       FontSize="16"
-                                       FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"
-                                       VerticalOptions="Center"/>
-
-                                <Label Grid.Row="1" Grid.Column="1"
-                                       FontSize="15"
-                                       FontAttributes="Bold"
-                                       TextColor="{Binding CurrentBalance, Converter={StaticResource BalanceToColorConverter}}"
-                                       VerticalOptions="Center">
-                                    <Label.Text>
-                                        <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
-                                            <Binding Path="CurrentBalance"/>
-                                            <Binding Path="Account.CurrencyCode"/>
-                                        </MultiBinding>
-                                    </Label.Text>
-                                </Label>
-
-                                <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="8">
-                                    <Label Text="{Binding InitialBalanceText}"
-                                           FontSize="12"
-                                           TextColor="{AppThemeBinding Light=#999999, Dark=#777777}"
-                                           VerticalOptions="Center"/>
-                                    <Border BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Label Text="{Binding Account.Name}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation"
+                                           VerticalOptions="Center" />
+                                    <Border StrokeThickness="0"
                                             StrokeShape="RoundRectangle 8"
-                                            Stroke="Transparent"
-                                            Padding="6,2"
-                                            IsVisible="{Binding Account.CurrencyCode, Converter={StaticResource IsStringNotNullOrEmptyConverter}}">
-                                        <Label Text="{Binding Account.CurrencyCode}"
+                                            Padding="6,1"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}">
+                                        <Label Text="{Binding CurrencyCode}"
                                                FontSize="11"
-                                               TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"/>
+                                               TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}" />
                                     </Border>
                                 </HorizontalStackLayout>
+                                <Label Text="{Binding LastActivityText}"
+                                       FontSize="12"
+                                       LineBreakMode="TailTruncation"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            </VerticalStackLayout>
 
-                                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
-                                        Text="{ext:Localize EditButton}"
-                                        FontSize="13"
-                                        HeightRequest="36"
-                                        Padding="12,0"
-                                        BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
-                                        TextColor="White"
-                                        CornerRadius="6"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditAccountCommand}"
-                                        CommandParameter="{Binding .}"/>
+                            <Label Grid.Column="2"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   VerticalOptions="Center"
+                                   TextColor="{Binding CurrentBalance, Converter={StaticResource BalanceToColorConverter}}">
+                                <Label.Text>
+                                    <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
+                                        <Binding Path="CurrentBalance" />
+                                        <Binding Path="CurrencyCode" />
+                                    </MultiBinding>
+                                </Label.Text>
+                            </Label>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
 
-                                <Button Grid.Row="0" Grid.RowSpan="3" Grid.Column="3"
-                                        Text="{ext:Localize DeleteButton}"
-                                        FontSize="13"
-                                        HeightRequest="36"
-                                        Padding="12,0"
-                                        BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
-                                        TextColor="White"
-                                        CornerRadius="6"
-                                        IsVisible="{Binding Account.IsDefault, Converter={StaticResource InvertedBoolConverter}}"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=DeleteAccountCommand}"
-                                        CommandParameter="{Binding .}"/>
-                            </Grid>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
+                    <Label Text="&#xF0070;"
+                           FontFamily="MaterialDesignIcons"
+                           FontSize="48"
+                           HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    <Label Text="{ext:Localize NoAccounts}"
+                           FontSize="16"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
 
-            </VerticalStackLayout>
-        </ScrollView>
+            <CollectionView.Footer>
+                <!-- Room so the last card scrolls above the add button -->
+                <ContentView HeightRequest="88" />
+            </CollectionView.Footer>
+        </CollectionView>
 
+        <Button Grid.RowSpan="2"
+                Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize AddAccountButton}"
+                IsVisible="{Binding IsFormOpen, Converter={StaticResource InvertedBoolConverter}}"
+                Command="{Binding AddAccountCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
+
+        <!-- Add / edit sheet: dimmed page behind it; tapping the dim closes it -->
+        <BoxView Grid.RowSpan="2" BackgroundColor="#80000000" IsVisible="{Binding IsFormOpen}">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding CloseFormCommand}" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <Border x:Name="FormSheet"
+                Grid.RowSpan="2"
+                IsVisible="{Binding IsFormOpen}"
+                VerticalOptions="End"
+                Padding="20,12,20,20"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 20,20,0,0"
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
+                <Border WidthRequest="36"
+                        HeightRequest="4"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 2"
+                        HorizontalOptions="Center"
+                        BackgroundColor="{AppThemeBinding Light=#BDBDBD, Dark=#616161}" />
+
+                <Label Grid.Row="1" Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
+
+                <ScrollView Grid.Row="2" x:Name="FormScroll">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <Entry Text="{Binding FormName}"
+                               Placeholder="{ext:Localize AccountNamePlaceholder}"
+                               FontSize="16" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" Margin="0,4,0,0">
+                            <Label Text="{ext:Localize InitialBalance}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <Label Grid.Column="1" Text="{ext:Localize Currency}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <controls:DecimalEntry Grid.Row="1"
+                                                   Text="{Binding FormBalance}"
+                                                   AllowNegative="{Binding FormAllowNegativeBalance}"
+                                                   Placeholder="0.00"
+                                                   FontSize="16">
+                                <controls:DecimalEntry.Behaviors>
+                                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency.Code}" AllowNegativeValues="{Binding FormAllowNegativeBalance}" />
+                                </controls:DecimalEntry.Behaviors>
+                            </controls:DecimalEntry>
+                            <Picker Grid.Row="1" Grid.Column="1"
+                                    ItemsSource="{Binding AvailableCurrencies}"
+                                    SelectedItem="{Binding FormCurrency}"
+                                    Title="{ext:Localize SelectCurrency}"
+                                    FontSize="16"
+                                    MinimumHeightRequest="44" />
+                        </Grid>
+
+                        <HorizontalStackLayout Spacing="8">
+                            <CheckBox IsChecked="{Binding FormAllowNegativeBalance}"
+                                      Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            <Label Text="{ext:Localize AllowNegativeBalance}"
+                                   FontSize="14"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+                        <Label Text="{ext:Localize SelectIcon}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="Start"
+                                    AlignItems="Center"
+                                    BindableLayout.ItemsSource="{Binding AvailableIcons}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:AccountIcon">
+                                    <Border StrokeThickness="3"
+                                            Padding="10"
+                                            Margin="4"
+                                            WidthRequest="52"
+                                            HeightRequest="52"
+                                            StrokeShape="RoundRectangle 10"
+                                            BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToSelectedBackgroundConverter}}">
+                                        <Border.Stroke>
+                                            <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}" />
+                                        </Border.Stroke>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectIconCommand}"
+                                                                  CommandParameter="{Binding Code}" />
+                                        </Border.GestureRecognizers>
+                                        <Label Text="{Binding DisplayIcon}"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="24"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}" />
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Delete only for an existing, non-default account -->
+                <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
+                    <Button Text="{ext:Localize DeleteButton}"
+                            IsVisible="{Binding CanDelete}"
+                            Command="{Binding DeleteAccountCommand}"
+                            Margin="0,0,12,0"
+                            HeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                    <Button Grid.Column="1"
+                            Text="{Binding SaveText}"
+                            Command="{Binding SaveAccountCommand}"
+                            HeightRequest="44"
+                            CornerRadius="22"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                </Grid>
+            </Grid>
+        </Border>
     </Grid>
 
 </ContentPage>

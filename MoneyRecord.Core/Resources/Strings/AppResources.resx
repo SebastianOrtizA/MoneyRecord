@@ -298,11 +298,8 @@
   <data name="CancelEdit" xml:space="preserve">
     <value>Cancel Edit</value>
   </data>
-  <data name="YourAccounts" xml:space="preserve">
-    <value>Your Accounts</value>
-  </data>
   <data name="NoAccounts" xml:space="preserve">
-    <value>No accounts yet. Add your first account above.</value>
+    <value>No accounts yet. Tap + to add your first account.</value>
   </data>
   <data name="AllowNegativeBalance" xml:space="preserve">
     <value>Allow negative balance</value>
@@ -883,9 +880,6 @@ Amount: {2}</value>
   <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
     <value>'{0}' uses {1}, but the default account '{2}' uses {3}. Its transactions and recurring rules can't be moved there without changing what they are worth: delete them first.</value>
   </data>
-  <data name="InitialBalanceAmount" xml:space="preserve">
-    <value>Initial: {0}</value>
-  </data>
 
   <!-- Search & Filters -->
   <data name="SearchTransactions" xml:space="preserve">
@@ -1084,5 +1078,14 @@ Amount: {2}</value>
   </data>
   <data name="MoreDetails" xml:space="preserve">
     <value>More details</value>
+  </data>
+  <data name="LastActivityDate" xml:space="preserve">
+    <value>Last activity: {0}</value>
+  </data>
+  <data name="AccountCountOne" xml:space="preserve">
+    <value>{0} account</value>
+  </data>
+  <data name="AccountCountOther" xml:space="preserve">
+    <value>{0} accounts</value>
   </data>
 </root>

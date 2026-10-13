@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.3 done; 8.4 in review)
+**Status**: In progress (8.1–8.4 done; 8.5 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -89,6 +89,16 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Grouped by currency (base first), each group with a subtotal header in that currency ("EUR · €300.00 · 2 accounts").
   Accepts a currency filter from Home.
 - Add/Edit in a bottom sheet instead of the always-open form on top of the list.
+- Done as: one grouped `CollectionView` of cards (icon, name, currency badge, balance in its own currency, "Last
+  activity: Oct 13, 2026" from `AccountBalanceInfo.LastActivityDate`). Core `AccountGroup.Build` groups by resolved
+  currency, base first then by code, with "EUR · €300.00 · 2 accounts" headers (`Plurals.Accounts`); the Home
+  currency filter keeps one group, with the "EUR accounts · Show all" chip above the list. A + button opens the add
+  sheet; tapping a card opens the same sheet in edit mode with Delete (hidden for the default account; the sheet stays
+  open when the delete is cancelled). One set of form fields replaces the separate add/edit fields; the form scrolls
+  inside the sheet with title and buttons fixed; Android back closes the sheet (`IOverlayHost`). The per-card Edit /
+  Delete buttons, the initial balance on the card and the `YourAccounts` / `InitialBalanceAmount` strings are gone.
+  Known, not fixed here: the icon-tile converters read the theme when they run, so a live light/dark switch leaves
+  stale tile colours until the page is reopened (also on Categories).
 
 ### 8.6 Budgets
 - Edit in a bottom sheet (period, limit) instead of `DisplayPromptAsync`.
