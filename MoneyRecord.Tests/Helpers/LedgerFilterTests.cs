@@ -120,4 +120,22 @@ public class LedgerFilterTests
         LedgerFilter.AccountOptions(All).Should().Equal(
             new FilterOption(2, "Bank"), new FilterOption(1, "Cash"), new FilterOption(3, "Savings"));
     }
+
+    [Fact]
+    public void Tag_filter_matches_one_of_the_tags_ignoring_case()
+    {
+        var trip = Lunch with { SourceId = 6, Tags = "travel, Work " };
+
+        LedgerFilter.Apply([Lunch, Salary, trip], new TransactionFilter(Tag: "WORK")).Should().BeEquivalentTo([Lunch, trip]);
+        LedgerFilter.Apply([Lunch, Salary, trip], new TransactionFilter(Tag: "wor")).Should().BeEmpty();
+        new TransactionFilter(Tag: "work").IsActive.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Tag_options_are_distinct_ignoring_case_and_sorted()
+    {
+        var trip = Lunch with { SourceId = 6, Tags = "travel, Work" };
+
+        LedgerFilter.TagOptions([trip, Lunch, Salary]).Should().Equal("travel", "Work");
+    }
 }

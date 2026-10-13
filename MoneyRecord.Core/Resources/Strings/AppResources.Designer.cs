@@ -1405,15 +1405,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a There are no transactions to show.
-        /// </summary>
-        public static string NoTransactions {
-            get {
-                return ResourceManager.GetString("NoTransactions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a No transfers yet.
         /// </summary>
         public static string NoTransfers {
@@ -1671,15 +1662,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string Spent {
             get {
                 return ResourceManager.GetString("Spent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Start tracking your finances by adding your first transaction.
-        /// </summary>
-        public static string StartTracking {
-            get {
-                return ResourceManager.GetString("StartTracking", resourceCulture);
             }
         }
         
@@ -2358,12 +2340,6 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
-        public static string AmountRange {
-            get {
-                return ResourceManager.GetString("AmountRange", resourceCulture);
-            }
-        }
-
         public static string Min {
             get {
                 return ResourceManager.GetString("Min", resourceCulture);
@@ -2709,6 +2685,78 @@ namespace MoneyRecord.Resources.Strings {
         public static string ShowAllAccounts {
             get {
                 return ResourceManager.GetString("ShowAllAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount.
+        /// </summary>
+        public static string FilterByAmount {
+            get {
+                return ResourceManager.GetString("FilterByAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tag.
+        /// </summary>
+        public static string FilterByTag {
+            get {
+                return ResourceManager.GetString("FilterByTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Tags.
+        /// </summary>
+        public static string AllTags {
+            get {
+                return ResourceManager.GetString("AllTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No transactions in this period.
+        /// </summary>
+        public static string NoTransactionsInPeriod {
+            get {
+                return ResourceManager.GetString("NoTransactionsInPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tap + to add an expense, income or transfer..
+        /// </summary>
+        public static string AddEntryHint {
+            get {
+                return ResourceManager.GetString("AddEntryHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No transactions match these filters.
+        /// </summary>
+        public static string NoMatchingTransactions {
+            get {
+                return ResourceManager.GetString("NoMatchingTransactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change or clear the filters to see more..
+        /// </summary>
+        public static string TryOtherFilters {
+            get {
+                return ResourceManager.GetString("TryOtherFilters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string FilteredOfTotal {
+            get {
+                return ResourceManager.GetString("FilteredOfTotal", resourceCulture);
             }
         }
     }

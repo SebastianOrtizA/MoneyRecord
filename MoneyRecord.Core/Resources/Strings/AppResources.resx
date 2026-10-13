@@ -135,12 +135,6 @@
   <data name="Transactions" xml:space="preserve">
     <value>Transactions</value>
   </data>
-  <data name="NoTransactions" xml:space="preserve">
-    <value>There are no transactions to show</value>
-  </data>
-  <data name="StartTracking" xml:space="preserve">
-    <value>Start tracking your finances by adding your first transaction</value>
-  </data>
   <data name="EditButton" xml:space="preserve">
     <value>Edit</value>
   </data>
@@ -918,9 +912,6 @@ Amount: {2}</value>
   <data name="AllAccounts" xml:space="preserve">
     <value>All Accounts</value>
   </data>
-  <data name="AmountRange" xml:space="preserve">
-    <value>Amount Range</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>Min</value>
   </data>
@@ -1072,5 +1063,29 @@ Amount: {2}</value>
   </data>
   <data name="ShowAllAccounts" xml:space="preserve">
     <value>Show all</value>
+  </data>
+  <data name="FilterByAmount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="FilterByTag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="AllTags" xml:space="preserve">
+    <value>All Tags</value>
+  </data>
+  <data name="NoTransactionsInPeriod" xml:space="preserve">
+    <value>No transactions in this period</value>
+  </data>
+  <data name="AddEntryHint" xml:space="preserve">
+    <value>Tap + to add an expense, income or transfer.</value>
+  </data>
+  <data name="NoMatchingTransactions" xml:space="preserve">
+    <value>No transactions match these filters</value>
+  </data>
+  <data name="TryOtherFilters" xml:space="preserve">
+    <value>Change or clear the filters to see more.</value>
+  </data>
+  <data name="FilteredOfTotal" xml:space="preserve">
+    <value>{0} of {1}</value>
   </data>
 </root>

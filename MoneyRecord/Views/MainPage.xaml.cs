@@ -1,8 +1,9 @@
+using MoneyRecord.Controls;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage, IOverlayHost
     {
         private readonly MainViewModel _viewModel;
 
@@ -19,5 +20,7 @@ namespace MoneyRecord.Views
             // The load shows its own spinner and errors; the page renders right away
             await _viewModel.InitializeAsync();
         }
+
+        public bool TryCloseOverlay() => AddEntry.TryClose();
     }
 }

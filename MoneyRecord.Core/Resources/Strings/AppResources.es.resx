@@ -135,12 +135,6 @@
   <data name="Transactions" xml:space="preserve">
     <value>Transacciones</value>
   </data>
-  <data name="NoTransactions" xml:space="preserve">
-    <value>No hay transacciones para mostrar</value>
-  </data>
-  <data name="StartTracking" xml:space="preserve">
-    <value>Comienza a controlar tus finanzas agregando tu primera transacción</value>
-  </data>
   <data name="EditButton" xml:space="preserve">
     <value>Editar</value>
   </data>
@@ -916,9 +910,6 @@ Monto: {2}</value>
   <data name="AllAccounts" xml:space="preserve">
     <value>Todas las Cuentas</value>
   </data>
-  <data name="AmountRange" xml:space="preserve">
-    <value>Rango de Monto</value>
-  </data>
   <data name="Min" xml:space="preserve">
     <value>Mín</value>
   </data>
@@ -1070,5 +1061,29 @@ Monto: {2}</value>
   </data>
   <data name="ShowAllAccounts" xml:space="preserve">
     <value>Mostrar todas</value>
+  </data>
+  <data name="FilterByAmount" xml:space="preserve">
+    <value>Monto</value>
+  </data>
+  <data name="FilterByTag" xml:space="preserve">
+    <value>Etiqueta</value>
+  </data>
+  <data name="AllTags" xml:space="preserve">
+    <value>Todas las Etiquetas</value>
+  </data>
+  <data name="NoTransactionsInPeriod" xml:space="preserve">
+    <value>No hay transacciones en este periodo</value>
+  </data>
+  <data name="AddEntryHint" xml:space="preserve">
+    <value>Toca + para agregar un gasto, ingreso o transferencia.</value>
+  </data>
+  <data name="NoMatchingTransactions" xml:space="preserve">
+    <value>Ninguna transacción coincide con estos filtros</value>
+  </data>
+  <data name="TryOtherFilters" xml:space="preserve">
+    <value>Cambia o limpia los filtros para ver más.</value>
+  </data>
+  <data name="FilteredOfTotal" xml:space="preserve">
+    <value>{0} de {1}</value>
   </data>
 </root>

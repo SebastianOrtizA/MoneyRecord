@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:MoneyRecord.Controls">
 
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
@@ -439,6 +440,26 @@
         <Setter Property="CornerRadius" Value="20" />
         <Setter Property="HeightRequest" Value="40" />
         <Setter Property="Padding" Value="12,0" />
+    </Style>
+
+    <!-- Filter chips (Controls/FilterChip): outlined, in the active colours while IsActive -->
+    <Style TargetType="controls:FilterChip">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light=#424242, Dark=#E0E0E0}" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light=#BDBDBD, Dark=#616161}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="CornerRadius" Value="17" />
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="MinimumWidthRequest" Value="0" />
+        <Setter Property="Padding" Value="14,0" />
+        <Style.Triggers>
+            <Trigger TargetType="controls:FilterChip" Property="IsActive" Value="True">
+                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark=#3A3060}" />
+                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- "See all" / "View all" at the edge of a card -->
