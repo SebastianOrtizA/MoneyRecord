@@ -133,10 +133,12 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
   `CategoryAmount.HeatLevel`, 16 heatmap / analysis strings) are gone. Reports top tabs are Spending · Income · Trends
   (routes unchanged). Spending / Income: a donut with the total in its middle and the ranked list as its legend and
   table view (dot = slice colour, amount, share, share bar; a tap still opens the transactions popup). Colours: the
-  dataviz reference categorical palette, light and dark steps chosen separately (`Charts/ChartPalette`), assigned by
-  the category's place among its type's categories by ID (`CategoryAmount.PaletteSlot`), so colour follows the
-  category, not its rank; past 8 categories (and deleted ones) fold into one grey "Other" slice
-  (`CategoryReport.Slices`). Trends: monthly spending and income vs expenses as rounded columns (one legend only on
+  dataviz reference categorical palette, light and dark steps chosen separately (`Charts/ChartPalette`), the 8 largest
+  categories of the report get one each, chosen by the category's place among its type's categories by ID
+  (`CategoryAmount.PaletteSlot`, wrapping; a larger category already holding it pushes to the next free slot), so
+  colour follows the category, not its rank; the smaller rest fold into one grey "Other" slice (`CategoryReport.Slices`;
+  review: "Other" by ID made a large newer category grey). Income / expense / card colours come from `Colors.xaml`
+  (`CardBackground` + shared `ChartCard` style), so the chart gaps match the card. Trends: monthly spending and income vs expenses as rounded columns (one legend only on
   the two-series chart), money on the value axis, a short localized month under every bar (`DateStyle.Month`), totals
   from Core `MonthlyTotalsBuilder` instead of loops in the view model; the expense-category pie left Trends (the
   Spending donut shows it). `Charts/ChartFactory` holds the shared look (2px surface gaps, 4px rounded bar ends,

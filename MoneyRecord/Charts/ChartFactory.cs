@@ -23,6 +23,7 @@ namespace MoneyRecord.Charts
                 Stroke = ChartPalette.Paint(ChartPalette.Surface, 2),
                 InnerRadius = 80,
                 HoverPushout = 4,
+                // Shows on hover (Windows); a tap on Android shows none, so the ranked list carries the values
                 ToolTipLabelFormatter = _ => total > 0
                     ? $"{MoneyFormatter.Format(slice.Amount)} · {slice.Amount / total:P1}"
                     : MoneyFormatter.Format(slice.Amount)

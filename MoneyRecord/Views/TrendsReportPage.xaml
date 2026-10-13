@@ -8,16 +8,6 @@
              x:DataType="viewmodels:TrendsReportViewModel"
              Title="{ext:Localize Trends}">
 
-    <ContentPage.Resources>
-        <Style x:Key="ChartCard" TargetType="Border">
-            <Setter Property="Padding" Value="12" />
-            <Setter Property="StrokeThickness" Value="1" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 12" />
-            <Setter Property="Stroke" Value="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" />
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}" />
-        </Style>
-    </ContentPage.Resources>
-
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadChartsCommand}">
         <ScrollView>

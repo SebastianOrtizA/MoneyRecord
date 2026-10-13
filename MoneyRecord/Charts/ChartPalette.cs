@@ -6,7 +6,8 @@ namespace MoneyRecord.Charts
     /// <summary>
     /// Chart colours, light and dark each chosen for their own surface (not a flip): the dataviz reference
     /// categorical palette in its fixed order, a neutral grey for "Other", recessive ink for axes and grid, and the
-    /// app's income / expense colours. Charts are built when a page loads, so a theme switch shows on the next load.
+    /// app's income / expense colours (read from <c>Colors.xaml</c>). Charts are built when a page loads, so a theme
+    /// switch shows on the next load.
     /// </summary>
     public static class ChartPalette
     {
@@ -27,18 +28,21 @@ namespace MoneyRecord.Charts
                 : Color.FromArgb(IsDark ? "#7a7974" : "#a3a29c");
         }
 
-        public static Color Income => Color.FromArgb(IsDark ? "#42A5F5" : "#1976D2");
+        public static Color Income => Resource(IsDark ? "IncomeColorDark" : "IncomeColor");
 
-        public static Color Expense => Color.FromArgb(IsDark ? "#EF5350" : "#D32F2F");
+        public static Color Expense => Resource(IsDark ? "ExpenseColorDark" : "ExpenseColor");
 
-        /// <summary>The card surface behind the charts: the 2px gap between slices and bars is drawn in it.</summary>
-        public static Color Surface => Color.FromArgb(IsDark ? "#1E1E1E" : "#FFFFFF");
+        /// <summary>The card surface behind the charts (<c>ChartCard</c>): the 2px gap between slices and bars is drawn in it.</summary>
+        public static Color Surface => Resource(IsDark ? "CardBackgroundDark" : "CardBackground");
 
         /// <summary>Axis labels: secondary ink, never a series colour.</summary>
         public static Color AxisText => Color.FromArgb(IsDark ? "#AAAAAA" : "#666666");
 
         /// <summary>Grid lines: recessive.</summary>
         public static Color Grid => Color.FromArgb(IsDark ? "#333333" : "#EEEEEE");
+
+        /// <summary>An app colour from <c>Colors.xaml</c>, so the charts follow the app's income / expense / card colours.</summary>
+        private static Color Resource(string key) => (Color)Application.Current!.Resources[key];
 
         public static SolidColorPaint Paint(Color color, float strokeThickness = 0) =>
             new(ToSk(color)) { StrokeThickness = strokeThickness };

@@ -5,8 +5,9 @@ namespace MoneyRecord.Models
 {
     /// <summary>
     /// One category of the Spending or Income report: its total, its share of the report and its chart colour slot.
-    /// The slot follows the category (its place among the type's categories by ID), never its rank, so a category
-    /// keeps its colour when the period changes; categories past <see cref="PaletteSize"/> share the "Other" grey.
+    /// The <see cref="PaletteSize"/> largest categories get a colour, chosen by the category (its place among the type's
+    /// categories by ID), not its rank, so it keeps its colour when the period changes; the smaller rest share the
+    /// "Other" grey.
     /// </summary>
     public sealed record CategoryAmount(
         CategoryType Type,

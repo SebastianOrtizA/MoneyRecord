@@ -1,7 +1,7 @@
 using AwesomeAssertions;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
-using MoneyRecord.Services;
+using MoneyRecord.Resources.Strings;
 using Xunit;
 
 namespace MoneyRecord.Tests.Helpers;
@@ -49,22 +49,34 @@ public class CategoryReportBuilderTests
     }
 
     [Fact]
-    public void Categories_past_the_palette_and_unknown_ones_fold_into_one_Other_slice()
+    public void The_largest_categories_get_a_colour_even_with_the_highest_ID_and_only_the_small_rest_folds()
     {
-        var ids = Enumerable.Range(1, CategoryAmount.PaletteSize + 2).ToArray();
+        // Ten categories; the newest (highest ID) is the largest, two small ones are past the palette
+        var ids = Enumerable.Range(1, 10).ToArray();
+        var report = CategoryReportBuilder.Build(
+            ids.Select(id => Tx(TransactionType.Expense, id, $"C{id}", id == 10 ? 500m : 100m - id)).ToList(),
+            CategoryType.Expense, ids);
+
+        report.Categories[0].CategoryId.Should().Be(10);
+        report.Categories[0].PaletteSlot.Should().NotBe(CategoryAmount.OtherSlot);
+        report.Categories.Where(c => c.CategoryId is 8 or 9).Should().AllSatisfy(c => c.PaletteSlot.Should().Be(CategoryAmount.OtherSlot));
+        report.Categories.Where(c => c.PaletteSlot != CategoryAmount.OtherSlot).Select(c => c.PaletteSlot)
+            .Should().OnlyHaveUniqueItems().And.HaveCount(CategoryAmount.PaletteSize);
+        report.Slices.Should().HaveCount(CategoryAmount.PaletteSize + 1);
+        report.Slices[^1].Should().Be(new ChartSlice(AppResources.OtherCategories, 92m + 91m, CategoryAmount.OtherSlot));
+    }
+
+    [Fact]
+    public void A_deleted_category_still_gets_a_colour_when_it_is_large()
+    {
         var report = CategoryReportBuilder.Build(
         [
-            Tx(TransactionType.Expense, 1, "First", 50m),
-            Tx(TransactionType.Expense, CategoryAmount.PaletteSize + 1, "Ninth", 20m),
-            Tx(TransactionType.Expense, CategoryAmount.PaletteSize + 2, "Tenth", 10m),
-            Tx(TransactionType.Expense, 99, "Deleted", 20m)
-        ], CategoryType.Expense, ids);
+            Tx(TransactionType.Expense, 1, "Rent", 10m),
+            Tx(TransactionType.Expense, 99, "Deleted", 50m)
+        ], CategoryType.Expense, Ids);
 
-        report.Categories.Single(c => c.CategoryId == 1).PaletteSlot.Should().Be(0);
-        report.Categories.Where(c => c.CategoryId != 1).Should().AllSatisfy(c => c.PaletteSlot.Should().Be(CategoryAmount.OtherSlot));
-        report.Slices.Should().Equal(
-            new ChartSlice("First", 50m, 0),
-            new ChartSlice(LocalizationService.Instance.GetString("OtherCategories")!, 50m, CategoryAmount.OtherSlot));
+        report.Categories.Select(c => c.PaletteSlot).Should().OnlyHaveUniqueItems().And.NotContain(CategoryAmount.OtherSlot);
+        report.Slices.Should().HaveCount(2);
     }
 
     [Fact]

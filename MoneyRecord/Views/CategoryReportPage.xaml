@@ -37,12 +37,7 @@
                     </Grid>
 
                     <!-- Donut with the total in the middle -->
-                    <Border IsVisible="{Binding HasData}"
-                            Padding="8"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 12"
-                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                    <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}" Padding="8">
                         <Grid HeightRequest="260">
                             <lvc:PieChart Series="{Binding Slices}"
                                           LegendPosition="Hidden"
