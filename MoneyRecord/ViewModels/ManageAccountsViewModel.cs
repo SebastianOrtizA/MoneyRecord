@@ -9,16 +9,6 @@ using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
-    public sealed class AccountDisplayItem
-    {
-        public Account Account { get; init; } = null!;
-        public decimal CurrentBalance { get; init; }
-
-        /// <summary>"Initial: €100.00", localized, in the account's currency.</summary>
-        public string InitialBalanceText =>
-            string.Format(AppResources.InitialBalanceAmount, MoneyFormatter.Format(Account.InitialBalance, Account.CurrencyCode));
-    }
-
     [QueryProperty(nameof(CurrencyFilter), "CurrencyCode")]
     public partial class ManageAccountsViewModel : ObservableObject
     {
@@ -30,8 +20,9 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
 
+        /// <summary>The accounts grouped by currency, base currency first, each with its subtotal.</summary>
         [ObservableProperty]
-        private ObservableCollection<AccountDisplayItem> accounts = new();
+        private List<AccountGroup> groups = new();
 
         /// <summary>From a Home currency line: only the accounts in this currency are listed (null = all).</summary>
         [ObservableProperty]
@@ -42,41 +33,38 @@ namespace MoneyRecord.ViewModels
 
         public string CurrencyFilterText => string.Format(AppResources.ShowingCurrencyAccounts, CurrencyFilter);
 
+        /// <summary>The add/edit sheet is open.</summary>
         [ObservableProperty]
-        private string newAccountName = string.Empty;
+        private bool isFormOpen;
 
+        /// <summary>The account the sheet edits; null when it adds a new one.</summary>
         [ObservableProperty]
-        private string newAccountBalance = "0";
-
-        [ObservableProperty]
-        private string newAccountIconCode = string.Empty;
-
-        [ObservableProperty]
-        private bool newAccountAllowNegativeBalance = false;
-
-        [ObservableProperty]
-        private Currency? newAccountCurrency;
-
-        [ObservableProperty]
-        private bool isEditMode = false;
-
-        [ObservableProperty]
-        private string editAccountName = string.Empty;
-
-        [ObservableProperty]
-        private string editAccountBalance = "0";
-
-        [ObservableProperty]
-        private string editAccountIconCode = string.Empty;
-
-        [ObservableProperty]
-        private bool editAccountAllowNegativeBalance = false;
-
-        [ObservableProperty]
-        private Currency? editAccountCurrency;
-
-        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEditMode), nameof(FormTitle), nameof(SaveText), nameof(CanDelete))]
         private Account? editingAccount;
+
+        public bool IsEditMode => EditingAccount != null;
+
+        public string FormTitle => IsEditMode ? AppResources.EditAccount : AppResources.AddNewAccount;
+
+        public string SaveText => IsEditMode ? AppResources.Save : AppResources.AddAccountButton;
+
+        /// <summary>The default account can't be deleted, so the sheet hides Delete for it.</summary>
+        public bool CanDelete => EditingAccount is { IsDefault: false };
+
+        [ObservableProperty]
+        private string formName = string.Empty;
+
+        [ObservableProperty]
+        private string formBalance = "0";
+
+        [ObservableProperty]
+        private string formIconCode = string.Empty;
+
+        [ObservableProperty]
+        private bool formAllowNegativeBalance;
+
+        [ObservableProperty]
+        private Currency? formCurrency;
 
         [ObservableProperty]
         private ObservableCollection<AccountIcon> availableIcons = new();
@@ -95,178 +83,117 @@ namespace MoneyRecord.ViewModels
             _dialogService = dialogService;
         }
 
-        public async Task InitializeAsync()
+        public Task InitializeAsync()
         {
-            LoadAvailableIcons();
-            AvailableCurrencies = _currencyService.GetAvailableCurrencies();
-            NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
-            UpdateIconSelection(NewAccountIconCode);
-            NewAccountCurrency = DefaultNewAccountCurrency();
-            await LoadAccountsAsync();
+            if (AvailableIcons.Count == 0)
+                AvailableIcons = new ObservableCollection<AccountIcon>(_categoryIconService.GetAccountIcons());
+            if (AvailableCurrencies.Count == 0)
+                AvailableCurrencies = _currencyService.GetAvailableCurrencies();
+            return LoadAccountsCommand.ExecuteAsync(null);
+        }
+
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private async Task LoadAccountsAsync(CancellationToken cancellationToken)
+        {
+            try
+            {
+                var accountsTask = _accountRepository.GetAllAsync();
+                var balancesTask = _balanceService.GetAllAccountBalancesAsync();
+                await Task.WhenAll(accountsTask, balancesTask);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                Groups = AccountGroup.Build(await accountsTask, await balancesTask,
+                    _currencyService.GetBaseCurrencyCode(), CurrencyFilter);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // A newer load replaced this one
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadAccountBalances);
+            }
+        }
+
+        [RelayCommand]
+        private void ClearCurrencyFilter()
+        {
+            CurrencyFilter = null;
+            LoadAccountsCommand.Execute(null);
         }
 
         /// <summary>
-        /// The add form's currency: the filter's when the list is filtered (a new account would otherwise vanish from the
-        /// list right after saving), else the base currency.
+        /// Opens the sheet for a new account. Its currency is the filter's when the list is filtered (a new account would
+        /// otherwise vanish from the list right after saving), else the base currency.
         /// </summary>
-        private Currency DefaultNewAccountCurrency()
+        [RelayCommand]
+        private void AddAccount()
         {
             var code = HasCurrencyFilter ? CurrencyFilter : _currencyService.GetDefaultCurrencyCode();
-            return AvailableCurrencies.FirstOrDefault(c => c.Code == code) ?? AvailableCurrencies.First();
-        }
-
-        private void LoadAvailableIcons()
-        {
-            AvailableIcons.Clear();
-            var icons = _categoryIconService.GetAccountIcons();
-            foreach (var icon in icons)
-            {
-                AvailableIcons.Add(icon);
-            }
-        }
-
-        private void UpdateIconSelection(string selectedCode)
-        {
-            foreach (var icon in AvailableIcons)
-            {
-                icon.IsSelected = icon.Code == selectedCode;
-            }
-        }
-
-        private async Task LoadAccountsAsync()
-        {
-            var accountList = await _accountRepository.GetAllAsync();
-            var balances = await _balanceService.GetAllAccountBalancesAsync();
-            var balanceMap = balances.ToDictionary(b => b.AccountId, b => b.CurrentBalance);
-
-            Accounts.Clear();
-            // An account without a currency is in the base currency
-            foreach (var account in accountList.Where(a => !HasCurrencyFilter
-                         || MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode) == CurrencyFilter))
-            {
-                Accounts.Add(new AccountDisplayItem
-                {
-                    Account = account,
-                    CurrentBalance = balanceMap.GetValueOrDefault(account.Id)
-                });
-            }
+            EditingAccount = null;
+            FormName = string.Empty;
+            FormAllowNegativeBalance = false;
+            FormCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == code) ?? AvailableCurrencies.FirstOrDefault();
+            FormBalance = "0";
+            SelectIcon(_categoryIconService.GetDefaultAccountIconCode());
+            IsFormOpen = true;
         }
 
         [RelayCommand]
-        private async Task ClearCurrencyFilterAsync()
+        private void EditAccount(AccountListItem? item)
         {
-            CurrencyFilter = null;
-            NewAccountCurrency = DefaultNewAccountCurrency();
-            await LoadAccountsAsync();
-        }
-
-        [RelayCommand]
-        private void SelectNewIcon(string iconCode)
-        {
-            NewAccountIconCode = iconCode;
-            UpdateIconSelection(iconCode);
-        }
-
-        [RelayCommand]
-        private void SelectEditIcon(string iconCode)
-        {
-            EditAccountIconCode = iconCode;
-            UpdateIconSelection(iconCode);
-        }
-
-        [RelayCommand]
-        private async Task AddAccountAsync()
-        {
-            if (string.IsNullOrWhiteSpace(NewAccountName))
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseEnterAccountName);
-                return;
-            }
-
-            // Always parse with allowNegative=true to detect negative values for validation
-            var balance = AmountParser.Parse(NewAccountBalance, NewAccountCurrency?.Code, allowNegative: true);
-
-            if (!Money.IsInRange(balance))
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
-                return;
-            }
-
-            // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
-            if (balance < 0 && !NewAccountAllowNegativeBalance)
-            {
-                await _errorHandler.HandleAsync(AppResources.NegativeBalanceNotAllowed);
-                return;
-            }
-
-            var account = new Account
-            {
-                Name = NewAccountName.Trim(),
-                InitialBalance = balance,
-                IsDefault = false,
-                IconCode = string.IsNullOrEmpty(NewAccountIconCode)
-                    ? _categoryIconService.GetDefaultAccountIconCode()
-                    : NewAccountIconCode,
-                CreatedDate = DateTime.Now,
-                AllowNegativeBalance = NewAccountAllowNegativeBalance,
-                CurrencyCode = NewAccountCurrency?.Code ?? _currencyService.GetDefaultCurrencyCode()
-            };
-
-            await _accountRepository.SaveAsync(account);
-            NewAccountName = string.Empty;
-            NewAccountBalance = "0";
-            NewAccountIconCode = _categoryIconService.GetDefaultAccountIconCode();
-            NewAccountAllowNegativeBalance = false;
-            NewAccountCurrency = DefaultNewAccountCurrency();
-            UpdateIconSelection(NewAccountIconCode);
-            await LoadAccountsAsync();
-        }
-
-        [RelayCommand]
-        private void EditAccount(AccountDisplayItem item)
-        {
-            if (item?.Account == null)
+            if (item == null)
                 return;
 
             var account = item.Account;
             EditingAccount = account;
-            EditAccountName = account.Name;
-            EditAccountIconCode = account.IconCode;
-            EditAccountAllowNegativeBalance = account.AllowNegativeBalance;
-            EditAccountCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == account.CurrencyCode)
-                ?? AvailableCurrencies.FirstOrDefault(c => c.Code == _currencyService.GetDefaultCurrencyCode());
+            FormName = account.Name;
+            FormAllowNegativeBalance = account.AllowNegativeBalance;
+            FormCurrency = AvailableCurrencies.FirstOrDefault(c => c.Code == item.CurrencyCode);
             // After the currency: the balance field formats in it
-            EditAccountBalance = account.InitialBalance.ToString();
-            UpdateIconSelection(account.IconCode);
-            IsEditMode = true;
+            FormBalance = account.InitialBalance.ToString();
+            SelectIcon(account.IconCode);
+            IsFormOpen = true;
         }
 
         [RelayCommand]
-        private void CancelEdit()
+        private void CloseForm()
         {
-            IsEditMode = false;
+            IsFormOpen = false;
             EditingAccount = null;
-            EditAccountName = string.Empty;
-            EditAccountBalance = "0";
-            EditAccountIconCode = string.Empty;
-            EditAccountAllowNegativeBalance = false;
-            UpdateIconSelection(NewAccountIconCode);
+        }
+
+        /// <summary>Closes the add/edit sheet; false when it wasn't open.</summary>
+        public bool CloseTopOverlay()
+        {
+            if (!IsFormOpen)
+                return false;
+
+            CloseForm();
+            return true;
         }
 
         [RelayCommand]
-        private async Task SaveEditAsync()
+        private void SelectIcon(string iconCode)
         {
-            if (EditingAccount == null)
-                return;
+            FormIconCode = iconCode;
+            foreach (var icon in AvailableIcons)
+            {
+                icon.IsSelected = icon.Code == iconCode;
+            }
+        }
 
-            if (string.IsNullOrWhiteSpace(EditAccountName))
+        [RelayCommand]
+        private async Task SaveAccountAsync()
+        {
+            if (string.IsNullOrWhiteSpace(FormName))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterAccountName);
                 return;
             }
 
             // Always parse with allowNegative=true to detect negative values for validation
-            var balance = AmountParser.Parse(EditAccountBalance, EditAccountCurrency?.Code, allowNegative: true);
+            var balance = AmountParser.Parse(FormBalance, FormCurrency?.Code, allowNegative: true);
 
             if (!Money.IsInRange(balance))
             {
@@ -275,42 +202,35 @@ namespace MoneyRecord.ViewModels
             }
 
             // Validate: negative initial balance only allowed if AllowNegativeBalance is enabled
-            if (balance < 0 && !EditAccountAllowNegativeBalance)
+            if (balance < 0 && !FormAllowNegativeBalance)
             {
                 await _errorHandler.HandleAsync(AppResources.NegativeBalanceNotAllowed);
                 return;
             }
 
-            EditingAccount.Name = EditAccountName.Trim();
-            EditingAccount.InitialBalance = balance;
-            EditingAccount.IconCode = string.IsNullOrEmpty(EditAccountIconCode)
+            var account = EditingAccount ?? new Account { IsDefault = false, CreatedDate = DateTime.Now };
+            account.Name = FormName.Trim();
+            account.InitialBalance = balance;
+            account.IconCode = string.IsNullOrEmpty(FormIconCode)
                 ? _categoryIconService.GetDefaultAccountIconCode()
-                : EditAccountIconCode;
-            EditingAccount.AllowNegativeBalance = EditAccountAllowNegativeBalance;
-            EditingAccount.CurrencyCode = EditAccountCurrency?.Code ?? _currencyService.GetDefaultCurrencyCode();
+                : FormIconCode;
+            account.AllowNegativeBalance = FormAllowNegativeBalance;
+            account.CurrencyCode = FormCurrency?.Code ?? _currencyService.GetDefaultCurrencyCode();
 
-            await _accountRepository.SaveAsync(EditingAccount);
-            
-            IsEditMode = false;
-            EditingAccount = null;
-            EditAccountName = string.Empty;
-            EditAccountBalance = "0";
-            EditAccountIconCode = string.Empty;
-            EditAccountAllowNegativeBalance = false;
-            EditAccountCurrency = null;
-            UpdateIconSelection(NewAccountIconCode);
-
-            await LoadAccountsAsync();
+            await _accountRepository.SaveAsync(account);
+            CloseForm();
+            await LoadAccountsCommand.ExecuteAsync(null);
         }
 
+        /// <summary>Deletes the account in the sheet; the sheet stays open behind the question, so cancelling returns to it.</summary>
         [RelayCommand]
-        private async Task DeleteAccountAsync(AccountDisplayItem item)
+        private async Task DeleteAccountAsync()
         {
-            if (item?.Account == null)
+            var account = EditingAccount;
+            if (account == null)
                 return;
 
-            var account = item.Account;
-
+            // The sheet hides Delete for the default account; this guards the command itself
             if (account.IsDefault)
             {
                 await _errorHandler.HandleAsync(AppResources.CannotDeleteDefaultAccount);
@@ -358,13 +278,15 @@ namespace MoneyRecord.ViewModels
                     return;
 
                 await _accountService.DeleteAsync(account.Id);
-                await LoadAccountsAsync();
+                CloseForm();
+                await LoadAccountsCommand.ExecuteAsync(null);
             }
             catch (InvalidOperationException ex)
             {
                 // A service guard fired because the data changed after the usage check (e.g. a transfer was added)
                 await _errorHandler.HandleAsync(ex, string.Format(AppResources.DeleteFailedDataChanged, account.Name));
-                await LoadAccountsAsync();
+                CloseForm();
+                await LoadAccountsCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
             {

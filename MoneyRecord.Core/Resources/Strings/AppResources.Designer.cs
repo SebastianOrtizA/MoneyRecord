@@ -1918,15 +1918,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Your Accounts.
-        /// </summary>
-        public static string YourAccounts {
-            get {
-                return ResourceManager.GetString("YourAccounts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Your Budgets.
         /// </summary>
         public static string YourBudgets {
@@ -2253,12 +2244,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string AccountCurrencyDiffersFromDefault {
             get {
                 return ResourceManager.GetString("AccountCurrencyDiffersFromDefault", resourceCulture);
-            }
-        }
-
-        public static string InitialBalanceAmount {
-            get {
-                return ResourceManager.GetString("InitialBalanceAmount", resourceCulture);
             }
         }
 
@@ -2748,6 +2733,33 @@ namespace MoneyRecord.Resources.Strings {
         public static string MoreDetails {
             get {
                 return ResourceManager.GetString("MoreDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last activity: {0}.
+        /// </summary>
+        public static string LastActivityDate {
+            get {
+                return ResourceManager.GetString("LastActivityDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} account.
+        /// </summary>
+        public static string AccountCountOne {
+            get {
+                return ResourceManager.GetString("AccountCountOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} accounts.
+        /// </summary>
+        public static string AccountCountOther {
+            get {
+                return ResourceManager.GetString("AccountCountOther", resourceCulture);
             }
         }
     }
