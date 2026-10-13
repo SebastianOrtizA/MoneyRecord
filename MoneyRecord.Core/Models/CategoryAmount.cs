@@ -34,8 +34,11 @@ namespace MoneyRecord.Models
         public double Share => Percentage / 100;
     }
 
-    /// <summary>One donut slice: a category with its own colour, or every <see cref="CategoryAmount.OtherSlot"/> one merged.</summary>
-    public sealed record ChartSlice(string Name, decimal Amount, int PaletteSlot);
+    /// <summary>
+    /// One donut slice: a category with its own colour, or every <see cref="CategoryAmount.OtherSlot"/> one merged
+    /// (<see cref="CategoryId"/> null).
+    /// </summary>
+    public sealed record ChartSlice(string Name, decimal Amount, int PaletteSlot, int? CategoryId);
 
     /// <summary>A report's total (in the base currency, see Stage 10.3) and its categories, largest share first.</summary>
     public sealed record CategoryReport(decimal Total, IReadOnlyList<CategoryAmount> Categories)
@@ -50,11 +53,11 @@ namespace MoneyRecord.Models
             {
                 var slices = Categories
                     .Where(c => c.PaletteSlot != CategoryAmount.OtherSlot)
-                    .Select(c => new ChartSlice(c.CategoryName, c.Amount, c.PaletteSlot))
+                    .Select(c => new ChartSlice(c.CategoryName, c.Amount, c.PaletteSlot, c.CategoryId))
                     .ToList();
                 var other = Categories.Where(c => c.PaletteSlot == CategoryAmount.OtherSlot).Sum(c => c.Amount);
                 if (other > 0)
-                    slices.Add(new ChartSlice(AppResources.OtherCategories, other, CategoryAmount.OtherSlot));
+                    slices.Add(new ChartSlice(AppResources.OtherCategories, other, CategoryAmount.OtherSlot, null));
                 return slices;
             }
         }

@@ -5,43 +5,42 @@ using MoneyRecord.Charts;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Views;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
-    /// <summary>The Spending or Income report: category shares as a donut and a ranked list. Set <see cref="Type"/> first.</summary>
+    /// <summary>
+    /// The Spending or Income report for the shared period: category shares as a donut and a ranked list, the total
+    /// against the previous period. A slice or a row opens the Transactions tab filtered to it. Set <see cref="Type"/> first.
+    /// </summary>
     public partial class CategoryReportViewModel : ObservableObject
     {
         private readonly ITransactionEnrichmentService _enrichmentService;
+        private readonly ITransactionRepository _transactionRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IErrorHandler _errorHandler;
-        private readonly IDialogService _dialogService;
+        private readonly INavigationService _navigationService;
+        private readonly TransactionsDrillDown _drillDown;
 
-        // The report's transactions, for the category detail popup
-        private List<Transaction> _transactions = [];
+        // While the page is shown: a period change (here or on another tab) reloads it
+        private IDisposable? _periodWatch;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsIncome), nameof(Texts))]
         private CategoryType type = CategoryType.Expense;
 
         [ObservableProperty]
-        private PeriodItem selectedPeriod;
-
-        [ObservableProperty]
-        private DateTime customStartDate = DateTime.Now.AddMonths(-1);
-
-        [ObservableProperty]
-        private DateTime customEndDate = DateTime.Now;
-
-        [ObservableProperty]
-        private bool isCustomPeriodSelected;
-
-        [ObservableProperty]
         private bool isLoading;
 
         [ObservableProperty]
         private decimal total;
+
+        /// <summary>The total against the previous period ("▲ 12% vs previous period").</summary>
+        [ObservableProperty]
+        private string deltaText = string.Empty;
 
         [ObservableProperty]
         private bool hasData;
@@ -57,18 +56,37 @@ namespace MoneyRecord.ViewModels
 
         public CategoryReportTexts Texts => CategoryReportTexts.For(Type);
 
-        public List<PeriodItem> Periods { get; } = PeriodHelper.GetReportPeriods();
+        /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
+        public PeriodViewModel Period { get; }
 
-        public CategoryReportViewModel(ITransactionEnrichmentService enrichmentService, ICategoryRepository categoryRepository, IErrorHandler errorHandler, IDialogService dialogService)
+        public CategoryReportViewModel(PeriodViewModel period, ITransactionEnrichmentService enrichmentService,
+            ITransactionRepository transactionRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler,
+            INavigationService navigationService, TransactionsDrillDown drillDown)
         {
             _enrichmentService = enrichmentService;
+            _transactionRepository = transactionRepository;
             _categoryRepository = categoryRepository;
             _errorHandler = errorHandler;
-            _dialogService = dialogService;
-            selectedPeriod = PeriodHelper.GetDefaultPeriod();
+            _navigationService = navigationService;
+            _drillDown = drillDown;
+            Period = period;
         }
 
-        public Task InitializeAsync() => LoadReportDataCommand.ExecuteAsync(null);
+        private TransactionType TransactionType => IsIncome ? TransactionType.Income : TransactionType.Expense;
+
+        /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>
+        public Task InitializeAsync()
+        {
+            _periodWatch ??= Period.WatchChanges(() => LoadReportDataCommand.Execute(null));
+            return LoadReportDataCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>The page disappeared: stop following the period (it reloads when it appears again).</summary>
+        public void Deactivate()
+        {
+            _periodWatch?.Dispose();
+            _periodWatch = null;
+        }
 
         /// <summary>Each run cancels the one in progress, so an older period's results never overwrite a newer one's.</summary>
         [RelayCommand(AllowConcurrentExecutions = true)]
@@ -78,21 +96,23 @@ namespace MoneyRecord.ViewModels
             {
                 IsLoading = true;
 
-                var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
-                // All types: the builder keeps the report's type, and the popup filters by category ID
+                var (startDate, endDate) = Period.Range;
+                var (previousStart, previousEnd) = Period.PreviousRange;
                 var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 var categoriesTask = _categoryRepository.GetByTypeAsync(Type);
-                await Task.WhenAll(transactionsTask, categoriesTask);
+                var previousTask = _transactionRepository.SumCentsAsync(TransactionType, previousStart, previousEnd);
+                await Task.WhenAll(transactionsTask, categoriesTask, previousTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                _transactions = await transactionsTask;
-                var report = CategoryReportBuilder.Build(_transactions, Type, (await categoriesTask).Select(c => c.Id));
+                var report = CategoryReportBuilder.Build(await transactionsTask, Type, (await categoriesTask).Select(c => c.Id));
                 Total = report.Total;
+                DeltaText = new PeriodDelta(report.Total, Money.FromCents(await previousTask)).Text;
                 HasData = report.Total > 0;
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     Categories = new(report.Categories);
-                    Slices = ChartFactory.Donut(report.Slices, report.Total);
+                    Slices = ChartFactory.Donut(report.Slices, report.Total,
+                        slice => OpenTransactionsCommand.Execute(slice.CategoryId));
                 });
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -111,58 +131,20 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>A row of the list: its transactions.</summary>
         [RelayCommand]
-        private async Task ShowCategoryDetailsAsync(CategoryAmount category)
+        private Task OpenCategoryAsync(CategoryAmount? category) =>
+            category == null ? Task.CompletedTask : OpenTransactionsAsync(category.CategoryId);
+
+        /// <summary>
+        /// The Transactions tab for the same period, filtered to this type and category (all of the type for the
+        /// "Other" slice, which has no single category).
+        /// </summary>
+        [RelayCommand]
+        private Task OpenTransactionsAsync(int? categoryId)
         {
-            if (category == null) return;
-
-            try
-            {
-                var categoryTransactions = _transactions
-                    .Where(t => t.CategoryId == category.CategoryId)
-                    .OrderByDescending(t => t.Date)
-                    .ToList();
-
-                if (categoryTransactions.Count == 0)
-                {
-                    await _dialogService.AlertAsync(category.CategoryName, Texts.NoDetailsFound);
-                    return;
-                }
-
-                var details = categoryTransactions.Select(t =>
-                    $"📅 {DateFormatter.Format(t.Date, DateStyle.Medium)}\n" +
-                    $"   💰 {MoneyFormatter.Format(Math.Abs(t.Amount), t.CurrencyCode)}\n" +
-                    $"   📝 {(string.IsNullOrEmpty(t.Description) ? AppResources.NoDescription : t.Description)}");
-
-                // One subtotal per currency: never "¥10,000 + $20.00 = $10,020.00"
-                var totalText = MoneyFormatter.FormatTotals(categoryTransactions.Select(t => (Math.Abs(t.Amount), (string?)t.CurrencyCode)));
-                var message = $"{AppResources.Total}: {totalText} ({Plurals.Transactions(categoryTransactions.Count)})\n\n" +
-                              string.Join("\n\n", details);
-
-                await _dialogService.AlertAsync($"{Texts.DetailsEmoji} {category.CategoryName}", message, AppResources.Close);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadCategoryDetails);
-            }
-        }
-
-        partial void OnSelectedPeriodChanged(PeriodItem value)
-        {
-            IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
-            LoadReportDataCommand.Execute(null);
-        }
-
-        partial void OnCustomStartDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-                LoadReportDataCommand.Execute(null);
-        }
-
-        partial void OnCustomEndDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-                LoadReportDataCommand.Execute(null);
+            _drillDown.Request(categoryId, TransactionType);
+            return _navigationService.NavigateToAsync($"//{nameof(TransactionsPage)}");
         }
     }
 
@@ -172,14 +154,12 @@ namespace MoneyRecord.ViewModels
         string TotalLabel,
         string EmptyIcon,
         string NoData,
-        string NoDataHint,
-        string NoDetailsFound,
-        string DetailsEmoji)
+        string NoDataHint)
     {
         public static CategoryReportTexts For(CategoryType type) => type == CategoryType.Income
             ? new(AppResources.Income, AppResources.TotalIncome, "\U000F0114", AppResources.NoIncomeDataFound,
-                AppResources.AddIncomeTransactionsToSee, AppResources.NoIncomeDetailsFound, "💵")
+                AppResources.AddIncomeTransactionsToSee)
             : new(AppResources.Spending, AppResources.TotalExpenses, "\U000F0127", AppResources.NoExpenseDataFound,
-                AppResources.AddExpenseTransactionsToSee, AppResources.NoExpenseDetailsFound, "📊");
+                AppResources.AddExpenseTransactionsToSee);
     }
 }

@@ -45,8 +45,10 @@ crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
 - `Models/` — 6 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction. Plus display models
-  (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance, LedgerEntry, TransactionGroup, TransactionFilter/FilterOption,
-  CategoryAmount/CategoryReport (report shares + chart palette slot, donut slices), BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
+  (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
+  LedgerEntry, TransactionGroup, TransactionFilter/FilterOption, CategoryAmount/CategoryReport (report shares + chart
+  palette slot, donut slices), PeriodDelta ("vs previous period"), BudgetProgress/BudgetLevel, TypeFilterOption,
+  Currency)
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
   `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
@@ -59,14 +61,17 @@ crashes at runtime (XAML is inflated at runtime there).
   (zip backup/restore, CSV), CategoryIconService,
   LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (localized message via
   `IDialogService`, exception to `ILogger`; never show `ex.Message`),
-  NavigationHistory (back-button stack; `//Route` = root)
+  NavigationHistory (back-button stack; `//Route` = root), TransactionsDrillDown (a report asks Transactions to open
+  filtered; taken once)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
   account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), RecurrenceCalculator
   (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
-- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips)
+- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
+  `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
+  Spending / Income show, plus the shared month count of the time-series reports)
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 14 ViewModels using [ObservableProperty] and [RelayCommand] source generators
@@ -75,9 +80,11 @@ crashes at runtime (XAML is inflated at runtime there).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab
 - `Charts/` — ChartPalette (light/dark chart colours, categorical slots), ChartFactory (LiveChartsCore donut / columns /
-  axes with one look)
-- `Controls/` — BottomSheet (the in-page sheet: dim, panel, handle, slide-up; `IsOpen` + `CloseCommand`), AddEntryButton (the one add button: opens an Expense / Income / Transfer sheet; on Home and
-  Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back closes it first),
+  lines / axes with one look; per-series tap handlers), ChartTapBehavior (drill-down on a real tap, never on a scroll)
+- `Controls/` — BottomSheet (the in-page sheet: dim, panel, handle, slide-up; `IsOpen` + `CloseCommand`), PeriodPicker /
+  MonthCountPicker (bind BindingContext to a page's `Period`), AddEntryButton (the one add button: opens an Expense /
+  Income / Transfer sheet; on Home and Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back
+  closes it first),
   LedgerItemTemplateSelector, FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
@@ -107,9 +114,10 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - All registrations use interface → implementation mapping
 
 ### Navigation
-- Shell `TabBar` (`AppShell.xaml`): Home · Transactions · Reports (Expenses / Incomes / Trends top tabs) · Budgets · More.
-  Tabs keep implicit routes, so each tab page is a root at `//MainPage`, `//TransactionsPage`, `//ExpenseReportPage`,
-  `//IncomeReportPage`, `//TrendsReportPage`, `//BudgetPage`, `//MorePage`
+- Shell `TabBar` (`AppShell.xaml`): Home · Transactions · Reports (Spending / Income / Trends / Cash flow / Net worth
+  top tabs) · Budgets · More. Tabs keep implicit routes, so each tab page is a root at `//MainPage`,
+  `//TransactionsPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//CashFlowReportPage`,
+  `//NetWorthReportPage`, `//BudgetPage`, `//MorePage`
 - Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
   `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `TransfersPage`, `SettingsPage`
 - Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See

@@ -479,4 +479,20 @@
         <Setter Property="Stroke" Value="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CardBackground}, Dark={StaticResource CardBackgroundDark}}" />
     </Style>
+
+    <!-- A report's headline: label, amount, then its change against the previous period in words -->
+    <Style x:Key="ReportHeadlineLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+    </Style>
+
+    <Style x:Key="ReportHeadline" TargetType="Label">
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="ReportDelta" TargetType="Label">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+    </Style>
 </ResourceDictionary>

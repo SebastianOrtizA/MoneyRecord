@@ -67,8 +67,12 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
+            // A report asks the Transactions tab to open filtered
+            builder.Services.AddSingleton<TransactionsDrillDown>();
 
             // Register ViewModels
+            // The one period every tab shows
+            builder.Services.AddSingleton<PeriodViewModel>();
             builder.Services.AddSingleton<MainViewModel>();
             builder.Services.AddTransient<TransactionsViewModel>();
             builder.Services.AddTransient<MoreViewModel>();
@@ -83,6 +87,8 @@ namespace MoneyRecord
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<TrendsReportViewModel>();
+            builder.Services.AddTransient<CashFlowReportViewModel>();
+            builder.Services.AddTransient<NetWorthReportViewModel>();
 
             // Register Views
             builder.Services.AddSingleton<MainPage>();
@@ -99,6 +105,8 @@ namespace MoneyRecord
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<TrendsReportPage>();
+            builder.Services.AddTransient<CashFlowReportPage>();
+            builder.Services.AddTransient<NetWorthReportPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

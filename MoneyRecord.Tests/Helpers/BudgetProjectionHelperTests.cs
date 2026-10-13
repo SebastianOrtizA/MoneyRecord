@@ -134,13 +134,29 @@ public class BudgetProjectionHelperTests
     public void YearBudget_CustomPeriod_ProRatesByDays()
     {
         var start = new DateTime(2026, 1, 1);
-        var end = new DateTime(2026, 3, 31);
+        var end = new DateTime(2026, 3, 30);
 
         var result = BudgetProjectionHelper.CalculateProjectedLimit(
             3650m, BudgetPeriod.Year, PeriodType.CustomPeriod, start, end);
 
-        // 90 days inclusive
-        result.Should().Be(3650m / 365 * 90);
+        // 89 days inclusive (not whole months)
+        result.Should().Be(3650m / 365 * 89);
+    }
+
+    [Theory]
+    [InlineData(BudgetPeriod.Month, 600, 600)]       // October: one month, not 600 / 30 × 31
+    [InlineData(BudgetPeriod.Year, 1200, 100)]
+    public void Whole_calendar_month_counts_as_one_month(BudgetPeriod period, int limit, int expected)
+    {
+        BudgetProjectionHelper.CalculateProjectedLimit(limit, period, PeriodType.CustomPeriod,
+            new DateTime(2026, 10, 1), new DateTime(2026, 10, 31)).Should().Be(expected);
+    }
+
+    [Fact]
+    public void Whole_calendar_months_count_in_months()
+    {
+        BudgetProjectionHelper.CalculateProjectedLimit(1200m, BudgetPeriod.Year, PeriodType.CustomPeriod,
+            new DateTime(2026, 1, 1), new DateTime(2026, 3, 31)).Should().Be(300m);
     }
 
     [Fact]

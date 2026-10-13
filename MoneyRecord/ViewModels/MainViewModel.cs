@@ -17,6 +17,9 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
 
+        // While the page is shown: a period change (here or on another tab) reloads it
+        private IDisposable? _periodWatch;
+
         /// <summary>Home balance card: the first currency's total (base currency first), with its code when there are several.</summary>
         [ObservableProperty]
         private BalanceLine primaryBalance = new(string.Empty, null);
@@ -38,19 +41,7 @@ namespace MoneyRecord.ViewModels
         public bool IsNetNegative => NetIncome < 0;
 
         [ObservableProperty]
-        private PeriodItem selectedPeriod;
-
-        [ObservableProperty]
         private DateTime currentDate = DateTime.Now;
-
-        [ObservableProperty]
-        private DateTime customStartDate = DateTime.Now.AddMonths(-1);
-
-        [ObservableProperty]
-        private DateTime customEndDate = DateTime.Now;
-
-        [ObservableProperty]
-        private bool isCustomPeriodSelected;
 
         [ObservableProperty]
         private bool isRefreshing;
@@ -73,9 +64,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private int budgetsOverBudget;
 
-        public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
+        /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
+        public PeriodViewModel Period { get; }
 
-        public MainViewModel(IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
+        public MainViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
             IErrorHandler errorHandler, INavigationService navigationService)
         {
             _balanceService = balanceService;
@@ -83,10 +75,22 @@ namespace MoneyRecord.ViewModels
             _budgetSummaryService = budgetSummaryService;
             _errorHandler = errorHandler;
             _navigationService = navigationService;
-            selectedPeriod = PeriodHelper.GetDefaultPeriod();
+            Period = period;
         }
 
-        public Task InitializeAsync() => LoadDataCommand.ExecuteAsync(null);
+        /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>
+        public Task InitializeAsync()
+        {
+            _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
+            return LoadDataCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>The page disappeared: stop following the period (it reloads when it appears again).</summary>
+        public void Deactivate()
+        {
+            _periodWatch?.Dispose();
+            _periodWatch = null;
+        }
 
         /// <summary>
         /// Reloads Home. Each run cancels the one in progress (period changes, pull to refresh), so the
@@ -99,13 +103,13 @@ namespace MoneyRecord.ViewModels
             {
                 IsRefreshing = true;
 
-                var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
+                var (startDate, endDate) = Period.Range;
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
                 var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
                 var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
                 var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
                 var budgetsTask = _budgetSummaryService.GetSummaryAsync(
-                    SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
+                    Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
                 await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask, budgetsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -161,23 +165,5 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task ViewAllBudgetsAsync() => _navigationService.NavigateToAsync($"//{nameof(BudgetPage)}");
-
-        partial void OnSelectedPeriodChanged(PeriodItem value)
-        {
-            IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
-            LoadDataCommand.Execute(null);
-        }
-
-        partial void OnCustomStartDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-                LoadDataCommand.Execute(null);
-        }
-
-        partial void OnCustomEndDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-                LoadDataCommand.Execute(null);
-        }
     }
 }

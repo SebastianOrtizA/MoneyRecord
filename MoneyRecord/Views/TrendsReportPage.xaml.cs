@@ -18,5 +18,11 @@ namespace MoneyRecord.Views
             base.OnAppearing();
             await _viewModel.InitializeAsync();
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _viewModel.Deactivate();
+        }
     }
 }

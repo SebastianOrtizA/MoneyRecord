@@ -1,4 +1,5 @@
 using LiveChartsCore;
+using LiveChartsCore.Kernel;
 using LiveChartsCore.SkiaSharpView;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
@@ -6,63 +7,117 @@ using MoneyRecord.Models;
 namespace MoneyRecord.Charts
 {
     /// <summary>
-    /// Builds the Reports charts with one look: thin marks with 4px rounded ends, a 2px surface gap between slices and
-    /// bars, a recessive grid, money on the value axis and in the tooltips. Text stays in text colours.
+    /// Builds the Reports charts with one look: thin marks with 4px rounded ends, 2px lines with 8px points, a 2px
+    /// surface gap between slices and bars, a recessive grid, money on the value axis and in the tooltips. Text stays in
+    /// text colours. A tap on a slice, bar or point calls back with what was tapped (the drill-down).
     /// </summary>
     public static class ChartFactory
     {
         private const float TextSize = 11;
 
+        // What a tap on a series does (with the tapped point's index) rides on the series itself; ChartTapBehavior runs it
+        // after a real tap, so a scroll that starts on a chart never navigates
+        private static void OnTap(ISeries series, Action<int> handler) => series.Tag = handler;
+
+        /// <summary>Runs the tap handler of the first tapped point's series (see <see cref="ChartTapBehavior"/>).</summary>
+        public static void HandleTap(IEnumerable<ChartPoint> points)
+        {
+            foreach (var point in points)
+            {
+                if (point.Context.Series.Tag is Action<int> handler)
+                {
+                    handler(point.Index);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>A named series of monthly values in one colour.</summary>
+        public sealed record Line(string Name, IEnumerable<decimal> Values, Color Color);
+
         /// <summary>A donut: one series per slice (LiveCharts draws each pie series as a slice), no labels on it.</summary>
-        public static ISeries[] Donut(IReadOnlyList<ChartSlice> slices, decimal total) =>
-            slices.Select(slice => (ISeries)new PieSeries<double>
+        public static ISeries[] Donut(IReadOnlyList<ChartSlice> slices, decimal total, Action<ChartSlice> onTap) =>
+            slices.Select(slice =>
             {
-                Name = slice.Name,
-                Values = [(double)slice.Amount],
-                Fill = ChartPalette.Paint(ChartPalette.Slot(slice.PaletteSlot)),
-                Stroke = ChartPalette.Paint(ChartPalette.Surface, 2),
-                InnerRadius = 80,
-                HoverPushout = 4,
-                // Shows on hover (Windows); a tap on Android shows none, so the ranked list carries the values
-                ToolTipLabelFormatter = _ => total > 0
-                    ? $"{MoneyFormatter.Format(slice.Amount)} · {slice.Amount / total:P1}"
-                    : MoneyFormatter.Format(slice.Amount)
+                var series = new PieSeries<double>
+                {
+                    Name = slice.Name,
+                    Values = [(double)slice.Amount],
+                    Fill = ChartPalette.Paint(ChartPalette.Slot(slice.PaletteSlot)),
+                    Stroke = ChartPalette.Paint(ChartPalette.Surface, 2),
+                    InnerRadius = 80,
+                    HoverPushout = 4,
+                    // Shows on hover (Windows); a tap on Android shows none, so the ranked list carries the values
+                    ToolTipLabelFormatter = _ => total > 0
+                        ? $"{MoneyFormatter.Format(slice.Amount)} · {slice.Amount / total:P1}"
+                        : MoneyFormatter.Format(slice.Amount)
+                };
+                OnTap(series, _ => onTap(slice));
+                return (ISeries)series;
             }).ToArray();
 
-        /// <summary>Grouped columns, one series per (name, values, colour); the tooltip shows the money amount.</summary>
-        public static ISeries[] Columns(params (string Name, IEnumerable<decimal> Values, Color Color)[] series) =>
-            series.Select(s => (ISeries)new ColumnSeries<double>
+        /// <summary>Grouped columns, one series per line; a tap calls back with the month's index and the series.</summary>
+        public static ISeries[] Columns(Action<int, int> onTap, params Line[] lines) =>
+            lines.Select((line, seriesIndex) =>
             {
-                Name = s.Name,
-                Values = s.Values.Select(v => (double)v).ToArray(),
-                Fill = ChartPalette.Paint(s.Color),
-                Rx = 4,
-                Ry = 4,
-                MaxBarWidth = 24,
-                Padding = 2,
-                YToolTipLabelFormatter = point => MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue)
+                var series = new ColumnSeries<double>
+                {
+                    Name = line.Name,
+                    Values = line.Values.Select(v => (double)v).ToArray(),
+                    Fill = ChartPalette.Paint(line.Color),
+                    Rx = 4,
+                    Ry = 4,
+                    MaxBarWidth = 24,
+                    Padding = 2,
+                    YToolTipLabelFormatter = point => MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue)
+                };
+                OnTap(series, index => onTap(index, seriesIndex));
+                return (ISeries)series;
             }).ToArray();
 
-        /// <summary>The month axis: one label per bar group, no grid lines.</summary>
+        /// <summary>Lines with points, no fill under them; a tap calls back with the month's index and the series.</summary>
+        public static ISeries[] Lines(Action<int, int> onTap, params Line[] lines) =>
+            lines.Select((line, seriesIndex) =>
+            {
+                var series = new LineSeries<double>
+                {
+                    Name = line.Name,
+                    Values = line.Values.Select(v => (double)v).ToArray(),
+                    Stroke = ChartPalette.Paint(line.Color, 2),
+                    Fill = null,
+                    GeometrySize = 8,
+                    GeometryStroke = ChartPalette.Paint(line.Color, 2),
+                    GeometryFill = ChartPalette.Paint(ChartPalette.Surface),
+                    LineSmoothness = 0,
+                    YToolTipLabelFormatter = point => MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue)
+                };
+                OnTap(series, index => onTap(index, seriesIndex));
+                return (ISeries)series;
+            }).ToArray();
+
+        /// <summary>The month axis: one label under every point or bar group, no grid lines.</summary>
         public static Axis[] LabelAxis(IEnumerable<string> labels) =>
         [
             new Axis
             {
                 Labels = labels.ToArray(),
+                LabelsPaint = ChartPalette.Paint(ChartPalette.AxisText),
+                TextSize = TextSize,
                 // A label under every bar group, not every other one
                 MinStep = 1,
-                ForceStepToMin = true,
-                LabelsPaint = ChartPalette.Paint(ChartPalette.AxisText),
-                TextSize = TextSize
+                ForceStepToMin = true
             }
         ];
 
-        /// <summary>The value axis: whole money amounts from zero, with faint grid lines.</summary>
-        public static Axis[] MoneyAxis() =>
+        /// <summary>
+        /// The value axis: whole money amounts with faint grid lines; from zero unless <paramref name="fromZero"/> is
+        /// false (net worth and cash flow can go below zero, or sit far above it).
+        /// </summary>
+        public static Axis[] MoneyAxis(bool fromZero = true) =>
         [
             new Axis
             {
-                MinLimit = 0,
+                MinLimit = fromZero ? 0 : null,
                 Labeler = value => MoneyFormatter.FormatWhole((decimal)value),
                 LabelsPaint = ChartPalette.Paint(ChartPalette.AxisText),
                 SeparatorsPaint = ChartPalette.Paint(ChartPalette.Grid, 1),

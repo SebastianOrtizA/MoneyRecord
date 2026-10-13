@@ -28,7 +28,8 @@
             <ShellContent ContentTemplate="{DataTemplate views:TransactionsPage}" Route="TransactionsPage" />
         </Tab>
 
-        <!-- Reports: Spending / Income / Trends as top tabs (charts on LiveChartsCore); Cash flow and Net worth come in 8.7b -->
+        <!-- Reports hub (charts on LiveChartsCore): Spending / Income follow the shared period, Trends / Cash flow / Net worth
+             the shared "last N months" -->
         <Tab Title="{ext:Localize Reports}">
             <Tab.Icon>
                 <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF0128;" />
@@ -42,6 +43,12 @@
             <ShellContent Title="{ext:Localize Trends}"
                           ContentTemplate="{DataTemplate views:TrendsReportPage}"
                           Route="TrendsReportPage" />
+            <ShellContent Title="{ext:Localize CashFlow}"
+                          ContentTemplate="{DataTemplate views:CashFlowReportPage}"
+                          Route="CashFlowReportPage" />
+            <ShellContent Title="{ext:Localize NetWorth}"
+                          ContentTemplate="{DataTemplate views:NetWorthReportPage}"
+                          Route="NetWorthReportPage" />
         </Tab>
 
         <Tab Title="{ext:Localize Budgets}">

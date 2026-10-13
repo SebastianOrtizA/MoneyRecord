@@ -21,6 +21,12 @@ namespace MoneyRecord.Views
             await _viewModel.InitializeAsync();
         }
 
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _viewModel.Deactivate();
+        }
+
         public bool TryCloseOverlay() => AddEntry.TryClose();
     }
 }

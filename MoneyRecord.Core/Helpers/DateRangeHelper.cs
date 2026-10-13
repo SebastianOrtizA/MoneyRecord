@@ -60,6 +60,33 @@ namespace MoneyRecord.Helpers
         }
 
         /// <summary>
+        /// How many calendar months [<paramref name="start"/>, <paramref name="end"/>] covers when it is whole months (from
+        /// a 1st to the last day of a month, any time of day); null otherwise. The one rule for "whole months", used by
+        /// <see cref="GetPreviousRange"/> and the budget projection.
+        /// </summary>
+        public static int? WholeMonths(DateTime start, DateTime end)
+        {
+            if (start == default || end == default || end < start || start.Day != 1
+                || end.Day != DateTime.DaysInMonth(end.Year, end.Month))
+                return null;
+
+            return (end.Year - start.Year) * 12 + end.Month - start.Month + 1;
+        }
+
+        /// <summary>
+        /// The period just before [<paramref name="start"/>, <paramref name="end"/>]: whole calendar months move back by
+        /// as many months (October → September, a calendar year → the year before), any other range by its own length.
+        /// </summary>
+        public static (DateTime startDate, DateTime endDate) GetPreviousRange(DateTime start, DateTime end)
+        {
+            if (WholeMonths(start, end) is { } months)
+                return (start.AddMonths(-months), start.AddTicks(-1));
+
+            var previousEnd = start.AddTicks(-1);
+            return (previousEnd - (end - start), previousEnd);
+        }
+
+        /// <summary>
         /// The budget period containing <paramref name="now"/>: its day, calendar month or calendar year, up to the
         /// last tick of it.
         /// </summary>

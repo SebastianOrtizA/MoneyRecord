@@ -63,7 +63,7 @@ public class CategoryReportBuilderTests
         report.Categories.Where(c => c.PaletteSlot != CategoryAmount.OtherSlot).Select(c => c.PaletteSlot)
             .Should().OnlyHaveUniqueItems().And.HaveCount(CategoryAmount.PaletteSize);
         report.Slices.Should().HaveCount(CategoryAmount.PaletteSize + 1);
-        report.Slices[^1].Should().Be(new ChartSlice(AppResources.OtherCategories, 92m + 91m, CategoryAmount.OtherSlot));
+        report.Slices[^1].Should().Be(new ChartSlice(AppResources.OtherCategories, 92m + 91m, CategoryAmount.OtherSlot, null));
     }
 
     [Fact]

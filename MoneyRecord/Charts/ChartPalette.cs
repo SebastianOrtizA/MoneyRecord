@@ -28,6 +28,9 @@ namespace MoneyRecord.Charts
                 : Color.FromArgb(IsDark ? "#7a7974" : "#a3a29c");
         }
 
+        /// <summary>A budget limit next to what was spent: neutral grey, so the spending carries the colour.</summary>
+        public static Color Budget => Slot(-1);
+
         public static Color Income => Resource(IsDark ? "IncomeColorDark" : "IncomeColor");
 
         public static Color Expense => Resource(IsDark ? "ExpenseColorDark" : "ExpenseColor");

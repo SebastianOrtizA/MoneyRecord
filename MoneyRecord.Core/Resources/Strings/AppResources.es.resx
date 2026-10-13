@@ -483,9 +483,6 @@
   <data name="Success" xml:space="preserve">
     <value>Éxito</value>
   </data>
-  <data name="Close" xml:space="preserve">
-    <value>Cerrar</value>
-  </data>
   <data name="ConfirmDelete" xml:space="preserve">
     <value>Confirmar Eliminación</value>
   </data>
@@ -498,20 +495,8 @@
   <data name="FailedToLoadReportData" xml:space="preserve">
     <value>Error al cargar los datos del reporte</value>
   </data>
-  <data name="NoIncomeDetailsFound" xml:space="preserve">
-    <value>No se encontraron detalles de ingresos.</value>
-  </data>
-  <data name="NoExpenseDetailsFound" xml:space="preserve">
-    <value>No se encontraron detalles de gastos.</value>
-  </data>
-  <data name="NoDescription" xml:space="preserve">
-    <value>Sin descripción</value>
-  </data>
   <data name="Total" xml:space="preserve">
     <value>Total</value>
-  </data>
-  <data name="FailedToLoadCategoryDetails" xml:space="preserve">
-    <value>Error al cargar los detalles de la categoría</value>
   </data>
   <data name="CannotDeleteDefaultAccount" xml:space="preserve">
     <value>No se puede eliminar la cuenta de Efectivo predeterminada</value>
@@ -849,15 +834,6 @@ Monto: {2}</value>
   <data name="Trends" xml:space="preserve">
     <value>Tendencias</value>
   </data>
-  <data name="TrendsAnalysis" xml:space="preserve">
-    <value>Análisis de Tendencias</value>
-  </data>
-  <data name="MonthlySpending" xml:space="preserve">
-    <value>Gastos Mensuales</value>
-  </data>
-  <data name="IncomeVsExpenses" xml:space="preserve">
-    <value>Ingresos vs Gastos</value>
-  </data>
   <data name="NoTrendsData" xml:space="preserve">
     <value>No hay datos de tendencias disponibles</value>
   </data>
@@ -1034,5 +1010,44 @@ Monto: {2}</value>
   </data>
   <data name="Spending" xml:space="preserve">
     <value>Gastos</value>
+  </data>
+  <data name="DeltaVsPrevious" xml:space="preserve">
+    <value>{0} vs. el periodo anterior</value>
+  </data>
+  <data name="DeltaNoChange" xml:space="preserve">
+    <value>Igual que el periodo anterior</value>
+  </data>
+  <data name="DeltaNothingBefore" xml:space="preserve">
+    <value>Nada en el periodo anterior</value>
+  </data>
+  <data name="CashFlow" xml:space="preserve">
+    <value>Flujo de caja</value>
+  </data>
+  <data name="NetCashFlow" xml:space="preserve">
+    <value>Flujo neto</value>
+  </data>
+  <data name="NetWorth" xml:space="preserve">
+    <value>Patrimonio</value>
+  </data>
+  <data name="NetWorthCurrencyOnly" xml:space="preserve">
+    <value>Solo cuentas en {0}</value>
+  </data>
+  <data name="BudgetVsActual" xml:space="preserve">
+    <value>Presupuesto vs real</value>
+  </data>
+  <data name="BudgetSeries" xml:space="preserve">
+    <value>Presupuesto</value>
+  </data>
+  <data name="SpentSeries" xml:space="preserve">
+    <value>Gastado</value>
+  </data>
+  <data name="NetSeries" xml:space="preserve">
+    <value>Neto</value>
+  </data>
+  <data name="MonthsShown" xml:space="preserve">
+    <value>Meses</value>
+  </data>
+  <data name="TotalSpending" xml:space="preserve">
+    <value>Gastos en estos meses</value>
   </data>
 </root>

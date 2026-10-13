@@ -412,15 +412,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Close.
-        /// </summary>
-        public static string Close {
-            get {
-                return ResourceManager.GetString("Close", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Confirm.
         /// </summary>
         public static string Confirm {
@@ -910,15 +901,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Failed to load category details.
-        /// </summary>
-        public static string FailedToLoadCategoryDetails {
-            get {
-                return ResourceManager.GetString("FailedToLoadCategoryDetails", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Failed to load report data.
         /// </summary>
         public static string FailedToLoadReportData {
@@ -1198,15 +1180,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No description.
-        /// </summary>
-        public static string NoDescription {
-            get {
-                return ResourceManager.GetString("NoDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a No expense data for this period.
         /// </summary>
         public static string NoExpenseData {
@@ -1225,15 +1198,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No expense details found..
-        /// </summary>
-        public static string NoExpenseDetailsFound {
-            get {
-                return ResourceManager.GetString("NoExpenseDetailsFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a No income data for this period.
         /// </summary>
         public static string NoIncomeData {
@@ -1248,15 +1212,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string NoIncomeDataFound {
             get {
                 return ResourceManager.GetString("NoIncomeDataFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a No income details found..
-        /// </summary>
-        public static string NoIncomeDetailsFound {
-            get {
-                return ResourceManager.GetString("NoIncomeDetailsFound", resourceCulture);
             }
         }
         
@@ -2142,24 +2097,6 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
-        public static string TrendsAnalysis {
-            get {
-                return ResourceManager.GetString("TrendsAnalysis", resourceCulture);
-            }
-        }
-
-        public static string MonthlySpending {
-            get {
-                return ResourceManager.GetString("MonthlySpending", resourceCulture);
-            }
-        }
-
-        public static string IncomeVsExpenses {
-            get {
-                return ResourceManager.GetString("IncomeVsExpenses", resourceCulture);
-            }
-        }
-
         public static string NoTrendsData {
             get {
                 return ResourceManager.GetString("NoTrendsData", resourceCulture);
@@ -2610,6 +2547,123 @@ namespace MoneyRecord.Resources.Strings {
         public static string Spending {
             get {
                 return ResourceManager.GetString("Spending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} vs previous period.
+        /// </summary>
+        public static string DeltaVsPrevious {
+            get {
+                return ResourceManager.GetString("DeltaVsPrevious", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same as the previous period.
+        /// </summary>
+        public static string DeltaNoChange {
+            get {
+                return ResourceManager.GetString("DeltaNoChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing in the previous period.
+        /// </summary>
+        public static string DeltaNothingBefore {
+            get {
+                return ResourceManager.GetString("DeltaNothingBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cash flow.
+        /// </summary>
+        public static string CashFlow {
+            get {
+                return ResourceManager.GetString("CashFlow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net cash flow.
+        /// </summary>
+        public static string NetCashFlow {
+            get {
+                return ResourceManager.GetString("NetCashFlow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net worth.
+        /// </summary>
+        public static string NetWorth {
+            get {
+                return ResourceManager.GetString("NetWorth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accounts in {0} only.
+        /// </summary>
+        public static string NetWorthCurrencyOnly {
+            get {
+                return ResourceManager.GetString("NetWorthCurrencyOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget vs actual.
+        /// </summary>
+        public static string BudgetVsActual {
+            get {
+                return ResourceManager.GetString("BudgetVsActual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget.
+        /// </summary>
+        public static string BudgetSeries {
+            get {
+                return ResourceManager.GetString("BudgetSeries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spent.
+        /// </summary>
+        public static string SpentSeries {
+            get {
+                return ResourceManager.GetString("SpentSeries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net.
+        /// </summary>
+        public static string NetSeries {
+            get {
+                return ResourceManager.GetString("NetSeries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Months.
+        /// </summary>
+        public static string MonthsShown {
+            get {
+                return ResourceManager.GetString("MonthsShown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spending in these months.
+        /// </summary>
+        public static string TotalSpending {
+            get {
+                return ResourceManager.GetString("TotalSpending", resourceCulture);
             }
         }
     }

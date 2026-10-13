@@ -172,14 +172,20 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private void Clear()
+        private void Clear() => ShowOnly(null, null);
+
+        /// <summary>
+        /// Every other filter off, then only <paramref name="type"/> (null = all types) and <paramref name="categoryId"/>
+        /// (null = all; ignored when no entry has it): a report's drill-down. Call it after <see cref="SetOptions"/>.
+        /// </summary>
+        public void ShowOnly(TransactionType? type, int? categoryId)
         {
             _clearing = true;
             try
             {
                 SearchText = string.Empty;
-                SelectedType = Types[0];
-                SelectedCategory = null;
+                SelectedType = Types.FirstOrDefault(t => t.Type == type) ?? Types[0];
+                SelectedCategory = Categories.FirstOrDefault(c => c.Id == categoryId);
                 SelectedAccount = null;
                 SelectedTag = null;
                 MinAmountText = string.Empty;

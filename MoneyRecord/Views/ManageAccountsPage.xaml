@@ -36,13 +36,12 @@
         <!-- Accounts grouped by currency (base first); a tap opens the edit sheet -->
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Groups}"
-                        IsGrouped="True"
-                        Margin="16,0">
+                        IsGrouped="True">
 
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="models:AccountGroup">
                     <Label Text="{Binding HeaderText}"
-                           Margin="4,20,0,4"
+                           Margin="20,20,16,4"
                            FontSize="14"
                            FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
@@ -51,7 +50,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AccountListItem">
-                    <Border Margin="0,4"
+                    <Border Margin="16,4"
                             Padding="12"
                             StrokeThickness="1"
                             StrokeShape="RoundRectangle 12"

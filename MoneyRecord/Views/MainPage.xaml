@@ -76,48 +76,7 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Period Selector -->
-            <Picker ItemsSource="{Binding Periods}"
-                    SelectedItem="{Binding SelectedPeriod}"
-                    Title="{ext:Localize SelectPeriod}"
-                    FontSize="16"
-                    MinimumHeightRequest="44"
-                    HorizontalOptions="FillAndExpand"
-                    BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"/>
-
-            <!-- Custom Date Range Selector -->
-            <VerticalStackLayout Spacing="12"
-                                IsVisible="{Binding IsCustomPeriodSelected}">
-                <Grid ColumnDefinitions="Auto,*"
-                      RowDefinitions="Auto,Auto"
-                      ColumnSpacing="12"
-                      RowSpacing="12">
-                    <Label Grid.Row="0" Grid.Column="0"
-                           Text="{ext:Localize From}"
-                           FontSize="16"
-                           VerticalOptions="Center"
-                           MinimumWidthRequest="50"/>
-                    <DatePicker Grid.Row="0" Grid.Column="1"
-                               Date="{Binding CustomStartDate}"
-                               Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                               FontSize="16"
-                               MinimumHeightRequest="44"
-                               HorizontalOptions="FillAndExpand"
-                               BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"/>
-                    <Label Grid.Row="1" Grid.Column="0"
-                           Text="{ext:Localize To}"
-                           FontSize="16"
-                           VerticalOptions="Center"
-                           MinimumWidthRequest="50"/>
-                    <DatePicker Grid.Row="1" Grid.Column="1"
-                               Date="{Binding CustomEndDate}"
-                               Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                               FontSize="16"
-                               MinimumHeightRequest="44"
-                               HorizontalOptions="FillAndExpand"
-                               BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"/>
-                </Grid>
-            </VerticalStackLayout>
+            <controls:PeriodPicker BindingContext="{Binding Period}" />
 
             <!-- Income / Expense / Net Row -->
             <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">

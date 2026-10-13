@@ -25,6 +25,14 @@ namespace MoneyRecord.Helpers
         {
             var now = DateTime.Now;
 
+            // A custom range of whole calendar months (a report drill-down into a month sets one) counts in months:
+            // a monthly limit once per month, a yearly one a twelfth per month, not a 30-day month times its days
+            if (selectedPeriodType == PeriodType.CustomPeriod && budgetPeriod != BudgetPeriod.Day
+                && DateRangeHelper.WholeMonths(customStartDate, customEndDate) is { } months)
+            {
+                return budgetPeriod == BudgetPeriod.Year ? originalLimit / 12 * months : originalLimit * months;
+            }
+
             return budgetPeriod switch
             {
                 BudgetPeriod.Day => CalculateDayBudgetProjection(originalLimit, selectedPeriodType, now, customStartDate, customEndDate),
