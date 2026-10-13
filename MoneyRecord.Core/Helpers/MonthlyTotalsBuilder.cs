@@ -7,6 +7,9 @@ namespace MoneyRecord.Helpers
     {
         /// <summary>"Oct" / "oct", for a chart axis (one label per bar, so it stays short).</summary>
         public string Label => DateFormatter.Format(Month, DateStyle.Month);
+
+        /// <summary>Income minus expense: the month's cash flow.</summary>
+        public decimal Net => Income - Expense;
     }
 
     /// <summary>Totals transactions per calendar month for the Trends charts.</summary>

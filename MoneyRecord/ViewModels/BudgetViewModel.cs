@@ -17,18 +17,6 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
 
         [ObservableProperty]
-        private PeriodItem selectedPeriod;
-
-        [ObservableProperty]
-        private DateTime customStartDate = DateTime.Now.AddMonths(-1);
-
-        [ObservableProperty]
-        private DateTime customEndDate = DateTime.Now;
-
-        [ObservableProperty]
-        private bool isCustomPeriodSelected = false;
-
-        [ObservableProperty]
         private bool isLoading = false;
 
         [ObservableProperty]
@@ -73,8 +61,6 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private decimal totalRemaining;
 
-        public List<PeriodItem> Periods { get; } = PeriodHelper.GetReportPeriods();
-
         public List<BudgetPeriodItem> BudgetPeriods { get; } =
         [
             new BudgetPeriodItem { Period = BudgetPeriod.Day },
@@ -82,15 +68,20 @@ namespace MoneyRecord.ViewModels
             new BudgetPeriodItem { Period = BudgetPeriod.Year }
         ];
 
-        public BudgetViewModel(ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBudgetSummaryService budgetSummaryService, IErrorHandler errorHandler, IDialogService dialogService)
+        /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
+        public PeriodViewModel Period { get; }
+
+        public BudgetViewModel(PeriodViewModel period, ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBudgetSummaryService budgetSummaryService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _categoryRepository = categoryRepository;
             _budgetRepository = budgetRepository;
             _budgetSummaryService = budgetSummaryService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
-            selectedPeriod = PeriodHelper.GetDefaultPeriod();
             selectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
+            Period = period;
+            // The shared period changed (here or on another tab): show the new one
+            Period.Changed += () => LoadBudgetsCommand.Execute(null);
         }
 
         public Task InitializeAsync() => LoadBudgetsCommand.ExecuteAsync(null);
@@ -117,7 +108,7 @@ namespace MoneyRecord.ViewModels
                 IsLoading = true;
 
                 var summaryTask = _budgetSummaryService.GetSummaryAsync(
-                    SelectedPeriod?.Type ?? PeriodType.CalendarMonth, CustomStartDate, CustomEndDate);
+                    Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
                 var categoriesTask = GetAvailableCategoriesAsync();
                 await Task.WhenAll(summaryTask, categoriesTask);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -278,28 +269,6 @@ namespace MoneyRecord.ViewModels
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteBudget);
-            }
-        }
-
-        partial void OnSelectedPeriodChanged(PeriodItem value)
-        {
-            IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
-            LoadBudgetsCommand.Execute(null);
-        }
-
-        partial void OnCustomStartDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-            {
-                LoadBudgetsCommand.Execute(null);
-            }
-        }
-
-        partial void OnCustomEndDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-            {
-                LoadBudgetsCommand.Execute(null);
             }
         }
     }

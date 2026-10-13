@@ -483,9 +483,6 @@
   <data name="Success" xml:space="preserve">
     <value>Success</value>
   </data>
-  <data name="Close" xml:space="preserve">
-    <value>Close</value>
-  </data>
   <data name="ConfirmDelete" xml:space="preserve">
     <value>Confirm Delete</value>
   </data>
@@ -498,20 +495,8 @@
   <data name="FailedToLoadReportData" xml:space="preserve">
     <value>Failed to load report data</value>
   </data>
-  <data name="NoIncomeDetailsFound" xml:space="preserve">
-    <value>No income details found.</value>
-  </data>
-  <data name="NoExpenseDetailsFound" xml:space="preserve">
-    <value>No expense details found.</value>
-  </data>
-  <data name="NoDescription" xml:space="preserve">
-    <value>No description</value>
-  </data>
   <data name="Total" xml:space="preserve">
     <value>Total</value>
-  </data>
-  <data name="FailedToLoadCategoryDetails" xml:space="preserve">
-    <value>Failed to load category details</value>
   </data>
   <data name="CannotDeleteDefaultAccount" xml:space="preserve">
     <value>Cannot delete the default Cash account</value>
@@ -851,15 +836,6 @@ Amount: {2}</value>
   <data name="Trends" xml:space="preserve">
     <value>Trends</value>
   </data>
-  <data name="TrendsAnalysis" xml:space="preserve">
-    <value>Trends Analysis</value>
-  </data>
-  <data name="MonthlySpending" xml:space="preserve">
-    <value>Monthly Spending</value>
-  </data>
-  <data name="IncomeVsExpenses" xml:space="preserve">
-    <value>Income vs Expenses</value>
-  </data>
   <data name="NoTrendsData" xml:space="preserve">
     <value>No trend data available</value>
   </data>
@@ -1036,5 +1012,44 @@ Amount: {2}</value>
   </data>
   <data name="Spending" xml:space="preserve">
     <value>Spending</value>
+  </data>
+  <data name="DeltaVsPrevious" xml:space="preserve">
+    <value>{0} vs previous period</value>
+  </data>
+  <data name="DeltaNoChange" xml:space="preserve">
+    <value>Same as the previous period</value>
+  </data>
+  <data name="DeltaNothingBefore" xml:space="preserve">
+    <value>Nothing in the previous period</value>
+  </data>
+  <data name="CashFlow" xml:space="preserve">
+    <value>Cash flow</value>
+  </data>
+  <data name="NetCashFlow" xml:space="preserve">
+    <value>Net cash flow</value>
+  </data>
+  <data name="NetWorth" xml:space="preserve">
+    <value>Net worth</value>
+  </data>
+  <data name="NetWorthCurrencyOnly" xml:space="preserve">
+    <value>Accounts in {0} only</value>
+  </data>
+  <data name="BudgetVsActual" xml:space="preserve">
+    <value>Budget vs actual</value>
+  </data>
+  <data name="BudgetSeries" xml:space="preserve">
+    <value>Budget</value>
+  </data>
+  <data name="SpentSeries" xml:space="preserve">
+    <value>Spent</value>
+  </data>
+  <data name="NetSeries" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="MonthsShown" xml:space="preserve">
+    <value>Months</value>
+  </data>
+  <data name="TotalSpending" xml:space="preserve">
+    <value>Spending in these months</value>
   </data>
 </root>

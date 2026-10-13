@@ -31,23 +31,7 @@
             <CollectionView ItemsSource="{Binding Budgets}" Margin="16,0">
                 <CollectionView.Header>
                     <VerticalStackLayout Spacing="12" Padding="0,12,0,4">
-                        <Picker ItemsSource="{Binding Periods}"
-                                SelectedItem="{Binding SelectedPeriod}"
-                                Title="{ext:Localize SelectPeriod}"
-                                FontSize="16"
-                                MinimumHeightRequest="44" />
-
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" IsVisible="{Binding IsCustomPeriodSelected}">
-                            <DatePicker Date="{Binding CustomStartDate}"
-                                        Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                                        FontSize="16"
-                                        MinimumHeightRequest="44" />
-                            <DatePicker Grid.Column="1"
-                                        Date="{Binding CustomEndDate}"
-                                        Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                                        FontSize="16"
-                                        MinimumHeightRequest="44" />
-                        </Grid>
+                        <controls:PeriodPicker BindingContext="{Binding Period}" />
 
                         <!-- Totals -->
                         <Border IsVisible="{Binding HasBudgets}"

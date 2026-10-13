@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.6 done; 8.7a in review)
+**Status**: In progress (8.1–8.7a done; 8.7b in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -138,12 +138,39 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
   (`CategoryAmount.PaletteSlot`, wrapping; a larger category already holding it pushes to the next free slot), so
   colour follows the category, not its rank; the smaller rest fold into one grey "Other" slice (`CategoryReport.Slices`;
   review: "Other" by ID made a large newer category grey). Income / expense / card colours come from `Colors.xaml`
-  (`CardBackground` + shared `ChartCard` style), so the chart gaps match the card. Trends: monthly spending and income vs expenses as rounded columns (one legend only on
-  the two-series chart), money on the value axis, a short localized month under every bar (`DateStyle.Month`), totals
-  from Core `MonthlyTotalsBuilder` instead of loops in the view model; the expense-category pie left Trends (the
+  (`CardBackground` + shared `ChartCard` style), so the chart gaps match the card. Trends: monthly spending and
+  income vs expenses as rounded columns (one legend only on the two-series chart), money on the value axis, a short
+  localized month under every bar (`DateStyle.Month`), totals from Core `MonthlyTotalsBuilder` instead of loops in
+  the view model; the expense-category pie left Trends (the
   Spending donut shows it). `Charts/ChartFactory` holds the shared look (2px surface gaps, 4px rounded bar ends,
   recessive grid). The palette validator needs Node, which this machine lacks; the palette is used unchanged from the
   reference, validated there against near-identical surfaces.
+- 8.7b done as:
+  - **One shared period**: Core `PeriodViewModel` (singleton) holds the period and custom dates; Home, Transactions,
+    Budgets and Spending / Income all bind `Controls/PeriodPicker` to it (the four copies of the picker markup and
+    their `OnSelectedPeriodChanged` handlers are gone, as the 8.3 TODO asked), and every page reloads on its
+    `Changed`. Home now also offers "Today" (one period list for all). The time-series tabs (Trends, Cash flow, Net
+    worth) need whole months, so they share `MonthCount` (3 / 6 / 12, `Controls/MonthCountPicker`) instead.
+  - **"vs previous period"**: `DateRangeHelper.GetPreviousRange` (whole calendar months move back by months, any
+    other range by its length) and `PeriodDelta` ("▲ 12% vs previous period", "Same as…", "Nothing in…", ">999%"
+    past ten times) under every headline: Spending / Income totals, Trends spending, Cash flow net, Net worth.
+  - **Tabs**: Spending · Income · Trends · Cash flow · Net worth (top tabs scroll). Trends = spending per month +
+    **budget vs actual** per month (Core `BudgetVsActualBuilder`: exact calendar-month limits, a budget counts from
+    the month it was created). Cash flow = income and expense lines, headline net (`MonthTotal.Net`). Net worth =
+    month-end totals of the base-currency accounts worked back from today's balances (Core `NetWorthBuilder`), with
+    "Accounts in COP only" when other currencies exist (never added together). The months share
+    `MonthlyReportViewModel`.
+  - **Drill-down**: a slice or list row (Spending / Income) opens Transactions for the same period filtered to that
+    type and category ("Other" = the type only); a bar or point opens that month (it becomes the shared period) and
+    type. Core `TransactionsDrillDown` hands the request over (taken once on the next load) and
+    `TransactionFilterViewModel.ShowOnly` applies it; the category transactions popup and its strings are gone.
+    `Charts/ChartTapBehavior` hit-tests on a real tap (the chart's own pointer-down also fired when a scroll started
+    on a chart and navigated away).
+  - **Also**: `BudgetProjectionHelper` counts a custom range of whole calendar months in months (a drill-down sets
+    one, and October showed a $50 monthly budget as $51.67). Removed `PeriodHelper.GetPeriods` /
+    `GetDefaultPeriod` and 8 unused strings.
+  - Known, unchanged: totals across accounts still add currencies in the base currency (the Spending total adds USD
+    expenses to a COP base) until Stage 10.3.
 
 ### 8.8 First-run setup
 - 3 steps: language & base currency → starting accounts with balances (Cash pre-filled) → pick default categories.

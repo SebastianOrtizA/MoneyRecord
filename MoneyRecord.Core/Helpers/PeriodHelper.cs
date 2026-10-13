@@ -60,15 +60,6 @@ namespace MoneyRecord.Helpers
 
     public static class PeriodHelper
     {
-        public static List<PeriodItem> GetPeriods() =>
-        [
-            new PeriodItem { Type = PeriodType.CalendarMonth },
-            new PeriodItem { Type = PeriodType.CalendarYear },
-            new PeriodItem { Type = PeriodType.LastWeek },
-            new PeriodItem { Type = PeriodType.LastMonth },
-            new PeriodItem { Type = PeriodType.LastYear },
-            new PeriodItem { Type = PeriodType.CustomPeriod }
-        ];
 
         public static List<PeriodItem> GetReportPeriods() =>
         [
@@ -80,7 +71,5 @@ namespace MoneyRecord.Helpers
             new PeriodItem { Type = PeriodType.LastYear },
             new PeriodItem { Type = PeriodType.CustomPeriod }
         ];
-
-        public static PeriodItem GetDefaultPeriod() => new() { Type = PeriodType.CalendarMonth };
     }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Net worth: the base-currency accounts' total at the end of each month over the shared "last N months";
+     a point opens that month's transactions -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:charts="clr-namespace:MoneyRecord.Charts"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             x:Class="MoneyRecord.Views.NetWorthReportPage"
+             x:DataType="viewmodels:NetWorthReportViewModel"
+             Title="{ext:Localize NetWorth}">
+
+    <RefreshView IsRefreshing="{Binding IsLoading}"
+                 Command="{Binding LoadCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16,12" Spacing="16">
+                <controls:MonthCountPicker BindingContext="{Binding Period}" />
+
+                <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{ext:Localize NetWorth}" Style="{StaticResource ReportHeadlineLabel}" />
+                        <Label Text="{Binding Headline, Converter={StaticResource MoneyConverter}}" Style="{StaticResource ReportHeadline}" />
+                        <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}" />
+                        <Label Text="{Binding CurrencyNote}"
+                               Style="{StaticResource ReportDelta}"
+                               IsVisible="{Binding CurrencyNote, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+                        <!-- One series: the headline names it, so no legend -->
+                        <lvc:CartesianChart HeightRequest="240"
+                                            Margin="0,8,0,0"
+                                            Series="{Binding NetWorthSeries}"
+                                            XAxes="{Binding MonthAxis}"
+                                            YAxes="{Binding MoneyAxis}"
+                                            LegendPosition="Hidden"
+                                            BackgroundColor="Transparent">
+                            <lvc:CartesianChart.Behaviors>
+                                <charts:ChartTapBehavior />
+                            </lvc:CartesianChart.Behaviors>
+                        </lvc:CartesianChart>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

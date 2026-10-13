@@ -60,6 +60,24 @@ namespace MoneyRecord.Helpers
         }
 
         /// <summary>
+        /// The period just before [<paramref name="start"/>, <paramref name="end"/>]: whole calendar months move back by
+        /// as many months (October → September, a calendar year → the year before), any other range by its own length.
+        /// </summary>
+        public static (DateTime startDate, DateTime endDate) GetPreviousRange(DateTime start, DateTime end)
+        {
+            var startsMonth = start == new DateTime(start.Year, start.Month, 1);
+            var endsMonth = end == new DateTime(end.Year, end.Month, 1).AddMonths(1).AddTicks(-1);
+            if (startsMonth && endsMonth)
+            {
+                var months = (end.Year - start.Year) * 12 + end.Month - start.Month + 1;
+                return (start.AddMonths(-months), start.AddTicks(-1));
+            }
+
+            var previousEnd = start.AddTicks(-1);
+            return (previousEnd - (end - start), previousEnd);
+        }
+
+        /// <summary>
         /// The budget period containing <paramref name="now"/>: its day, calendar month or calendar year, up to the
         /// last tick of it.
         /// </summary>

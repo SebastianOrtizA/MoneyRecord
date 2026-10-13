@@ -173,30 +173,7 @@
                             Margin="16,0">
                 <CollectionView.Header>
                     <VerticalStackLayout Padding="0,12,0,4" Spacing="12">
-                        <Picker ItemsSource="{Binding Periods}"
-                                SelectedItem="{Binding SelectedPeriod}"
-                                Title="{ext:Localize SelectPeriod}"
-                                FontSize="16"
-                                MinimumHeightRequest="44"
-                                BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
-
-                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12"
-                              IsVisible="{Binding IsCustomPeriodSelected}">
-                            <Label Text="{ext:Localize From}" FontSize="16" VerticalOptions="Center" />
-                            <DatePicker Grid.Column="1"
-                                        Date="{Binding CustomStartDate}"
-                                        Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                                        FontSize="16"
-                                        MinimumHeightRequest="44"
-                                        BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
-                            <Label Grid.Row="1" Text="{ext:Localize To}" FontSize="16" VerticalOptions="Center" />
-                            <DatePicker Grid.Row="1" Grid.Column="1"
-                                        Date="{Binding CustomEndDate}"
-                                        Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                                        FontSize="16"
-                                        MinimumHeightRequest="44"
-                                        BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
-                        </Grid>
+                        <controls:PeriodPicker BindingContext="{Binding Period}" />
 
                         <SearchBar Placeholder="{ext:Localize SearchTransactions}"
                                    Text="{Binding Filters.SearchText}"

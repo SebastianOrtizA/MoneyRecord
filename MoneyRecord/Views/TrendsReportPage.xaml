@@ -1,30 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- Trends: spending per month and budget vs actual over the shared "last N months"; a bar opens that month's expenses -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:charts="clr-namespace:MoneyRecord.Charts"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              x:Class="MoneyRecord.Views.TrendsReportPage"
              x:DataType="viewmodels:TrendsReportViewModel"
              Title="{ext:Localize Trends}">
 
     <RefreshView IsRefreshing="{Binding IsLoading}"
-                 Command="{Binding LoadChartsCommand}">
+                 Command="{Binding LoadCommand}">
         <ScrollView>
             <VerticalStackLayout Padding="16,12" Spacing="16">
-
-                <!-- How many months -->
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                    <Label Text="{ext:Localize TrendsAnalysis}"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           VerticalOptions="Center" />
-                    <Picker Grid.Column="1"
-                            ItemsSource="{Binding MonthCountOptions}"
-                            SelectedItem="{Binding SelectedMonthCount}"
-                            FontSize="16"
-                            MinimumWidthRequest="80" />
-                </Grid>
+                <controls:MonthCountPicker BindingContext="{Binding Period}" />
 
                 <!-- Empty state -->
                 <VerticalStackLayout IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}"
@@ -44,32 +35,42 @@
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                 </VerticalStackLayout>
 
-                <!-- One series: the title names it, so no legend -->
+                <!-- Spending per month; one series, so the title names it and there is no legend -->
                 <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
-                    <VerticalStackLayout Spacing="8">
-                        <Label Text="{ext:Localize MonthlySpending}" FontSize="16" FontAttributes="Bold" />
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{ext:Localize TotalSpending}" Style="{StaticResource ReportHeadlineLabel}" />
+                        <Label Text="{Binding Headline, Converter={StaticResource MoneyConverter}}" Style="{StaticResource ReportHeadline}" />
+                        <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}" />
                         <lvc:CartesianChart HeightRequest="220"
+                                            Margin="0,8,0,0"
                                             Series="{Binding SpendingSeries}"
                                             XAxes="{Binding MonthAxis}"
                                             YAxes="{Binding MoneyAxis}"
                                             LegendPosition="Hidden"
-                                            BackgroundColor="Transparent" />
+                                            BackgroundColor="Transparent">
+                            <lvc:CartesianChart.Behaviors>
+                                <charts:ChartTapBehavior />
+                            </lvc:CartesianChart.Behaviors>
+                        </lvc:CartesianChart>
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Two series: legend on top -->
-                <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
+                <!-- Budget vs actual: two series, legend on top -->
+                <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasBudgets}">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="{ext:Localize IncomeVsExpenses}" FontSize="16" FontAttributes="Bold" />
+                        <Label Text="{ext:Localize BudgetVsActual}" FontSize="16" FontAttributes="Bold" />
                         <lvc:CartesianChart HeightRequest="240"
-                                            Series="{Binding IncomeVsExpenseSeries}"
+                                            Series="{Binding BudgetSeries}"
                                             XAxes="{Binding MonthAxis}"
                                             YAxes="{Binding MoneyAxis}"
                                             LegendPosition="Top"
-                                            BackgroundColor="Transparent" />
+                                            BackgroundColor="Transparent">
+                            <lvc:CartesianChart.Behaviors>
+                                <charts:ChartTapBehavior />
+                            </lvc:CartesianChart.Behaviors>
+                        </lvc:CartesianChart>
                     </VerticalStackLayout>
                 </Border>
-
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>

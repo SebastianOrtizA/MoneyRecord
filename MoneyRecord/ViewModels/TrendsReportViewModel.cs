@@ -1,92 +1,68 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore;
-using LiveChartsCore.SkiaSharpView;
 using MoneyRecord.Charts;
 using MoneyRecord.Helpers;
+using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
 {
-    /// <summary>The Trends report: monthly spending, and income against expenses, over the last few months.</summary>
-    public partial class TrendsReportViewModel : ObservableObject
+    /// <summary>
+    /// The Trends report: spending per month (headline = the window's spending against the window before) and budget vs
+    /// actual per month for the budgeted categories. A bar opens that month's expenses.
+    /// </summary>
+    public partial class TrendsReportViewModel : MonthlyReportViewModel
     {
         private readonly ITransactionRepository _transactionRepository;
-        private readonly IErrorHandler _errorHandler;
-
-        [ObservableProperty]
-        private bool isLoading;
-
-        [ObservableProperty]
-        private bool hasData;
-
-        [ObservableProperty]
-        private int selectedMonthCount = 6;
+        private readonly IBudgetRepository _budgetRepository;
 
         [ObservableProperty]
         private ISeries[] spendingSeries = [];
 
         [ObservableProperty]
-        private ISeries[] incomeVsExpenseSeries = [];
+        private ISeries[] budgetSeries = [];
 
         [ObservableProperty]
-        private Axis[] monthAxis = [];
+        private bool hasBudgets;
 
-        [ObservableProperty]
-        private Axis[] moneyAxis = [];
-
-        public List<int> MonthCountOptions { get; } = [3, 6, 12];
-
-        public TrendsReportViewModel(ITransactionRepository transactionRepository, IErrorHandler errorHandler)
+        public TrendsReportViewModel(PeriodViewModel period, ITransactionRepository transactionRepository,
+            IBudgetRepository budgetRepository, IErrorHandler errorHandler, INavigationService navigationService,
+            TransactionsDrillDown drillDown)
+            : base(period, errorHandler, navigationService, drillDown)
         {
             _transactionRepository = transactionRepository;
-            _errorHandler = errorHandler;
+            _budgetRepository = budgetRepository;
         }
 
-        public Task InitializeAsync() => LoadChartsCommand.ExecuteAsync(null);
-
-        partial void OnSelectedMonthCountChanged(int value) => LoadChartsCommand.Execute(null);
-
-        /// <summary>Each run cancels the one in progress, so an older month count's charts never overwrite a newer one's.</summary>
-        [RelayCommand(AllowConcurrentExecutions = true)]
-        private async Task LoadChartsAsync(CancellationToken cancellationToken)
+        protected override async Task BuildAsync(DateTime firstMonth, int months, CancellationToken cancellationToken)
         {
-            try
-            {
-                IsLoading = true;
+            // The window and the one before it, in one query
+            var previousFirst = firstMonth.AddMonths(-months);
+            var transactionsTask = _transactionRepository.GetByDateRangeAsync(previousFirst, firstMonth.AddMonths(months).AddTicks(-1));
+            var budgetsTask = _budgetRepository.GetActiveBudgetsAsync();
+            await Task.WhenAll(transactionsTask, budgetsTask);
+            cancellationToken.ThrowIfCancellationRequested();
 
-                var months = SelectedMonthCount;
-                var (start, end) = MonthlyTotalsBuilder.Window(DateTime.Now, months);
-                var transactions = await _transactionRepository.GetByDateRangeAsync(start, end);
-                cancellationToken.ThrowIfCancellationRequested();
+            var transactions = await transactionsTask;
+            var budgets = await budgetsTask;
+            var totals = MonthlyTotalsBuilder.Build(transactions, firstMonth, months);
+            var previous = MonthlyTotalsBuilder.Build(transactions, previousFirst, months);
+            var budgetRows = BudgetVsActualBuilder.Build(budgets, transactions, firstMonth, months);
 
-                var totals = MonthlyTotalsBuilder.Build(transactions, start, months);
-                HasData = totals.Any(t => t.Income > 0 || t.Expense > 0);
+            HasData = totals.Any(t => t.Expense > 0);
+            HasBudgets = budgets.Count > 0;
+            Headline = totals.Sum(t => t.Expense);
+            DeltaText = new PeriodDelta(Headline, previous.Sum(t => t.Expense)).Text;
 
-                // Built on every load, so the colours follow the current light/dark theme
-                MonthAxis = ChartFactory.LabelAxis(totals.Select(t => t.Label));
-                MoneyAxis = ChartFactory.MoneyAxis();
-                SpendingSeries = ChartFactory.Columns(
-                    (AppResources.Expenses, totals.Select(t => t.Expense), ChartPalette.Expense));
-                IncomeVsExpenseSeries = ChartFactory.Columns(
-                    (AppResources.Incomes, totals.Select(t => t.Income), ChartPalette.Income),
-                    (AppResources.Expenses, totals.Select(t => t.Expense), ChartPalette.Expense));
-            }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-            {
-                // A newer load replaced this one
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadReportData);
-            }
-            finally
-            {
-                // The newer load owns the spinner
-                if (!cancellationToken.IsCancellationRequested)
-                    IsLoading = false;
-            }
+            MonthAxis = ChartFactory.LabelAxis(totals.Select(t => t.Label));
+            MoneyAxis = ChartFactory.MoneyAxis();
+            SpendingSeries = ChartFactory.Columns((month, _) => OpenMonth(month, TransactionType.Expense),
+                new ChartFactory.Line(AppResources.Expenses, totals.Select(t => t.Expense), ChartPalette.Expense));
+            BudgetSeries = ChartFactory.Columns((month, _) => OpenMonth(month, TransactionType.Expense),
+                new ChartFactory.Line(AppResources.BudgetSeries, budgetRows.Select(b => b.Limit), ChartPalette.Budget),
+                new ChartFactory.Line(AppResources.SpentSeries, budgetRows.Select(b => b.Spent), ChartPalette.Expense));
         }
     }
 }

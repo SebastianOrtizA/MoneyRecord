@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- How many months the time-series reports show (shared): bind BindingContext to a page's Period -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Controls.MonthCountPicker"
+             x:DataType="viewmodels:PeriodViewModel">
+
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+        <Label Text="{ext:Localize MonthsShown}"
+               FontSize="16"
+               VerticalOptions="Center"
+               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        <Picker Grid.Column="1"
+                ItemsSource="{Binding MonthCountOptions}"
+                SelectedItem="{Binding MonthCount}"
+                FontSize="16"
+                MinimumWidthRequest="80" />
+    </Grid>
+</ContentView>

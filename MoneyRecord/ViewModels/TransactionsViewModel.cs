@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 
@@ -21,25 +22,12 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
+        private readonly TransactionsDrillDown _drillDown;
 
         private List<LedgerEntry> _entries = [];
         private List<LedgerEntry> _accountEntries = [];
         private List<AccountBalanceInfo> _accountBalances = [];
         private List<Account> _accounts = [];
-
-        // TODO(8.7): Home and Transactions each keep their own period (same picker and logic as MainViewModel);
-        // the shared period picker replaces both
-        [ObservableProperty]
-        private PeriodItem selectedPeriod;
-
-        [ObservableProperty]
-        private DateTime customStartDate = DateTime.Now.AddMonths(-1);
-
-        [ObservableProperty]
-        private DateTime customEndDate = DateTime.Now;
-
-        [ObservableProperty]
-        private bool isCustomPeriodSelected;
 
         [ObservableProperty]
         private GroupingMode currentGroupingMode = GroupingMode.Category;
@@ -75,8 +63,6 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isReceiptOpen;
 
-        public List<PeriodItem> Periods { get; } = PeriodHelper.GetPeriods();
-
         public TransactionFilterViewModel Filters { get; }
 
         public bool IsDetailsOpen => SelectedEntry != null;
@@ -85,8 +71,12 @@ namespace MoneyRecord.ViewModels
 
         public string EmptyHint => HasActiveFilters ? AppResources.TryOtherFilters : AppResources.AddEntryHint;
 
-        public TransactionsViewModel(IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
-            IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService)
+        /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
+        public PeriodViewModel Period { get; }
+
+        public TransactionsViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
+            IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService,
+            TransactionsDrillDown drillDown)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
@@ -95,9 +85,12 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _navigationService = navigationService;
-            selectedPeriod = PeriodHelper.GetDefaultPeriod();
+            _drillDown = drillDown;
             Filters = new TransactionFilterViewModel(dialogService);
             Filters.Changed += ApplyFilters;
+            Period = period;
+            // The shared period changed (here or on another tab): show the new one
+            Period.Changed += () => LoadDataCommand.Execute(null);
         }
 
         public Task InitializeAsync() => LoadDataCommand.ExecuteAsync(null);
@@ -110,7 +103,7 @@ namespace MoneyRecord.ViewModels
             {
                 IsRefreshing = true;
 
-                var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
+                var (startDate, endDate) = Period.Range;
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
                 var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
                 var accountsTask = _accountRepository.GetAllAsync();
@@ -124,7 +117,11 @@ namespace MoneyRecord.ViewModels
                 _accountEntries = LedgerTransfers.PerAccount(_entries);
                 _accounts = await accountsTask;
                 Filters.SetOptions(_entries);
-                ApplyFilters();
+                // A report opened this tab for one category or type: show only that (ShowOnly applies the filters)
+                if (_drillDown.TryTake(out var categoryId, out var type))
+                    Filters.ShowOnly(type, categoryId);
+                else
+                    ApplyFilters();
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -288,24 +285,6 @@ namespace MoneyRecord.ViewModels
                 await _errorHandler.HandleAsync(ex, errorMessage);
                 return false;
             }
-        }
-
-        partial void OnSelectedPeriodChanged(PeriodItem value)
-        {
-            IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
-            LoadDataCommand.Execute(null);
-        }
-
-        partial void OnCustomStartDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-                LoadDataCommand.Execute(null);
-        }
-
-        partial void OnCustomEndDateChanged(DateTime value)
-        {
-            if (IsCustomPeriodSelected)
-                LoadDataCommand.Execute(null);
         }
     }
 }

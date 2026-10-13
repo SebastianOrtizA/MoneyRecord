@@ -186,4 +186,30 @@ public class TransactionFilterViewModelTests
         _sut.IsAmountVisible.Should().BeFalse();
         _sut.AmountChipText.Should().Be(AppResources.FilterByAmount);
     }
+
+    [Fact]
+    public void ShowOnly_turns_every_other_filter_off_and_keeps_the_type_and_category_with_one_change()
+    {
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food", Tags = "work" }]);
+        _sut.SelectedTag = "work";
+        _sut.MinAmountText = "10";
+        _changes = 0;
+
+        _sut.ShowOnly(TransactionType.Expense, 5);
+
+        _changes.Should().Be(1);
+        _sut.SelectedType!.Type.Should().Be(TransactionType.Expense);
+        _sut.SelectedCategory.Should().Be(new FilterOption(5, "Food"));
+        _sut.SelectedTag.Should().BeNull();
+        _sut.IsAmountActive.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ShowOnly_ignores_a_category_without_entries()
+    {
+        _sut.ShowOnly(TransactionType.Income, 42);
+
+        _sut.SelectedType!.Type.Should().Be(TransactionType.Income);
+        _sut.IsCategoryActive.Should().BeFalse();
+    }
 }

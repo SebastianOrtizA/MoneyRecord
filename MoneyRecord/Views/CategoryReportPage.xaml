@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- The Spending and Income reports (ExpenseReportPage / IncomeReportPage set the type): a donut of the category
-     shares with the total in its middle, and the ranked list below it as the donut's legend (each row's dot is its
-     slice colour, and the list doubles as the table view). -->
+<!-- The Spending and Income reports (ExpenseReportPage / IncomeReportPage set the type) for the shared period: a
+     donut of the category shares with the total and its change in the middle, and the ranked list below it as the
+     donut's legend and table view (each row's dot is its slice colour). A slice or a row opens its transactions. -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              xmlns:helpers="clr-namespace:MoneyRecord.Helpers;assembly=MoneyRecord.Core"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:charts="clr-namespace:MoneyRecord.Charts"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              x:Class="MoneyRecord.Views.CategoryReportPage"
              x:DataType="viewmodels:CategoryReportViewModel"
@@ -18,23 +20,7 @@
         <CollectionView ItemsSource="{Binding Categories}" Margin="16,0">
             <CollectionView.Header>
                 <VerticalStackLayout Spacing="12" Padding="0,12,0,4">
-                    <Picker ItemsSource="{Binding Periods}"
-                            SelectedItem="{Binding SelectedPeriod}"
-                            Title="{ext:Localize SelectPeriod}"
-                            FontSize="16"
-                            MinimumHeightRequest="44" />
-
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" IsVisible="{Binding IsCustomPeriodSelected}">
-                        <DatePicker Date="{Binding CustomStartDate}"
-                                    Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                                    FontSize="16"
-                                    MinimumHeightRequest="44" />
-                        <DatePicker Grid.Column="1"
-                                    Date="{Binding CustomEndDate}"
-                                    Format="{x:Static helpers:DateFormatter.MediumPattern}"
-                                    FontSize="16"
-                                    MinimumHeightRequest="44" />
-                    </Grid>
+                    <controls:PeriodPicker BindingContext="{Binding Period}" />
 
                     <!-- Donut with the total in the middle -->
                     <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}" Padding="8">
@@ -42,7 +28,11 @@
                             <lvc:PieChart Series="{Binding Slices}"
                                           LegendPosition="Hidden"
                                           InitialRotation="-90"
-                                          BackgroundColor="Transparent" />
+                                          BackgroundColor="Transparent">
+                                <lvc:PieChart.Behaviors>
+                                    <charts:ChartTapBehavior />
+                                </lvc:PieChart.Behaviors>
+                            </lvc:PieChart>
                             <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" InputTransparent="True">
                                 <Label Text="{Binding Texts.TotalLabel}"
                                        FontSize="13"
@@ -52,18 +42,23 @@
                                        FontSize="20"
                                        FontAttributes="Bold"
                                        HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding DeltaText}"
+                                       FontSize="12"
+                                       HorizontalTextAlignment="Center"
+                                       MaximumWidthRequest="150"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                             </VerticalStackLayout>
                         </Grid>
                     </Border>
                 </VerticalStackLayout>
             </CollectionView.Header>
 
-            <!-- Ranked list: tap a row for its transactions -->
+            <!-- Ranked list: a row opens its transactions -->
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:CategoryAmount">
                     <Grid Padding="4,10" ColumnDefinitions="Auto,Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="6">
                         <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategoryReportViewModel}}, Path=ShowCategoryDetailsCommand}"
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategoryReportViewModel}}, Path=OpenCategoryCommand}"
                                                   CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
                         <Border Grid.RowSpan="2"
