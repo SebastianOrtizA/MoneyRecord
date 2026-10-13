@@ -3,39 +3,52 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services.Interfaces;
+using System.Globalization;
 
 namespace MoneyRecord.ViewModels
 {
     /// <summary>
-    /// Home's search box and filter panel. <see cref="Changed"/> fires when the filter changes: typed text once the
-    /// typing stops, pickers and buttons at once.
+    /// The Transactions tab's search box and filter chips. A chip shows its filter's name, or the chosen value when it
+    /// filters; tapping it picks a value from a list (Amount opens a min/max row instead). <see cref="Changed"/> fires
+    /// when the filter changes: typed text once the typing stops, picks and buttons at once.
     /// </summary>
     public partial class TransactionFilterViewModel : ObservableObject
     {
         public static readonly TimeSpan DefaultTypingDelay = TimeSpan.FromMilliseconds(300);
 
+        private readonly IDialogService? _dialogService;
         private readonly Debouncer _typingDebouncer;
         private bool _clearing;
 
         [ObservableProperty]
-        private bool isVisible;
+        private bool isAmountVisible;
 
         [ObservableProperty]
         private string searchText = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(TypeChipText), nameof(IsTypeActive))]
         private TypeFilterOption? selectedType;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CategoryChipText), nameof(IsCategoryActive))]
         private FilterOption? selectedCategory;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(AccountChipText), nameof(IsAccountActive))]
         private FilterOption? selectedAccount;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(TagChipText), nameof(IsTagActive))]
+        private string? selectedTag;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(AmountChipText), nameof(IsAmountActive))]
         private string minAmountText = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(AmountChipText), nameof(IsAmountActive))]
         private string maxAmountText = string.Empty;
 
         [ObservableProperty]
@@ -43,6 +56,9 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private List<FilterOption> accounts = [];
+
+        [ObservableProperty]
+        private List<string> tags = [];
 
         public List<TypeFilterOption> Types { get; } =
         [
@@ -52,13 +68,43 @@ namespace MoneyRecord.ViewModels
             new(TransactionType.Transfer, AppResources.Transfers)
         ];
 
-        public TransactionFilterViewModel(TimeSpan? typingDelay = null, TimeProvider? timeProvider = null)
+        /// <param name="dialogService">Shows the chips' pick lists; without it the chips don't open.</param>
+        public TransactionFilterViewModel(IDialogService? dialogService = null, TimeSpan? typingDelay = null,
+            TimeProvider? timeProvider = null)
         {
+            _dialogService = dialogService;
             _typingDebouncer = new Debouncer(typingDelay ?? DefaultTypingDelay, timeProvider);
             selectedType = Types[0];
         }
 
         public event Action? Changed;
+
+        public string TypeChipText => IsTypeActive ? SelectedType!.Name : AppResources.FilterByType;
+
+        public bool IsTypeActive => SelectedType?.Type != null;
+
+        public string CategoryChipText => SelectedCategory?.Name ?? AppResources.FilterByCategory;
+
+        public bool IsCategoryActive => SelectedCategory != null;
+
+        public string AccountChipText => SelectedAccount?.Name ?? AppResources.FilterByAccount;
+
+        public bool IsAccountActive => SelectedAccount != null;
+
+        public string TagChipText => SelectedTag ?? AppResources.FilterByTag;
+
+        public bool IsTagActive => SelectedTag != null;
+
+        /// <summary>"10 – 50", "≥ 10" or "≤ 50" (plain numbers: the limits apply to every currency), else "Amount".</summary>
+        public string AmountChipText => (ParseAmountLimit(MinAmountText), ParseAmountLimit(MaxAmountText)) switch
+        {
+            (decimal min, decimal max) => $"{FormatLimit(min)} – {FormatLimit(max)}",
+            (decimal min, null) => $"≥ {FormatLimit(min)}",
+            (null, decimal max) => $"≤ {FormatLimit(max)}",
+            _ => AppResources.FilterByAmount
+        };
+
+        public bool IsAmountActive => ParseAmountLimit(MinAmountText) != null || ParseAmountLimit(MaxAmountText) != null;
 
         public TransactionFilter ToFilter(bool ascending) => new(
             SearchText,
@@ -67,21 +113,81 @@ namespace MoneyRecord.ViewModels
             SelectedAccount?.Id,
             ParseAmountLimit(MinAmountText),
             ParseAmountLimit(MaxAmountText),
-            ascending);
+            ascending,
+            SelectedTag);
 
-        /// <summary>The category and account pickers offer what the loaded entries use.</summary>
+        /// <summary>The category, account and tag lists offer what the loaded entries use.</summary>
         public void SetOptions(IReadOnlyCollection<LedgerEntry> entries)
         {
             Categories = LedgerFilter.CategoryOptions(entries);
             Accounts = LedgerFilter.AccountOptions(entries);
+            Tags = LedgerFilter.TagOptions(entries);
         }
 
         /// <summary>Empty = no limit; otherwise read like amount entry (base currency).</summary>
         private static decimal? ParseAmountLimit(string text) =>
             string.IsNullOrWhiteSpace(text) ? null : AmountParser.Parse(text, null);
 
+        private static string FormatLimit(decimal value) => value.ToString("#,0.##", CultureInfo.CurrentCulture);
+
         [RelayCommand]
-        private void Toggle() => IsVisible = !IsVisible;
+        private async Task PickTypeAsync()
+        {
+            if (await PickAsync(AppResources.FilterByType, Types.Select(t => t.Name)) is int index)
+                SelectedType = Types[index];
+        }
+
+        [RelayCommand]
+        private async Task PickCategoryAsync()
+        {
+            if (await PickAsync(AppResources.FilterByCategory, [AppResources.AllCategories, .. Categories.Select(c => c.Name)]) is int index)
+                SelectedCategory = index == 0 ? null : Categories[index - 1];
+        }
+
+        [RelayCommand]
+        private async Task PickAccountAsync()
+        {
+            if (await PickAsync(AppResources.FilterByAccount, [AppResources.AllAccounts, .. Accounts.Select(a => a.Name)]) is int index)
+                SelectedAccount = index == 0 ? null : Accounts[index - 1];
+        }
+
+        [RelayCommand]
+        private async Task PickTagAsync()
+        {
+            if (await PickAsync(AppResources.FilterByTag, [AppResources.AllTags, .. Tags]) is int index)
+                SelectedTag = index == 0 ? null : Tags[index - 1];
+        }
+
+        [RelayCommand]
+        private void ToggleAmount() => IsAmountVisible = !IsAmountVisible;
+
+        /// <summary>The index of the picked option; null when cancelled.</summary>
+        private async Task<int?> PickAsync(string title, IEnumerable<string> options)
+        {
+            if (_dialogService == null)
+                return null;
+
+            // The list answers with the picked text, so two options never share one
+            var labels = UniqueLabels(options);
+            var choice = await _dialogService.ActionSheetAsync(title, AppResources.Cancel, labels);
+            var index = choice == null ? -1 : labels.IndexOf(choice);
+            return index < 0 ? null : index;
+        }
+
+        /// <summary>Repeated names get a number ("Other", "Other (2)").</summary>
+        public static List<string> UniqueLabels(IEnumerable<string> names)
+        {
+            var labels = new List<string>();
+            foreach (var name in names)
+            {
+                var label = name;
+                for (var n = 2; labels.Contains(label); n++)
+                    label = $"{name} ({n})";
+                labels.Add(label);
+            }
+
+            return labels;
+        }
 
         [RelayCommand]
         private void Clear()
@@ -93,8 +199,10 @@ namespace MoneyRecord.ViewModels
                 SelectedType = Types[0];
                 SelectedCategory = null;
                 SelectedAccount = null;
+                SelectedTag = null;
                 MinAmountText = string.Empty;
                 MaxAmountText = string.Empty;
+                IsAmountVisible = false;
             }
             finally
             {
@@ -119,6 +227,8 @@ namespace MoneyRecord.ViewModels
         partial void OnSelectedCategoryChanged(FilterOption? value) => RaiseChanged();
 
         partial void OnSelectedAccountChanged(FilterOption? value) => RaiseChanged();
+
+        partial void OnSelectedTagChanged(string? value) => RaiseChanged();
 
         private void OnTyped()
         {

@@ -1,7 +1,10 @@
 using AwesomeAssertions;
 using Microsoft.Extensions.Time.Testing;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.ViewModels;
+using NSubstitute;
 using Xunit;
 
 namespace MoneyRecord.Tests.ViewModels;
@@ -9,13 +12,14 @@ namespace MoneyRecord.Tests.ViewModels;
 public class TransactionFilterViewModelTests
 {
     private readonly FakeTimeProvider _clock = new();
+    private readonly IDialogService _dialog = Substitute.For<IDialogService>();
 
     private readonly TransactionFilterViewModel _sut;
     private int _changes;
 
     public TransactionFilterViewModelTests()
     {
-        _sut = new TransactionFilterViewModel(timeProvider: _clock);
+        _sut = new TransactionFilterViewModel(_dialog, timeProvider: _clock);
         _sut.Changed += () => _changes++;
     }
 
@@ -101,5 +105,92 @@ public class TransactionFilterViewModelTests
 
         _sut.Categories.Should().Equal(new FilterOption(5, "Food"));
         _sut.Accounts.Select(a => a.Name).Should().BeEquivalentTo("Checking", "Savings");
+    }
+
+    private void PickInList(string? choice) =>
+        _dialog.ActionSheetAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<IReadOnlyList<string>>())
+            .Returns(choice);
+
+    [Fact]
+    public async Task A_chip_shows_its_name_until_a_value_is_picked()
+    {
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food" }]);
+        _sut.CategoryChipText.Should().Be(AppResources.FilterByCategory);
+        _sut.IsCategoryActive.Should().BeFalse();
+
+        PickInList("Food");
+        await _sut.PickCategoryCommand.ExecuteAsync(null);
+
+        _sut.CategoryChipText.Should().Be("Food");
+        _sut.IsCategoryActive.Should().BeTrue();
+        _sut.ToFilter(ascending: false).CategoryId.Should().Be(5);
+        _changes.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task Picking_all_clears_the_chip_and_cancel_keeps_it()
+    {
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, Tags = "work" }]);
+        _sut.SelectedTag = "work";
+
+        PickInList(null);
+        await _sut.PickTagCommand.ExecuteAsync(null);
+        _sut.SelectedTag.Should().Be("work");
+
+        PickInList(AppResources.AllTags);
+        await _sut.PickTagCommand.ExecuteAsync(null);
+        _sut.SelectedTag.Should().BeNull();
+        _sut.TagChipText.Should().Be(AppResources.FilterByTag);
+    }
+
+    [Fact]
+    public async Task Accounts_with_the_same_name_stay_apart()
+    {
+        _sut.SetOptions(
+        [
+            new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, AccountId = 1, AccountName = "Cash" },
+            new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 2, AccountId = 2, AccountName = "Cash" }
+        ]);
+
+        PickInList("Cash (2)");
+        await _sut.PickAccountCommand.ExecuteAsync(null);
+
+        _sut.SelectedAccount!.Id.Should().Be(2);
+    }
+
+    [Fact]
+    public void UniqueLabels_numbers_repeated_names()
+    {
+        TransactionFilterViewModel.UniqueLabels(["Other", "Food", "Other", "Other"])
+            .Should().Equal("Other", "Food", "Other (2)", "Other (3)");
+    }
+
+    [Theory]
+    [InlineData("10", "", "≥ 10")]
+    [InlineData("", "1500.5", "≤ 1,500.5")]
+    [InlineData("10", "50", "10 – 50")]
+    public void The_amount_chip_shows_the_range(string min, string max, string expected)
+    {
+        TestCulture.WithCulture("en-US", () =>
+        {
+            _sut.MinAmountText = min;
+            _sut.MaxAmountText = max;
+
+            _sut.AmountChipText.Should().Be(expected);
+            _sut.IsAmountActive.Should().BeTrue();
+        });
+    }
+
+    [Fact]
+    public void Clear_also_resets_the_tag_and_hides_the_amount_row()
+    {
+        _sut.SelectedTag = "work";
+        _sut.ToggleAmountCommand.Execute(null);
+
+        _sut.ClearCommand.Execute(null);
+
+        _sut.SelectedTag.Should().BeNull();
+        _sut.IsAmountVisible.Should().BeFalse();
+        _sut.AmountChipText.Should().Be(AppResources.FilterByAmount);
     }
 }

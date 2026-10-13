@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1 done; 8.2 in review)
+**Status**: In progress (8.1–8.2 done; 8.3 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -51,6 +51,18 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Full list moved off Home: search, filter chips (type, category, account, amount, tags), group by none/category/account.
 - Swipe to edit/delete; tap opens a detail sheet (with receipt preview).
 - Proper localized empty state.
+- Done as: one `CollectionView` (header = period, search, chips, count / Clear, grouping and sort links; footer =
+  empty state) instead of two lists inside a `ScrollView`; `LedgerItemTemplateSelector` picks the row or the group
+  template. Chips Type · Category · Account · Amount · Tag show their name until they filter, then the value (active
+  colours); tapping one opens a pick list via `IDialogService.ActionSheetAsync` (repeated names get " (2)" so the
+  answer maps back to one ID), Amount opens the min/max row (`DecimalEntry`). New tag filter
+  (`TransactionFilter.Tag`, `LedgerFilter.TagOptions`, `LedgerEntry.TagList`). Rows are compact (icon, description,
+  category · account, amount, tag/receipt marks, date); swipe left reveals Edit / Delete. A tap opens a detail sheet
+  (amount, date, account, tags, receipt preview → full-screen photo, Edit / Delete). Android back closes the photo,
+  then the sheet, then the add sheet: pages implement `IOverlayHost` instead of AppShell looking up `AddEntry` by
+  name. Empty state: "No transactions in this period · Tap + to add…" or, with filters, "No transactions match these
+  filters" + Clear. Removed the collapsible filter panel, the `GroupingModeToIs(Not)Grouped` converters and the
+  `NoTransactions` / `StartTracking` / `AmountRange` strings.
 
 ### 8.4 Fast entry (P7)
 - Field order: Amount (autofocus, numeric keypad) → Category (icon grid, recent first) → Account → Date → optional

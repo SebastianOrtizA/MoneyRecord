@@ -2,7 +2,7 @@ using MoneyRecord.Models;
 
 namespace MoneyRecord.Helpers
 {
-    /// <summary>Filters, sorts and lists the filter options of Home's ledger entries.</summary>
+    /// <summary>Filters, sorts and lists the filter options of the Transactions tab's ledger entries.</summary>
     public static class LedgerFilter
     {
         /// <summary>The entries matching <paramref name="filter"/>, by date (newest first unless <see cref="TransactionFilter.Ascending"/>).</summary>
@@ -34,6 +34,12 @@ namespace MoneyRecord.Helpers
                                                (e.Kind == LedgerEntryKind.Transfer && e.CounterpartAccountId == accountId));
             }
 
+            if (!string.IsNullOrWhiteSpace(filter.Tag))
+            {
+                var tag = filter.Tag.Trim();
+                filtered = filtered.Where(e => e.TagList.Contains(tag, StringComparer.OrdinalIgnoreCase));
+            }
+
             if (filter.MinAmount is decimal min)
                 filtered = filtered.Where(e => e.Amount >= min);
 
@@ -54,6 +60,14 @@ namespace MoneyRecord.Helpers
         /// <summary>The accounts used by the entries, transfer destinations included, by name.</summary>
         public static List<FilterOption> AccountOptions(IEnumerable<LedgerEntry> entries) =>
             Distinct(entries.SelectMany(AccountsOf));
+
+        /// <summary>The tags used by the entries, once each (ignoring case), alphabetically.</summary>
+        public static List<string> TagOptions(IEnumerable<LedgerEntry> entries) =>
+            entries
+                .SelectMany(e => e.TagList)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Order(StringComparer.CurrentCultureIgnoreCase)
+                .ToList();
 
         private static IEnumerable<FilterOption> AccountsOf(LedgerEntry entry)
         {

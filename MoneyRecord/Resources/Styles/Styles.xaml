@@ -441,6 +441,19 @@
         <Setter Property="Padding" Value="12,0" />
     </Style>
 
+    <!-- A filter chip; a DataTrigger sets the FilterChipActive colours while it filters -->
+    <Style x:Key="FilterChip" TargetType="Button">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light=#424242, Dark=#E0E0E0}" />
+        <Setter Property="BorderColor" Value="{AppThemeBinding Light=#BDBDBD, Dark=#616161}" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="CornerRadius" Value="17" />
+        <Setter Property="HeightRequest" Value="34" />
+        <Setter Property="MinimumWidthRequest" Value="0" />
+        <Setter Property="Padding" Value="14,0" />
+    </Style>
+
     <!-- "See all" / "View all" at the edge of a card -->
     <Style x:Key="CardLink" TargetType="Label">
         <Setter Property="FontSize" Value="14" />

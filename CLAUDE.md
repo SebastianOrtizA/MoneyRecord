@@ -65,15 +65,17 @@ crashes at runtime (XAML is inflated at runtime there).
   RecurrenceCalculator (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow`
   for a budget's current day/month/year)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
-- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter panel)
+- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips)
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 14 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 13 XAML pages with code-behind. Home keeps the summary cards; the full list is on `TransactionsPage`.
+- `Views/` — 13 XAML pages with code-behind. Home keeps the summary cards; the full list is on `TransactionsPage`
+  (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab
 - `Controls/` — AddEntryButton (the one add button: opens an Expense / Income / Transfer sheet; on Home and
-  Transactions, named `AddEntry` so Android back closes the sheet), DecimalEntry (numeric keyboard), ChartDrawables (Trends)
+  Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back closes it first),
+  LedgerItemTemplateSelector, DecimalEntry (numeric keyboard), ChartDrawables (Trends)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
@@ -110,8 +112,8 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See
   all" → `//TransactionsPage`, budgets "See all" → `//BudgetPage`
 - Custom `INavigationService` tracks navigation history for back button behavior: AppShell's `Navigated` event feeds
-  `NavigationHistory`; Android back → `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed` (previous page,
-  then Home, then close)
+  `NavigationHistory`; Android back → `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed` (an open sheet
+  on an `IOverlayHost` page, then the previous page, then Home, then close)
 
 ### Database
 - SQLite via `sqlite-net-pcl` with `SQLiteAsyncConnection`

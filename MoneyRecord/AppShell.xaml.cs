@@ -44,13 +44,13 @@ namespace MoneyRecord
         }
 
         /// <summary>
-        /// Back closes an open add sheet first, then goes to the previous page, then to Home; on Home with no
-        /// history the app closes.
+        /// Back closes an open sheet first (<see cref="IOverlayHost"/>), then goes to the previous page, then to Home;
+        /// on Home with no history the app closes.
         /// MainActivity routes the Android back gesture here.
         /// </summary>
         protected override bool OnBackButtonPressed()
         {
-            if (CurrentPage?.FindByName<AddEntryButton>("AddEntry")?.TryClose() == true)
+            if (CurrentPage is IOverlayHost host && host.TryCloseOverlay())
                 return true;
 
             var currentRoute = CurrentState?.Location?.ToString() ?? "";

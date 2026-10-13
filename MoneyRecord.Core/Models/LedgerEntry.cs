@@ -83,6 +83,11 @@ namespace MoneyRecord.Models
 
         public bool HasTags => !string.IsNullOrWhiteSpace(Tags);
 
+        /// <summary>The comma-separated <see cref="Tags"/>, trimmed.</summary>
+        public IReadOnlyList<string> TagList => string.IsNullOrWhiteSpace(Tags)
+            ? []
+            : Tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
         public bool HasReceipt => !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
 
         public string CategoryDisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
