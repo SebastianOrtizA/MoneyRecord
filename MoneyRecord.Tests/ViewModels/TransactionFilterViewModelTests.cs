@@ -158,13 +158,6 @@ public class TransactionFilterViewModelTests
         _sut.SelectedAccount!.Id.Should().Be(2);
     }
 
-    [Fact]
-    public void UniqueLabels_numbers_repeated_names()
-    {
-        TransactionFilterViewModel.UniqueLabels(["Other", "Food", "Other", "Other"])
-            .Should().Equal("Other", "Food", "Other (2)", "Other (3)");
-    }
-
     [Theory]
     [InlineData("10", "", "≥ 10")]
     [InlineData("", "1500.5", "≤ 1,500.5")]

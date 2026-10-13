@@ -208,12 +208,12 @@ namespace MoneyRecord.ViewModels
             return EditTransactionAsync(entry);
         }
 
+        /// <summary>The sheet stays open behind the question, so cancelling returns to the entry.</summary>
         [RelayCommand]
-        private Task DeleteSelectedAsync()
+        private async Task DeleteSelectedAsync()
         {
-            var entry = SelectedEntry;
-            CloseDetails();
-            return DeleteTransactionAsync(entry);
+            if (await TryDeleteAsync(SelectedEntry))
+                CloseDetails();
         }
 
         /// <summary>Closes the full-screen receipt, else the detail sheet; false when neither was open.</summary>
@@ -253,10 +253,13 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private async Task DeleteTransactionAsync(LedgerEntry? entry)
+        private Task DeleteTransactionAsync(LedgerEntry? entry) => TryDeleteAsync(entry);
+
+        /// <summary>Asks first; true when the entry was deleted (not when the user cancelled or the delete failed).</summary>
+        private async Task<bool> TryDeleteAsync(LedgerEntry? entry)
         {
             if (entry == null)
-                return;
+                return false;
 
             var amount = MoneyFormatter.Format(entry.Amount, entry.CurrencyCode);
             var confirmMessage = entry.IsTransfer
@@ -265,7 +268,7 @@ namespace MoneyRecord.ViewModels
 
             if (!await _dialogService.ConfirmAsync(AppResources.ConfirmDeleteTransactionTitle, confirmMessage,
                     AppResources.YesDelete, AppResources.Cancel))
-                return;
+                return false;
 
             try
             {
@@ -275,6 +278,7 @@ namespace MoneyRecord.ViewModels
                 await _dialogService.ToastAsync(entry.IsTransfer
                     ? AppResources.TransferDeletedSuccessfully
                     : AppResources.TransactionDeletedSuccessfully);
+                return true;
             }
             catch (Exception ex)
             {
@@ -282,6 +286,7 @@ namespace MoneyRecord.ViewModels
                     ? AppResources.FailedToDeleteTransfer
                     : AppResources.FailedToDeleteTransaction;
                 await _errorHandler.HandleAsync(ex, errorMessage);
+                return false;
             }
         }
 

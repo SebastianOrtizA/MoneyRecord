@@ -54,8 +54,9 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Done as: one `CollectionView` (header = period, search, chips, count / Clear, grouping and sort links; footer =
   empty state) instead of two lists inside a `ScrollView`; `LedgerItemTemplateSelector` picks the row or the group
   template. Chips Type · Category · Account · Amount · Tag show their name until they filter, then the value (active
-  colours); tapping one opens a pick list via `IDialogService.ActionSheetAsync` (repeated names get " (2)" so the
-  answer maps back to one ID), Amount opens the min/max row (`DecimalEntry`). New tag filter
+  colours, `Controls/FilterChip.IsActive` + one style trigger); tapping one opens a pick list via
+  `IDialogService.ActionSheetAsync` (`PickList.UniqueLabels`: repeated names get " (2)" so the answer maps back to
+  one ID), Amount opens the min/max row (`DecimalEntry`). New tag filter
   (`TransactionFilter.Tag`, `LedgerFilter.TagOptions`, `LedgerEntry.TagList`). Rows are compact (icon, description,
   category · account, amount, tag/receipt marks, date); swipe left reveals Edit / Delete. A tap opens a detail sheet
   (amount, date, account, tags, receipt preview → full-screen photo, Edit / Delete). Android back closes the photo,

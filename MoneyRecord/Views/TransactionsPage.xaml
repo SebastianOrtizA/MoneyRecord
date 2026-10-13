@@ -208,61 +208,16 @@
                         <!-- Filter chips: the name until it filters, then the chosen value -->
                         <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
                             <HorizontalStackLayout Spacing="8">
-                                <Button Style="{StaticResource FilterChip}"
-                                        Text="{Binding Filters.TypeChipText}"
-                                        Command="{Binding Filters.PickTypeCommand}">
-                                    <Button.Triggers>
-                                        <DataTrigger TargetType="Button" Binding="{Binding Filters.IsTypeActive}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark=#3A3060}" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
-                                <Button Style="{StaticResource FilterChip}"
-                                        Text="{Binding Filters.CategoryChipText}"
-                                        Command="{Binding Filters.PickCategoryCommand}">
-                                    <Button.Triggers>
-                                        <DataTrigger TargetType="Button" Binding="{Binding Filters.IsCategoryActive}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark=#3A3060}" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
-                                <Button Style="{StaticResource FilterChip}"
-                                        Text="{Binding Filters.AccountChipText}"
-                                        Command="{Binding Filters.PickAccountCommand}">
-                                    <Button.Triggers>
-                                        <DataTrigger TargetType="Button" Binding="{Binding Filters.IsAccountActive}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark=#3A3060}" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
-                                <Button Style="{StaticResource FilterChip}"
-                                        Text="{Binding Filters.AmountChipText}"
-                                        Command="{Binding Filters.ToggleAmountCommand}">
-                                    <Button.Triggers>
-                                        <DataTrigger TargetType="Button" Binding="{Binding Filters.IsAmountActive}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark=#3A3060}" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
-                                <Button Style="{StaticResource FilterChip}"
-                                        Text="{Binding Filters.TagChipText}"
-                                        Command="{Binding Filters.PickTagCommand}">
-                                    <Button.Triggers>
-                                        <DataTrigger TargetType="Button" Binding="{Binding Filters.IsTagActive}" Value="True">
-                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Secondary}, Dark=#3A3060}" />
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                        </DataTrigger>
-                                    </Button.Triggers>
-                                </Button>
+                                <controls:FilterChip Text="{Binding Filters.TypeChipText}" IsActive="{Binding Filters.IsTypeActive}"
+                                                     Command="{Binding Filters.PickTypeCommand}" />
+                                <controls:FilterChip Text="{Binding Filters.CategoryChipText}" IsActive="{Binding Filters.IsCategoryActive}"
+                                                     Command="{Binding Filters.PickCategoryCommand}" />
+                                <controls:FilterChip Text="{Binding Filters.AccountChipText}" IsActive="{Binding Filters.IsAccountActive}"
+                                                     Command="{Binding Filters.PickAccountCommand}" />
+                                <controls:FilterChip Text="{Binding Filters.AmountChipText}" IsActive="{Binding Filters.IsAmountActive}"
+                                                     Command="{Binding Filters.ToggleAmountCommand}" />
+                                <controls:FilterChip Text="{Binding Filters.TagChipText}" IsActive="{Binding Filters.IsTagActive}"
+                                                     Command="{Binding Filters.PickTagCommand}" />
                             </HorizontalStackLayout>
                         </ScrollView>
 

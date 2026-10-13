@@ -60,10 +60,10 @@ crashes at runtime (XAML is inflated at runtime there).
   `IDialogService`, exception to `ILogger`; never show `ex.Message`),
   NavigationHistory (back-button stack; `//Route` = root)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
-  IconHelper (only place that parses icon hex codes), PeriodHelper, ReceiptFiles, ReceiptDraft, LedgerFilter (search/filter/sort
-  by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the account view), Debouncer, CategoryReportBuilder,
-  RecurrenceCalculator (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow`
-  for a budget's current day/month/year)
+  IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
+  ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
+  account view), Debouncer, CategoryReportBuilder, RecurrenceCalculator (occurrences at 00:00;
+  `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips)
 
@@ -75,7 +75,8 @@ crashes at runtime (XAML is inflated at runtime there).
   the type). `MorePage` lists the screens without a tab
 - `Controls/` — AddEntryButton (the one add button: opens an Expense / Income / Transfer sheet; on Home and
   Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back closes it first),
-  LedgerItemTemplateSelector, DecimalEntry (numeric keyboard), ChartDrawables (Trends)
+  LedgerItemTemplateSelector, FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
+  ChartDrawables (Trends)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)

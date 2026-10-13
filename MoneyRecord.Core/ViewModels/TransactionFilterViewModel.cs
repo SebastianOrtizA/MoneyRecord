@@ -17,7 +17,7 @@ namespace MoneyRecord.ViewModels
     {
         public static readonly TimeSpan DefaultTypingDelay = TimeSpan.FromMilliseconds(300);
 
-        private readonly IDialogService? _dialogService;
+        private readonly IDialogService _dialogService;
         private readonly Debouncer _typingDebouncer;
         private bool _clearing;
 
@@ -68,8 +68,8 @@ namespace MoneyRecord.ViewModels
             new(TransactionType.Transfer, AppResources.Transfers)
         ];
 
-        /// <param name="dialogService">Shows the chips' pick lists; without it the chips don't open.</param>
-        public TransactionFilterViewModel(IDialogService? dialogService = null, TimeSpan? typingDelay = null,
+        /// <param name="dialogService">Shows the chips' pick lists.</param>
+        public TransactionFilterViewModel(IDialogService dialogService, TimeSpan? typingDelay = null,
             TimeProvider? timeProvider = null)
         {
             _dialogService = dialogService;
@@ -164,29 +164,11 @@ namespace MoneyRecord.ViewModels
         /// <summary>The index of the picked option; null when cancelled.</summary>
         private async Task<int?> PickAsync(string title, IEnumerable<string> options)
         {
-            if (_dialogService == null)
-                return null;
-
             // The list answers with the picked text, so two options never share one
-            var labels = UniqueLabels(options);
+            var labels = PickList.UniqueLabels(options);
             var choice = await _dialogService.ActionSheetAsync(title, AppResources.Cancel, labels);
             var index = choice == null ? -1 : labels.IndexOf(choice);
             return index < 0 ? null : index;
-        }
-
-        /// <summary>Repeated names get a number ("Other", "Other (2)").</summary>
-        public static List<string> UniqueLabels(IEnumerable<string> names)
-        {
-            var labels = new List<string>();
-            foreach (var name in names)
-            {
-                var label = name;
-                for (var n = 2; labels.Contains(label); n++)
-                    label = $"{name} ({n})";
-                labels.Add(label);
-            }
-
-            return labels;
         }
 
         [RelayCommand]

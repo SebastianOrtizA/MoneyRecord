@@ -37,7 +37,8 @@ namespace MoneyRecord.Views
             if (e.PropertyName != nameof(TransactionsViewModel.IsDetailsOpen) || !_viewModel.IsDetailsOpen)
                 return;
 
-            // Slide the sheet up from below the screen once it has a size
+            // Slide the sheet up from below the screen; on the first open it isn't measured yet (Height 0), so start
+            // a typical sheet height below
             DetailsSheet.TranslationY = DetailsSheet.Height > 0 ? DetailsSheet.Height : 400;
             await DetailsSheet.TranslateTo(0, 0, 200, Easing.CubicOut);
         }
