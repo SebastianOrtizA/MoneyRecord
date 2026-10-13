@@ -22,6 +22,7 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly IAppPaths _paths;
+        private readonly IEntryDefaultsService _entryDefaults;
 
         [ObservableProperty]
         private TransactionType transactionType;
@@ -41,8 +42,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private Category? selectedCategory;
 
+        /// <summary>The category grid: recently used first (<see cref="IEntryDefaultsService.OrderByRecent"/>).</summary>
         [ObservableProperty]
-        private List<Category> categories = new();
+        private List<CategoryChoice> categoryChoices = [];
+
+        /// <summary>Description, tags, receipt and recurrence sit under "More details".</summary>
+        [ObservableProperty]
+        private bool isMoreDetailsOpen;
 
         [ObservableProperty]
         private Account? selectedAccount;
@@ -115,7 +121,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -127,6 +133,7 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _paths = paths;
+            _entryDefaults = entryDefaults;
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
         }
@@ -146,6 +153,7 @@ namespace MoneyRecord.ViewModels
             SelectedAccount = null;
             Title = AppResources.AddTransaction;
             IsEditMode = false;
+            IsMoreDetailsOpen = false;
             TagsText = string.Empty;
             ShowReceipt();
             IsRecurring = false;
@@ -169,14 +177,13 @@ namespace MoneyRecord.ViewModels
             Transaction = savedTransaction;
             TransactionType = savedType;
 
-            await LoadAccountsAsync();
-            await LoadCategoriesAsync();
-            
             if (Transaction != null)
             {
                 // Edit mode
                 IsEditMode = true;
                 TransactionType = Transaction.Type;
+                await LoadAccountsAsync();
+                await LoadCategoriesAsync();
                 SelectedDate = Transaction.Date;
                 Description = Transaction.Description;
                 TagsText = Transaction.Tags ?? string.Empty;
@@ -185,9 +192,10 @@ namespace MoneyRecord.ViewModels
 
                 Title = TransactionType == TransactionType.Income ? AppResources.EditIncome : AppResources.EditExpense;
                 
-                // Load categories and select the current one
-                await LoadCategoriesAsync();
-                SelectedCategory = Categories.FirstOrDefault(c => c.Id == Transaction.CategoryId);
+                SelectedCategory = CategoryChoices.FirstOrDefault(c => c.Category.Id == Transaction.CategoryId)?.Category;
+
+                // Open the details when they hold something beyond the defaults
+                IsMoreDetailsOpen = Description != SelectedCategory?.Name || Transaction.HasTags || Transaction.HasReceipt;
                 
                 // Select the current account
                 if (Transaction.AccountId.HasValue)
@@ -207,9 +215,13 @@ namespace MoneyRecord.ViewModels
                 // Add mode
                 IsEditMode = false;
                 Title = TransactionType == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
-                
-                // Default to Cash account
-                SelectedAccount = Accounts.FirstOrDefault(a => a.IsDefault) ?? Accounts.FirstOrDefault();
+                await LoadAccountsAsync();
+                await LoadCategoriesAsync();
+
+                // The account and category last used for this type
+                SelectedAccount = _entryDefaults.DefaultAccount(TransactionType, Accounts);
+                SelectedCategory = _entryDefaults.DefaultCategory(TransactionType,
+                    CategoryChoices.Select(c => c.Category).ToList());
             }
         }
 
@@ -221,16 +233,23 @@ namespace MoneyRecord.ViewModels
         private async Task LoadCategoriesAsync()
         {
             var categoryType = TransactionType == TransactionType.Income ? CategoryType.Income : CategoryType.Expense;
-            Categories = await _categoryRepository.GetByTypeAsync(categoryType);
-
-            if (!IsEditMode)
-            {
-                SelectedCategory = Categories.FirstOrDefault();
-            }
+            var categories = await _categoryRepository.GetByTypeAsync(categoryType);
+            CategoryChoices = _entryDefaults.OrderByRecent(TransactionType, categories)
+                .Select(c => new CategoryChoice(c))
+                .ToList();
         }
+
+        [RelayCommand]
+        private void SelectCategory(CategoryChoice choice) => SelectedCategory = choice.Category;
+
+        [RelayCommand]
+        private void ToggleMoreDetails() => IsMoreDetailsOpen = !IsMoreDetailsOpen;
 
         partial void OnSelectedCategoryChanged(Category? value)
         {
+            foreach (var choice in CategoryChoices)
+                choice.IsSelected = choice.Category.Id == value?.Id;
+
             _ = CheckBudgetAsync();
         }
 
@@ -289,12 +308,6 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task SaveAsync()
         {
-            if (string.IsNullOrWhiteSpace(Description))
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseEnterDescription);
-                return;
-            }
-
             var amountValue = AmountParser.Parse(Amount, SelectedAccount?.CurrencyCode);
             if (amountValue <= 0 || !Money.IsInRange(amountValue))
             {
@@ -315,6 +328,7 @@ namespace MoneyRecord.ViewModels
             }
 
             int accountId = SelectedAccount.Id;
+            var savedDescription = EntryDescription.Resolve(Description, SelectedCategory.Name);
 
             // Validate balance for expense transactions if account doesn't allow negative balance
             if (TransactionType == TransactionType.Expense && !SelectedAccount.AllowNegativeBalance)
@@ -338,7 +352,7 @@ namespace MoneyRecord.ViewModels
             {
                 // Update existing transaction
                 Transaction.Date = SelectedDate;
-                Transaction.Description = Description;
+                Transaction.Description = savedDescription;
                 Transaction.Amount = amountValue;
                 Transaction.CategoryId = SelectedCategory.Id;
                 Transaction.Type = TransactionType;
@@ -356,7 +370,7 @@ namespace MoneyRecord.ViewModels
                 var newTransaction = new Transaction
                 {
                     Date = SelectedDate,
-                    Description = Description,
+                    Description = savedDescription,
                     Amount = amountValue,
                     CategoryId = SelectedCategory.Id,
                     Type = TransactionType,
@@ -367,6 +381,7 @@ namespace MoneyRecord.ViewModels
 
                 await _transactionRepository.SaveAsync(newTransaction);
                 _receipt.Commit();
+                _entryDefaults.Remember(TransactionType, accountId, SelectedCategory.Id);
 
                 if (IsRecurring && SelectedFrequencyItem != null)
                 {
@@ -380,7 +395,7 @@ namespace MoneyRecord.ViewModels
                     var recurring = new RecurringTransaction
                     {
                         Amount = amountValue,
-                        Description = Description,
+                        Description = savedDescription,
                         CategoryId = SelectedCategory.Id,
                         AccountId = accountId,
                         TransactionType = TransactionType,

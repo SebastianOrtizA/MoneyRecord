@@ -54,16 +54,17 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
   as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page),
-  AccountService / CategoryService (transactional deletes),
-  CurrencyService, RecurringTransactionService, DataExportService (zip backup/restore, CSV), CategoryIconService,
+  AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
+  categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
+  (zip backup/restore, CSV), CategoryIconService,
   LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (localized message via
   `IDialogService`, exception to `ILogger`; never show `ex.Message`),
   NavigationHistory (back-button stack; `//Route` = root)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
-  account view), Debouncer, CategoryReportBuilder, RecurrenceCalculator (occurrences at 00:00;
-  `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year)
+  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), RecurrenceCalculator
+  (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips)
 

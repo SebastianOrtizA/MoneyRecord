@@ -61,6 +61,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IDataExportService, DataExportService>();
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
+            builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
 
             // Register ViewModels
             builder.Services.AddSingleton<MainViewModel>();

@@ -17,7 +17,16 @@ namespace MoneyRecord.Views
         {
             base.OnAppearing();
             // Fire-and-forget for non-blocking UI
-            _ = _viewModel.InitializeAsync();
+            _ = InitializeAsync();
+        }
+
+        private async Task InitializeAsync()
+        {
+            await _viewModel.InitializeAsync();
+
+            // A new entry starts at the amount with the keypad open; after the page has settled, or Android drops it
+            if (!_viewModel.IsEditMode)
+                Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(300), () => AmountEntry.Focus());
         }
 
         protected override void OnNavigatedFrom(NavigatedFromEventArgs args)

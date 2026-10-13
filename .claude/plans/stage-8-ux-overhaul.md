@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.2 done; 8.3 in review)
+**Status**: In progress (8.1–8.3 done; 8.4 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -71,6 +71,17 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Description optional; defaults to the category name.
 - Remember last used account and category per type (`IPreferencesService`).
 - Save button pinned at the bottom, always visible.
+- Done as: `AddTransactionPage` is a `Grid` (scrolling form + pinned Save bar; back cancels, so the Cancel button is
+  gone). Amount first, large, focused with the numeric keypad on a new entry (not when editing). Category is an icon
+  grid (`FlexLayout`, 4 per row, `CategoryChoice.IsSelected` highlight). Account and Date follow; Description (its
+  placeholder is the category name), Tags, Receipt and Recurring sit under "More details", which opens by itself when
+  editing an entry that has a custom description, tags or a receipt. Core `IEntryDefaultsService` (over the
+  so-far-unused `IPreferencesService`) keeps per type the last account and the 4 most recent categories by ID:
+  recent ones lead the grid and the last one is preselected (deleted ones fall back to the default account / first
+  category). `EntryDescription.Resolve` saves an empty description as the category name. The "*" left the Date,
+  Description, Amount, Category and Account labels (they were also shown on the Recurring page) and the "Required
+  fields" note left both add pages; `RequiredFields` and `PleaseEnterDescription` are gone. Verified: amount → tap
+  category → Save = 2 taps after the amount.
 
 ### 8.5 Accounts screen
 - Cards with icon, name, currency badge, balance in its own currency, last activity.

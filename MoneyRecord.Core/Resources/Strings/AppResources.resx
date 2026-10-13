@@ -71,9 +71,6 @@
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
-  <data name="RequiredFields" xml:space="preserve">
-    <value>* Required fields</value>
-  </data>
   
   <!-- Navigation / Shell -->
   <data name="Home" xml:space="preserve">
@@ -208,25 +205,25 @@
     <value>Edit Expense</value>
   </data>
   <data name="Date" xml:space="preserve">
-    <value>Date *</value>
+    <value>Date</value>
   </data>
   <data name="Description" xml:space="preserve">
-    <value>Description *</value>
+    <value>Description</value>
   </data>
   <data name="EnterDescription" xml:space="preserve">
     <value>Enter description</value>
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>Amount *</value>
+    <value>Amount</value>
   </data>
   <data name="Account" xml:space="preserve">
-    <value>Account *</value>
+    <value>Account</value>
   </data>
   <data name="SelectAccount" xml:space="preserve">
     <value>Select Account</value>
   </data>
   <data name="Category" xml:space="preserve">
-    <value>Category *</value>
+    <value>Category</value>
   </data>
   <data name="SelectCategory" xml:space="preserve">
     <value>Select Category</value>
@@ -415,9 +412,6 @@
   </data>
   
   <!-- Validation Messages -->
-  <data name="PleaseEnterDescription" xml:space="preserve">
-    <value>Please enter a description</value>
-  </data>
   <data name="PleaseEnterValidAmount" xml:space="preserve">
     <value>Please enter a valid amount</value>
   </data>
@@ -1087,5 +1081,8 @@ Amount: {2}</value>
   </data>
   <data name="FilteredOfTotal" xml:space="preserve">
     <value>{0} of {1}</value>
+  </data>
+  <data name="MoreDetails" xml:space="preserve">
+    <value>More details</value>
   </data>
 </root>
