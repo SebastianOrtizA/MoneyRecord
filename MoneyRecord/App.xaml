@@ -32,6 +32,7 @@
             <converters:BoolToOverBudgetLabelConverter x:Key="BoolToOverBudgetLabelConverter" />
             <converters:OverBudgetAmountConverter x:Key="OverBudgetAmountConverter" />
             <converters:BudgetPeriodToDisplayConverter x:Key="BudgetPeriodToDisplayConverter" />
+            <converters:PaletteSlotToColorConverter x:Key="PaletteSlotToColorConverter" />
             <toolkit:IntToBoolConverter x:Key="IntToBoolConverter" />
             <converters:BudgetLevelToColorConverter x:Key="BudgetLevelToColorConverter" />
             <converters:DateTextConverter x:Key="DateTextConverter" />

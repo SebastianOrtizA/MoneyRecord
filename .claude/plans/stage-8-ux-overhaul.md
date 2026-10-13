@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.5 done; 8.6 in review)
+**Status**: In progress (8.1–8.6 done; 8.7a in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -125,6 +125,23 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Period picker shared across tabs; "vs previous period" delta on every headline number.
 - Tap a slice/bar → Transactions tab pre-filtered to that category/month.
 - Budget vs actual per month for budgeted categories.
+- Split in two PRs: **8.7a** = the library, the charts and the tab shell (bullet 1, Spending / Income / Trends of
+  bullet 2); **8.7b** = Cash flow and Net worth tabs, the shared period picker with "vs previous period" deltas,
+  drill-down to Transactions, budget vs actual.
+- 8.7a done as: `LiveChartsCore.SkiaSharpView.Maui` 2.0.5 (MIT; brings SkiaSharp 3.119, MIT) registered with
+  `UseSkiaSharp().UseLiveCharts()`; `Controls/ChartDrawables.cs` and the heatmap (`HeatmapColorConverter`,
+  `CategoryAmount.HeatLevel`, 16 heatmap / analysis strings) are gone. Reports top tabs are Spending · Income · Trends
+  (routes unchanged). Spending / Income: a donut with the total in its middle and the ranked list as its legend and
+  table view (dot = slice colour, amount, share, share bar; a tap still opens the transactions popup). Colours: the
+  dataviz reference categorical palette, light and dark steps chosen separately (`Charts/ChartPalette`), assigned by
+  the category's place among its type's categories by ID (`CategoryAmount.PaletteSlot`), so colour follows the
+  category, not its rank; past 8 categories (and deleted ones) fold into one grey "Other" slice
+  (`CategoryReport.Slices`). Trends: monthly spending and income vs expenses as rounded columns (one legend only on
+  the two-series chart), money on the value axis, a short localized month under every bar (`DateStyle.Month`), totals
+  from Core `MonthlyTotalsBuilder` instead of loops in the view model; the expense-category pie left Trends (the
+  Spending donut shows it). `Charts/ChartFactory` holds the shared look (2px surface gaps, 4px rounded bar ends,
+  recessive grid). The palette validator needs Node, which this machine lacks; the palette is used unchanged from the
+  reference, validated there against near-identical surfaces.
 
 ### 8.8 First-run setup
 - 3 steps: language & base currency → starting accounts with balances (Cash pre-filled) → pick default categories.

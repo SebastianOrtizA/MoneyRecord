@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore;
+using MoneyRecord.Charts;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
@@ -8,10 +10,11 @@ using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
-    /// <summary>The Expense or Income report: category shares as a heatmap and a list. Set <see cref="Type"/> first.</summary>
+    /// <summary>The Spending or Income report: category shares as a donut and a ranked list. Set <see cref="Type"/> first.</summary>
     public partial class CategoryReportViewModel : ObservableObject
     {
         private readonly ITransactionEnrichmentService _enrichmentService;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
 
@@ -46,15 +49,20 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<CategoryAmount> categories = [];
 
+        /// <summary>The donut: one slice per category with its own colour, then "Other".</summary>
+        [ObservableProperty]
+        private ISeries[] slices = [];
+
         public bool IsIncome => Type == CategoryType.Income;
 
         public CategoryReportTexts Texts => CategoryReportTexts.For(Type);
 
         public List<PeriodItem> Periods { get; } = PeriodHelper.GetReportPeriods();
 
-        public CategoryReportViewModel(ITransactionEnrichmentService enrichmentService, IErrorHandler errorHandler, IDialogService dialogService)
+        public CategoryReportViewModel(ITransactionEnrichmentService enrichmentService, ICategoryRepository categoryRepository, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _enrichmentService = enrichmentService;
+            _categoryRepository = categoryRepository;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             selectedPeriod = PeriodHelper.GetDefaultPeriod();
@@ -72,14 +80,20 @@ namespace MoneyRecord.ViewModels
 
                 var (startDate, endDate) = DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
                 // All types: the builder keeps the report's type, and the popup filters by category ID
-                var transactions = await _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
+                var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
+                var categoriesTask = _categoryRepository.GetByTypeAsync(Type);
+                await Task.WhenAll(transactionsTask, categoriesTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                _transactions = transactions;
-                var report = CategoryReportBuilder.Build(_transactions, Type);
+                _transactions = await transactionsTask;
+                var report = CategoryReportBuilder.Build(_transactions, Type, (await categoriesTask).Select(c => c.Id));
                 Total = report.Total;
                 HasData = report.Total > 0;
-                await MainThread.InvokeOnMainThreadAsync(() => Categories = new(report.Categories));
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    Categories = new(report.Categories);
+                    Slices = ChartFactory.Donut(report.Slices, report.Total);
+                });
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -152,26 +166,20 @@ namespace MoneyRecord.ViewModels
         }
     }
 
-    /// <summary>The words that differ between the Expense and Income reports.</summary>
+    /// <summary>The words that differ between the Spending and Income reports.</summary>
     public sealed record CategoryReportTexts(
         string Title,
-        string Analysis,
-        string AnalysisHint,
         string TotalLabel,
         string EmptyIcon,
         string NoData,
         string NoDataHint,
-        string Heatmap,
-        string HeatmapHint,
         string NoDetailsFound,
         string DetailsEmoji)
     {
         public static CategoryReportTexts For(CategoryType type) => type == CategoryType.Income
-            ? new(AppResources.IncomeReport, AppResources.IncomeAnalysis, AppResources.IdentifyIncomeCategories,
-                AppResources.TotalIncome, "\U000F0114", AppResources.NoIncomeDataFound, AppResources.AddIncomeTransactionsToSee,
-                AppResources.IncomeHeatmap, AppResources.AllIncomeCategoriesByPercentage, AppResources.NoIncomeDetailsFound, "💵")
-            : new(AppResources.ExpenseReport, AppResources.ExpenseAnalysis, AppResources.IdentifyExpenseCategories,
-                AppResources.TotalExpenses, "\U000F0127", AppResources.NoExpenseDataFound, AppResources.AddExpenseTransactionsToSee,
-                AppResources.ExpenseHeatmap, AppResources.AllExpenseCategoriesByPercentage, AppResources.NoExpenseDetailsFound, "📊");
+            ? new(AppResources.Income, AppResources.TotalIncome, "\U000F0114", AppResources.NoIncomeDataFound,
+                AppResources.AddIncomeTransactionsToSee, AppResources.NoIncomeDetailsFound, "💵")
+            : new(AppResources.Spending, AppResources.TotalExpenses, "\U000F0127", AppResources.NoExpenseDataFound,
+                AppResources.AddExpenseTransactionsToSee, AppResources.NoExpenseDetailsFound, "📊");
     }
 }

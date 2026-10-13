@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui;
+using LiveChartsCore.SkiaSharpView.Maui;
 using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
@@ -29,7 +31,10 @@ namespace MoneyRecord
                 })
                 // Toolkit converters return a default instead of throwing on unexpected input, like ours did
                 .UseMauiCommunityToolkit(options => options.SetShouldSuppressExceptionsInConverters(true))
-                .ConfigureDecimalEntry();
+                .ConfigureDecimalEntry()
+                // Reports charts (LiveChartsCore on SkiaSharp)
+                .UseSkiaSharp()
+                .UseLiveCharts();
 
             // Register Infrastructure Services
             builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);

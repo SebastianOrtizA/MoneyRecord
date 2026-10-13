@@ -46,7 +46,7 @@ crashes at runtime (XAML is inflated at runtime there).
 `MoneyRecord.Core/`
 - `Models/` — 6 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction. Plus display models
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance, LedgerEntry, TransactionGroup, TransactionFilter/FilterOption,
-  CategoryAmount/CategoryReport (report shares + heat level), BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
+  CategoryAmount/CategoryReport (report shares + chart palette slot, donut slices), BudgetProgress/BudgetLevel, TypeFilterOption, Currency)
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
   `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
@@ -74,10 +74,11 @@ crashes at runtime (XAML is inflated at runtime there).
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab
+- `Charts/` — ChartPalette (light/dark chart colours, categorical slots), ChartFactory (LiveChartsCore donut / columns /
+  axes with one look)
 - `Controls/` — BottomSheet (the in-page sheet: dim, panel, handle, slide-up; `IsOpen` + `CloseCommand`), AddEntryButton (the one add button: opens an Expense / Income / Transfer sheet; on Home and
   Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back closes it first),
-  LedgerItemTemplateSelector, FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
-  ChartDrawables (Trends)
+  LedgerItemTemplateSelector, FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)

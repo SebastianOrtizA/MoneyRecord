@@ -17,6 +17,7 @@ public class DateFormatterTests
         DateFormatter.Format(Date, DateStyle.Long, culture).Should().Be("October 11, 2026");
         DateFormatter.Format(Date, DateStyle.Medium, culture).Should().Be("Oct 11, 2026");
         DateFormatter.Format(Date, DateStyle.MonthDay, culture).Should().Be("Oct 11");
+        DateFormatter.Format(Date, DateStyle.Month, culture).Should().Be("Oct");
     }
 
     [Theory]
@@ -29,6 +30,7 @@ public class DateFormatterTests
         DateFormatter.Format(Date, DateStyle.Long, culture).Should().Be("11 de octubre de 2026");
         DateFormatter.Format(Date, DateStyle.Medium, culture).Should().StartWith("11 de oct").And.EndWith("2026");
         DateFormatter.Format(Date, DateStyle.MonthDay, culture).Should().StartWith("11 de oct");
+        DateFormatter.Format(Date, DateStyle.Month, culture).Should().StartWith("oct");
     }
 
     [Theory]

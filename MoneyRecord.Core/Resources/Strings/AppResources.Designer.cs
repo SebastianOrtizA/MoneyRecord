@@ -223,24 +223,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a All expense categories by percentage.
-        /// </summary>
-        public static string AllExpenseCategoriesByPercentage {
-            get {
-                return ResourceManager.GetString("AllExpenseCategoriesByPercentage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a All income categories by percentage.
-        /// </summary>
-        public static string AllIncomeCategoriesByPercentage {
-            get {
-                return ResourceManager.GetString("AllIncomeCategoriesByPercentage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Allow negative balance.
         /// </summary>
         public static string AllowNegativeBalance {
@@ -408,15 +390,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string CategoryDeletedAndTransactionsMoved {
             get {
                 return ResourceManager.GetString("CategoryDeletedAndTransactionsMoved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Category Details.
-        /// </summary>
-        public static string CategoryDetails {
-            get {
-                return ResourceManager.GetString("CategoryDetails", resourceCulture);
             }
         }
         
@@ -883,38 +856,11 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Expense Analysis.
-        /// </summary>
-        public static string ExpenseAnalysis {
-            get {
-                return ResourceManager.GetString("ExpenseAnalysis", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Expense Categories.
         /// </summary>
         public static string ExpenseCategories {
             get {
                 return ResourceManager.GetString("ExpenseCategories", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Expense Heatmap.
-        /// </summary>
-        public static string ExpenseHeatmap {
-            get {
-                return ResourceManager.GetString("ExpenseHeatmap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Expense Report.
-        /// </summary>
-        public static string ExpenseReport {
-            get {
-                return ResourceManager.GetString("ExpenseReport", resourceCulture);
             }
         }
         
@@ -1072,38 +1018,11 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a High.
-        /// </summary>
-        public static string High {
-            get {
-                return ResourceManager.GetString("High", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Home.
         /// </summary>
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Identify your most used expense categories.
-        /// </summary>
-        public static string IdentifyExpenseCategories {
-            get {
-                return ResourceManager.GetString("IdentifyExpenseCategories", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Identify your most used income categories.
-        /// </summary>
-        public static string IdentifyIncomeCategories {
-            get {
-                return ResourceManager.GetString("IdentifyIncomeCategories", resourceCulture);
             }
         }
         
@@ -1117,38 +1036,11 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Income Analysis.
-        /// </summary>
-        public static string IncomeAnalysis {
-            get {
-                return ResourceManager.GetString("IncomeAnalysis", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Income Categories.
         /// </summary>
         public static string IncomeCategories {
             get {
                 return ResourceManager.GetString("IncomeCategories", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Income Heatmap.
-        /// </summary>
-        public static string IncomeHeatmap {
-            get {
-                return ResourceManager.GetString("IncomeHeatmap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Income Report.
-        /// </summary>
-        public static string IncomeReport {
-            get {
-                return ResourceManager.GetString("IncomeReport", resourceCulture);
             }
         }
         
@@ -1234,29 +1126,11 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Low.
-        /// </summary>
-        public static string Low {
-            get {
-                return ResourceManager.GetString("Low", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Manage Accounts.
         /// </summary>
         public static string ManageAccounts {
             get {
                 return ResourceManager.GetString("ManageAccounts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Medium.
-        /// </summary>
-        public static string Medium {
-            get {
-                return ResourceManager.GetString("Medium", resourceCulture);
             }
         }
         
@@ -1617,15 +1491,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string Summary {
             get {
                 return ResourceManager.GetString("Summary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a • Tap for details.
-        /// </summary>
-        public static string TapForDetails {
-            get {
-                return ResourceManager.GetString("TapForDetails", resourceCulture);
             }
         }
         
@@ -2295,12 +2160,6 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
-        public static string ExpenseCategoryBreakdown {
-            get {
-                return ResourceManager.GetString("ExpenseCategoryBreakdown", resourceCulture);
-            }
-        }
-
         public static string NoTrendsData {
             get {
                 return ResourceManager.GetString("NoTrendsData", resourceCulture);
@@ -2733,6 +2592,24 @@ namespace MoneyRecord.Resources.Strings {
         public static string BudgetSpentOfLimit {
             get {
                 return ResourceManager.GetString("BudgetSpentOfLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        public static string OtherCategories {
+            get {
+                return ResourceManager.GetString("OtherCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spending.
+        /// </summary>
+        public static string Spending {
+            get {
+                return ResourceManager.GetString("Spending", resourceCulture);
             }
         }
     }

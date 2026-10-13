@@ -3,7 +3,7 @@ using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
 {
-    /// <summary>The Expense or Income report; the two flyout routes are the subclasses below.</summary>
+    /// <summary>The Spending or Income report; the two Reports top tabs are the subclasses below.</summary>
     public partial class CategoryReportPage : ContentPage
     {
         private readonly CategoryReportViewModel _viewModel;
