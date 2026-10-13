@@ -471,4 +471,12 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
     </Style>
 
+    <!-- A Reports chart card; ChartPalette.Surface reads the same CardBackground colours for the gaps in the chart -->
+    <Style x:Key="ChartCard" TargetType="Border">
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CardBackground}, Dark={StaticResource CardBackgroundDark}}" />
+    </Style>
 </ResourceDictionary>

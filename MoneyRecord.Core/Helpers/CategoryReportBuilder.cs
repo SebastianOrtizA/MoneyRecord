@@ -3,10 +3,16 @@ using MoneyRecord.Resources.Strings;
 
 namespace MoneyRecord.Helpers
 {
-    /// <summary>Totals enriched transactions per category for the Expense and Income reports.</summary>
+    /// <summary>Totals enriched transactions per category for the Spending and Income reports.</summary>
     public static class CategoryReportBuilder
     {
-        public static CategoryReport Build(IEnumerable<Transaction> transactions, CategoryType type)
+        /// <param name="categoryIds">
+        /// Every category of the report's type. Which categories get their own colour depends on amount: the
+        /// <see cref="CategoryAmount.PaletteSize"/> largest in this report, the rest fold into "Other". Which colour
+        /// depends on the category: its place among these IDs (wrapping past the palette), so it stays the same when
+        /// the period changes; only when a larger category already holds that colour does it take the next free one.
+        /// </param>
+        public static CategoryReport Build(IEnumerable<Transaction> transactions, CategoryType type, IEnumerable<int> categoryIds)
         {
             var transactionType = type == CategoryType.Income ? TransactionType.Income : TransactionType.Expense;
             var matching = transactions.Where(t => t.Type == transactionType).ToList();
@@ -14,40 +20,46 @@ namespace MoneyRecord.Helpers
             if (total == 0)
                 return new CategoryReport(0, []);
 
+            var idIndex = categoryIds.Distinct().Order().Select((id, index) => (id, index)).ToDictionary(x => x.id, x => x.index);
+
             var groups = matching
                 .GroupBy(t => t.CategoryId)
-                .Select(g =>
-                {
-                    var amount = g.Sum(t => Math.Abs(t.Amount));
-                    var first = g.First();
-                    return (first, amount, percentage: (double)(amount / total * 100));
-                })
-                .OrderByDescending(g => g.percentage)
+                .Select(g => (first: g.First(), amount: g.Sum(t => Math.Abs(t.Amount))))
+                .OrderByDescending(g => g.amount)
+                .ThenBy(g => g.first.CategoryId)
                 .ToList();
 
-            var max = groups[0].percentage;
-            var min = groups[^1].percentage;
-
+            var taken = new bool[CategoryAmount.PaletteSize];
             var categories = groups
-                .Select(g => new CategoryAmount(
+                .Select((g, rank) => new CategoryAmount(
                     type,
                     g.first.CategoryId,
                     string.IsNullOrEmpty(g.first.CategoryName) ? AppResources.Unknown : g.first.CategoryName,
                     g.first.CategoryIconCode,
                     g.amount,
-                    g.percentage,
-                    HeatLevel(g.percentage, min, max)))
+                    (double)(g.amount / total * 100),
+                    rank < CategoryAmount.PaletteSize
+                        ? TakeSlot(taken, idIndex.GetValueOrDefault(g.first.CategoryId, g.first.CategoryId))
+                        : CategoryAmount.OtherSlot))
                 .ToList();
 
             return new CategoryReport(total, categories);
         }
 
-        /// <summary>The share's position between the smallest and the largest share; the middle when they are all equal.</summary>
-        public static int HeatLevel(double percentage, double min, double max)
+        /// <summary>The category's own slot (its ID position, wrapped) if free, else the next free one after it.</summary>
+        private static int TakeSlot(bool[] taken, int preferred)
         {
-            var normalized = max > min ? (percentage - min) / (max - min) : 0.5;
-            var level = (int)(normalized * (CategoryAmount.HeatLevels - 1));
-            return Math.Clamp(level, 0, CategoryAmount.HeatLevels - 1);
+            for (var step = 0; step < taken.Length; step++)
+            {
+                var slot = (Math.Abs(preferred) + step) % taken.Length;
+                if (!taken[slot])
+                {
+                    taken[slot] = true;
+                    return slot;
+                }
+            }
+
+            return CategoryAmount.OtherSlot;
         }
     }
 }

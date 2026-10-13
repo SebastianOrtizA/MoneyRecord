@@ -76,12 +76,6 @@
   <data name="Home" xml:space="preserve">
     <value>Inicio</value>
   </data>
-  <data name="ExpenseReport" xml:space="preserve">
-    <value>Reporte de Gastos</value>
-  </data>
-  <data name="IncomeReport" xml:space="preserve">
-    <value>Reporte de Ingresos</value>
-  </data>
   <data name="Transfers" xml:space="preserve">
     <value>Transferencias</value>
   </data>
@@ -335,18 +329,6 @@
   </data>
   
   <!-- Reports -->
-  <data name="ExpenseAnalysis" xml:space="preserve">
-    <value>Análisis de Gastos</value>
-  </data>
-  <data name="IncomeAnalysis" xml:space="preserve">
-    <value>Análisis de Ingresos</value>
-  </data>
-  <data name="IdentifyExpenseCategories" xml:space="preserve">
-    <value>Identifica tus categorías de gastos más utilizadas</value>
-  </data>
-  <data name="IdentifyIncomeCategories" xml:space="preserve">
-    <value>Identifica tus categorías de ingresos más utilizadas</value>
-  </data>
   <data name="TotalExpenses" xml:space="preserve">
     <value>Total de Gastos</value>
   </data>
@@ -379,33 +361,6 @@
   </data>
   <data name="AddIncomeTransactionsToSee" xml:space="preserve">
     <value>Agrega algunas transacciones de ingresos para ver tu análisis de ganancias</value>
-  </data>
-  <data name="ExpenseHeatmap" xml:space="preserve">
-    <value>Mapa de Calor de Gastos</value>
-  </data>
-  <data name="IncomeHeatmap" xml:space="preserve">
-    <value>Mapa de Calor de Ingresos</value>
-  </data>
-  <data name="AllExpenseCategoriesByPercentage" xml:space="preserve">
-    <value>Todas las categorías de gastos por porcentaje</value>
-  </data>
-  <data name="AllIncomeCategoriesByPercentage" xml:space="preserve">
-    <value>Todas las categorías de ingresos por porcentaje</value>
-  </data>
-  <data name="Low" xml:space="preserve">
-    <value>Bajo</value>
-  </data>
-  <data name="Medium" xml:space="preserve">
-    <value>Medio</value>
-  </data>
-  <data name="High" xml:space="preserve">
-    <value>Alto</value>
-  </data>
-  <data name="CategoryDetails" xml:space="preserve">
-    <value>Detalles por Categoría</value>
-  </data>
-  <data name="TapForDetails" xml:space="preserve">
-    <value>• Toca para detalles</value>
   </data>
   
   <!-- Validation Messages -->
@@ -903,9 +858,6 @@ Monto: {2}</value>
   <data name="IncomeVsExpenses" xml:space="preserve">
     <value>Ingresos vs Gastos</value>
   </data>
-  <data name="ExpenseCategoryBreakdown" xml:space="preserve">
-    <value>Desglose de Gastos por Categoría</value>
-  </data>
   <data name="NoTrendsData" xml:space="preserve">
     <value>No hay datos de tendencias disponibles</value>
   </data>
@@ -1076,5 +1028,11 @@ Monto: {2}</value>
   </data>
   <data name="BudgetSpentOfLimit" xml:space="preserve">
     <value>{0} de {1}</value>
+  </data>
+  <data name="OtherCategories" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="Spending" xml:space="preserve">
+    <value>Gastos</value>
   </data>
 </root>

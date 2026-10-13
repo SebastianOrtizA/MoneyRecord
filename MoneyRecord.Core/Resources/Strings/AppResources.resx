@@ -76,12 +76,6 @@
   <data name="Home" xml:space="preserve">
     <value>Home</value>
   </data>
-  <data name="ExpenseReport" xml:space="preserve">
-    <value>Expense Report</value>
-  </data>
-  <data name="IncomeReport" xml:space="preserve">
-    <value>Income Report</value>
-  </data>
   <data name="Transfers" xml:space="preserve">
     <value>Transfers</value>
   </data>
@@ -335,18 +329,6 @@
   </data>
   
   <!-- Reports -->
-  <data name="ExpenseAnalysis" xml:space="preserve">
-    <value>Expense Analysis</value>
-  </data>
-  <data name="IncomeAnalysis" xml:space="preserve">
-    <value>Income Analysis</value>
-  </data>
-  <data name="IdentifyExpenseCategories" xml:space="preserve">
-    <value>Identify your most used expense categories</value>
-  </data>
-  <data name="IdentifyIncomeCategories" xml:space="preserve">
-    <value>Identify your most used income categories</value>
-  </data>
   <data name="TotalExpenses" xml:space="preserve">
     <value>Total Expenses</value>
   </data>
@@ -379,33 +361,6 @@
   </data>
   <data name="AddIncomeTransactionsToSee" xml:space="preserve">
     <value>Add some income transactions to see your earnings analysis</value>
-  </data>
-  <data name="ExpenseHeatmap" xml:space="preserve">
-    <value>Expense Heatmap</value>
-  </data>
-  <data name="IncomeHeatmap" xml:space="preserve">
-    <value>Income Heatmap</value>
-  </data>
-  <data name="AllExpenseCategoriesByPercentage" xml:space="preserve">
-    <value>All expense categories by percentage</value>
-  </data>
-  <data name="AllIncomeCategoriesByPercentage" xml:space="preserve">
-    <value>All income categories by percentage</value>
-  </data>
-  <data name="Low" xml:space="preserve">
-    <value>Low</value>
-  </data>
-  <data name="Medium" xml:space="preserve">
-    <value>Medium</value>
-  </data>
-  <data name="High" xml:space="preserve">
-    <value>High</value>
-  </data>
-  <data name="CategoryDetails" xml:space="preserve">
-    <value>Category Details</value>
-  </data>
-  <data name="TapForDetails" xml:space="preserve">
-    <value>• Tap for details</value>
   </data>
   
   <!-- Validation Messages -->
@@ -905,9 +860,6 @@ Amount: {2}</value>
   <data name="IncomeVsExpenses" xml:space="preserve">
     <value>Income vs Expenses</value>
   </data>
-  <data name="ExpenseCategoryBreakdown" xml:space="preserve">
-    <value>Expense Category Breakdown</value>
-  </data>
   <data name="NoTrendsData" xml:space="preserve">
     <value>No trend data available</value>
   </data>
@@ -1078,5 +1030,11 @@ Amount: {2}</value>
   </data>
   <data name="BudgetSpentOfLimit" xml:space="preserve">
     <value>{0} of {1}</value>
+  </data>
+  <data name="OtherCategories" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="Spending" xml:space="preserve">
+    <value>Spending</value>
   </data>
 </root>

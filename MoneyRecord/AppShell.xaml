@@ -28,15 +28,15 @@
             <ShellContent ContentTemplate="{DataTemplate views:TransactionsPage}" Route="TransactionsPage" />
         </Tab>
 
-        <!-- Three report pages as top tabs until the Reports hub (8.7) -->
+        <!-- Reports: Spending / Income / Trends as top tabs (charts on LiveChartsCore); Cash flow and Net worth come in 8.7b -->
         <Tab Title="{ext:Localize Reports}">
             <Tab.Icon>
                 <FontImageSource FontFamily="MaterialDesignIcons" Glyph="&#xF0128;" />
             </Tab.Icon>
-            <ShellContent Title="{ext:Localize Expenses}"
+            <ShellContent Title="{ext:Localize Spending}"
                           ContentTemplate="{DataTemplate views:ExpenseReportPage}"
                           Route="ExpenseReportPage" />
-            <ShellContent Title="{ext:Localize Incomes}"
+            <ShellContent Title="{ext:Localize Income}"
                           ContentTemplate="{DataTemplate views:IncomeReportPage}"
                           Route="IncomeReportPage" />
             <ShellContent Title="{ext:Localize Trends}"
