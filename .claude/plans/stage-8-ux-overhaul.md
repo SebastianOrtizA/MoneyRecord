@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.7a done; 8.7b in review)
+**Status**: In progress (8.1–8.7 done; 8.8 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -181,6 +181,21 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 ### 8.8 First-run setup
 - 3 steps: language & base currency → starting accounts with balances (Cash pre-filled) → pick default categories.
 - Skippable; reachable later from Settings.
+- Done as `Views/SetupPage` over a Core `SetupViewModel` + `ISetupService`. A new install (no database file at the
+  first start; decided once and saved as `SetupState`, so closing the app halfway shows it again) opens the window
+  on the setup instead of the Shell; finishing swaps in `AppShell`. Updates from older versions skip it. Step 1 sets
+  the language (System / English / Español, saved as the `Language` preference and applied at startup; this is the
+  language half of 8.9's picker) and the base currency, both live. Step 2 lists starting accounts in the base
+  currency (Cash pre-filled, add/remove rows). Step 3 lists `DefaultCategory.All` (now also the seed list) with
+  checkboxes. First run: one transaction replaces the seeded Cash and categories with the choices (only while
+  nothing is recorded), so they're named in the chosen language. Skip = finish with what the steps show. From
+  Settings ("Setup assistant" card, pushed, tab bar hidden) it only adds: no prefilled account, existing default
+  categories are checked and locked. Android back goes to the previous step first (`IOverlayHost`; MainActivity now
+  sends back to the window's page, so it also works before the Shell exists). `DialogService` shows dialogs on the
+  window's page for the same reason.
+  **Fixes found on the way:** `{ext:Localize}` bindings never refreshed on a language change (`LocalizedStrings`
+  now listens to `LanguageChanged`), and `CurrencyMaskBehavior` kept the culture it was created with, so after a
+  switch to Spanish "120,00 €" was read back as 12000.
 
 ### 8.9 Settings
 - Language picker (System / English / Español) using `LocalizationService.SetCulture`.

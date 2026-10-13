@@ -14,11 +14,11 @@ namespace MoneyRecord
     {
         public static MauiApp CreateMauiApp()
         {
-            // Initialize localization based on system language
-            _ = LocalizationService.Instance;
-
-            // Before anything formats money or opens the database (migration 3 stamps old accounts with it)
-            CurrencyService.LoadBaseCurrency(new PreferencesService());
+            // The saved language (or the device's), and the base currency, before anything formats money or opens the
+            // database (migration 3 stamps old accounts with the currency)
+            var preferences = new PreferencesService();
+            LocalizationService.Instance.LoadLanguage(preferences);
+            CurrencyService.LoadBaseCurrency(preferences);
 
             var builder = MauiApp.CreateBuilder();
             builder
@@ -67,6 +67,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
+            builder.Services.AddSingleton<ISetupService, SetupService>();
             // A report asks the Transactions tab to open filtered
             builder.Services.AddSingleton<TransactionsDrillDown>();
 
@@ -86,6 +87,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<BudgetViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<SetupViewModel>();
             builder.Services.AddTransient<TrendsReportViewModel>();
             builder.Services.AddTransient<CashFlowReportViewModel>();
             builder.Services.AddTransient<NetWorthReportViewModel>();
@@ -104,6 +106,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<BudgetPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<SetupPage>();
             builder.Services.AddTransient<TrendsReportPage>();
             builder.Services.AddTransient<CashFlowReportPage>();
             builder.Services.AddTransient<NetWorthReportPage>();

@@ -1052,4 +1052,64 @@ Amount: {2}</value>
   <data name="TotalSpending" xml:space="preserve">
     <value>Spending in these months</value>
   </data>
+  <data name="SetupAssistant" xml:space="preserve">
+    <value>Setup assistant</value>
+  </data>
+  <data name="SetupAssistantDescription" xml:space="preserve">
+    <value>Language, base currency, starting accounts and categories</value>
+  </data>
+  <data name="SetupWelcome" xml:space="preserve">
+    <value>Welcome to MoneyRecord</value>
+  </data>
+  <data name="SetupStepOf" xml:space="preserve">
+    <value>Step {0} of {1}</value>
+  </data>
+  <data name="SetupLanguageTitle" xml:space="preserve">
+    <value>Language and currency</value>
+  </data>
+  <data name="SetupLanguageDescription" xml:space="preserve">
+    <value>Pick the app language and the currency your totals are shown in.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="SetupAccountsTitle" xml:space="preserve">
+    <value>Starting accounts</value>
+  </data>
+  <data name="SetupAccountsDescription" xml:space="preserve">
+    <value>Where do you keep your money? Enter what each account holds today, in {0}.</value>
+  </data>
+  <data name="SetupAccountsAddDescription" xml:space="preserve">
+    <value>New accounts are added to the ones you already have, in {0}.</value>
+  </data>
+  <data name="SetupCategoriesTitle" xml:space="preserve">
+    <value>Pick your categories</value>
+  </data>
+  <data name="SetupCategoriesDescription" xml:space="preserve">
+    <value>Uncheck the ones you won't use. You can add your own later.</value>
+  </data>
+  <data name="SetupCategoriesAddDescription" xml:space="preserve">
+    <value>The checked categories you don't have yet are added.</value>
+  </data>
+  <data name="SetupNeedsAccount" xml:space="preserve">
+    <value>Add at least one account with a name.</value>
+  </data>
+  <data name="SetupFailed" xml:space="preserve">
+    <value>Couldn't save the setup. Please try again.</value>
+  </data>
+  <data name="SetupGetStarted" xml:space="preserve">
+    <value>Get started</value>
+  </data>
+  <data name="RemoveAccount" xml:space="preserve">
+    <value>Remove account</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
 </root>

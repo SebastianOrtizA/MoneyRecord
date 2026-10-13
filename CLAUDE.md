@@ -48,7 +48,7 @@ crashes at runtime (XAML is inflated at runtime there).
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
   LedgerEntry, TransactionGroup, TransactionFilter/FilterOption, CategoryAmount/CategoryReport (report shares + chart
   palette slot, donut slices), PeriodDelta ("vs previous period"), BudgetProgress/BudgetLevel, TypeFilterOption,
-  Currency)
+  Currency, DefaultCategory (the seed categories by resource key; also offered by the setup))
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
   `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
@@ -58,8 +58,10 @@ crashes at runtime (XAML is inflated at runtime there).
   as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
   categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
-  (zip backup/restore, CSV), CategoryIconService,
-  LocalizationService, AppPaths (app data folder → database, receipts, backups), ErrorHandler (localized message via
+  (zip backup/restore, CSV), CategoryIconService, SetupService (first-run setup: pending only on a new install;
+  applies the chosen accounts/categories, replacing the seed data on the first run),
+  LocalizationService (saved `Language` preference, empty = device), AppPaths (app data folder → database, receipts,
+  backups), ErrorHandler (localized message via
   `IDialogService`, exception to `ILogger`; never show `ex.Message`),
   NavigationHistory (back-button stack; `//Route` = root), TransactionsDrillDown (a report asks Transactions to open
   filtered; taken once)
@@ -71,14 +73,16 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
-  Spending / Income show, plus the shared month count of the time-series reports)
+  Spending / Income show, plus the shared month count of the time-series reports), SetupViewModel (setup assistant:
+  language + base currency → starting accounts → default categories)
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 14 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 13 XAML pages with code-behind. Home keeps the summary cards; the full list is on `TransactionsPage`
+- `Views/` — 14 XAML pages with code-behind. Home keeps the summary cards; the full list is on `TransactionsPage`
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
-  the type). `MorePage` lists the screens without a tab
+  the type). `MorePage` lists the screens without a tab. `SetupPage` is the window's page on a new install
+  (swapped for `AppShell` when done) and a pushed route from Settings
 - `Charts/` — ChartPalette (light/dark chart colours, categorical slots), ChartFactory (LiveChartsCore donut / columns /
   lines / axes with one look; per-series tap handlers), ChartTapBehavior (drill-down on a real tap, never on a scroll)
 - `Controls/` — BottomSheet (the in-page sheet: dim, panel, handle, slide-up; `IsOpen` + `CloseCommand`), PeriodPicker /
@@ -89,7 +93,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
-- `Services/` — NavigationService, DialogService (Shell alerts/prompts/action sheets + toast), PreferencesService
+- `Services/` — NavigationService, DialogService (alerts/prompts/action sheets on the window's page + toast), PreferencesService
   (MAUI Preferences). ViewModels use `IDialogService` / `INavigationService`, never `Shell.Current` or `Toast`
 - `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
 

@@ -1050,4 +1050,64 @@ Monto: {2}</value>
   <data name="TotalSpending" xml:space="preserve">
     <value>Gastos en estos meses</value>
   </data>
+  <data name="SetupAssistant" xml:space="preserve">
+    <value>Asistente de configuración</value>
+  </data>
+  <data name="SetupAssistantDescription" xml:space="preserve">
+    <value>Idioma, moneda base, cuentas iniciales y categorías</value>
+  </data>
+  <data name="SetupWelcome" xml:space="preserve">
+    <value>Te damos la bienvenida a MoneyRecord</value>
+  </data>
+  <data name="SetupStepOf" xml:space="preserve">
+    <value>Paso {0} de {1}</value>
+  </data>
+  <data name="SetupLanguageTitle" xml:space="preserve">
+    <value>Idioma y moneda</value>
+  </data>
+  <data name="SetupLanguageDescription" xml:space="preserve">
+    <value>Elige el idioma de la app y la moneda en la que se muestran tus totales.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Predeterminado del sistema</value>
+  </data>
+  <data name="SetupAccountsTitle" xml:space="preserve">
+    <value>Cuentas iniciales</value>
+  </data>
+  <data name="SetupAccountsDescription" xml:space="preserve">
+    <value>¿Dónde guardas tu dinero? Ingresa cuánto tiene hoy cada cuenta, en {0}.</value>
+  </data>
+  <data name="SetupAccountsAddDescription" xml:space="preserve">
+    <value>Las cuentas nuevas se agregan a las que ya tienes, en {0}.</value>
+  </data>
+  <data name="SetupCategoriesTitle" xml:space="preserve">
+    <value>Elige tus categorías</value>
+  </data>
+  <data name="SetupCategoriesDescription" xml:space="preserve">
+    <value>Desmarca las que no vas a usar. Puedes crear las tuyas después.</value>
+  </data>
+  <data name="SetupCategoriesAddDescription" xml:space="preserve">
+    <value>Se agregan las categorías marcadas que aún no tienes.</value>
+  </data>
+  <data name="SetupNeedsAccount" xml:space="preserve">
+    <value>Agrega al menos una cuenta con nombre.</value>
+  </data>
+  <data name="SetupFailed" xml:space="preserve">
+    <value>No se pudo guardar la configuración. Inténtalo de nuevo.</value>
+  </data>
+  <data name="SetupGetStarted" xml:space="preserve">
+    <value>Comenzar</value>
+  </data>
+  <data name="RemoveAccount" xml:space="preserve">
+    <value>Quitar cuenta</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Siguiente</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Omitir</value>
+  </data>
 </root>

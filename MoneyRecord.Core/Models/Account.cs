@@ -33,6 +33,9 @@ namespace MoneyRecord.Models
         /// </summary>
         public string IconCode { get; set; } = "F0070"; // Default: bank icon
 
+        /// <summary>The icon of the Cash account a new database starts with.</summary>
+        public const string CashIconCode = "F0115";
+
         /// <summary>
         /// The date when the account was created or when the initial balance was assigned.
         /// Used as fallback for last activity date when no transactions or transfers exist.

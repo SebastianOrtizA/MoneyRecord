@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.SetupPage"
+             x:DataType="viewmodels:SetupViewModel"
+             Shell.TabBarIsVisible="False"
+             Title="{ext:Localize SetupAssistant}">
+
+    <ContentPage.Resources>
+        <!-- A default category: tap the row or the box to pick it; categories the user already has stay checked -->
+        <DataTemplate x:Key="CategoryOptionTemplate" x:DataType="viewmodels:SetupCategoryOption">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" Padding="4,2" MinimumHeightRequest="48">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:SetupViewModel}}, Path=ToggleCategoryCommand, x:DataType=viewmodels:SetupViewModel}"
+                                          CommandParameter="{Binding .}" />
+                </Grid.GestureRecognizers>
+                <Label Text="{Binding DisplayIcon}"
+                       FontFamily="MaterialDesignIcons"
+                       FontSize="22"
+                       VerticalOptions="Center"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                <Label Grid.Column="1" Text="{Binding Name}" FontSize="16" VerticalOptions="Center" />
+                <CheckBox Grid.Column="2"
+                          IsChecked="{Binding IsSelected}"
+                          IsEnabled="{Binding CanToggle}"
+                          VerticalOptions="Center"
+                          Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            </Grid>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Progress; Skip only on the first run (from Settings, back leaves) -->
+        <Grid Padding="20,16,12,0" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="8">
+            <Label Text="{Binding StepText}"
+                   FontSize="14"
+                   VerticalOptions="Center"
+                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+            <Button Grid.Column="1"
+                    Text="{ext:Localize Skip}"
+                    IsVisible="{Binding IsFirstRun}"
+                    Command="{Binding SkipCommand}"
+                    BackgroundColor="Transparent"
+                    BorderWidth="0"
+                    Padding="12,0"
+                    HeightRequest="40"
+                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            <ProgressBar Grid.Row="1" Grid.ColumnSpan="2"
+                         Margin="0,0,8,0"
+                         Progress="{Binding Progress}"
+                         ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </Grid>
+
+        <ScrollView Grid.Row="1" x:Name="StepScroll">
+            <VerticalStackLayout Padding="20" Spacing="12">
+
+                <!-- 1. Language and base currency -->
+                <VerticalStackLayout Spacing="12" IsVisible="{Binding IsLanguageStep}">
+                    <Label Text="{ext:Localize SetupWelcome}"
+                           IsVisible="{Binding IsFirstRun}"
+                           FontSize="16"
+                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                    <Label Text="{ext:Localize SetupLanguageTitle}" FontSize="24" FontAttributes="Bold" />
+                    <Label Text="{ext:Localize SetupLanguageDescription}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+
+                    <Label Text="{ext:Localize Language}" FontSize="14" Margin="0,8,0,0" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    <Picker ItemsSource="{Binding Languages}"
+                            ItemDisplayBinding="{Binding Name, x:DataType=viewmodels:LanguageOption}"
+                            SelectedItem="{Binding SelectedLanguage}"
+                            Title="{ext:Localize Language}"
+                            FontSize="16"
+                            MinimumHeightRequest="44" />
+
+                    <Label Text="{ext:Localize BaseCurrency}" FontSize="14" Margin="0,8,0,0" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    <Picker ItemsSource="{Binding Currencies}"
+                            SelectedItem="{Binding BaseCurrency}"
+                            Title="{ext:Localize SelectCurrency}"
+                            FontSize="16"
+                            MinimumHeightRequest="44" />
+                    <Label Text="{ext:Localize BaseCurrencyDescription}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                </VerticalStackLayout>
+
+                <!-- 2. Starting accounts (in the base currency) -->
+                <VerticalStackLayout Spacing="12" IsVisible="{Binding IsAccountsStep}">
+                    <Label Text="{ext:Localize SetupAccountsTitle}" FontSize="24" FontAttributes="Bold" />
+                    <Label Text="{Binding AccountsDescription}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+
+                    <VerticalStackLayout Spacing="12" BindableLayout.ItemsSource="{Binding Accounts}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:SetupAccountRow">
+                                <Border Padding="12,8"
+                                        StrokeShape="RoundRectangle 12"
+                                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                                        <Entry Text="{Binding Name}"
+                                               Placeholder="{ext:Localize AccountNamePlaceholder}"
+                                               FontSize="16" />
+                                        <controls:DecimalEntry Grid.Row="1"
+                                                               Text="{Binding Balance}"
+                                                               AllowNegative="True"
+                                                               Placeholder="{ext:Localize InitialBalance}"
+                                                               FontSize="16">
+                                            <controls:DecimalEntry.Behaviors>
+                                                <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" AllowNegativeValues="True" />
+                                            </controls:DecimalEntry.Behaviors>
+                                        </controls:DecimalEntry>
+                                        <Button Grid.Column="1" Grid.RowSpan="2"
+                                                Text="&#xF0156;"
+                                                FontFamily="MaterialDesignIcons"
+                                                FontSize="22"
+                                                WidthRequest="44"
+                                                HeightRequest="44"
+                                                Padding="0"
+                                                VerticalOptions="Center"
+                                                BackgroundColor="Transparent"
+                                                TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"
+                                                SemanticProperties.Description="{ext:Localize RemoveAccount}"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:SetupViewModel}}, Path=RemoveAccountCommand, x:DataType=viewmodels:SetupViewModel}"
+                                                CommandParameter="{Binding .}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Button Text="{ext:Localize AddAccountButton}"
+                            Command="{Binding AddAccountCommand}"
+                            HorizontalOptions="Start"
+                            HeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                </VerticalStackLayout>
+
+                <!-- 3. Default categories -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding IsCategoriesStep}">
+                    <Label Text="{ext:Localize SetupCategoriesTitle}" FontSize="24" FontAttributes="Bold" />
+                    <Label Text="{Binding CategoriesDescription}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+
+                    <Label Text="{ext:Localize Expenses}" FontSize="16" FontAttributes="Bold" Margin="0,8,0,0" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding ExpenseCategories}"
+                                         BindableLayout.ItemTemplate="{StaticResource CategoryOptionTemplate}" />
+
+                    <Label Text="{ext:Localize Incomes}" FontSize="16" FontAttributes="Bold" Margin="0,8,0,0" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding IncomeCategories}"
+                                         BindableLayout.ItemTemplate="{StaticResource CategoryOptionTemplate}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Always visible -->
+        <Border Grid.Row="2"
+                Padding="20,12"
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                Shadow="{Shadow Brush=Black, Offset='0,-2', Radius=6, Opacity=0.15}">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button Text="{ext:Localize Back}"
+                        IsVisible="{Binding CanGoBack}"
+                        Command="{Binding BackCommand}"
+                        Margin="0,0,12,0"
+                        HeightRequest="48"
+                        Padding="20,0"
+                        CornerRadius="24"
+                        BorderWidth="1"
+                        BackgroundColor="Transparent"
+                        BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                <Button Grid.Column="1"
+                        Text="{Binding NextText}"
+                        Command="{Binding NextCommand}"
+                        IsEnabled="{Binding IsSaving, Converter={StaticResource InvertedBoolConverter}}"
+                        HeightRequest="48"
+                        CornerRadius="24"
+                        FontAttributes="Bold"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+            </Grid>
+        </Border>
+    </Grid>
+
+</ContentPage>

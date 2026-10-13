@@ -91,28 +91,9 @@ namespace MoneyRecord.Services.Repositories
 
         private static async Task AddDefaultCategoriesAsync(SQLiteAsyncConnection db)
         {
-            var defaultIncomeCategories = new[]
+            foreach (var category in DefaultCategory.All)
             {
-                new Category { Name = AppResources.DefaultCategorySalary, Type = CategoryType.Income, IconCode = "F0116" },
-                new Category { Name = AppResources.DefaultCategoryFreelance, Type = CategoryType.Income, IconCode = "F00D6" },
-                new Category { Name = AppResources.DefaultCategoryInvestment, Type = CategoryType.Income, IconCode = "F081F" },
-                new Category { Name = AppResources.DefaultCategoryOtherIncome, Type = CategoryType.Income, IconCode = "F0CF4" }
-            };
-
-            var defaultExpenseCategories = new[]
-            {
-                new Category { Name = AppResources.DefaultCategoryFood, Type = CategoryType.Expense, IconCode = "F025A" },
-                new Category { Name = AppResources.DefaultCategoryTransportation, Type = CategoryType.Expense, IconCode = "F0BD8" },
-                new Category { Name = AppResources.DefaultCategoryEntertainment, Type = CategoryType.Expense, IconCode = "F0356" },
-                new Category { Name = AppResources.DefaultCategoryUtilities, Type = CategoryType.Expense, IconCode = "F0D15" },
-                new Category { Name = AppResources.DefaultCategoryShopping, Type = CategoryType.Expense, IconCode = "F0110" },
-                new Category { Name = AppResources.DefaultCategoryHome, Type = CategoryType.Expense, IconCode = "F0D15" },
-                new Category { Name = AppResources.DefaultCategoryOtherExpense, Type = CategoryType.Expense, IconCode = "F0076" }
-            };
-
-            foreach (var category in defaultIncomeCategories.Concat(defaultExpenseCategories))
-            {
-                await db.InsertAsync(category);
+                await db.InsertAsync(category.ToCategory());
             }
         }
 
@@ -123,7 +104,7 @@ namespace MoneyRecord.Services.Repositories
                 Name = AppResources.DefaultAccountCash,
                 InitialBalance = 0,
                 IsDefault = true,
-                IconCode = "F0115",
+                IconCode = Account.CashIconCode,
                 // Cash starts at 0, so a new user's first expense must not be blocked
                 AllowNegativeBalance = true,
                 CurrencyCode = CurrencyService.GetDeviceCurrencyCode()

@@ -27,8 +27,10 @@ namespace MoneyRecord
 
             public override void HandleOnBackPressed()
             {
-                // AppShell goes to the previous page or Home (INavigationService history)
-                if (Shell.Current?.SendBackButtonPressed() == true)
+                // AppShell goes to the previous page or Home (INavigationService history); the first-run setup, shown
+                // before the Shell exists, goes to its previous step
+                var page = Microsoft.Maui.Controls.Application.Current?.Windows.FirstOrDefault()?.Page;
+                if (page?.SendBackButtonPressed() == true)
                     return;
 
                 // On Home with no history, let the system close the app. Re-enable afterwards: on Android 12+
