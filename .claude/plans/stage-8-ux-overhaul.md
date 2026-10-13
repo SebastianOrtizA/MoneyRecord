@@ -76,8 +76,7 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
   grid (`FlexLayout`, 4 per row, `CategoryChoice.IsSelected` highlight). Account and Date follow; Description (its
   placeholder is the category name; when editing, one equal to the category name shows empty via
   `EntryDescription.ForEditing`, so it follows a category change), Tags, Receipt and Recurring sit under "More
-  details", which opens by itself when
-  editing an entry that has a custom description, tags or a receipt. Core `IEntryDefaultsService` (over the
+  details", which opens by itself when editing an entry that has a custom description, tags or a receipt. Core `IEntryDefaultsService` (over the
   so-far-unused `IPreferencesService`) keeps per type the last account and the 4 most recent categories by ID:
   recent ones lead the grid and the last one is preselected (deleted ones fall back to the default account / first
   category). `EntryDescription.Resolve` saves an empty description as the category name. The "*" left the Date,
