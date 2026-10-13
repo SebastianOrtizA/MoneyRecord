@@ -167,6 +167,10 @@ MoneyRecord is licensed under the **GNU Affero General Public License v3.0** (se
 
 Third-party components:
 - .NET MAUI, CommunityToolkit.Mvvm, CommunityToolkit.Maui: MIT
-- sqlite-net-pcl: MIT; SQLitePCLRaw: Apache-2.0
-- Material Design Icons: Apache-2.0 (icons) / SIL OFL 1.1 (font)
+- sqlite-net-pcl: MIT; SQLitePCLRaw: Apache-2.0; SQLite: public domain
+- LiveCharts2: MIT; SkiaSharp / HarfBuzzSharp: MIT (with the Skia, HarfBuzz, FreeType, ICU, … notices they bundle)
+- Material Design Icons: Apache-2.0 (font and icons, Pictogrammers Free License); Open Sans: Apache-2.0
 - Test-only: xUnit (Apache-2.0), NSubstitute (BSD-3-Clause), AwesomeAssertions (Apache-2.0)
+
+The app lists the shipped ones with their full licence texts under Settings → About
+(`MoneyRecord/Resources/Raw/Licenses/`).

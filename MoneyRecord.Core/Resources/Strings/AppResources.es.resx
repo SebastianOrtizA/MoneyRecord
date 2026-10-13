@@ -1071,7 +1071,7 @@ Monto: {2}</value>
   <data name="Language" xml:space="preserve">
     <value>Idioma</value>
   </data>
-  <data name="LanguageSystem" xml:space="preserve">
+  <data name="SystemDefault" xml:space="preserve">
     <value>Predeterminado del sistema</value>
   </data>
   <data name="SetupAccountsTitle" xml:space="preserve">
@@ -1109,5 +1109,50 @@ Monto: {2}</value>
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Omitir</value>
+  </data>
+  <data name="LanguageAndAppearance" xml:space="preserve">
+    <value>Idioma y apariencia</value>
+  </data>
+  <data name="LanguageAndAppearanceDescription" xml:space="preserve">
+    <value>El idioma de la app y su aspecto claro u oscuro</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Oscuro</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Acerca de</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Versión, licencia y componentes de código abierto</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versión {0}</value>
+  </data>
+  <data name="AppLicenseNotice" xml:space="preserve">
+    <value>MoneyRecord es software libre: puedes redistribuirlo y modificarlo bajo la Licencia Pública General Affero de GNU v3.0.</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Código fuente</value>
+  </data>
+  <data name="OpenSourceComponents" xml:space="preserve">
+    <value>Componentes de código abierto</value>
+  </data>
+  <data name="OpenSourceComponentsDescription" xml:space="preserve">
+    <value>MoneyRecord usa estos proyectos. Toca uno para leer su licencia.</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>Licencia</value>
+  </data>
+  <data name="FailedToOpenLicense" xml:space="preserve">
+    <value>No se pudo abrir el texto de la licencia.</value>
+  </data>
+  <data name="FailedToOpenLink" xml:space="preserve">
+    <value>No se pudo abrir el enlace.</value>
   </data>
 </root>

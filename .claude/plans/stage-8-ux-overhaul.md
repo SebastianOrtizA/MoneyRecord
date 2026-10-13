@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.7 done; 8.8 in review)
+**Status**: In progress (8.1–8.8 done; 8.9 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -201,6 +201,20 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Language picker (System / English / Español) using `LocalizationService.SetCulture`.
 - Base currency, theme (System/Light/Dark), backup section, about/licences (list third-party licences, required for
   AGPL distribution with MIT/Apache deps).
+- Done as a "Language and appearance" card at the top of Settings: language (System / English / Español, from
+  `LanguageOption.All()`, shared with the setup; the saved `Language` preference came with 8.8) and theme (System /
+  Light / Dark, `IThemeService` → `Application.UserAppTheme`, saved as `Theme`, applied in the App constructor before
+  the first page). Both apply live. Base currency, setup assistant and backup cards stay. An "About" card opens
+  `AboutPage`: version, the AGPL notice, a source-code link, and `ThirdPartyComponent.All` (name, licence, copyright).
+  A tap pushes `LicensePage` with the full text from `Resources/Raw/Licenses/` (the official files: Apache-2.0, each
+  MIT LICENSE, the Pictogrammers licence, SkiaSharp's LICENSE + its 140 KB third-party notices for Skia, HarfBuzz,
+  FreeType, ICU…). `ThirdPartyComponentTests` fails when a package reference isn't listed or a licence file is
+  missing or unused.
+  **Found on the way:** after a live language change, Home's date and every period picker kept the old language
+  (both built once in singletons). `MainViewModel` now re-formats the date and calls `PeriodViewModel.RefreshNames()`
+  (new items, same period, no reload) on `LanguageChanged`. The README said the icon font is OFL; the current
+  Pictogrammers licence says Apache-2.0 for fonts and icons, and the README now lists LiveCharts2, SkiaSharp and
+  Open Sans too.
 
 ## Tests
 - ViewModel tests for entry defaults (remembered account/category, description fallback).

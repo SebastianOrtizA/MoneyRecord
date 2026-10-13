@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 
@@ -14,6 +15,9 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly ICurrencyService _currencyService;
         private readonly INavigationService _navigationService;
+        private readonly IThemeService _themeService;
+        private readonly IPreferencesService _preferences;
+        private readonly LocalizationService _localization;
 
         [ObservableProperty]
         private bool isExporting;
@@ -28,22 +32,62 @@ namespace MoneyRecord.ViewModels
         private Currency? baseCurrency;
 
         public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService,
-            ICurrencyService currencyService, INavigationService navigationService)
+            ICurrencyService currencyService, INavigationService navigationService, IThemeService themeService,
+            IPreferencesService preferences, LocalizationService localization)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _currencyService = currencyService;
             _navigationService = navigationService;
+            _themeService = themeService;
+            _preferences = preferences;
+            _localization = localization;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
         }
 
-        /// <summary>Shows the base currency again: the setup assistant may have changed it.</summary>
+        [ObservableProperty]
+        private IReadOnlyList<LanguageOption> languages = LanguageOption.All();
+
+        [ObservableProperty]
+        private LanguageOption? selectedLanguage;
+
+        [ObservableProperty]
+        private IReadOnlyList<ThemeOption> themes = ThemeOption.All();
+
+        [ObservableProperty]
+        private ThemeOption? selectedTheme;
+
+        /// <summary>Shows the saved settings again: the setup assistant may have changed the language or currency.</summary>
         public void Refresh()
         {
             BaseCurrency = _currencyService.GetCurrency(_currencyService.GetBaseCurrencyCode());
+            SelectedLanguage = Languages.First(l => l.Code == _localization.LanguageSetting);
+            SelectedTheme = Themes.First(t => t.Choice == _themeService.Current);
         }
+
+        partial void OnSelectedLanguageChanged(LanguageOption? value)
+        {
+            if (value == null || value.Code == _localization.LanguageSetting)
+                return;
+
+            _localization.SetLanguage(value.Code, _preferences);
+
+            // The pickers' "System default" / theme names are translated too
+            Languages = LanguageOption.All();
+            Themes = ThemeOption.All();
+            Refresh();
+        }
+
+        partial void OnSelectedThemeChanged(ThemeOption? value)
+        {
+            if (value != null && value.Choice != _themeService.Current)
+                _themeService.Set(value.Choice);
+        }
+
+        [RelayCommand]
+        private Task OpenAboutAsync() => _navigationService.NavigateToAsync(nameof(AboutPage));
 
         partial void OnBaseCurrencyChanged(Currency? value)
         {

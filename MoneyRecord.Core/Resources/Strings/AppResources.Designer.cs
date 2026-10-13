@@ -2733,9 +2733,9 @@ namespace MoneyRecord.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to System default.
         /// </summary>
-        public static string LanguageSystem {
+        public static string SystemDefault {
             get {
-                return ResourceManager.GetString("LanguageSystem", resourceCulture);
+                return ResourceManager.GetString("SystemDefault", resourceCulture);
             }
         }
         
@@ -2844,6 +2844,141 @@ namespace MoneyRecord.Resources.Strings {
         public static string Skip {
             get {
                 return ResourceManager.GetString("Skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language and appearance.
+        /// </summary>
+        public static string LanguageAndAppearance {
+            get {
+                return ResourceManager.GetString("LanguageAndAppearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The app language and its light or dark look.
+        /// </summary>
+        public static string LanguageAndAppearanceDescription {
+            get {
+                return ResourceManager.GetString("LanguageAndAppearanceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Theme.
+        /// </summary>
+        public static string Theme {
+            get {
+                return ResourceManager.GetString("Theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light.
+        /// </summary>
+        public static string ThemeLight {
+            get {
+                return ResourceManager.GetString("ThemeLight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dark.
+        /// </summary>
+        public static string ThemeDark {
+            get {
+                return ResourceManager.GetString("ThemeDark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version, licence and open-source components.
+        /// </summary>
+        public static string AboutDescription {
+            get {
+                return ResourceManager.GetString("AboutDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0}.
+        /// </summary>
+        public static string AppVersion {
+            get {
+                return ResourceManager.GetString("AppVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyRecord is free software: you can redistribute and modify it under the GNU Affero General Public License v3.0..
+        /// </summary>
+        public static string AppLicenseNotice {
+            get {
+                return ResourceManager.GetString("AppLicenseNotice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source code.
+        /// </summary>
+        public static string SourceCode {
+            get {
+                return ResourceManager.GetString("SourceCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open-source components.
+        /// </summary>
+        public static string OpenSourceComponents {
+            get {
+                return ResourceManager.GetString("OpenSourceComponents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyRecord is built with these projects. Tap one to read its licence..
+        /// </summary>
+        public static string OpenSourceComponentsDescription {
+            get {
+                return ResourceManager.GetString("OpenSourceComponentsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Licence.
+        /// </summary>
+        public static string LicenseText {
+            get {
+                return ResourceManager.GetString("LicenseText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't open the licence text..
+        /// </summary>
+        public static string FailedToOpenLicense {
+            get {
+                return ResourceManager.GetString("FailedToOpenLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't open the link..
+        /// </summary>
+        public static string FailedToOpenLink {
+            get {
+                return ResourceManager.GetString("FailedToOpenLink", resourceCulture);
             }
         }
     }

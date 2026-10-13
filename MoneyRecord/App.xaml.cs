@@ -12,9 +12,11 @@ namespace MoneyRecord
         private readonly ILogger<App> _logger;
 
         public App(IRecurringTransactionService recurringTransactionService, ISetupService setupService,
-            Func<SetupPage> createSetupPage, ILogger<App> logger)
+            Func<SetupPage> createSetupPage, IThemeService themeService, ILogger<App> logger)
         {
             InitializeComponent();
+            // Before the first page is created, so it never flashes in the other theme
+            themeService.ApplySaved();
             _recurringTransactionService = recurringTransactionService;
             _setupService = setupService;
             _createSetupPage = createSetupPage;

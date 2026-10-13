@@ -1073,7 +1073,7 @@ Amount: {2}</value>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>
-  <data name="LanguageSystem" xml:space="preserve">
+  <data name="SystemDefault" xml:space="preserve">
     <value>System default</value>
   </data>
   <data name="SetupAccountsTitle" xml:space="preserve">
@@ -1111,5 +1111,50 @@ Amount: {2}</value>
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Skip</value>
+  </data>
+  <data name="LanguageAndAppearance" xml:space="preserve">
+    <value>Language and appearance</value>
+  </data>
+  <data name="LanguageAndAppearanceDescription" xml:space="preserve">
+    <value>The app language and its light or dark look</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Version, licence and open-source components</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Version {0}</value>
+  </data>
+  <data name="AppLicenseNotice" xml:space="preserve">
+    <value>MoneyRecord is free software: you can redistribute and modify it under the GNU Affero General Public License v3.0.</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Source code</value>
+  </data>
+  <data name="OpenSourceComponents" xml:space="preserve">
+    <value>Open-source components</value>
+  </data>
+  <data name="OpenSourceComponentsDescription" xml:space="preserve">
+    <value>MoneyRecord is built with these projects. Tap one to read its licence.</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>Licence</value>
+  </data>
+  <data name="FailedToOpenLicense" xml:space="preserve">
+    <value>Couldn't open the licence text.</value>
+  </data>
+  <data name="FailedToOpenLink" xml:space="preserve">
+    <value>Couldn't open the link.</value>
   </data>
 </root>

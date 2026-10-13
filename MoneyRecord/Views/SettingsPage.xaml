@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.SettingsPage"
              x:DataType="viewmodels:SettingsViewModel"
@@ -10,6 +11,47 @@
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Language and theme -->
+                <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                       BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                       CornerRadius="12"
+                       Padding="16"
+                       HasShadow="True">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="&#xF03D8;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="28"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{ext:Localize LanguageAndAppearance}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Label Text="{ext:Localize LanguageAndAppearanceDescription}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                        <Label Text="{ext:Localize Language}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        <Picker ItemsSource="{Binding Languages}"
+                                ItemDisplayBinding="{Binding Name, x:DataType=models:LanguageOption}"
+                                SelectedItem="{Binding SelectedLanguage}"
+                                Title="{ext:Localize Language}"
+                                FontSize="16"
+                                MinimumHeightRequest="44"/>
+                        <Label Text="{ext:Localize Theme}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        <Picker ItemsSource="{Binding Themes}"
+                                ItemDisplayBinding="{Binding Name, x:DataType=models:ThemeOption}"
+                                SelectedItem="{Binding SelectedTheme}"
+                                Title="{ext:Localize Theme}"
+                                FontSize="16"
+                                MinimumHeightRequest="44"/>
+                    </VerticalStackLayout>
+                </Frame>
 
                 <!-- Base Currency Section -->
                 <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
@@ -153,6 +195,40 @@
                                TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
                                FontAttributes="Italic"/>
                     </VerticalStackLayout>
+                </Frame>
+
+                <!-- About: version, licence, open-source components -->
+                <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                       BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                       CornerRadius="12"
+                       Padding="16"
+                       HasShadow="True">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenAboutCommand}" />
+                    </Frame.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="&#xF02FC;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="28"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{ext:Localize About}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Label Text="{ext:Localize AboutDescription}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xF0142;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="24"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
+                    </Grid>
                 </Frame>
 
             </VerticalStackLayout>
