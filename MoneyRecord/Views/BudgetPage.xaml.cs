@@ -1,8 +1,9 @@
+using MoneyRecord.Controls;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
 {
-    public partial class BudgetPage : ContentPage
+    public partial class BudgetPage : ContentPage, IOverlayHost
     {
         private readonly BudgetViewModel _viewModel;
 
@@ -18,5 +19,14 @@ namespace MoneyRecord.Views
             base.OnAppearing();
             await _viewModel.InitializeAsync();
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            // Another tab: come back to the list, not a stale sheet
+            _viewModel.CloseFormCommand.Execute(null);
+        }
+
+        public bool TryCloseOverlay() => _viewModel.CloseTopOverlay();
     }
 }

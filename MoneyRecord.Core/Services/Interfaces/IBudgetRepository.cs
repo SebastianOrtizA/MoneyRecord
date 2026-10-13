@@ -6,7 +6,8 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<List<Budget>> GetActiveBudgetsAsync();
         Task<Budget?> GetByCategoryIdAsync(int categoryId);
-        Task<int> UpdateAmountAsync(int budgetId, decimal newAmount);
+        /// <summary>Sets an existing budget's limit and period; 0 when it doesn't exist.</summary>
+        Task<int> UpdateLimitAsync(int budgetId, decimal limitAmount, BudgetPeriod period);
         Task<int> DeleteByIdAsync(int budgetId);
     }
 }

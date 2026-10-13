@@ -321,28 +321,11 @@
 
         <controls:AddEntryButton x:Name="AddEntry" />
 
-        <!-- Detail sheet: dimmed page behind it; tapping the dim closes it -->
-        <BoxView BackgroundColor="#80000000" IsVisible="{Binding IsDetailsOpen}">
-            <BoxView.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding CloseDetailsCommand}" />
-            </BoxView.GestureRecognizers>
-        </BoxView>
-
-        <Border x:Name="DetailsSheet"
-                IsVisible="{Binding IsDetailsOpen}"
-                VerticalOptions="End"
-                Padding="20,12,20,24"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 20,20,0,0"
-                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+        <!-- Detail sheet -->
+        <controls:BottomSheet IsOpen="{Binding IsDetailsOpen}"
+                              CloseCommand="{Binding CloseDetailsCommand}"
+                              SheetPadding="20,12,20,24">
             <VerticalStackLayout Spacing="12">
-                <Border WidthRequest="36"
-                        HeightRequest="4"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 2"
-                        HorizontalOptions="Center"
-                        BackgroundColor="{AppThemeBinding Light=#BDBDBD, Dark=#616161}" />
-
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                     <Border WidthRequest="48" HeightRequest="48" StrokeThickness="0" StrokeShape="Ellipse"
                             VerticalOptions="Center"
@@ -419,7 +402,7 @@
                             TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
                 </Grid>
             </VerticalStackLayout>
-        </Border>
+        </controls:BottomSheet>
 
         <!-- The receipt full screen; tap anywhere to close -->
         <Grid IsVisible="{Binding IsReceiptOpen}" BackgroundColor="Black">

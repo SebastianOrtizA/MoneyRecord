@@ -1,6 +1,6 @@
 # Stage 8: UX Overhaul
 
-**Status**: In progress (8.1–8.4 done; 8.5 in review)
+**Status**: In progress (8.1–8.5 done; 8.6 in review)
 **Depends on**: Stage 7 (LedgerEntry, IDialogService, single report VM)
 **Complexity**: High (navigation and several screens change)
 **Source**: Product & engineering review, 2026-10-11 (P6, P7, P9, N5–N8) + device check screenshots
@@ -104,6 +104,18 @@ A clearer, faster app: fewer places to look, faster entry, reports people can ac
 - Edit in a bottom sheet (period, limit) instead of `DisplayPromptAsync`.
 - Status colours: green / amber / red with text labels ("On track", "Near limit", "Over") so colour isn't the only signal.
 - Empty state with a budget/target icon instead of "#" (N8).
+- Done as: one `CollectionView` (header = period picker and totals, footer = empty state) of cards: category icon,
+  name, "Per Month · $100.00", a status label with its own icon and colour (`BudgetProgress.StatusText` /
+  `StatusIcon` from `Level`: On track < 60% ≤ Near limit < 100% ≤ Over budget), the bar, "$70.00 of $100.00" and
+  Remaining / Exceeded. A + button opens the add sheet (category, limit, period; a toast when every expense category
+  already has a budget); tapping a card opens the edit sheet, which now edits the period too
+  (`IBudgetRepository.UpdateLimitAsync` replaces `UpdateAmountAsync`) and holds Delete. N8: `F117F` rendered as a boxed
+  "#"; the empty state uses bullseye-arrow (`F08C9`). The page title is "Budgets" (was "Budget Mode").
+  **Also:** the 8.5 review asked for a shared sheet once a fourth appeared, so `Controls/BottomSheet` (dim + rounded
+  panel + handle + slide-up, `IsOpen` / `CloseCommand` / `Opened`) now hosts all four sheets (add entry, transaction
+  details, account form, budget form) and `SheetAnimation` is gone. Removed the four `BoolToOverBudget*` colour/icon
+  converters and the `BudgetMode`, `YourBudgets`, `EnterNewBudgetLimit`, `OriginalLimit`, `ProjectedLimit`, `Spent`
+  strings.
 
 ### 8.7 Reports hub (P9) — LiveChartsCore
 - Add `LiveChartsCore.SkiaSharpView.Maui` (MIT, 2.0.5); retire `Controls/ChartDrawables.cs`.

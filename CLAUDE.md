@@ -74,7 +74,7 @@ crashes at runtime (XAML is inflated at runtime there).
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab
-- `Controls/` — AddEntryButton (the one add button: opens an Expense / Income / Transfer sheet; on Home and
+- `Controls/` — BottomSheet (the in-page sheet: dim, panel, handle, slide-up; `IsOpen` + `CloseCommand`), AddEntryButton (the one add button: opens an Expense / Income / Transfer sheet; on Home and
   Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back closes it first),
   LedgerItemTemplateSelector, FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
   ChartDrawables (Trends)

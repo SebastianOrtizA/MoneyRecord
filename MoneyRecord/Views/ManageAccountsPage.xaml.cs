@@ -1,6 +1,5 @@
 using MoneyRecord.Controls;
 using MoneyRecord.ViewModels;
-using System.ComponentModel;
 
 namespace MoneyRecord.Views
 {
@@ -15,8 +14,9 @@ namespace MoneyRecord.Views
         {
             InitializeComponent();
             _viewModel = viewModel;
-            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
-            FormSheet.SizeChanged += (_, _) => UpdateFormMaxHeight();
+            FormSheet.Panel.SizeChanged += (_, _) => UpdateFormMaxHeight();
+            // A new form starts at its top
+            FormSheet.Opened += async (_, _) => await FormScroll.ScrollToAsync(0, 0, false);
             BindingContext = _viewModel;
         }
 
@@ -47,21 +47,10 @@ namespace MoneyRecord.Views
             if (Height <= 0)
                 return;
 
-            var chrome = FormSheet.Height > 0 ? FormSheet.Height - FormScroll.Height : 0;
+            var chrome = FormSheet.Panel.Height > 0 ? FormSheet.Panel.Height - FormScroll.Height : 0;
             FormScroll.MaximumHeightRequest = Math.Max(0, Height * MaxSheetShare - chrome);
         }
 
         public bool TryCloseOverlay() => _viewModel.CloseTopOverlay();
-
-        private async void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != nameof(ManageAccountsViewModel.IsFormOpen) || !_viewModel.IsFormOpen)
-                return;
-
-            // Below the screen before the first await, so the sheet is never drawn in place first; the form starts at the top
-            var slideUp = FormSheet.SlideUpAsync(600);
-            await FormScroll.ScrollToAsync(0, 0, false);
-            await slideUp;
-        }
     }
 }

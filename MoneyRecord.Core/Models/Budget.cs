@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using MoneyRecord.Helpers;
+using MoneyRecord.Resources.Strings;
 using SQLite;
 
 namespace MoneyRecord.Models
@@ -74,9 +75,11 @@ namespace MoneyRecord.Models
         private decimal originalLimitAmount;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(SpentOfLimitText))]
         private decimal limitAmount;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(SpentOfLimitText))]
         private decimal spentAmount;
 
         [ObservableProperty]
@@ -92,7 +95,31 @@ namespace MoneyRecord.Models
         private decimal remainingAmount;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(StatusText), nameof(StatusIcon))]
         private BudgetLevel level = BudgetLevel.OnTrack;
+
+        /// <summary>
+        /// "On track" below 60%, "Near limit" from 60%, "Over budget" at the limit: a text label next to the status colour,
+        /// so colour isn't the only signal.
+        /// </summary>
+        public string StatusText => Level switch
+        {
+            BudgetLevel.Exceeded => AppResources.OverBudget,
+            BudgetLevel.Warning or BudgetLevel.High => AppResources.NearLimit,
+            _ => AppResources.OnTrack
+        };
+
+        /// <summary>Check, alert or alert-circle: the status shape, also for readers who can't tell the colours apart.</summary>
+        public string StatusIcon => IconHelper.GetDisplayIcon(Level switch
+        {
+            BudgetLevel.Exceeded => "F0028",
+            BudgetLevel.Warning or BudgetLevel.High => "F0026",
+            _ => "F05E0"
+        }, "F05E0");
+
+        /// <summary>"$400.00 of $500.00": spent of the limit for the shown period.</summary>
+        public string SpentOfLimitText =>
+            string.Format(AppResources.BudgetSpentOfLimit, MoneyFormatter.Format(SpentAmount), MoneyFormatter.Format(LimitAmount));
 
         public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
 

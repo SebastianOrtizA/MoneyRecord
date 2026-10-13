@@ -1,5 +1,4 @@
 using MoneyRecord.ViewModels;
-using System.ComponentModel;
 
 namespace MoneyRecord.Controls
 {
@@ -11,7 +10,6 @@ namespace MoneyRecord.Controls
         {
             InitializeComponent();
             _viewModel = IPlatformApplication.Current!.Services.GetRequiredService<AddEntryViewModel>();
-            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             BindingContext = _viewModel;
         }
 
@@ -23,14 +21,6 @@ namespace MoneyRecord.Controls
 
             _viewModel.IsOpen = false;
             return true;
-        }
-
-        private async void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != nameof(AddEntryViewModel.IsOpen) || !_viewModel.IsOpen)
-                return;
-
-            await Sheet.SlideUpAsync(400);
         }
     }
 }

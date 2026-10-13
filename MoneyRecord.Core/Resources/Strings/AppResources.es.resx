@@ -602,9 +602,6 @@ Monto: {2}</value>
   </data>
 
   <!-- Budget Mode -->
-  <data name="BudgetMode" xml:space="preserve">
-    <value>Modo Presupuesto</value>
-  </data>
   <data name="AddCategoryToBudget" xml:space="preserve">
     <value>Agregar Categoría al Presupuesto</value>
   </data>
@@ -614,17 +611,11 @@ Monto: {2}</value>
   <data name="AddBudgetButton" xml:space="preserve">
     <value>Agregar Presupuesto</value>
   </data>
-  <data name="YourBudgets" xml:space="preserve">
-    <value>Tus Presupuestos</value>
-  </data>
   <data name="NoBudgetsYet" xml:space="preserve">
     <value>Aún no hay presupuestos</value>
   </data>
   <data name="AddBudgetToStart" xml:space="preserve">
-    <value>Agrega categorías de gastos a tu presupuesto para controlar los límites de gasto</value>
-  </data>
-  <data name="Spent" xml:space="preserve">
-    <value>Gastado</value>
+    <value>Toca + para fijar un límite de gasto a una categoría.</value>
   </data>
   <data name="Remaining" xml:space="preserve">
     <value>Restante</value>
@@ -656,12 +647,6 @@ Monto: {2}</value>
   <data name="BudgetPeriod" xml:space="preserve">
     <value>Período de Presupuesto</value>
   </data>
-  <data name="OriginalLimit" xml:space="preserve">
-    <value>Límite Original</value>
-  </data>
-  <data name="ProjectedLimit" xml:space="preserve">
-    <value>Límite Proyectado</value>
-  </data>
   <data name="PerDay" xml:space="preserve">
     <value>Por Día</value>
   </data>
@@ -673,9 +658,6 @@ Monto: {2}</value>
   </data>
   <data name="EditBudget" xml:space="preserve">
     <value>Editar Presupuesto</value>
-  </data>
-  <data name="EnterNewBudgetLimit" xml:space="preserve">
-    <value>Ingrese el nuevo límite de presupuesto para {0}:</value>
   </data>
   <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
     <value>Transacción actualizada exitosamente</value>
@@ -716,10 +698,10 @@ Monto: {2}</value>
     <value>Resumen de Presupuesto</value>
   </data>
   <data name="OnTrack" xml:space="preserve">
-    <value>En Orden</value>
+    <value>En orden</value>
   </data>
   <data name="OverBudget" xml:space="preserve">
-    <value>Excedido</value>
+    <value>Sobre presupuesto</value>
   </data>
 
   <!-- Recurring Transactions -->
@@ -1085,5 +1067,14 @@ Monto: {2}</value>
   </data>
   <data name="AccountCountOther" xml:space="preserve">
     <value>{0} cuentas</value>
+  </data>
+  <data name="NearLimit" xml:space="preserve">
+    <value>Cerca del límite</value>
+  </data>
+  <data name="NoCategoriesLeftForBudget" xml:space="preserve">
+    <value>Todas las categorías de gasto ya tienen un presupuesto.</value>
+  </data>
+  <data name="BudgetSpentOfLimit" xml:space="preserve">
+    <value>{0} de {1}</value>
   </data>
 </root>

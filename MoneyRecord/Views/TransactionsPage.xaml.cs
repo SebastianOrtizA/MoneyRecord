@@ -1,6 +1,5 @@
 using MoneyRecord.Controls;
 using MoneyRecord.ViewModels;
-using System.ComponentModel;
 
 namespace MoneyRecord.Views
 {
@@ -12,7 +11,6 @@ namespace MoneyRecord.Views
         {
             InitializeComponent();
             _viewModel = viewModel;
-            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
             BindingContext = _viewModel;
         }
 
@@ -31,13 +29,5 @@ namespace MoneyRecord.Views
         }
 
         public bool TryCloseOverlay() => _viewModel.CloseTopOverlay() || AddEntry.TryClose();
-
-        private async void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != nameof(TransactionsViewModel.IsDetailsOpen) || !_viewModel.IsDetailsOpen)
-                return;
-
-            await DetailsSheet.SlideUpAsync(400);
-        }
     }
 }

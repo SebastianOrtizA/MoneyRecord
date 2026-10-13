@@ -151,32 +151,15 @@
                 TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
                 Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
 
-        <!-- Add / edit sheet: dimmed page behind it; tapping the dim closes it -->
-        <BoxView Grid.RowSpan="2" BackgroundColor="#80000000" IsVisible="{Binding IsFormOpen}">
-            <BoxView.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding CloseFormCommand}" />
-            </BoxView.GestureRecognizers>
-        </BoxView>
+        <!-- Add / edit sheet -->
+        <controls:BottomSheet x:Name="FormSheet"
+                              Grid.RowSpan="2"
+                              IsOpen="{Binding IsFormOpen}"
+                              CloseCommand="{Binding CloseFormCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
 
-        <Border x:Name="FormSheet"
-                Grid.RowSpan="2"
-                IsVisible="{Binding IsFormOpen}"
-                VerticalOptions="End"
-                Padding="20,12,20,20"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 20,20,0,0"
-                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
-            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12">
-                <Border WidthRequest="36"
-                        HeightRequest="4"
-                        StrokeThickness="0"
-                        StrokeShape="RoundRectangle 2"
-                        HorizontalOptions="Center"
-                        BackgroundColor="{AppThemeBinding Light=#BDBDBD, Dark=#616161}" />
-
-                <Label Grid.Row="1" Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
-
-                <ScrollView Grid.Row="2" x:Name="FormScroll">
+                <ScrollView Grid.Row="1" x:Name="FormScroll">
                     <VerticalStackLayout Spacing="8">
                         <Label Text="{ext:Localize AccountName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                         <Entry Text="{Binding FormName}"
@@ -246,7 +229,7 @@
                 </ScrollView>
 
                 <!-- Delete only for an existing, non-default account -->
-                <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
                     <Button Text="{ext:Localize DeleteButton}"
                             IsVisible="{Binding CanDelete}"
                             Command="{Binding DeleteAccountCommand}"
@@ -267,7 +250,7 @@
                             TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
                 </Grid>
             </Grid>
-        </Border>
+        </controls:BottomSheet>
     </Grid>
 
 </ContentPage>

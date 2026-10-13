@@ -29,11 +29,7 @@
             <converters:BoolToSelectedBackgroundConverter x:Key="BoolToSelectedBackgroundConverter" />
             <converters:BoolToIconColorConverter x:Key="BoolToIconColorConverter" />
             <converters:PercentageToProgressConverter x:Key="PercentageToProgressConverter" />
-            <converters:BoolToOverBudgetColorConverter x:Key="BoolToOverBudgetColorConverter" />
-            <converters:BoolToOverBudgetBorderConverter x:Key="BoolToOverBudgetBorderConverter" />
-            <converters:BoolToOverBudgetIconConverter x:Key="BoolToOverBudgetIconConverter" />
             <converters:BoolToOverBudgetLabelConverter x:Key="BoolToOverBudgetLabelConverter" />
-            <converters:BoolToOverBudgetTextColorConverter x:Key="BoolToOverBudgetTextColorConverter" />
             <converters:OverBudgetAmountConverter x:Key="OverBudgetAmountConverter" />
             <converters:BudgetPeriodToDisplayConverter x:Key="BudgetPeriodToDisplayConverter" />
             <toolkit:IntToBoolConverter x:Key="IntToBoolConverter" />

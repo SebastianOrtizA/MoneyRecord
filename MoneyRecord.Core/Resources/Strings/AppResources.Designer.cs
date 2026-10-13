@@ -313,15 +313,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Budget Mode.
-        /// </summary>
-        public static string BudgetMode {
-            get {
-                return ResourceManager.GetString("BudgetMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Budget Period.
         /// </summary>
         public static string BudgetPeriod {
@@ -861,15 +852,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string EnterDescription {
             get {
                 return ResourceManager.GetString("EnterDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Enter new budget limit for {0}:.
-        /// </summary>
-        public static string EnterNewBudgetLimit {
-            get {
-                return ResourceManager.GetString("EnterNewBudgetLimit", resourceCulture);
             }
         }
         
@@ -1423,15 +1405,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Original Limit.
-        /// </summary>
-        public static string OriginalLimit {
-            get {
-                return ResourceManager.GetString("OriginalLimit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Per Day.
         /// </summary>
         public static string PerDay {
@@ -1518,15 +1491,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string PleaseSelectSourceAccount {
             get {
                 return ResourceManager.GetString("PleaseSelectSourceAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Projected Limit.
-        /// </summary>
-        public static string ProjectedLimit {
-            get {
-                return ResourceManager.GetString("ProjectedLimit", resourceCulture);
             }
         }
         
@@ -1635,15 +1599,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string SourceDestinationMustBeDifferent {
             get {
                 return ResourceManager.GetString("SourceDestinationMustBeDifferent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Spent.
-        /// </summary>
-        public static string Spent {
-            get {
-                return ResourceManager.GetString("Spent", resourceCulture);
             }
         }
         
@@ -1914,15 +1869,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string YesDelete {
             get {
                 return ResourceManager.GetString("YesDelete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Your Budgets.
-        /// </summary>
-        public static string YourBudgets {
-            get {
-                return ResourceManager.GetString("YourBudgets", resourceCulture);
             }
         }
         
@@ -2760,6 +2706,33 @@ namespace MoneyRecord.Resources.Strings {
         public static string AccountCountOther {
             get {
                 return ResourceManager.GetString("AccountCountOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Near limit.
+        /// </summary>
+        public static string NearLimit {
+            get {
+                return ResourceManager.GetString("NearLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every expense category already has a budget..
+        /// </summary>
+        public static string NoCategoriesLeftForBudget {
+            get {
+                return ResourceManager.GetString("NoCategoriesLeftForBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string BudgetSpentOfLimit {
+            get {
+                return ResourceManager.GetString("BudgetSpentOfLimit", resourceCulture);
             }
         }
     }
