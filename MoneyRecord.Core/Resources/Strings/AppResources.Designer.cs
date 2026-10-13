@@ -61,7 +61,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Account *.
+        ///   Busca una cadena traducida similar a Account.
         /// </summary>
         public static string Account {
             get {
@@ -250,7 +250,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Amount *.
+        ///   Busca una cadena traducida similar a Amount.
         /// </summary>
         public static string Amount {
             get {
@@ -394,7 +394,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Category *.
+        ///   Busca una cadena traducida similar a Category.
         /// </summary>
         public static string Category {
             get {
@@ -517,7 +517,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Date *.
+        ///   Busca una cadena traducida similar a Date.
         /// </summary>
         public static string Date {
             get {
@@ -775,7 +775,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Description *.
+        ///   Busca una cadena traducida similar a Description.
         /// </summary>
         public static string Description {
             get {
@@ -1477,15 +1477,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Please enter a description.
-        /// </summary>
-        public static string PleaseEnterDescription {
-            get {
-                return ResourceManager.GetString("PleaseEnterDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Please enter a valid amount.
         /// </summary>
         public static string PleaseEnterValidAmount {
@@ -1545,15 +1536,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string Remaining {
             get {
                 return ResourceManager.GetString("Remaining", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a * Required fields.
-        /// </summary>
-        public static string RequiredFields {
-            get {
-                return ResourceManager.GetString("RequiredFields", resourceCulture);
             }
         }
         
@@ -2757,6 +2739,15 @@ namespace MoneyRecord.Resources.Strings {
         public static string FilteredOfTotal {
             get {
                 return ResourceManager.GetString("FilteredOfTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More details.
+        /// </summary>
+        public static string MoreDetails {
+            get {
+                return ResourceManager.GetString("MoreDetails", resourceCulture);
             }
         }
     }

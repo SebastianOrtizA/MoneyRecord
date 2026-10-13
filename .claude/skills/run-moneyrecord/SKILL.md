@@ -52,7 +52,9 @@ Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/mon
 - Bottom tabs at y=2262 (`tab NAME`). More page rows (x≈300): Accounts 374, Categories 513, Recurring 652, Transfers 791, Settings 930.
 - Add button (959,2069) opens the sheet: Expense (300,1621), Income (300,1801), Transfer (300,1980). Back closes it.
 - Home: total balance card (540,504) opens Manage Accounts (a currency line, with several currencies, filters it); Recent "See all" is at the card's top right. Reports tab: Expenses / Incomes / Trends top tabs at y≈358.
-- Add Expense form: description (540,780), amount (540,1058); swipe up for Save (790,2227).
+- Add Expense / Income form: the amount is focused with the keypad open (type, then `back` to close it); category grid
+  row 1 at y=760 (x = 175 / 420 / 663 / 907), row 2 at y=980; Save is pinned at (540,2242); "More details" (540,1698)
+  opens description, tags, receipt and recurrence.
 - Alert OK button: about (906, alert bottom − 70).
 
 `uiautomator dump` returns nothing useful for MAUI views, so drive from screenshots.
@@ -73,7 +75,7 @@ dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android   # instal
 ## Test
 
 ```powershell
-dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 299 pass, ~2 s (plain net10.0, references MoneyRecord.Core only)
+dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 308 pass, ~2 s (plain net10.0, references MoneyRecord.Core only)
 ```
 
 ## Gotchas

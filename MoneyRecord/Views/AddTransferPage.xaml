@@ -73,8 +73,6 @@
                    Placeholder="{ext:Localize TransferOptional}"
                    FontSize="16"/>
 
-            <Label Text="{ext:Localize RequiredFields}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" Margin="0,5,0,0"/>
-
             <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,20,0,0">
                 <Button Grid.Column="0" 
                        Text="{ext:Localize Cancel}" 
