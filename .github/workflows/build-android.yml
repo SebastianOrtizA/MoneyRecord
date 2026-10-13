@@ -32,8 +32,6 @@ jobs:
     name: Build Android APK + AAB
     runs-on: windows-latest
     needs: test
-    env:
-      ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
     steps:
       - uses: actions/checkout@v4
 
@@ -46,16 +44,27 @@ jobs:
         run: dotnet workload install maui-android
 
       # The csproj signs Release builds when MoneyRecord/moneyrecord.keystore exists. Tag builds are published,
-      # so they fail without the keystore instead of shipping an APK signed with the debug key.
+      # so they fail before the build when a signing secret is missing instead of shipping a debug-signed APK.
       - name: Decode signing keystore
         shell: pwsh
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          HAS_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD != '' }}
+          HAS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD != '' }}
         run: |
+          if ($env:GITHUB_REF -like 'refs/tags/v*') {
+            $missing = @()
+            if (-not $env:ANDROID_KEYSTORE_B64) { $missing += 'ANDROID_KEYSTORE_B64' }
+            if ($env:HAS_KEYSTORE_PASSWORD -ne 'true') { $missing += 'KEYSTORE_PASSWORD' }
+            if ($env:HAS_KEY_PASSWORD -ne 'true') { $missing += 'KEY_PASSWORD' }
+            if ($missing) {
+              Write-Host "::error::Tag builds must be signed with the release keystore; missing secrets: $($missing -join ', ')"
+              exit 1
+            }
+          }
           if ($env:ANDROID_KEYSTORE_B64) {
             [IO.File]::WriteAllBytes("MoneyRecord/moneyrecord.keystore", [Convert]::FromBase64String($env:ANDROID_KEYSTORE_B64))
             Write-Host "Signing with the release keystore."
-          } elseif ($env:GITHUB_REF -like 'refs/tags/v*') {
-            Write-Error "ANDROID_KEYSTORE_B64 is not set: tag builds must be signed with the release keystore."
-            exit 1
           } else {
             Write-Host "::notice::No release keystore: this build is signed with the debug key."
           }

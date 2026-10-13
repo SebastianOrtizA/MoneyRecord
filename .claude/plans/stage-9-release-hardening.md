@@ -17,7 +17,7 @@ Public releases users can install and update, with enough logging to debug field
 - Fail the `release` job (tag builds) if the keystore is missing, so unsigned APKs are never published.
 - Publish both `.apk` (GitHub Releases / F-Droid) and `.aab` (Play Store).
 - Done as: the `build-android` job decodes the secret when it is set (any build) and fails on `v*` tags when it
-  isn't, so the check runs before the build instead of in the `release` job. Release builds already produce both
+  isn't (any of the three secrets missing → `::error::` naming them), so the check runs before the build instead of in the `release` job. Each secret is scoped to the step that uses it (the decode step only sees whether the passwords are set). Release builds already produce both
   formats (`*-Signed.apk` + `*-Signed.aab`), so `-p:AndroidPackageFormat=apk` was dropped; both are uploaded as one
   `MoneyRecord-Android` artifact and attached to the release. The decoded keystore is deleted after the build.
   Key creation + `gh secret set` steps are in the README ("Releases"). Checked locally with a throwaway keystore:
