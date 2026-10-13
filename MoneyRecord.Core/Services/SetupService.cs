@@ -26,7 +26,7 @@ namespace MoneyRecord.Services
             _categoryRepository = categoryRepository;
         }
 
-        public bool IsFirstRunPending()
+        public bool ResolveFirstRunPending()
         {
             var state = _preferences.Get(SetupStatePreferenceKey, string.Empty);
             if (state.Length == 0)
@@ -63,8 +63,7 @@ namespace MoneyRecord.Services
                     var existing = db.Table<Category>().ToList();
                     foreach (var category in choices.Categories)
                     {
-                        if (!existing.Any(c => c.Type == category.Type
-                                && string.Equals(c.Name, category.Name, StringComparison.CurrentCultureIgnoreCase)))
+                        if (!existing.Any(category.Matches))
                             db.Insert(category.ToCategory());
                     }
 

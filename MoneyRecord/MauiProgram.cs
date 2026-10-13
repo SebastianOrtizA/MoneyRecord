@@ -107,6 +107,8 @@ namespace MoneyRecord
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<SetupPage>();
+            // App creates it only on a new install
+            builder.Services.AddTransient<Func<SetupPage>>(services => () => services.GetRequiredService<SetupPage>());
             builder.Services.AddTransient<TrendsReportPage>();
             builder.Services.AddTransient<CashFlowReportPage>();
             builder.Services.AddTransient<NetWorthReportPage>();

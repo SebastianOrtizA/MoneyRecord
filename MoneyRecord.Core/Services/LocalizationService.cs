@@ -19,6 +19,13 @@ namespace MoneyRecord.Services
         /// <summary>The languages the app is translated to; the language setting is one of these or empty (the device's).</summary>
         public static IReadOnlyList<string> SupportedLanguages { get; } = ["en", "es"];
 
+        /// <summary>A language's name in that language ("English", "Español"), for a language picker.</summary>
+        public static string GetLanguageName(string code)
+        {
+            var culture = CultureInfo.GetCultureInfo(code);
+            return culture.TextInfo.ToUpper(culture.NativeName[0]) + culture.NativeName[1..];
+        }
+
         /// <summary>The chosen language ("en", "es"), or empty to follow the device.</summary>
         public string LanguageSetting { get; private set; } = string.Empty;
 

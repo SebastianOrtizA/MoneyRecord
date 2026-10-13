@@ -19,10 +19,11 @@ namespace MoneyRecord.Services.Interfaces
     public interface ISetupService
     {
         /// <summary>
-        /// True until the first-run setup is finished. Call before anything opens the database: a database that
-        /// already exists (an update from an older version) counts as set up.
+        /// True until the first-run setup is finished. The first call decides it and saves the answer, so call it before
+        /// anything opens the database: a database that already exists then (an update from an older version) counts
+        /// as set up.
         /// </summary>
-        bool IsFirstRunPending();
+        bool ResolveFirstRunPending();
 
         /// <summary>Creates the chosen accounts and categories in one transaction and marks the setup as done.</summary>
         Task ApplyAsync(SetupChoices choices);

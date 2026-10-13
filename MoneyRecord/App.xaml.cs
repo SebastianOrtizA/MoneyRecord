@@ -8,24 +8,24 @@ namespace MoneyRecord
     {
         private readonly IRecurringTransactionService _recurringTransactionService;
         private readonly ISetupService _setupService;
-        private readonly IServiceProvider _services;
+        private readonly Func<SetupPage> _createSetupPage;
         private readonly ILogger<App> _logger;
 
         public App(IRecurringTransactionService recurringTransactionService, ISetupService setupService,
-            IServiceProvider services, ILogger<App> logger)
+            Func<SetupPage> createSetupPage, ILogger<App> logger)
         {
             InitializeComponent();
             _recurringTransactionService = recurringTransactionService;
             _setupService = setupService;
-            _services = services;
+            _createSetupPage = createSetupPage;
             _logger = logger;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
             // A new install starts with the setup; it swaps itself for the Shell when finished
-            Page page = _setupService.IsFirstRunPending()
-                ? _services.GetRequiredService<SetupPage>().AsFirstRun()
+            Page page = _setupService.ResolveFirstRunPending()
+                ? _createSetupPage().AsFirstRun()
                 : new AppShell();
             var window = new Window(page);
 

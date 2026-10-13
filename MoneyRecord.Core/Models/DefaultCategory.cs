@@ -27,5 +27,12 @@ namespace MoneyRecord.Models
         public string Name => AppResources.ResourceManager.GetString(NameKey, AppResources.Culture) ?? NameKey;
 
         public Category ToCategory() => new() { Name = Name, Type = Type, IconCode = IconCode };
+
+        /// <summary>
+        /// The user already has this category: same type and name (in the current language, ignoring case). The setup
+        /// shows it locked and never inserts it twice.
+        /// </summary>
+        public bool Matches(Category category) =>
+            category.Type == Type && string.Equals(category.Name, Name, StringComparison.CurrentCultureIgnoreCase);
     }
 }

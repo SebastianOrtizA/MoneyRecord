@@ -43,14 +43,14 @@ public sealed class SetupServiceTests : IAsyncLifetime
     [Fact]
     public async Task A_new_install_is_pending_until_the_setup_is_applied()
     {
-        _sut.IsFirstRunPending().Should().BeTrue();
+        _sut.ResolveFirstRunPending().Should().BeTrue();
 
         // Closing the app halfway: the database now exists, but the setup is still to do
         await OpenAsync();
-        _sut.IsFirstRunPending().Should().BeTrue();
+        _sut.ResolveFirstRunPending().Should().BeTrue();
 
         await _sut.ApplyAsync(new SetupChoices("USD", [new SetupAccount("Cash", 0m, Account.CashIconCode)], [], true));
-        _sut.IsFirstRunPending().Should().BeFalse();
+        _sut.ResolveFirstRunPending().Should().BeFalse();
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public sealed class SetupServiceTests : IAsyncLifetime
     {
         await OpenAsync();
 
-        _sut.IsFirstRunPending().Should().BeFalse("an update from an older version already has its data");
+        _sut.ResolveFirstRunPending().Should().BeFalse("an update from an older version already has its data");
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public sealed class SetupServiceTests : IAsyncLifetime
     [Fact]
     public async Task First_run_without_accounts_is_refused_and_changes_nothing()
     {
-        _sut.IsFirstRunPending().Should().BeTrue();
+        _sut.ResolveFirstRunPending().Should().BeTrue();
         await OpenAsync();
 
         var act = () => _sut.ApplyAsync(new SetupChoices("USD", [], [Food], ReplaceStartingData: true));
@@ -91,7 +91,7 @@ public sealed class SetupServiceTests : IAsyncLifetime
         await act.Should().ThrowAsync<ArgumentException>();
         (await Db.Table<Account>().CountAsync()).Should().Be(1);
         (await Db.Table<Category>().CountAsync()).Should().Be(DefaultCategory.All.Count);
-        _sut.IsFirstRunPending().Should().BeTrue();
+        _sut.ResolveFirstRunPending().Should().BeTrue();
     }
 
     [Fact]

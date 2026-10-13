@@ -147,8 +147,7 @@ namespace MoneyRecord.ViewModels
                 Accounts.Add(new SetupAccountRow { Name = AppResources.DefaultAccountCash, IconCode = Account.CashIconCode });
 
             var options = DefaultCategory.All
-                .Select(d => new SetupCategoryOption(d, existing.Any(c => c.Type == d.Type
-                    && string.Equals(c.Name, d.Name, StringComparison.CurrentCultureIgnoreCase))))
+                .Select(d => new SetupCategoryOption(d, existing.Any(d.Matches)))
                 .ToList();
             foreach (var option in options)
                 option.IsSelected = isFirstRun || option.Exists;
@@ -177,10 +176,8 @@ namespace MoneyRecord.ViewModels
             Languages = BuildLanguages();
             SelectedLanguage = Languages.First(l => l.Code == value.Code);
 
-            OnPropertyChanged(nameof(StepText));
-            OnPropertyChanged(nameof(NextText));
-            OnPropertyChanged(nameof(AccountsDescription));
-            OnPropertyChanged(nameof(CategoriesDescription));
+            // Every localized text (step, buttons, descriptions)
+            OnPropertyChanged(string.Empty);
         }
 
         partial void OnBaseCurrencyChanged(Currency? value)
@@ -192,8 +189,7 @@ namespace MoneyRecord.ViewModels
         private static List<LanguageOption> BuildLanguages() =>
         [
             new(string.Empty, AppResources.LanguageSystem),
-            new("en", "English"),
-            new("es", "Español"),
+            .. LocalizationService.SupportedLanguages.Select(code => new LanguageOption(code, LocalizationService.GetLanguageName(code))),
         ];
 
         [RelayCommand]
