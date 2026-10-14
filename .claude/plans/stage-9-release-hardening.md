@@ -61,7 +61,9 @@ Public releases users can install and update, with enough logging to debug field
   backupnow` with LocalTransport backed up 85 KB (the 113 MB `files/.__override__` was not included).
   `bmgr restore 1` after wiping the data brought back the DB, receipt and prefs (no setup screen, the expense
   is listed). The Release APK then installed over the install with `adb install -r` and kept the data. The restore
-  also wipes `.__override__`, so a Debug install then needs a reinstall.
+  also wipes `.__override__`, so a Debug install then needs a reinstall. Review: `AndroidBackupRulesTests` checks
+  that all three include lists match `AppPaths.DatabaseFileName`, `ReceiptFiles.FolderName` and the shared prefs
+  (the repo-root lookup moved to `TestRepo`, shared with `ThirdPartyComponentTests`).
 
 ### 9.4 Logging and crash reports
 - Serilog (Apache-2.0) + `Serilog.Sinks.File` to `AppDataDirectory/logs`, 7-day rolling; `ErrorHandler` logs there.

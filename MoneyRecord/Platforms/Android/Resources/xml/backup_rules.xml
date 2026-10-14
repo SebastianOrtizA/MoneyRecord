@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Android 11 and older backup: the same files as data_extraction_rules.xml (keep the two in sync). -->
+<!-- Android 11 and older backup: the same files as data_extraction_rules.xml (keep the two in sync; AndroidBackupRulesTests checks both). -->
 <full-backup-content>
 	<include domain="file" path="moneyrecord.db3" />
 	<include domain="file" path="receipts/" />
