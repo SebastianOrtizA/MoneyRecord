@@ -8,25 +8,15 @@ namespace MoneyRecord.Tests.Models;
 /// <summary>The About page's licence list stays in step with the packages and the bundled licence files.</summary>
 public class ThirdPartyComponentTests
 {
-    private static readonly string RepoRoot = FindRepoRoot();
-
     private static string LicensesFolder =>
-        Path.Combine(RepoRoot, "MoneyRecord", "Resources", "Raw", ThirdPartyComponent.LicensesFolder);
-
-    private static string FindRepoRoot()
-    {
-        var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (dir != null && !File.Exists(Path.Combine(dir.FullName, "MoneyRecord.slnx")))
-            dir = dir.Parent;
-        return dir?.FullName ?? throw new InvalidOperationException("Repository root not found.");
-    }
+        TestRepo.PathOf("MoneyRecord", "Resources", "Raw", ThirdPartyComponent.LicensesFolder);
 
     [Theory]
     [InlineData("MoneyRecord/MoneyRecord.csproj")]
     [InlineData("MoneyRecord.Core/MoneyRecord.Core.csproj")]
     public void Every_shipped_package_is_listed(string project)
     {
-        var packages = XDocument.Load(Path.Combine(RepoRoot, project))
+        var packages = XDocument.Load(TestRepo.PathOf(project))
             .Descendants("PackageReference")
             .Select(p => (string)p.Attribute("Include")!);
 

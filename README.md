@@ -82,6 +82,18 @@ and Windows are maintained too. All data stays on the device.
 - **Schema migrations**: `PRAGMA user_version` plus a migration runner; each migration runs in its own transaction, and
   migrations that rewrite data back up the database first (`moneyrecord.db3.bak-v{n}`).
 
+### Privacy
+- **Offline:** the app has no internet permission, so your data never leaves the device unless you export or share a
+  backup yourself.
+- **No accounts, ads, analytics or tracking.**
+- **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
+  is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,
+  which need no permission.
+- **Android backup:** if the device's own backup is on, it copies the database, receipt photos and settings, which
+  includes device-to-device transfer. Restore snapshots, migration copies, logs and caches are left out
+  (`Platforms/Android/Resources/xml`). Google's cloud backup holds at most 25 MB per app; past that it stops backing
+  up the app, so use **Settings → Backup** for a complete copy.
+
 ### Known limitation
 Totals that span accounts in different currencies (Home income/expense/net, reports, budgets, charts) are still added
 together and shown in the base currency. Proper conversion needs exchange rates (planned).
