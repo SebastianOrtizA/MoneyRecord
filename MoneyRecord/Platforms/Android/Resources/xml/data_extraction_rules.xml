@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ backup (cloud backup and device-to-device transfer). Only what's listed is copied: the database,
+     the receipt photos and the preferences (language, theme, base currency, ...). Restore snapshots (Backups/),
+     migration copies (moneyrecord.db3.bak-v*), logs and caches stay on the device. Keep in sync with backup_rules.xml. -->
+<data-extraction-rules>
+	<cloud-backup>
+		<include domain="file" path="moneyrecord.db3" />
+		<include domain="file" path="receipts/" />
+		<include domain="sharedpref" path="." />
+	</cloud-backup>
+	<device-transfer>
+		<include domain="file" path="moneyrecord.db3" />
+		<include domain="file" path="receipts/" />
+		<include domain="sharedpref" path="." />
+	</device-transfer>
+</data-extraction-rules>
