@@ -108,6 +108,12 @@ CI (`.github/workflows/build-android.yml`) builds a Release `.apk` (GitHub Relea
 Store) on every push. A `v*` tag publishes them as a GitHub Release, and that build fails unless the release keystore
 is configured, so a published APK is never signed with the debug key.
 
+Versions: the version name comes from the tag (`v1.2.0` → `1.2.0`; a suffix such as `v0.9.0-rc1` is kept and marks
+the GitHub Release as a pre-release) and the version code is the workflow run number, so every CI build can update
+the previous one. Untagged builds show the csproj's `ApplicationDisplayVersion` (for example `1.0.0`) in About, however
+many builds there have been; bump it after a release if testers need to tell builds apart. To release, push a tag:
+`git tag v1.2.0 && git push origin v1.2.0`.
+
 The release key signs every update: an APK signed with another key can't be installed over the app without losing its
 data. Create it once and keep a backup of the file and both passwords outside the repository (`*.keystore` is ignored):
 
@@ -118,7 +124,7 @@ keytool -genkeypair -keystore moneyrecord.keystore -alias moneyrecord -keyalg RS
 Then store it in the repository secrets (PowerShell):
 
 ```powershell
-gh secret set ANDROID_KEYSTORE_B64 --body ([Convert]::ToBase64String([IO.File]::ReadAllBytes("moneyrecord.keystore")))
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$PWD\moneyrecord.keystore")) | gh secret set ANDROID_KEYSTORE_B64
 gh secret set KEYSTORE_PASSWORD
 gh secret set KEY_PASSWORD   # the same as the store password for keytool's default PKCS12 keystore
 ```
