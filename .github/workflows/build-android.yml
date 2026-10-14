@@ -35,6 +35,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # versionCode = run number (always increasing, as Android and the Play Store require). versionName comes from a
+      # v* tag (v1.2.0 → 1.2.0, v0.9.0-rc1 → 0.9.0-rc1); other builds keep the csproj's ApplicationDisplayVersion.
+      # run_number counts per workflow file: renaming or recreating this workflow restarts it at 1, so then add the
+      # last published versionCode as an offset. Runs first so a mistyped tag fails in seconds.
+      - name: Set version
+        id: version
+        shell: pwsh
+        run: |
+          $props = "-p:ApplicationVersion=${{ github.run_number }}"
+          if ($env:GITHUB_REF -like 'refs/tags/v*') {
+            $name = $env:GITHUB_REF_NAME.Substring(1)
+            if ($name -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$') {
+              Write-Host "::error::Tag $env:GITHUB_REF_NAME is not v<major>.<minor>.<patch>[-suffix]"
+              exit 1
+            }
+            $props += " -p:ApplicationDisplayVersion=$name"
+          }
+          Write-Host "Version properties: $props"
+          "props=$props" >> $env:GITHUB_OUTPUT
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -73,24 +93,6 @@ jobs:
           } else {
             Write-Host "::notice::No release keystore: this build is signed with the debug key."
           }
-
-      # versionCode = run number (always increasing, as Android and the Play Store require). versionName comes from a
-      # v* tag (v1.2.0 → 1.2.0, v0.9.0-rc1 → 0.9.0-rc1); other builds keep the csproj's ApplicationDisplayVersion.
-      - name: Set version
-        id: version
-        shell: pwsh
-        run: |
-          $props = "-p:ApplicationVersion=${{ github.run_number }}"
-          if ($env:GITHUB_REF -like 'refs/tags/v*') {
-            $name = $env:GITHUB_REF_NAME.Substring(1)
-            if ($name -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$') {
-              Write-Host "::error::Tag $env:GITHUB_REF_NAME is not v<major>.<minor>.<patch>[-suffix]"
-              exit 1
-            }
-            $props += " -p:ApplicationDisplayVersion=$name"
-          }
-          Write-Host "Version properties: $props"
-          "props=$props" >> $env:GITHUB_OUTPUT
 
       # Release builds produce both formats: the .apk for GitHub Releases / F-Droid, the .aab for the Play Store.
       - name: Build Android APK + AAB (Release)
