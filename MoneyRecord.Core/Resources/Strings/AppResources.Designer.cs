@@ -2981,5 +2981,41 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("FailedToOpenLink", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share logs.
+        /// </summary>
+        public static string ShareLogs {
+            get {
+                return ResourceManager.GetString("ShareLogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The error log, to report a problem. It holds technical details only..
+        /// </summary>
+        public static string ShareLogsDescription {
+            get {
+                return ResourceManager.GetString("ShareLogsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is nothing in the log yet..
+        /// </summary>
+        public static string NoLogsYet {
+            get {
+                return ResourceManager.GetString("NoLogsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not share the logs..
+        /// </summary>
+        public static string FailedToShareLogs {
+            get {
+                return ResourceManager.GetString("FailedToShareLogs", resourceCulture);
+            }
+        }
     }
 }

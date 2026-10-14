@@ -1,6 +1,6 @@
 # Stage 9: Release Hardening
 
-**Status**: In progress (9.1–9.2 done; 9.3 in review)
+**Status**: In progress (9.1–9.3 done; 9.4a in review)
 **Depends on**: Stage 6 (can run in parallel with Stages 7–8)
 **Complexity**: Medium
 **Source**: Product & engineering review, 2026-10-11 (Tests & CI, P11) + parts of Stage 5.1
@@ -70,6 +70,22 @@ Public releases users can install and update, with enough logging to debug field
 - Settings → "Share logs" (zip via Share API).
 - Opt-in crash reporting (Sentry .NET SDK, MIT, or self-hosted GlitchTip), default **off**, asked once after
   first successful week. (Replaces Stage 5.1.)
+- Split by agreement (2026-10-14): **9.4a** = local logs + Share logs; **9.4b** = Sentry crash reports (the owner has a
+  Sentry account; the DSN goes in a `SENTRY_DSN` GitHub secret passed to CI builds only, so local and fork builds
+  never report). 9.4b brings back `INTERNET`, so the README Privacy section and the 9.3 notes change with it.
+- 9.4a done as: `Serilog.Extensions.Logging` 10.0.0 + `Serilog.Sinks.File` 7.0.0 (Apache-2.0, About page entry)
+  behind the existing `ILogger<T>`, set up in `MauiProgram.ConfigureLogging`. One file a day in `IAppPaths.LogsFolder`
+  (`logs/moneyrecord-yyyyMMdd.log`), deleted after 7 days (`retainedFileTimeLimit`). Review: a file rolls over at 1 MB
+  (`_001`, ...) and at most 10 files are kept (about 10 MB), so the newest events, such as a final crash, survive an
+  error loop (the first version dropped everything past 1 MB a day, including the crash line). Information level in Release (Debug in Debug
+  builds), `Microsoft.*` at Warning. Also logged: the version + OS at start, `AppDomain` unhandled exceptions (flushed
+  before the process ends) and unobserved task exceptions. Core `LogFiles.CreateArchive` zips the logs, reading
+  today's file with shared access while Serilog holds it (tested with a writer that only shares reading). Settings
+  has a "Share logs" card (toast when there are no logs yet). The 9.3 backup allow list already leaves `logs/` out.
+  Emulator: the card renders, the log file starts with `[INF] MoneyRecord 1.0.0 (1) on Android 16`, and the share
+  sheet offers `MoneyRecord_Logs_….zip`.
+  Review: zipping runs in `Task.Run` with `IsExporting` set, and `NewCacheFile(prefix, extension)` replaces the
+  delete-old-then-timestamp code for the backup, log and CSV shares (the CSV share now cleans up old copies too).
 
 ### 9.5 Tests and CI
 - CI test job on `ubuntu-latest` once Stage 7.1 lands (Core-only tests).
