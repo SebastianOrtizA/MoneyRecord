@@ -1157,4 +1157,16 @@ Amount: {2}</value>
   <data name="FailedToOpenLink" xml:space="preserve">
     <value>Couldn't open the link.</value>
   </data>
+  <data name="ShareLogs" xml:space="preserve">
+    <value>Share logs</value>
+  </data>
+  <data name="ShareLogsDescription" xml:space="preserve">
+    <value>The error log, to report a problem. It holds technical details only.</value>
+  </data>
+  <data name="NoLogsYet" xml:space="preserve">
+    <value>There is nothing in the log yet.</value>
+  </data>
+  <data name="FailedToShareLogs" xml:space="preserve">
+    <value>Could not share the logs.</value>
+  </data>
 </root>

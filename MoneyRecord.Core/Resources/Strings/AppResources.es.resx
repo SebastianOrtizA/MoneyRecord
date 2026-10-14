@@ -1155,4 +1155,16 @@ Monto: {2}</value>
   <data name="FailedToOpenLink" xml:space="preserve">
     <value>No se pudo abrir el enlace.</value>
   </data>
+  <data name="ShareLogs" xml:space="preserve">
+    <value>Compartir registros</value>
+  </data>
+  <data name="ShareLogsDescription" xml:space="preserve">
+    <value>El registro de errores, para informar de un problema. Solo contiene detalles técnicos.</value>
+  </data>
+  <data name="NoLogsYet" xml:space="preserve">
+    <value>Todavía no hay nada en el registro.</value>
+  </data>
+  <data name="FailedToShareLogs" xml:space="preserve">
+    <value>No se pudieron compartir los registros.</value>
+  </data>
 </root>

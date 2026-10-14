@@ -13,5 +13,8 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>Snapshots taken before a restore.</summary>
         string BackupsFolder { get; }
+
+        /// <summary>The app's log files (one per day, the last 7 kept). They never leave the device unless shared.</summary>
+        string LogsFolder { get; }
     }
 }

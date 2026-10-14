@@ -89,6 +89,9 @@ and Windows are maintained too. All data stays on the device.
 - **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
   is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,
   which need no permission.
+- **Logs:** errors are written to log files on the device (the last 7 days, at most 1 MB a day). They hold technical
+  details such as error messages and the app version (the app doesn't log your amounts or descriptions), and leave the device only
+  when you use **Settings → Share logs**.
 - **Android backup:** if the device's own backup is on, it copies the database, receipt photos and settings, which
   includes device-to-device transfer. Restore snapshots, migration copies, logs and caches are left out
   (`Platforms/Android/Resources/xml`). Google's cloud backup holds at most 25 MB per app; past that it stops backing

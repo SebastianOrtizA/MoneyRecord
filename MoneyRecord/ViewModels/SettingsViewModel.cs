@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
@@ -18,6 +19,7 @@ namespace MoneyRecord.ViewModels
         private readonly IThemeService _themeService;
         private readonly IPreferencesService _preferences;
         private readonly LocalizationService _localization;
+        private readonly IAppPaths _paths;
 
         [ObservableProperty]
         private bool isExporting;
@@ -33,7 +35,7 @@ namespace MoneyRecord.ViewModels
 
         public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService,
             ICurrencyService currencyService, INavigationService navigationService, IThemeService themeService,
-            IPreferencesService preferences, LocalizationService localization)
+            IPreferencesService preferences, LocalizationService localization, IAppPaths paths)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -43,6 +45,7 @@ namespace MoneyRecord.ViewModels
             _themeService = themeService;
             _preferences = preferences;
             _localization = localization;
+            _paths = paths;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
         }
@@ -156,6 +159,33 @@ namespace MoneyRecord.ViewModels
         }
 
         private static string BackupFileName() => $"MoneyRecord_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
+
+        [RelayCommand]
+        private async Task ShareLogsAsync()
+        {
+            try
+            {
+                foreach (var old in Directory.GetFiles(FileSystem.CacheDirectory, "MoneyRecord_Logs_*.zip"))
+                    File.Delete(old);
+
+                var filePath = Path.Combine(FileSystem.CacheDirectory, $"MoneyRecord_Logs_{DateTime.Now:yyyyMMdd_HHmmss}.zip");
+                if (!LogFiles.CreateArchive(_paths.LogsFolder, filePath))
+                {
+                    await _dialogService.ToastAsync(AppResources.NoLogsYet);
+                    return;
+                }
+
+                await Share.Default.RequestAsync(new ShareFileRequest
+                {
+                    Title = AppResources.ShareLogs,
+                    File = new ShareFile(filePath)
+                });
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToShareLogs);
+            }
+        }
 
         [RelayCommand]
         private async Task ExportCsvAsync()

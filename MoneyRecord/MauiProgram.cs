@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 using LiveChartsCore.SkiaSharpView.Maui;
 using Microsoft.Extensions.Logging;
+using MoneyRecord.Helpers;
+using Serilog;
+using Serilog.Events;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
@@ -19,6 +22,7 @@ namespace MoneyRecord
             var preferences = new PreferencesService();
             LocalizationService.Instance.LoadLanguage(preferences);
             CurrencyService.LoadBaseCurrency(preferences);
+            var paths = new AppPaths(FileSystem.AppDataDirectory);
 
             var builder = MauiApp.CreateBuilder();
             builder
@@ -34,7 +38,8 @@ namespace MoneyRecord
                 .ConfigureDecimalEntry()
                 // Reports charts (LiveChartsCore on SkiaSharp)
                 .UseSkiaSharp()
-                .UseLiveCharts();
+                .UseLiveCharts()
+                .ConfigureLogging(paths.LogsFolder);
 
             // Register Infrastructure Services
             builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);
@@ -46,7 +51,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IThemeService, ThemeService>();
 
             // Register Database Infrastructure
-            builder.Services.AddSingleton<IAppPaths>(new AppPaths(FileSystem.AppDataDirectory));
+            builder.Services.AddSingleton<IAppPaths>(paths);
             builder.Services.AddSingleton<DatabaseInitializer>();
 
             // Register Repositories (Interface Segregation)
@@ -118,11 +123,48 @@ namespace MoneyRecord
             builder.Services.AddTransient<CashFlowReportPage>();
             builder.Services.AddTransient<NetWorthReportPage>();
 
+            return builder.Build();
+        }
+
+        /// <summary>
+        /// Every <see cref="ILogger{T}"/> writes to a daily file in the app's logs folder (shared from Settings), and to
+        /// the debugger in Debug builds. Files older than <see cref="LogFiles.RetainedDays"/> days are deleted, and a day
+        /// stops at 1 MB so an error loop can't fill the device (its first errors are the useful ones). Crashes are
+        /// logged before the process ends.
+        /// </summary>
+        private static MauiAppBuilder ConfigureLogging(this MauiAppBuilder builder, string logsFolder)
+        {
+            Log.Logger = new LoggerConfiguration()
+#if DEBUG
+                .MinimumLevel.Debug()
+#else
+                .MinimumLevel.Information()
+#endif
+                // MAUI's own chatter; its warnings and errors still get through
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .WriteTo.File(LogFiles.RollingPath(logsFolder),
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: null,
+                    retainedFileTimeLimit: TimeSpan.FromDays(LogFiles.RetainedDays),
+                    fileSizeLimitBytes: 1_000_000)
+                .CreateLogger();
+
+            builder.Logging.AddSerilog(dispose: true);
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            AppDomain.CurrentDomain.UnhandledException += (_, e) =>
+            {
+                Log.Fatal(e.ExceptionObject as Exception, "Unhandled exception");
+                Log.CloseAndFlush();
+            };
+            TaskScheduler.UnobservedTaskException += (_, e) => Log.Error(e.Exception, "Unobserved task exception");
+
+            Log.Information("MoneyRecord {Version} ({Build}) on {Platform} {OsVersion}",
+                AppInfo.Current.VersionString, AppInfo.Current.BuildString,
+                DeviceInfo.Current.Platform, DeviceInfo.Current.VersionString);
+            return builder;
         }
 
         /// <summary>
