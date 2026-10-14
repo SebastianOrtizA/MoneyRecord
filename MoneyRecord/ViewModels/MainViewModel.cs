@@ -17,6 +17,9 @@ namespace MoneyRecord.ViewModels
         private readonly IBudgetSummaryService _budgetSummaryService;
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
+        private readonly ICrashReportConsent _crashReports;
+        private readonly IDialogService _dialogService;
+        private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
         private IDisposable? _periodWatch;
@@ -69,13 +72,16 @@ namespace MoneyRecord.ViewModels
         public PeriodViewModel Period { get; }
 
         public MainViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
-            IErrorHandler errorHandler, INavigationService navigationService)
+            IErrorHandler errorHandler, INavigationService navigationService, ICrashReportConsent crashReports,
+            IDialogService dialogService)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
             _budgetSummaryService = budgetSummaryService;
             _errorHandler = errorHandler;
             _navigationService = navigationService;
+            _crashReports = crashReports;
+            _dialogService = dialogService;
             Period = period;
 
             // Home lives as long as the app: after a language change in Settings, a new value makes the bound date
@@ -84,10 +90,30 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>
-        public Task InitializeAsync()
+        public async Task InitializeAsync()
         {
             _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
-            return LoadDataCommand.ExecuteAsync(null);
+            await LoadDataCommand.ExecuteAsync(null);
+            await AskCrashReportsOnceAsync();
+        }
+
+        /// <summary>Once, a week after first use: may the app send crash reports? (Only builds that can send ask.)</summary>
+        private async Task AskCrashReportsOnceAsync()
+        {
+            if (_askingCrashReports || !_crashReports.ShouldAsk())
+                return;
+
+            _askingCrashReports = true;
+            try
+            {
+                var agreed = await _dialogService.ConfirmAsync(AppResources.CrashReportsQuestionTitle,
+                    AppResources.CrashReportsQuestion, AppResources.CrashReportsAccept, AppResources.CrashReportsDecline);
+                _crashReports.Answer(agreed);
+            }
+            finally
+            {
+                _askingCrashReports = false;
+            }
         }
 
         /// <summary>The page disappeared: stop following the period (it reloads when it appears again).</summary>

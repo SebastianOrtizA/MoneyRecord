@@ -99,6 +99,8 @@ jobs:
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # Opt-in crash reports: the csproj stores it in the app (local and fork builds have none and never report)
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         run: >
           dotnet publish MoneyRecord/MoneyRecord.csproj
           -f net10.0-android

@@ -1,6 +1,6 @@
 # Stage 9: Release Hardening
 
-**Status**: In progress (9.1–9.3 done; 9.4a in review)
+**Status**: In progress (9.1–9.4a done; 9.4b in review)
 **Depends on**: Stage 6 (can run in parallel with Stages 7–8)
 **Complexity**: Medium
 **Source**: Product & engineering review, 2026-10-11 (Tests & CI, P11) + parts of Stage 5.1
@@ -47,7 +47,7 @@ Public releases users can install and update, with enough logging to debug field
 - `android:allowBackup`: keep, but add `dataExtractionRules` so Android backup includes the DB and receipts and
   excludes `files/.__override__` and caches.
 - Privacy section in README: offline, no tracking.
-- Done as: removed `INTERNET`, `ACCESS_NETWORK_STATE`, `READ_EXTERNAL_STORAGE` and `READ_MEDIA_IMAGES`. Deviation:
+- Done as: removed `INTERNET`, `ACCESS_NETWORK_STATE` (9.4b brought `INTERNET` back for opt-in crash reports), `READ_EXTERNAL_STORAGE` and `READ_MEDIA_IMAGES`. Deviation:
   **`WRITE_EXTERNAL_STORAGE` (maxSdkVersion 32) stays.** MAUI 10.0.90 `MediaPicker.CaptureAsync` calls
   `Permissions.EnsureGrantedAsync<StorageWrite>()` below API 33, and that throws `PermissionException` when the
   permission isn't declared. Picking uses the photo picker / `ACTION_GET_CONTENT` and needs nothing. The Release APK's
@@ -86,6 +86,19 @@ Public releases users can install and update, with enough logging to debug field
   sheet offers `MoneyRecord_Logs_….zip`.
   Review: zipping runs in `Task.Run` with `IsExporting` set, and `NewCacheFile(prefix, extension)` replaces the
   delete-old-then-timestamp code for the backup, log and CSV shares (the CSV share now cleans up old copies too).
+- 9.4b done as: `Sentry.Maui` 6.11.1 (MIT; 6.12.x was under two weeks old), About entry with the sentry-dotnet /
+  sentry-java / sentry-native licences (`Sentry.txt`). The `SENTRY_DSN` secret reaches MSBuild as an environment
+  variable in the CI build step and is stored as `AssemblyMetadata("SentryDsn")`; local and fork builds have none.
+  Core `ICrashReportConsent` / `CrashReportConsent` (prefs `CrashReports.*`, `TimeProvider`): off by default; Home asks
+  once (`ConfirmAsync`) when `AskAfterDays` = 7 have passed since the first check; a Settings switch (shown only when a
+  DSN exists) also counts as the answer. `MauiProgram.ConfigureCrashReports` calls `UseSentry` only with a DSN **and**
+  consent at start (turning it on applies at the next start); `BeforeSend` drops events as soon as it is turned off.
+  Options: no default PII, no screenshots, no UI text/titles in breadcrumbs, no session tracking; ILogger errors (e.g.
+  `ErrorHandler`) become events. `INTERNET` is back (only permission added; Sentry Android ships
+  `io.sentry.auto-init=false`, so nothing starts without `UseSentry`). APK 47.7 → 51.9 MB. README Privacy rewritten.
+  Owner: enable "Prevent Storing of IP Addresses" in the Sentry project. Emulator (Debug + placeholder DSN): the
+  question appears after backdating `CrashReports.FirstUse` 8 days, "Send reports" saves Decided/Enabled, the
+  Settings switch shows on, and the next start loads Sentry.
 
 ### 9.5 Tests and CI
 - CI test job on `ubuntu-latest` once Stage 7.1 lands (Core-only tests).

@@ -2,6 +2,7 @@
 using LiveChartsCore.SkiaSharpView.Maui;
 using Microsoft.Extensions.Logging;
 using MoneyRecord.Helpers;
+using System.Reflection;
 using Serilog;
 using Serilog.Events;
 using SkiaSharp.Views.Maui.Controls.Hosting;
@@ -23,6 +24,7 @@ namespace MoneyRecord
             LocalizationService.Instance.LoadLanguage(preferences);
             CurrencyService.LoadBaseCurrency(preferences);
             var paths = new AppPaths(FileSystem.AppDataDirectory);
+            var crashReports = new CrashReportConsent(preferences, TimeProvider.System, isAvailable: SentryDsn() != null);
 
             var builder = MauiApp.CreateBuilder();
             builder
@@ -39,7 +41,8 @@ namespace MoneyRecord
                 // Reports charts (LiveChartsCore on SkiaSharp)
                 .UseSkiaSharp()
                 .UseLiveCharts()
-                .ConfigureLogging(paths.LogsFolder);
+                .ConfigureLogging(paths.LogsFolder)
+                .ConfigureCrashReports(crashReports);
 
             // Register Infrastructure Services
             builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);
@@ -49,6 +52,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ICategoryIconService, CategoryIconService>();
             builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
             builder.Services.AddSingleton<IThemeService, ThemeService>();
+            builder.Services.AddSingleton<ICrashReportConsent>(crashReports);
 
             // Register Database Infrastructure
             builder.Services.AddSingleton<IAppPaths>(paths);
@@ -167,6 +171,39 @@ namespace MoneyRecord
                 DeviceInfo.Current.Platform, DeviceInfo.Current.VersionString);
             return builder;
         }
+
+        /// <summary>
+        /// Sentry crash reports, only when this build has a DSN (CI builds) and the user agreed. Consent is checked at
+        /// start; turning it off in Settings stops sending at once (BeforeSend). Errors logged through ILogger are sent
+        /// too. Nothing that identifies the user or shows their data: no screenshots (screens show amounts), no
+        /// default PII, no UI text in breadcrumbs, no session tracking.
+        /// </summary>
+        private static MauiAppBuilder ConfigureCrashReports(this MauiAppBuilder builder, ICrashReportConsent consent)
+        {
+            var dsn = SentryDsn();
+            if (dsn == null || !consent.Enabled)
+                return builder;
+
+            return builder.UseSentry(options =>
+            {
+                options.Dsn = dsn;
+                options.Release = $"moneyrecord@{AppInfo.Current.VersionString}+{AppInfo.Current.BuildString}";
+#if DEBUG
+                options.Environment = "debug";
+#endif
+                options.SendDefaultPii = false;
+                options.AttachScreenshot = false;
+                options.IncludeTextInBreadcrumbs = false;
+                options.IncludeTitleInBreadcrumbs = false;
+                options.AutoSessionTracking = false;
+                options.SetBeforeSend(sentryEvent => consent.Enabled ? sentryEvent : null);
+            });
+        }
+
+        /// <summary>The Sentry DSN that CI builds carry (see the csproj); null in local and fork builds.</summary>
+        private static string? SentryDsn() =>
+            typeof(MauiProgram).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+                .FirstOrDefault(a => a.Key == "SentryDsn")?.Value is { Length: > 0 } dsn ? dsn : null;
 
         /// <summary>
         /// Configures the DecimalEntry control with platform-specific handlers
