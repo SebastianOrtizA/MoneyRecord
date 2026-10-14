@@ -128,9 +128,9 @@ namespace MoneyRecord
 
         /// <summary>
         /// Every <see cref="ILogger{T}"/> writes to a daily file in the app's logs folder (shared from Settings), and to
-        /// the debugger in Debug builds. Files older than <see cref="LogFiles.RetainedDays"/> days are deleted, and a day
-        /// stops at 1 MB so an error loop can't fill the device (its first errors are the useful ones). Crashes are
-        /// logged before the process ends.
+        /// the debugger in Debug builds. A file rolls over at 1 MB; files older than <see cref="LogFiles.RetainedDays"/> days
+        /// and all but the newest <see cref="LogFiles.MaxFiles"/> are deleted, so an error loop can't fill the device and
+        /// the newest events (such as the crash that ends it) are kept. Crashes are logged before the process ends.
         /// </summary>
         private static MauiAppBuilder ConfigureLogging(this MauiAppBuilder builder, string logsFolder)
         {
@@ -144,9 +144,10 @@ namespace MoneyRecord
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
                 .WriteTo.File(LogFiles.RollingPath(logsFolder),
                     rollingInterval: RollingInterval.Day,
-                    retainedFileCountLimit: null,
+                    retainedFileCountLimit: LogFiles.MaxFiles,
                     retainedFileTimeLimit: TimeSpan.FromDays(LogFiles.RetainedDays),
-                    fileSizeLimitBytes: 1_000_000)
+                    fileSizeLimitBytes: LogFiles.MaxFileBytes,
+                    rollOnFileSizeLimit: true)
                 .CreateLogger();
 
             builder.Logging.AddSerilog(dispose: true);

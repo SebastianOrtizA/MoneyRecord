@@ -37,10 +37,12 @@ public sealed class LogFilesTests : IDisposable
     }
 
     [Fact]
-    public void CreateArchive_ZipsEveryLogFile()
+    public void CreateArchive_ZipsEveryLogFile_OldestFirst()
     {
-        File.WriteAllText(Path.Combine(_logs, "moneyrecord-20261013.log"), "yesterday");
+        // Past the size limit a day continues in _001, _002, ...
+        File.WriteAllText(Path.Combine(_logs, "moneyrecord-20261014_001.log"), "today, later");
         File.WriteAllText(Path.Combine(_logs, "moneyrecord-20261014.log"), "today");
+        File.WriteAllText(Path.Combine(_logs, "moneyrecord-20261013.log"), "yesterday");
         File.WriteAllText(Path.Combine(_logs, "notes.txt"), "not a log");
 
         LogFiles.CreateArchive(_logs, _zip).Should().BeTrue();
@@ -49,7 +51,11 @@ public sealed class LogFilesTests : IDisposable
         {
             ["moneyrecord-20261013.log"] = "yesterday",
             ["moneyrecord-20261014.log"] = "today",
+            ["moneyrecord-20261014_001.log"] = "today, later",
         });
+        using var zip = ZipFile.OpenRead(_zip);
+        zip.Entries.Select(e => e.FullName).Should().Equal(
+            "moneyrecord-20261013.log", "moneyrecord-20261014.log", "moneyrecord-20261014_001.log");
     }
 
     [Fact]

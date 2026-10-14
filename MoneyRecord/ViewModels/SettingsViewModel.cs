@@ -135,11 +135,7 @@ namespace MoneyRecord.ViewModels
             {
                 IsExporting = true;
 
-                // Backups include photos, so don't let earlier shared copies pile up in the cache
-                foreach (var old in Directory.GetFiles(FileSystem.CacheDirectory, "MoneyRecord_Backup_*.zip"))
-                    File.Delete(old);
-
-                var filePath = Path.Combine(FileSystem.CacheDirectory, BackupFileName());
+                var filePath = NewCacheFile("MoneyRecord_Backup", ".zip");
                 await _dataExportService.ExportBackupAsync(filePath);
 
                 await Share.Default.RequestAsync(new ShareFileRequest
@@ -160,16 +156,27 @@ namespace MoneyRecord.ViewModels
 
         private static string BackupFileName() => $"MoneyRecord_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
 
+        /// <summary>
+        /// A new timestamped file in the cache folder, to share. Earlier ones with the same prefix are deleted first, so
+        /// shared copies (backups include photos) don't pile up.
+        /// </summary>
+        private static string NewCacheFile(string prefix, string extension)
+        {
+            foreach (var old in Directory.GetFiles(FileSystem.CacheDirectory, $"{prefix}_*{extension}"))
+                File.Delete(old);
+            return Path.Combine(FileSystem.CacheDirectory, $"{prefix}_{DateTime.Now:yyyyMMdd_HHmmss}{extension}");
+        }
+
         [RelayCommand]
         private async Task ShareLogsAsync()
         {
             try
             {
-                foreach (var old in Directory.GetFiles(FileSystem.CacheDirectory, "MoneyRecord_Logs_*.zip"))
-                    File.Delete(old);
+                IsExporting = true;
 
-                var filePath = Path.Combine(FileSystem.CacheDirectory, $"MoneyRecord_Logs_{DateTime.Now:yyyyMMdd_HHmmss}.zip");
-                if (!LogFiles.CreateArchive(_paths.LogsFolder, filePath))
+                var filePath = NewCacheFile("MoneyRecord_Logs", ".zip");
+                // Up to several MB of text to compress: off the UI thread
+                if (!await Task.Run(() => LogFiles.CreateArchive(_paths.LogsFolder, filePath)))
                 {
                     await _dialogService.ToastAsync(AppResources.NoLogsYet);
                     return;
@@ -185,6 +192,10 @@ namespace MoneyRecord.ViewModels
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToShareLogs);
             }
+            finally
+            {
+                IsExporting = false;
+            }
         }
 
         [RelayCommand]
@@ -195,8 +206,7 @@ namespace MoneyRecord.ViewModels
                 IsExporting = true;
 
                 var csv = await _dataExportService.ExportCsvAsync();
-                var fileName = $"MoneyRecord_Transactions_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
-                var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+                var filePath = NewCacheFile("MoneyRecord_Transactions", ".csv");
                 await File.WriteAllTextAsync(filePath, csv);
 
                 await Share.Default.RequestAsync(new ShareFileRequest
