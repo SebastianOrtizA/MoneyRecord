@@ -21,6 +21,9 @@ namespace MoneyRecord.ViewModels
         private readonly LocalizationService _localization;
         private readonly IAppPaths _paths;
         private readonly ICrashReportConsent _crashReports;
+        private readonly IReminderService _reminders;
+        private readonly IReminderSettings _reminderSettings;
+        private readonly INotificationService _notifications;
 
         [ObservableProperty]
         private bool isExporting;
@@ -37,7 +40,8 @@ namespace MoneyRecord.ViewModels
         public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService,
             ICurrencyService currencyService, INavigationService navigationService, IThemeService themeService,
             IPreferencesService preferences, LocalizationService localization, IAppPaths paths,
-            ICrashReportConsent crashReports)
+            ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
+            INotificationService notifications)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -49,6 +53,9 @@ namespace MoneyRecord.ViewModels
             _localization = localization;
             _paths = paths;
             _crashReports = crashReports;
+            _reminders = reminders;
+            _reminderSettings = reminderSettings;
+            _notifications = notifications;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
         }
@@ -70,12 +77,16 @@ namespace MoneyRecord.ViewModels
         {
             BaseCurrency = _currencyService.GetCurrency(_currencyService.GetBaseCurrencyCode());
             SelectPickers();
+            // Notifications may have been allowed or blocked in the system settings meanwhile
+            OnPropertyChanged(nameof(RemindersEnabled));
         }
 
         private void SelectPickers()
         {
             SelectedLanguage = Languages.First(l => l.Code == _localization.LanguageSetting);
             SelectedTheme = Themes.First(t => t.Choice == _themeService.Current);
+            SelectedBillReminder = BillReminderOptions.FirstOrDefault(o => o.DaysBefore == _reminderSettings.BillDaysBefore)
+                ?? BillReminderOptions[0];
         }
 
         partial void OnSelectedLanguageChanged(LanguageOption? value)
@@ -88,6 +99,7 @@ namespace MoneyRecord.ViewModels
             // The pickers' "System default" / theme names are translated too
             Languages = LanguageOption.All();
             Themes = ThemeOption.All();
+            BillReminderOptions = BillReminderOption.All();
             SelectPickers();
         }
 
@@ -108,6 +120,68 @@ namespace MoneyRecord.ViewModels
                 if (value == _crashReports.Enabled)
                     return;
                 _crashReports.Enabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>Platforms with notifications (Android) show the Reminders card.</summary>
+        public bool RemindersSupported => _notifications.IsSupported;
+
+        /// <summary>On only while the system still allows notifications (they can be blocked in the system settings).</summary>
+        public bool RemindersEnabled
+        {
+            get => _reminderSettings.Enabled && _notifications.AreAllowed;
+            set
+            {
+                if (value == RemindersEnabled)
+                    return;
+                if (value)
+                {
+                    // Asks for the permission; the switch goes back off when it is refused
+                    TurnOnRemindersCommand.Execute(null);
+                    return;
+                }
+                _reminderSettings.Enabled = false;
+                _reminderSettings.Offered = true;
+                OnPropertyChanged();
+            }
+        }
+
+        [RelayCommand]
+        private async Task TurnOnRemindersAsync()
+        {
+            await _reminders.EnableAsync();
+            OnPropertyChanged(nameof(RemindersEnabled));
+        }
+
+        [ObservableProperty]
+        private IReadOnlyList<BillReminderOption> billReminderOptions = BillReminderOption.All();
+
+        [ObservableProperty]
+        private BillReminderOption? selectedBillReminder;
+
+        partial void OnSelectedBillReminderChanged(BillReminderOption? value)
+        {
+            if (value != null)
+                _reminderSettings.BillDaysBefore = value.DaysBefore;
+        }
+
+        public bool BudgetAlertsEnabled
+        {
+            get => _reminderSettings.BudgetAlerts;
+            set
+            {
+                _reminderSettings.BudgetAlerts = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool RecurringAddedEnabled
+        {
+            get => _reminderSettings.RecurringAdded;
+            set
+            {
+                _reminderSettings.RecurringAdded = value;
                 OnPropertyChanged();
             }
         }

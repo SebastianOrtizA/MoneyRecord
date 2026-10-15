@@ -91,6 +91,11 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 	</ItemGroup>
 
+	<!-- Daily background job (reminders, recurring transactions) on Android: WorkManager -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.10.3" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\MoneyRecord.Core\MoneyRecord.Core.csproj" />
 	</ItemGroup>

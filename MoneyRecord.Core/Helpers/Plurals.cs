@@ -13,5 +13,11 @@ namespace MoneyRecord.Helpers
 
         public static string InDays(int count) =>
             string.Format(count == 1 ? AppResources.InDaysOne : AppResources.InDaysOther, count);
+
+        public static string DaysBefore(int count) =>
+            string.Format(count == 1 ? AppResources.DaysBeforeOne : AppResources.DaysBeforeOther, count);
+
+        public static string RecurringAdded(int count) =>
+            string.Format(count == 1 ? AppResources.RecurringAddedOne : AppResources.RecurringAddedOther, count);
     }
 }

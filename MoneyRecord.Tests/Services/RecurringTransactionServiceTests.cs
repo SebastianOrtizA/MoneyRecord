@@ -191,4 +191,16 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         (await TransactionsAsync()).Skip(before).Select(t => t.Date)
             .Should().Equal(upcoming.Select(u => u.Date));
     }
+
+    [Fact]
+    public async Task Runs_at_the_same_time_never_create_an_occurrence_twice()
+    {
+        // App start and the daily background job can overlap
+        await AddAsync(RecurrenceFrequency.Daily, new DateTime(2026, 3, 1));
+
+        var counts = await Task.WhenAll(Enumerable.Range(0, 4).Select(_ => Task.Run(_sut.ProcessDueTransactionsAsync)));
+
+        counts.Sum().Should().Be(15);
+        (await TransactionsAsync()).Should().HaveCount(15);
+    }
 }

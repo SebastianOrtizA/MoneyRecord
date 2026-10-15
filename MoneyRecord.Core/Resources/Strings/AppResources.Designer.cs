@@ -3134,5 +3134,203 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("InDaysOther", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reminders.
+        /// </summary>
+        public static string Reminders {
+            get {
+                return ResourceManager.GetString("Reminders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bills before they are due and budgets near their limit.
+        /// </summary>
+        public static string RemindersDescription {
+            get {
+                return ResourceManager.GetString("RemindersDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bill reminders.
+        /// </summary>
+        public static string BillReminders {
+            get {
+                return ResourceManager.GetString("BillReminders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string BillRemindersOff {
+            get {
+                return ResourceManager.GetString("BillRemindersOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On the day.
+        /// </summary>
+        public static string BillRemindersSameDay {
+            get {
+                return ResourceManager.GetString("BillRemindersSameDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} day before.
+        /// </summary>
+        public static string DaysBeforeOne {
+            get {
+                return ResourceManager.GetString("DaysBeforeOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days before.
+        /// </summary>
+        public static string DaysBeforeOther {
+            get {
+                return ResourceManager.GetString("DaysBeforeOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget alerts.
+        /// </summary>
+        public static string BudgetAlerts {
+            get {
+                return ResourceManager.GetString("BudgetAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recurring transactions added.
+        /// </summary>
+        public static string RecurringAddedAlerts {
+            get {
+                return ResourceManager.GetString("RecurringAddedAlerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bills and recurring transactions.
+        /// </summary>
+        public static string ChannelBills {
+            get {
+                return ResourceManager.GetString("ChannelBills", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bill due: {0}.
+        /// </summary>
+        public static string BillDueTitle {
+            get {
+                return ResourceManager.GetString("BillDueTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: budget near its limit.
+        /// </summary>
+        public static string BudgetNearLimitTitle {
+            get {
+                return ResourceManager.GetString("BudgetNearLimitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: over budget.
+        /// </summary>
+        public static string BudgetExceededTitle {
+            get {
+                return ResourceManager.GetString("BudgetExceededTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recurring transaction was added.
+        /// </summary>
+        public static string RecurringAddedOne {
+            get {
+                return ResourceManager.GetString("RecurringAddedOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recurring transactions were added.
+        /// </summary>
+        public static string RecurringAddedOther {
+            get {
+                return ResourceManager.GetString("RecurringAddedOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get reminders?.
+        /// </summary>
+        public static string RemindersOfferTitle {
+            get {
+                return ResourceManager.GetString("RemindersOfferTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyRecord can remind you before a bill is due and when a budget nears its limit. You can change this in Settings..
+        /// </summary>
+        public static string RemindersOfferMessage {
+            get {
+                return ResourceManager.GetString("RemindersOfferMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn on.
+        /// </summary>
+        public static string RemindersOfferAccept {
+            get {
+                return ResourceManager.GetString("RemindersOfferAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not now.
+        /// </summary>
+        public static string NotNow {
+            get {
+                return ResourceManager.GetString("NotNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications are off.
+        /// </summary>
+        public static string NotificationsBlockedTitle {
+            get {
+                return ResourceManager.GetString("NotificationsBlockedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow notifications for MoneyRecord in the system settings to get reminders..
+        /// </summary>
+        public static string NotificationsBlockedMessage {
+            get {
+                return ResourceManager.GetString("NotificationsBlockedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open settings.
+        /// </summary>
+        public static string OpenSystemSettings {
+            get {
+                return ResourceManager.GetString("OpenSystemSettings", resourceCulture);
+            }
+        }
     }
 }

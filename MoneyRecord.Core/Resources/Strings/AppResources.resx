@@ -1208,4 +1208,70 @@ Amount: {2}</value>
   <data name="InDaysOther" xml:space="preserve">
     <value>In {0} days</value>
   </data>
+  <data name="Reminders" xml:space="preserve">
+    <value>Reminders</value>
+  </data>
+  <data name="RemindersDescription" xml:space="preserve">
+    <value>Bills before they are due and budgets near their limit</value>
+  </data>
+  <data name="BillReminders" xml:space="preserve">
+    <value>Bill reminders</value>
+  </data>
+  <data name="BillRemindersOff" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="BillRemindersSameDay" xml:space="preserve">
+    <value>On the day</value>
+  </data>
+  <data name="DaysBeforeOne" xml:space="preserve">
+    <value>{0} day before</value>
+  </data>
+  <data name="DaysBeforeOther" xml:space="preserve">
+    <value>{0} days before</value>
+  </data>
+  <data name="BudgetAlerts" xml:space="preserve">
+    <value>Budget alerts</value>
+  </data>
+  <data name="RecurringAddedAlerts" xml:space="preserve">
+    <value>Recurring transactions added</value>
+  </data>
+  <data name="ChannelBills" xml:space="preserve">
+    <value>Bills and recurring transactions</value>
+  </data>
+  <data name="BillDueTitle" xml:space="preserve">
+    <value>Bill due: {0}</value>
+  </data>
+  <data name="BudgetNearLimitTitle" xml:space="preserve">
+    <value>{0}: budget near its limit</value>
+  </data>
+  <data name="BudgetExceededTitle" xml:space="preserve">
+    <value>{0}: over budget</value>
+  </data>
+  <data name="RecurringAddedOne" xml:space="preserve">
+    <value>{0} recurring transaction was added</value>
+  </data>
+  <data name="RecurringAddedOther" xml:space="preserve">
+    <value>{0} recurring transactions were added</value>
+  </data>
+  <data name="RemindersOfferTitle" xml:space="preserve">
+    <value>Get reminders?</value>
+  </data>
+  <data name="RemindersOfferMessage" xml:space="preserve">
+    <value>MoneyRecord can remind you before a bill is due and when a budget nears its limit. You can change this in Settings.</value>
+  </data>
+  <data name="RemindersOfferAccept" xml:space="preserve">
+    <value>Turn on</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Not now</value>
+  </data>
+  <data name="NotificationsBlockedTitle" xml:space="preserve">
+    <value>Notifications are off</value>
+  </data>
+  <data name="NotificationsBlockedMessage" xml:space="preserve">
+    <value>Allow notifications for MoneyRecord in the system settings to get reminders.</value>
+  </data>
+  <data name="OpenSystemSettings" xml:space="preserve">
+    <value>Open settings</value>
+  </data>
 </root>

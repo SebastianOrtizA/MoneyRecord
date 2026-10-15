@@ -36,6 +36,8 @@ most, and doesn't log your amounts or descriptions. They leave the device only w
 - **Camera:** only when you take a photo of a receipt.
 - **Storage (Android 12 and older):** needed by the camera capture on those versions.
 - **Internet:** used only for crash reports, when you have turned them on.
+- **Notifications (Android 13 and newer):** asked when you turn reminders on, to remind you of bills and budgets.
+  Reminders are created on the device; nothing is sent anywhere.
 
 ## Children
 The app isn't directed at children and doesn't knowingly collect data from anyone.
@@ -89,6 +91,8 @@ guarda 7 días como máximo y no registra tus importes ni descripciones. Solo sa
 - **Cámara:** solo cuando tomas la foto de un recibo.
 - **Almacenamiento (Android 12 y anteriores):** lo necesita la captura con la cámara en esas versiones.
 - **Internet:** se usa solo para los informes de errores, cuando los has activado.
+- **Notificaciones (Android 13 y posteriores):** se piden cuando activas los recordatorios, para avisarte de pagos y
+  presupuestos. Los recordatorios se crean en el dispositivo; no se envía nada.
 
 ## Menores
 La app no está dirigida a menores y no recopila datos de nadie a sabiendas.

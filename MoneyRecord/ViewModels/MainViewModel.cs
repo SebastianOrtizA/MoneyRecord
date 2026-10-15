@@ -20,6 +20,7 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly ICrashReportConsent _crashReports;
         private readonly IDialogService _dialogService;
+        private readonly NotificationLaunch _notificationLaunch;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -81,7 +82,8 @@ namespace MoneyRecord.ViewModels
 
         public MainViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
-            INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService)
+            INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
+            NotificationLaunch notificationLaunch)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
@@ -91,6 +93,7 @@ namespace MoneyRecord.ViewModels
             _navigationService = navigationService;
             _crashReports = crashReports;
             _dialogService = dialogService;
+            _notificationLaunch = notificationLaunch;
             Period = period;
 
             // Home lives as long as the app: after a language change in Settings, a new value makes the bound date
@@ -103,6 +106,8 @@ namespace MoneyRecord.ViewModels
         {
             _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
             await LoadDataCommand.ExecuteAsync(null);
+            // Opened from a notification: its page, now that the Shell is ready
+            await _notificationLaunch.OpenPendingAsync();
             await AskCrashReportsOnceAsync();
         }
 

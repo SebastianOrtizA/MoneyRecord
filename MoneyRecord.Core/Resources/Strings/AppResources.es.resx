@@ -1206,4 +1206,70 @@ Monto: {2}</value>
   <data name="InDaysOther" xml:space="preserve">
     <value>En {0} días</value>
   </data>
+  <data name="Reminders" xml:space="preserve">
+    <value>Recordatorios</value>
+  </data>
+  <data name="RemindersDescription" xml:space="preserve">
+    <value>Pagos antes de su vencimiento y presupuestos cerca del límite</value>
+  </data>
+  <data name="BillReminders" xml:space="preserve">
+    <value>Recordatorios de pagos</value>
+  </data>
+  <data name="BillRemindersOff" xml:space="preserve">
+    <value>Desactivados</value>
+  </data>
+  <data name="BillRemindersSameDay" xml:space="preserve">
+    <value>El mismo día</value>
+  </data>
+  <data name="DaysBeforeOne" xml:space="preserve">
+    <value>{0} día antes</value>
+  </data>
+  <data name="DaysBeforeOther" xml:space="preserve">
+    <value>{0} días antes</value>
+  </data>
+  <data name="BudgetAlerts" xml:space="preserve">
+    <value>Alertas de presupuesto</value>
+  </data>
+  <data name="RecurringAddedAlerts" xml:space="preserve">
+    <value>Transacciones recurrentes añadidas</value>
+  </data>
+  <data name="ChannelBills" xml:space="preserve">
+    <value>Pagos y transacciones recurrentes</value>
+  </data>
+  <data name="BillDueTitle" xml:space="preserve">
+    <value>Pago próximo: {0}</value>
+  </data>
+  <data name="BudgetNearLimitTitle" xml:space="preserve">
+    <value>{0}: presupuesto cerca del límite</value>
+  </data>
+  <data name="BudgetExceededTitle" xml:space="preserve">
+    <value>{0}: presupuesto superado</value>
+  </data>
+  <data name="RecurringAddedOne" xml:space="preserve">
+    <value>Se añadió {0} transacción recurrente</value>
+  </data>
+  <data name="RecurringAddedOther" xml:space="preserve">
+    <value>Se añadieron {0} transacciones recurrentes</value>
+  </data>
+  <data name="RemindersOfferTitle" xml:space="preserve">
+    <value>¿Recibir recordatorios?</value>
+  </data>
+  <data name="RemindersOfferMessage" xml:space="preserve">
+    <value>MoneyRecord puede recordarte antes de que venza un pago y cuando un presupuesto se acerque a su límite. Puedes cambiarlo en Ajustes.</value>
+  </data>
+  <data name="RemindersOfferAccept" xml:space="preserve">
+    <value>Activar</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Ahora no</value>
+  </data>
+  <data name="NotificationsBlockedTitle" xml:space="preserve">
+    <value>Notificaciones desactivadas</value>
+  </data>
+  <data name="NotificationsBlockedMessage" xml:space="preserve">
+    <value>Permite las notificaciones de MoneyRecord en los ajustes del sistema para recibir recordatorios.</value>
+  </data>
+  <data name="OpenSystemSettings" xml:space="preserve">
+    <value>Abrir ajustes</value>
+  </data>
 </root>

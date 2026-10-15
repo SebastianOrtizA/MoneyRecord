@@ -15,6 +15,7 @@ namespace MoneyRecord.ViewModels
         private readonly IBudgetSummaryService _budgetSummaryService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
+        private readonly IReminderService _reminders;
 
         // While the page is shown: a period change (here or on another tab) reloads it
         private IDisposable? _periodWatch;
@@ -74,13 +75,15 @@ namespace MoneyRecord.ViewModels
         /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
         public PeriodViewModel Period { get; }
 
-        public BudgetViewModel(PeriodViewModel period, ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBudgetSummaryService budgetSummaryService, IErrorHandler errorHandler, IDialogService dialogService)
+        public BudgetViewModel(PeriodViewModel period, ICategoryRepository categoryRepository, IBudgetRepository budgetRepository, IBudgetSummaryService budgetSummaryService, IErrorHandler errorHandler, IDialogService dialogService,
+            IReminderService reminders)
         {
             _categoryRepository = categoryRepository;
             _budgetRepository = budgetRepository;
             _budgetSummaryService = budgetSummaryService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
+            _reminders = reminders;
             selectedBudgetPeriod = BudgetPeriods[1]; // Default to Month
             Period = period;
         }
@@ -248,7 +251,11 @@ namespace MoneyRecord.ViewModels
                 await LoadBudgetsCommand.ExecuteAsync(null);
 
                 if (adding)
+                {
                     await _dialogService.ToastAsync(AppResources.BudgetAddedSuccessfully);
+                    // A first budget: offer alerts when it nears its limit (once)
+                    await _reminders.OfferAsync();
+                }
             }
             catch (Exception ex)
             {
