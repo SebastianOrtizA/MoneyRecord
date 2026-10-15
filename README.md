@@ -83,16 +83,22 @@ and Windows are maintained too. All data stays on the device.
   migrations that rewrite data back up the database first (`moneyrecord.db3.bak-v{n}`).
 
 ### Privacy
-- **Offline:** the app has no internet permission, so your data never leaves the device unless you export or share a
-  backup yourself.
+- **Offline:** your data never leaves the device unless you export or share a backup yourself. The internet permission
+  is there only for opt-in crash reports (below).
 - **No accounts, ads, analytics or tracking.**
+- **Crash reports (opt-in, off by default):** after a week of use the app asks once whether it may send crash reports
+  to the developer through [Sentry](https://sentry.io), and **Settings → Send crash reports** changes the answer.
+  A report holds the error, the app version and device details such as the Android version and model. The app
+  doesn't add your amounts or descriptions, screenshots, or a user ID, and the Sentry project doesn't store IP
+  addresses.
+  Only official builds can send reports; builds from source have no Sentry address and never ask.
 - **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
   is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,
   which need no permission.
 - **Logs:** errors and basic app info (version, device OS) are written to log files on the device (the last 7 days,
   at most 10 MB in all). They hold technical details such as error messages (the app doesn't log your amounts or
-  descriptions), and leave the device only
-  when you use **Settings → Share logs**.
+  descriptions), and leave the device only when you use
+  **Settings → Share logs**.
 - **Android backup:** if the device's own backup is on, it copies the database, receipt photos and settings, which
   includes device-to-device transfer. Restore snapshots, migration copies, logs and caches are left out
   (`Platforms/Android/Resources/xml`). Google's cloud backup holds at most 25 MB per app; past that it stops backing

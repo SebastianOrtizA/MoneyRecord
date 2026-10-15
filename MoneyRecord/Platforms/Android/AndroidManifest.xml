@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 	<application android:allowBackup="true" android:fullBackupContent="@xml/backup_rules" android:dataExtractionRules="@xml/data_extraction_rules" android:icon="@mipmap/moneyrecord" android:roundIcon="@mipmap/moneyrecord_round" android:supportsRtl="true"></application>
-	<!-- The app is offline: no INTERNET / network permissions. Picking photos (photo picker) and files (system picker)
-	     needs no storage permission. -->
+	<!-- Only for opt-in crash reports (Sentry, off by default): nothing else goes online. Picking photos (photo picker)
+	     and files (system picker) needs no storage permission. -->
+	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<!-- MediaPicker.CapturePhotoAsync requires it to be declared on Android 12 and older (throws otherwise) -->
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />

@@ -1169,4 +1169,22 @@ Amount: {2}</value>
   <data name="FailedToShareLogs" xml:space="preserve">
     <value>Could not share the logs.</value>
   </data>
+  <data name="CrashReports" xml:space="preserve">
+    <value>Send crash reports</value>
+  </data>
+  <data name="CrashReportsDescription" xml:space="preserve">
+    <value>When the app fails, send the technical details to the developer (through Sentry). Your amounts and descriptions are not included. Turning it on applies the next time the app starts.</value>
+  </data>
+  <data name="CrashReportsQuestionTitle" xml:space="preserve">
+    <value>Help improve MoneyRecord?</value>
+  </data>
+  <data name="CrashReportsQuestion" xml:space="preserve">
+    <value>Can the app send a crash report when something goes wrong? Reports hold technical details only, such as the error and the Android version, not your amounts or descriptions. You can change this in Settings.</value>
+  </data>
+  <data name="CrashReportsAccept" xml:space="preserve">
+    <value>Send reports</value>
+  </data>
+  <data name="CrashReportsDecline" xml:space="preserve">
+    <value>No, thanks</value>
+  </data>
 </root>

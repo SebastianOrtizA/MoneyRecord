@@ -3017,5 +3017,59 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("FailedToShareLogs", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send crash reports.
+        /// </summary>
+        public static string CrashReports {
+            get {
+                return ResourceManager.GetString("CrashReports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When the app fails, send the technical details to the developer (through Sentry).....
+        /// </summary>
+        public static string CrashReportsDescription {
+            get {
+                return ResourceManager.GetString("CrashReportsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help improve MoneyRecord?.
+        /// </summary>
+        public static string CrashReportsQuestionTitle {
+            get {
+                return ResourceManager.GetString("CrashReportsQuestionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can the app send a crash report when something goes wrong?....
+        /// </summary>
+        public static string CrashReportsQuestion {
+            get {
+                return ResourceManager.GetString("CrashReportsQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send reports.
+        /// </summary>
+        public static string CrashReportsAccept {
+            get {
+                return ResourceManager.GetString("CrashReportsAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No, thanks.
+        /// </summary>
+        public static string CrashReportsDecline {
+            get {
+                return ResourceManager.GetString("CrashReportsDecline", resourceCulture);
+            }
+        }
     }
 }

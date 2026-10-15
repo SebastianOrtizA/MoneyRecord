@@ -20,6 +20,7 @@ namespace MoneyRecord.ViewModels
         private readonly IPreferencesService _preferences;
         private readonly LocalizationService _localization;
         private readonly IAppPaths _paths;
+        private readonly ICrashReportConsent _crashReports;
 
         [ObservableProperty]
         private bool isExporting;
@@ -35,7 +36,8 @@ namespace MoneyRecord.ViewModels
 
         public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService,
             ICurrencyService currencyService, INavigationService navigationService, IThemeService themeService,
-            IPreferencesService preferences, LocalizationService localization, IAppPaths paths)
+            IPreferencesService preferences, LocalizationService localization, IAppPaths paths,
+            ICrashReportConsent crashReports)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -46,6 +48,7 @@ namespace MoneyRecord.ViewModels
             _preferences = preferences;
             _localization = localization;
             _paths = paths;
+            _crashReports = crashReports;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
         }
@@ -92,6 +95,21 @@ namespace MoneyRecord.ViewModels
         {
             if (value != null && value.Choice != _themeService.Current)
                 _themeService.Set(value.Choice);
+        }
+
+        /// <summary>Only builds that can send reports (CI builds with the Sentry DSN) show the switch.</summary>
+        public bool CrashReportsAvailable => _crashReports.IsAvailable;
+
+        public bool CrashReportsEnabled
+        {
+            get => _crashReports.Enabled;
+            set
+            {
+                if (value == _crashReports.Enabled)
+                    return;
+                _crashReports.Enabled = value;
+                OnPropertyChanged();
+            }
         }
 
         [RelayCommand]

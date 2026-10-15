@@ -47,6 +47,8 @@ namespace MoneyRecord.Models
             new("Serilog", "Apache-2.0", "Serilog Contributors",
                 "https://github.com/serilog/serilog", "Apache-2.0.txt",
                 ["Serilog.Extensions.Logging", "Serilog.Sinks.File"]),
+            new("Sentry SDKs (.NET, Android, Native)", "MIT", "Sentry and individual contributors",
+                "https://github.com/getsentry/sentry-dotnet", "Sentry.txt", ["Sentry.Maui"]),
             new("SQLite", "Public domain", string.Empty,
                 "https://sqlite.org/copyright.html", null, []),
             new("LiveCharts2", "MIT", "Alberto Rodriguez Orozco",

@@ -1,6 +1,10 @@
 using MoneyRecord.Services;
 using Xunit;
 
+// The app language is global state (AppResources.Culture is static), and a non-parallel collection alone still let a
+// language test switch to Spanish while other tests ran (CI on PR #33). The suite takes about 5 s, so it runs sequentially.
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace MoneyRecord.Tests;
 
 /// <summary>
