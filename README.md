@@ -15,6 +15,7 @@ and Windows are maintained too. All data stays on the device.
   appear alongside transactions. Groups are collapsible and show their total and transaction count.
 - **Search and filters**: text search (description, category, account, tags), type, category, account and amount range.
 - **Recent transactions** and a **budget summary**.
+- **Hide balances**: the eye on the balance card replaces the balance and the period totals with "••••••" (remembered).
 - **Pull to refresh**; quick income / transfer / expense buttons.
 
 ### Transactions
@@ -66,6 +67,9 @@ and Windows are maintained too. All data stays on the device.
 - **Restore** from a local or picked backup (also older `.json` backups). The restore is all-or-nothing; the current data
   is saved to an automatic snapshot first (the last 5 are kept) and the "Restore complete" dialog offers **Undo**.
 - **CSV export** of transactions.
+- **App lock** (Android, opt-in): fingerprint, face or the phone's screen lock when the app opens and after 1, 5, 15
+  or 60 minutes in the background. The app stores no PIN or biometric data; on Android 13+ the recent apps screen
+  doesn't show its content while the lock is on.
 
 ### Localization
 - English and Spanish, picked from the device language; the device region is kept for currency and number formats
@@ -102,7 +106,8 @@ The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
   Only official builds can send reports; builds from source have no Sentry address and never ask.
 - **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
   is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,
-  which need no permission. Notifications (Android 13 and newer), only when you turn reminders on.
+  which need no permission. Notifications (Android 13 and newer), only when you turn reminders on. Biometrics, only
+  when you turn the app lock on (Android checks it; the app only learns whether it passed).
 - **Logs:** errors and basic app info (version, device OS) are written to log files on the device (the last 7 days,
   at most 10 MB in all). They hold technical details such as error messages (the app doesn't log your amounts or
   descriptions), and leave the device only when you use

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The app lock: shown modally over everything until the phone's lock is passed -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.LockPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}">
+
+    <VerticalStackLayout VerticalOptions="Center" Spacing="24" Padding="32">
+        <Label Text="&#xF033E;"
+               FontFamily="MaterialDesignIcons"
+               FontSize="72"
+               HorizontalOptions="Center"
+               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+        <Label Text="{ext:Localize AppLocked}"
+               FontSize="22"
+               FontAttributes="Bold"
+               HorizontalTextAlignment="Center"/>
+        <Label Text="{ext:Localize UnlockSubtitle}"
+               FontSize="15"
+               HorizontalTextAlignment="Center"
+               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+        <Button Text="{ext:Localize Unlock}"
+                Clicked="OnUnlockClicked"
+                HeightRequest="48"
+                CornerRadius="24"
+                HorizontalOptions="Center"
+                Padding="40,0"/>
+    </VerticalStackLayout>
+</ContentPage>

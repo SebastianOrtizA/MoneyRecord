@@ -24,6 +24,8 @@ namespace MoneyRecord.ViewModels
         private readonly IReminderService _reminders;
         private readonly IReminderSettings _reminderSettings;
         private readonly INotificationService _notifications;
+        private readonly IPrivacySettings _privacy;
+        private readonly IDeviceLock _deviceLock;
 
         [ObservableProperty]
         private bool isExporting;
@@ -41,7 +43,7 @@ namespace MoneyRecord.ViewModels
             ICurrencyService currencyService, INavigationService navigationService, IThemeService themeService,
             IPreferencesService preferences, LocalizationService localization, IAppPaths paths,
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
-            INotificationService notifications)
+            INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -56,6 +58,8 @@ namespace MoneyRecord.ViewModels
             _reminders = reminders;
             _reminderSettings = reminderSettings;
             _notifications = notifications;
+            _privacy = privacy;
+            _deviceLock = deviceLock;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
         }
@@ -87,6 +91,8 @@ namespace MoneyRecord.ViewModels
             SelectedTheme = Themes.First(t => t.Choice == _themeService.Current);
             SelectedBillReminder = BillReminderOptions.FirstOrDefault(o => o.DaysBefore == _reminderSettings.BillDaysBefore)
                 ?? BillReminderOptions[0];
+            SelectedLockDelay = LockDelayOptions.FirstOrDefault(o => o.Minutes == _privacy.LockAfterMinutes)
+                ?? LockDelayOptions[0];
         }
 
         partial void OnSelectedLanguageChanged(LanguageOption? value)
@@ -100,6 +106,7 @@ namespace MoneyRecord.ViewModels
             Languages = LanguageOption.All();
             Themes = ThemeOption.All();
             BillReminderOptions = BillReminderOption.All();
+            LockDelayOptions = LockDelayOption.All();
             SelectPickers();
         }
 
@@ -184,6 +191,55 @@ namespace MoneyRecord.ViewModels
                 _reminderSettings.RecurringAdded = value;
                 OnPropertyChanged();
             }
+        }
+
+        /// <summary>Platforms with the app lock (Android) show its card.</summary>
+        public bool AppLockSupported => _deviceLock.IsSupported;
+
+        public bool AppLockEnabled
+        {
+            get => _privacy.LockEnabled;
+            set
+            {
+                if (value == _privacy.LockEnabled)
+                    return;
+                if (value)
+                {
+                    // Needs the phone's lock once first; the switch goes back off otherwise
+                    TurnOnAppLockCommand.Execute(null);
+                    return;
+                }
+                _privacy.LockEnabled = false;
+                _deviceLock.HideContentInRecents(false);
+                OnPropertyChanged();
+            }
+        }
+
+        [RelayCommand]
+        private async Task TurnOnAppLockAsync()
+        {
+            if (!_deviceLock.IsAvailable)
+            {
+                await _dialogService.AlertAsync(AppResources.NoScreenLockTitle, AppResources.NoScreenLockMessage);
+            }
+            else if (await _deviceLock.AuthenticateAsync(AppResources.TurnOnAppLock, AppResources.UnlockSubtitle))
+            {
+                _privacy.LockEnabled = true;
+                _deviceLock.HideContentInRecents(true);
+            }
+            OnPropertyChanged(nameof(AppLockEnabled));
+        }
+
+        [ObservableProperty]
+        private IReadOnlyList<LockDelayOption> lockDelayOptions = LockDelayOption.All();
+
+        [ObservableProperty]
+        private LockDelayOption? selectedLockDelay;
+
+        partial void OnSelectedLockDelayChanged(LockDelayOption? value)
+        {
+            if (value != null)
+                _privacy.LockAfterMinutes = value.Minutes;
         }
 
         [RelayCommand]

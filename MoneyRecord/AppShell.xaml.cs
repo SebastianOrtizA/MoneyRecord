@@ -53,6 +53,10 @@ namespace MoneyRecord
         /// </summary>
         protected override bool OnBackButtonPressed()
         {
+            // The lock screen handles back itself (it leaves the app); never go back into the app behind it
+            if (Navigation.ModalStack.LastOrDefault() is LockPage)
+                return false;
+
             if (CurrentPage is IOverlayHost host && host.TryCloseOverlay())
                 return true;
 

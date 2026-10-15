@@ -3332,5 +3332,131 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("OpenSystemSettings", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App lock.
+        /// </summary>
+        public static string AppLock {
+            get {
+                return ResourceManager.GetString("AppLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ask for your fingerprint, face or phone screen lock to open MoneyRecord.
+        /// </summary>
+        public static string AppLockDescription {
+            get {
+                return ResourceManager.GetString("AppLockDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lock after.
+        /// </summary>
+        public static string LockAfter {
+            get {
+                return ResourceManager.GetString("LockAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} minute.
+        /// </summary>
+        public static string MinutesOne {
+            get {
+                return ResourceManager.GetString("MinutesOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} minutes.
+        /// </summary>
+        public static string MinutesOther {
+            get {
+                return ResourceManager.GetString("MinutesOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 hour.
+        /// </summary>
+        public static string OneHour {
+            get {
+                return ResourceManager.GetString("OneHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyRecord is locked.
+        /// </summary>
+        public static string AppLocked {
+            get {
+                return ResourceManager.GetString("AppLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlock.
+        /// </summary>
+        public static string Unlock {
+            get {
+                return ResourceManager.GetString("Unlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use your fingerprint, face or phone screen lock.
+        /// </summary>
+        public static string UnlockSubtitle {
+            get {
+                return ResourceManager.GetString("UnlockSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn on the app lock.
+        /// </summary>
+        public static string TurnOnAppLock {
+            get {
+                return ResourceManager.GetString("TurnOnAppLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No screen lock.
+        /// </summary>
+        public static string NoScreenLockTitle {
+            get {
+                return ResourceManager.GetString("NoScreenLockTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set a screen lock (PIN, pattern, password or fingerprint) on your phone first, then turn on the app lock..
+        /// </summary>
+        public static string NoScreenLockMessage {
+            get {
+                return ResourceManager.GetString("NoScreenLockMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide balances.
+        /// </summary>
+        public static string HideBalances {
+            get {
+                return ResourceManager.GetString("HideBalances", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show balances.
+        /// </summary>
+        public static string ShowBalances {
+            get {
+                return ResourceManager.GetString("ShowBalances", resourceCulture);
+            }
+        }
     }
 }

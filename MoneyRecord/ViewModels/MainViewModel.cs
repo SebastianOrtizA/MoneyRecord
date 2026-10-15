@@ -21,6 +21,7 @@ namespace MoneyRecord.ViewModels
         private readonly ICrashReportConsent _crashReports;
         private readonly IDialogService _dialogService;
         private readonly NotificationLaunch _notificationLaunch;
+        private readonly IPrivacySettings _privacy;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -33,6 +34,17 @@ namespace MoneyRecord.ViewModels
         /// <summary>Totals in the other currencies, one line each ("€300.00 EUR"); never added to the first.</summary>
         [ObservableProperty]
         private List<BalanceLine> otherBalances = [];
+
+        /// <summary>Privacy mode: the balance card and the period totals show "••••••" (saved).</summary>
+        [ObservableProperty]
+        private bool hideBalances;
+
+        [RelayCommand]
+        private void ToggleHideBalances()
+        {
+            HideBalances = !HideBalances;
+            _privacy.HideBalances = HideBalances;
+        }
 
         [ObservableProperty]
         private decimal totalIncomes;
@@ -83,7 +95,7 @@ namespace MoneyRecord.ViewModels
         public MainViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
-            NotificationLaunch notificationLaunch)
+            NotificationLaunch notificationLaunch, IPrivacySettings privacy)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
@@ -94,6 +106,8 @@ namespace MoneyRecord.ViewModels
             _crashReports = crashReports;
             _dialogService = dialogService;
             _notificationLaunch = notificationLaunch;
+            _privacy = privacy;
+            HideBalances = privacy.HideBalances;
             Period = period;
 
             // Home lives as long as the app: after a language change in Settings, a new value makes the bound date
