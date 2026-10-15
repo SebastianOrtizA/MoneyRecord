@@ -56,6 +56,15 @@ namespace MoneyRecord.Models
 
         public string CounterpartAccountName { get; init; } = string.Empty;
 
+        /// <summary>
+        /// A transfer's amount on the counterpart side, in <see cref="CounterpartCurrencyCode"/>: what arrived for a
+        /// whole transfer, what left for a <see cref="LedgerEntryKind.TransferIn"/>. 0 for transactions.
+        /// </summary>
+        public long CounterpartAmountCents { get; init; }
+
+        /// <summary>The counterpart account's currency (empty = the base currency).</summary>
+        public string CounterpartCurrencyCode { get; init; } = string.Empty;
+
         public string? Tags { get; init; }
 
         public string? ReceiptPhotoPath { get; init; }
@@ -68,6 +77,21 @@ namespace MoneyRecord.Models
             : Math.Abs(Amount);
 
         public bool IsTransfer => Kind is LedgerEntryKind.Transfer or LedgerEntryKind.TransferOut or LedgerEntryKind.TransferIn;
+
+        /// <summary>A transfer between accounts of different currencies.</summary>
+        public bool IsCrossCurrency => IsTransfer && !string.Equals(
+            MoneyFormatter.ResolveCurrencyCode(CurrencyCode),
+            MoneyFormatter.ResolveCurrencyCode(CounterpartCurrencyCode),
+            StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// The signed amount in the entry's currency; a whole cross-currency transfer also shows what arrived
+        /// on a second line ("$400,000" over "→ US$100.00").
+        /// </summary>
+        public string AmountText => Kind == LedgerEntryKind.Transfer && IsCrossCurrency
+            ? $"{MoneyFormatter.Format(SignedAmount, CurrencyCode)}\n→ " +
+              MoneyFormatter.Format(Math.Abs(Money.FromCents(CounterpartAmountCents)), CounterpartCurrencyCode)
+            : MoneyFormatter.Format(SignedAmount, CurrencyCode);
 
         public TransactionType Type => Kind switch
         {

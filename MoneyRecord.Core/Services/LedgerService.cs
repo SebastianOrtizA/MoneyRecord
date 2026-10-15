@@ -87,7 +87,9 @@ namespace MoneyRecord.Services
             AccountName = t.SourceAccountName,
             AccountIconCode = TransferIconCode,
             CounterpartAccountId = t.DestinationAccountId,
-            CounterpartAccountName = t.DestinationAccountName
+            CounterpartAccountName = t.DestinationAccountName,
+            CounterpartAmountCents = t.DestinationAmountCents,
+            CounterpartCurrencyCode = t.DestinationCurrencyCode
         };
     }
 }

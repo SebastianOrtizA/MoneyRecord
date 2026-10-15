@@ -36,7 +36,7 @@ namespace MoneyRecord.Charts
         public sealed record Line(string Name, IEnumerable<decimal> Values, Color Color);
 
         /// <summary>A donut: one series per slice (LiveCharts draws each pie series as a slice), no labels on it.</summary>
-        public static ISeries[] Donut(IReadOnlyList<ChartSlice> slices, decimal total, Action<ChartSlice> onTap) =>
+        public static ISeries[] Donut(IReadOnlyList<ChartSlice> slices, decimal total, string currencyCode, Action<ChartSlice> onTap) =>
             slices.Select(slice =>
             {
                 var series = new PieSeries<double>
@@ -49,15 +49,15 @@ namespace MoneyRecord.Charts
                     HoverPushout = 4,
                     // Shows on hover (Windows); a tap on Android shows none, so the ranked list carries the values
                     ToolTipLabelFormatter = _ => total > 0
-                        ? $"{MoneyFormatter.Format(slice.Amount)} · {slice.Amount / total:P1}"
-                        : MoneyFormatter.Format(slice.Amount)
+                        ? $"{MoneyFormatter.Format(slice.Amount, currencyCode)} · {slice.Amount / total:P1}"
+                        : MoneyFormatter.Format(slice.Amount, currencyCode)
                 };
                 OnTap(series, _ => onTap(slice));
                 return (ISeries)series;
             }).ToArray();
 
         /// <summary>Grouped columns, one series per line; a tap calls back with the month's index and the series.</summary>
-        public static ISeries[] Columns(Action<int, int> onTap, params Line[] lines) =>
+        public static ISeries[] Columns(Action<int, int> onTap, string currencyCode, params Line[] lines) =>
             lines.Select((line, seriesIndex) =>
             {
                 var series = new ColumnSeries<double>
@@ -69,14 +69,14 @@ namespace MoneyRecord.Charts
                     Ry = 4,
                     MaxBarWidth = 24,
                     Padding = 2,
-                    YToolTipLabelFormatter = point => MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue)
+                    YToolTipLabelFormatter = point => MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue, currencyCode)
                 };
                 OnTap(series, index => onTap(index, seriesIndex));
                 return (ISeries)series;
             }).ToArray();
 
         /// <summary>Lines with points, no fill under them; a tap calls back with the month's index and the series.</summary>
-        public static ISeries[] Lines(Action<int, int> onTap, params Line[] lines) =>
+        public static ISeries[] Lines(Action<int, int> onTap, string currencyCode, params Line[] lines) =>
             lines.Select((line, seriesIndex) =>
             {
                 var series = new LineSeries<double>
@@ -89,7 +89,7 @@ namespace MoneyRecord.Charts
                     GeometryStroke = ChartPalette.Paint(line.Color, 2),
                     GeometryFill = ChartPalette.Paint(ChartPalette.Surface),
                     LineSmoothness = 0,
-                    YToolTipLabelFormatter = point => MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue)
+                    YToolTipLabelFormatter = point => MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue, currencyCode)
                 };
                 OnTap(series, index => onTap(index, seriesIndex));
                 return (ISeries)series;
@@ -113,12 +113,12 @@ namespace MoneyRecord.Charts
         /// The value axis: whole money amounts with faint grid lines; from zero unless <paramref name="fromZero"/> is
         /// false (net worth and cash flow can go below zero, or sit far above it).
         /// </summary>
-        public static Axis[] MoneyAxis(bool fromZero = true) =>
+        public static Axis[] MoneyAxis(string currencyCode, bool fromZero = true) =>
         [
             new Axis
             {
                 MinLimit = fromZero ? 0 : null,
-                Labeler = value => MoneyFormatter.FormatWhole((decimal)value),
+                Labeler = value => MoneyFormatter.FormatWhole((decimal)value, currencyCode),
                 LabelsPaint = ChartPalette.Paint(ChartPalette.AxisText),
                 SeparatorsPaint = ChartPalette.Paint(ChartPalette.Grid, 1),
                 TextSize = TextSize

@@ -876,9 +876,6 @@ Monto: {2}</value>
   <data name="SelectCurrency" xml:space="preserve">
     <value>Seleccionar Moneda</value>
   </data>
-  <data name="CurrencyMismatchWarning" xml:space="preserve">
-    <value>Advertencia: Transferencia entre cuentas con diferentes monedas ({0} → {1}). No se aplica conversión de tipo de cambio.</value>
-  </data>
   <data name="DefaultCurrency" xml:space="preserve">
     <value>Moneda Predeterminada</value>
   </data>
@@ -1352,5 +1349,17 @@ Monto: {2}</value>
   </data>
   <data name="UnreadableDatabaseMessage" xml:space="preserve">
     <value>La clave de tu base de datos cifrada ya no está en este teléfono, así que la app empezó con una base de datos nueva. Restaura una copia de seguridad en Configuración para recuperar tus datos.</value>
+  </data>
+  <data name="AmountReceived" xml:space="preserve">
+    <value>Monto recibido</value>
+  </data>
+  <data name="CrossCurrencyTransferHint" xml:space="preserve">
+    <value>Las cuentas usan monedas distintas ({0} → {1}): ingresa el monto que llegó.</value>
+  </data>
+  <data name="ExchangeRateValue" xml:space="preserve">
+    <value>Tasa: {0}</value>
+  </data>
+  <data name="BudgetNotCounted" xml:space="preserve">
+    <value>No se cuentan: {0}</value>
   </data>
 </root>

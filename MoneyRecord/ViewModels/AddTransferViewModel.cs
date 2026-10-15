@@ -75,11 +75,20 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string sourceAccountBalanceText = string.Empty;
 
+        /// <summary>What arrived in a destination account of another currency (in its currency).</summary>
         [ObservableProperty]
-        private bool showCurrencyMismatchWarning = false;
+        private string destinationAmount = string.Empty;
+
+        /// <summary>The two accounts have different currencies: the form asks what arrived too.</summary>
+        [ObservableProperty]
+        private bool isCrossCurrency;
 
         [ObservableProperty]
-        private string currencyMismatchWarningText = string.Empty;
+        private string crossCurrencyHint = string.Empty;
+
+        /// <summary>"Rate: 1 USD = 4,012.5 COP" from the two amounts; empty until both are entered.</summary>
+        [ObservableProperty]
+        private string rateText = string.Empty;
 
         // Store original transfer values for edit mode
         private int? _originalSourceAccountId;
@@ -106,6 +115,7 @@ namespace MoneyRecord.ViewModels
             _transferIdString = null;
             SelectedDate = DateTime.Now;
             Amount = string.Empty;
+            DestinationAmount = string.Empty;
             Description = string.Empty;
             SelectedSourceAccount = null;
             SelectedDestinationAccount = null;
@@ -152,8 +162,10 @@ namespace MoneyRecord.ViewModels
                 SelectedSourceAccount = Accounts.FirstOrDefault(a => a.Id == Transfer.SourceAccountId);
                 SelectedDestinationAccount = Accounts.FirstOrDefault(a => a.Id == Transfer.DestinationAccountId);
 
-                // After the source account: the amount field formats in its currency
+                // After the accounts: the amount fields format in their currencies
                 Amount = Transfer.Amount.ToString();
+                if (IsCrossCurrency)
+                    DestinationAmount = Transfer.DestinationAmount.ToString();
             }
             else
             {
@@ -174,30 +186,37 @@ namespace MoneyRecord.ViewModels
         partial void OnSelectedSourceAccountChanged(Account? value)
         {
             _ = UpdateSourceAccountBalanceAsync();
-            CheckCurrencyMismatch();
+            UpdateCrossCurrency();
         }
 
         partial void OnSelectedDestinationAccountChanged(Account? value)
         {
-            CheckCurrencyMismatch();
+            UpdateCrossCurrency();
         }
 
-        private void CheckCurrencyMismatch()
+        partial void OnAmountChanged(string value) => UpdateRate();
+
+        partial void OnDestinationAmountChanged(string value) => UpdateRate();
+
+        private void UpdateCrossCurrency()
         {
-            if (SelectedSourceAccount != null && SelectedDestinationAccount != null)
-            {
-                var srcCurrency = MoneyFormatter.ResolveCurrencyCode(SelectedSourceAccount.CurrencyCode);
-                var dstCurrency = MoneyFormatter.ResolveCurrencyCode(SelectedDestinationAccount.CurrencyCode);
+            var source = MoneyFormatter.ResolveCurrencyCode(SelectedSourceAccount?.CurrencyCode);
+            var destination = MoneyFormatter.ResolveCurrencyCode(SelectedDestinationAccount?.CurrencyCode);
+            IsCrossCurrency = SelectedSourceAccount != null && SelectedDestinationAccount != null && source != destination;
+            CrossCurrencyHint = IsCrossCurrency
+                ? string.Format(AppResources.CrossCurrencyTransferHint, source, destination)
+                : string.Empty;
+            UpdateRate();
+        }
 
-                if (srcCurrency != dstCurrency)
-                {
-                    CurrencyMismatchWarningText = string.Format(AppResources.CurrencyMismatchWarning, srcCurrency, dstCurrency);
-                    ShowCurrencyMismatchWarning = true;
-                    return;
-                }
-            }
-
-            ShowCurrencyMismatchWarning = false;
+        private void UpdateRate()
+        {
+            var rate = IsCrossCurrency
+                ? TransferRate.Describe(
+                    AmountParser.Parse(Amount, SelectedSourceAccount?.CurrencyCode), SelectedSourceAccount?.CurrencyCode,
+                    AmountParser.Parse(DestinationAmount, SelectedDestinationAccount?.CurrencyCode), SelectedDestinationAccount?.CurrencyCode)
+                : null;
+            RateText = rate == null ? string.Empty : string.Format(AppResources.ExchangeRateValue, rate);
         }
 
         private async Task UpdateSourceAccountBalanceAsync()
@@ -269,6 +288,18 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+            // Between currencies, what arrived is entered separately; otherwise it is what left
+            var destinationValue = amountValue;
+            if (IsCrossCurrency)
+            {
+                destinationValue = AmountParser.Parse(DestinationAmount, SelectedDestinationAccount.CurrencyCode);
+                if (destinationValue <= 0 || !Money.IsInRange(destinationValue))
+                {
+                    await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
+                    return;
+                }
+            }
+
             var description = string.IsNullOrWhiteSpace(Description) ? AppResources.DefaultTransferDescription : Description;
 
             try
@@ -278,6 +309,7 @@ namespace MoneyRecord.ViewModels
                     // Update existing transfer
                     Transfer.Date = SelectedDate;
                     Transfer.Amount = amountValue;
+                    Transfer.DestinationAmount = destinationValue;
                     Transfer.Description = description;
                     Transfer.SourceAccountId = SelectedSourceAccount.Id;
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
@@ -292,6 +324,7 @@ namespace MoneyRecord.ViewModels
                     {
                         Date = SelectedDate,
                         Amount = amountValue,
+                        DestinationAmount = destinationValue,
                         Description = description,
                         SourceAccountId = SelectedSourceAccount.Id,
                         DestinationAccountId = SelectedDestinationAccount.Id

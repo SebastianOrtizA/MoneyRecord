@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Repositories;
@@ -22,6 +23,8 @@ public sealed class BalanceServiceTests : IAsyncLifetime
 
     private SQLiteAsyncConnection Db { get; set; } = null!;
 
+    private static string Base => MoneyFormatter.ResolveCurrencyCode(null);
+
     public async Task InitializeAsync()
     {
         Directory.CreateDirectory(_appData);
@@ -39,9 +42,12 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         Directory.Delete(_appData, recursive: true);
     }
 
-    private async Task<Account> AddAccountAsync(string name, decimal initial = 0, DateTime? created = null)
+    private async Task<Account> AddAccountAsync(string name, decimal initial = 0, DateTime? created = null, string currencyCode = "")
     {
-        var account = new Account { Name = name, InitialBalance = initial, CreatedDate = created ?? new DateTime(2026, 1, 1) };
+        var account = new Account
+        {
+            Name = name, InitialBalance = initial, CreatedDate = created ?? new DateTime(2026, 1, 1), CurrencyCode = currencyCode
+        };
         await Db.InsertAsync(account);
         return account;
     }
@@ -50,7 +56,7 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         Db.InsertAsync(new Transaction { Type = type, Amount = amount, Date = date, AccountId = accountId, CategoryId = categoryId });
 
     private Task TransferAsync(int from, int to, decimal amount, DateTime date) =>
-        Db.InsertAsync(new Transfer { SourceAccountId = from, DestinationAccountId = to, Amount = amount, Date = date });
+        Db.InsertAsync(new Transfer { SourceAccountId = from, DestinationAccountId = to, Amount = amount, DestinationAmount = amount, Date = date });
 
     [Fact]
     public async Task Account_balance_is_initial_plus_incomes_minus_expenses_and_transfers()
@@ -67,6 +73,22 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         balances["Bank"].CurrentBalance.Should().Be(500m + 200m - 50.25m - 30m - 120m);
         balances["Savings"].CurrentBalance.Should().Be(220m);
         (await _sut.GetAccountBalanceAsync(savings.Id)).Should().Be(220m);
+    }
+
+    [Fact]
+    public async Task A_cross_currency_transfer_takes_what_left_and_adds_what_arrived()
+    {
+        var pesos = await AddAccountAsync("Pesos", initial: 1_000_000m);
+        var dollars = await AddAccountAsync("Dollars");
+        await Db.InsertAsync(new Transfer
+        {
+            SourceAccountId = pesos.Id, DestinationAccountId = dollars.Id, Amount = 401_250m, DestinationAmount = 100m, Date = March1
+        });
+
+        var balances = (await _sut.GetAllAccountBalancesAsync()).ToDictionary(b => b.AccountName);
+
+        balances["Pesos"].CurrentBalance.Should().Be(598_750m);
+        balances["Dollars"].CurrentBalance.Should().Be(100m);
     }
 
     [Fact]
@@ -109,14 +131,14 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         await AddAsync(TransactionType.Income, 7m, March31End.AddTicks(1)); // April
         await AddAsync(TransactionType.Expense, 30m, March1.AddDays(3));
 
-        (await _sut.GetTotalIncomesAsync(March1, March31End)).Should().Be(150m);
-        (await _sut.GetTotalExpensesAsync(March1, March31End)).Should().Be(30m);
+        (await _sut.GetTotalIncomesAsync(March1, March31End)).Should().Equal(new CurrencyAmount(Base, 150m));
+        (await _sut.GetTotalExpensesAsync(March1, March31End)).Should().Equal(new CurrencyAmount(Base, 30m));
     }
 
     [Fact]
     public async Task An_empty_period_totals_zero()
     {
-        (await _sut.GetTotalExpensesAsync(March1, March31End)).Should().Be(0);
+        (await _sut.GetTotalExpensesAsync(March1, March31End)).Should().BeEmpty();
     }
 
     [Fact]
@@ -127,9 +149,39 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         await AddAsync(TransactionType.Expense, 100m, March1, categoryId: 6);
         await AddAsync(TransactionType.Income, 40m, March1, categoryId: 5);
 
-        (await _sut.GetCategoryExpensesAsync(5, March1, March31End)).Should().Be(20m);
+        (await _sut.GetCategoryExpensesAsync(5, March1, March31End)).Should().Equal(new CurrencyAmount(Base, 20m));
 
         var byCategory = await _sut.GetExpensesByCategoryAsync(March1, March31End);
-        byCategory.Should().BeEquivalentTo(new Dictionary<int, decimal> { [5] = 20m, [6] = 100m });
+        byCategory.Keys.Should().BeEquivalentTo([5, 6]);
+        byCategory[5].Should().Equal(new CurrencyAmount(Base, 20m));
+        byCategory[6].Should().Equal(new CurrencyAmount(Base, 100m));
+    }
+
+    [Fact]
+    public async Task Period_totals_are_per_currency_base_first_never_added_together()
+    {
+        var previousBase = MoneyFormatter.BaseCurrencyCode;
+        MoneyFormatter.BaseCurrencyCode = "COP"; // not EUR or USD, whatever the machine's region
+        try
+        {
+            var euros = await AddAccountAsync("Euros", currencyCode: "EUR");
+            var dollars = await AddAccountAsync("Dollars", currencyCode: "USD");
+            await AddAsync(TransactionType.Expense, 10m, March1, dollars.Id, categoryId: 5);
+            await AddAsync(TransactionType.Expense, 20m, March1, euros.Id, categoryId: 5);
+            await AddAsync(TransactionType.Expense, 30m, March1, euros.Id, categoryId: 6);
+            await AddAsync(TransactionType.Expense, 40m, March1, categoryId: 5); // no account: the base currency
+
+            var totals = await _sut.GetTotalExpensesAsync(March1, March31End);
+            var byCategory = await _sut.GetExpensesByCategoryAsync(March1, March31End);
+
+            totals[0].Should().Be(new CurrencyAmount("COP", 40m));
+            totals.Skip(1).Should().Equal(new CurrencyAmount("EUR", 50m), new CurrencyAmount("USD", 10m));
+            byCategory[5].Should().Equal(new CurrencyAmount("COP", 40m), new CurrencyAmount("EUR", 20m), new CurrencyAmount("USD", 10m));
+            byCategory[6].Should().Equal(new CurrencyAmount("EUR", 30m));
+        }
+        finally
+        {
+            MoneyFormatter.BaseCurrencyCode = previousBase;
+        }
     }
 }

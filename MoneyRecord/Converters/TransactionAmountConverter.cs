@@ -5,14 +5,15 @@ using System.Globalization;
 namespace MoneyRecord.Converters
 {
     /// <summary>
-    /// Formats a <see cref="LedgerEntry"/>'s signed amount in its currency: negative for expenses and outgoing transfers.
+    /// Formats a <see cref="LedgerEntry"/>'s signed amount in its currency (<see cref="LedgerEntry.AmountText"/>):
+    /// negative for expenses and outgoing transfers.
     /// </summary>
     public class TransactionAmountConverter : IValueConverter
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             return value is LedgerEntry entry
-                ? MoneyFormatter.Format(entry.SignedAmount, entry.CurrencyCode)
+                ? entry.AmountText
                 : MoneyFormatter.Format(0);
         }
 

@@ -43,9 +43,8 @@ namespace MoneyRecord.Services
                     OriginalLimitAmount = budget.LimitAmount,
                     LimitAmount = BudgetProjectionHelper.CalculateProjectedLimit(
                         budget.LimitAmount, budget.Period, period, customStartDate, customEndDate),
-                    SpentAmount = spentByCategory.GetValueOrDefault(budget.CategoryId)
                 };
-                progress.CalculateProgress();
+                progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? [], MoneyFormatter.ResolveCurrencyCode(null));
                 progressList.Add(progress);
             }
 

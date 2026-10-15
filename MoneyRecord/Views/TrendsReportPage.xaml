@@ -16,6 +16,7 @@
         <ScrollView>
             <VerticalStackLayout Padding="16,12" Spacing="16">
                 <controls:MonthCountPicker BindingContext="{Binding Period}" />
+                <controls:CurrencyChips BindingContext="{Binding Period}" />
 
                 <!-- Empty state -->
                 <VerticalStackLayout IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}"
@@ -39,7 +40,7 @@
                 <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
                     <VerticalStackLayout Spacing="4">
                         <Label Text="{ext:Localize TotalSpending}" Style="{StaticResource ReportHeadlineLabel}" />
-                        <Label Text="{Binding Headline, Converter={StaticResource MoneyConverter}}" Style="{StaticResource ReportHeadline}" />
+                        <Label Text="{Binding HeadlineText}" Style="{StaticResource ReportHeadline}" />
                         <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}" />
                         <lvc:CartesianChart HeightRequest="220"
                                             Margin="0,8,0,0"

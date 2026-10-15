@@ -21,6 +21,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITransactionEnrichmentService _enrichmentService;
         private readonly ITransactionRepository _transactionRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
@@ -35,8 +36,9 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isLoading;
 
+        /// <summary>The total in the report's currency (<see cref="PeriodViewModel.ReportCurrency"/>).</summary>
         [ObservableProperty]
-        private decimal total;
+        private string totalText = string.Empty;
 
         /// <summary>The total against the previous period ("▲ 12% vs previous period").</summary>
         [ObservableProperty]
@@ -60,12 +62,13 @@ namespace MoneyRecord.ViewModels
         public PeriodViewModel Period { get; }
 
         public CategoryReportViewModel(PeriodViewModel period, ITransactionEnrichmentService enrichmentService,
-            ITransactionRepository transactionRepository, ICategoryRepository categoryRepository, IErrorHandler errorHandler,
-            INavigationService navigationService, TransactionsDrillDown drillDown)
+            ITransactionRepository transactionRepository, ICategoryRepository categoryRepository, IAccountRepository accountRepository,
+            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown)
         {
             _enrichmentService = enrichmentService;
             _transactionRepository = transactionRepository;
             _categoryRepository = categoryRepository;
+            _accountRepository = accountRepository;
             _errorHandler = errorHandler;
             _navigationService = navigationService;
             _drillDown = drillDown;
@@ -100,18 +103,27 @@ namespace MoneyRecord.ViewModels
                 var (previousStart, previousEnd) = Period.PreviousRange;
                 var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 var categoriesTask = _categoryRepository.GetByTypeAsync(Type);
-                var previousTask = _transactionRepository.SumCentsAsync(TransactionType, previousStart, previousEnd);
-                await Task.WhenAll(transactionsTask, categoriesTask, previousTask);
+                var baseCode = MoneyFormatter.ResolveCurrencyCode(null);
+                var previousTask = _transactionRepository.SumByCurrencyAsync(TransactionType, previousStart, previousEnd, baseCode);
+                var accountsTask = _accountRepository.GetAllAsync();
+                await Task.WhenAll(transactionsTask, categoriesTask, previousTask, accountsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var report = CategoryReportBuilder.Build(await transactionsTask, Type, (await categoriesTask).Select(c => c.Id));
-                Total = report.Total;
-                DeltaText = new PeriodDelta(report.Total, Money.FromCents(await previousTask)).Text;
+                // One currency at a time: the chosen one (the chips list the currencies the accounts use)
+                var currencies = ReportCurrencies.InUse(await accountsTask, baseCode);
+                await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies));
+                var code = Period.ReportCurrency;
+                var transactions = (await transactionsTask)
+                    .Where(t => MoneyFormatter.ResolveCurrencyCode(t.CurrencyCode, baseCode) == code);
+
+                var report = CategoryReportBuilder.Build(transactions, Type, (await categoriesTask).Select(c => c.Id), code);
+                TotalText = MoneyFormatter.Format(report.Total, code);
+                DeltaText = new PeriodDelta(report.Total, CurrencyAmount.In(await previousTask, code)).Text;
                 HasData = report.Total > 0;
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     Categories = new(report.Categories);
-                    Slices = ChartFactory.Donut(report.Slices, report.Total,
+                    Slices = ChartFactory.Donut(report.Slices, report.Total, code,
                         slice => OpenTransactionsCommand.Execute(slice.CategoryId));
                 });
             }

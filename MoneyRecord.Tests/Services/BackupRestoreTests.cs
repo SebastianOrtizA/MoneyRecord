@@ -52,7 +52,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         zip.Entries.Select(e => e.FullName).Should().BeEquivalentTo("data.json", "receipts/receipt_1.jpg");
         using var reader = new StreamReader(zip.GetEntry("data.json")!.Open());
         var json = await reader.ReadToEndAsync();
-        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 3");
+        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 4");
         json.Should().NotContain(_appData.Replace("\\", "\\\\"), "no device paths in a backup");
     }
 
@@ -63,7 +63,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var bank = await AddAccountAsync("Bank");
         var cash = (await _accountRepository.GetDefaultAsync())!;
         await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, CategoryId = food.Id, AccountId = bank.Id, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
-        await Db.InsertAsync(new Transfer { Amount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
+        await Db.InsertAsync(new Transfer { Amount = 50m, DestinationAmount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
         await Db.InsertAsync(new Budget { CategoryId = food.Id, LimitAmount = 300m });
         await Db.InsertAsync(new RecurringTransaction { Description = "Rent", Amount = 500m, CategoryId = food.Id, AccountId = bank.Id });
         var before = await DumpAsync();

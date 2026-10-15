@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2a done; 10.2b in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3a in progress)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -92,6 +92,31 @@ Close the gap with competing finance apps. Each section can ship on its own.
   report category amounts and totals, budget spent/remaining, category group totals (`TransactionGroup` with mixed
   currencies) and chart values. Until rates exist they should at least show per-currency subtotals the way
   `MoneyFormatter.FormatTotals` does in the report detail popup (already fixed in 6.5).
+- Split by agreement (2026-10-15): **10.3a** = cross-currency transfers (source + destination amounts; the rate
+  follows from them; a migration fills the destination amount of existing transfers) + per-currency subtotals
+  wherever totals mix currencies today (Home, reports, budgets, groups). No network. **10.3b** = `ExchangeRate`
+  table, Frankfurter v2 download (opt-in; v2 has several providers, BANREP covers COP), the "Show in" switch,
+  converted totals marked "≈".
+- Decisions (2026-10-15): the manual rate override is **per transaction** (an optional rate in the add/edit form's
+  More details, stored on the row; 10.3b). Budgets: before rates exist (or with "Show in" = Original) only
+  base-currency expenses count and the card says so; with rates, other currencies count converted at the
+  transaction-date rate. Reports (before rates): **currency chips** under the period picker, one currency at a time,
+  shared by every report tab (10.3b adds a converted "≈ All in base" choice).
+- 10.3a done as: `Transfer.DestinationAmountCents` (migration v4 `M004_TransferDestinationAmounts` and restore fill it
+  with the source amount; backup format v4); the destination balance adds it. The transfer form asks "Amount received"
+  when the currencies differ and shows the rate (`TransferRate`: "1 USD = 4,012.5 COP"); the old mismatch warning is
+  gone. `LedgerEntry.CounterpartAmountCents/CurrencyCode`: each half in its own account's currency, a whole transfer
+  shows "COL$401,250.00 / → $100.00". Totals: `ITransactionRepository.SumByCurrencyAsync` / `SumByCategoryAsync` (SQL
+  `GROUP BY` the account currency; no account = base) return `CurrencyAmount` lists; `IBalanceService` period totals
+  are per currency. Home: the three cards show the base currency, other currencies are rows under them
+  (`PeriodTotals`; hidden with the balances). Transactions groups list one total per currency (`TransactionGroup.Totals`).
+  Budgets count base-currency expenses only (`BudgetProgress.SetSpent`; "Not counted: …" on the Budget page card;
+  also the add-form warning and the reminder job). Reports: `PeriodViewModel.ReportCurrency` + `CurrencyChips`
+  (hidden with one currency; a currency no account uses falls back to base); `ReportCurrencies.InUse/Only`; chart
+  axes and tooltips format in that currency; Trends hides budget vs actual for a non-base currency; Net worth counts
+  that currency's accounts.
+  **Deviation:** no stored rate column on `Transfer` (it follows from the two amounts). Home's compact budget card
+  doesn't repeat the "Not counted" line (the Budget page has it).
 
 ### 10.4 Import from bank statements
 - CSV import with CsvHelper (use its Apache-2.0 licence): pick file → map columns (date, description, amount,

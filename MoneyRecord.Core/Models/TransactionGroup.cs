@@ -16,14 +16,13 @@ namespace MoneyRecord.Models
         [ObservableProperty]
         private bool isExpanded;
 
-        public TransactionGroup(string groupName, string groupIconCode, TransactionType type, decimal total,
-            string currencyCode, IReadOnlyList<LedgerEntry> items)
+        public TransactionGroup(string groupName, string groupIconCode, TransactionType type,
+            IReadOnlyList<CurrencyAmount> totals, IReadOnlyList<LedgerEntry> items)
         {
             GroupName = groupName;
             GroupIconCode = groupIconCode;
             Type = type;
-            Total = total;
-            CurrencyCode = currencyCode;
+            Totals = totals;
             Items = items;
         }
 
@@ -33,13 +32,17 @@ namespace MoneyRecord.Models
 
         public string GroupDisplayIcon => IconHelper.GetCategoryDisplayIcon(GroupIconCode);
 
-        /// <summary>Income/Expense give the total's sign (an account balance: its sign); Transfer shows it unsigned.</summary>
+        /// <summary>Income/Expense give the totals' sign (an account balance: its sign); Transfer shows them unsigned.</summary>
         public TransactionType Type { get; }
 
-        public decimal Total { get; }
+        /// <summary>The total in each currency of the group (base currency first): currencies are never added together.</summary>
+        public IReadOnlyList<CurrencyAmount> Totals { get; }
 
-        /// <summary>The currency of <see cref="Total"/> (empty = the base currency).</summary>
-        public string CurrencyCode { get; }
+        /// <summary>"-$35.00", "-US$5.00", one line each: each total with the group's sign (none for transfers).</summary>
+        public string TotalText => CurrencyAmount.Format(Totals.Select(t => t with
+        {
+            Amount = Type == TransactionType.Expense ? -Math.Abs(t.Amount) : Math.Abs(t.Amount)
+        }).ToList(), separator: "\n");
 
         public IReadOnlyList<LedgerEntry> Items { get; }
 

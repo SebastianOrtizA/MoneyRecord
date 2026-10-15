@@ -26,6 +26,38 @@ public class PeriodViewModelTests
         sut.Periods.Should().Contain(sut.SelectedPeriod);
         changes.Should().Be(0);
     }
+
+    [Fact]
+    public void A_currency_chip_switches_every_report_and_reloads_the_one_shown()
+    {
+        var sut = new PeriodViewModel();
+        var baseCode = MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null);
+        sut.SetCurrencies([baseCode, "ZZA"]);
+        var periodChanges = 0;
+        var monthChanges = 0;
+        using var periodWatch = sut.WatchChanges(() => periodChanges++);
+        using var monthWatch = sut.WatchMonthCount(() => monthChanges++);
+
+        sut.SelectCurrencyCommand.Execute("ZZA");
+
+        sut.ReportCurrency.Should().Be("ZZA");
+        sut.CurrencyChoices.Should().ContainSingle(c => c.IsSelected).Which.Code.Should().Be("ZZA");
+        (periodChanges, monthChanges).Should().Be((1, 1));
+    }
+
+    [Fact]
+    public void One_currency_shows_no_chips_and_a_gone_currency_falls_back_to_the_base()
+    {
+        var sut = new PeriodViewModel();
+        var baseCode = MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null);
+        sut.SetCurrencies([baseCode, "ZZA"]);
+        sut.SelectCurrencyCommand.Execute("ZZA");
+
+        sut.SetCurrencies([baseCode]);
+
+        sut.ReportCurrency.Should().Be(baseCode);
+        sut.HasCurrencyChoices.Should().BeFalse();
+    }
 }
 
 /// <summary>The shared period follows a language change by itself (it changes global culture, so it runs alone).</summary>

@@ -498,4 +498,12 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
     </Style>
+
+    <!-- Home: a period total in another currency, under its card; small enough for long amounts on one line -->
+    <Style x:Key="OtherCurrencyTotal" TargetType="Label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="LineBreakMode" Value="NoWrap" />
+    </Style>
 </ResourceDictionary>

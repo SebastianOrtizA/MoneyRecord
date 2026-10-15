@@ -21,19 +21,19 @@ public class LedgerGroupingTests
             GroupingMode.Category);
 
         groups.Select(g => g.GroupName).Should().Equal("Food", "Rent");
-        groups[0].Total.Should().Be(35m);
+        groups[0].Totals.Should().Equal(new CurrencyAmount("EUR", 35m));
         groups[0].Type.Should().Be(TransactionType.Expense);
         groups[0].TransactionCount.Should().Be(2);
         groups[0].GroupIconCode.Should().Be("F0001");
-        groups[0].CurrencyCode.Should().Be("EUR");
     }
 
     [Fact]
-    public void A_category_group_in_mixed_currencies_uses_the_base_currency()
+    public void A_category_group_in_mixed_currencies_has_one_total_per_currency()
     {
         var groups = LedgerGrouping.Group([Expense(1, "Food", 100, "EUR"), Expense(2, "Food", 100, "USD")], GroupingMode.Category);
 
-        groups[0].CurrencyCode.Should().BeEmpty();
+        groups[0].Totals.Select(t => t.CurrencyCode).Should().BeEquivalentTo(["EUR", "USD"]);
+        groups[0].TotalText.Should().Contain(MoneyFormatter.Format(-1m, "EUR")).And.Contain(MoneyFormatter.Format(-1m, "USD"));
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public class LedgerGroupingTests
         var group = LedgerGrouping.Group([transfer, transfer with { SourceId = 2 }], GroupingMode.Category).Single();
 
         group.Type.Should().Be(TransactionType.Transfer);
-        group.Total.Should().Be(200m);
+        group.Totals.Should().Equal(new CurrencyAmount(MoneyFormatter.ResolveCurrencyCode(null), 200m));
     }
 
     [Fact]
@@ -58,8 +58,8 @@ public class LedgerGroupingTests
         var groups = LedgerGrouping.Group([Expense(1, "Gifts", 2_000), giftReceived], GroupingMode.Category);
 
         groups.Should().HaveCount(2);
-        groups.Should().ContainSingle(g => g.Type == TransactionType.Expense && g.Total == 20m);
-        groups.Should().ContainSingle(g => g.Type == TransactionType.Income && g.Total == 50m);
+        groups.Should().ContainSingle(g => g.Type == TransactionType.Expense && g.Totals.Single().Amount == 20m);
+        groups.Should().ContainSingle(g => g.Type == TransactionType.Income && g.Totals.Single().Amount == 50m);
     }
 
     [Fact]
@@ -85,9 +85,8 @@ public class LedgerGroupingTests
 
         var group = LedgerGrouping.Group([Expense(1, "Food", 500), incoming], GroupingMode.Account, balances, accounts).Single();
 
-        group.Total.Should().Be(-5m);
+        group.Totals.Should().Equal(new CurrencyAmount("EUR", -5m));
         group.Type.Should().Be(TransactionType.Expense);
-        group.CurrencyCode.Should().Be("EUR");
         group.GroupIconCode.Should().Be("F0123");
         group.TransactionCount.Should().Be(2);
     }
@@ -99,7 +98,7 @@ public class LedgerGroupingTests
             GroupingMode.Account);
 
         groups.Should().HaveCount(2);
-        groups.Should().AllSatisfy(g => g.Total.Should().Be(0));
+        groups.Should().AllSatisfy(g => g.Totals.Single().Amount.Should().Be(0));
     }
 
     [Fact]

@@ -12,7 +12,9 @@ namespace MoneyRecord.Helpers
         /// depends on the category: its place among these IDs (wrapping past the palette), so it stays the same when
         /// the period changes; only when a larger category already holds that colour does it take the next free one.
         /// </param>
-        public static CategoryReport Build(IEnumerable<Transaction> transactions, CategoryType type, IEnumerable<int> categoryIds)
+        /// <param name="currencyCode">The currency of the transactions (one per report), kept on each amount for display.</param>
+        public static CategoryReport Build(IEnumerable<Transaction> transactions, CategoryType type, IEnumerable<int> categoryIds,
+            string currencyCode = "")
         {
             var transactionType = type == CategoryType.Income ? TransactionType.Income : TransactionType.Expense;
             var matching = transactions.Where(t => t.Type == transactionType).ToList();
@@ -40,7 +42,8 @@ namespace MoneyRecord.Helpers
                     (double)(g.amount / total * 100),
                     rank < CategoryAmount.PaletteSize
                         ? TakeSlot(taken, idIndex.GetValueOrDefault(g.first.CategoryId, g.first.CategoryId))
-                        : CategoryAmount.OtherSlot))
+                        : CategoryAmount.OtherSlot)
+                    { CurrencyCode = currencyCode })
                 .ToList();
 
             return new CategoryReport(total, categories);

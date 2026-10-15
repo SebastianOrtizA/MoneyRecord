@@ -130,6 +130,30 @@ public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
             .And.Be(MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null));
     }
 
+    [Fact]
+    public async Task Migration4_OldTransfersReceiveWhatLeft()
+    {
+        await _db.ExecuteAsync("INSERT INTO \"Transfer\" (Amount, SourceAccountId, DestinationAccountId) VALUES (99.99, 1, 2)");
+
+        await MigrateAsync();
+
+        var old = await _db.Table<Transfer>().FirstAsync();
+        (old.AmountCents, old.DestinationAmountCents).Should().Be((9999, 9999));
+    }
+
+    [Fact]
+    public async Task DestinationAmountFill_KeepsTransfersThatHaveOne()
+    {
+        await MigrateAsync();
+        await _db.InsertAsync(new Transfer { Amount = 100m, DestinationAmount = 401_250m });
+        await _db.InsertAsync(new Transfer { Amount = 30m }); // a v3 backup row: no destination amount
+
+        await _db.RunInTransactionAsync(conn => M004_TransferDestinationAmounts.FillMissing(conn));
+
+        var transfers = await _db.Table<Transfer>().OrderBy(t => t.Id).ToListAsync();
+        transfers.Select(t => t.DestinationAmount).Should().Equal(401_250m, 30m);
+    }
+
     private Task MigrateAsync() =>
         DatabaseInitializer.CreateSchemaAsync(_db, new MigrationRunner(MigrationRunner.All));
 }

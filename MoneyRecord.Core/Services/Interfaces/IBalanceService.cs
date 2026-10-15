@@ -3,21 +3,21 @@ using MoneyRecord.Models;
 namespace MoneyRecord.Services.Interfaces
 {
     /// <summary>
-    /// Balances and totals. Amounts are unsigned sums per type; a total across accounts is in the base currency
-    /// until exchange rates exist (Stage 10.3).
+    /// Balances and totals. Period totals are unsigned sums per type, one per currency (base currency first): amounts in
+    /// different currencies are never added together.
     /// </summary>
     public interface IBalanceService
     {
         Task<decimal> GetAccountBalanceAsync(int accountId);
-        Task<decimal> GetTotalIncomesAsync(DateTime startDate, DateTime endDate);
-        Task<decimal> GetTotalExpensesAsync(DateTime startDate, DateTime endDate);
+        Task<List<CurrencyAmount>> GetTotalIncomesAsync(DateTime startDate, DateTime endDate);
+        Task<List<CurrencyAmount>> GetTotalExpensesAsync(DateTime startDate, DateTime endDate);
 
         /// <summary>Every account's balance in its own currency and its latest activity (or creation) date.</summary>
         Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync();
 
-        Task<decimal> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate);
+        Task<List<CurrencyAmount>> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate);
 
         /// <summary>Expenses in the range per category ID, in one query; categories without any are absent.</summary>
-        Task<Dictionary<int, decimal>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate);
+        Task<Dictionary<int, List<CurrencyAmount>>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate);
     }
 }

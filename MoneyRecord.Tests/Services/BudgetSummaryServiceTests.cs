@@ -14,11 +14,12 @@ public class BudgetSummaryServiceTests
     private readonly ICategoryRepository _categories = Substitute.For<ICategoryRepository>();
     private readonly IBalanceService _balance = Substitute.For<IBalanceService>();
     private readonly BudgetSummaryService _sut;
+    private static string Base => MoneyFormatter.ResolveCurrencyCode(null);
 
     public BudgetSummaryServiceTests()
     {
         _sut = new BudgetSummaryService(_budgets, _categories, _balance);
-        _balance.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, decimal>());
+        _balance.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, List<CurrencyAmount>>());
         _categories.GetAllAsync().Returns(new List<Category>
         {
             new() { Id = 1, Name = "Food", IconCode = "F0001" },
@@ -43,7 +44,7 @@ public class BudgetSummaryServiceTests
             new() { Id = 11, CategoryId = 2, LimitAmount = 100m, Period = BudgetPeriod.Month }
         });
         var (start, end) = DateRangeHelper.GetDateRange(PeriodType.CalendarMonth);
-        _balance.GetExpensesByCategoryAsync(start, end).Returns(new Dictionary<int, decimal> { [1] = 20m, [2] = 120m });
+        _balance.GetExpensesByCategoryAsync(start, end).Returns(new Dictionary<int, List<CurrencyAmount>> { [1] = [new(Base, 20m)], [2] = [new(Base, 120m)] });
 
         var summary = await _sut.GetSummaryAsync(PeriodType.CalendarMonth);
 
@@ -78,5 +79,25 @@ public class BudgetSummaryServiceTests
         });
 
         (await _sut.GetSummaryAsync(PeriodType.CalendarMonth)).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Only_base_currency_expenses_count_and_the_others_are_listed()
+    {
+        _budgets.GetActiveBudgetsAsync().Returns(new List<Budget>
+        {
+            new() { Id = 10, CategoryId = 1, LimitAmount = 100m, Period = BudgetPeriod.Month }
+        });
+        _balance.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, List<CurrencyAmount>>
+        {
+            [1] = [new(Base, 30m), new("ZZZ", 500m)]
+        });
+
+        var progress = (await _sut.GetSummaryAsync(PeriodType.CalendarMonth)).Single();
+
+        progress.SpentAmount.Should().Be(30m);
+        progress.IsOverBudget.Should().BeFalse();
+        progress.HasUncounted.Should().BeTrue();
+        progress.UncountedText.Should().Contain(MoneyFormatter.Format(500m, "ZZZ"));
     }
 }

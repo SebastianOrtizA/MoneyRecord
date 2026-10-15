@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The reports' currency (shared, one at a time): bind BindingContext to a page's Period. Hidden with one currency. -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             x:Class="MoneyRecord.Controls.CurrencyChips"
+             x:DataType="viewmodels:PeriodViewModel"
+             IsVisible="{Binding HasCurrencyChoices}">
+
+    <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+        <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding CurrencyChoices}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate x:DataType="models:CurrencyChoice">
+                    <controls:FilterChip Text="{Binding Code}"
+                                         IsActive="{Binding IsSelected}"
+                                         Command="{Binding SelectCurrencyCommand, Source={RelativeSource AncestorType={x:Type viewmodels:PeriodViewModel}}, x:DataType=viewmodels:PeriodViewModel}"
+                                         CommandParameter="{Binding Code}" />
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </HorizontalStackLayout>
+    </ScrollView>
+</ContentView>

@@ -25,7 +25,12 @@ namespace MoneyRecord.Helpers
             AccountId = outgoing ? transfer.AccountId : transfer.CounterpartAccountId,
             AccountName = outgoing ? transfer.AccountName : transfer.CounterpartAccountName,
             CounterpartAccountId = outgoing ? transfer.CounterpartAccountId : transfer.AccountId,
-            CounterpartAccountName = outgoing ? transfer.CounterpartAccountName : transfer.AccountName
+            CounterpartAccountName = outgoing ? transfer.CounterpartAccountName : transfer.AccountName,
+            // The destination's half is in its own currency: what arrived
+            AmountCents = outgoing ? transfer.AmountCents : transfer.CounterpartAmountCents,
+            CurrencyCode = outgoing ? transfer.CurrencyCode : transfer.CounterpartCurrencyCode,
+            CounterpartAmountCents = outgoing ? transfer.CounterpartAmountCents : transfer.AmountCents,
+            CounterpartCurrencyCode = outgoing ? transfer.CounterpartCurrencyCode : transfer.CurrencyCode
         };
 
         private static string Label(string format, string accountName, string note)

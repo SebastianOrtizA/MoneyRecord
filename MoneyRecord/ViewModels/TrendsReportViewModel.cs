@@ -28,9 +28,9 @@ namespace MoneyRecord.ViewModels
         private bool hasBudgets;
 
         public TrendsReportViewModel(PeriodViewModel period, ITransactionRepository transactionRepository,
-            IBudgetRepository budgetRepository, IErrorHandler errorHandler, INavigationService navigationService,
-            TransactionsDrillDown drillDown)
-            : base(period, errorHandler, navigationService, drillDown)
+            IBudgetRepository budgetRepository, IAccountRepository accountRepository, IErrorHandler errorHandler,
+            INavigationService navigationService, TransactionsDrillDown drillDown)
+            : base(period, accountRepository, errorHandler, navigationService, drillDown)
         {
             _transactionRepository = transactionRepository;
             _budgetRepository = budgetRepository;
@@ -42,25 +42,29 @@ namespace MoneyRecord.ViewModels
             var previousFirst = firstMonth.AddMonths(-months);
             var transactionsTask = _transactionRepository.GetByDateRangeAsync(previousFirst, firstMonth.AddMonths(months).AddTicks(-1));
             var budgetsTask = _budgetRepository.GetActiveBudgetsAsync();
-            await Task.WhenAll(transactionsTask, budgetsTask);
+            var accountsTask = LoadAccountsAsync();
+            await Task.WhenAll(transactionsTask, budgetsTask, accountsTask);
             cancellationToken.ThrowIfCancellationRequested();
 
-            var transactions = await transactionsTask;
+            var code = Period.ReportCurrency;
+            var transactions = ReportCurrencies.Only(await transactionsTask, await accountsTask, code, BaseCurrencyCode);
             var budgets = await budgetsTask;
             var totals = MonthlyTotalsBuilder.Build(transactions, firstMonth, months);
             var previous = MonthlyTotalsBuilder.Build(transactions, previousFirst, months);
             var budgetRows = BudgetVsActualBuilder.Build(budgets, transactions, firstMonth, months);
 
             HasData = totals.Any(t => t.Expense > 0);
-            HasBudgets = budgets.Count > 0;
-            Headline = totals.Sum(t => t.Expense);
-            DeltaText = new PeriodDelta(Headline, previous.Sum(t => t.Expense)).Text;
+            // Budgets are in the base currency: no comparison while another currency is shown
+            HasBudgets = budgets.Count > 0 && code == BaseCurrencyCode;
+            var spending = totals.Sum(t => t.Expense);
+            HeadlineText = MoneyFormatter.Format(spending, code);
+            DeltaText = new PeriodDelta(spending, previous.Sum(t => t.Expense)).Text;
 
             MonthAxis = ChartFactory.LabelAxis(totals.Select(t => t.Label));
-            MoneyAxis = ChartFactory.MoneyAxis();
-            SpendingSeries = ChartFactory.Columns((month, _) => OpenMonth(month, TransactionType.Expense),
+            MoneyAxis = ChartFactory.MoneyAxis(code);
+            SpendingSeries = ChartFactory.Columns((month, _) => OpenMonth(month, TransactionType.Expense), code,
                 new ChartFactory.Line(AppResources.Expenses, totals.Select(t => t.Expense), ChartPalette.Expense));
-            BudgetSeries = ChartFactory.Columns((month, _) => OpenMonth(month, TransactionType.Expense),
+            BudgetSeries = ChartFactory.Columns((month, _) => OpenMonth(month, TransactionType.Expense), code,
                 new ChartFactory.Line(AppResources.BudgetSeries, budgetRows.Select(b => b.Limit), ChartPalette.Budget),
                 new ChartFactory.Line(AppResources.SpentSeries, budgetRows.Select(b => b.Spent), ChartPalette.Expense));
         }

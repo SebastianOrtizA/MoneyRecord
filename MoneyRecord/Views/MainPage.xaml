@@ -127,7 +127,7 @@
                                FontSize="11"
                                TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"
                                HorizontalOptions="Center"/>
-                        <Label Text="{Binding TotalIncomes, Converter={StaticResource MoneyConverter}}"
+                        <Label Text="{Binding BaseTotals.IncomeText}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
@@ -158,7 +158,7 @@
                                FontSize="11"
                                TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"
                                HorizontalOptions="Center"/>
-                        <Label Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}"
+                        <Label Text="{Binding BaseTotals.ExpenseText}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
@@ -180,7 +180,7 @@
                        Padding="10"
                        HasShadow="False">
                     <Frame.Triggers>
-                        <DataTrigger TargetType="Frame" Binding="{Binding IsNetNegative}" Value="True">
+                        <DataTrigger TargetType="Frame" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
                             <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"/>
                         </DataTrigger>
                     </Frame.Triggers>
@@ -191,7 +191,7 @@
                                HorizontalOptions="Center"
                                TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
                             <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
                                     <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
                                 </DataTrigger>
                             </Label.Triggers>
@@ -201,12 +201,12 @@
                                TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
                                HorizontalOptions="Center">
                             <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
                                     <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
-                        <Label Text="{Binding NetIncome, Converter={StaticResource SignedMoneyConverter}}"
+                        <Label Text="{Binding BaseTotals.NetText}"
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
@@ -215,7 +215,7 @@
                                 <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
                                     <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
                                 </DataTrigger>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
                                     <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
                                 </DataTrigger>
                             </Label.Triggers>
@@ -223,6 +223,29 @@
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
+
+            <!-- The same totals in other currencies, one row each, under the matching card (never added together; hidden with the balances) -->
+            <VerticalStackLayout Spacing="4" IsVisible="{Binding ShowOtherTotals}"
+                                 BindableLayout.ItemsSource="{Binding OtherTotals}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:PeriodTotals">
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <Label Text="{Binding IncomeText}" Style="{StaticResource OtherCurrencyTotal}"
+                                   TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
+                            <Label Grid.Column="1" Text="{Binding ExpenseText}" Style="{StaticResource OtherCurrencyTotal}"
+                                   TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
+                            <Label Grid.Column="2" Text="{Binding NetText}" Style="{StaticResource OtherCurrencyTotal}"
+                                   TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
 
             <!-- Recent Transactions Quick View -->
             <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
@@ -269,6 +292,7 @@
                                            FontSize="15"
                                            FontAttributes="Bold"
                                            VerticalOptions="Center"
+                                           HorizontalTextAlignment="End"
                                            TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
                                 </Grid>
                             </DataTemplate>

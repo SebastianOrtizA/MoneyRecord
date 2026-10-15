@@ -81,7 +81,7 @@
                                 </HorizontalStackLayout>
                                 
                                 <!-- Row 2: To Account -->
-                                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                                <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="6">
                                     <Label Text="&#xF0CD5;" FontFamily="MaterialDesignIcons" FontSize="14" TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
                                     <Label Text="{ext:Localize ToLabel}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                     <Label Text="{Binding DestinationAccountName}"
@@ -89,6 +89,21 @@
                                            FontAttributes="Bold"
                                            TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
                                 </HorizontalStackLayout>
+
+                                <!-- What arrived, when the destination has another currency -->
+                                <Label Grid.Row="2" Grid.Column="1"
+                                       IsVisible="{Binding IsCrossCurrency}"
+                                       HorizontalOptions="End"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}">
+                                    <Label.Text>
+                                        <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
+                                            <Binding Path="DestinationAmount"/>
+                                            <Binding Path="DestinationCurrencyCode"/>
+                                        </MultiBinding>
+                                    </Label.Text>
+                                </Label>
                                 
                                 <!-- Row 3: Action Buttons -->
                                 <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" 
