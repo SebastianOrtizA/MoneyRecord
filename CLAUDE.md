@@ -46,6 +46,8 @@ crashes at runtime (XAML is inflated at runtime there).
 `MoneyRecord.Core/`
 - `Models/` — 6 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction. Plus display models
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
+  CurrencyAmount (a total in one currency; per-currency totals, never added), PeriodTotals (Home: income / expense / net
+  per currency), CurrencyChoice (report currency chip),
   LedgerEntry, TransactionGroup, TransactionFilter/FilterOption, CategoryAmount/CategoryReport (report shares + chart
   palette slot, donut slices), PeriodDelta ("vs previous period"), BudgetProgress/BudgetLevel, TypeFilterOption,
   Currency, DefaultCategory (the seed categories by resource key; also offered by the setup), LanguageOption /
@@ -56,7 +58,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
   `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
   `GetConnectionAsync`, `RunInTransactionAsync`; optional encryption), `SqliteSetup`
-- `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
+- `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M004`
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
   as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
@@ -76,11 +78,12 @@ crashes at runtime (XAML is inflated at runtime there).
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
   account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), RecurrenceCalculator
   (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
-  days of recurring occurrences, same rule)
+  days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
+  (currencies in use; transactions in one currency)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
-  Spending / Income show, plus the shared month count of the time-series reports), SetupViewModel (setup assistant:
+  Spending / Income show, plus the shared month count of the time-series reports and the reports' currency, `ReportCurrency`), SetupViewModel (setup assistant:
   language + base currency → starting accounts → default categories)
 
 `MoneyRecord/` (app)
@@ -95,7 +98,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Charts/` — ChartPalette (light/dark chart colours, categorical slots), ChartFactory (LiveChartsCore donut / columns /
   lines / axes with one look; per-series tap handlers), ChartTapBehavior (drill-down on a real tap, never on a scroll)
 - `Controls/` — BottomSheet (the in-page sheet: dim, panel, handle, slide-up; `IsOpen` + `CloseCommand`), PeriodPicker /
-  MonthCountPicker (bind BindingContext to a page's `Period`), AddEntryButton (the one add button: opens an Expense /
+  MonthCountPicker / CurrencyChips (bind BindingContext to a page's `Period`; the chips hide with one currency), AddEntryButton (the one add button: opens an Expense /
   Income / Transfer sheet; on Home and Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back
   closes it first),
   LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard)
@@ -164,7 +167,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Multi-row changes go through `DatabaseInitializer.RunInTransactionAsync` (deletes in AccountService/CategoryService,
   backup snapshot, restore)
 - Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row
-- Backups: `.zip` with `data.json` (format v3, rows keep their IDs) + `receipts/`; restore snapshots go to `Backups/`
+- Backups: `.zip` with `data.json` (format v4, rows keep their IDs) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization
 - `.resx` resource files with `ResXFileCodeGenerator`
@@ -192,10 +195,13 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 
 - Budget is **expense-only** (per-category spending limits, not income targets)
 - Transfers are a **separate table** from transactions (linked via TransferId on display)
-- Each account has a **currency**; amounts are shown with `MoneyFormatter.Format(amount, currencyCode)` / `MoneyConverter`
+- Each account has a **currency**; amounts are shown with `MoneyFormatter.Format(amount, currencyCode)` (`MoneyFormatter.BaseCurrency` = the resolved base code, `SameCurrency(a, b)`) / `MoneyConverter`
   / `CurrencyMoneyConverter`. An empty code means the **base currency** (Settings; default = device region currency)
-- Never add different currencies together: the Home card shows one subtotal per currency. Totals across accounts in
-  reports/budgets are still summed in the base currency until exchange rates exist (Stage 10.3)
+- Never add different currencies together: totals are per currency (`CurrencyAmount`, SQL `GROUP BY` the account's
+  currency; no account = base). Home lists each currency, reports show one at a time (currency chips), budgets count
+  base-currency expenses only until exchange rates exist (Stage 10.3b)
+- A transfer stores what left (`AmountCents`, source currency) and what arrived (`DestinationAmountCents`, destination
+  currency); they differ only between currencies
 - Accounts with transfers can't be deleted; account deletes into a different currency are refused
 - Budget progress uses `BudgetLevel` + `BudgetLevelToColorConverter` (light/dark aware); models hold no `Color`
 - `BudgetPeriod` enum: Day, Month, Year — projected via `BudgetProjectionHelper`

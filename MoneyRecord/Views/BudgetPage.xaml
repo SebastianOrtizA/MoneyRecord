@@ -146,6 +146,12 @@
                                         </Label.FormattedText>
                                     </Label>
                                 </Grid>
+
+                                <!-- Expenses in other currencies: listed, not counted against the limit (base currency) -->
+                                <Label Text="{Binding UncountedText}"
+                                       IsVisible="{Binding HasUncounted}"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

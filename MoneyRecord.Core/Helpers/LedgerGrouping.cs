@@ -35,10 +35,11 @@ namespace MoneyRecord.Helpers
         /// <summary>One category means one type: an income or expense category, or the transfers.</summary>
         private static TransactionGroup CategoryGroup(string name, List<LedgerEntry> items)
         {
-            var currencies = items.Select(e => MoneyFormatter.ResolveCurrencyCode(e.CurrencyCode)).Distinct().ToList();
-            var currencyCode = currencies.Count == 1 ? currencies[0] : string.Empty;
+            // One total per currency (a transfer counts in its source currency)
+            var totals = CurrencyAmount.Totals(items.Select(e => new CurrencyAmount(e.CurrencyCode, e.Amount)),
+                MoneyFormatter.BaseCurrency);
 
-            return new TransactionGroup(name, items[0].CategoryIconCode, items[0].Type, items.Sum(e => e.Amount), currencyCode, items);
+            return new TransactionGroup(name, items[0].CategoryIconCode, items[0].Type, totals, items);
         }
 
         private static TransactionGroup AccountGroup(int? accountId, string name, List<LedgerEntry> items,
@@ -47,11 +48,11 @@ namespace MoneyRecord.Helpers
             // The account's own currency: a transfer row from another currency must not change it
             var balance = balances?.FirstOrDefault(b => b.AccountId == accountId);
             var total = balance?.CurrentBalance ?? 0;
-            var currencyCode = balance?.CurrencyCode ?? string.Empty;
+            var currencyCode = MoneyFormatter.ResolveCurrencyCode(balance?.CurrencyCode);
             var iconCode = accounts?.FirstOrDefault(a => a.Id == accountId)?.IconCode ?? IconHelper.DefaultAccountIconCode;
             var type = total >= 0 ? TransactionType.Income : TransactionType.Expense;
 
-            return new TransactionGroup(name, iconCode, type, total, currencyCode, items);
+            return new TransactionGroup(name, iconCode, type, [new CurrencyAmount(currencyCode, total)], items);
         }
     }
 }

@@ -10,11 +10,16 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
 
-        /// <summary>Total (unsigned, in cents) of one type in the range, optionally of one category. Summed by SQLite.</summary>
-        Task<long> SumCentsAsync(TransactionType type, DateTime startDate, DateTime endDate, int? categoryId = null);
+        /// <summary>
+        /// Totals (unsigned) of one type in the range, one per currency (an account's; no account = the base currency),
+        /// base currency first. Summed by SQLite; currencies are never added together.
+        /// </summary>
+        Task<List<CurrencyAmount>> SumByCurrencyAsync(TransactionType type, DateTime startDate, DateTime endDate,
+            string baseCurrencyCode);
 
-        /// <summary>Totals (unsigned, in cents) of one type in the range per category ID; categories without any are absent.</summary>
-        Task<Dictionary<int, long>> SumCentsByCategoryAsync(TransactionType type, DateTime startDate, DateTime endDate);
+        /// <summary>Like <see cref="SumByCurrencyAsync"/> per category ID; categories without any are absent.</summary>
+        Task<Dictionary<int, List<CurrencyAmount>>> SumByCategoryAsync(TransactionType type, DateTime startDate,
+            DateTime endDate, string baseCurrencyCode);
 
         /// <summary>All-time totals of one type per account, with each account's latest date of that type.</summary>
         Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type);

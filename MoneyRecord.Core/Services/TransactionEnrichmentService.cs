@@ -129,6 +129,7 @@ namespace MoneyRecord.Services
             if (accounts.TryGetValue(transfer.DestinationAccountId, out var destAccount))
             {
                 transfer.DestinationAccountName = destAccount.Name ?? AppResources.Unknown;
+                transfer.DestinationCurrencyCode = destAccount.CurrencyCode;
             }
             else
             {

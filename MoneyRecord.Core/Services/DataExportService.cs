@@ -15,9 +15,9 @@ namespace MoneyRecord.Services
     {
         /// <summary>
         /// v1: decimals only (.json). v2: also exact cents (.json). v3: a .zip with data.json + receipts/,
-        /// receipt paths relative to the zip ("receipts/receipt_x.jpg").
+        /// receipt paths relative to the zip ("receipts/receipt_x.jpg"). v4: transfers also store the destination amount.
         /// </summary>
-        public const int BackupVersion = 3;
+        public const int BackupVersion = 4;
 
         private const string DataEntryName = "data.json";
         private const string SnapshotPrefix = "pre-restore-";
@@ -247,7 +247,9 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.RecurringTransactions, r => r.Id);
 
             // A backup from before account currencies: give its accounts a fixed currency, as migration 3 does
-            M003_AccountCurrencyCodes.FillMissing(conn, MoneyFormatter.ResolveCurrencyCode(null));
+            M003_AccountCurrencyCodes.FillMissing(conn, MoneyFormatter.BaseCurrency);
+            // A backup from before destination amounts (v3 and older): what arrived is what left, as migration 4 does
+            M004_TransferDestinationAmounts.FillMissing(conn);
             return count;
         }
 

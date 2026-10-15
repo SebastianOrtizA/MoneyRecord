@@ -68,8 +68,8 @@ public class ReportsHubTests
             new Transaction { AccountId = 9, Type = TransactionType.Income, Amount = 999m, Date = new DateTime(2026, 10, 3) }
         ],
         [
-            new Transfer { SourceAccountId = 1, DestinationAccountId = 3, Amount = 100m, Date = new DateTime(2026, 10, 5) },
-            new Transfer { SourceAccountId = 1, DestinationAccountId = 2, Amount = 30m, Date = new DateTime(2026, 10, 6) }
+            new Transfer { SourceAccountId = 1, DestinationAccountId = 3, Amount = 100m, DestinationAmount = 100m, Date = new DateTime(2026, 10, 5) },
+            new Transfer { SourceAccountId = 1, DestinationAccountId = 2, Amount = 30m, DestinationAmount = 30m, Date = new DateTime(2026, 10, 6) }
         ], new DateTime(2026, 8, 1), 3);
 
         points.Select(p => (p.Month.Month, p.Value)).Should().Equal((8, 950m), (9, 1150m), (10, 1000m));

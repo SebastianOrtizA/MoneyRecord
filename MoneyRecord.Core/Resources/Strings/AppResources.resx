@@ -878,9 +878,6 @@ Amount: {2}</value>
   <data name="SelectCurrency" xml:space="preserve">
     <value>Select Currency</value>
   </data>
-  <data name="CurrencyMismatchWarning" xml:space="preserve">
-    <value>Warning: Transferring between accounts with different currencies ({0} → {1}). No exchange rate conversion is applied.</value>
-  </data>
   <data name="DefaultCurrency" xml:space="preserve">
     <value>Default Currency</value>
   </data>
@@ -1354,5 +1351,17 @@ Amount: {2}</value>
   </data>
   <data name="UnreadableDatabaseMessage" xml:space="preserve">
     <value>The key of your encrypted database is no longer on this phone, so the app started with a new database. Restore a backup in Settings to get your data back.</value>
+  </data>
+  <data name="AmountReceived" xml:space="preserve">
+    <value>Amount received</value>
+  </data>
+  <data name="CrossCurrencyTransferHint" xml:space="preserve">
+    <value>The accounts use different currencies ({0} → {1}): enter the amount that arrived.</value>
+  </data>
+  <data name="ExchangeRateValue" xml:space="preserve">
+    <value>Rate: {0}</value>
+  </data>
+  <data name="BudgetNotCounted" xml:space="preserve">
+    <value>Not counted: {0}</value>
   </data>
 </root>

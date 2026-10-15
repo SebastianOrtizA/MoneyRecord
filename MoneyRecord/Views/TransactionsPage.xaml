@@ -86,6 +86,7 @@
                                    FontSize="15"
                                    FontAttributes="Bold"
                                    HorizontalOptions="End"
+                                   HorizontalTextAlignment="End"
                                    TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
                             <HorizontalStackLayout Spacing="4" HorizontalOptions="End">
                                 <Label Text="&#xF04F9;"
@@ -141,12 +142,15 @@
                                FontSize="16"
                                FontAttributes="Bold"
                                LineBreakMode="TailTruncation" />
-                        <Label Grid.Column="3"
+                        <!-- One line per currency -->
+                        <Label Grid.Column="3" Grid.RowSpan="2"
                                Text="{Binding ., Converter={StaticResource GroupTotalConverter}}"
+                               HorizontalTextAlignment="End"
+                               VerticalOptions="Center"
                                FontSize="16"
                                FontAttributes="Bold"
                                TextColor="{Binding ., Converter={StaticResource GroupTypeToColorConverter}}" />
-                        <Label Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
+                        <Label Grid.Row="1" Grid.Column="2"
                                Text="{Binding TransactionCount, Converter={StaticResource TransactionCountConverter}}"
                                FontSize="12"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />

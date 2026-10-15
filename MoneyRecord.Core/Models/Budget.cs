@@ -123,6 +123,30 @@ namespace MoneyRecord.Models
 
         public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
 
+        /// <summary>
+        /// "Not counted: US$40.00" when the category also has expenses in other currencies: a budget is in the base
+        /// currency and other currencies count only once exchange rates exist (Stage 10.3b). Empty otherwise.
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasUncounted))]
+        private string uncountedText = string.Empty;
+
+        public bool HasUncounted => !string.IsNullOrEmpty(UncountedText);
+
+        /// <summary>
+        /// Takes the category's expenses per currency: the base currency's count against the limit, the others are
+        /// only listed (<see cref="UncountedText"/>). Then <see cref="CalculateProgress"/>.
+        /// </summary>
+        public void SetSpent(IReadOnlyCollection<CurrencyAmount> spent, string baseCurrencyCode)
+        {
+            SpentAmount = CurrencyAmount.In(spent, baseCurrencyCode);
+            var others = CurrencyAmount.Except(spent, baseCurrencyCode);
+            UncountedText = others.Count == 0
+                ? string.Empty
+                : string.Format(AppResources.BudgetNotCounted, CurrencyAmount.Format(others, separator: " + "));
+            CalculateProgress();
+        }
+
         public void CalculateProgress()
         {
             if (LimitAmount > 0)

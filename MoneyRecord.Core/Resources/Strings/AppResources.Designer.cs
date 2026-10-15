@@ -2169,12 +2169,6 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
-        public static string CurrencyMismatchWarning {
-            get {
-                return ResourceManager.GetString("CurrencyMismatchWarning", resourceCulture);
-            }
-        }
-
         public static string DefaultCurrency {
             get {
                 return ResourceManager.GetString("DefaultCurrency", resourceCulture);
@@ -3573,6 +3567,42 @@ namespace MoneyRecord.Resources.Strings {
         public static string UnreadableDatabaseMessage {
             get {
                 return ResourceManager.GetString("UnreadableDatabaseMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Amount received.
+        /// </summary>
+        public static string AmountReceived {
+            get {
+                return ResourceManager.GetString("AmountReceived", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The accounts use different currencies ({0} → {1}): enter t [rest of string was truncated].
+        /// </summary>
+        public static string CrossCurrencyTransferHint {
+            get {
+                return ResourceManager.GetString("CrossCurrencyTransferHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rate: {0}.
+        /// </summary>
+        public static string ExchangeRateValue {
+            get {
+                return ResourceManager.GetString("ExchangeRateValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not counted: {0}.
+        /// </summary>
+        public static string BudgetNotCounted {
+            get {
+                return ResourceManager.GetString("BudgetNotCounted", resourceCulture);
             }
         }
     }

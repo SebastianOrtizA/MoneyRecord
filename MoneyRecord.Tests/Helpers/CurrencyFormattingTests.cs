@@ -61,17 +61,10 @@ public class CurrencyFormattingTests
     }
 
     [Fact]
-    public void FormatTotals_NeverAddsDifferentCurrencies()
+    public void SameCurrency_TreatsEmptyAsTheBaseAndIgnoresCase()
     {
-        WithCulture("en-US", () =>
-            MoneyFormatter.FormatTotals([(10000m, "JPY"), (12.5m, "USD"), (7.5m, "usd")])
-                .Should().Be("¥10,000 + $20.00"));
-    }
-
-    [Fact]
-    public void FormatTotals_OneCurrency_IsASingleAmount()
-    {
-        WithCulture("en-US", () =>
-            MoneyFormatter.FormatTotals([(1m, "EUR"), (2m, "EUR")]).Should().Be("€3.00"));
+        MoneyFormatter.SameCurrency("usd", "USD").Should().BeTrue();
+        MoneyFormatter.SameCurrency("", MoneyFormatter.BaseCurrency).Should().BeTrue();
+        MoneyFormatter.SameCurrency("EUR", "USD").Should().BeFalse();
     }
 }

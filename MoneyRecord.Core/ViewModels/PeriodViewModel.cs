@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
@@ -8,7 +9,8 @@ namespace MoneyRecord.ViewModels
     /// <summary>
     /// The one period the app looks at (singleton): Home, Transactions, Budgets and the Spending / Income reports all show
     /// it, so changing it on one tab changes it everywhere. The time-series reports (Trends, Cash flow, Net worth) share
-    /// <see cref="MonthCount"/> instead, since they need whole months.
+    /// <see cref="MonthCount"/> instead, since they need whole months. Every report shows one currency,
+    /// <see cref="ReportCurrency"/> (until exchange rates exist).
     /// </summary>
     public partial class PeriodViewModel : ObservableObject
     {
@@ -36,6 +38,19 @@ namespace MoneyRecord.ViewModels
 
         public List<int> MonthCountOptions { get; } = [3, 6, 12];
 
+        // The reports' currency; null = the base currency, so a base currency change in Settings is followed
+        private string? _reportCurrency;
+
+        /// <summary>The reports' currency chips; empty with a single currency (nothing to choose).</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasCurrencyChoices))]
+        private List<CurrencyChoice> currencyChoices = [];
+
+        public bool HasCurrencyChoices => CurrencyChoices.Count > 1;
+
+        /// <summary>The currency every report shows (an ISO code).</summary>
+        public string ReportCurrency => _reportCurrency ?? MoneyFormatter.BaseCurrency;
+
         public PeriodViewModel()
         {
             selectedPeriod = periods.First(p => p.Type == PeriodType.CalendarMonth);
@@ -48,6 +63,9 @@ namespace MoneyRecord.ViewModels
 
         /// <summary><see cref="MonthCount"/> changed.</summary>
         public event Action? MonthCountChanged;
+
+        /// <summary><see cref="ReportCurrency"/> changed (a chip was tapped); only the reports follow it.</summary>
+        public event Action? CurrencyChanged;
 
         /// <summary>
         /// Runs <paramref name="onChanged"/> on every period change until the result is disposed: a page listens only
@@ -66,6 +84,13 @@ namespace MoneyRecord.ViewModels
             return new Subscription(() => MonthCountChanged -= onChanged);
         }
 
+        /// <summary>Like <see cref="WatchChanges"/>, for <see cref="ReportCurrency"/>.</summary>
+        public IDisposable WatchCurrency(Action onChanged)
+        {
+            CurrencyChanged += onChanged;
+            return new Subscription(() => CurrencyChanged -= onChanged);
+        }
+
         private sealed class Subscription(Action unsubscribe) : IDisposable
         {
             private Action? _unsubscribe = unsubscribe;
@@ -75,6 +100,32 @@ namespace MoneyRecord.ViewModels
                 _unsubscribe?.Invoke();
                 _unsubscribe = null;
             }
+        }
+
+        /// <summary>
+        /// A report is loading: the currencies there are now (<see cref="ReportCurrencies.InUse"/>). A chosen currency
+        /// no account uses any more falls back to the base currency.
+        /// </summary>
+        public void SetCurrencies(IReadOnlyList<string> codes)
+        {
+            if (_reportCurrency != null && !codes.Contains(_reportCurrency))
+                _reportCurrency = null;
+
+            var choices = codes.Count > 1 ? codes.Select(c => new CurrencyChoice(c, c == ReportCurrency)).ToList() : [];
+            if (!choices.SequenceEqual(CurrencyChoices))
+                CurrencyChoices = choices;
+        }
+
+        /// <summary>A chip was tapped: every report shows this currency, and the one on screen (watching) reloads.</summary>
+        [RelayCommand]
+        private void SelectCurrency(string? code)
+        {
+            if (string.IsNullOrEmpty(code) || code == ReportCurrency)
+                return;
+
+            _reportCurrency = code == MoneyFormatter.BaseCurrency ? null : code;
+            CurrencyChoices = CurrencyChoices.Select(c => c with { IsSelected = c.Code == code }).ToList();
+            CurrencyChanged?.Invoke();
         }
 
         public (DateTime Start, DateTime End) Range =>

@@ -108,121 +108,165 @@
 
             <controls:PeriodPicker BindingContext="{Binding Period}" />
 
-            <!-- Income / Expense / Net Row -->
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
-                <!-- Incomes Card -->
-                <Frame Grid.Column="0"
-                       BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
-                       BorderColor="Transparent"
-                       CornerRadius="12"
-                       Padding="10"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="4">
-                        <Label Text="&#xF0415;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="20"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
-                        <Label Text="{ext:Localize Incomes}"
-                               FontSize="11"
-                               TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"
-                               HorizontalOptions="Center"/>
-                        <Label Text="{Binding TotalIncomes, Converter={StaticResource MoneyConverter}}"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
-                                    <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                    </VerticalStackLayout>
-                </Frame>
+            <!-- The period summary: base-currency cards, then the other currencies, in one container so they read as one -->
+            <Border Style="{StaticResource PeriodSummary}">
+                <VerticalStackLayout Spacing="8">
+                    <!-- Income / Expense / Net Row -->
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                        <!-- Incomes Card -->
+                        <Frame Grid.Column="0"
+                               BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
+                               BorderColor="Transparent"
+                               CornerRadius="12"
+                               Padding="10"
+                               HasShadow="False">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="&#xF0415;"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
+                                <Label Text="{ext:Localize Incomes}"
+                                       FontSize="11"
+                                       TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding BaseTotals.IncomeText}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                            <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Frame>
 
-                <!-- Expenses Card -->
-                <Frame Grid.Column="1"
-                       BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"
-                       BorderColor="Transparent"
-                       CornerRadius="12"
-                       Padding="10"
-                       HasShadow="False">
-                    <VerticalStackLayout Spacing="4">
-                        <Label Text="&#xF0374;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="20"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
-                        <Label Text="{ext:Localize Expenses}"
-                               FontSize="11"
-                               TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"
-                               HorizontalOptions="Center"/>
-                        <Label Text="{Binding TotalExpenses, Converter={StaticResource MoneyConverter}}"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFEBEE}">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
-                                    <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                    </VerticalStackLayout>
-                </Frame>
+                        <!-- Expenses Card -->
+                        <Frame Grid.Column="1"
+                               BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"
+                               BorderColor="Transparent"
+                               CornerRadius="12"
+                               Padding="10"
+                               HasShadow="False">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="&#xF0374;"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
+                                <Label Text="{ext:Localize Expenses}"
+                                       FontSize="11"
+                                       TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"
+                                       HorizontalOptions="Center"/>
+                                <Label Text="{Binding BaseTotals.ExpenseText}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFEBEE}">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                            <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Frame>
 
-                <!-- Net Card: green, or the expense palette when net is negative -->
-                <Frame Grid.Column="2"
-                       BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
-                       BorderColor="Transparent"
-                       CornerRadius="12"
-                       Padding="10"
-                       HasShadow="False">
-                    <Frame.Triggers>
-                        <DataTrigger TargetType="Frame" Binding="{Binding IsNetNegative}" Value="True">
-                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"/>
-                        </DataTrigger>
-                    </Frame.Triggers>
-                    <VerticalStackLayout Spacing="4">
-                        <Label Text="&#xF04E1;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="20"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
-                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                        <!-- Net Card: green, or the expense palette when net is negative -->
+                        <Frame Grid.Column="2"
+                               BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+                               BorderColor="Transparent"
+                               CornerRadius="12"
+                               Padding="10"
+                               HasShadow="False">
+                            <Frame.Triggers>
+                                <DataTrigger TargetType="Frame" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"/>
                                 </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                        <Label Text="{ext:Localize NetIncome}"
-                               FontSize="11"
-                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
-                               HorizontalOptions="Center">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
-                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
-                        <Label Text="{Binding NetIncome, Converter={StaticResource SignedMoneyConverter}}"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#1B5E20, Dark=#E8F5E9}">
-                            <Label.Triggers>
-                                <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
-                                    <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
-                                </DataTrigger>
-                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
-                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
-                                </DataTrigger>
-                            </Label.Triggers>
-                        </Label>
+                            </Frame.Triggers>
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="&#xF04E1;"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Label Text="{ext:Localize NetIncome}"
+                                       FontSize="11"
+                                       TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
+                                       HorizontalOptions="Center">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Label Text="{Binding BaseTotals.NetText}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#1B5E20, Dark=#E8F5E9}">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                            <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
+
+                    <!-- The same totals in other currencies, one row each, a pill under the matching card (never added together;
+                         hidden with the balances) -->
+                    <VerticalStackLayout Spacing="6" IsVisible="{Binding ShowOtherTotals}"
+                                         BindableLayout.ItemsSource="{Binding OtherTotals}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:PeriodTotals">
+                                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                                    <Border Style="{StaticResource OtherCurrencyPill}"
+                                            BackgroundColor="{AppThemeBinding Light=#EEF6FE, Dark=#122B4A}">
+                                        <Label Text="{Binding IncomeText}" Style="{StaticResource OtherCurrencyTotal}"
+                                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
+                                    </Border>
+                                    <Border Grid.Column="1" Style="{StaticResource OtherCurrencyPill}"
+                                            BackgroundColor="{AppThemeBinding Light=#FFF2F4, Dark=#3F1619}">
+                                        <Label Text="{Binding ExpenseText}" Style="{StaticResource OtherCurrencyTotal}"
+                                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
+                                    </Border>
+                                    <!-- Green, or the expense palette when this currency's net is negative (like the Net card) -->
+                                    <Border Grid.Column="2" Style="{StaticResource OtherCurrencyPill}"
+                                            BackgroundColor="{AppThemeBinding Light=#EFF8F0, Dark=#14321B}">
+                                        <Border.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsNetNegative}" Value="True">
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFF2F4, Dark=#3F1619}"/>
+                                            </DataTrigger>
+                                        </Border.Triggers>
+                                        <Label Text="{Binding NetText}" Style="{StaticResource OtherCurrencyTotal}"
+                                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
+                                            <Label.Triggers>
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
+                                                </DataTrigger>
+                                            </Label.Triggers>
+                                        </Label>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
-                </Frame>
-            </Grid>
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Recent Transactions Quick View -->
             <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
@@ -269,6 +313,7 @@
                                            FontSize="15"
                                            FontAttributes="Bold"
                                            VerticalOptions="Center"
+                                           HorizontalTextAlignment="End"
                                            TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
                                 </Grid>
                             </DataTemplate>

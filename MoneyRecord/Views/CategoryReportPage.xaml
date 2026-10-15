@@ -22,6 +22,7 @@
             <CollectionView.Header>
                 <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
                     <controls:PeriodPicker BindingContext="{Binding Period}" />
+                    <controls:CurrencyChips BindingContext="{Binding Period}" />
 
                     <!-- Donut with the total in the middle -->
                     <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}" Padding="8">
@@ -39,7 +40,7 @@
                                        FontSize="13"
                                        HorizontalTextAlignment="Center"
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
-                                <Label Text="{Binding Total, Converter={StaticResource MoneyConverter}}"
+                                <Label Text="{Binding TotalText}"
                                        FontSize="20"
                                        FontAttributes="Bold"
                                        HorizontalTextAlignment="Center" />
@@ -84,7 +85,7 @@
                         <Label Grid.Column="3" VerticalOptions="Center" HorizontalTextAlignment="End">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span Text="{Binding Amount, Converter={StaticResource MoneyConverter}}" FontSize="15" FontAttributes="Bold" />
+                                    <Span Text="{Binding AmountText}" FontSize="15" FontAttributes="Bold" />
                                     <Span Text="  " />
                                     <Span Text="{Binding PercentageText}"
                                           FontSize="13"

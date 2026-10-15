@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveChartsCore.SkiaSharpView;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
@@ -16,12 +17,14 @@ namespace MoneyRecord.ViewModels
     /// </summary>
     public abstract partial class MonthlyReportViewModel : ObservableObject
     {
+        private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
 
-        // While the page is shown: a month count change (here or on another report) reloads it
+        // While the page is shown: a month count or report currency change (here or on another report) reloads it
         private IDisposable? _monthsWatch;
+        private IDisposable? _currencyWatch;
 
         [ObservableProperty]
         private bool isLoading;
@@ -29,9 +32,9 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hasData;
 
-        /// <summary>The report's headline number for the window.</summary>
+        /// <summary>The report's headline number for the window, in the report's currency.</summary>
         [ObservableProperty]
-        private decimal headline;
+        private string headlineText = string.Empty;
 
         /// <summary>The headline against the window before ("▲ 12% vs previous period").</summary>
         [ObservableProperty]
@@ -43,9 +46,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private Axis[] moneyAxis = [];
 
-        protected MonthlyReportViewModel(PeriodViewModel period, IErrorHandler errorHandler,
+        protected MonthlyReportViewModel(PeriodViewModel period, IAccountRepository accountRepository, IErrorHandler errorHandler,
             INavigationService navigationService, TransactionsDrillDown drillDown)
         {
+            _accountRepository = accountRepository;
             _errorHandler = errorHandler;
             _navigationService = navigationService;
             _drillDown = drillDown;
@@ -62,6 +66,7 @@ namespace MoneyRecord.ViewModels
         public Task InitializeAsync()
         {
             _monthsWatch ??= Period.WatchMonthCount(() => LoadCommand.Execute(null));
+            _currencyWatch ??= Period.WatchCurrency(() => LoadCommand.Execute(null));
             return LoadCommand.ExecuteAsync(null);
         }
 
@@ -70,6 +75,20 @@ namespace MoneyRecord.ViewModels
         {
             _monthsWatch?.Dispose();
             _monthsWatch = null;
+            _currencyWatch?.Dispose();
+            _currencyWatch = null;
+        }
+
+        /// <summary>
+        /// Every account, after the shared currency chips are updated from them: the report then shows
+        /// <see cref="PeriodViewModel.ReportCurrency"/> only (currencies are never added together).
+        /// </summary>
+        protected async Task<List<Account>> LoadAccountsAsync()
+        {
+            var accounts = await _accountRepository.GetAllAsync();
+            var currencies = ReportCurrencies.InUse(accounts, MoneyFormatter.BaseCurrency);
+            await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies));
+            return accounts;
         }
 
         /// <summary>Loads the window [<paramref name="firstMonth"/>, this month]; charts are built here, so they follow the theme.</summary>

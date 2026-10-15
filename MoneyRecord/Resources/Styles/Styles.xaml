@@ -498,4 +498,28 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
     </Style>
+
+    <!-- Home: the period summary container (base-currency cards + other currencies), lighter than the cards -->
+    <Style x:Key="PeriodSummary" TargetType="Border">
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 16" />
+        <Setter Property="StrokeThickness" Value="1" />
+        <Setter Property="Stroke" Value="{AppThemeBinding Light=#E8E8EF, Dark=#2C2C2C}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F8F8FB, Dark=#171717}" />
+    </Style>
+
+    <!-- Home: one total in another currency, a small pill under its card (tinted like the card) -->
+    <Style x:Key="OtherCurrencyPill" TargetType="Border">
+        <Setter Property="Padding" Value="2,6" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        <Setter Property="StrokeThickness" Value="0" />
+    </Style>
+
+    <!-- Home: a period total in another currency; small enough for long amounts on one line -->
+    <Style x:Key="OtherCurrencyTotal" TargetType="Label">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HorizontalTextAlignment" Value="Center" />
+        <Setter Property="LineBreakMode" Value="NoWrap" />
+    </Style>
 </ResourceDictionary>

@@ -17,11 +17,12 @@
         <ScrollView>
             <VerticalStackLayout Padding="16,12" Spacing="16">
                 <controls:MonthCountPicker BindingContext="{Binding Period}" />
+                <controls:CurrencyChips BindingContext="{Binding Period}" />
 
                 <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
                     <VerticalStackLayout Spacing="4">
                         <Label Text="{ext:Localize NetWorth}" Style="{StaticResource ReportHeadlineLabel}" />
-                        <Label Text="{Binding Headline, Converter={StaticResource MoneyConverter}}" Style="{StaticResource ReportHeadline}" />
+                        <Label Text="{Binding HeadlineText}" Style="{StaticResource ReportHeadline}" />
                         <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}" />
                         <Label Text="{Binding CurrencyNote}"
                                Style="{StaticResource ReportDelta}"

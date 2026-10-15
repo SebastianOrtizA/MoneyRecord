@@ -1,3 +1,4 @@
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 
 namespace MoneyRecord.Services.Repositories
@@ -5,32 +6,29 @@ namespace MoneyRecord.Services.Repositories
     public sealed class TransactionRepository(DatabaseInitializer database)
         : RepositoryBase<Transaction>(database), Interfaces.ITransactionRepository
     {
+        // A transaction is in its account's currency; one without an account (or a currency) is in the base currency
+        private const string ByCurrencySql =
+            "SELECT t.CategoryId AS CategoryId, COALESCE(NULLIF(a.CurrencyCode, ''), ?) AS CurrencyCode, " +
+            "SUM(ABS(t.AmountCents)) AS Cents " +
+            "FROM \"Transaction\" t LEFT JOIN \"Account\" a ON a.Id = t.AccountId " +
+            "WHERE t.Type = ? AND t.Date >= ? AND t.Date <= ? " +
+            "GROUP BY t.CategoryId, COALESCE(NULLIF(a.CurrencyCode, ''), ?)";
+
         public async Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate) =>
             await (await TableAsync())
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
 
-        public async Task<long> SumCentsAsync(TransactionType type, DateTime startDate, DateTime endDate, int? categoryId = null)
-        {
-            var sql = "SELECT COALESCE(SUM(ABS(AmountCents)), 0) FROM \"Transaction\" WHERE Type = ? AND Date >= ? AND Date <= ?";
-            var args = new List<object> { type, startDate, endDate };
-            if (categoryId is int id)
-            {
-                sql += " AND CategoryId = ?";
-                args.Add(id);
-            }
+        public async Task<List<CurrencyAmount>> SumByCurrencyAsync(TransactionType type, DateTime startDate, DateTime endDate,
+            string baseCurrencyCode) =>
+            CurrencyAmount.Totals((await SumByCategoryRowsAsync(type, startDate, endDate, baseCurrencyCode)).Select(r => r.ToAmount()),
+                baseCurrencyCode);
 
-            return await (await ConnectionAsync()).ExecuteScalarAsync<long>(sql, args.ToArray());
-        }
-
-        public async Task<Dictionary<int, long>> SumCentsByCategoryAsync(TransactionType type, DateTime startDate, DateTime endDate)
-        {
-            var rows = await (await ConnectionAsync()).QueryAsync<CategoryTotal>(
-                "SELECT CategoryId, SUM(ABS(AmountCents)) AS Cents FROM \"Transaction\" " +
-                "WHERE Type = ? AND Date >= ? AND Date <= ? GROUP BY CategoryId",
-                type, startDate, endDate);
-            return rows.ToDictionary(r => r.CategoryId, r => r.Cents);
-        }
+        public async Task<Dictionary<int, List<CurrencyAmount>>> SumByCategoryAsync(TransactionType type, DateTime startDate,
+            DateTime endDate, string baseCurrencyCode) =>
+            (await SumByCategoryRowsAsync(type, startDate, endDate, baseCurrencyCode))
+                .GroupBy(r => r.CategoryId)
+                .ToDictionary(g => g.Key, g => CurrencyAmount.Totals(g.Select(r => r.ToAmount()), baseCurrencyCode));
 
         public async Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type) =>
             await (await ConnectionAsync()).QueryAsync<AccountTotal>(
@@ -38,11 +36,22 @@ namespace MoneyRecord.Services.Repositories
                 "WHERE Type = ? AND AccountId IS NOT NULL GROUP BY AccountId",
                 type);
 
-        private sealed class CategoryTotal
+        private async Task<List<CategoryCurrencyTotal>> SumByCategoryRowsAsync(TransactionType type, DateTime startDate,
+            DateTime endDate, string baseCurrencyCode)
+        {
+            var code = baseCurrencyCode.ToUpperInvariant();
+            return await (await ConnectionAsync()).QueryAsync<CategoryCurrencyTotal>(ByCurrencySql, code, type, startDate, endDate, code);
+        }
+
+        private sealed class CategoryCurrencyTotal
         {
             public int CategoryId { get; set; }
 
+            public string CurrencyCode { get; set; } = string.Empty;
+
             public long Cents { get; set; }
+
+            public CurrencyAmount ToAmount() => new(CurrencyCode, Money.FromCents(Cents));
         }
     }
 }

@@ -28,7 +28,7 @@ namespace MoneyRecord.Helpers
                 .Where(t => t.AccountId is { } id && counted.Contains(id))
                 .Select(t => (t.Date, Amount: t.Type == TransactionType.Income ? Math.Abs(t.Amount) : -Math.Abs(t.Amount)))
                 .Concat(transfers.Select(t => (t.Date, Amount:
-                    (counted.Contains(t.DestinationAccountId) ? Math.Abs(t.Amount) : 0) -
+                    (counted.Contains(t.DestinationAccountId) ? Math.Abs(t.DestinationAmount) : 0) -
                     (counted.Contains(t.SourceAccountId) ? Math.Abs(t.Amount) : 0))))
                 .ToList();
 

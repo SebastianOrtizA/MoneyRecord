@@ -24,6 +24,11 @@ namespace MoneyRecord.Models
         /// <summary>The slot of a category without its own colour (grey, shown as "Other" in the donut).</summary>
         public const int OtherSlot = -1;
 
+        /// <summary>The currency of <see cref="Amount"/> (the report's; empty = the base currency).</summary>
+        public string CurrencyCode { get; init; } = string.Empty;
+
+        public string AmountText => MoneyFormatter.Format(Amount, CurrencyCode);
+
         public bool IsIncome => Type == CategoryType.Income;
 
         public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(IconCode);

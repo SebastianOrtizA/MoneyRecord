@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Repositories;
@@ -52,7 +53,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         zip.Entries.Select(e => e.FullName).Should().BeEquivalentTo("data.json", "receipts/receipt_1.jpg");
         using var reader = new StreamReader(zip.GetEntry("data.json")!.Open());
         var json = await reader.ReadToEndAsync();
-        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 3");
+        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 4");
         json.Should().NotContain(_appData.Replace("\\", "\\\\"), "no device paths in a backup");
     }
 
@@ -63,7 +64,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var bank = await AddAccountAsync("Bank");
         var cash = (await _accountRepository.GetDefaultAsync())!;
         await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, CategoryId = food.Id, AccountId = bank.Id, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
-        await Db.InsertAsync(new Transfer { Amount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
+        await Db.InsertAsync(new Transfer { Amount = 50m, DestinationAmount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
         await Db.InsertAsync(new Budget { CategoryId = food.Id, LimitAmount = 300m });
         await Db.InsertAsync(new RecurringTransaction { Description = "Rent", Amount = 500m, CategoryId = food.Id, AccountId = bank.Id });
         var before = await DumpAsync();
@@ -199,7 +200,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         File.Exists(orphan).Should().BeFalse("no restored transaction uses it (it is in the snapshot)");
         var bank = (await _accountRepository.GetAllAsync()).Should().ContainSingle().Which;
         bank.Name.Should().Be("Bank", "the repository cache is refreshed");
-        bank.CurrencyCode.Should().Be(MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null),
+        bank.CurrencyCode.Should().Be(MoneyFormatter.BaseCurrency,
             "an account from before currencies gets a fixed one, so changing the base currency can't relabel it");
     }
 

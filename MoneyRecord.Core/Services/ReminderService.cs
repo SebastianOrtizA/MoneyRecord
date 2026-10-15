@@ -108,10 +108,9 @@ namespace MoneyRecord.Services
                     var progress = new BudgetProgress
                     {
                         CategoryName = names.GetValueOrDefault(budget.CategoryId, string.Empty),
-                        LimitAmount = budget.LimitAmount,
-                        SpentAmount = spentByCategory.GetValueOrDefault(budget.CategoryId)
+                        LimitAmount = budget.LimitAmount
                     };
-                    progress.CalculateProgress();
+                    progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? [], MoneyFormatter.BaseCurrency);
                     NotifyBudget(budget, start, progress);
                 }
             }

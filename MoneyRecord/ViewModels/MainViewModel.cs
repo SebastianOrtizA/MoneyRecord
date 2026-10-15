@@ -38,6 +38,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>Privacy mode: the balance card and the period totals show "••••••" (saved).</summary>
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowOtherTotals))]
         private bool hideBalances;
 
         partial void OnHideBalancesChanged(bool value) => _privacy.HideBalances = value;
@@ -45,17 +46,17 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private void ToggleHideBalances() => HideBalances = !HideBalances;
 
+        /// <summary>The period's totals in the base currency (the three cards).</summary>
         [ObservableProperty]
-        private decimal totalIncomes;
+        private PeriodTotals baseTotals = new(string.Empty, 0, 0);
 
+        /// <summary>The period's totals in every other currency, one row each under the cards (never added together).</summary>
         [ObservableProperty]
-        private decimal totalExpenses;
+        [NotifyPropertyChangedFor(nameof(ShowOtherTotals))]
+        private List<PeriodTotals> otherTotals = [];
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsNetNegative))]
-        private decimal netIncome;
-
-        public bool IsNetNegative => NetIncome < 0;
+        /// <summary>The other-currency rows show when there are any and balances aren't hidden.</summary>
+        public bool ShowOtherTotals => OtherTotals.Count > 0 && !HideBalances;
 
         [ObservableProperty]
         private DateTime currentDate = DateTime.Now;
@@ -177,17 +178,14 @@ namespace MoneyRecord.ViewModels
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var balanceLines = CurrencyBalance.DisplayLines(
-                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.ResolveCurrencyCode(null)));
+                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.BaseCurrency));
                 PrimaryBalance = balanceLines[0];
                 OtherBalances = balanceLines.Skip(1).ToList();
 
-                TotalIncomes = await incomesTask;
-                TotalExpenses = await expensesTask;
-                NetIncome = TotalIncomes - TotalExpenses;
-                // Re-format even when the values didn't change: the base currency may have (Settings)
-                OnPropertyChanged(nameof(TotalIncomes));
-                OnPropertyChanged(nameof(TotalExpenses));
-                OnPropertyChanged(nameof(NetIncome));
+                // A new record even when the values didn't change: the base currency may have (Settings)
+                var totals = PeriodTotals.Build(await incomesTask, await expensesTask, MoneyFormatter.BaseCurrency);
+                BaseTotals = totals[0];
+                OtherTotals = totals.Skip(1).ToList();
 
                 // Whole transfers: the Recent card lists a transfer once
                 var entries = await entriesTask;

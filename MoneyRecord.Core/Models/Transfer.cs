@@ -27,6 +27,20 @@ namespace MoneyRecord.Models
         /// </summary>
         public long AmountCents { get; set; }
 
+        /// <summary>
+        /// What arrived in the destination account, in its currency; stored as <see cref="DestinationAmountCents"/>.
+        /// Equal to <see cref="Amount"/> when both accounts have the same currency.
+        /// </summary>
+        [Ignore]
+        public decimal DestinationAmount
+        {
+            get => Money.FromCents(DestinationAmountCents);
+            set => DestinationAmountCents = Money.ToCents(value);
+        }
+
+        /// <summary>Stored value in cents; declared after <see cref="DestinationAmount"/> for the same reason as <see cref="AmountCents"/>.</summary>
+        public long DestinationAmountCents { get; set; }
+
         [Indexed(Name = "IX_Transfer_SourceAccountId")]
         public int SourceAccountId { get; set; }
 
@@ -44,5 +58,13 @@ namespace MoneyRecord.Models
         /// <summary>The source account's currency (empty = the base currency), filled in for display.</summary>
         [Ignore]
         public string CurrencyCode { get; set; } = string.Empty;
+
+        /// <summary>The destination account's currency (empty = the base currency), filled in for display.</summary>
+        [Ignore]
+        public string DestinationCurrencyCode { get; set; } = string.Empty;
+
+        /// <summary>True when the two accounts have different currencies (filled-in codes; empty = the base currency).</summary>
+        [Ignore]
+        public bool IsCrossCurrency => !MoneyFormatter.SameCurrency(CurrencyCode, DestinationCurrencyCode);
     }
 }
