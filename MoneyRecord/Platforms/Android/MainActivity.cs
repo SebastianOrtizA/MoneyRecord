@@ -36,11 +36,12 @@ namespace MoneyRecord
         {
             var route = intent?.GetStringExtra(RouteExtra);
             var launch = IPlatformApplication.Current?.Services.GetService<NotificationLaunch>();
-            if (string.IsNullOrEmpty(route) || launch == null)
+            // Not while the Shell is missing (the first-run setup): it would open later, on an unrelated visit to Home
+            if (string.IsNullOrEmpty(route) || launch == null || (openNow && Shell.Current == null))
                 return;
 
             launch.Request(route);
-            if (openNow && Shell.Current != null)
+            if (openNow)
                 MainThread.BeginInvokeOnMainThread(async () => await launch.OpenPendingAsync());
         }
 

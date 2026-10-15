@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Time.Testing;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
@@ -41,7 +42,7 @@ public sealed class ReminderServiceTests : LanguageTestBase
         _categories.GetAllAsync().Returns([new Category { Id = 7, Name = "Food" }]);
 
         _sut = new ReminderService(_recurring, _budgets, _categories, _balances, _settings, _notifications, _dialogs,
-            _preferences, _clock);
+            _preferences, _clock, Substitute.For<ILogger<ReminderService>>());
     }
 
     private static UpcomingEntry Bill(int recurringId, int daysAway, string description = "Rent",
@@ -177,6 +178,47 @@ public sealed class ReminderServiceTests : LanguageTestBase
         await _sut.CheckBudgetsAsync();
 
         _shown.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public async Task Changing_the_budget_period_starts_its_alerts_over()
+    {
+        // Month → Year mid-year: the year's window starts before the month's, and still alerts
+        var food = new Budget { Id = 4, CategoryId = 7, LimitAmount = 100m, CreatedDate = Today.AddMonths(-2) };
+        _budgets.GetActiveBudgetsAsync().Returns([food]);
+        Spent(120m);
+        await _sut.CheckBudgetsAsync();
+
+        food.Period = BudgetPeriod.Year;
+        await _sut.CheckBudgetsAsync();
+
+        _shown.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public async Task A_new_budget_with_a_reused_id_alerts_again()
+    {
+        Spent(120m);
+        _budgets.GetActiveBudgetsAsync().Returns([new Budget { Id = 4, CategoryId = 7, LimitAmount = 100m, CreatedDate = Today.AddDays(-9) }]);
+        await _sut.CheckBudgetsAsync();
+
+        _budgets.GetActiveBudgetsAsync().Returns([new Budget { Id = 4, CategoryId = 7, LimitAmount = 100m, CreatedDate = Today }]);
+        await _sut.CheckBudgetsAsync();
+
+        _shown.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public async Task A_failing_budget_check_or_offer_after_a_save_is_only_logged()
+    {
+        // The entry is saved already: the form must still close
+        _budgets.GetActiveBudgetsAsync().Returns(Task.FromException<List<Budget>>(new InvalidOperationException()));
+        await _sut.Invoking(s => s.CheckBudgetsAsync()).Should().NotThrowAsync();
+
+        _settings.Enabled = false;
+        _dialogs.ConfirmAsync(default!, default!, default!, default!)
+            .ReturnsForAnyArgs(Task.FromException<bool>(new InvalidOperationException()));
+        await _sut.Invoking(s => s.OfferAsync()).Should().NotThrowAsync();
     }
 
     [Fact]

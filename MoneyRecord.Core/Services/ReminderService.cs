@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
@@ -14,9 +15,11 @@ namespace MoneyRecord.Services
         INotificationService notifications,
         IDialogService dialogs,
         IPreferencesService preferences,
-        TimeProvider clock) : IReminderService
+        TimeProvider clock,
+        ILogger<ReminderService> logger) : IReminderService
     {
-        // Notification IDs: one per recurrence and per budget, so a newer reminder replaces the older one
+        // Notification IDs: one per recurrence and per budget, so a newer reminder replaces the older one (bill IDs would
+        // only reach the budget range after 100,000 recurrences)
         public const int RecurringAddedId = 1;
         public const int BillIdBase = 100_000;
         public const int BudgetIdBase = 200_000;
@@ -45,7 +48,7 @@ namespace MoneyRecord.Services
                     AppResources.RecurringTransactions, Plurals.RecurringAdded(created), TransactionsRoute));
             }
 
-            await CheckBudgetsAsync();
+            await CheckBudgetsCoreAsync();
         }
 
         private async Task NotifyBillsAsync()
@@ -70,6 +73,19 @@ namespace MoneyRecord.Services
         }
 
         public async Task CheckBudgetsAsync()
+        {
+            // Best-effort after a save: never keep the user on a form that was already saved
+            try
+            {
+                await CheckBudgetsCoreAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Budget alerts check failed");
+            }
+        }
+
+        private async Task CheckBudgetsCoreAsync()
         {
             if (!CanNotify || !settings.BudgetAlerts)
                 return;
@@ -96,31 +112,46 @@ namespace MoneyRecord.Services
                         SpentAmount = spentByCategory.GetValueOrDefault(budget.CategoryId)
                     };
                     progress.CalculateProgress();
-                    NotifyBudget(budget.Id, start, progress);
+                    NotifyBudget(budget, start, progress);
                 }
             }
         }
 
-        private void NotifyBudget(int budgetId, DateTime periodStart, BudgetProgress progress)
+        private void NotifyBudget(Budget budget, DateTime periodStart, BudgetProgress progress)
         {
             // 80% (High) and over the limit (Exceeded) each notify once per budget period
             if (progress.Level is not (BudgetLevel.High or BudgetLevel.Exceeded))
                 return;
 
-            var mark = $"{periodStart:yyyyMMdd}:{(int)progress.Level}";
-            var notified = preferences.Get(BudgetNotifiedKey + budgetId, string.Empty);
-            if (string.CompareOrdinal(notified, mark) >= 0)
+            // The budget (its creation, so a reused ID starts over) and its current period (a Month → Year change too),
+            // then the highest level notified in it
+            var window = $"{budget.CreatedDate.Ticks}:{budget.Period}:{periodStart:yyyyMMdd}";
+            var notified = preferences.Get(BudgetNotifiedKey + budget.Id, string.Empty).Split('|');
+            if (notified.Length == 2 && notified[0] == window && int.Parse(notified[1]) >= (int)progress.Level)
                 return;
 
             var title = progress.Level == BudgetLevel.Exceeded
                 ? AppResources.BudgetExceededTitle
                 : AppResources.BudgetNearLimitTitle;
-            notifications.Show(new AppNotification(BudgetIdBase + budgetId, ReminderChannel.Budgets,
+            notifications.Show(new AppNotification(BudgetIdBase + budget.Id, ReminderChannel.Budgets,
                 string.Format(title, progress.CategoryName), progress.SpentOfLimitText, BudgetsRoute));
-            preferences.Set(BudgetNotifiedKey + budgetId, mark);
+            preferences.Set(BudgetNotifiedKey + budget.Id, $"{window}|{(int)progress.Level}");
         }
 
         public async Task OfferAsync()
+        {
+            // Best-effort after a save, like the budget check
+            try
+            {
+                await OfferOnceAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Reminders offer failed");
+            }
+        }
+
+        private async Task OfferOnceAsync()
         {
             if (settings.Enabled || settings.Offered || !notifications.IsSupported)
                 return;

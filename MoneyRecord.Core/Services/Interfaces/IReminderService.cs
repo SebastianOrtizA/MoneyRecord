@@ -9,12 +9,15 @@ namespace MoneyRecord.Services.Interfaces
         /// </summary>
         Task RunDailyAsync();
 
-        /// <summary>Notifies once per budget period when a budget reaches 80% of its limit, and once when it goes over.</summary>
+        /// <summary>
+        /// Notifies once per budget period when a budget reaches 80% of its limit, and once when it goes over. Best-effort
+        /// (called after a save): a failure is logged, never thrown.
+        /// </summary>
         Task CheckBudgetsAsync();
 
         /// <summary>
         /// Once, after the user saves a recurring transaction or a budget: offers to turn reminders on (and asks for the
-        /// system permission).
+        /// system permission). Best-effort like <see cref="CheckBudgetsAsync"/>.
         /// </summary>
         Task OfferAsync();
 
