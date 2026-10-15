@@ -108,8 +108,8 @@ Close the gap with competing finance apps. Each section can ship on its own.
   gone. `LedgerEntry.CounterpartAmountCents/CurrencyCode`: each half in its own account's currency, a whole transfer
   shows "COL$401,250.00 / → $100.00". Totals: `ITransactionRepository.SumByCurrencyAsync` / `SumByCategoryAsync` (SQL
   `GROUP BY` the account currency; no account = base) return `CurrencyAmount` lists; `IBalanceService` period totals
-  are per currency. Home: the three cards show the base currency, other currencies are rows under them
-  (`PeriodTotals`; hidden with the balances). Transactions groups list one total per currency (`TransactionGroup.Totals`).
+  are per currency. Home: the three cards show the base currency, other currencies are tinted pills under them, all in one
+  lighter `PeriodSummary` container (`PeriodTotals`; hidden with the balances; review). Transactions groups list one total per currency (`TransactionGroup.Totals`).
   Budgets count base-currency expenses only (`BudgetProgress.SetSpent`; "Not counted: …" on the Budget page card;
   also the add-form warning and the reminder job). Reports: `PeriodViewModel.ReportCurrency` + `CurrencyChips`
   (hidden with one currency; a currency no account uses falls back to base); `ReportCurrencies.InUse/Only`; chart
