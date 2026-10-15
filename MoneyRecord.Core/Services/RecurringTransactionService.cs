@@ -1,66 +1,67 @@
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Services.Repositories;
 
 namespace MoneyRecord.Services
 {
     public sealed class RecurringTransactionService : IRecurringTransactionService
     {
         private readonly IRecurringTransactionRepository _recurringRepo;
-        private readonly ITransactionRepository _transactionRepo;
+        private readonly DatabaseInitializer _database;
+        private readonly TimeProvider _clock;
 
-        public RecurringTransactionService(
-            IRecurringTransactionRepository recurringRepo,
-            ITransactionRepository transactionRepo)
+        public RecurringTransactionService(IRecurringTransactionRepository recurringRepo, DatabaseInitializer database,
+            TimeProvider clock)
         {
             _recurringRepo = recurringRepo;
-            _transactionRepo = transactionRepo;
+            _database = database;
+            _clock = clock;
         }
 
+        /// <summary>
+        /// Creates every occurrence that is due (catching up the periods missed while the app was closed) and moves
+        /// each schedule on. A recurrence whose next occurrence is past its end date is deactivated.
+        /// </summary>
         public async Task<int> ProcessDueTransactionsAsync()
         {
-            var now = DateTime.Now;
-            var dueItems = await _recurringRepo.GetDueAsync(now);
-            int created = 0;
+            var now = _clock.GetLocalNow().DateTime;
+            var created = 0;
 
-            foreach (var recurring in dueItems)
+            foreach (var recurring in await _recurringRepo.GetDueAsync(now))
             {
-                if (recurring.EndDate.HasValue && recurring.NextOccurrence > recurring.EndDate.Value)
+                // One database transaction per recurrence: its new transactions and its advanced schedule are saved
+                // together, so an interrupted catch-up never creates the same occurrence twice (a rollback rethrows)
+                await _database.RunInTransactionAsync(db =>
                 {
-                    await _recurringRepo.DeactivateAsync(recurring.Id);
-                    continue;
-                }
-
-                while (recurring.NextOccurrence <= now)
-                {
-                    if (recurring.EndDate.HasValue && recurring.NextOccurrence > recurring.EndDate.Value)
+                    while (recurring.NextOccurrence <= now && !HasEnded(recurring))
                     {
-                        await _recurringRepo.DeactivateAsync(recurring.Id);
-                        break;
+                        db.Insert(new Transaction
+                        {
+                            Date = recurring.NextOccurrence,
+                            Description = recurring.Description,
+                            Amount = recurring.Amount,
+                            CategoryId = recurring.CategoryId,
+                            Type = recurring.TransactionType,
+                            AccountId = recurring.AccountId
+                        });
+                        created++;
+
+                        recurring.LastProcessedDate = recurring.NextOccurrence;
+                        recurring.NextOccurrence = RecurrenceCalculator.Next(
+                            recurring.NextOccurrence, recurring.Frequency, recurring.EffectiveDayOfMonth);
                     }
 
-                    var transaction = new Transaction
-                    {
-                        Date = recurring.NextOccurrence,
-                        Description = recurring.Description,
-                        Amount = recurring.Amount,
-                        CategoryId = recurring.CategoryId,
-                        Type = recurring.TransactionType,
-                        AccountId = recurring.AccountId
-                    };
-
-                    await _transactionRepo.SaveAsync(transaction);
-                    created++;
-
-                    recurring.LastProcessedDate = recurring.NextOccurrence;
-                    recurring.NextOccurrence = RecurrenceCalculator.Next(recurring.NextOccurrence, recurring.Frequency, recurring.EffectiveDayOfMonth);
-                }
-
-                await _recurringRepo.SaveAsync(recurring);
+                    if (HasEnded(recurring))
+                        recurring.IsActive = false;
+                    db.Update(recurring);
+                });
             }
 
             return created;
         }
 
+        private static bool HasEnded(RecurringTransaction recurring) =>
+            recurring.EndDate.HasValue && recurring.NextOccurrence > recurring.EndDate.Value;
     }
 }

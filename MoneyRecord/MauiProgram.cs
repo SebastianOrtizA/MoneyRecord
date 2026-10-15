@@ -54,6 +54,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ICurrencyService, CurrencyService>();
             builder.Services.AddSingleton<IThemeService, ThemeService>();
             builder.Services.AddSingleton<ICrashReportConsent>(crashReports);
+            builder.Services.AddSingleton(TimeProvider.System);
 
             // Register Database Infrastructure
             builder.Services.AddSingleton<IAppPaths>(paths);
