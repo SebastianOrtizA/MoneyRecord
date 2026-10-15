@@ -21,6 +21,9 @@ namespace MoneyRecord.Services.Interfaces
         Task<Dictionary<int, List<CurrencyAmount>>> SumByCategoryAsync(TransactionType type, DateTime startDate,
             DateTime endDate, string baseCurrencyCode);
 
+        /// <summary>The date of the first transaction in each currency (no account = the base currency).</summary>
+        Task<Dictionary<string, DateTime>> GetFirstDatesByCurrencyAsync(string baseCurrencyCode);
+
         /// <summary>All-time totals of one type per account, with each account's latest date of that type.</summary>
         Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type);
     }

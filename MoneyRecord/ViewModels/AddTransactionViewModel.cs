@@ -104,6 +104,26 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string tagsText = string.Empty;
 
+        /// <summary>The user's own conversion ("Amount in USD"), offered when the account's currency isn't the base.</summary>
+        [ObservableProperty]
+        private string convertedAmount = string.Empty;
+
+        [ObservableProperty]
+        private bool canConvert;
+
+        [ObservableProperty]
+        private string baseCurrencyCode = MoneyFormatter.BaseCurrency;
+
+        [ObservableProperty]
+        private string convertedAmountLabel = string.Empty;
+
+        [ObservableProperty]
+        private string convertedAmountHint = string.Empty;
+
+        /// <summary>"Rate: 1 USD = 3,186.13 COP" from the two amounts; empty until both are entered.</summary>
+        [ObservableProperty]
+        private string convertedRateText = string.Empty;
+
         [ObservableProperty]
         private string? receiptPhotoPath;
 
@@ -157,6 +177,7 @@ namespace MoneyRecord.ViewModels
             IsEditMode = false;
             IsMoreDetailsOpen = false;
             TagsText = string.Empty;
+            ConvertedAmount = string.Empty;
             ShowReceipt();
             IsRecurring = false;
             SelectedFrequencyItem = Frequencies[3];
@@ -200,7 +221,8 @@ namespace MoneyRecord.ViewModels
                 Description = EntryDescription.ForEditing(Transaction.Description, SelectedCategory?.Name);
 
                 // Open the details when they hold something beyond the defaults
-                IsMoreDetailsOpen = Description.Length > 0 || Transaction.HasTags || Transaction.HasReceipt;
+                IsMoreDetailsOpen = Description.Length > 0 || Transaction.HasTags || Transaction.HasReceipt
+                    || Transaction.ConvertedAmount != null;
                 
                 // Select the current account
                 if (Transaction.AccountId.HasValue)
@@ -214,6 +236,9 @@ namespace MoneyRecord.ViewModels
 
                 // After the account: the amount field formats in the account's currency
                 Amount = Transaction.Amount.ToString();
+                if (Transaction.ConvertedAmount is { } converted && CanConvert
+                    && MoneyFormatter.SameCurrency(Transaction.ConvertedCurrencyCode, BaseCurrencyCode))
+                    ConvertedAmount = converted.ToString();
             }
             else
             {
@@ -248,6 +273,28 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private void ToggleMoreDetails() => IsMoreDetailsOpen = !IsMoreDetailsOpen;
+
+        partial void OnSelectedAccountChanged(Account? value)
+        {
+            BaseCurrencyCode = MoneyFormatter.BaseCurrency;
+            CanConvert = value != null && !MoneyFormatter.SameCurrency(value.CurrencyCode, BaseCurrencyCode);
+            ConvertedAmountLabel = string.Format(AppResources.AmountInCurrency, BaseCurrencyCode);
+            ConvertedAmountHint = string.Format(AppResources.ConvertedAmountHint, BaseCurrencyCode);
+            UpdateConvertedRate();
+        }
+
+        partial void OnAmountChanged(string value) => UpdateConvertedRate();
+
+        partial void OnConvertedAmountChanged(string value) => UpdateConvertedRate();
+
+        private void UpdateConvertedRate()
+        {
+            var rate = CanConvert
+                ? TransferRate.Describe(AmountParser.Parse(Amount, SelectedAccount?.CurrencyCode), SelectedAccount?.CurrencyCode,
+                    AmountParser.Parse(ConvertedAmount, BaseCurrencyCode), BaseCurrencyCode)
+                : null;
+            ConvertedRateText = rate == null ? string.Empty : string.Format(AppResources.ExchangeRateValue, rate);
+        }
 
         partial void OnSelectedCategoryChanged(Category? value)
         {
@@ -333,6 +380,18 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+            // The optional "Amount in USD": empty = the downloaded rate
+            decimal? convertedValue = null;
+            if (CanConvert && !string.IsNullOrWhiteSpace(ConvertedAmount))
+            {
+                convertedValue = AmountParser.Parse(ConvertedAmount, BaseCurrencyCode);
+                if (convertedValue <= 0 || !Money.IsInRange(convertedValue.Value))
+                {
+                    await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
+                    return;
+                }
+            }
+
             int accountId = SelectedAccount.Id;
             var savedDescription = EntryDescription.Resolve(Description, SelectedCategory.Name);
 
@@ -365,6 +424,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.AccountId = accountId;
                 Transaction.Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim();
                 Transaction.ReceiptPhotoPath = ReceiptPhotoPath;
+                Transaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
 
                 await _transactionRepository.SaveAsync(Transaction);
                 _receipt.Commit(); // deletes a removed or replaced receipt
@@ -384,6 +444,7 @@ namespace MoneyRecord.ViewModels
                     Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim(),
                     ReceiptPhotoPath = ReceiptPhotoPath
                 };
+                newTransaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
 
                 await _transactionRepository.SaveAsync(newTransaction);
                 _receipt.Commit();

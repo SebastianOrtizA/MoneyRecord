@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3a in progress)
+**Status**: In progress (10.1 done; 10.2 done; 10.3a done; 10.3b-1 in progress)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -119,6 +119,30 @@ Close the gap with competing finance apps. Each section can ship on its own.
   that currency's accounts.
   **Deviation:** no stored rate column on `Transfer` (it follows from the two amounts). Home's compact budget card
   doesn't repeat the "Not counted" line (the Budget page has it).
+- 10.3b split by agreement (2026-10-15): **10.3b-1** = `ExchangeRate` table, Frankfurter v2 download (opt-in switch +
+  "Update now" in Settings; at start and in the daily job), a Core converter and the per-transaction override; nothing
+  on screen converts yet. **10.3b-2** = the "Show in" switch (converted Home total, "≈ All in base" report chip,
+  budgets counting other currencies converted).
+- Decisions (2026-10-15): the override is entered as **"Amount in USD"** (the base currency; what a bank statement
+  shows), with the rate shown under it like the transfer form; stored as the converted amount + its currency, so a
+  later base change ignores it. A day without a rate uses the **nearest earlier day**; an entry older than every
+  downloaded rate makes the download go back to its date; still none (offline) = listed unconverted.
+- Frankfurter v2 (checked 2026-10-15): `GET https://api.frankfurter.dev/v2/rates?base=USD&quotes=COP,EUR&from=…&to=…`
+  returns `[{"date":"2026-10-01","base":"USD","quote":"COP","rate":3317.65}, …]`, weekends included; no key, no quota
+  (rate-limited against abuse); blended rates free to use.
+- 10.3b-1 done as: `ExchangeRate` table (date, base, quote, `double` rate; unique (base, quote, date) index, upsert; a
+  cache, not in backups). `IExchangeRateSource` = `FrankfurterRateSource` (HttpClient, 30 s timeout; 404/422 =
+  `ExchangeRateUnavailableException`). `ExchangeRateService.UpdateAsync`: for each account currency other than the base,
+  from its first transaction (`ITransactionRepository.GetFirstDatesByCurrencyAsync`) or today, to today, only the days
+  missing before/after the stored ones; one update at a time; `LastUpdated` set unless a download failed (offline =
+  retried). `UpdateIfDueAsync` (on + not today) runs at app start and in the daily WorkManager job.
+  `CurrencyConverter` (Core): nearest earlier day, inverse pairs and across an earlier base (rates stay usable after a
+  base change), `Convert(Transaction, …)` prefers the user's own conversion in that currency. Settings → Exchange rates
+  (switch; turning it on downloads; status line + Update now). `Transaction.ConvertedAmountCents` +
+  `ConvertedCurrencyCode` (new nullable columns, no migration; `SetConversion` rule: an empty field clears only a
+  conversion into the current base); the add/edit form's More details shows "Amount in USD" + the rate when the
+  account isn't in the base. PRIVACY.md / README: the opt-in download sends currency codes and dates only.
+  Backup format stays v4 (the override is two optional fields; 10.3a's v4 hasn't shipped yet).
 
 ### 10.4 Import from bank statements
 - CSV import with CsvHelper (use its Apache-2.0 licence): pick file → map columns (date, description, amount,

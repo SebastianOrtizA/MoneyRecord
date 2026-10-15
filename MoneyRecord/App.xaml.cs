@@ -8,6 +8,7 @@ namespace MoneyRecord
     public partial class App : Application
     {
         private readonly IRecurringTransactionService _recurringTransactionService;
+        private readonly IExchangeRateService _exchangeRates;
         private readonly ISetupService _setupService;
         private readonly Func<SetupPage> _createSetupPage;
         private readonly AppLock _appLock;
@@ -18,12 +19,13 @@ namespace MoneyRecord
 
         public App(IRecurringTransactionService recurringTransactionService, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
-            IPrivacySettings privacy, Func<LockPage> createLockPage, ILogger<App> logger)
+            IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
             themeService.ApplySaved();
             _recurringTransactionService = recurringTransactionService;
+            _exchangeRates = exchangeRates;
             _setupService = setupService;
             _createSetupPage = createSetupPage;
             _appLock = appLock;
@@ -47,6 +49,8 @@ namespace MoneyRecord
             window.Created += (s, e) =>
             {
                 _ = ProcessRecurringTransactionsAsync();
+                // Opt-in, once a day, best-effort: nothing waits for it
+                _ = _exchangeRates.UpdateIfDueAsync();
 #if ANDROID
                 // While the app is closed, the daily job creates them (and sends the reminders)
                 Platforms.Android.DailyReminderWorker.Schedule(Android.App.Application.Context);

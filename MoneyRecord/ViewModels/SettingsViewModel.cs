@@ -27,6 +27,8 @@ namespace MoneyRecord.ViewModels
         private readonly IPrivacySettings _privacy;
         private readonly IDeviceLock _deviceLock;
         private readonly IDatabaseEncryption _encryption;
+        private readonly IExchangeRateService _exchangeRates;
+        private readonly IExchangeRateSettings _exchangeRateSettings;
 
         [ObservableProperty]
         private bool isExporting;
@@ -45,7 +47,7 @@ namespace MoneyRecord.ViewModels
             IPreferencesService preferences, LocalizationService localization, IAppPaths paths,
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
-            IDatabaseEncryption encryption)
+            IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -63,8 +65,11 @@ namespace MoneyRecord.ViewModels
             _privacy = privacy;
             _deviceLock = deviceLock;
             _encryption = encryption;
+            _exchangeRates = exchangeRates;
+            _exchangeRateSettings = exchangeRateSettings;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
+            exchangeRatesStatus = LastUpdatedText();
         }
 
         [ObservableProperty]
@@ -86,7 +91,56 @@ namespace MoneyRecord.ViewModels
             SelectPickers();
             // Notifications may have been allowed or blocked in the system settings meanwhile
             OnPropertyChanged(nameof(RemindersEnabled));
+            // The daily job may have updated the rates meanwhile
+            if (!UpdateExchangeRatesCommand.IsRunning)
+                ExchangeRatesStatus = LastUpdatedText();
         }
+
+        // ---- Exchange rates ----
+
+        /// <summary>The opt-in download; turning it on downloads at once.</summary>
+        public bool ExchangeRatesEnabled
+        {
+            get => _exchangeRateSettings.Enabled;
+            set
+            {
+                if (value == _exchangeRateSettings.Enabled)
+                    return;
+
+                _exchangeRateSettings.Enabled = value;
+                OnPropertyChanged();
+                if (value)
+                    UpdateExchangeRatesCommand.Execute(null);
+            }
+        }
+
+        /// <summary>"Updated Oct 15, 2026", "Updating…", or what a failed update left out.</summary>
+        [ObservableProperty]
+        private string exchangeRatesStatus;
+
+        [RelayCommand]
+        private async Task UpdateExchangeRatesAsync()
+        {
+            ExchangeRatesStatus = AppResources.ExchangeRatesUpdating;
+            try
+            {
+                var result = await _exchangeRates.UpdateAsync();
+                ExchangeRatesStatus = result.Failed.Count > 0
+                    ? AppResources.ExchangeRatesFailed
+                    : result.Unavailable.Count > 0
+                        ? $"{LastUpdatedText()} · {string.Format(AppResources.ExchangeRatesUnavailable, string.Join(", ", result.Unavailable))}"
+                        : LastUpdatedText();
+            }
+            catch (Exception ex)
+            {
+                ExchangeRatesStatus = LastUpdatedText();
+                await _errorHandler.HandleAsync(ex, AppResources.ExchangeRatesFailed);
+            }
+        }
+
+        private string LastUpdatedText() => _exchangeRateSettings.LastUpdated is { } updated
+            ? string.Format(AppResources.ExchangeRatesUpdated, DateFormatter.Format(updated, DateStyle.Medium))
+            : AppResources.ExchangeRatesNever;
 
         private void SelectPickers()
         {

@@ -41,6 +41,50 @@ namespace MoneyRecord.Models
 
         public string? ReceiptPhotoPath { get; set; }
 
+        /// <summary>
+        /// The user's own conversion (the "Amount in USD" a bank statement shows), in <see cref="ConvertedCurrencyCode"/>;
+        /// null = convert with the downloaded rate. Stored as <see cref="ConvertedAmountCents"/>.
+        /// </summary>
+        [Ignore]
+        public decimal? ConvertedAmount
+        {
+            get => ConvertedAmountCents is { } cents ? Money.FromCents(cents) : null;
+            set => ConvertedAmountCents = value is { } amount ? Money.ToCents(amount) : null;
+        }
+
+        /// <summary>Stored value in cents; declared after <see cref="ConvertedAmount"/> for the same reason as <see cref="AmountCents"/>.</summary>
+        public long? ConvertedAmountCents { get; set; }
+
+        /// <summary>
+        /// The currency of <see cref="ConvertedAmount"/> (the base currency when it was entered). A conversion into another
+        /// currency (the base changed later) is ignored, never misread.
+        /// </summary>
+        public string? ConvertedCurrencyCode { get; set; }
+
+        /// <summary>
+        /// Applies the form's "Amount in {base}" field: a positive amount is the conversion into the base currency; an empty
+        /// field clears a conversion into the base but keeps one into another currency (the field didn't show it). An
+        /// account already in the base currency needs none.
+        /// </summary>
+        public void SetConversion(decimal? amountInBase, string? accountCurrency, string baseCurrency)
+        {
+            if (MoneyFormatter.SameCurrency(accountCurrency, baseCurrency))
+            {
+                ConvertedAmount = null;
+                ConvertedCurrencyCode = null;
+            }
+            else if (amountInBase is > 0 and var amount)
+            {
+                ConvertedAmount = amount;
+                ConvertedCurrencyCode = MoneyFormatter.ResolveCurrencyCode(baseCurrency);
+            }
+            else if (MoneyFormatter.SameCurrency(ConvertedCurrencyCode, baseCurrency) && ConvertedCurrencyCode != null)
+            {
+                ConvertedAmount = null;
+                ConvertedCurrencyCode = null;
+            }
+        }
+
         [Ignore]
         public List<string> TagList => string.IsNullOrWhiteSpace(Tags)
             ? new List<string>()
