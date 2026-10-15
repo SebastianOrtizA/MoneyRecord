@@ -153,7 +153,8 @@ Public releases users can install and update, with enough logging to debug field
     IP addresses" relies on **Prevent Storing of IP Addresses** in the Sentry project (README says so).
     End to end (CI APK, real DSN, 2026-10-15 01:06 UTC): the "Failed to restore backup" event has no `user.id`, no
     `ip_address` and no `contexts.device.id`, but has `user.geo` (CO / Antioquia / Medellín) that Sentry derives
-    server-side, so the policy, README and Data safety now disclose approximate location.
+    server-side even with **Prevent Storing of IP Addresses** on (owner confirmed the project's Data
+    Scrubbing settings: scrubber + default scrubbers + prevent IP storage all on), so the policy, README and Data safety now disclose approximate location.
   - `THIRD-PARTY-NOTICES.md` mirrors `ThirdPartyComponent.All` (same order, licence, copyright, URL, licence file);
     `ThirdPartyComponentTests` checks it. Gson (Apache-2.0, via Sentry's Android SDK) added to the Android
     libraries entry. No Play Services / Firebase / other proprietary SDKs in `project.assets.json`.
