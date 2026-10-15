@@ -18,7 +18,9 @@ namespace MoneyRecord.Services.Repositories
     /// </summary>
     public sealed class DatabaseInitializer : IDatabaseEncryption
     {
-        /// <summary>An encrypted database whose key is gone gets this suffix: it can't be read, but isn't deleted.</summary>
+        /// <summary>
+        /// An encrypted database whose key is gone gets this suffix plus the time: it can't be read, but isn't deleted.
+        /// </summary>
         public const string UnreadableSuffix = ".unreadable";
 
         private const string TempSuffix = ".tmp";
@@ -79,9 +81,10 @@ namespace MoneyRecord.Services.Repositories
                     return new SQLiteAsyncConnection(ConnectionString(_encryptedPath, key));
                 }
 
-                // The key is gone (app data partly cleared): nothing can read this file again. It is kept aside, and
-                // the app goes on with the plain database if there is one, or a new one.
-                File.Move(_encryptedPath, _encryptedPath + UnreadableSuffix, overwrite: true);
+                // The key is gone (app data partly cleared): nothing can read this file again. It is kept aside (a
+                // name per time, so an earlier one stays too), and the app goes on with the plain database if there
+                // is one, or a new one.
+                File.Move(_encryptedPath, $"{_encryptedPath}{UnreadableSuffix}-{DateTime.Now:yyyyMMdd-HHmmss}", overwrite: true);
                 _unreadableNotice = true;
             }
             return new SQLiteAsyncConnection(ConnectionString(_plainPath, key: null));
@@ -105,7 +108,7 @@ namespace MoneyRecord.Services.Repositories
             if (IsEncrypted)
                 return;
 
-            // Random, so the cipher's own key derivation has nothing to guess
+            // 256 random bits as a hex passphrase (the cipher still runs its key derivation on every open)
             var key = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
             var temp = _encryptedPath + TempSuffix;
             await Task.Run(() => Rekey(_plainPath, temp, fromKey: null, toKey: key));
@@ -198,9 +201,11 @@ namespace MoneyRecord.Services.Repositories
                 connection.ExecuteScalar<int>("SELECT COUNT(*) FROM sqlite_master");
                 return true;
             }
-            catch (SQLiteException)
+            catch (SQLiteException ex) when (ex.Result == SQLite3.Result.NonDBFile)
             {
-                return false; // "file is not a database": not this key
+                // "file is not a database": not this key. Any other error (busy, I/O, full disk) is thrown, so the
+                // file isn't set aside and the next start tries again.
+                return false;
             }
         }
 

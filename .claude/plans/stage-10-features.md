@@ -70,7 +70,7 @@ Close the gap with competing finance apps. Each section can ship on its own.
   `.bak-v*` migration copies; decrypting does the reverse and forgets the key. The state is which file exists (no
   preference to restore out of sync). The key (32 random bytes, hex) is in `IDatabaseKeyStore` = MAUI SecureStorage,
   whose file is excluded from Android backup (MAUI's own advice). A start that finds the encrypted file without a
-  working key sets it aside (`.unreadable`), starts from a new database and tells the user on Home.
+  working key sets it aside (`.unreadable-{time}`; only "file is not a database" counts, other errors are thrown so the next start retries), starts from a new database and tells the user on Home.
   `SqliteSetup.Init` swaps sqlite-net's provider for SQLite3MC after sqlite-net's static constructor (which always
   picks e_sqlite3, so plain SQLite still ships: about +1 MB per ABI).
   **Deviation:** no export → re-create → import migration and no kept plain pre-migration copy: the encrypted copy is

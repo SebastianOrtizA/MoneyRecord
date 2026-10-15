@@ -120,10 +120,10 @@ namespace MoneyRecord.ViewModels
         {
             _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
             await LoadDataCommand.ExecuteAsync(null);
-            // Opened from a notification: its page, now that the Shell is ready
             // The encrypted database's key was gone at start: say why the data is missing
             if (_databaseEncryption.TakeUnreadableDatabaseNotice())
                 await _dialogService.AlertAsync(AppResources.UnreadableDatabaseTitle, AppResources.UnreadableDatabaseMessage);
+            // Opened from a notification: its page, now that the Shell is ready
             await _notificationLaunch.OpenPendingAsync();
             await AskCrashReportsOnceAsync();
         }

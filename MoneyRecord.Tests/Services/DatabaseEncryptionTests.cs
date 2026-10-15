@@ -114,6 +114,24 @@ public sealed class DatabaseEncryptionTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task A_migration_copy_of_the_encrypted_database_stays_encrypted()
+    {
+        // MigrationRunner copies with VACUUM INTO before a data rewrite: a plain copy would undo the encryption
+        var db = Start();
+        await AddAccountAsync(db, "Savings");
+        await db.EncryptAsync();
+        var copy = MigrationRunner.GetBackupPath(_paths.EncryptedDatabasePath, 4);
+
+        await (await db.GetConnectionAsync()).ExecuteAsync("VACUUM INTO ?", copy);
+
+        IsPlainSqliteFile(copy).Should().BeFalse();
+        var plain = new SQLiteConnection(copy);
+        var read = () => plain.ExecuteScalar<int>("SELECT COUNT(*) FROM sqlite_master");
+        read.Should().Throw<SQLiteException>();
+        plain.Close();
+    }
+
+    [Fact]
     public async Task A_missing_key_sets_the_file_aside_and_starts_a_new_database_once()
     {
         var db = Start();
@@ -127,9 +145,26 @@ public sealed class DatabaseEncryptionTests : IAsyncLifetime
 
         accounts.Should().NotContain(a => a.Name == "Savings"); // only the seeded Cash account
         next.IsEncrypted.Should().BeFalse();
-        File.Exists(_paths.EncryptedDatabasePath + DatabaseInitializer.UnreadableSuffix).Should().BeTrue();
+        Directory.GetFiles(_appData, AppPaths.EncryptedDatabaseFileName + DatabaseInitializer.UnreadableSuffix + "-*")
+            .Should().ContainSingle();
         next.TakeUnreadableDatabaseNotice().Should().BeTrue();
         next.TakeUnreadableDatabaseNotice().Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task A_wrong_key_sets_the_file_aside_like_a_missing_one()
+    {
+        var db = Start();
+        await db.GetConnectionAsync();
+        await db.EncryptAsync();
+        await (await db.GetConnectionAsync()).CloseAsync();
+        _keyStore.Key = new string('A', 64); // "file is not a database"
+
+        var next = Start();
+        await next.GetConnectionAsync();
+
+        next.IsEncrypted.Should().BeFalse();
+        next.TakeUnreadableDatabaseNotice().Should().BeTrue();
     }
 
     [Fact]
