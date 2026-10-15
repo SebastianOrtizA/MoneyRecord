@@ -1,7 +1,7 @@
 MoneyRecord es una app sencilla y privada para llevar tus cuentas. Registra lo que gastas y ganas, mira a dónde va tu dinero y cumple tu presupuesto. Tus datos se quedan en tu teléfono: sin cuenta, sin anuncios, sin rastreo.
 
 <b>Registro rápido</b>
-• Agrega un gasto, un ingreso o una transferencia en pocos toques: primero el importe, luego la categoría en una cuadrícula que pone primero las que más usas.
+• Añade un gasto, un ingreso o una transferencia en pocos toques: primero el importe, luego la categoría en una cuadrícula que pone primero las que más usas.
 • Descripción, etiquetas, foto del recibo (cámara o galería) y repetición, si quieres.
 
 <b>Cuentas y monedas</b>
@@ -18,7 +18,7 @@ MoneyRecord es una app sencilla y privada para llevar tus cuentas. Registra lo q
 • Toca un gráfico para ver las transacciones que lo forman.
 
 <b>Transacciones recurrentes</b>
-• Nómina, alquiler, suscripciones: diarias, semanales, cada dos semanas, mensuales o anuales, con fecha de fin opcional. Las que faltaron se agregan al abrir la app.
+• Nómina, alquiler, suscripciones: diarias, semanales, cada dos semanas, mensuales o anuales, con fecha de fin opcional. Las que faltaron se añaden al abrir la app.
 
 <b>Tus datos, bajo tu control</b>
 • Copia de seguridad completa en un archivo .zip (con las fotos de recibos), guardada en el dispositivo o compartida; restauración que se puede deshacer.

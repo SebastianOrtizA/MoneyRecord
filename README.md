@@ -91,8 +91,9 @@ The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
 - **Crash reports (opt-in, off by default):** after a week of use the app asks once whether it may send crash reports
   to the developer through [Sentry](https://sentry.io), and **Settings → Send crash reports** changes the answer.
   A report holds the error, the app version and device details such as the Android version and model. The app
-  doesn't add your amounts or descriptions, screenshots, or a user ID, and the Sentry project doesn't store IP
-  addresses.
+  doesn't add your amounts or descriptions, screenshots, or a user or device ID, and the Sentry project doesn't store IP
+  addresses (that relies on **Prevent Storing of IP Addresses** being on in the Sentry project's Security & Privacy
+  settings; turn it on again if the project is ever recreated).
   Only official builds can send reports; builds from source have no Sentry address and never ask.
 - **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
   is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,

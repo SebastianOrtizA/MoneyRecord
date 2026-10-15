@@ -10,7 +10,8 @@ Your accounts, transactions, transfers, budgets, categories, receipt photos and 
 private storage on your device. The developer has no copy of them and no way to see them.
 
 They leave the device only when you choose to:
-- **Export or share a backup** (Settings → Backup & Restore), a CSV file or the logs. You pick where the file goes.
+- **Export or share a backup** (Settings → Backup & Restore), a CSV file or the logs. You pick where the file
+  goes.
 - **Android backup:** if your device's own backup is turned on, Android copies the database, receipt photos and
   settings to your Google account or to a new device, under Google's terms. Logs and caches are left out.
 
@@ -56,8 +57,8 @@ Tus cuentas, transacciones, transferencias, presupuestos, categorías, fotos de 
 almacenamiento privado de la app en tu dispositivo. El desarrollador no tiene copia de ellos ni forma de verlos.
 
 Solo salen del dispositivo cuando tú lo decides:
-- **Exportar o compartir una copia de seguridad** (Configuración → Copia de Seguridad y Restauración), un archivo CSV o los registros.
-  Tú eliges a dónde va el archivo.
+- **Exportar o compartir una copia de seguridad** (Configuración → Copia de Seguridad y Restauración), un archivo
+  CSV o los registros. Tú eliges a dónde va el archivo.
 - **Copia de seguridad de Android:** si la copia de seguridad del dispositivo está activada, Android copia la base de
   datos, las fotos de recibos y los ajustes a tu cuenta de Google o a un dispositivo nuevo, según las condiciones de
   Google. Los registros y la caché quedan fuera.

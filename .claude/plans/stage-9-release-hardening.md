@@ -148,6 +148,9 @@ Public releases users can install and update, with enough logging to debug field
   - Found while writing it: Sentry sets `User.Id` to a random per-install ID even with `SendDefaultPii = false`
     (`Enricher` / `GlobalRootScopeIntegration`), so the 9.4b README promise "no user ID" was false. `BeforeSend` now
     replaces the user with an empty `SentryUser` (covers Android SDK events too, since `Native.EnableBeforeSend`).
+    Review: the Android SDK also puts that ID in `contexts.device.id` (sentry-android-core `DeviceInfoUtil`), so
+    `BeforeSend` clears `Contexts.Device.DeviceUniqueIdentifier` too. The policy's "the Sentry project doesn't store
+    IP addresses" relies on **Prevent Storing of IP Addresses** in the Sentry project (README says so).
   - `THIRD-PARTY-NOTICES.md` mirrors `ThirdPartyComponent.All` (same order, licence, copyright, URL, licence file);
     `ThirdPartyComponentTests` checks it. Gson (Apache-2.0, via Sentry's Android SDK) added to the Android
     libraries entry. No Play Services / Firebase / other proprietary SDKs in `project.assets.json`.

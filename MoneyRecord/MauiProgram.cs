@@ -202,8 +202,10 @@ namespace MoneyRecord
                 {
                     if (!consent.Enabled)
                         return null;
-                    // Sentry adds a random per-install ID as the user even without PII; reports stay anonymous
+                    // Sentry adds a random per-install ID (as the user and as the device ID) even without PII;
+                    // reports stay anonymous
                     sentryEvent.User = new SentryUser();
+                    sentryEvent.Contexts.Device.DeviceUniqueIdentifier = null;
                     return sentryEvent;
                 });
                 // Java crashes and ANRs come from the embedded Android SDK, which skips that callback unless this is on
