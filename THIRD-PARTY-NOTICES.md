@@ -16,6 +16,7 @@ package reference is listed and that this file matches the app's list (`ThirdPar
 | .NET MAUI Community Toolkit | MIT | .NET Foundation and Contributors | https://github.com/CommunityToolkit/Maui | [CommunityToolkit-Maui.txt](MoneyRecord/Resources/Raw/Licenses/CommunityToolkit-Maui.txt) |
 | sqlite-net | MIT | Krueger Systems, Inc. | https://github.com/praeclarum/sqlite-net | [sqlite-net.txt](MoneyRecord/Resources/Raw/Licenses/sqlite-net.txt) |
 | SQLitePCL.raw | Apache-2.0 | Eric Sink | https://github.com/ericsink/SQLitePCL.raw | [Apache-2.0.txt](MoneyRecord/Resources/Raw/Licenses/Apache-2.0.txt) |
+| SQLite3 Multiple Ciphers | MIT | Ulrich Telle | https://github.com/utelle/SQLite3MultipleCiphers | [SQLite3MultipleCiphers.txt](MoneyRecord/Resources/Raw/Licenses/SQLite3MultipleCiphers.txt) |
 | Serilog | Apache-2.0 | Serilog Contributors | https://github.com/serilog/serilog | [Apache-2.0.txt](MoneyRecord/Resources/Raw/Licenses/Apache-2.0.txt) |
 | Sentry SDKs (.NET, Android, Native) | MIT | Sentry and individual contributors | https://github.com/getsentry/sentry-dotnet | [Sentry.txt](MoneyRecord/Resources/Raw/Licenses/Sentry.txt) |
 | SQLite | Public domain |  | https://sqlite.org/copyright.html |  |

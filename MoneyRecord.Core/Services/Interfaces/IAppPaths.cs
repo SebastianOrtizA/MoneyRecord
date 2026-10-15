@@ -8,6 +8,9 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>The SQLite database (moneyrecord.db3).</summary>
         string DatabasePath { get; }
 
+        /// <summary>The database while it is encrypted (moneyrecord-encrypted.db3); only one of the two exists.</summary>
+        string EncryptedDatabasePath { get; }
+
         /// <summary>Receipt photos.</summary>
         string ReceiptsFolder { get; }
 

@@ -72,10 +72,13 @@ namespace MoneyRecord.Services.Repositories.Migrations
         public static Task<int> GetVersionAsync(SQLiteAsyncConnection db) =>
             db.ExecuteScalarAsync<int>("PRAGMA user_version");
 
-        public static string GetBackupPath(string databasePath, int version) => $"{databasePath}.bak-v{version}";
+        public const string BackupSuffix = ".bak-v";
+
+        public static string GetBackupPath(string databasePath, int version) => $"{databasePath}{BackupSuffix}{version}";
 
         /// <summary>
-        /// Copies the database to moneyrecord.db3.bak-v{version}. VACUUM INTO is safe on an open connection.
+        /// Copies the database to moneyrecord.db3.bak-v{version}. VACUUM INTO is safe on an open connection, and keeps
+        /// an encrypted database encrypted with the same key.
         /// </summary>
         private static async Task BackupAsync(SQLiteAsyncConnection db, int version)
         {

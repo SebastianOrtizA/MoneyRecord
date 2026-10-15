@@ -59,6 +59,13 @@ namespace MoneyRecord
             // Register Database Infrastructure
             builder.Services.AddSingleton<IAppPaths>(paths);
             builder.Services.AddSingleton<DatabaseInitializer>();
+            // Optional encryption (Settings): the key in SecureStorage, Android only for now like the app lock
+            builder.Services.AddSingleton<IDatabaseEncryption>(sp => sp.GetRequiredService<DatabaseInitializer>());
+#if ANDROID
+            builder.Services.AddSingleton<IDatabaseKeyStore, SecureDatabaseKeyStore>();
+#else
+            builder.Services.AddSingleton<IDatabaseKeyStore>(NoDatabaseKeyStore.Instance);
+#endif
 
             // Register Repositories (Interface Segregation)
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();

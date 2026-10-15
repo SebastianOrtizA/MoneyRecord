@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2a in review)
+**Status**: In progress (10.1 done; 10.2a done; 10.2b in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -60,6 +60,23 @@ Close the gap with competing finance apps. Each section can ship on its own.
   **Deviation:** no Oscore.Maui.Biometric (AndroidX Biometric directly, like WorkManager in 10.1b); no "immediately"
   delay (a receipt photo, file pick or share leaves the app for a moment). Recent / Upcoming / budget amounts on Home
   stay visible (the toggle hides balances and totals).
+- 10.2b options (2026-10-15): `SQLitePCLRaw.bundle_e_sqlcipher` stops at 2.1.11 (SQLitePCLRaw 3 dropped it) and
+  Zetetic's SQLCipher for .NET is commercial, so the cipher is **SQLite3 Multiple Ciphers** (`SQLite3MC.PCLRaw.bundle`
+  2.6.1, MIT, built on SQLitePCLRaw 3, 16 KB-aligned Android libraries). The user chose **opt-in encryption with the
+  key in the Android Keystore** over always-on, a key that travels with the backup, or no encryption.
+- 10.2b done as: Settings → Encrypt database (Android; off by default). `DatabaseInitializer` implements
+  `IDatabaseEncryption`: encrypting writes a checked copy (`PRAGMA rekey`, file header + `integrity_check`) to
+  `moneyrecord-encrypted.db3`, a name Android backup doesn't include, then deletes the plain file and its
+  `.bak-v*` migration copies; decrypting does the reverse and forgets the key. The state is which file exists (no
+  preference to restore out of sync). The key (32 random bytes, hex) is in `IDatabaseKeyStore` = MAUI SecureStorage,
+  whose file is excluded from Android backup (MAUI's own advice). A start that finds the encrypted file without a
+  working key sets it aside (`.unreadable-{time}`; only "file is not a database" counts, other errors are thrown so the next start retries), starts from a new database and tells the user on Home.
+  `SqliteSetup.Init` swaps sqlite-net's provider for SQLite3MC after sqlite-net's static constructor (which always
+  picks e_sqlite3, so plain SQLite still ships: about +1 MB per ABI).
+  **Deviation:** no export → re-create → import migration and no kept plain pre-migration copy: the encrypted copy is
+  written and checked next to the original before the original is deleted (a plain copy would defeat the point).
+  Known limits: zip backups and the pre-restore snapshots (`Backups/`) stay unencrypted (encrypted zips belong to
+  10.5); a query running at the moment the switch closes the connection can fail (the switch is a Settings action).
 
 ### 10.3 Multi-currency done properly (P2)
 - Base currency (from Stage 6.5) + exchange rates from Frankfurter API (MIT, ECB rates, no key, history since 1999).

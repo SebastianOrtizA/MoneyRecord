@@ -22,6 +22,7 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly NotificationLaunch _notificationLaunch;
         private readonly IPrivacySettings _privacy;
+        private readonly IDatabaseEncryption _databaseEncryption;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -93,7 +94,7 @@ namespace MoneyRecord.ViewModels
         public MainViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
-            NotificationLaunch notificationLaunch, IPrivacySettings privacy)
+            NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
@@ -105,6 +106,7 @@ namespace MoneyRecord.ViewModels
             _dialogService = dialogService;
             _notificationLaunch = notificationLaunch;
             _privacy = privacy;
+            _databaseEncryption = databaseEncryption;
             HideBalances = privacy.HideBalances;
             Period = period;
 
@@ -118,6 +120,9 @@ namespace MoneyRecord.ViewModels
         {
             _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
             await LoadDataCommand.ExecuteAsync(null);
+            // The encrypted database's key was gone at start: say why the data is missing
+            if (_databaseEncryption.TakeUnreadableDatabaseNotice())
+                await _dialogService.AlertAsync(AppResources.UnreadableDatabaseTitle, AppResources.UnreadableDatabaseMessage);
             // Opened from a notification: its page, now that the Shell is ready
             await _notificationLaunch.OpenPendingAsync();
             await AskCrashReportsOnceAsync();

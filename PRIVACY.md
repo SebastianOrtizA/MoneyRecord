@@ -13,7 +13,8 @@ They leave the device only when you choose to:
 - **Export or share a backup** (Settings → Backup & Restore), a CSV file or the logs. You pick where the file
   goes.
 - **Android backup:** if your device's own backup is turned on, Android copies the database, receipt photos and
-  settings to your Google account or to a new device, under Google's terms. Logs and caches are left out.
+  settings to your Google account or to a new device, under Google's terms. Logs and caches are left out, and so is
+  the database while **Encrypt database** is on: its key never leaves your phone.
 
 ## Crash reports (optional, off by default)
 After a week of use the app asks once whether it may send crash reports; you can change the answer at any time in

@@ -82,7 +82,7 @@ case "$cmd" in
     # First-run state: delete the DB, receipts, backups and prefs (seed data is recreated on next launch).
     # NOT `pm clear`: that also wipes files/.__override__ (Debug fast-deployment assemblies) -> app aborts.
     adb shell am force-stop "$PKG"
-    adb shell run-as "$PKG" sh -c "'rm -rf files/moneyrecord.db3* files/receipts files/Backups shared_prefs'"
+    adb shell run-as "$PKG" sh -c "'rm -rf files/moneyrecord.db3* files/moneyrecord-encrypted.db3* files/receipts files/Backups shared_prefs'"
     echo "app data cleared"
     ;;
   crash)
