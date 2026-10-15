@@ -1,6 +1,6 @@
 # Stage 9: Release Hardening
 
-**Status**: In progress (9.1–9.5 done; 9.6 in review)
+**Status**: Complete
 **Depends on**: Stage 6 (can run in parallel with Stages 7–8)
 **Complexity**: Medium
 **Source**: Product & engineering review, 2026-10-11 (Tests & CI, P11) + parts of Stage 5.1

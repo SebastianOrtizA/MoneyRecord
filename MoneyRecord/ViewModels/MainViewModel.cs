@@ -15,6 +15,7 @@ namespace MoneyRecord.ViewModels
         private readonly IBalanceService _balanceService;
         private readonly ILedgerService _ledgerService;
         private readonly IBudgetSummaryService _budgetSummaryService;
+        private readonly IRecurringTransactionService _recurringService;
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
         private readonly ICrashReportConsent _crashReports;
@@ -56,6 +57,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<LedgerEntry> recentTransactions = [];
 
+        /// <summary>The next scheduled recurring transactions (the period doesn't apply).</summary>
+        [ObservableProperty]
+        private List<UpcomingEntry> upcomingEntries = [];
+
+        [ObservableProperty]
+        private bool hasUpcoming;
+
         [ObservableProperty]
         private ObservableCollection<BudgetProgress> budgetSummaries = [];
 
@@ -72,12 +80,13 @@ namespace MoneyRecord.ViewModels
         public PeriodViewModel Period { get; }
 
         public MainViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
-            IErrorHandler errorHandler, INavigationService navigationService, ICrashReportConsent crashReports,
-            IDialogService dialogService)
+            IRecurringTransactionService recurringService, IErrorHandler errorHandler,
+            INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService)
         {
             _balanceService = balanceService;
             _ledgerService = ledgerService;
             _budgetSummaryService = budgetSummaryService;
+            _recurringService = recurringService;
             _errorHandler = errorHandler;
             _navigationService = navigationService;
             _crashReports = crashReports;
@@ -141,7 +150,8 @@ namespace MoneyRecord.ViewModels
                 var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
                 var budgetsTask = _budgetSummaryService.GetSummaryAsync(
                     Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
-                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask, budgetsTask);
+                var upcomingTask = _recurringService.GetUpcomingAsync();
+                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask, budgetsTask, upcomingTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var balanceLines = CurrencyBalance.DisplayLines(
@@ -161,6 +171,9 @@ namespace MoneyRecord.ViewModels
                 var entries = await entriesTask;
                 RecentTransactions = new(entries.OrderByDescending(e => e.Date).Take(5));
                 HasRecentTransactions = RecentTransactions.Count > 0;
+
+                UpcomingEntries = (await upcomingTask).Take(3).ToList();
+                HasUpcoming = UpcomingEntries.Count > 0;
 
                 // The budget card uses the Home period, like the Budget page does with its own
                 var budgets = await budgetsTask;
@@ -193,6 +206,10 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task SeeAllTransactionsAsync() => _navigationService.NavigateToAsync($"//{nameof(TransactionsPage)}");
+
+        [RelayCommand]
+        private Task SeeAllUpcomingAsync() =>
+            _navigationService.NavigateToAsync($"{nameof(RecurringTransactionsPage)}?Show={RecurringTransactionsViewModel.ShowUpcoming}");
 
         [RelayCommand]
         private Task ViewAllBudgetsAsync() => _navigationService.NavigateToAsync($"//{nameof(BudgetPage)}");

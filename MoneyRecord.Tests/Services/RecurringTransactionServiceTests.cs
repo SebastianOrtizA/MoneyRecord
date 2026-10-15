@@ -26,7 +26,8 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         Directory.CreateDirectory(_appData);
         _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
         Db = await _dbInitializer.GetConnectionAsync();
-        _sut = new RecurringTransactionService(new RecurringTransactionRepository(_dbInitializer), _dbInitializer, _clock);
+        _sut = new RecurringTransactionService(new RecurringTransactionRepository(_dbInitializer),
+            new CategoryRepository(_dbInitializer), new AccountRepository(_dbInitializer), _dbInitializer, _clock);
     }
 
     public async Task DisposeAsync()
@@ -151,5 +152,43 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         (await _sut.ProcessDueTransactionsAsync()).Should().Be(0);
 
         (await TransactionsAsync()).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Upcoming_lists_the_next_30_days_with_category_and_account()
+    {
+        var category = await Db.Table<Category>().FirstAsync(c => c.Type == CategoryType.Expense);
+        var account = await Db.Table<Account>().FirstAsync();
+        var rent = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 3, 31));
+        rent.CategoryId = category.Id;
+        rent.AccountId = account.Id;
+        await Db.UpdateAsync(rent);
+        await AddAsync(RecurrenceFrequency.Weekly, new DateTime(2026, 3, 20), active: false);
+
+        var upcoming = await _sut.GetUpcomingAsync();
+
+        // 15 March + 30 days = 14 April: 31 March only (30 April is past the window)
+        upcoming.Should().ContainSingle();
+        upcoming[0].Date.Should().Be(new DateTime(2026, 3, 31));
+        upcoming[0].DaysAway.Should().Be(16);
+        upcoming[0].CategoryName.Should().Be(category.Name);
+        upcoming[0].AccountName.Should().Be(account.Name);
+        upcoming[0].SignedAmount.Should().Be(-25.50m);
+    }
+
+    [Fact]
+    public async Task Upcoming_occurrences_are_the_ones_processing_creates_later()
+    {
+        await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 1, 31));
+        await AddAsync(RecurrenceFrequency.Biweekly, new DateTime(2026, 3, 18), end: new DateTime(2026, 4, 10));
+        await _sut.ProcessDueTransactionsAsync();
+        var before = (await TransactionsAsync()).Count;
+
+        var upcoming = await _sut.GetUpcomingAsync();
+        _clock.Advance(TimeSpan.FromDays(30));
+        await _sut.ProcessDueTransactionsAsync();
+
+        (await TransactionsAsync()).Skip(before).Select(t => t.Date)
+            .Should().Equal(upcoming.Select(u => u.Date));
     }
 }

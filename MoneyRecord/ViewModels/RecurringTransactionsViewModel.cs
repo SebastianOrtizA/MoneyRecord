@@ -8,9 +8,14 @@ using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
 {
+    [QueryProperty(nameof(Show), "Show")]
     public partial class RecurringTransactionsViewModel : ObservableObject
     {
+        /// <summary>The <c>Show</c> query value that opens the page on the Upcoming list (Home's "See all").</summary>
+        public const string ShowUpcoming = "Upcoming";
+
         private readonly IRecurringTransactionRepository _recurringRepo;
+        private readonly IRecurringTransactionService _recurringService;
         private readonly ICategoryRepository _categoryRepo;
         private readonly IAccountRepository _accountRepo;
         private readonly IErrorHandler _errorHandler;
@@ -21,6 +26,22 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private bool hasRecurringTransactions;
+
+        /// <summary>The page shows the next 30 days of occurrences instead of the schedules.</summary>
+        [ObservableProperty]
+        private bool isUpcomingView;
+
+        [ObservableProperty]
+        private List<UpcomingEntry> upcomingEntries = [];
+
+        [ObservableProperty]
+        private bool hasUpcoming;
+
+        public string? Show
+        {
+            get => IsUpcomingView ? ShowUpcoming : null;
+            set => IsUpcomingView = value == ShowUpcoming;
+        }
 
         [ObservableProperty]
         private bool isLoading;
@@ -59,11 +80,13 @@ namespace MoneyRecord.ViewModels
 
         public RecurringTransactionsViewModel(
             IRecurringTransactionRepository recurringRepo,
+            IRecurringTransactionService recurringService,
             ICategoryRepository categoryRepo,
             IAccountRepository accountRepo,
             IErrorHandler errorHandler, IDialogService dialogService)
         {
             _recurringRepo = recurringRepo;
+            _recurringService = recurringService;
             _categoryRepo = categoryRepo;
             _accountRepo = accountRepo;
             _errorHandler = errorHandler;
@@ -119,6 +142,10 @@ namespace MoneyRecord.ViewModels
                     }
                     HasRecurringTransactions = RecurringTransactions.Count > 0;
                 });
+
+                // After any change to the schedules (edit, delete, pause), so both lists agree
+                UpcomingEntries = await _recurringService.GetUpcomingAsync();
+                HasUpcoming = UpcomingEntries.Count > 0;
             }
             catch (Exception ex)
             {
@@ -128,6 +155,17 @@ namespace MoneyRecord.ViewModels
             {
                 IsLoading = false;
             }
+        }
+
+        [RelayCommand]
+        private void SelectSchedules() => IsUpcomingView = false;
+
+        [RelayCommand]
+        private void SelectUpcoming()
+        {
+            // The edit form belongs to the schedules list
+            CancelEdit();
+            IsUpcomingView = true;
         }
 
         [RelayCommand]

@@ -1187,4 +1187,25 @@ Amount: {2}</value>
   <data name="CrashReportsDecline" xml:space="preserve">
     <value>No, thanks</value>
   </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>Upcoming</value>
+  </data>
+  <data name="UpcomingSubtitle" xml:space="preserve">
+    <value>Next 30 days</value>
+  </data>
+  <data name="NoUpcoming" xml:space="preserve">
+    <value>Nothing scheduled in the next 30 days</value>
+  </data>
+  <data name="RecurringSchedules" xml:space="preserve">
+    <value>Schedules</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Tomorrow</value>
+  </data>
+  <data name="InDaysOne" xml:space="preserve">
+    <value>In {0} day</value>
+  </data>
+  <data name="InDaysOther" xml:space="preserve">
+    <value>In {0} days</value>
+  </data>
 </root>

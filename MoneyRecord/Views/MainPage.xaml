@@ -232,6 +232,36 @@
                 </VerticalStackLayout>
             </Frame>
 
+            <!-- Upcoming: the next scheduled recurring transactions -->
+            <!-- A Border with the look of the Frames around it (Frame is obsolete; 11.5 converts the rest) -->
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="16"
+                    IsVisible="{Binding HasUpcoming}">
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ext:Localize Upcoming}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="{ext:Localize SeeAll}"
+                               Style="{StaticResource CardLink}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SeeAllUpcomingCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding UpcomingEntries}" Spacing="6">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:UpcomingEntry">
+                                <controls:UpcomingRow/>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
 
             <!-- Budget Summary Section -->
             <Frame IsVisible="{Binding HasBudgets}"
