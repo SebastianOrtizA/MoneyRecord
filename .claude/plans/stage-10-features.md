@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: Pending
+**Status**: In progress (10.1a in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -16,6 +16,15 @@ Close the gap with competing finance apps. Each section can ship on its own.
 - Process recurring rules in the background daily (Android WorkManager via Shiny, MIT), not only at app start.
 - "Upcoming" list on Home / Recurring: next 30 days of scheduled entries.
 - Android 13+ `POST_NOTIFICATIONS` runtime permission prompt with explanation.
+- Split into two PRs (2026-10-14): **10.1a** = the Upcoming list; **10.1b** = notifications, the daily background
+  job and the permission prompt.
+- 10.1a done as: Core `UpcomingSchedule` (occurrences from each active recurrence's next occurrence through today +
+  30 days, by `RecurrenceCalculator`, up to the end date; overdue ones not created yet are listed as "Today"
+  (review)) + `UpcomingEntry` ("Today" / "Tomorrow" / "In N days" via `Plurals.InDays`);
+  `IRecurringTransactionService.GetUpcomingAsync`. Home has an Upcoming card (next 3, hidden when empty; "See all" →
+  `RecurringTransactionsPage?Show=Upcoming`); the Recurring page has a Schedules / Upcoming switch. Rows are one
+  shared `Controls/UpcomingRow`; the Recurring page builds the list from the rows it already loaded (review). A test
+  checks the Upcoming dates equal what processing creates 30 days later.
 
 ### 10.2 App lock and encryption (P11)
 - Biometric/PIN lock on open and after N minutes in background (Oscore.Maui.Biometric, MIT. Check its NOTICE,

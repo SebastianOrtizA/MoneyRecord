@@ -8,15 +8,31 @@ namespace MoneyRecord.Services
     public sealed class RecurringTransactionService : IRecurringTransactionService
     {
         private readonly IRecurringTransactionRepository _recurringRepo;
+        private readonly ICategoryRepository _categoryRepo;
+        private readonly IAccountRepository _accountRepo;
         private readonly DatabaseInitializer _database;
         private readonly TimeProvider _clock;
 
-        public RecurringTransactionService(IRecurringTransactionRepository recurringRepo, DatabaseInitializer database,
+        public RecurringTransactionService(IRecurringTransactionRepository recurringRepo,
+            ICategoryRepository categoryRepo, IAccountRepository accountRepo, DatabaseInitializer database,
             TimeProvider clock)
         {
             _recurringRepo = recurringRepo;
+            _categoryRepo = categoryRepo;
+            _accountRepo = accountRepo;
             _database = database;
             _clock = clock;
+        }
+
+        public async Task<List<UpcomingEntry>> GetUpcomingAsync(int days = UpcomingSchedule.DefaultDays)
+        {
+            var recurrings = await _recurringRepo.GetActiveAsync();
+            if (recurrings.Count == 0)
+                return [];
+
+            var categories = (await _categoryRepo.GetAllAsync()).ToDictionary(c => c.Id);
+            var accounts = (await _accountRepo.GetAllAsync()).ToDictionary(a => a.Id);
+            return UpcomingSchedule.Build(recurrings, categories, accounts, _clock.GetLocalNow().DateTime, days);
         }
 
         /// <summary>

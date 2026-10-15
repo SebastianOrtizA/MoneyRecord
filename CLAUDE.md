@@ -49,7 +49,8 @@ crashes at runtime (XAML is inflated at runtime there).
   LedgerEntry, TransactionGroup, TransactionFilter/FilterOption, CategoryAmount/CategoryReport (report shares + chart
   palette slot, donut slices), PeriodDelta ("vs previous period"), BudgetProgress/BudgetLevel, TypeFilterOption,
   Currency, DefaultCategory (the seed categories by resource key; also offered by the setup), LanguageOption /
-  ThemeOption (picker items, named in the current language), ThirdPartyComponent (About page licence list; a test
+  ThemeOption (picker items, named in the current language), UpcomingEntry (a scheduled recurring occurrence:
+  Home card + Recurring page), ThirdPartyComponent (About page licence list; a test
   checks it covers every package reference))
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
@@ -71,7 +72,8 @@ crashes at runtime (XAML is inflated at runtime there).
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
   account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), RecurrenceCalculator
-  (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year)
+  (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
+  days of recurring occurrences, same rule)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
@@ -92,7 +94,7 @@ crashes at runtime (XAML is inflated at runtime there).
   MonthCountPicker (bind BindingContext to a page's `Period`), AddEntryButton (the one add button: opens an Expense /
   Income / Transfer sheet; on Home and Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back
   closes it first),
-  LedgerItemTemplateSelector, FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard)
+  LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
@@ -129,7 +131,8 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
   `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `TransfersPage`, `SettingsPage`
 - Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See
-  all" → `//TransactionsPage`, budgets "See all" → `//BudgetPage`
+  all" → `//TransactionsPage`, Upcoming "See all" → `RecurringTransactionsPage?Show=Upcoming`, budgets "See all" →
+  `//BudgetPage`
 - Custom `INavigationService` tracks navigation history for back button behavior: AppShell's `Navigated` event feeds
   `NavigationHistory`; Android back → `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed` (an open sheet
   on an `IOverlayHost` page, then the previous page, then Home, then close)

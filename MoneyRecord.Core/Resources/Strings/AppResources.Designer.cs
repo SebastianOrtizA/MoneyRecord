@@ -3071,5 +3071,68 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("CrashReportsDecline", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upcoming.
+        /// </summary>
+        public static string Upcoming {
+            get {
+                return ResourceManager.GetString("Upcoming", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next 30 days.
+        /// </summary>
+        public static string UpcomingSubtitle {
+            get {
+                return ResourceManager.GetString("UpcomingSubtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing scheduled in the next 30 days.
+        /// </summary>
+        public static string NoUpcoming {
+            get {
+                return ResourceManager.GetString("NoUpcoming", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schedules.
+        /// </summary>
+        public static string RecurringSchedules {
+            get {
+                return ResourceManager.GetString("RecurringSchedules", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tomorrow.
+        /// </summary>
+        public static string Tomorrow {
+            get {
+                return ResourceManager.GetString("Tomorrow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In {0} day.
+        /// </summary>
+        public static string InDaysOne {
+            get {
+                return ResourceManager.GetString("InDaysOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In {0} days.
+        /// </summary>
+        public static string InDaysOther {
+            get {
+                return ResourceManager.GetString("InDaysOther", resourceCulture);
+            }
+        }
     }
 }
