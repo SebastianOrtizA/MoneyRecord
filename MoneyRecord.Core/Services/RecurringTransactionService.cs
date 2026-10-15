@@ -13,6 +13,10 @@ namespace MoneyRecord.Services
         private readonly DatabaseInitializer _database;
         private readonly TimeProvider _clock;
 
+        // App start and the daily background job can run at the same time: one run at a time, each reading the
+        // schedules the previous run advanced, so no occurrence is created twice
+        private readonly SemaphoreSlim _processing = new(1, 1);
+
         public RecurringTransactionService(IRecurringTransactionRepository recurringRepo,
             ICategoryRepository categoryRepo, IAccountRepository accountRepo, DatabaseInitializer database,
             TimeProvider clock)
@@ -37,9 +41,22 @@ namespace MoneyRecord.Services
 
         /// <summary>
         /// Creates every occurrence that is due (catching up the periods missed while the app was closed) and moves
-        /// each schedule on. A recurrence whose next occurrence is past its end date is deactivated.
+        /// each schedule on. A recurrence whose next occurrence is past its end date is deactivated. Runs one at a time.
         /// </summary>
         public async Task<int> ProcessDueTransactionsAsync()
+        {
+            await _processing.WaitAsync();
+            try
+            {
+                return await ProcessDueAsync();
+            }
+            finally
+            {
+                _processing.Release();
+            }
+        }
+
+        private async Task<int> ProcessDueAsync()
         {
             var now = _clock.GetLocalNow().DateTime;
             var created = 0;

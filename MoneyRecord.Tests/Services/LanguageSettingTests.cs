@@ -24,6 +24,23 @@ public sealed class LanguageSettingTests : LanguageTestBase
     }
 
     [Fact]
+    public void Background_threads_format_in_the_app_language_too()
+    {
+        // The daily reminders job runs on a WorkManager thread; the language that differs from the device's
+        var language = LocalizationService.DeviceCulture.TwoLetterISOLanguageName == "es" ? "en" : "es";
+        Sut.SetLanguage(language, _preferences);
+
+        // A new thread that inherits nothing from this one, like a Java thread
+        CultureInfo? culture = null;
+        var thread = new Thread(() => culture = CultureInfo.CurrentCulture);
+        using (ExecutionContext.SuppressFlow())
+            thread.Start();
+        thread.Join();
+
+        culture!.TwoLetterISOLanguageName.Should().Be(language);
+    }
+
+    [Fact]
     public void LoadLanguage_applies_the_saved_language()
     {
         _preferences.Set(LocalizationService.LanguagePreferenceKey, "es");

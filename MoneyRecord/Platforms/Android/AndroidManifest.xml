@@ -5,6 +5,8 @@
 	     and files (system picker) needs no storage permission. -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CAMERA" />
+	<!-- Reminders (opt-in, Settings): asked on Android 13+ when the user turns them on -->
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	<!-- MediaPicker.CapturePhotoAsync requires it to be declared on Android 12 and older (throws otherwise) -->
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 	<uses-feature android:name="android.hardware.camera" android:required="false" />

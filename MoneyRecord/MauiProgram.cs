@@ -83,6 +83,16 @@ namespace MoneyRecord
             // A report asks the Transactions tab to open filtered
             builder.Services.AddSingleton<TransactionsDrillDown>();
 
+            // Reminders: Android notifications and a daily background job (Platforms/Android/DailyReminderWorker)
+            builder.Services.AddSingleton<IReminderSettings, ReminderSettings>();
+            builder.Services.AddSingleton<IReminderService, ReminderService>();
+            builder.Services.AddSingleton<NotificationLaunch>();
+#if ANDROID
+            builder.Services.AddSingleton<INotificationService, Platforms.Android.AndroidNotificationService>();
+#else
+            builder.Services.AddSingleton<INotificationService, NoNotificationService>();
+#endif
+
             // Register ViewModels
             // The one period every tab shows
             builder.Services.AddSingleton<PeriodViewModel>();
@@ -209,7 +219,9 @@ namespace MoneyRecord
                     return sentryEvent;
                 });
                 // Java crashes and ANRs come from the embedded Android SDK, which skips that callback unless this is on
+#if ANDROID
                 options.Native.EnableBeforeSend = true;
+#endif
             });
         }
 

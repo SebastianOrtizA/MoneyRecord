@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1a in review)
+**Status**: In progress (10.1a done; 10.1b in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -25,6 +25,21 @@ Close the gap with competing finance apps. Each section can ship on its own.
   `RecurringTransactionsPage?Show=Upcoming`); the Recurring page has a Schedules / Upcoming switch. Rows are one
   shared `Controls/UpcomingRow`; the Recurring page builds the list from the rows it already loaded (review). A test
   checks the Upcoming dates equal what processing creates 30 days later.
+- 10.1b done as: Core `ReminderService` (daily job: bill reminders for expenses due within the chosen days, before
+  processing so today's still count; processing; "N recurring transactions added"; budget alerts at 80% (High) and
+  over the limit, once per budget period each), `ReminderSettings` (off until turned on; bills 1 day before, budget
+  alerts and "added" on), `INotificationService`, `NotificationLaunch` (a tapped notification's page: at once when
+  running, else when Home appears), `BillReminderOption`. Android: `AndroidNotificationService` (channels Bills /
+  Budgets, bell icon, `POST_NOTIFICATIONS` via MAUI `Permissions.PostNotifications`), `DailyReminderWorker`
+  (WorkManager periodic job aimed at 09:00, fixed Java name, scheduled at every start with KEEP). Other platforms:
+  `NoNotificationService` (Settings hides the card). The offer ("Get reminders?") comes once after adding a first
+  recurring transaction or budget; Settings → Reminders has the switch, bill days, budget alerts and "added".
+  Saving an expense checks the budgets right away. `ProcessDueTransactionsAsync` runs one at a time (app start and
+  the job can overlap).
+  **Deviation:** no Plugin.LocalNotification / Shiny: AndroidX WorkManager (`Xamarin.AndroidX.Work.Runtime` 2.10.3,
+  the newest without Lifecycle conflicts with MAUI's AndroidX) + `NotificationCompat` from AndroidX.Core directly.
+  Known limit: if the app starts before the job on a bill's own day, it creates the occurrence first, so an "On the
+  day" reminder for it is skipped (the 1-day-before default is not affected).
 
 ### 10.2 App lock and encryption (P11)
 - Biometric/PIN lock on open and after N minutes in background (Oscore.Maui.Biometric, MIT. Check its NOTICE,

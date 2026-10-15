@@ -231,6 +231,70 @@
                     </Grid>
                 </Frame>
 
+                <!-- Reminders (opt-in), where notifications are supported (Android). A Border styled like the Frames
+                     around it (Frame is obsolete; 11.5 converts the rest) -->
+                <Border IsVisible="{Binding RemindersSupported}"
+                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="&#xF009A;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="28"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{ext:Localize Reminders}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Label Text="{ext:Localize RemindersDescription}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            </VerticalStackLayout>
+                            <Switch Grid.Column="2"
+                                    IsToggled="{Binding RemindersEnabled}"
+                                    VerticalOptions="Center"/>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8" IsVisible="{Binding RemindersEnabled}">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize BillReminders}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Picker Grid.Column="1"
+                                        WidthRequest="170"
+                                        ItemsSource="{Binding BillReminderOptions}"
+                                        ItemDisplayBinding="{Binding Name, x:DataType=models:BillReminderOption}"
+                                        SelectedItem="{Binding SelectedBillReminder}"
+                                        Title="{ext:Localize BillReminders}"/>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize BudgetAlerts}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding BudgetAlertsEnabled}"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize RecurringAddedAlerts}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding RecurringAddedEnabled}"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
                 <!-- Crash reports (opt-in), only in builds that can send them -->
                 <Frame IsVisible="{Binding CrashReportsAvailable}"
                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"

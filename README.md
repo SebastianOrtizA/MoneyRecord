@@ -49,7 +49,11 @@ and Windows are maintained too. All data stays on the device.
 
 ### Recurring transactions
 - Daily, weekly, biweekly, monthly (optionally on a specific day) or yearly rules, with an optional end date.
-- Due transactions are created when the app starts.
+- Due transactions are created when the app starts and, on Android, by a daily background job.
+- **Upcoming**: the next 30 days of scheduled transactions, on Home and on the Recurring page.
+- **Reminders** (Android, opt-in): a notification before a bill is due (on the day or 1–7 days before), when a
+  budget reaches 80% of its limit or goes over it, and when the daily job adds recurring transactions. Set them in
+  **Settings → Reminders**; the app offers them once after you add your first recurring transaction or budget.
 
 ### Reports
 - **Expense / Income reports**: heatmaps by category, small categories grouped under "Others"; tap a category for its
@@ -98,7 +102,7 @@ The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
   Only official builds can send reports; builds from source have no Sentry address and never ask.
 - **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
   is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,
-  which need no permission.
+  which need no permission. Notifications (Android 13 and newer), only when you turn reminders on.
 - **Logs:** errors and basic app info (version, device OS) are written to log files on the device (the last 7 days,
   at most 10 MB in all). They hold technical details such as error messages (the app doesn't log your amounts or
   descriptions), and leave the device only when you use

@@ -68,6 +68,9 @@ namespace MoneyRecord.Services
             var culture = ResolveCulture(cultureCode, DeviceCulture);
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
+            // Threads started later too (the daily background job): amounts and dates in the app's language there as well
+            CultureInfo.DefaultThreadCurrentCulture = culture;
+            CultureInfo.DefaultThreadCurrentUICulture = culture;
             AppResources.Culture = culture;
             
             LanguageChanged?.Invoke(this, EventArgs.Empty);

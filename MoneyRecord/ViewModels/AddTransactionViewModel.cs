@@ -23,6 +23,7 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IAppPaths _paths;
         private readonly IEntryDefaultsService _entryDefaults;
+        private readonly IReminderService _reminders;
 
         [ObservableProperty]
         private TransactionType transactionType;
@@ -121,7 +122,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -134,6 +135,7 @@ namespace MoneyRecord.ViewModels
             _dialogService = dialogService;
             _paths = paths;
             _entryDefaults = entryDefaults;
+            _reminders = reminders;
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
         }
@@ -411,8 +413,14 @@ namespace MoneyRecord.ViewModels
                     };
 
                     await _recurringTransactionRepository.SaveAsync(recurring);
+                    // A first schedule: offer reminders before its bills come due (once)
+                    await _reminders.OfferAsync();
                 }
             }
+
+            // An expense may take a budget to 80% or over it
+            if (TransactionType == TransactionType.Expense)
+                await _reminders.CheckBudgetsAsync();
 
             await _navigationService.GoBackAsync();
         }

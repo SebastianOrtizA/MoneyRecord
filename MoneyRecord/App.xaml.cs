@@ -34,6 +34,10 @@ namespace MoneyRecord
             window.Created += (s, e) =>
             {
                 _ = ProcessRecurringTransactionsAsync();
+#if ANDROID
+                // While the app is closed, the daily job creates them (and sends the reminders)
+                Platforms.Android.DailyReminderWorker.Schedule(Android.App.Application.Context);
+#endif
             };
 
             return window;
