@@ -1,0 +1,31 @@
+MoneyRecord is a simple, private money tracker. Record what you spend and earn, see where your money goes, and stay on budget. Your data stays on your phone: no account, no ads, no tracking.
+
+<b>Fast entry</b>
+• Add an expense, income or transfer in a few taps: amount first, then a category from a grid that puts your recent ones first.
+• Optional description, tags, receipt photo (camera or gallery) and recurrence.
+
+<b>Accounts and currencies</b>
+• Cash, bank, savings, credit cards… each with its own currency.
+• Balances in different currencies are shown side by side, never added together.
+
+<b>Budgets</b>
+• Spending limits per category, per day, month or year.
+• Clear status at a glance: on track, near limit, over budget.
+
+<b>Reports</b>
+• Spending and income by category, with a donut chart.
+• Trends, cash flow and net worth over the last months, budget vs. actual.
+• Tap a chart to see the transactions behind it.
+
+<b>Recurring transactions</b>
+• Salary, rent, subscriptions: daily, weekly, every two weeks, monthly or yearly, with an optional end date. Missed occurrences are added when you open the app.
+
+<b>Your data, your control</b>
+• Full backup as a .zip file (with receipt photos), saved on the device or shared; restore with undo.
+• Export transactions as CSV.
+• Works offline. Optional crash reports, off unless you turn them on.
+
+<b>Made for you</b>
+• English and Spanish, light and dark theme, a quick setup on first start.
+
+MoneyRecord is free and open source (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

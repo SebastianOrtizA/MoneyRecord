@@ -198,7 +198,16 @@ namespace MoneyRecord
                 options.IncludeTextInBreadcrumbs = false;
                 options.IncludeTitleInBreadcrumbs = false;
                 options.AutoSessionTracking = false;
-                options.SetBeforeSend(sentryEvent => consent.Enabled ? sentryEvent : null);
+                options.SetBeforeSend(sentryEvent =>
+                {
+                    if (!consent.Enabled)
+                        return null;
+                    // Sentry adds a random per-install ID (as the user and as the device ID) even without PII;
+                    // reports stay anonymous
+                    sentryEvent.User = new SentryUser();
+                    sentryEvent.Contexts.Device.DeviceUniqueIdentifier = null;
+                    return sentryEvent;
+                });
                 // Java crashes and ANRs come from the embedded Android SDK, which skips that callback unless this is on
                 options.Native.EnableBeforeSend = true;
             });

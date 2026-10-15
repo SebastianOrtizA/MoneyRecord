@@ -1,6 +1,6 @@
 # Stage 9: Release Hardening
 
-**Status**: In progress (9.1–9.4 done; 9.5 in review)
+**Status**: In progress (9.1–9.5 done; 9.6 in review)
 **Depends on**: Stage 6 (can run in parallel with Stages 7–8)
 **Complexity**: Medium
 **Source**: Product & engineering review, 2026-10-11 (Tests & CI, P11) + parts of Stage 5.1
@@ -133,6 +133,47 @@ Public releases users can install and update, with enough logging to debug field
   `/run-moneyrecord`.
 - Check F-Droid inclusion rules (no proprietary deps, reproducible build notes).
 - `THIRD-PARTY-NOTICES.md` listing all dependency licences (MDI font Apache-2.0, CommunityToolkit MIT, …).
+- Done as (target changed by the owner: **Google Play** first, once the developer account is approved):
+  - `fastlane/metadata/android/{en-US,es-419,es-ES}` (the layout `fastlane supply` uploads to Play): title (≤30),
+    short (≤80) and full descriptions, `changelogs/default.txt`, 7 phone screenshots each (Home, Add expense,
+    Transactions, Spending, Budgets, Cash flow, Trends). es-419 (Latin America) is the main Spanish listing; es-ES
+    copies it with Spain wording (nómina, alquiler). Screenshots: emulator at `wm size 1080x2160` (Play rejects
+    sides longer than 2:1; 1080x2400 is 2.2:1) with SystemUI demo mode (12:00, full battery, Wi-Fi), demo data
+    from a scratch seed script (`#:project` Core, sqlite-net, per-language: fresh install in that language, then
+    accounts/transactions/transfers/budgets/recurring mapped by category position), base currency USD with a EUR
+    travel account so the per-currency balances show.
+  - `PRIVACY.md` (EN + ES) at the repo root: the Play privacy policy URL is
+    https://github.com/SebastianOrtizA/MoneyRecord/blob/main/PRIVACY.md (repo is public). It covers on-device data,
+    Android backup, opt-in crash reports (what a report holds), logs, permissions, children, contact (GitHub issues).
+  - Found while writing it: Sentry sets `User.Id` to a random per-install ID even with `SendDefaultPii = false`
+    (`Enricher` / `GlobalRootScopeIntegration`), so the 9.4b README promise "no user ID" was false. `BeforeSend` now
+    replaces the user with an empty `SentryUser` (covers Android SDK events too, since `Native.EnableBeforeSend`).
+    Review: the Android SDK also puts that ID in `contexts.device.id` (sentry-android-core `DeviceInfoUtil`), so
+    `BeforeSend` clears `Contexts.Device.DeviceUniqueIdentifier` too. The policy's "the Sentry project doesn't store
+    IP addresses" relies on **Prevent Storing of IP Addresses** in the Sentry project (README says so).
+    End to end (CI APK, real DSN, 2026-10-15 01:06 UTC): the "Failed to restore backup" event has no `user.id`, no
+    `ip_address` and no `contexts.device.id`, but has `user.geo` (CO / Antioquia / Medellín) that Sentry derives
+    server-side even with **Prevent Storing of IP Addresses** on (owner confirmed the project's Data
+    Scrubbing settings: scrubber + default scrubbers + prevent IP storage all on). The Java crash (`am crash`, sent by
+    `sentry.java.android.dotnet` 8.57.0 at the next start) is clean too: no `contexts.device.id`, no `user.id`, only
+    `user.geo`; Sentry shows 0 users for it. Its integrations list Replay and continuous profiling, which stay off
+    without a sample rate (none set), so the policy, README and Data safety now disclose approximate location.
+  - `THIRD-PARTY-NOTICES.md` mirrors `ThirdPartyComponent.All` (same order, licence, copyright, URL, licence file);
+    `ThirdPartyComponentTests` checks it. Gson (Apache-2.0, via Sentry's Android SDK) added to the Android
+    libraries entry. No Play Services / Firebase / other proprietary SDKs in `project.assets.json`.
+  - Play Data safety answers (for the owner): data collected = **Crash logs**, **Diagnostics** and **Approximate
+    location** (Sentry derives country / region / city from the connection's IP, seen in a real event), optional (user
+    choice), not shared (Sentry processes it for the developer: a service provider), encrypted in transit, not linked
+    to the user, used for app functionality / diagnostics only; no other data collected (all records stay on device).
+    No ads. Target audience: not children. App access: no login needed.
+  - F-Droid main repo: effectively blocked for now. The MAUI Android workload is a prebuilt Microsoft binary that
+    can't be built from source, which F-Droid's inclusion policy requires (forum threads, no official ruling).
+    IzzyOnDroid (signed APKs from GitHub Releases) is the realistic FOSS channel later: its ~30 MB limit needs an
+    arm64-only APK (`-r android-arm64`: 29.1 MB vs 49.5 MB universal with x86_64), and apps with sensitive data may
+    have no tracking at all, so ask its maintainers whether opt-in Sentry is acceptable (or ship that build without
+    a DSN, which already disables Sentry).
+  - Not done here: the Play Console itself (account approval pending), a feature graphic (1024x500) and the app icon
+    at 512x512 for the listing, upload automation (`fastlane supply` or a CI step).
 
 ## Verify
 - ~~Tag `v0.9.0-rc1` on a test branch → workflow produces signed APK + AAB with version `0.9.0`.~~ Done on `main`
