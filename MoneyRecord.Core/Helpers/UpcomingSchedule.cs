@@ -12,11 +12,12 @@ namespace MoneyRecord.Helpers
         public const int DefaultDays = 30;
 
         /// <summary>
-        /// The occurrence days of <paramref name="recurring"/> from <paramref name="from"/> through
-        /// <paramref name="through"/> (both days, inclusive). An inactive recurrence has none. Occurrences already due
-        /// but not created yet (before <paramref name="from"/>) are skipped: the app creates them when it starts.
+        /// Every occurrence of <paramref name="recurring"/> not created yet, through <paramref name="through"/>
+        /// (inclusive). That starts at its next occurrence, which can be today or earlier when it is already due (the app
+        /// was left open past midnight, or the start date was in the past): those are still money that will move, and
+        /// the app creates them when it starts. An inactive recurrence has none.
         /// </summary>
-        public static IEnumerable<DateTime> Occurrences(RecurringTransaction recurring, DateTime from, DateTime through)
+        public static IEnumerable<DateTime> Occurrences(RecurringTransaction recurring, DateTime through)
         {
             if (!recurring.IsActive)
                 yield break;
@@ -24,15 +25,14 @@ namespace MoneyRecord.Helpers
             var date = recurring.NextOccurrence.Date;
             while (date <= through.Date && (recurring.EndDate is not { } end || date <= end))
             {
-                if (date >= from.Date)
-                    yield return date;
+                yield return date;
                 date = RecurrenceCalculator.Next(date, recurring.Frequency, recurring.EffectiveDayOfMonth);
             }
         }
 
         /// <summary>
-        /// Every occurrence from <paramref name="today"/> through <paramref name="days"/> days later, soonest first,
-        /// with the category and account filled in.
+        /// Every pending occurrence through <paramref name="days"/> days after <paramref name="today"/>, soonest first,
+        /// with the category and account filled in. Overdue ones count as today.
         /// </summary>
         public static List<UpcomingEntry> Build(IEnumerable<RecurringTransaction> recurrings,
             IReadOnlyDictionary<int, Category> categories, IReadOnlyDictionary<int, Account> accounts,
@@ -46,18 +46,18 @@ namespace MoneyRecord.Helpers
                 var category = categories.GetValueOrDefault(recurring.CategoryId);
                 var account = accounts.GetValueOrDefault(recurring.AccountId);
 
-                foreach (var date in Occurrences(recurring, today, today.AddDays(days)))
+                foreach (var date in Occurrences(recurring, today.AddDays(days)))
                 {
                     entries.Add(new UpcomingEntry
                     {
                         RecurringId = recurring.Id,
                         Date = date,
-                        DaysAway = (date - today).Days,
+                        DaysAway = Math.Max(0, (date - today).Days),
                         Description = recurring.Description,
                         Amount = recurring.Amount,
                         Type = recurring.TransactionType,
                         CategoryName = category?.Name ?? string.Empty,
-                        CategoryIconCode = category?.IconCode ?? "F0770",
+                        CategoryIconCode = category?.IconCode ?? IconHelper.DefaultCategoryIconCode,
                         AccountName = account?.Name ?? string.Empty,
                         CurrencyCode = account?.CurrencyCode ?? string.Empty
                     });

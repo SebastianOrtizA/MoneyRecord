@@ -15,7 +15,6 @@ namespace MoneyRecord.ViewModels
         public const string ShowUpcoming = "Upcoming";
 
         private readonly IRecurringTransactionRepository _recurringRepo;
-        private readonly IRecurringTransactionService _recurringService;
         private readonly ICategoryRepository _categoryRepo;
         private readonly IAccountRepository _accountRepo;
         private readonly IErrorHandler _errorHandler;
@@ -39,7 +38,6 @@ namespace MoneyRecord.ViewModels
 
         public string? Show
         {
-            get => IsUpcomingView ? ShowUpcoming : null;
             set => IsUpcomingView = value == ShowUpcoming;
         }
 
@@ -80,13 +78,11 @@ namespace MoneyRecord.ViewModels
 
         public RecurringTransactionsViewModel(
             IRecurringTransactionRepository recurringRepo,
-            IRecurringTransactionService recurringService,
             ICategoryRepository categoryRepo,
             IAccountRepository accountRepo,
             IErrorHandler errorHandler, IDialogService dialogService)
         {
             _recurringRepo = recurringRepo;
-            _recurringService = recurringService;
             _categoryRepo = categoryRepo;
             _accountRepo = accountRepo;
             _errorHandler = errorHandler;
@@ -143,8 +139,8 @@ namespace MoneyRecord.ViewModels
                     HasRecurringTransactions = RecurringTransactions.Count > 0;
                 });
 
-                // After any change to the schedules (edit, delete, pause), so both lists agree
-                UpcomingEntries = await _recurringService.GetUpcomingAsync();
+                // From the same rows, after any change to the schedules (edit, delete, pause), so both lists agree
+                UpcomingEntries = UpcomingSchedule.Build(items, categories, accounts, DateTime.Now);
                 HasUpcoming = UpcomingEntries.Count > 0;
             }
             catch (Exception ex)

@@ -26,7 +26,7 @@ public class UpcomingScheduleTests
     };
 
     private static List<DateTime> Occurrences(RecurringTransaction recurring) =>
-        UpcomingSchedule.Occurrences(recurring, Today, Today.AddDays(UpcomingSchedule.DefaultDays)).ToList();
+        UpcomingSchedule.Occurrences(recurring, Today.AddDays(UpcomingSchedule.DefaultDays)).ToList();
 
     [Fact]
     public void Weekly_occurrences_cover_today_through_30_days_later()
@@ -41,16 +41,28 @@ public class UpcomingScheduleTests
         var recurring = Recurring(RecurrenceFrequency.Monthly, new DateTime(2026, 1, 31));
         recurring.NextOccurrence = new DateTime(2026, 3, 31);
 
-        UpcomingSchedule.Occurrences(recurring, Today, new DateTime(2026, 5, 31))
+        UpcomingSchedule.Occurrences(recurring, new DateTime(2026, 5, 31))
             .Should().Equal(new DateTime(2026, 3, 31), new DateTime(2026, 4, 30), new DateTime(2026, 5, 31));
     }
 
     [Fact]
-    public void Occurrences_already_due_are_skipped()
+    public void Overdue_occurrences_are_listed_too()
     {
-        // Not created yet (the app creates them when it starts), so not upcoming either
-        Occurrences(Recurring(RecurrenceFrequency.Daily, Today.AddDays(-3))).Should().HaveCount(31)
-            .And.StartWith(Today);
+        // Due but not created yet (left open past midnight, or a past start date): the app creates them at start
+        Occurrences(Recurring(RecurrenceFrequency.Daily, Today.AddDays(-1))).Should().HaveCount(32)
+            .And.StartWith([Today.AddDays(-1), Today]);
+    }
+
+    [Fact]
+    public void An_occurrence_due_yesterday_shows_as_today()
+    {
+        var entries = UpcomingSchedule.Build([Recurring(RecurrenceFrequency.Yearly, Today.AddDays(-1))],
+            new Dictionary<int, Category>(), new Dictionary<int, Account>(), Today.AddHours(10));
+
+        entries.Should().ContainSingle();
+        entries[0].Date.Should().Be(Today.AddDays(-1));
+        entries[0].DaysAway.Should().Be(0);
+        entries[0].CategoryIconCode.Should().Be(IconHelper.DefaultCategoryIconCode);
     }
 
     [Fact]

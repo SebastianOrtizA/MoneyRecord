@@ -11,7 +11,7 @@ namespace MoneyRecord.Models
         /// <summary>The occurrence's day (00:00).</summary>
         public DateTime Date { get; init; }
 
-        /// <summary>Days from today: 0 = today, 1 = tomorrow.</summary>
+        /// <summary>Days from today: 0 = today (or overdue, still to be created), 1 = tomorrow.</summary>
         public int DaysAway { get; init; }
 
         public string Description { get; init; } = string.Empty;
@@ -22,7 +22,7 @@ namespace MoneyRecord.Models
 
         public string CategoryName { get; init; } = string.Empty;
 
-        public string CategoryIconCode { get; init; } = "F0770";
+        public string CategoryIconCode { get; init; } = IconHelper.DefaultCategoryIconCode;
 
         public string AccountName { get; init; } = string.Empty;
 
