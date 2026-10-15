@@ -32,7 +32,7 @@ namespace MoneyRecord.Services
             if (state.Length == 0)
             {
                 // Decided once, so closing the app halfway through the setup shows it again
-                state = File.Exists(_paths.DatabasePath) ? Done : Pending;
+                state = File.Exists(_paths.DatabasePath) || File.Exists(_paths.EncryptedDatabasePath) ? Done : Pending;
                 _preferences.Set(SetupStatePreferenceKey, state);
             }
             return state == Pending;

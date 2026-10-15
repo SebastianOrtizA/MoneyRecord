@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Android 11 and older backup: the same files as data_extraction_rules.xml (keep the two in sync; AndroidBackupRulesTests checks both). -->
+<!-- Android 11 and older backup: the same rules as data_extraction_rules.xml (keep the two in sync; AndroidBackupRulesTests checks both). -->
 <full-backup-content>
 	<include domain="file" path="moneyrecord.db3" />
 	<include domain="file" path="receipts/" />
 	<include domain="sharedpref" path="." />
+	<exclude domain="sharedpref" path="com.sebastianortiz.moneyrecord.microsoft.maui.essentials.preferences.xml" />
 </full-backup-content>

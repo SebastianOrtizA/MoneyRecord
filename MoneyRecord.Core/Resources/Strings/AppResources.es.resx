@@ -1314,4 +1314,43 @@ Monto: {2}</value>
   <data name="ShowBalances" xml:space="preserve">
     <value>Mostrar saldos</value>
   </data>
+  <data name="EncryptDatabase" xml:space="preserve">
+    <value>Cifrar la base de datos</value>
+  </data>
+  <data name="EncryptDatabaseDescription" xml:space="preserve">
+    <value>Tus datos se cifran con una clave guardada en este teléfono. Mientras esté activado, la copia de seguridad automática de Android no los incluye.</value>
+  </data>
+  <data name="EncryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>¿Cifrar la base de datos?</value>
+  </data>
+  <data name="EncryptDatabaseQuestion" xml:space="preserve">
+    <value>La clave se queda en este teléfono, así que la copia de seguridad automática de Android y la transferencia a otro teléfono ya no incluirán tus datos. Antes de cambiar de teléfono, guarda una copia en Copia de Seguridad y Restauración (los archivos de copia no están cifrados).</value>
+  </data>
+  <data name="EncryptDatabaseAccept" xml:space="preserve">
+    <value>Cifrar</value>
+  </data>
+  <data name="DecryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>¿Desactivar el cifrado?</value>
+  </data>
+  <data name="DecryptDatabaseQuestion" xml:space="preserve">
+    <value>Tus datos se guardarán sin cifrar otra vez, y la copia de seguridad automática de Android los incluirá.</value>
+  </data>
+  <data name="DecryptDatabaseAccept" xml:space="preserve">
+    <value>Desactivar</value>
+  </data>
+  <data name="DatabaseEncrypted" xml:space="preserve">
+    <value>Base de datos cifrada</value>
+  </data>
+  <data name="DatabaseDecrypted" xml:space="preserve">
+    <value>Cifrado desactivado</value>
+  </data>
+  <data name="FailedToChangeEncryption" xml:space="preserve">
+    <value>No se pudo cambiar el cifrado. Tus datos no cambiaron.</value>
+  </data>
+  <data name="UnreadableDatabaseTitle" xml:space="preserve">
+    <value>No se pudieron abrir los datos cifrados</value>
+  </data>
+  <data name="UnreadableDatabaseMessage" xml:space="preserve">
+    <value>La clave de tu base de datos cifrada ya no está en este teléfono, así que la app empezó con una base de datos nueva. Restaura una copia de seguridad en Configuración para recuperar tus datos.</value>
+  </data>
 </root>

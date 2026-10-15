@@ -43,4 +43,20 @@ public class AndroidBackupRulesTests
             "sharedpref:.",
         ]);
     }
+
+    /// <summary>
+    /// SecureStorage (the database key) is encrypted with a Keystore key that stays on the phone: a restored copy
+    /// can't be read. Its file is named after the application ID.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(Sections))]
+    public void Every_rule_list_leaves_out_secure_storage(string section)
+    {
+        var applicationId = XDocument.Load(TestRepo.PathOf("MoneyRecord", "MoneyRecord.csproj"))
+            .Descendants("ApplicationId").Single().Value;
+
+        Section(section).Elements("exclude")
+            .Select(e => $"{(string)e.Attribute("domain")!}:{(string)e.Attribute("path")!}")
+            .Should().Equal($"sharedpref:{applicationId}.microsoft.maui.essentials.preferences.xml");
+    }
 }

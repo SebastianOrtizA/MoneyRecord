@@ -55,7 +55,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
 - `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
   `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
-  `GetConnectionAsync`, `RunInTransactionAsync`)
+  `GetConnectionAsync`, `RunInTransactionAsync`; optional encryption), `SqliteSetup`
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M003`
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
   as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page),
@@ -147,7 +147,10 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 
 ### Database
 - SQLite via `sqlite-net-pcl` with `SQLiteAsyncConnection`
-- DB file: `moneyrecord.db3` in `FileSystem.AppDataDirectory`
+- DB file: `moneyrecord.db3` in `FileSystem.AppDataDirectory`, or `moneyrecord-encrypted.db3` while Settings → Encrypt
+  database is on (`IDatabaseEncryption` = `DatabaseInitializer`; key in `IDatabaseKeyStore` = SecureStorage; neither file
+  nor key is in Android backup). Native SQLite is SQLite3 Multiple Ciphers: `SqliteSetup.Init` overrides sqlite-net's
+  e_sqlite3 provider (DatabaseInitializer's static ctor; tests via a module initializer)
 - No ORM relationships — joins done in application code via dictionary lookups
 - `DatabaseInitializer` handles schema creation + seed data, then the migration runner
 - Seed data: 4 income categories, 7 expense categories, 1 "Cash" account (allows negative balance, device currency)

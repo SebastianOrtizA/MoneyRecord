@@ -3458,5 +3458,122 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ShowBalances", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encrypt database.
+        /// </summary>
+        public static string EncryptDatabase {
+            get {
+                return ResourceManager.GetString("EncryptDatabase", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your data is encrypted with a key kept on this phone. While  [rest of string was truncated].
+        /// </summary>
+        public static string EncryptDatabaseDescription {
+            get {
+                return ResourceManager.GetString("EncryptDatabaseDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encrypt database?.
+        /// </summary>
+        public static string EncryptDatabaseQuestionTitle {
+            get {
+                return ResourceManager.GetString("EncryptDatabaseQuestionTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key stays on this phone, so Android&apos;s automatic backup a [rest of string was truncated].
+        /// </summary>
+        public static string EncryptDatabaseQuestion {
+            get {
+                return ResourceManager.GetString("EncryptDatabaseQuestion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encrypt.
+        /// </summary>
+        public static string EncryptDatabaseAccept {
+            get {
+                return ResourceManager.GetString("EncryptDatabaseAccept", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Turn off encryption?.
+        /// </summary>
+        public static string DecryptDatabaseQuestionTitle {
+            get {
+                return ResourceManager.GetString("DecryptDatabaseQuestionTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your data will be stored unencrypted again, and Android&apos;s au [rest of string was truncated].
+        /// </summary>
+        public static string DecryptDatabaseQuestion {
+            get {
+                return ResourceManager.GetString("DecryptDatabaseQuestion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Turn off.
+        /// </summary>
+        public static string DecryptDatabaseAccept {
+            get {
+                return ResourceManager.GetString("DecryptDatabaseAccept", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Database encrypted.
+        /// </summary>
+        public static string DatabaseEncrypted {
+            get {
+                return ResourceManager.GetString("DatabaseEncrypted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encryption turned off.
+        /// </summary>
+        public static string DatabaseDecrypted {
+            get {
+                return ResourceManager.GetString("DatabaseDecrypted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t change the encryption. Your data was not changed..
+        /// </summary>
+        public static string FailedToChangeEncryption {
+            get {
+                return ResourceManager.GetString("FailedToChangeEncryption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Encrypted data couldn&apos;t be opened.
+        /// </summary>
+        public static string UnreadableDatabaseTitle {
+            get {
+                return ResourceManager.GetString("UnreadableDatabaseTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key of your encrypted database is no longer on this phon [rest of string was truncated].
+        /// </summary>
+        public static string UnreadableDatabaseMessage {
+            get {
+                return ResourceManager.GetString("UnreadableDatabaseMessage", resourceCulture);
+            }
+        }
     }
 }

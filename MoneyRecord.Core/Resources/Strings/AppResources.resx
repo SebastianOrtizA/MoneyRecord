@@ -1316,4 +1316,43 @@ Amount: {2}</value>
   <data name="ShowBalances" xml:space="preserve">
     <value>Show balances</value>
   </data>
+  <data name="EncryptDatabase" xml:space="preserve">
+    <value>Encrypt database</value>
+  </data>
+  <data name="EncryptDatabaseDescription" xml:space="preserve">
+    <value>Your data is encrypted with a key kept on this phone. While this is on, Android's automatic backup leaves it out.</value>
+  </data>
+  <data name="EncryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Encrypt database?</value>
+  </data>
+  <data name="EncryptDatabaseQuestion" xml:space="preserve">
+    <value>The key stays on this phone, so Android's automatic backup and phone-to-phone transfer will no longer include your data. Before you change phones, save a backup under Backup &amp; Restore (backup files are not encrypted).</value>
+  </data>
+  <data name="EncryptDatabaseAccept" xml:space="preserve">
+    <value>Encrypt</value>
+  </data>
+  <data name="DecryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Turn off encryption?</value>
+  </data>
+  <data name="DecryptDatabaseQuestion" xml:space="preserve">
+    <value>Your data will be stored unencrypted again, and Android's automatic backup will include it.</value>
+  </data>
+  <data name="DecryptDatabaseAccept" xml:space="preserve">
+    <value>Turn off</value>
+  </data>
+  <data name="DatabaseEncrypted" xml:space="preserve">
+    <value>Database encrypted</value>
+  </data>
+  <data name="DatabaseDecrypted" xml:space="preserve">
+    <value>Encryption turned off</value>
+  </data>
+  <data name="FailedToChangeEncryption" xml:space="preserve">
+    <value>Couldn't change the encryption. Your data was not changed.</value>
+  </data>
+  <data name="UnreadableDatabaseTitle" xml:space="preserve">
+    <value>Encrypted data couldn't be opened</value>
+  </data>
+  <data name="UnreadableDatabaseMessage" xml:space="preserve">
+    <value>The key of your encrypted database is no longer on this phone, so the app started with a new database. Restore a backup in Settings to get your data back.</value>
+  </data>
 </root>

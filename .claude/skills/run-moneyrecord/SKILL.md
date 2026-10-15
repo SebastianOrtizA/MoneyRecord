@@ -44,7 +44,7 @@ Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/mon
 | `key CODE` / `back` | key events, e.g. `key 67` (backspace), `key 123` (move to end) |
 | `tab NAME` | tap a bottom tab: `home`, `transactions`, `reports`, `budgets`, `more` |
 | `locale es-ES` / `locale reset` | per-app language, then relaunch |
-| `fresh` | delete `moneyrecord.db3*`, receipts, backups and prefs (keeps the install working) |
+| `fresh` | delete `moneyrecord*.db3*` (plain and encrypted), receipts, backups and prefs (keeps the install working) |
 | `crash [N]` | last N fatal/exception lines from logcat |
 | `stop` | kill the emulator |
 

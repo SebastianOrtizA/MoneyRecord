@@ -13,7 +13,11 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
-		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.5" />
+		<!-- SQLite3 Multiple Ciphers: SQLite with encryption (see SqliteSetup). sqlite-net-pcl still brings plain SQLite
+		     (e_sqlite3), which its static constructor needs; the two SQLitePCLRaw packages are pinned to the bundle's 3.0.x. -->
+		<PackageReference Include="SQLite3MC.PCLRaw.bundle" Version="2.6.1" />
+		<PackageReference Include="SQLitePCLRaw.core" Version="3.0.5" />
+		<PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" Version="3.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

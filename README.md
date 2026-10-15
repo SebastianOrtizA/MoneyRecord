@@ -70,6 +70,9 @@ and Windows are maintained too. All data stays on the device.
 - **App lock** (Android, opt-in): fingerprint, face or the phone's screen lock when the app opens and after 1, 5, 15
   or 60 minutes in the background. The app stores no PIN or biometric data; on Android 13+ the recent apps screen
   doesn't show its content while the lock is on.
+- **Encrypt database** (Android, opt-in): the database is encrypted (SQLite3 Multiple Ciphers) with a random key kept
+  in the Android Keystore through SecureStorage. While it is on, Android backup leaves the database out (the key can't
+  leave the phone), so move to a new phone with a backup from **Settings → Backup**; backup files are not encrypted.
 
 ### Localization
 - English and Spanish, picked from the device language; the device region is kept for currency and number formats
@@ -85,7 +88,8 @@ and Windows are maintained too. All data stays on the device.
 - Full light and dark mode.
 
 ## Data & storage
-- SQLite (`moneyrecord.db3` in the app's data folder) via `sqlite-net-pcl`.
+- SQLite (`moneyrecord.db3` in the app's data folder, or `moneyrecord-encrypted.db3` while encrypted) via `sqlite-net-pcl`
+  on SQLite3 Multiple Ciphers (`SqliteSetup`).
 - **Money is stored as integer cents** (`AmountCents`, ...), so totals never drift.
 - **Schema migrations**: `PRAGMA user_version` plus a migration runner; each migration runs in its own transaction, and
   migrations that rewrite data back up the database first (`moneyrecord.db3.bak-v{n}`).
@@ -113,7 +117,8 @@ The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
   descriptions), and leave the device only when you use
   **Settings → Share logs**.
 - **Android backup:** if the device's own backup is on, it copies the database, receipt photos and settings, which
-  includes device-to-device transfer. Restore snapshots, migration copies, logs and caches are left out
+  includes device-to-device transfer. Restore snapshots, migration copies, logs, caches, the encrypted database and
+  SecureStorage (its key) are left out
   (`Platforms/Android/Resources/xml`). Google's cloud backup holds at most 25 MB per app; past that it stops backing
   up the app, so use **Settings → Backup** for a complete copy.
 

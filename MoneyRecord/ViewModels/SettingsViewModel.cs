@@ -26,6 +26,7 @@ namespace MoneyRecord.ViewModels
         private readonly INotificationService _notifications;
         private readonly IPrivacySettings _privacy;
         private readonly IDeviceLock _deviceLock;
+        private readonly IDatabaseEncryption _encryption;
 
         [ObservableProperty]
         private bool isExporting;
@@ -43,7 +44,8 @@ namespace MoneyRecord.ViewModels
             ICurrencyService currencyService, INavigationService navigationService, IThemeService themeService,
             IPreferencesService preferences, LocalizationService localization, IAppPaths paths,
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
-            INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock)
+            INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
+            IDatabaseEncryption encryption)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -60,6 +62,7 @@ namespace MoneyRecord.ViewModels
             _notifications = notifications;
             _privacy = privacy;
             _deviceLock = deviceLock;
+            _encryption = encryption;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
         }
@@ -240,6 +243,54 @@ namespace MoneyRecord.ViewModels
         {
             if (value != null)
                 _privacy.LockAfterMinutes = value.Minutes;
+        }
+
+        /// <summary>Platforms that can keep the database key (Android) show the encryption card.</summary>
+        public bool EncryptionSupported => _encryption.IsSupported;
+
+        [ObservableProperty]
+        private bool isChangingEncryption;
+
+        public bool DatabaseEncrypted
+        {
+            get => _encryption.IsEncrypted;
+            set
+            {
+                // Asks first; the switch goes back when cancelled
+                if (value != _encryption.IsEncrypted && !IsChangingEncryption)
+                    ChangeEncryptionCommand.Execute(value);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ChangeEncryptionAsync(bool encrypt)
+        {
+            var confirmed = encrypt
+                ? await _dialogService.ConfirmAsync(AppResources.EncryptDatabaseQuestionTitle,
+                    AppResources.EncryptDatabaseQuestion, AppResources.EncryptDatabaseAccept, AppResources.Cancel)
+                : await _dialogService.ConfirmAsync(AppResources.DecryptDatabaseQuestionTitle,
+                    AppResources.DecryptDatabaseQuestion, AppResources.DecryptDatabaseAccept, AppResources.Cancel);
+            if (confirmed)
+            {
+                IsChangingEncryption = true;
+                try
+                {
+                    if (encrypt)
+                        await _encryption.EncryptAsync();
+                    else
+                        await _encryption.DecryptAsync();
+                    await _dialogService.ToastAsync(encrypt ? AppResources.DatabaseEncrypted : AppResources.DatabaseDecrypted);
+                }
+                catch (Exception ex)
+                {
+                    await _errorHandler.HandleAsync(ex, AppResources.FailedToChangeEncryption);
+                }
+                finally
+                {
+                    IsChangingEncryption = false;
+                }
+            }
+            OnPropertyChanged(nameof(DatabaseEncrypted));
         }
 
         [RelayCommand]
