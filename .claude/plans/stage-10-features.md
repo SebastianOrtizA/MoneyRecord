@@ -135,7 +135,10 @@ Close the gap with competing finance apps. Each section can ship on its own.
   `ExchangeRateUnavailableException`). `ExchangeRateService.UpdateAsync`: for each account currency other than the base,
   from its first transaction (`ITransactionRepository.GetFirstDatesByCurrencyAsync`) or today, to today, only the days
   missing before/after the stored ones; one update at a time; `LastUpdated` set unless a download failed (offline =
-  retried). `UpdateIfDueAsync` (on + not today) runs at app start and in the daily WorkManager job.
+  retried). `UpdateIfDueAsync` (on + not today) runs at app start and in the daily WorkManager job;
+  `UpdateIfEnabledAsync` (on, any time) runs in the background after saving an account or an entry in another currency,
+  so a new currency or an older date gets its rates at once (review). A leading range that came back empty isn't asked
+  again while the app runs (review).
   `CurrencyConverter` (Core): nearest earlier day, inverse pairs and across an earlier base (rates stay usable after a
   base change), `Convert(Transaction, …)` prefers the user's own conversion in that currency. Settings → Exchange rates
   (switch; turning it on downloads; status line + Update now). `Transaction.ConvertedAmountCents` +

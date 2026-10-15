@@ -24,6 +24,7 @@ namespace MoneyRecord.ViewModels
         private readonly IAppPaths _paths;
         private readonly IEntryDefaultsService _entryDefaults;
         private readonly IReminderService _reminders;
+        private readonly IExchangeRateService _exchangeRates;
 
         [ObservableProperty]
         private TransactionType transactionType;
@@ -142,7 +143,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -156,6 +157,7 @@ namespace MoneyRecord.ViewModels
             _paths = paths;
             _entryDefaults = entryDefaults;
             _reminders = reminders;
+            _exchangeRates = exchangeRates;
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
         }
@@ -178,6 +180,10 @@ namespace MoneyRecord.ViewModels
             IsMoreDetailsOpen = false;
             TagsText = string.Empty;
             ConvertedAmount = string.Empty;
+            // The base currency can't change while the form is open (it is set in Settings)
+            BaseCurrencyCode = MoneyFormatter.BaseCurrency;
+            ConvertedAmountLabel = string.Format(AppResources.AmountInCurrency, BaseCurrencyCode);
+            ConvertedAmountHint = string.Format(AppResources.ConvertedAmountHint, BaseCurrencyCode);
             ShowReceipt();
             IsRecurring = false;
             SelectedFrequencyItem = Frequencies[3];
@@ -222,7 +228,7 @@ namespace MoneyRecord.ViewModels
 
                 // Open the details when they hold something beyond the defaults
                 IsMoreDetailsOpen = Description.Length > 0 || Transaction.HasTags || Transaction.HasReceipt
-                    || Transaction.ConvertedAmount != null;
+                    || (Transaction.ConvertedAmount != null && MoneyFormatter.SameCurrency(Transaction.ConvertedCurrencyCode, BaseCurrencyCode));
                 
                 // Select the current account
                 if (Transaction.AccountId.HasValue)
@@ -276,10 +282,7 @@ namespace MoneyRecord.ViewModels
 
         partial void OnSelectedAccountChanged(Account? value)
         {
-            BaseCurrencyCode = MoneyFormatter.BaseCurrency;
             CanConvert = value != null && !MoneyFormatter.SameCurrency(value.CurrencyCode, BaseCurrencyCode);
-            ConvertedAmountLabel = string.Format(AppResources.AmountInCurrency, BaseCurrencyCode);
-            ConvertedAmountHint = string.Format(AppResources.ConvertedAmountHint, BaseCurrencyCode);
             UpdateConvertedRate();
         }
 
@@ -484,6 +487,10 @@ namespace MoneyRecord.ViewModels
             // An expense may take a budget to 80% or over it
             if (TransactionType == TransactionType.Expense)
                 await _reminders.CheckBudgetsAsync();
+
+            // An entry in another currency (perhaps dated before the stored rates) gets its rates now, in the background
+            if (CanConvert)
+                _ = _exchangeRates.UpdateIfEnabledAsync();
 
             await _navigationService.GoBackAsync();
         }

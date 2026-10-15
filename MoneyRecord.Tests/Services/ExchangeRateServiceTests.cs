@@ -28,6 +28,7 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
     private readonly string _previousBase = MoneyFormatter.BaseCurrencyCode;
     private DatabaseInitializer _database = null!;
     private ExchangeRateRepository _rates = null!;
+    private AccountRepository _accounts = null!;
     private ExchangeRateService _sut = null!;
 
     private SQLiteAsyncConnection Db { get; set; } = null!;
@@ -40,7 +41,8 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
         _database = new DatabaseInitializer(new AppPaths(_appData));
         Db = await _database.GetConnectionAsync();
         _rates = new ExchangeRateRepository(_database);
-        _sut = new ExchangeRateService(_rates, new AccountRepository(_database), new TransactionRepository(_database),
+        _accounts = new AccountRepository(_database);
+        _sut = new ExchangeRateService(_rates, _accounts, new TransactionRepository(_database),
             _source, _settings, _clock, NullLogger<ExchangeRateService>.Instance);
 
         // The source answers with one rate per day asked for
@@ -63,7 +65,7 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
     private async Task<Account> AccountAsync(string currency)
     {
         var account = new Account { Name = currency, CurrencyCode = currency };
-        await Db.InsertAsync(account);
+        await _accounts.SaveAsync(account); // through the repository, which caches the accounts
         return account;
     }
 
@@ -76,8 +78,9 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
 
         var result = await _sut.UpdateAsync();
 
-        result.Complete.Should().BeTrue();
-        result.Added.Should().Be(4 + 1);
+        result.Unavailable.Should().BeEmpty();
+        result.Failed.Should().BeEmpty();
+        result.Saved.Should().Be(4 + 1);
         await _source.Received(1).GetRatesAsync("USD", "COP", Today.AddDays(-3), Today, Arg.Any<CancellationToken>());
         await _source.Received(1).GetRatesAsync("USD", "EUR", Today, Today, Arg.Any<CancellationToken>());
         _settings.LastUpdated.Should().Be(Today.AddHours(9));
@@ -145,11 +148,40 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
     public async Task The_converter_sees_the_rates_of_the_latest_update()
     {
         await AccountAsync("COP");
-        (await _sut.GetConverterAsync()).HasRates.Should().BeFalse();
+        (await _sut.GetConverterAsync()).Convert(8000m, "COP", Today, "USD").Should().BeNull();
 
         await _sut.UpdateAsync();
 
         (await _sut.GetConverterAsync()).Convert(8000m, "COP", Today, "USD").Should().Be(2m);
+    }
+
+    [Fact]
+    public async Task After_a_save_the_update_runs_even_when_it_already_ran_today()
+    {
+        await AccountAsync("COP");
+        _settings.Enabled = true;
+        await _sut.UpdateIfDueAsync();
+        await AccountAsync("EUR"); // a new currency the same day
+
+        await _sut.UpdateIfDueAsync();
+        await _sut.UpdateIfEnabledAsync();
+
+        await _source.Received(1).GetRatesAsync("USD", "EUR", Today, Today, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task A_range_before_the_stored_days_that_came_back_empty_isnt_asked_again()
+    {
+        var pesos = await AccountAsync("COP");
+        await _rates.SaveRatesAsync([new ExchangeRate { BaseCode = "USD", QuoteCode = "COP", Date = Today, Rate = 1 }]);
+        await Db.InsertAsync(new Transaction { AccountId = pesos.Id, Amount = 1m, Date = new DateTime(1900, 1, 1) });
+        _source.GetRatesAsync("USD", "COP", new DateTime(1900, 1, 1), Today.AddDays(-1), Arg.Any<CancellationToken>())
+            .Returns(new List<ExchangeRate>()); // nothing that old
+
+        await _sut.UpdateAsync();
+        await _sut.UpdateAsync();
+
+        await _source.Received(1).GetRatesAsync("USD", "COP", new DateTime(1900, 1, 1), Today.AddDays(-1), Arg.Any<CancellationToken>());
     }
 
     [Fact]

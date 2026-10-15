@@ -19,6 +19,7 @@ namespace MoneyRecord.ViewModels
         private readonly ICurrencyService _currencyService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
+        private readonly IExchangeRateService _exchangeRates;
 
         /// <summary>The accounts grouped by currency, base currency first, each with its subtotal.</summary>
         [ObservableProperty]
@@ -72,7 +73,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private List<Currency> availableCurrencies = new();
 
-        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler, IDialogService dialogService)
+        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler, IDialogService dialogService, IExchangeRateService exchangeRates)
         {
             _accountRepository = accountRepository;
             _accountService = accountService;
@@ -81,6 +82,7 @@ namespace MoneyRecord.ViewModels
             _currencyService = currencyService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
+            _exchangeRates = exchangeRates;
         }
 
         public Task InitializeAsync()
@@ -220,6 +222,8 @@ namespace MoneyRecord.ViewModels
             await _accountRepository.SaveAsync(account);
             CloseForm();
             await LoadAccountsCommand.ExecuteAsync(null);
+            // A new currency gets its exchange rates now, in the background (nothing is fetched for the base currency)
+            _ = _exchangeRates.UpdateIfEnabledAsync();
         }
 
         /// <summary>Deletes the account in the sheet; the sheet stays open behind the question, so cancelling returns to it.</summary>

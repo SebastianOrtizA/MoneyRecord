@@ -17,6 +17,10 @@ namespace MoneyRecord.Services
         private readonly SemaphoreSlim _updating = new(1, 1);
         private CurrencyConverter? _converter;
 
+        // Ranges before the stored days that came back empty (the source has nothing that old): not asked again while the
+        // app runs. Only leading ranges: an empty trailing range may just be today's rate not published yet.
+        private readonly HashSet<(string Base, string Quote, DateTime From, DateTime To)> _emptyLeadingRanges = [];
+
         public async Task<RateUpdateResult> UpdateAsync(CancellationToken cancellationToken = default)
         {
             await _updating.WaitAsync(cancellationToken);
@@ -30,10 +34,12 @@ namespace MoneyRecord.Services
             }
         }
 
-        public async Task UpdateIfDueAsync()
+        public Task UpdateIfDueAsync() =>
+            settings.LastUpdated?.Date == clock.GetLocalNow().Date ? Task.CompletedTask : UpdateIfEnabledAsync();
+
+        public async Task UpdateIfEnabledAsync()
         {
-            var today = clock.GetLocalNow().Date;
-            if (!settings.Enabled || settings.LastUpdated?.Date == today)
+            if (!settings.Enabled)
                 return;
 
             try
@@ -57,7 +63,7 @@ namespace MoneyRecord.Services
             var quotes = ReportCurrencies.InUse(await accounts.GetAllAsync(), baseCode).Skip(1).ToList();
             var firstDates = await transactions.GetFirstDatesByCurrencyAsync(baseCode);
 
-            var added = 0;
+            var saved = 0;
             var unavailable = new List<string>();
             var failed = new List<string>();
             foreach (var quote in quotes)
@@ -65,8 +71,18 @@ namespace MoneyRecord.Services
                 var first = firstDates.TryGetValue(quote, out var date) && date.Date < today ? date.Date : today;
                 try
                 {
-                    foreach (var (from, to) in MissingRanges(await rates.GetCoverageAsync(baseCode, quote), first, today))
-                        added += await rates.SaveRatesAsync(await source.GetRatesAsync(baseCode, quote, from, to, cancellationToken));
+                    var stored = await rates.GetCoverageAsync(baseCode, quote);
+                    foreach (var (from, to) in MissingRanges(stored, first, today))
+                    {
+                        var leading = stored is { } covered && to < covered.First;
+                        if (leading && _emptyLeadingRanges.Contains((baseCode, quote, from, to)))
+                            continue;
+
+                        var downloaded = await source.GetRatesAsync(baseCode, quote, from, to, cancellationToken);
+                        if (leading && downloaded.Count == 0)
+                            _emptyLeadingRanges.Add((baseCode, quote, from, to));
+                        saved += await rates.SaveRatesAsync(downloaded);
+                    }
                 }
                 catch (ExchangeRateUnavailableException)
                 {
@@ -80,12 +96,12 @@ namespace MoneyRecord.Services
                 }
             }
 
-            if (added > 0)
+            if (saved > 0)
                 _converter = null;
             // A currency the source doesn't offer won't get better by retrying; a failed download will
             if (failed.Count == 0)
                 settings.LastUpdated = now;
-            return new RateUpdateResult(added, unavailable, failed);
+            return new RateUpdateResult(saved, unavailable, failed);
         }
 
         /// <summary>

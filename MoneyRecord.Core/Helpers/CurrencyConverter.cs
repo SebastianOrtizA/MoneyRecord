@@ -8,8 +8,6 @@ namespace MoneyRecord.Helpers
     /// </summary>
     public sealed class CurrencyConverter
     {
-        public static readonly CurrencyConverter Empty = new([]);
-
         // Per (base, quote): dates ascending with their rates
         private readonly Dictionary<(string Base, string Quote), (DateTime[] Dates, double[] Rates)> _pairs;
 
@@ -24,8 +22,6 @@ namespace MoneyRecord.Helpers
                     return (sorted.Select(r => r.Date.Date).ToArray(), sorted.Select(r => r.Rate).ToArray());
                 });
         }
-
-        public bool HasRates => _pairs.Count > 0;
 
         /// <summary>
         /// How many <paramref name="to"/> one <paramref name="from"/> is worth on <paramref name="date"/>: the stored pair,

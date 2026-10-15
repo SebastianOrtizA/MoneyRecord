@@ -32,7 +32,7 @@ public class CurrencyConverterTests
     {
         Usd.Convert(10m, "COP", Oct1.AddDays(-1), "USD").Should().BeNull();
         Usd.Convert(10m, "JPY", Oct1, "USD").Should().BeNull();
-        CurrencyConverter.Empty.HasRates.Should().BeFalse();
+        new CurrencyConverter([]).Convert(10m, "COP", Oct1, "USD").Should().BeNull();
     }
 
     [Fact]

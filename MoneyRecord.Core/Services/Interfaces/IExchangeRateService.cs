@@ -2,12 +2,11 @@ using MoneyRecord.Helpers;
 
 namespace MoneyRecord.Services.Interfaces
 {
-    /// <summary>The outcome of a rate update: how many daily rates were stored, and the currencies that got none.</summary>
-    public sealed record RateUpdateResult(int Added, IReadOnlyList<string> Unavailable, IReadOnlyList<string> Failed)
-    {
-        /// <summary>Every currency in use has rates up to today.</summary>
-        public bool Complete => Unavailable.Count == 0 && Failed.Count == 0;
-    }
+    /// <summary>
+    /// The outcome of a rate update: how many daily rates were saved (new or updated), the currencies the source doesn't
+    /// offer, and those whose download failed.
+    /// </summary>
+    public sealed record RateUpdateResult(int Saved, IReadOnlyList<string> Unavailable, IReadOnlyList<string> Failed);
 
     /// <summary>Keeps the downloaded daily rates up to date and converts with them.</summary>
     public interface IExchangeRateService
@@ -23,6 +22,13 @@ namespace MoneyRecord.Services.Interfaces
         /// For the app start and the daily job.
         /// </summary>
         Task UpdateIfDueAsync();
+
+        /// <summary>
+        /// <see cref="UpdateAsync"/> when the download is on, whenever it last ran; best-effort. After saving an account or a
+        /// transaction: a new currency or an older date gets its rates now, not tomorrow (only missing days are fetched, so
+        /// it usually sends nothing).
+        /// </summary>
+        Task UpdateIfEnabledAsync();
 
         /// <summary>A converter over every stored rate (rebuilt after an update).</summary>
         Task<CurrencyConverter> GetConverterAsync();
