@@ -151,10 +151,14 @@ Public releases users can install and update, with enough logging to debug field
     Review: the Android SDK also puts that ID in `contexts.device.id` (sentry-android-core `DeviceInfoUtil`), so
     `BeforeSend` clears `Contexts.Device.DeviceUniqueIdentifier` too. The policy's "the Sentry project doesn't store
     IP addresses" relies on **Prevent Storing of IP Addresses** in the Sentry project (README says so).
+    End to end (CI APK, real DSN, 2026-10-15 01:06 UTC): the "Failed to restore backup" event has no `user.id`, no
+    `ip_address` and no `contexts.device.id`, but has `user.geo` (CO / Antioquia / Medellín) that Sentry derives
+    server-side, so the policy, README and Data safety now disclose approximate location.
   - `THIRD-PARTY-NOTICES.md` mirrors `ThirdPartyComponent.All` (same order, licence, copyright, URL, licence file);
     `ThirdPartyComponentTests` checks it. Gson (Apache-2.0, via Sentry's Android SDK) added to the Android
     libraries entry. No Play Services / Firebase / other proprietary SDKs in `project.assets.json`.
-  - Play Data safety answers (for the owner): data collected = **Crash logs** and **Diagnostics**, optional (user
+  - Play Data safety answers (for the owner): data collected = **Crash logs**, **Diagnostics** and **Approximate
+    location** (Sentry derives country / region / city from the connection's IP, seen in a real event), optional (user
     choice), not shared (Sentry processes it for the developer: a service provider), encrypted in transit, not linked
     to the user, used for app functionality / diagnostics only; no other data collected (all records stay on device).
     No ads. Target audience: not children. App access: no login needed.

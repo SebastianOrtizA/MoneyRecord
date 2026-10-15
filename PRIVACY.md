@@ -22,6 +22,7 @@ developer through [Sentry](https://sentry.io) when an error happens. A report co
 - the error and where in the app it happened (technical details such as the error message and stack trace);
 - the app version and device information such as the Android version, device model, language and free memory;
 - recent technical events in the app before the error (such as which screen was open).
+- the approximate location (country, region and city) that Sentry works out from the connection's IP address.
 
 A report doesn't include your amounts, descriptions or other records, screenshots, your name, email, user ID or device
 ID, and the Sentry project doesn't store IP addresses. Reports are sent over an encrypted connection (HTTPS), used only
@@ -72,6 +73,7 @@ contiene:
 - la versión de la app e información del dispositivo, como la versión de Android, el modelo, el idioma y la memoria
   libre;
 - los eventos técnicos recientes de la app antes del error (por ejemplo, qué pantalla estaba abierta).
+- la ubicación aproximada (país, región y ciudad) que Sentry deduce de la dirección IP de la conexión.
 
 Un informe no incluye tus importes, descripciones u otros registros, capturas de pantalla, tu nombre, correo, ID de
 usuario ni ID del dispositivo, y el proyecto de Sentry no guarda direcciones IP. Los informes se envían por una conexión
