@@ -124,6 +124,23 @@
                            Placeholder="{ext:Localize TagsPlaceholder}"
                            FontSize="16"/>
 
+                    <!-- The user's own conversion into the base currency, when the account is in another one -->
+                    <VerticalStackLayout Spacing="8" IsVisible="{Binding CanConvert}">
+                        <Label Text="{Binding ConvertedAmountLabel}" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding ConvertedAmountHint}" FontSize="13"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        <controls:DecimalEntry Text="{Binding ConvertedAmount}"
+                                               Placeholder="0.00"
+                                               FontSize="16">
+                            <controls:DecimalEntry.Behaviors>
+                                <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding BaseCurrencyCode}"/>
+                            </controls:DecimalEntry.Behaviors>
+                        </controls:DecimalEntry>
+                        <Label Text="{Binding ConvertedRateText}" FontSize="13"
+                               IsVisible="{Binding ConvertedRateText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </VerticalStackLayout>
+
                     <!-- Receipt Photo Section -->
                     <Label Text="{ext:Localize Receipt}" FontSize="16" FontAttributes="Bold"/>
                     <VerticalStackLayout Spacing="8">

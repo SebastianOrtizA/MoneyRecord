@@ -85,6 +85,47 @@
                     </VerticalStackLayout>
                 </Frame>
 
+                <!-- Exchange rates (opt-in download: it needs the internet) -->
+                <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                        StrokeShape="RoundRectangle 12"
+                        Padding="16">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="&#xF01E7;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="28"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{ext:Localize ExchangeRates}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Label Text="{ext:Localize ExchangeRatesDescription}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            </VerticalStackLayout>
+                            <Switch Grid.Column="2"
+                                    IsToggled="{Binding ExchangeRatesEnabled}"
+                                    VerticalOptions="Center"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" IsVisible="{Binding ExchangeRatesEnabled}">
+                            <Label Text="{Binding ExchangeRatesStatus}"
+                                   FontSize="13"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <Button Grid.Column="1"
+                                    Text="{ext:Localize UpdateNow}"
+                                    Command="{Binding UpdateExchangeRatesCommand}"
+                                    FontSize="14"
+                                    HeightRequest="40"
+                                    Padding="16,0"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
                 <!-- Setup assistant (the first-run setup, again) -->
                 <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                        BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"

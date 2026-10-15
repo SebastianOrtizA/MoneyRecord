@@ -74,6 +74,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ITransferRepository, TransferRepository>();
             builder.Services.AddSingleton<IBudgetRepository, BudgetRepository>();
             builder.Services.AddSingleton<IRecurringTransactionRepository, RecurringTransactionRepository>();
+            builder.Services.AddSingleton<IExchangeRateRepository, ExchangeRateRepository>();
 
             // Register Business Services
             builder.Services.AddSingleton<IBalanceService, BalanceService>();
@@ -87,6 +88,10 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
             builder.Services.AddSingleton<ISetupService, SetupService>();
+            builder.Services.AddSingleton<IExchangeRateSettings, ExchangeRateSettings>();
+            builder.Services.AddSingleton<IExchangeRateSource>(_ => new FrankfurterRateSource(
+                new HttpClient { BaseAddress = FrankfurterRateSource.BaseAddress, Timeout = TimeSpan.FromSeconds(30) }));
+            builder.Services.AddSingleton<IExchangeRateService, ExchangeRateService>();
             // A report asks the Transactions tab to open filtered
             builder.Services.AddSingleton<TransactionsDrillDown>();
 

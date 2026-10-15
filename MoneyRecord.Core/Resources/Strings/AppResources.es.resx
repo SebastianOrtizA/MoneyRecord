@@ -1362,4 +1362,34 @@ Monto: {2}</value>
   <data name="BudgetNotCounted" xml:space="preserve">
     <value>No se cuentan: {0}</value>
   </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Tipos de cambio</value>
+  </data>
+  <data name="ExchangeRatesDescription" xml:space="preserve">
+    <value>Descarga tasas diarias de frankfurter.dev para convertir otras monedas. Solo se envían códigos de moneda y fechas.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Actualizar ahora</value>
+  </data>
+  <data name="ExchangeRatesUpdated" xml:space="preserve">
+    <value>Actualizado: {0}</value>
+  </data>
+  <data name="ExchangeRatesNever" xml:space="preserve">
+    <value>Aún sin descargar</value>
+  </data>
+  <data name="ExchangeRatesUpdating" xml:space="preserve">
+    <value>Actualizando…</value>
+  </data>
+  <data name="ExchangeRatesUnavailable" xml:space="preserve">
+    <value>Sin tasas para {0}</value>
+  </data>
+  <data name="ExchangeRatesFailed" xml:space="preserve">
+    <value>No se pudieron descargar los tipos de cambio. Revisa tu conexión e inténtalo de nuevo.</value>
+  </data>
+  <data name="AmountInCurrency" xml:space="preserve">
+    <value>Monto en {0}</value>
+  </data>
+  <data name="ConvertedAmountHint" xml:space="preserve">
+    <value>Opcional: cuánto costó en {0}, como lo muestra tu extracto. Déjalo vacío para usar la tasa descargada.</value>
+  </data>
 </root>

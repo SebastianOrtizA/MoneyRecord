@@ -1364,4 +1364,34 @@ Amount: {2}</value>
   <data name="BudgetNotCounted" xml:space="preserve">
     <value>Not counted: {0}</value>
   </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Exchange rates</value>
+  </data>
+  <data name="ExchangeRatesDescription" xml:space="preserve">
+    <value>Download daily rates from frankfurter.dev to convert other currencies. Only currency codes and dates are sent.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="ExchangeRatesUpdated" xml:space="preserve">
+    <value>Updated {0}</value>
+  </data>
+  <data name="ExchangeRatesNever" xml:space="preserve">
+    <value>Not downloaded yet</value>
+  </data>
+  <data name="ExchangeRatesUpdating" xml:space="preserve">
+    <value>Updating…</value>
+  </data>
+  <data name="ExchangeRatesUnavailable" xml:space="preserve">
+    <value>No rates for {0}</value>
+  </data>
+  <data name="ExchangeRatesFailed" xml:space="preserve">
+    <value>Couldn't download the exchange rates. Check your connection and try again.</value>
+  </data>
+  <data name="AmountInCurrency" xml:space="preserve">
+    <value>Amount in {0}</value>
+  </data>
+  <data name="ConvertedAmountHint" xml:space="preserve">
+    <value>Optional: what it cost in {0}, as your statement shows it. Leave it empty to use the downloaded rate.</value>
+  </data>
 </root>

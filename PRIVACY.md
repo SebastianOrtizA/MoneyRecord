@@ -29,6 +29,12 @@ A report doesn't include your amounts, descriptions or other records, screenshot
 ID, and the Sentry project doesn't store IP addresses. Reports are sent over an encrypted connection (HTTPS), used only
 to find and fix bugs, never sold or shared, and deleted by Sentry when its retention period ends.
 
+## Exchange rates (optional, off by default)
+When you turn on **Settings → Exchange rates**, the app downloads daily exchange rates from
+[Frankfurter](https://frankfurter.dev) (once a day, and when you tap **Update now**). A request contains only
+currency codes and dates (for example USD, COP and a date range), never your amounts, descriptions or accounts. Like
+any web request, it reveals your IP address to that server. The rates are stored on the device.
+
 ## Logs
 The app writes technical logs (errors, app version, Android version) to its private storage, keeps them for 7 days at
 most, and doesn't log your amounts or descriptions. They leave the device only when you use **Settings → Share logs**.
@@ -36,7 +42,7 @@ most, and doesn't log your amounts or descriptions. They leave the device only w
 ## Permissions
 - **Camera:** only when you take a photo of a receipt.
 - **Storage (Android 12 and older):** needed by the camera capture on those versions.
-- **Internet:** used only for crash reports, when you have turned them on.
+- **Internet:** used only for crash reports and exchange rates, when you have turned them on.
 - **Notifications (Android 13 and newer):** asked when you turn reminders on, to remind you of bills and budgets.
   Reminders are created on the device; nothing is sent anywhere.
 - **Biometrics / screen lock:** used only when you turn the app lock on. Android checks your fingerprint, face or
@@ -85,6 +91,12 @@ usuario ni ID del dispositivo, y el proyecto de Sentry no guarda direcciones IP.
 cifrada (HTTPS), se usan solo para encontrar y corregir errores, nunca se venden ni se comparten, y Sentry los borra al
 terminar su periodo de conservación.
 
+## Tipos de cambio (opcionales, desactivados por defecto)
+Cuando activas **Configuración → Tipos de cambio**, la app descarga tipos de cambio diarios de
+[Frankfurter](https://frankfurter.dev) (una vez al día, y cuando tocas **Actualizar ahora**). Una solicitud contiene
+solo códigos de moneda y fechas (por ejemplo USD, COP y un rango de fechas), nunca tus importes, descripciones ni
+cuentas. Como cualquier solicitud web, revela tu dirección IP a ese servidor. Las tasas se guardan en el dispositivo.
+
 ## Registros
 La app escribe registros técnicos (errores, versión de la app, versión de Android) en su almacenamiento privado, los
 guarda 7 días como máximo y no registra tus importes ni descripciones. Solo salen del dispositivo cuando usas
@@ -93,7 +105,7 @@ guarda 7 días como máximo y no registra tus importes ni descripciones. Solo sa
 ## Permisos
 - **Cámara:** solo cuando tomas la foto de un recibo.
 - **Almacenamiento (Android 12 y anteriores):** lo necesita la captura con la cámara en esas versiones.
-- **Internet:** se usa solo para los informes de errores, cuando los has activado.
+- **Internet:** se usa solo para los informes de errores y los tipos de cambio, cuando los has activado.
 - **Notificaciones (Android 13 y posteriores):** se piden cuando activas los recordatorios, para avisarte de pagos y
   presupuestos. Los recordatorios se crean en el dispositivo; no se envía nada.
 - **Biometría / bloqueo de pantalla:** solo cuando activas el bloqueo de la app. Android comprueba tu huella, rostro o

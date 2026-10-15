@@ -98,7 +98,7 @@ and Windows are maintained too. All data stays on the device.
 The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
 
 - **Offline:** your data never leaves the device unless you export or share a backup yourself. The internet permission
-  is there only for opt-in crash reports (below).
+  is there only for opt-in crash reports and exchange rates (below).
 - **No accounts, ads, analytics or tracking.**
 - **Crash reports (opt-in, off by default):** after a week of use the app asks once whether it may send crash reports
   to the developer through [Sentry](https://sentry.io), and **Settings → Send crash reports** changes the answer.
@@ -108,6 +108,8 @@ The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
   on **Prevent Storing of IP Addresses** being on in the project's Security & Privacy settings; turn it on again if
   the project is ever recreated).
   Only official builds can send reports; builds from source have no Sentry address and never ask.
+- **Exchange rates (opt-in, off by default):** **Settings → Exchange rates** downloads daily rates from
+  [Frankfurter](https://frankfurter.dev); a request holds only currency codes and dates, never your amounts.
 - **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
   is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,
   which need no permission. Notifications (Android 13 and newer), only when you turn reminders on. Biometrics, only

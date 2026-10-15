@@ -63,7 +63,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var food = await AddCategoryAsync("Food");
         var bank = await AddAccountAsync("Bank");
         var cash = (await _accountRepository.GetDefaultAsync())!;
-        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, CategoryId = food.Id, AccountId = bank.Id, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
+        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, ConvertedAmount = 3.1m, ConvertedCurrencyCode = "EUR", CategoryId = food.Id, AccountId = bank.Id, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
         await Db.InsertAsync(new Transfer { Amount = 50m, DestinationAmount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
         await Db.InsertAsync(new Budget { CategoryId = food.Id, LimitAmount = 300m });
         await Db.InsertAsync(new RecurringTransaction { Description = "Rent", Amount = 500m, CategoryId = food.Id, AccountId = bank.Id });
@@ -83,6 +83,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         result.RecordCount.Should().Be(before.Count);
         var lunch = await Db.Table<Transaction>().FirstAsync();
         lunch.ReceiptPhotoPath.Should().Be(Path.Combine(Receipts, "receipt_1.jpg"));
+        (lunch.ConvertedAmount, lunch.ConvertedCurrencyCode).Should().Be((3.1m, "EUR"));
         File.ReadAllText(lunch.ReceiptPhotoPath!).Should().Be("photo-1");
         Directory.GetFiles(Receipts).Select(Path.GetFileName).Should().Equal("receipt_1.jpg");
         File.Exists(result.SnapshotPath).Should().BeTrue();

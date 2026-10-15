@@ -43,6 +43,8 @@ namespace MoneyRecord.Platforms.Android
             try
             {
                 services.GetRequiredService<IReminderService>().RunDailyAsync().GetAwaiter().GetResult();
+                // Opt-in and best-effort (logs its own failures): a missing connection never fails the reminders
+                services.GetRequiredService<IExchangeRateService>().UpdateIfDueAsync().GetAwaiter().GetResult();
                 return Result.InvokeSuccess();
             }
             catch (Exception ex)

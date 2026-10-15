@@ -30,6 +30,18 @@ namespace MoneyRecord.Services.Repositories
                 .GroupBy(r => r.CategoryId)
                 .ToDictionary(g => g.Key, g => CurrencyAmount.Totals(g.Select(r => r.ToAmount()), baseCurrencyCode));
 
+        public async Task<Dictionary<string, DateTime>> GetFirstDatesByCurrencyAsync(string baseCurrencyCode)
+        {
+            var code = baseCurrencyCode.ToUpperInvariant();
+            var rows = await (await ConnectionAsync()).QueryAsync<CurrencyFirstDate>(
+                "SELECT COALESCE(NULLIF(a.CurrencyCode, ''), ?) AS CurrencyCode, MIN(t.Date) AS FirstTicks " +
+                "FROM \"Transaction\" t LEFT JOIN \"Account\" a ON a.Id = t.AccountId " +
+                "GROUP BY COALESCE(NULLIF(a.CurrencyCode, ''), ?)", code, code);
+            return rows
+                .GroupBy(r => r.CurrencyCode.ToUpperInvariant())
+                .ToDictionary(g => g.Key, g => new DateTime(g.Min(r => r.FirstTicks)));
+        }
+
         public async Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type) =>
             await (await ConnectionAsync()).QueryAsync<AccountTotal>(
                 "SELECT AccountId, SUM(ABS(AmountCents)) AS Cents, MAX(Date) AS LastDateTicks FROM \"Transaction\" " +
@@ -41,6 +53,13 @@ namespace MoneyRecord.Services.Repositories
         {
             var code = baseCurrencyCode.ToUpperInvariant();
             return await (await ConnectionAsync()).QueryAsync<CategoryCurrencyTotal>(ByCurrencySql, code, type, startDate, endDate, code);
+        }
+
+        private sealed class CurrencyFirstDate
+        {
+            public string CurrencyCode { get; set; } = string.Empty;
+
+            public long FirstTicks { get; set; }
         }
 
         private sealed class CategoryCurrencyTotal

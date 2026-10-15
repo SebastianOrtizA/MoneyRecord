@@ -3605,5 +3605,95 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("BudgetNotCounted", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exchange rates.
+        /// </summary>
+        public static string ExchangeRates {
+            get {
+                return ResourceManager.GetString("ExchangeRates", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Download daily rates from frankfurter.dev to convert other c [rest of string was truncated].
+        /// </summary>
+        public static string ExchangeRatesDescription {
+            get {
+                return ResourceManager.GetString("ExchangeRatesDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Update now.
+        /// </summary>
+        public static string UpdateNow {
+            get {
+                return ResourceManager.GetString("UpdateNow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Updated {0}.
+        /// </summary>
+        public static string ExchangeRatesUpdated {
+            get {
+                return ResourceManager.GetString("ExchangeRatesUpdated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not downloaded yet.
+        /// </summary>
+        public static string ExchangeRatesNever {
+            get {
+                return ResourceManager.GetString("ExchangeRatesNever", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Updating….
+        /// </summary>
+        public static string ExchangeRatesUpdating {
+            get {
+                return ResourceManager.GetString("ExchangeRatesUpdating", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No rates for {0}.
+        /// </summary>
+        public static string ExchangeRatesUnavailable {
+            get {
+                return ResourceManager.GetString("ExchangeRatesUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't download the exchange rates. Check your connection  [rest of string was truncated].
+        /// </summary>
+        public static string ExchangeRatesFailed {
+            get {
+                return ResourceManager.GetString("ExchangeRatesFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Amount in {0}.
+        /// </summary>
+        public static string AmountInCurrency {
+            get {
+                return ResourceManager.GetString("AmountInCurrency", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Optional: what it cost in {0}, as your statement shows it. L [rest of string was truncated].
+        /// </summary>
+        public static string ConvertedAmountHint {
+            get {
+                return ResourceManager.GetString("ConvertedAmountHint", resourceCulture);
+            }
+        }
     }
 }
