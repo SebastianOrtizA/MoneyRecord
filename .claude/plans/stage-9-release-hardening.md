@@ -107,6 +107,8 @@ Public releases users can install and update, with enough logging to debug field
   CI flake on the review push: a Language-collection test switched `AppResources.Culture` to Spanish while
   `TransactionEnrichmentServiceTests` / `SetupServiceTests` ran, so the test assembly now runs sequentially
   (`CollectionBehavior(DisableTestParallelization = true)`, about 5 s).
+  End to end (2026-10-15): the PR's CI APK (real DSN, release key) on the emulator showed the switch; with it on and
+  the app restarted, restoring a broken zip ("Failed to restore backup") reached the owner's Sentry project.
 
 ### 9.5 Tests and CI
 - CI test job on `ubuntu-latest` once Stage 7.1 lands (Core-only tests).
