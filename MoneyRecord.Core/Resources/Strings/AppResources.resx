@@ -1274,4 +1274,46 @@ Amount: {2}</value>
   <data name="OpenSystemSettings" xml:space="preserve">
     <value>Open settings</value>
   </data>
+  <data name="AppLock" xml:space="preserve">
+    <value>App lock</value>
+  </data>
+  <data name="AppLockDescription" xml:space="preserve">
+    <value>Ask for your fingerprint, face or phone screen lock to open MoneyRecord</value>
+  </data>
+  <data name="LockAfter" xml:space="preserve">
+    <value>Lock after</value>
+  </data>
+  <data name="MinutesOne" xml:space="preserve">
+    <value>{0} minute</value>
+  </data>
+  <data name="MinutesOther" xml:space="preserve">
+    <value>{0} minutes</value>
+  </data>
+  <data name="OneHour" xml:space="preserve">
+    <value>1 hour</value>
+  </data>
+  <data name="AppLocked" xml:space="preserve">
+    <value>MoneyRecord is locked</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Unlock</value>
+  </data>
+  <data name="UnlockSubtitle" xml:space="preserve">
+    <value>Use your fingerprint, face or phone screen lock</value>
+  </data>
+  <data name="TurnOnAppLock" xml:space="preserve">
+    <value>Turn on the app lock</value>
+  </data>
+  <data name="NoScreenLockTitle" xml:space="preserve">
+    <value>No screen lock</value>
+  </data>
+  <data name="NoScreenLockMessage" xml:space="preserve">
+    <value>Set a screen lock (PIN, pattern, password or fingerprint) on your phone first, then turn on the app lock.</value>
+  </data>
+  <data name="HideBalances" xml:space="preserve">
+    <value>Hide balances</value>
+  </data>
+  <data name="ShowBalances" xml:space="preserve">
+    <value>Show balances</value>
+  </data>
 </root>

@@ -1272,4 +1272,46 @@ Monto: {2}</value>
   <data name="OpenSystemSettings" xml:space="preserve">
     <value>Abrir ajustes</value>
   </data>
+  <data name="AppLock" xml:space="preserve">
+    <value>Bloqueo de la app</value>
+  </data>
+  <data name="AppLockDescription" xml:space="preserve">
+    <value>Pide tu huella, rostro o el bloqueo de pantalla del teléfono para abrir MoneyRecord</value>
+  </data>
+  <data name="LockAfter" xml:space="preserve">
+    <value>Bloquear tras</value>
+  </data>
+  <data name="MinutesOne" xml:space="preserve">
+    <value>{0} minuto</value>
+  </data>
+  <data name="MinutesOther" xml:space="preserve">
+    <value>{0} minutos</value>
+  </data>
+  <data name="OneHour" xml:space="preserve">
+    <value>1 hora</value>
+  </data>
+  <data name="AppLocked" xml:space="preserve">
+    <value>MoneyRecord está bloqueado</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Desbloquear</value>
+  </data>
+  <data name="UnlockSubtitle" xml:space="preserve">
+    <value>Usa tu huella, rostro o el bloqueo de pantalla del teléfono</value>
+  </data>
+  <data name="TurnOnAppLock" xml:space="preserve">
+    <value>Activar el bloqueo de la app</value>
+  </data>
+  <data name="NoScreenLockTitle" xml:space="preserve">
+    <value>Sin bloqueo de pantalla</value>
+  </data>
+  <data name="NoScreenLockMessage" xml:space="preserve">
+    <value>Primero configura un bloqueo de pantalla (PIN, patrón, contraseña o huella) en tu teléfono y luego activa el bloqueo de la app.</value>
+  </data>
+  <data name="HideBalances" xml:space="preserve">
+    <value>Ocultar saldos</value>
+  </data>
+  <data name="ShowBalances" xml:space="preserve">
+    <value>Mostrar saldos</value>
+  </data>
 </root>

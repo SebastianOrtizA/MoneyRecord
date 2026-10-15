@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1a done; 10.1b in review)
+**Status**: In progress (10.1 done; 10.2a in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -47,6 +47,19 @@ Close the gap with competing finance apps. Each section can ship on its own.
 - Encrypt the DB with SQLCipher (`SQLitePCLRaw.bundle_e_sqlcipher`); key in Android Keystore via `SecureStorage`.
   Migration: export → re-create encrypted DB → import; keep a pre-migration backup.
 - Hide balances toggle (privacy mode) on Home.
+- Split by agreement (2026-10-15): **10.2a** = app lock + hide balances; **10.2b** = SQLCipher (options on the
+  package and the Android backup trade-off first). The user chose the phone's own lock (BiometricPrompt with
+  fingerprint / face / screen lock) over an app PIN.
+- 10.2a done as: Core `AppLock` (locks at start and after 1 / 5 / 15 / 60 minutes away; never without a phone lock, so
+  removing the screen lock can't lock the user out), `PrivacySettings` (lock off by default, 1 minute, hide balances),
+  `IDeviceLock`, `LockDelayOption`. Android `AndroidDeviceLock` (`Xamarin.AndroidX.Biometric` 1.1.0.30, the newest
+  without Lifecycle NU1608; BIOMETRIC_WEAK | DEVICE_CREDENTIAL; recent apps screenshot off on Android 13+), modal
+  `LockPage` (back leaves the app: a modal page gets back before the Shell), checked on `Window.Activated` (Resumed
+  comes before the activity is in front and cancels the prompt). Settings → App lock (asks the phone's lock once to
+  turn it on; "No screen lock" alert). Home eye toggle masks the balance card and the period totals.
+  **Deviation:** no Oscore.Maui.Biometric (AndroidX Biometric directly, like WorkManager in 10.1b); no "immediately"
+  delay (a receipt photo, file pick or share leaves the app for a moment). Recent / Upcoming / budget amounts on Home
+  stay visible (the toggle hides balances and totals).
 
 ### 10.3 Multi-currency done properly (P2)
 - Base currency (from Stage 6.5) + exchange rates from Frankfurter API (MIT, ECB rates, no key, history since 1999).

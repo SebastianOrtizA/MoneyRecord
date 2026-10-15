@@ -93,6 +93,15 @@ namespace MoneyRecord
             builder.Services.AddSingleton<INotificationService, NoNotificationService>();
 #endif
 
+            // App lock (the phone's own lock) and hidden balances
+            builder.Services.AddSingleton<IPrivacySettings, PrivacySettings>();
+            builder.Services.AddSingleton<AppLock>();
+#if ANDROID
+            builder.Services.AddSingleton<IDeviceLock, Platforms.Android.AndroidDeviceLock>();
+#else
+            builder.Services.AddSingleton<IDeviceLock, NoDeviceLock>();
+#endif
+
             // Register ViewModels
             // The one period every tab shows
             builder.Services.AddSingleton<PeriodViewModel>();
@@ -135,6 +144,8 @@ namespace MoneyRecord
             builder.Services.AddTransient<LicensePage>();
             // App creates it only on a new install
             builder.Services.AddTransient<Func<SetupPage>>(services => () => services.GetRequiredService<SetupPage>());
+            builder.Services.AddTransient<LockPage>();
+            builder.Services.AddTransient<Func<LockPage>>(services => () => services.GetRequiredService<LockPage>());
             builder.Services.AddTransient<TrendsReportPage>();
             builder.Services.AddTransient<CashFlowReportPage>();
             builder.Services.AddTransient<NetWorthReportPage>();

@@ -53,6 +53,11 @@ namespace MoneyRecord
         /// </summary>
         protected override bool OnBackButtonPressed()
         {
+            // Safety net only: on Android the modal lock screen gets back first and leaves the app itself
+            // (LockPage.OnBackButtonPressed). Should back ever reach the Shell, it must not open the app behind the lock
+            if (Navigation.ModalStack.LastOrDefault() is LockPage)
+                return false;
+
             if (CurrentPage is IOverlayHost host && host.TryCloseOverlay())
                 return true;
 

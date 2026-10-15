@@ -39,6 +39,24 @@
                                FontSize="15"
                                TextColor="#FFFFFFCC"
                                VerticalOptions="Center"/>
+                        <!-- Privacy mode: hides the balances and the period totals until tapped again -->
+                        <Label Text="&#xF06D0;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="20"
+                               Padding="8,4"
+                               TextColor="#FFFFFFCC"
+                               VerticalOptions="Center"
+                               SemanticProperties.Description="{ext:Localize HideBalances}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleHideBalancesCommand}"/>
+                            </Label.GestureRecognizers>
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                    <Setter Property="Text" Value="&#xF06D1;"/>
+                                    <Setter Property="SemanticProperties.Description" Value="{ext:Localize ShowBalances}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </HorizontalStackLayout>
                     <Label Text="{Binding PrimaryBalance.Text}"
                            FontSize="36"
@@ -46,6 +64,11 @@
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"
                            TextColor="White">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenAccountsCommand}" CommandParameter="{Binding PrimaryBalance}"/>
                         </Label.GestureRecognizers>
@@ -61,6 +84,13 @@
                                        FontAttributes="Bold"
                                        HorizontalOptions="Center"
                                        TextColor="#FFFFFFDD">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label"
+                                                     Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=HideBalances}"
+                                                     Value="True">
+                                            <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                        </DataTrigger>
+                                    </Label.Triggers>
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=OpenAccountsCommand}"
                                                               CommandParameter="{Binding .}"/>
@@ -101,7 +131,13 @@
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}"/>
+                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                    <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -126,7 +162,13 @@
                                FontSize="16"
                                FontAttributes="Bold"
                                HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFEBEE}"/>
+                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFEBEE}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                    <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -170,6 +212,9 @@
                                HorizontalOptions="Center"
                                TextColor="{AppThemeBinding Light=#1B5E20, Dark=#E8F5E9}">
                             <Label.Triggers>
+                                <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                    <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                </DataTrigger>
                                 <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
                                     <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
                                 </DataTrigger>

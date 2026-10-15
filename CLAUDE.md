@@ -49,7 +49,7 @@ crashes at runtime (XAML is inflated at runtime there).
   LedgerEntry, TransactionGroup, TransactionFilter/FilterOption, CategoryAmount/CategoryReport (report shares + chart
   palette slot, donut slices), PeriodDelta ("vs previous period"), BudgetProgress/BudgetLevel, TypeFilterOption,
   Currency, DefaultCategory (the seed categories by resource key; also offered by the setup), LanguageOption /
-  ThemeOption / BillReminderOption (picker items, named in the current language), AppNotification, UpcomingEntry (a scheduled recurring occurrence:
+  ThemeOption / BillReminderOption / LockDelayOption (picker items, named in the current language), AppNotification, UpcomingEntry (a scheduled recurring occurrence:
   Home card + Recurring page), ThirdPartyComponent (About page licence list; a test
   checks it covers every package reference))
 - `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
@@ -68,7 +68,9 @@ crashes at runtime (XAML is inflated at runtime there).
   `IDialogService`, exception to `ILogger`; never show `ex.Message`),
   NavigationHistory (back-button stack; `//Route` = root), TransactionsDrillDown (a report asks Transactions to open
   filtered; taken once), ReminderService (daily job: bill reminders, recurring processing, budget alerts; the one-time
-  offer) + ReminderSettings + `INotificationService`, NotificationLaunch (a tapped notification opens its page)
+  offer) + ReminderSettings + `INotificationService`, NotificationLaunch (a tapped notification opens its page),
+  AppLock (when the app lock locks: start, back after the delay; never without a phone lock) + PrivacySettings +
+  `IDeviceLock`
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
@@ -87,7 +89,8 @@ crashes at runtime (XAML is inflated at runtime there).
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab. `AboutPage` / `LicensePage` show the licences (full texts in
-  `Resources/Raw/Licenses/`). `SetupPage` is the window's page on a new install
+  `Resources/Raw/Licenses/`). `LockPage` is the app lock (modal; App pushes it on start / `Window.Activated`).
+  `SetupPage` is the window's page on a new install
   (swapped for `AppShell` when done) and a pushed route from Settings
 - `Charts/` — ChartPalette (light/dark chart colours, categorical slots), ChartFactory (LiveChartsCore donut / columns /
   lines / axes with one look; per-series tap handlers), ChartTapBehavior (drill-down on a real tap, never on a scroll)
@@ -101,10 +104,11 @@ crashes at runtime (XAML is inflated at runtime there).
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
 - `Services/` — NavigationService, DialogService (alerts/prompts/action sheets on the window's page + toast),
   ThemeService (saved System / Light / Dark → `UserAppTheme`), PreferencesService
-  (MAUI Preferences), NoNotificationService (platforms without reminders). ViewModels use `IDialogService` /
+  (MAUI Preferences), NoNotificationService / NoDeviceLock (platforms without reminders / app lock). ViewModels use `IDialogService` /
   `INavigationService`, never `Shell.Current` or `Toast`
 - `Platforms/Android/` — AndroidNotificationService (channels, `POST_NOTIFICATIONS`), DailyReminderWorker (WorkManager
-  job once a day at ~09:00: `IReminderService.RunDailyAsync`), MainActivity (notification route extra)
+  job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), MainActivity
+  (notification route extra)
 - `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
 
 `MoneyRecord.Tests/` — xUnit tests on plain `net10.0`, referencing Core only (helpers, models, services, migrations

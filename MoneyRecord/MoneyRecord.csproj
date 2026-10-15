@@ -91,9 +91,11 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 	</ItemGroup>
 
-	<!-- Daily background job (reminders, recurring transactions) on Android: WorkManager -->
+	<!-- Android only: the daily background job (WorkManager) and the app lock (Biometric) -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.10.3" />
+		<!-- App lock: the phone's fingerprint / face / screen lock (BiometricPrompt) -->
+		<PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0.30" />
 	</ItemGroup>
 
 	<ItemGroup>

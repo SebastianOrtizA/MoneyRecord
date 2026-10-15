@@ -19,5 +19,8 @@ namespace MoneyRecord.Helpers
 
         public static string RecurringAdded(int count) =>
             string.Format(count == 1 ? AppResources.RecurringAddedOne : AppResources.RecurringAddedOther, count);
+
+        public static string Minutes(int count) =>
+            string.Format(count == 1 ? AppResources.MinutesOne : AppResources.MinutesOther, count);
     }
 }
