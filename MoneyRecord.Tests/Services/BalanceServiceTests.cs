@@ -23,7 +23,7 @@ public sealed class BalanceServiceTests : IAsyncLifetime
 
     private SQLiteAsyncConnection Db { get; set; } = null!;
 
-    private static string Base => MoneyFormatter.ResolveCurrencyCode(null);
+    private static string Base => MoneyFormatter.BaseCurrency;
 
     public async Task InitializeAsync()
     {

@@ -65,9 +65,6 @@ namespace MoneyRecord.Models
 
         /// <summary>True when the two accounts have different currencies (filled-in codes; empty = the base currency).</summary>
         [Ignore]
-        public bool IsCrossCurrency => !string.Equals(
-            MoneyFormatter.ResolveCurrencyCode(CurrencyCode),
-            MoneyFormatter.ResolveCurrencyCode(DestinationCurrencyCode),
-            StringComparison.OrdinalIgnoreCase);
+        public bool IsCrossCurrency => !MoneyFormatter.SameCurrency(CurrencyCode, DestinationCurrencyCode);
     }
 }

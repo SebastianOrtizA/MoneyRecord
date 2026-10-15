@@ -22,8 +22,9 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
 
-        // While the page is shown: a month count change (here or on another report) reloads it
+        // While the page is shown: a month count or report currency change (here or on another report) reloads it
         private IDisposable? _monthsWatch;
+        private IDisposable? _currencyWatch;
 
         [ObservableProperty]
         private bool isLoading;
@@ -65,6 +66,7 @@ namespace MoneyRecord.ViewModels
         public Task InitializeAsync()
         {
             _monthsWatch ??= Period.WatchMonthCount(() => LoadCommand.Execute(null));
+            _currencyWatch ??= Period.WatchCurrency(() => LoadCommand.Execute(null));
             return LoadCommand.ExecuteAsync(null);
         }
 
@@ -73,9 +75,9 @@ namespace MoneyRecord.ViewModels
         {
             _monthsWatch?.Dispose();
             _monthsWatch = null;
+            _currencyWatch?.Dispose();
+            _currencyWatch = null;
         }
-
-        protected static string BaseCurrencyCode => MoneyFormatter.ResolveCurrencyCode(null);
 
         /// <summary>
         /// Every account, after the shared currency chips are updated from them: the report then shows
@@ -84,7 +86,7 @@ namespace MoneyRecord.ViewModels
         protected async Task<List<Account>> LoadAccountsAsync()
         {
             var accounts = await _accountRepository.GetAllAsync();
-            var currencies = ReportCurrencies.InUse(accounts, BaseCurrencyCode);
+            var currencies = ReportCurrencies.InUse(accounts, MoneyFormatter.BaseCurrency);
             await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies));
             return accounts;
         }

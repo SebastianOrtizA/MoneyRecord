@@ -79,10 +79,7 @@ namespace MoneyRecord.Models
         public bool IsTransfer => Kind is LedgerEntryKind.Transfer or LedgerEntryKind.TransferOut or LedgerEntryKind.TransferIn;
 
         /// <summary>A transfer between accounts of different currencies.</summary>
-        public bool IsCrossCurrency => IsTransfer && !string.Equals(
-            MoneyFormatter.ResolveCurrencyCode(CurrencyCode),
-            MoneyFormatter.ResolveCurrencyCode(CounterpartCurrencyCode),
-            StringComparison.OrdinalIgnoreCase);
+        public bool IsCrossCurrency => IsTransfer && !MoneyFormatter.SameCurrency(CurrencyCode, CounterpartCurrencyCode);
 
         /// <summary>
         /// The signed amount in the entry's currency; a whole cross-currency transfer also shows what arrived

@@ -178,12 +178,12 @@ namespace MoneyRecord.ViewModels
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var balanceLines = CurrencyBalance.DisplayLines(
-                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.ResolveCurrencyCode(null)));
+                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.BaseCurrency));
                 PrimaryBalance = balanceLines[0];
                 OtherBalances = balanceLines.Skip(1).ToList();
 
                 // A new record even when the values didn't change: the base currency may have (Settings)
-                var totals = PeriodTotals.Build(await incomesTask, await expensesTask, MoneyFormatter.ResolveCurrencyCode(null));
+                var totals = PeriodTotals.Build(await incomesTask, await expensesTask, MoneyFormatter.BaseCurrency);
                 BaseTotals = totals[0];
                 OtherTotals = totals.Skip(1).ToList();
 

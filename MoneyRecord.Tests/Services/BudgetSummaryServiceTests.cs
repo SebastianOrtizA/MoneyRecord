@@ -14,7 +14,7 @@ public class BudgetSummaryServiceTests
     private readonly ICategoryRepository _categories = Substitute.For<ICategoryRepository>();
     private readonly IBalanceService _balance = Substitute.For<IBalanceService>();
     private readonly BudgetSummaryService _sut;
-    private static string Base => MoneyFormatter.ResolveCurrencyCode(null);
+    private static string Base => MoneyFormatter.BaseCurrency;
 
     public BudgetSummaryServiceTests()
     {

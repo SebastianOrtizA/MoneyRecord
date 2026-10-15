@@ -60,7 +60,7 @@ public sealed class ReminderServiceTests : LanguageTestBase
 
     private void Spent(decimal food) =>
         _balances.GetExpensesByCategoryAsync(Arg.Any<DateTime>(), Arg.Any<DateTime>())
-            .Returns(new Dictionary<int, List<CurrencyAmount>> { [7] = [new(MoneyFormatter.ResolveCurrencyCode(null), food)] });
+            .Returns(new Dictionary<int, List<CurrencyAmount>> { [7] = [new(MoneyFormatter.BaseCurrency, food)] });
 
     [Fact]
     public async Task Bills_due_within_the_chosen_days_are_reminded_once()

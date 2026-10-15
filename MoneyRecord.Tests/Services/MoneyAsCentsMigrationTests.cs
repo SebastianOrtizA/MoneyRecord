@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Repositories;
 using MoneyRecord.Services.Repositories.Migrations;
@@ -127,7 +128,7 @@ public sealed class MoneyAsCentsMigrationTests : IAsyncLifetime
 
         var old = await _db.Table<Account>().FirstAsync();
         old.CurrencyCode.Should().NotBeNullOrEmpty()
-            .And.Be(MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null));
+            .And.Be(MoneyFormatter.BaseCurrency);
     }
 
     [Fact]

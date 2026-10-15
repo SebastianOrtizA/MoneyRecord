@@ -49,7 +49,7 @@ namespace MoneyRecord.ViewModels
         public bool HasCurrencyChoices => CurrencyChoices.Count > 1;
 
         /// <summary>The currency every report shows (an ISO code).</summary>
-        public string ReportCurrency => _reportCurrency ?? MoneyFormatter.ResolveCurrencyCode(null);
+        public string ReportCurrency => _reportCurrency ?? MoneyFormatter.BaseCurrency;
 
         public PeriodViewModel()
         {
@@ -63,6 +63,9 @@ namespace MoneyRecord.ViewModels
 
         /// <summary><see cref="MonthCount"/> changed.</summary>
         public event Action? MonthCountChanged;
+
+        /// <summary><see cref="ReportCurrency"/> changed (a chip was tapped); only the reports follow it.</summary>
+        public event Action? CurrencyChanged;
 
         /// <summary>
         /// Runs <paramref name="onChanged"/> on every period change until the result is disposed: a page listens only
@@ -79,6 +82,13 @@ namespace MoneyRecord.ViewModels
         {
             MonthCountChanged += onChanged;
             return new Subscription(() => MonthCountChanged -= onChanged);
+        }
+
+        /// <summary>Like <see cref="WatchChanges"/>, for <see cref="ReportCurrency"/>.</summary>
+        public IDisposable WatchCurrency(Action onChanged)
+        {
+            CurrencyChanged += onChanged;
+            return new Subscription(() => CurrencyChanged -= onChanged);
         }
 
         private sealed class Subscription(Action unsubscribe) : IDisposable
@@ -106,17 +116,16 @@ namespace MoneyRecord.ViewModels
                 CurrencyChoices = choices;
         }
 
-        /// <summary>A chip was tapped: every report shows this currency, and the one on screen reloads.</summary>
+        /// <summary>A chip was tapped: every report shows this currency, and the one on screen (watching) reloads.</summary>
         [RelayCommand]
         private void SelectCurrency(string? code)
         {
             if (string.IsNullOrEmpty(code) || code == ReportCurrency)
                 return;
 
-            _reportCurrency = code == MoneyFormatter.ResolveCurrencyCode(null) ? null : code;
+            _reportCurrency = code == MoneyFormatter.BaseCurrency ? null : code;
             CurrencyChoices = CurrencyChoices.Select(c => c with { IsSelected = c.Code == code }).ToList();
-            RaiseChanged();
-            MonthCountChanged?.Invoke();
+            CurrencyChanged?.Invoke();
         }
 
         public (DateTime Start, DateTime End) Range =>

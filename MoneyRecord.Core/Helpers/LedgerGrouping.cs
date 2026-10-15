@@ -37,7 +37,7 @@ namespace MoneyRecord.Helpers
         {
             // One total per currency (a transfer counts in its source currency)
             var totals = CurrencyAmount.Totals(items.Select(e => new CurrencyAmount(e.CurrencyCode, e.Amount)),
-                MoneyFormatter.ResolveCurrencyCode(null));
+                MoneyFormatter.BaseCurrency);
 
             return new TransactionGroup(name, items[0].CategoryIconCode, items[0].Type, totals, items);
         }

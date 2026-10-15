@@ -275,7 +275,7 @@ namespace MoneyRecord.ViewModels
                     var (startDate, endDate) = DateRangeHelper.GetBudgetWindow(budget.Period, DateTime.Now);
                     // A budget is in the base currency: only base-currency expenses count until rates exist
                     spent = CurrencyAmount.In(await _balanceService.GetCategoryExpensesAsync(category.Id, startDate, endDate),
-                        MoneyFormatter.ResolveCurrencyCode(null));
+                        MoneyFormatter.BaseCurrency);
                 }
 
                 // Another category was picked meanwhile: its own check shows its warning

@@ -51,7 +51,7 @@ namespace MoneyRecord.ViewModels
             var code = Period.ReportCurrency;
             var accounts = await accountsTask;
             var counted = accounts
-                .Where(a => MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode, BaseCurrencyCode) == code)
+                .Where(a => MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode, MoneyFormatter.BaseCurrency) == code)
                 .Select(a => a.Id)
                 .ToHashSet();
             var currentTotal = (await balancesTask).Where(b => counted.Contains(b.AccountId)).Sum(b => b.CurrentBalance);

@@ -26,8 +26,9 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
 
-        // While the page is shown: a period change (here or on another tab) reloads it
+        // While the page is shown: a period or report currency change (here or on another tab) reloads it
         private IDisposable? _periodWatch;
+        private IDisposable? _currencyWatch;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsIncome), nameof(Texts))]
@@ -81,6 +82,7 @@ namespace MoneyRecord.ViewModels
         public Task InitializeAsync()
         {
             _periodWatch ??= Period.WatchChanges(() => LoadReportDataCommand.Execute(null));
+            _currencyWatch ??= Period.WatchCurrency(() => LoadReportDataCommand.Execute(null));
             return LoadReportDataCommand.ExecuteAsync(null);
         }
 
@@ -89,6 +91,8 @@ namespace MoneyRecord.ViewModels
         {
             _periodWatch?.Dispose();
             _periodWatch = null;
+            _currencyWatch?.Dispose();
+            _currencyWatch = null;
         }
 
         /// <summary>Each run cancels the one in progress, so an older period's results never overwrite a newer one's.</summary>
@@ -103,18 +107,18 @@ namespace MoneyRecord.ViewModels
                 var (previousStart, previousEnd) = Period.PreviousRange;
                 var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 var categoriesTask = _categoryRepository.GetByTypeAsync(Type);
-                var baseCode = MoneyFormatter.ResolveCurrencyCode(null);
+                var baseCode = MoneyFormatter.BaseCurrency;
                 var previousTask = _transactionRepository.SumByCurrencyAsync(TransactionType, previousStart, previousEnd, baseCode);
                 var accountsTask = _accountRepository.GetAllAsync();
                 await Task.WhenAll(transactionsTask, categoriesTask, previousTask, accountsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // One currency at a time: the chosen one (the chips list the currencies the accounts use)
-                var currencies = ReportCurrencies.InUse(await accountsTask, baseCode);
+                var accounts = await accountsTask;
+                var currencies = ReportCurrencies.InUse(accounts, baseCode);
                 await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies));
                 var code = Period.ReportCurrency;
-                var transactions = (await transactionsTask)
-                    .Where(t => MoneyFormatter.ResolveCurrencyCode(t.CurrencyCode, baseCode) == code);
+                var transactions = ReportCurrencies.Only(await transactionsTask, accounts, code, baseCode);
 
                 var report = CategoryReportBuilder.Build(transactions, Type, (await categoriesTask).Select(c => c.Id), code);
                 TotalText = MoneyFormatter.Format(report.Total, code);

@@ -110,7 +110,7 @@ namespace MoneyRecord.Services
                         CategoryName = names.GetValueOrDefault(budget.CategoryId, string.Empty),
                         LimitAmount = budget.LimitAmount
                     };
-                    progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? [], MoneyFormatter.ResolveCurrencyCode(null));
+                    progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? [], MoneyFormatter.BaseCurrency);
                     NotifyBudget(budget, start, progress);
                 }
             }

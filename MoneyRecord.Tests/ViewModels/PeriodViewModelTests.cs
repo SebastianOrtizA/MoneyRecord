@@ -1,5 +1,6 @@
 using System.Globalization;
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
@@ -28,28 +29,28 @@ public class PeriodViewModelTests
     }
 
     [Fact]
-    public void A_currency_chip_switches_every_report_and_reloads_the_one_shown()
+    public void A_currency_chip_switches_every_report_and_reloads_only_the_reports()
     {
         var sut = new PeriodViewModel();
-        var baseCode = MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null);
+        var baseCode = MoneyFormatter.BaseCurrency;
         sut.SetCurrencies([baseCode, "ZZA"]);
-        var periodChanges = 0;
-        var monthChanges = 0;
+        var (periodChanges, monthChanges, currencyChanges) = (0, 0, 0);
         using var periodWatch = sut.WatchChanges(() => periodChanges++);
         using var monthWatch = sut.WatchMonthCount(() => monthChanges++);
+        using var currencyWatch = sut.WatchCurrency(() => currencyChanges++);
 
         sut.SelectCurrencyCommand.Execute("ZZA");
 
         sut.ReportCurrency.Should().Be("ZZA");
         sut.CurrencyChoices.Should().ContainSingle(c => c.IsSelected).Which.Code.Should().Be("ZZA");
-        (periodChanges, monthChanges).Should().Be((1, 1));
+        (periodChanges, monthChanges, currencyChanges).Should().Be((0, 0, 1), "Home, Transactions and Budgets don't show it");
     }
 
     [Fact]
     public void One_currency_shows_no_chips_and_a_gone_currency_falls_back_to_the_base()
     {
         var sut = new PeriodViewModel();
-        var baseCode = MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null);
+        var baseCode = MoneyFormatter.BaseCurrency;
         sut.SetCurrencies([baseCode, "ZZA"]);
         sut.SelectCurrencyCommand.Execute("ZZA");
 

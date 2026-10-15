@@ -247,7 +247,7 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.RecurringTransactions, r => r.Id);
 
             // A backup from before account currencies: give its accounts a fixed currency, as migration 3 does
-            M003_AccountCurrencyCodes.FillMissing(conn, MoneyFormatter.ResolveCurrencyCode(null));
+            M003_AccountCurrencyCodes.FillMissing(conn, MoneyFormatter.BaseCurrency);
             // A backup from before destination amounts (v3 and older): what arrived is what left, as migration 4 does
             M004_TransferDestinationAmounts.FillMissing(conn);
             return count;

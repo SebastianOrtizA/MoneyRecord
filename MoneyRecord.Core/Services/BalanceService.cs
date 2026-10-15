@@ -27,18 +27,16 @@ namespace MoneyRecord.Services
             (await GetAllAccountBalancesAsync()).FirstOrDefault(b => b.AccountId == accountId)?.CurrentBalance ?? 0;
 
         public Task<List<CurrencyAmount>> GetTotalIncomesAsync(DateTime startDate, DateTime endDate) =>
-            _transactionRepository.SumByCurrencyAsync(TransactionType.Income, startDate, endDate, BaseCurrencyCode);
+            _transactionRepository.SumByCurrencyAsync(TransactionType.Income, startDate, endDate, MoneyFormatter.BaseCurrency);
 
         public Task<List<CurrencyAmount>> GetTotalExpensesAsync(DateTime startDate, DateTime endDate) =>
-            _transactionRepository.SumByCurrencyAsync(TransactionType.Expense, startDate, endDate, BaseCurrencyCode);
+            _transactionRepository.SumByCurrencyAsync(TransactionType.Expense, startDate, endDate, MoneyFormatter.BaseCurrency);
 
         public async Task<List<CurrencyAmount>> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate) =>
             (await GetExpensesByCategoryAsync(startDate, endDate)).GetValueOrDefault(categoryId) ?? [];
 
         public Task<Dictionary<int, List<CurrencyAmount>>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate) =>
-            _transactionRepository.SumByCategoryAsync(TransactionType.Expense, startDate, endDate, BaseCurrencyCode);
-
-        private static string BaseCurrencyCode => MoneyFormatter.ResolveCurrencyCode(null);
+            _transactionRepository.SumByCategoryAsync(TransactionType.Expense, startDate, endDate, MoneyFormatter.BaseCurrency);
 
         public async Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync()
         {

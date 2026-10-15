@@ -62,17 +62,13 @@ namespace MoneyRecord.Helpers
             (!string.IsNullOrEmpty(currencyCode) ? currencyCode : baseCurrencyCode).ToUpperInvariant();
 
         /// <summary>
-        /// Sums amounts per currency and lists the subtotals ("¥10,000 + $20.00"): amounts in different currencies are
-        /// never added together. One currency gives a single amount.
+        /// The base currency as an ISO code: the setting (<see cref="BaseCurrencyCode"/>), else the device region's.
         /// </summary>
-        public static string FormatTotals(IEnumerable<(decimal Amount, string? CurrencyCode)> amounts)
-        {
-            var totals = amounts
-                .GroupBy(a => ResolveCurrencyCode(a.CurrencyCode))
-                .Select(g => Format(g.Sum(a => a.Amount), g.Key))
-                .ToList();
-            return totals.Count > 0 ? string.Join(" + ", totals) : Format(0);
-        }
+        public static string BaseCurrency => ResolveCurrencyCode(null);
+
+        /// <summary>True when two currency codes name the same currency (empty = the base currency; case ignored).</summary>
+        public static bool SameCurrency(string? currencyCode, string? otherCurrencyCode) =>
+            ResolveCurrencyCode(currencyCode) == ResolveCurrencyCode(otherCurrencyCode);
 
         /// <summary>The ISO currency of each culture's region (null = none), looked up once per culture.</summary>
         private static readonly ConcurrentDictionary<string, string?> RegionCurrencies = new();

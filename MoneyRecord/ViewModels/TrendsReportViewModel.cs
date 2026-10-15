@@ -47,7 +47,7 @@ namespace MoneyRecord.ViewModels
             cancellationToken.ThrowIfCancellationRequested();
 
             var code = Period.ReportCurrency;
-            var transactions = ReportCurrencies.Only(await transactionsTask, await accountsTask, code, BaseCurrencyCode);
+            var transactions = ReportCurrencies.Only(await transactionsTask, await accountsTask, code, MoneyFormatter.BaseCurrency);
             var budgets = await budgetsTask;
             var totals = MonthlyTotalsBuilder.Build(transactions, firstMonth, months);
             var previous = MonthlyTotalsBuilder.Build(transactions, previousFirst, months);
@@ -55,7 +55,7 @@ namespace MoneyRecord.ViewModels
 
             HasData = totals.Any(t => t.Expense > 0);
             // Budgets are in the base currency: no comparison while another currency is shown
-            HasBudgets = budgets.Count > 0 && code == BaseCurrencyCode;
+            HasBudgets = budgets.Count > 0 && code == MoneyFormatter.BaseCurrency;
             var spending = totals.Sum(t => t.Expense);
             HeadlineText = MoneyFormatter.Format(spending, code);
             DeltaText = new PeriodDelta(spending, previous.Sum(t => t.Expense)).Text;

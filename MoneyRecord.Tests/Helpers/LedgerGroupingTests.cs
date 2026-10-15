@@ -44,7 +44,7 @@ public class LedgerGroupingTests
         var group = LedgerGrouping.Group([transfer, transfer with { SourceId = 2 }], GroupingMode.Category).Single();
 
         group.Type.Should().Be(TransactionType.Transfer);
-        group.Totals.Should().Equal(new CurrencyAmount(MoneyFormatter.ResolveCurrencyCode(null), 200m));
+        group.Totals.Should().Equal(new CurrencyAmount(MoneyFormatter.BaseCurrency, 200m));
     }
 
     [Fact]

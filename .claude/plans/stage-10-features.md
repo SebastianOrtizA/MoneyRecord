@@ -112,7 +112,7 @@ Close the gap with competing finance apps. Each section can ship on its own.
   lighter `PeriodSummary` container (`PeriodTotals`; hidden with the balances; review). Transactions groups list one total per currency (`TransactionGroup.Totals`).
   Budgets count base-currency expenses only (`BudgetProgress.SetSpent`; "Not counted: …" on the Budget page card;
   also the add-form warning and the reminder job). Reports: `PeriodViewModel.ReportCurrency` + `CurrencyChips`
-  (hidden with one currency; a currency no account uses falls back to base); `ReportCurrencies.InUse/Only`; chart
+  (hidden with one currency; a currency no account uses falls back to base); `ReportCurrencies.InUse/Only` (the one transaction-currency rule, every report; review); `MoneyFormatter.BaseCurrency` / `SameCurrency` (review; `FormatTotals` removed); chart
   axes and tooltips format in that currency; Trends hides budget vs actual for a non-base currency; Net worth counts
   that currency's accounts.
   **Deviation:** no stored rate column on `Transfer` (it follows from the two amounts). Home's compact budget card

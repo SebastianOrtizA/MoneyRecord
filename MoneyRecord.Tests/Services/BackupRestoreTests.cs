@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Repositories;
@@ -199,7 +200,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         File.Exists(orphan).Should().BeFalse("no restored transaction uses it (it is in the snapshot)");
         var bank = (await _accountRepository.GetAllAsync()).Should().ContainSingle().Which;
         bank.Name.Should().Be("Bank", "the repository cache is refreshed");
-        bank.CurrencyCode.Should().Be(MoneyRecord.Helpers.MoneyFormatter.ResolveCurrencyCode(null),
+        bank.CurrencyCode.Should().Be(MoneyFormatter.BaseCurrency,
             "an account from before currencies gets a fixed one, so changing the base currency can't relabel it");
     }
 

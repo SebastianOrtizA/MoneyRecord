@@ -37,7 +37,7 @@ namespace MoneyRecord.ViewModels
             cancellationToken.ThrowIfCancellationRequested();
 
             var code = Period.ReportCurrency;
-            var transactions = ReportCurrencies.Only(await transactionsTask, await accountsTask, code, BaseCurrencyCode);
+            var transactions = ReportCurrencies.Only(await transactionsTask, await accountsTask, code, MoneyFormatter.BaseCurrency);
 
             var totals = MonthlyTotalsBuilder.Build(transactions, firstMonth, months);
             var previous = MonthlyTotalsBuilder.Build(transactions, previousFirst, months);

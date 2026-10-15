@@ -195,7 +195,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 
 - Budget is **expense-only** (per-category spending limits, not income targets)
 - Transfers are a **separate table** from transactions (linked via TransferId on display)
-- Each account has a **currency**; amounts are shown with `MoneyFormatter.Format(amount, currencyCode)` / `MoneyConverter`
+- Each account has a **currency**; amounts are shown with `MoneyFormatter.Format(amount, currencyCode)` (`MoneyFormatter.BaseCurrency` = the resolved base code, `SameCurrency(a, b)`) / `MoneyConverter`
   / `CurrencyMoneyConverter`. An empty code means the **base currency** (Settings; default = device region currency)
 - Never add different currencies together: totals are per currency (`CurrencyAmount`, SQL `GROUP BY` the account's
   currency; no account = base). Home lists each currency, reports show one at a time (currency chips), budgets count

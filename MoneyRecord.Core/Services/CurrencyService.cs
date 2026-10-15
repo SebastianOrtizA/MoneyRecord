@@ -57,7 +57,7 @@ namespace MoneyRecord.Services
             MoneyFormatter.BaseCurrencyCode = preferences.Get(BaseCurrencyPreferenceKey, string.Empty);
         }
 
-        public string GetBaseCurrencyCode() => MoneyFormatter.ResolveCurrencyCode(null);
+        public string GetBaseCurrencyCode() => MoneyFormatter.BaseCurrency;
 
         public void SetBaseCurrencyCode(string code)
         {
@@ -80,7 +80,7 @@ namespace MoneyRecord.Services
         public static string GetSymbol(string? code)
         {
             if (string.IsNullOrEmpty(code))
-                code = MoneyFormatter.ResolveCurrencyCode(null);
+                code = MoneyFormatter.BaseCurrency;
             return _currencyMap.TryGetValue(code, out var currency) ? currency.Symbol : code;
         }
 
