@@ -83,6 +83,8 @@ and Windows are maintained too. All data stays on the device.
   migrations that rewrite data back up the database first (`moneyrecord.db3.bak-v{n}`).
 
 ### Privacy
+The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
+
 - **Offline:** your data never leaves the device unless you export or share a backup yourself. The internet permission
   is there only for opt-in crash reports (below).
 - **No accounts, ads, analytics or tracking.**
@@ -217,15 +219,8 @@ MoneyRecord.Tests/      xUnit tests (net10.0, Core only): helpers, models, servi
 
 MoneyRecord is licensed under the **GNU Affero General Public License v3.0** (see [LICENSE](LICENSE)).
 
-Third-party components:
-- .NET MAUI, CommunityToolkit.Mvvm, CommunityToolkit.Maui: MIT
-- sqlite-net-pcl: MIT; SQLitePCLRaw: Apache-2.0; SQLite: public domain
-- LiveCharts2: MIT; SkiaSharp / HarfBuzzSharp: MIT (with the Skia, HarfBuzz, FreeType, ICU, … notices they bundle)
-- Material Design Icons: Apache-2.0 (font and icons, Pictogrammers Free License); Open Sans: Apache-2.0
-- Test-only: xUnit (Apache-2.0), NSubstitute (BSD-3-Clause), AwesomeAssertions (Apache-2.0)
-
-The Android app also ships the .NET runtime and .NET for Android (MIT, with their third-party notices), the AndroidX,
-Material Components, Kotlin, Guava and Tink libraries pulled in by MAUI (Apache-2.0), and Glide (BSD-2-Clause, with MIT
-and Apache-2.0 parts). Settings → About lists everything shipped with the full licence texts
-(`MoneyRecord/Resources/Raw/Licenses/`). A test checks that every direct package reference is listed; transitive
-Android dependencies are checked by hand after a MAUI or SkiaSharp update.
+Third-party components shipped in the app, with their licences: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) (the same
+list as Settings → About, which shows the full licence texts from `MoneyRecord/Resources/Raw/Licenses/`). A test keeps
+the file, the About list and the package references in step; transitive Android dependencies are checked by hand
+after a MAUI, SkiaSharp or Sentry update. Test-only packages: xUnit (Apache-2.0), NSubstitute (BSD-3-Clause),
+AwesomeAssertions (Apache-2.0), coverlet (MIT).

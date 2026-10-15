@@ -37,5 +37,12 @@
   (About, Accounts, Budgets) use `Border`. Replace the remaining `Frame`s with `Border` + a shared card style so
   every card looks the same (raised in the 8.9 review).
 
+### 11.6 Small things seen in the store screenshots (9.6)
+- Utilities and Home seed categories share the icon `F0D15` (`DefaultCategory`); give Utilities its own.
+- The category grid cuts long names ("Entretenimient" in Spanish); wrap to two lines or shrink the font.
+- Spanish report tabs read "GASTOS · INGRESO": make it "INGRESOS".
+- README "Features" still describes the pre-Stage-8 app (flyout menu, floating button, report heatmaps); rewrite it
+  from the store description.
+
 ## Done when
 Each item is fixed or consciously dropped with the user.

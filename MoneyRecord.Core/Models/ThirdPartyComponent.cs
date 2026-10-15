@@ -31,7 +31,7 @@ namespace MoneyRecord.Models
                 ["Microsoft.Extensions.Logging.Abstractions", "Microsoft.Extensions.Logging.Debug"]),
             new(".NET for Android", "MIT + bundled notices", ".NET Foundation and Contributors",
                 "https://github.com/dotnet/android", "dotnet-android.txt", []),
-            new("Android libraries (AndroidX, Material Components, Kotlin, Guava, Tink, …)", "Apache-2.0",
+            new("Android libraries (AndroidX, Material Components, Kotlin, Guava, Tink, Gson, …)", "Apache-2.0",
                 "The Android Open Source Project; Google LLC; JetBrains s.r.o. and other contributors",
                 "https://developer.android.com/jetpack/androidx", "Apache-2.0.txt", []),
             new("Glide", "BSD-2-Clause, MIT and Apache-2.0 parts", "Google, Inc.",
