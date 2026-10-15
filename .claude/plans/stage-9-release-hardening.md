@@ -104,6 +104,9 @@ Public releases users can install and update, with enough logging to debug field
   crashes are stored and sent at the next start, when Sentry isn't started without consent. `Answer` removed (the
   `Enabled` setter records the decision), `ShouldAsk` renamed `ShouldAskNow` (its first call starts the week), the DSN
   is read once and passed to `ConfigureCrashReports`.
+  CI flake on the review push: a Language-collection test switched `AppResources.Culture` to Spanish while
+  `TransactionEnrichmentServiceTests` / `SetupServiceTests` ran, so the test assembly now runs sequentially
+  (`CollectionBehavior(DisableTestParallelization = true)`, about 5 s).
 
 ### 9.5 Tests and CI
 - CI test job on `ubuntu-latest` once Stage 7.1 lands (Core-only tests).
