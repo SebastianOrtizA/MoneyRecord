@@ -31,8 +31,7 @@ namespace MoneyRecord.Services
             foreach (var recurring in await _recurringRepo.GetDueAsync(now))
             {
                 // One database transaction per recurrence: its new transactions and its advanced schedule are saved
-                // together, so an interrupted catch-up never creates the same occurrence twice
-                var count = 0;
+                // together, so an interrupted catch-up never creates the same occurrence twice (a rollback rethrows)
                 await _database.RunInTransactionAsync(db =>
                 {
                     while (recurring.NextOccurrence <= now && !HasEnded(recurring))
@@ -46,7 +45,7 @@ namespace MoneyRecord.Services
                             Type = recurring.TransactionType,
                             AccountId = recurring.AccountId
                         });
-                        count++;
+                        created++;
 
                         recurring.LastProcessedDate = recurring.NextOccurrence;
                         recurring.NextOccurrence = RecurrenceCalculator.Next(
@@ -57,7 +56,6 @@ namespace MoneyRecord.Services
                         recurring.IsActive = false;
                     db.Update(recurring);
                 });
-                created += count;
             }
 
             return created;
