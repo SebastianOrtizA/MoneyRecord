@@ -39,12 +39,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hideBalances;
 
+        partial void OnHideBalancesChanged(bool value) => _privacy.HideBalances = value;
+
         [RelayCommand]
-        private void ToggleHideBalances()
-        {
-            HideBalances = !HideBalances;
-            _privacy.HideBalances = HideBalances;
-        }
+        private void ToggleHideBalances() => HideBalances = !HideBalances;
 
         [ObservableProperty]
         private decimal totalIncomes;

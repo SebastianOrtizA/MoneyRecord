@@ -41,6 +41,8 @@ namespace MoneyRecord
                 : new AppShell();
             var window = new Window(page);
             var lockOnStart = _appLock.LockOnStart();
+            // Nothing of the app is drawn until the lock screen covers it (no frame of balances before it)
+            SetContentHidden(window, lockOnStart);
 
             window.Created += (s, e) =>
             {
@@ -54,32 +56,53 @@ namespace MoneyRecord
                     ShowLock(window);
             };
 
-            // The app lock: away for longer than the chosen delay locks it again
-            window.Stopped += (s, e) => _appLock.Backgrounded();
+            // The app lock: away for longer than the chosen delay locks it again. Until coming back decides that, the
+            // app's content stays hidden, so its first frame can't show the balances the lock screen is about to cover
+            window.Stopped += (s, e) =>
+            {
+                _appLock.Backgrounded();
+                if (_privacy.LockEnabled)
+                    SetContentHidden(window, true);
+            };
             // Activated, not Resumed: on Android Resumed comes before the activity is in front, where the phone's lock
             // prompt would be cancelled. Every activation asks; only a return from the background can lock
             window.Activated += (s, e) =>
             {
                 if (_appLock.LockOnResume())
                     ShowLock(window);
+                else
+                    SetContentHidden(window, false);
             };
 
             return window;
         }
 
-        /// <summary>Covers the app with the lock screen (once: a second call while it is up does nothing).</summary>
+        private static void SetContentHidden(Window window, bool hidden)
+        {
+            if (window.Page is { } page)
+                page.Opacity = hidden ? 0 : 1;
+        }
+
+        /// <summary>
+        /// Covers the app with the lock screen (once: a second call while it is up does nothing), then shows the content
+        /// under it again.
+        /// </summary>
         private void ShowLock(Window window) => MainThread.BeginInvokeOnMainThread(async () =>
         {
             try
             {
                 var navigation = window.Page?.Navigation;
-                if (navigation == null || navigation.ModalStack.LastOrDefault() is LockPage)
-                    return;
-                await navigation.PushModalAsync(_createLockPage(), animated: false);
+                if (navigation != null && navigation.ModalStack.LastOrDefault() is not LockPage)
+                    await navigation.PushModalAsync(_createLockPage(), animated: false);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to show the lock screen");
+            }
+            finally
+            {
+                // Also after a failure: a hidden app that never comes back would be worse
+                SetContentHidden(window, false);
             }
         });
 

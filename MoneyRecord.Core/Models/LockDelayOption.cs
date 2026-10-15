@@ -8,7 +8,11 @@ namespace MoneyRecord.Models
     public sealed record LockDelayOption(int Minutes, string Name)
     {
         public static IReadOnlyList<LockDelayOption> All() =>
-            PrivacySettings.LockDelays.Select(minutes =>
-                new LockDelayOption(minutes, minutes == 60 ? AppResources.OneHour : Plurals.Minutes(minutes))).ToList();
+            PrivacySettings.LockDelays.Select(minutes => new LockDelayOption(minutes, minutes switch
+            {
+                // The one whole hour offered
+                60 => AppResources.OneHour,
+                _ => Plurals.Minutes(minutes)
+            })).ToList();
     }
 }
