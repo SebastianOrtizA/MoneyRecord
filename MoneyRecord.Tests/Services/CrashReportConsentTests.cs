@@ -23,39 +23,39 @@ public class CrashReportConsentTests
     {
         var consent = Consent();
 
-        consent.ShouldAsk().Should().BeFalse("the first call starts the week");
+        consent.ShouldAskNow().Should().BeFalse("the first call starts the week");
         _clock.Advance(TimeSpan.FromDays(CrashReportConsent.AskAfterDays) - TimeSpan.FromMinutes(1));
-        consent.ShouldAsk().Should().BeFalse();
+        consent.ShouldAskNow().Should().BeFalse();
         _clock.Advance(TimeSpan.FromMinutes(1));
-        consent.ShouldAsk().Should().BeTrue();
+        consent.ShouldAskNow().Should().BeTrue();
 
-        consent.Answer(false);
+        consent.Enabled = false;
 
-        consent.ShouldAsk().Should().BeFalse();
+        consent.ShouldAskNow().Should().BeFalse();
         consent.Enabled.Should().BeFalse();
     }
 
     [Fact]
     public void Agreeing_enables_reports_and_is_remembered()
     {
-        Consent().Answer(true);
+        Consent().Enabled = true;
 
         var later = Consent();
         later.Enabled.Should().BeTrue();
-        later.ShouldAsk().Should().BeFalse();
+        later.ShouldAskNow().Should().BeFalse();
     }
 
     [Fact]
     public void A_choice_in_Settings_means_the_question_never_comes()
     {
         var consent = Consent();
-        consent.ShouldAsk();
+        consent.ShouldAskNow();
 
         consent.Enabled = true;
         consent.Enabled = false;
         _clock.Advance(TimeSpan.FromDays(30));
 
-        consent.ShouldAsk().Should().BeFalse();
+        consent.ShouldAskNow().Should().BeFalse();
         consent.Enabled.Should().BeFalse();
     }
 
@@ -63,10 +63,10 @@ public class CrashReportConsentTests
     public void A_build_without_a_DSN_never_asks_and_never_sends()
     {
         var consent = Consent(isAvailable: false);
-        consent.ShouldAsk();
+        consent.ShouldAskNow();
         _clock.Advance(TimeSpan.FromDays(30));
 
-        consent.ShouldAsk().Should().BeFalse();
+        consent.ShouldAskNow().Should().BeFalse();
 
         // Even with a choice left over from a build that could send
         _preferences.Set("CrashReports.Enabled", true);

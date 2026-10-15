@@ -72,7 +72,7 @@
 	</ItemGroup>
 
 	<!-- Crash reports (opt-in): CI passes the SENTRY_DSN secret as an environment variable, which MSBuild sees as a
-	     property. Local and fork builds have none, so they never set up Sentry (SentryConfig.Dsn is null). -->
+	     property. Local and fork builds have none, so they never set up Sentry (MauiProgram.SentryDsn() is null). -->
 	<ItemGroup Condition="'$(SENTRY_DSN)' != ''">
 		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
 			<_Parameter1>SentryDsn</_Parameter1>

@@ -100,7 +100,7 @@ namespace MoneyRecord.ViewModels
         /// <summary>Once, a week after first use: may the app send crash reports? (Only builds that can send ask.)</summary>
         private async Task AskCrashReportsOnceAsync()
         {
-            if (_askingCrashReports || !_crashReports.ShouldAsk())
+            if (_askingCrashReports || !_crashReports.ShouldAskNow())
                 return;
 
             _askingCrashReports = true;
@@ -108,7 +108,7 @@ namespace MoneyRecord.ViewModels
             {
                 var agreed = await _dialogService.ConfirmAsync(AppResources.CrashReportsQuestionTitle,
                     AppResources.CrashReportsQuestion, AppResources.CrashReportsAccept, AppResources.CrashReportsDecline);
-                _crashReports.Answer(agreed);
+                _crashReports.Enabled = agreed;
             }
             finally
             {

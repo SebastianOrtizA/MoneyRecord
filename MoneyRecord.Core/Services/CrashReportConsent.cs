@@ -24,7 +24,7 @@ namespace MoneyRecord.Services
             }
         }
 
-        public bool ShouldAsk()
+        public bool ShouldAskNow()
         {
             if (!IsAvailable || preferences.Get(DecidedKey, false))
                 return false;
@@ -38,7 +38,5 @@ namespace MoneyRecord.Services
             }
             return now - firstUse >= TimeSpan.FromDays(AskAfterDays);
         }
-
-        public void Answer(bool enabled) => Enabled = enabled;
     }
 }

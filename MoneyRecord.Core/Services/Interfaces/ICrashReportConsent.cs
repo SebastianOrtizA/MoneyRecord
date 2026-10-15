@@ -9,16 +9,16 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>This build can send reports (CI builds carry the Sentry DSN).</summary>
         bool IsAvailable { get; }
 
-        /// <summary>The user agreed. Turning it off stops sending at once; turning it on starts with the next app start.</summary>
+        /// <summary>
+        /// The user agreed. Setting it (from the one-time question or Settings) also records that the user decided.
+        /// Turning it off stops sending at once; turning it on starts with the next app start.
+        /// </summary>
         bool Enabled { get; set; }
 
         /// <summary>
         /// True once: when reports are available, the user hasn't decided yet, and the app has been in use for
-        /// <see cref="CrashReportConsent.AskAfterDays"/> days. The first call starts that count.
+        /// <see cref="CrashReportConsent.AskAfterDays"/> days. Not a pure query: the first call starts that count.
         /// </summary>
-        bool ShouldAsk();
-
-        /// <summary>Records the answer to the one-time question.</summary>
-        void Answer(bool enabled);
+        bool ShouldAskNow();
     }
 }

@@ -99,6 +99,11 @@ Public releases users can install and update, with enough logging to debug field
   Owner: enable "Prevent Storing of IP Addresses" in the Sentry project. Emulator (Debug + placeholder DSN): the
   question appears after backdating `CrashReports.FirstUse` 8 days, "Send reports" saves Decided/Enabled, the
   Settings switch shows on, and the next start loads Sentry.
+  Review: `options.Native.EnableBeforeSend = true` (default false in 6.11.1, marked experimental), so Java crashes
+  and ANRs from the embedded Android SDK also pass the consent check and "off" really stops sending at once; NDK
+  crashes are stored and sent at the next start, when Sentry isn't started without consent. `Answer` removed (the
+  `Enabled` setter records the decision), `ShouldAsk` renamed `ShouldAskNow` (its first call starts the week), the DSN
+  is read once and passed to `ConfigureCrashReports`.
 
 ### 9.5 Tests and CI
 - CI test job on `ubuntu-latest` once Stage 7.1 lands (Core-only tests).

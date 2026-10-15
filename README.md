@@ -97,8 +97,8 @@ and Windows are maintained too. All data stays on the device.
   which need no permission.
 - **Logs:** errors and basic app info (version, device OS) are written to log files on the device (the last 7 days,
   at most 10 MB in all). They hold technical details such as error messages (the app doesn't log your amounts or
-  descriptions), and leave the device only when you use **Settings → Share
-  logs**.
+  descriptions), and leave the device only when you use
+  **Settings → Share logs**.
 - **Android backup:** if the device's own backup is on, it copies the database, receipt photos and settings, which
   includes device-to-device transfer. Restore snapshots, migration copies, logs and caches are left out
   (`Platforms/Android/Resources/xml`). Google's cloud backup holds at most 25 MB per app; past that it stops backing

@@ -24,7 +24,8 @@ namespace MoneyRecord
             LocalizationService.Instance.LoadLanguage(preferences);
             CurrencyService.LoadBaseCurrency(preferences);
             var paths = new AppPaths(FileSystem.AppDataDirectory);
-            var crashReports = new CrashReportConsent(preferences, TimeProvider.System, isAvailable: SentryDsn() != null);
+            var sentryDsn = SentryDsn();
+            var crashReports = new CrashReportConsent(preferences, TimeProvider.System, isAvailable: sentryDsn != null);
 
             var builder = MauiApp.CreateBuilder();
             builder
@@ -42,7 +43,7 @@ namespace MoneyRecord
                 .UseSkiaSharp()
                 .UseLiveCharts()
                 .ConfigureLogging(paths.LogsFolder)
-                .ConfigureCrashReports(crashReports);
+                .ConfigureCrashReports(sentryDsn, crashReports);
 
             // Register Infrastructure Services
             builder.Services.AddSingleton<LocalizationService>(_ => LocalizationService.Instance);
@@ -174,13 +175,13 @@ namespace MoneyRecord
 
         /// <summary>
         /// Sentry crash reports, only when this build has a DSN (CI builds) and the user agreed. Consent is checked at
-        /// start; turning it off in Settings stops sending at once (BeforeSend). Errors logged through ILogger are sent
-        /// too. Nothing that identifies the user or shows their data: no screenshots (screens show amounts), no
-        /// default PII, no UI text in breadcrumbs, no session tracking.
+        /// start; turning it off in Settings stops sending at once (BeforeSend, for .NET and Android SDK events alike).
+        /// Errors logged through ILogger are sent too. Nothing that identifies the user or shows their data: no
+        /// screenshots (screens show amounts), no default PII, no UI text in breadcrumbs, no session tracking.
         /// </summary>
-        private static MauiAppBuilder ConfigureCrashReports(this MauiAppBuilder builder, ICrashReportConsent consent)
+        private static MauiAppBuilder ConfigureCrashReports(this MauiAppBuilder builder, string? dsn,
+            ICrashReportConsent consent)
         {
-            var dsn = SentryDsn();
             if (dsn == null || !consent.Enabled)
                 return builder;
 
@@ -197,6 +198,8 @@ namespace MoneyRecord
                 options.IncludeTitleInBreadcrumbs = false;
                 options.AutoSessionTracking = false;
                 options.SetBeforeSend(sentryEvent => consent.Enabled ? sentryEvent : null);
+                // Java crashes and ANRs come from the embedded Android SDK, which skips that callback unless this is on
+                options.Native.EnableBeforeSend = true;
             });
         }
 
