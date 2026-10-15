@@ -26,7 +26,29 @@ jobs:
         run: dotnet build MoneyRecord.Tests/MoneyRecord.Tests.csproj -c Release
 
       - name: Run Tests
-        run: dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj --no-build -c Release --verbosity normal
+        run: >
+          dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj --no-build -c Release --verbosity normal
+          --collect:"XPlat Code Coverage" --results-directory TestResults
+
+      # Coverage of MoneyRecord.Core (the tests reference Core only): the total goes to the run summary, the Cobertura
+      # report to an artifact. No threshold yet.
+      - name: Coverage summary
+        if: always()
+        run: |
+          report=$(find TestResults -name coverage.cobertura.xml | head -n 1)
+          if [ -z "$report" ]; then echo "No coverage report." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          rate() { grep -o -m 1 "$1=\"[0-9.]*\"" "$report" | head -n 1 | tr -dc '0-9.'; }
+          awk -v l="$(rate line-rate)" -v b="$(rate branch-rate)" \
+            'BEGIN { printf "### Coverage (MoneyRecord.Core)\nLines: %.1f%% · Branches: %.1f%%\n", l * 100, b * 100 }' \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: TestResults/**/coverage.cobertura.xml
+          if-no-files-found: warn
 
   build-android:
     name: Build Android APK + AAB

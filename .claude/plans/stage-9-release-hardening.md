@@ -1,6 +1,6 @@
 # Stage 9: Release Hardening
 
-**Status**: In progress (9.1–9.4a done; 9.4b in review)
+**Status**: In progress (9.1–9.4 done; 9.5 in review)
 **Depends on**: Stage 6 (can run in parallel with Stages 7–8)
 **Complexity**: Medium
 **Source**: Product & engineering review, 2026-10-11 (Tests & CI, P11) + parts of Stage 5.1
@@ -115,6 +115,18 @@ Public releases users can install and update, with enough logging to debug field
 - Add tests: `RecurringTransactionService` (catch-up of missed periods, end date), backup/restore round-trip,
   delete cascades, migrations.
 - Coverage report (coverlet, MIT) uploaded as an artifact; no hard threshold yet.
+- Done as: the Linux test job and the backup/restore (`BackupRestoreTests`), delete-cascade (`DeleteCascadeTests`) and
+  migration tests (`MigrationRunnerTests`, `MoneyAsCentsMigrationTests`) already existed from Stages 6–7, so only
+  `RecurringTransactionService` was missing. `RecurringTransactionServiceTests` (7, temp SQLite + `FakeTimeProvider`):
+  monthly catch-up on the 31st (→ 28 Feb), due from 00:00 of its day, a second run creates nothing, the end date
+  (inclusive) stops occurrences and deactivates, already-ended only deactivates, inactive skipped. Writing them found
+  **a bug**: hitting the end date mid catch-up called `DeactivateAsync`, then `SaveAsync(recurring)` wrote the stale
+  `IsActive = true` back, so an ended recurrence stayed active (a test covers it). The service now takes a
+  `TimeProvider` (registered as `TimeProvider.System`) and `DatabaseInitializer`, and saves each recurrence's new
+  transactions plus its advanced schedule in one database transaction, so an interrupted catch-up can't create the
+  same occurrence twice. Coverage: `coverlet.collector` 10.1.0 (MIT, loads under Smart App Control here); the CI test
+  job collects `XPlat Code Coverage`, writes the line/branch rate to the run summary and uploads
+  `coverage.cobertura.xml` as the `coverage-report` artifact. Baseline: MoneyRecord.Core 67.6% lines, 83.7% branches.
 
 ### 9.6 Store and F-Droid readiness
 - Fastlane metadata folder (`fastlane/metadata/android/{en-US,es-ES}`) with descriptions + screenshots taken via
