@@ -98,6 +98,18 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Occurrences_get_the_payee_of_the_recurrence()
+    {
+        var recurring = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 2, 15));
+        recurring.PayeeId = 7;
+        await Db.UpdateAsync(recurring);
+
+        await _sut.ProcessDueTransactionsAsync();
+
+        (await TransactionsAsync()).Select(t => t.PayeeId).Should().Equal(7, 7);
+    }
+
+    [Fact]
     public async Task Running_again_creates_nothing_new()
     {
         await AddAsync(RecurrenceFrequency.Daily, new DateTime(2026, 3, 10));

@@ -20,6 +20,9 @@ and Windows are maintained too. All data stays on the device.
 
 ### Transactions
 - Incomes and expenses with date, description, amount, account, category and optional **tags**.
+- Optional **payee** (shop, person or company): earlier payees are suggested as you type, and picking one selects the
+  category it had last time. More → Payees renames, merges (a typo into the right name) and deletes them; search finds
+  transactions by payee, and the CSV export has a Payee column.
 - **Receipt photos** from the camera or gallery; unsaved photos are discarded when you cancel.
 - Amount input formatted in the **account's currency** (symbol, separators, and no decimals for currencies like JPY).
 - Optional **"Make recurring"** to create a recurring rule from the transaction.
@@ -210,7 +213,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 ├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
 │                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping,
 │                       LedgerTransfers, CategoryReportBuilder, RecurrenceCalculator, Debouncer
-├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal (tables)
+├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal, Payee (tables)
 │                       + display models (LedgerEntry, TransactionGroup, CategoryAmount, AccountBalanceInfo, BudgetProgress, ...)
 ├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
 ├── Services/
@@ -223,6 +226,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 │   ├── LedgerService                            Home list rows (transactions + whole transfers), delete one
 │   ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
 │   ├── SavingsGoalService                       Goal progress (linked accounts' balances) + projection
+│   ├── PayeeService                             Payees: found or created on save, use counts, rename / merge / delete
 │   ├── CurrencyService                          Currencies, base currency, decimals
 │   ├── RecurringTransactionService              Creates due recurring transactions
 │   ├── DataExportService                        Zip backup, restore + snapshot, CSV export
@@ -238,7 +242,7 @@ MoneyRecord/            The MAUI app
 ├── Services/           NavigationService, DialogService, PreferencesService
 ├── ViewModels/         One per page + FloatingMenuViewModel
 ├── Views/              Main, AddTransaction, AddTransfer, Transfers, ManageAccounts, ManageCategories, Budget, Goals,
-│                       RecurringTransactions, CategoryReport (Expense/Income), TrendsReport, Settings
+│                       Payees, RecurringTransactions, CategoryReport (Expense/Income), TrendsReport, Settings
 ├── App.xaml            Converters and styles; processes recurring transactions on start
 ├── AppShell.xaml       Flyout menu and routes
 └── MauiProgram.cs      Dependency injection

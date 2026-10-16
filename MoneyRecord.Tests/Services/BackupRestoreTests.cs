@@ -31,7 +31,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Db = await _dbInitializer.GetConnectionAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
-        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new AppPaths(_appData));
+        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData));
     }
 
     public async Task DisposeAsync()
@@ -81,10 +81,12 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var food = await AddCategoryAsync("Food");
         var bank = await AddAccountAsync("Bank");
         var cash = (await _accountRepository.GetDefaultAsync())!;
-        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, ConvertedAmount = 3.1m, ConvertedCurrencyCode = "EUR", CategoryId = food.Id, AccountId = bank.Id, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
+        var bakery = new Payee { Name = "Bakery" };
+        await Db.InsertAsync(bakery);
+        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, PayeeId = bakery.Id, ConvertedAmount = 3.1m, ConvertedCurrencyCode = "EUR", CategoryId = food.Id, AccountId = bank.Id, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
         await Db.InsertAsync(new Transfer { Amount = 50m, DestinationAmount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
         await Db.InsertAsync(new Budget { CategoryId = food.Id, LimitAmount = 300m });
-        await Db.InsertAsync(new RecurringTransaction { Description = "Rent", Amount = 500m, CategoryId = food.Id, AccountId = bank.Id });
+        await Db.InsertAsync(new RecurringTransaction { Description = "Rent", Amount = 500m, CategoryId = food.Id, AccountId = bank.Id, PayeeId = bakery.Id });
         var goal = new SavingsGoal { Name = "Trip", TargetAmount = 2000m, CurrencyCode = "USD", TargetDate = new DateTime(2027, 6, 1) };
         await Db.InsertAsync(goal);
         await Db.InsertAsync(new SavingsGoalAccount { GoalId = goal.Id, AccountId = bank.Id });
@@ -94,6 +96,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
 
         // Change everything after the backup
         await Db.DeleteAllAsync<SavingsGoalAccount>();
+        await Db.DeleteAllAsync<Payee>();
         await Db.DeleteAllAsync<Transaction>();
         await Db.InsertAsync(new Transaction { Description = "Later", Amount = 1m, ReceiptPhotoPath = WriteReceipt("receipt_2.jpg", "photo-2") });
         File.Delete(Path.Combine(Receipts, "receipt_1.jpg"));
@@ -106,11 +109,27 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var lunch = await Db.Table<Transaction>().FirstAsync();
         lunch.ReceiptPhotoPath.Should().Be(Path.Combine(Receipts, "receipt_1.jpg"));
         (lunch.ConvertedAmount, lunch.ConvertedCurrencyCode).Should().Be((3.1m, "EUR"));
+        lunch.PayeeId.Should().Be(bakery.Id);
         File.ReadAllText(lunch.ReceiptPhotoPath!).Should().Be("photo-1");
         Directory.GetFiles(Receipts).Select(Path.GetFileName).Should().Equal("receipt_1.jpg");
         (await Db.Table<SavingsGoalAccount>().ToListAsync()).Should().ContainSingle()
             .Which.Should().BeEquivalentTo(new { GoalId = goal.Id, AccountId = bank.Id }, "the goal keeps its account; a link is not counted as an item");
         File.Exists(result.SnapshotPath).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Csv_HasAPayeeColumn_EmptyWithoutOne()
+    {
+        var bakery = new Payee { Name = "Bakery, Main St" };
+        await Db.InsertAsync(bakery);
+        await Db.InsertAsync(new Transaction { Description = "Bread", Amount = 3m, Date = new DateTime(2026, 10, 2), PayeeId = bakery.Id });
+        await Db.InsertAsync(new Transaction { Description = "Tip", Amount = 1m, Date = new DateTime(2026, 10, 1) });
+
+        var lines = (await _service.ExportCsvAsync()).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        lines[0].Should().EndWith(",Account,Payee");
+        lines[1].Should().StartWith("2026-10-02,Bread,").And.EndWith(",\"Bakery, Main St\"");
+        lines[2].Should().StartWith("2026-10-01,Tip,").And.EndWith(",");
     }
 
     [Fact]
@@ -380,6 +399,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         rows.AddRange(await Db.Table<Budget>().ToListAsync());
         rows.AddRange(await Db.Table<RecurringTransaction>().ToListAsync());
         rows.AddRange(await Db.Table<SavingsGoal>().ToListAsync());
+        rows.AddRange(await Db.Table<Payee>().ToListAsync());
         return rows;
     }
 }

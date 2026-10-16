@@ -14,17 +14,20 @@ namespace MoneyRecord.Services
         private readonly ITransferRepository _transferRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly IPayeeRepository _payeeRepository;
 
         public TransactionEnrichmentService(
             ITransactionRepository transactionRepository,
             ITransferRepository transferRepository,
             ICategoryRepository categoryRepository,
-            IAccountRepository accountRepository)
+            IAccountRepository accountRepository,
+            IPayeeRepository payeeRepository)
         {
             _transactionRepository = transactionRepository;
             _transferRepository = transferRepository;
             _categoryRepository = categoryRepository;
             _accountRepository = accountRepository;
+            _payeeRepository = payeeRepository;
         }
 
         public async Task<List<Transaction>> GetEnrichedTransactionsAsync(DateTime startDate, DateTime endDate)
@@ -32,16 +35,18 @@ namespace MoneyRecord.Services
             var transactionsTask = _transactionRepository.GetByDateRangeAsync(startDate, endDate);
             var categoriesTask = _categoryRepository.GetAllAsync();
             var accountsTask = _accountRepository.GetAllAsync();
+            var payeesTask = _payeeRepository.GetAllAsync();
 
-            await Task.WhenAll(transactionsTask, categoriesTask, accountsTask);
+            await Task.WhenAll(transactionsTask, categoriesTask, accountsTask, payeesTask);
 
             var transactions = await transactionsTask ?? [];
             var categories = (await categoriesTask ?? []).ToDictionary(c => c.Id);
             var accounts = (await accountsTask ?? []).ToDictionary(a => a.Id);
+            var payees = (await payeesTask ?? []).ToDictionary(p => p.Id, p => p.Name);
 
             foreach (var transaction in transactions)
             {
-                EnrichTransaction(transaction, categories, accounts);
+                EnrichTransaction(transaction, categories, accounts, payees);
             }
 
             return transactions;
@@ -88,8 +93,11 @@ namespace MoneyRecord.Services
         private static void EnrichTransaction(
             Transaction transaction,
             Dictionary<int, Category> categories,
-            Dictionary<int, Account> accounts)
+            Dictionary<int, Account> accounts,
+            Dictionary<int, string> payees)
         {
+            transaction.PayeeName = transaction.PayeeId is int payeeId ? payees.GetValueOrDefault(payeeId, string.Empty) : string.Empty;
+
             if (categories.TryGetValue(transaction.CategoryId, out var category))
             {
                 transaction.CategoryName = category.Name ?? AppResources.Unknown;

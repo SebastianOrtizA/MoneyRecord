@@ -1704,4 +1704,73 @@ Monto: {2}</value>
   <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
     <value>Al guardar se quitan las cuentas que ahora están en otra moneda: {0}</value>
   </data>
+  <data name="Payee" xml:space="preserve">
+    <value>Beneficiario</value>
+  </data>
+  <data name="PayeePlaceholder" xml:space="preserve">
+    <value>Comercio, persona o empresa (opcional)</value>
+  </data>
+  <data name="Payees" xml:space="preserve">
+    <value>Beneficiarios</value>
+  </data>
+  <data name="SearchPayees" xml:space="preserve">
+    <value>Buscar beneficiarios</value>
+  </data>
+  <data name="NoPayeesYet" xml:space="preserve">
+    <value>Aún no hay beneficiarios. Escribe uno al añadir un gasto o ingreso y aparecerá aquí.</value>
+  </data>
+  <data name="NoMatchingPayees" xml:space="preserve">
+    <value>Ningún beneficiario coincide con la búsqueda.</value>
+  </data>
+  <data name="PayeeLastUsed" xml:space="preserve">
+    <value>último {0}</value>
+  </data>
+  <data name="RenamePayee" xml:space="preserve">
+    <value>Cambiar nombre</value>
+  </data>
+  <data name="RenamePayeeMessage" xml:space="preserve">
+    <value>Nuevo nombre para "{0}"</value>
+  </data>
+  <data name="PayeeExistsTitle" xml:space="preserve">
+    <value>El beneficiario ya existe</value>
+  </data>
+  <data name="PayeeExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" ya existe. ¿Unir "{0}" con él?</value>
+  </data>
+  <data name="MergePayee" xml:space="preserve">
+    <value>Unir con otro beneficiario</value>
+  </data>
+  <data name="MergePayeeInto" xml:space="preserve">
+    <value>Unir "{0}" con</value>
+  </data>
+  <data name="MergePayeeConfirmMessage" xml:space="preserve">
+    <value>"{0}" se elimina y lo que lo usa ({2}) pasa a "{1}".</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Unir</value>
+  </data>
+  <data name="DeletePayee" xml:space="preserve">
+    <value>Eliminar beneficiario</value>
+  </data>
+  <data name="DeletePayeeConfirmation" xml:space="preserve">
+    <value>¿Eliminar "{0}"? Lo que lo usa ({1}) se conserva, sin beneficiario.</value>
+  </data>
+  <data name="PayeesMerged" xml:space="preserve">
+    <value>Beneficiarios unidos</value>
+  </data>
+  <data name="PayeeDeleted" xml:space="preserve">
+    <value>Beneficiario eliminado</value>
+  </data>
+  <data name="FailedToLoadPayees" xml:space="preserve">
+    <value>No se pudieron cargar los beneficiarios</value>
+  </data>
+  <data name="FailedToSavePayee" xml:space="preserve">
+    <value>No se pudo actualizar el beneficiario</value>
+  </data>
+  <data name="RecurringCountOne" xml:space="preserve">
+    <value>{0} recurrente</value>
+  </data>
+  <data name="RecurringCountOther" xml:space="preserve">
+    <value>{0} recurrentes</value>
+  </data>
 </root>

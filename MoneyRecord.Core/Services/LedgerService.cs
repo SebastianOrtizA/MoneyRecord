@@ -66,6 +66,8 @@ namespace MoneyRecord.Services
             AccountId = t.AccountId,
             AccountName = t.AccountName,
             AccountIconCode = t.AccountIconCode,
+            PayeeId = t.PayeeId,
+            PayeeName = t.PayeeName,
             Tags = t.Tags,
             ReceiptPhotoPath = t.ReceiptPhotoPath
         };

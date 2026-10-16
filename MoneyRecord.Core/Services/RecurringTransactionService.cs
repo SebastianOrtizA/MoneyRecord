@@ -76,7 +76,8 @@ namespace MoneyRecord.Services
                             Amount = recurring.Amount,
                             CategoryId = recurring.CategoryId,
                             Type = recurring.TransactionType,
-                            AccountId = recurring.AccountId
+                            AccountId = recurring.AccountId,
+                            PayeeId = recurring.PayeeId
                         });
                         created++;
 

@@ -13,11 +13,12 @@ public class TransactionEnrichmentServiceTests
     private readonly ITransferRepository _transferRepo = Substitute.For<ITransferRepository>();
     private readonly ICategoryRepository _categoryRepo = Substitute.For<ICategoryRepository>();
     private readonly IAccountRepository _accountRepo = Substitute.For<IAccountRepository>();
+    private readonly IPayeeRepository _payeeRepo = Substitute.For<IPayeeRepository>();
     private readonly TransactionEnrichmentService _sut;
 
     public TransactionEnrichmentServiceTests()
     {
-        _sut = new TransactionEnrichmentService(_transactionRepo, _transferRepo, _categoryRepo, _accountRepo);
+        _sut = new TransactionEnrichmentService(_transactionRepo, _transferRepo, _categoryRepo, _accountRepo, _payeeRepo);
     }
 
     [Fact]
@@ -46,6 +47,25 @@ public class TransactionEnrichmentServiceTests
         result[0].CategoryIconCode.Should().Be("F0001");
         result[0].AccountName.Should().Be("Checking");
         result[0].AccountIconCode.Should().Be("F0070");
+    }
+
+    [Fact]
+    public async Task GetEnrichedTransactionsAsync_FillsThePayeeName_EmptyWithoutOne()
+    {
+        var start = new DateTime(2026, 1, 1);
+        var end = new DateTime(2026, 1, 31);
+
+        _transactionRepo.GetByDateRangeAsync(start, end).Returns(new List<Transaction>
+        {
+            new() { Id = 1, CategoryId = 10, PayeeId = 5 },
+            new() { Id = 2, CategoryId = 10 },
+            new() { Id = 3, CategoryId = 10, PayeeId = 99 }
+        });
+        _payeeRepo.GetAllAsync().Returns(new List<Payee> { new() { Id = 5, Name = "Bakery" } });
+
+        var result = await _sut.GetEnrichedTransactionsAsync(start, end);
+
+        result.Select(t => t.PayeeName).Should().Equal("Bakery", "", "");
     }
 
     [Fact]

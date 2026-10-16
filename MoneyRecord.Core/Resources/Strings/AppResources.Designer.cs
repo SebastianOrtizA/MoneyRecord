@@ -4631,5 +4631,212 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("GoalAccountsRemovedOnSave", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payee.
+        /// </summary>
+        public static string Payee {
+            get {
+                return ResourceManager.GetString("Payee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shop, person or company (optional).
+        /// </summary>
+        public static string PayeePlaceholder {
+            get {
+                return ResourceManager.GetString("PayeePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payees.
+        /// </summary>
+        public static string Payees {
+            get {
+                return ResourceManager.GetString("Payees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search payees.
+        /// </summary>
+        public static string SearchPayees {
+            get {
+                return ResourceManager.GetString("SearchPayees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No payees yet. Type one when you add an expense or income and it shows up here..
+        /// </summary>
+        public static string NoPayeesYet {
+            get {
+                return ResourceManager.GetString("NoPayeesYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No payees match your search..
+        /// </summary>
+        public static string NoMatchingPayees {
+            get {
+                return ResourceManager.GetString("NoMatchingPayees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to last {0}.
+        /// </summary>
+        public static string PayeeLastUsed {
+            get {
+                return ResourceManager.GetString("PayeeLastUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string RenamePayee {
+            get {
+                return ResourceManager.GetString("RenamePayee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New name for "{0}".
+        /// </summary>
+        public static string RenamePayeeMessage {
+            get {
+                return ResourceManager.GetString("RenamePayeeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payee already exists.
+        /// </summary>
+        public static string PayeeExistsTitle {
+            get {
+                return ResourceManager.GetString("PayeeExistsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to "{1}" already exists. Merge "{0}" into it?.
+        /// </summary>
+        public static string PayeeExistsMergeMessage {
+            get {
+                return ResourceManager.GetString("PayeeExistsMergeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge into another payee.
+        /// </summary>
+        public static string MergePayee {
+            get {
+                return ResourceManager.GetString("MergePayee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge "{0}" into.
+        /// </summary>
+        public static string MergePayeeInto {
+            get {
+                return ResourceManager.GetString("MergePayeeInto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to "{0}" is deleted and what uses it ({2}) moves to "{1}"..
+        /// </summary>
+        public static string MergePayeeConfirmMessage {
+            get {
+                return ResourceManager.GetString("MergePayeeConfirmMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge.
+        /// </summary>
+        public static string MergeButton {
+            get {
+                return ResourceManager.GetString("MergeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete payee.
+        /// </summary>
+        public static string DeletePayee {
+            get {
+                return ResourceManager.GetString("DeletePayee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete "{0}"? What uses it ({1}) stays, without a payee..
+        /// </summary>
+        public static string DeletePayeeConfirmation {
+            get {
+                return ResourceManager.GetString("DeletePayeeConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payees merged.
+        /// </summary>
+        public static string PayeesMerged {
+            get {
+                return ResourceManager.GetString("PayeesMerged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payee deleted.
+        /// </summary>
+        public static string PayeeDeleted {
+            get {
+                return ResourceManager.GetString("PayeeDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load payees.
+        /// </summary>
+        public static string FailedToLoadPayees {
+            get {
+                return ResourceManager.GetString("FailedToLoadPayees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update the payee.
+        /// </summary>
+        public static string FailedToSavePayee {
+            get {
+                return ResourceManager.GetString("FailedToSavePayee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recurring.
+        /// </summary>
+        public static string RecurringCountOne {
+            get {
+                return ResourceManager.GetString("RecurringCountOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recurring.
+        /// </summary>
+        public static string RecurringCountOther {
+            get {
+                return ResourceManager.GetString("RecurringCountOther", resourceCulture);
+            }
+        }
     }
 }

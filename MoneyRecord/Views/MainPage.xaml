@@ -339,7 +339,7 @@
                                            VerticalOptions="Center"
                                            TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                        <Label Text="{Binding Description}"
+                                        <Label Text="{Binding Title}"
                                                FontSize="14"
                                                FontAttributes="Bold"
                                                LineBreakMode="TailTruncation"/>
