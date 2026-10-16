@@ -17,15 +17,19 @@ namespace MoneyRecord.Helpers
     /// </summary>
     public sealed class CsvTable
     {
-        private CsvTable(IReadOnlyList<string> headers, IReadOnlyList<string[]> rows)
+        private CsvTable(IReadOnlyList<string> headers, IReadOnlyList<string[]> rows, bool hasHeader)
         {
             Headers = headers;
             Rows = rows;
+            HasHeader = hasHeader;
         }
 
         public IReadOnlyList<string> Headers { get; }
 
         public IReadOnlyList<string[]> Rows { get; }
+
+        /// <summary>The file had a header row; otherwise <see cref="Headers"/> are made-up "Column n" names.</summary>
+        public bool HasHeader { get; }
 
         /// <summary>Every row's value in <paramref name="column"/>.</summary>
         public IEnumerable<string> Column(int column) => Rows.Select(r => r[column]);
@@ -45,14 +49,14 @@ namespace MoneyRecord.Helpers
                 .Select(d => FindTable(ReadRecords(text, d)))
                 .MaxBy(t => t.Count * (t.FirstOrDefault()?.Length ?? 0))!;
             if (table.Count == 0)
-                return new CsvTable([], []);
+                return new CsvTable([], [], false);
 
             var first = table[0];
             var hasHeader = !LooksLikeData(first);
             var headers = hasHeader
                 ? first.Select((h, i) => string.IsNullOrWhiteSpace(h) ? ColumnName(i) : h.Trim()).ToList()
                 : first.Select((_, i) => ColumnName(i)).ToList();
-            return new CsvTable(headers, hasHeader ? table.Skip(1).ToList() : table);
+            return new CsvTable(headers, hasHeader ? table.Skip(1).ToList() : table, hasHeader);
         }
 
         private static string ColumnName(int index) => string.Format(AppResources.ImportColumnName, index + 1);

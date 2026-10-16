@@ -55,6 +55,26 @@
                                     TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
                         </Grid>
 
+                        <!-- A bank's file seen before: its last import's columns and account -->
+                        <Border Padding="10,8"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10"
+                                IsVisible="{Binding UsesSavedMapping}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Label Text="&#xF02DA;"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="16"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                <Label Grid.Column="1"
+                                       Text="{ext:Localize ImportSavedMapping}"
+                                       FontSize="13"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                            </Grid>
+                        </Border>
+
                         <Label Text="{ext:Localize Account}" FontSize="14" FontAttributes="Bold"/>
                         <Picker ItemsSource="{Binding Accounts}"
                                 SelectedItem="{Binding SelectedAccount}"

@@ -4010,5 +4010,14 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ImportLearnedCategory", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Same columns and account as your last import of this bank's file..
+        /// </summary>
+        public static string ImportSavedMapping {
+            get {
+                return ResourceManager.GetString("ImportSavedMapping", resourceCulture);
+            }
+        }
     }
 }

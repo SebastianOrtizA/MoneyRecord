@@ -4,6 +4,7 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
+using Microsoft.Extensions.Logging;
 using System.ComponentModel;
 
 namespace MoneyRecord.ViewModels
@@ -25,6 +26,8 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
         private readonly IExchangeRateService _exchangeRates;
+        private readonly IStatementMappingStore _mappingStore;
+        private readonly ILogger<ImportStatementViewModel> _logger;
 
         private CsvTable? _table;
         private StatementGuess? _guess;
@@ -34,7 +37,8 @@ namespace MoneyRecord.ViewModels
 
         public ImportStatementViewModel(IStatementImportService importService, IAccountRepository accountRepository,
             ICategoryRepository categoryRepository, IEntryDefaultsService entryDefaults, IDialogService dialogService,
-            INavigationService navigationService, IErrorHandler errorHandler, IExchangeRateService exchangeRates)
+            INavigationService navigationService, IErrorHandler errorHandler, IExchangeRateService exchangeRates,
+            IStatementMappingStore mappingStore, ILogger<ImportStatementViewModel> logger)
         {
             _importService = importService;
             _accountRepository = accountRepository;
@@ -44,6 +48,8 @@ namespace MoneyRecord.ViewModels
             _navigationService = navigationService;
             _errorHandler = errorHandler;
             _exchangeRates = exchangeRates;
+            _mappingStore = mappingStore;
+            _logger = logger;
         }
 
         [ObservableProperty]
@@ -112,6 +118,10 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private bool isBusy;
+
+        /// <summary>The columns and account come from the last import of a file with this header (shown as a note).</summary>
+        [ObservableProperty]
+        private bool usesSavedMapping;
 
         /// <summary>Only a file whose dates fit both day-first and month-first needs the format picker.</summary>
         public bool HasDateChoice => DateFormats.Count > 1;
@@ -184,7 +194,12 @@ namespace MoneyRecord.ViewModels
                 }
 
                 _table = table;
-                ApplyGuess(table, guess);
+                // A bank's file seen before starts from the choices of its last import
+                var saved = _mappingStore.Find(table, guess);
+                var savedAccount = Accounts.FirstOrDefault(a => a.Id == saved?.AccountId);
+                ApplyGuess(table, guess, saved?.Mapping ?? guess.Mapping, savedAccount);
+                // The note promises the columns and the account: not for a deleted account or a header-less file (no account)
+                UsesSavedMapping = savedAccount != null;
                 FileSummary = $"{file.FileName} · {Plurals.Rows(table.Rows.Count)}";
                 HasFile = true;
                 LoadPreviewCommand.Execute(null);
@@ -196,10 +211,9 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private void ApplyGuess(CsvTable table, StatementGuess guess)
+        private void ApplyGuess(CsvTable table, StatementGuess guess, StatementMapping mapping, Account? account)
         {
             var columns = table.Headers.Select((name, i) => new ColumnOption(i, name)).ToList();
-            var mapping = guess.Mapping;
 
             _applyingGuess = true;
             try
@@ -215,6 +229,8 @@ namespace MoneyRecord.ViewModels
                 DateFormats = guess.DateFormats[mapping.DateColumn];
                 SelectedDateFormat = mapping.DateFormat;
                 PositiveIsExpense = mapping.PositiveIsExpense;
+                if (account != null)
+                    SelectedAccount = account;
             }
             finally
             {
@@ -224,7 +240,12 @@ namespace MoneyRecord.ViewModels
 
         // Each picker changes the one mapping; the preview follows it
 
-        partial void OnSelectedAccountChanged(Account? value) => Reload();
+        partial void OnSelectedAccountChanged(Account? value)
+        {
+            if (!_applyingGuess)
+                UsesSavedMapping = false; // not the saved account any more
+            Reload();
+        }
 
         partial void OnSelectedDescriptionColumnChanged(ColumnOption? value) =>
             Update(m => value == null ? m : m with { DescriptionColumn = value.Index });
@@ -256,6 +277,7 @@ namespace MoneyRecord.ViewModels
             if (_applyingGuess || _mapping == null)
                 return;
             _mapping = change(_mapping);
+            UsesSavedMapping = false;
             Reload();
         }
 
@@ -367,6 +389,16 @@ namespace MoneyRecord.ViewModels
             finally
             {
                 IsBusy = false;
+            }
+
+            // The next file from this bank starts with these choices; a failure here must not cost the Undo dialog
+            try
+            {
+                _mappingStore.Remember(_table!, _mapping!, account.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Could not save the import mapping");
             }
 
             // Entries in another currency (perhaps dated before the stored rates) get their rates in the background

@@ -78,7 +78,8 @@ crashes at runtime (XAML is inflated at runtime there).
   job) + ExchangeRateSettings + `IExchangeRateSource` = FrankfurterRateSource, ConversionService (the "Show in" switch
   applied: converted or by-currency totals for Home, reports and budgets) + CurrencyDisplaySettings,
   StatementImportService (CSV import into one account: preview with duplicates + learned categories, import, undo;
-  `StatementMapping` = the columns, `ImportRow` = a preview row)
+  `StatementMapping` = the columns, `ImportRow` = a preview row), StatementMappingStore (the last import's
+  columns + account per header layout, in preferences)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
