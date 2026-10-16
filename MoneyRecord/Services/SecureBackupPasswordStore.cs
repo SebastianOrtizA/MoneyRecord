@@ -10,6 +10,8 @@ namespace MoneyRecord.Services
     {
         private const string KeyName = "BackupPassword";
 
+        public bool IsSupported => true;
+
         public async Task<string?> GetAsync()
         {
             var password = await SecureStorage.Default.GetAsync(KeyName);

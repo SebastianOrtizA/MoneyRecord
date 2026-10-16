@@ -216,6 +216,7 @@
                         <!-- The backup password: manual and automatic backups are encrypted with it -->
                         <VerticalStackLayout BindingContext="{Binding BackupPassword}"
                                              x:DataType="corevm:BackupPasswordViewModel"
+                                             IsVisible="{Binding IsSupported}"
                                              Spacing="4">
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                 <Label Text="{ext:Localize BackupPassword}"

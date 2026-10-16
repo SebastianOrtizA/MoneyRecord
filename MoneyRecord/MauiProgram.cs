@@ -118,8 +118,12 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IBackupFolder, NoBackupFolder>();
 #endif
             builder.Services.AddTransient<AutoBackupViewModel>();
-            // The backup password (manual and automatic backups), in secure storage
+            // The backup password (manual and automatic backups), in secure storage: Android only, like the database key
+#if ANDROID
             builder.Services.AddSingleton<IBackupPasswordStore, SecureBackupPasswordStore>();
+#else
+            builder.Services.AddSingleton<IBackupPasswordStore, NoBackupPasswordStore>();
+#endif
             builder.Services.AddTransient<BackupPasswordViewModel>();
 
             // App lock (the phone's own lock) and hidden balances

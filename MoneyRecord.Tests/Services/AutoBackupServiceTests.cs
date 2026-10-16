@@ -227,6 +227,8 @@ internal sealed class FakeBackupFolder : IBackupFolder
 /// <summary>The backup password in memory.</summary>
 internal sealed class FakeBackupPasswordStore : IBackupPasswordStore
 {
+    public bool IsSupported => true;
+
     public string? Password { get; set; }
 
     public Task<string?> GetAsync() => Task.FromResult(Password);

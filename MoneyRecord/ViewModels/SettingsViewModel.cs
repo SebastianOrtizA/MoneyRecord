@@ -29,7 +29,6 @@ namespace MoneyRecord.ViewModels
         private readonly IDatabaseEncryption _encryption;
         private readonly IExchangeRateService _exchangeRates;
         private readonly IExchangeRateSettings _exchangeRateSettings;
-        private readonly IBackupPasswordStore _backupPasswords;
 
         [ObservableProperty]
         private bool isExporting;
@@ -49,7 +48,7 @@ namespace MoneyRecord.ViewModels
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
             IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
-            AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword, IBackupPasswordStore backupPasswords)
+            AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -71,7 +70,6 @@ namespace MoneyRecord.ViewModels
             _exchangeRateSettings = exchangeRateSettings;
             AutoBackup = autoBackup;
             BackupPassword = backupPassword;
-            _backupPasswords = backupPasswords;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
             exchangeRatesStatus = LastUpdatedText();
@@ -385,7 +383,7 @@ namespace MoneyRecord.ViewModels
                 IsExporting = true;
 
                 var filePath = Path.Combine(_dataExportService.BackupsFolder, BackupFileName());
-                await _dataExportService.ExportBackupAsync(filePath, await _backupPasswords.GetAsync());
+                await _dataExportService.ExportBackupAsync(filePath, await BackupPassword.GetPasswordAsync());
 
                 await _dialogService.ToastAsync(AppResources.BackupCreatedSuccessfully);
             }
@@ -407,7 +405,7 @@ namespace MoneyRecord.ViewModels
                 IsExporting = true;
 
                 var filePath = NewCacheFile("MoneyRecord_Backup", ".zip");
-                await _dataExportService.ExportBackupAsync(filePath, await _backupPasswords.GetAsync());
+                await _dataExportService.ExportBackupAsync(filePath, await BackupPassword.GetPasswordAsync());
 
                 await Share.Default.RequestAsync(new ShareFileRequest
                 {

@@ -17,12 +17,20 @@ namespace MoneyRecord.ViewModels
     {
         private bool _isProtected;
 
+        /// <summary>Platforms with secure storage (Android) show the switch.</summary>
+        public bool IsSupported => store.IsSupported;
+
+        /// <summary>The saved password for a new backup; null = a plain backup.</summary>
+        public Task<string?> GetPasswordAsync() => store.GetAsync();
+
         /// <summary>Backups are encrypted. Turning it on asks for a password; off asks to confirm.</summary>
         public bool IsProtected
         {
             get => _isProtected;
             set
             {
+                // The value is not stored here: the command asks first and then raises PropertyChanged, which puts the
+                // switch back when the user cancels
                 if (value == _isProtected || SetPasswordCommand.IsRunning || RemovePasswordCommand.IsRunning)
                     return;
                 if (value)
@@ -35,6 +43,8 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task RefreshAsync()
         {
+            if (!IsSupported)
+                return;
             _isProtected = await store.GetAsync() != null;
             OnPropertyChanged(nameof(IsProtected));
         }

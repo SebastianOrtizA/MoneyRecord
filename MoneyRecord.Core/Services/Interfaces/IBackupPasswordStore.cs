@@ -6,6 +6,9 @@ namespace MoneyRecord.Services.Interfaces
     /// </summary>
     public interface IBackupPasswordStore
     {
+        /// <summary>Platforms with secure storage (Android) show the switch; elsewhere backups stay plain.</summary>
+        bool IsSupported { get; }
+
         Task<string?> GetAsync();
 
         /// <summary>Saves the password; null or empty removes it.</summary>

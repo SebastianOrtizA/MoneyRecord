@@ -7,6 +7,7 @@ using SQLite;
 using System.Globalization;
 using System.Security.Cryptography;
 using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Zip.Compression;
 using System.Text;
 using System.Text.Json;
 
@@ -126,17 +127,20 @@ namespace MoneyRecord.Services
             var entryName = $"{ReceiptFiles.FolderName}/{Path.GetFileName(path)}";
             if (added.Add(entryName))
             {
+                // Photos are already compressed: no CPU spent deflating them again
                 PutEntry(zip, entryName, output =>
                 {
                     using var photo = File.OpenRead(path!);
                     photo.CopyTo(output);
-                });
+                }, compress: false);
             }
             return entryName;
         }
 
-        private static void PutEntry(ZipOutputStream zip, string name, Action<Stream> write)
+        private static void PutEntry(ZipOutputStream zip, string name, Action<Stream> write, bool compress = true)
         {
+            // Level 0 writes stored blocks: one code path for every entry, plain or encrypted
+            zip.SetLevel(compress ? Deflater.DEFAULT_COMPRESSION : Deflater.NO_COMPRESSION);
             var entry = new ZipEntry(name) { DateTime = DateTime.Now };
             if (zip.Password != null)
                 entry.AESKeySize = 256;
