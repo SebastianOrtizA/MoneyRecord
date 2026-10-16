@@ -84,6 +84,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IRecurringTransactionService, RecurringTransactionService>();
             builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
             builder.Services.AddSingleton<IDataExportService, DataExportService>();
+            builder.Services.AddSingleton<IStatementImportService, StatementImportService>();
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
@@ -135,6 +136,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<SetupViewModel>();
             builder.Services.AddTransient<AboutViewModel>();
             builder.Services.AddTransient<LicenseViewModel>();
+            builder.Services.AddTransient<ImportStatementViewModel>();
             builder.Services.AddTransient<TrendsReportViewModel>();
             builder.Services.AddTransient<CashFlowReportViewModel>();
             builder.Services.AddTransient<NetWorthReportViewModel>();
@@ -156,6 +158,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<SetupPage>();
             builder.Services.AddTransient<AboutPage>();
             builder.Services.AddTransient<LicensePage>();
+            builder.Services.AddTransient<ImportStatementPage>();
             // App creates it only on a new install
             builder.Services.AddTransient<Func<SetupPage>>(services => () => services.GetRequiredService<SetupPage>());
             builder.Services.AddTransient<LockPage>();

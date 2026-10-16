@@ -51,6 +51,8 @@ namespace MoneyRecord.Models
             new("Serilog", "Apache-2.0", "Serilog Contributors",
                 "https://github.com/serilog/serilog", "Apache-2.0.txt",
                 ["Serilog.Extensions.Logging", "Serilog.Sinks.File"]),
+            new("CsvHelper", "Apache-2.0 (dual MS-PL / Apache-2.0)", "Josh Close",
+                "https://github.com/JoshClose/CsvHelper", "Apache-2.0.txt", ["CsvHelper"]),
             new("Sentry SDKs (.NET, Android, Native)", "MIT", "Sentry and individual contributors",
                 "https://github.com/getsentry/sentry-dotnet", "Sentry.txt", ["Sentry.Maui"]),
             new("SQLite", "Public domain", string.Empty,

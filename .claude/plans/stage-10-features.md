@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3a done; 10.3b-1 done; 10.3b-2 in progress)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4a in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -167,6 +167,22 @@ Close the gap with competing finance apps. Each section can ship on its own.
 - CSV import with CsvHelper (use its Apache-2.0 licence): pick file → map columns (date, description, amount,
   type/sign) → preview → duplicate detection (date + amount + description) → import into one account.
 - Save mappings per bank. Later: OFX/QIF.
+
+  Split by agreement (2026-10-16): **10.4a** = import, **10.4b** = saved mappings per bank (recognised by the header).
+  Owner choices: one signed amount column (no debit/credit or type columns); categories learned from history (the
+  latest entry of the type with the same description, digits ignored), else a default per type picked on the screen.
+
+  10.4a done as: Core `CsvTable` (own delimiter choice = the one giving the largest table, because CsvHelper's detection
+  picks "," in "-45.000,00;…" files; the longest run of rows with the common width, so title / totals lines don't
+  break it; header-less files get "Column n"; strict UTF-8 else Latin-1), `StatementDate` (layouts + optional time;
+  ambiguous day/month → the shortest date span, then the culture's order; the screen offers the choice),
+  `StatementAmount` (per-column decimal separator; "(12.00)", "12.00-", currency signs/codes; a column qualifies with
+  all but one or 20% of its values readable), `StatementMapping.Guess` (en/es header names, else the values),
+  `IStatementImportService` (preview with counted duplicates per account: day + type + cents + description; import
+  in one DB transaction; undo deletes the new IDs). App: Settings → Import bank statement → `ImportStatementPage`
+  (pickers for account / columns / date format, "positive amounts are expenses" switch, default categories,
+  preview rows with include box and tap-to-change category, pinned Import button, then Undo / OK). CsvHelper
+  33.1.0 under Apache-2.0 on the About page and in THIRD-PARTY-NOTICES.md.
 
 ### 10.5 Backups off the device
 - Scheduled automatic local backups (weekly, keep last N).

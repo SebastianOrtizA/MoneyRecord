@@ -27,6 +27,7 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(SetupPage), typeof(SetupPage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
             Routing.RegisterRoute(nameof(LicensePage), typeof(LicensePage));
+            Routing.RegisterRoute(nameof(ImportStatementPage), typeof(ImportStatementPage));
 
             // The DI singleton: a private fallback would keep a second history the ViewModels never see
             var services = IPlatformApplication.Current!.Services;

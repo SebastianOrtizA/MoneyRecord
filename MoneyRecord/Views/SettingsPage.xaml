@@ -221,6 +221,19 @@
                                 HeightRequest="48"
                                 CornerRadius="10"/>
 
+                        <!-- Bank statement (CSV) into one account; not a restore, nothing is replaced -->
+                        <Button Text="{ext:Localize ImportStatement}"
+                                Command="{Binding OpenImportCommand}"
+                                BackgroundColor="{AppThemeBinding Light=#00796B, Dark=#4DB6AC}"
+                                TextColor="White"
+                                FontSize="15"
+                                HeightRequest="48"
+                                CornerRadius="10"/>
+                        <Label Text="{ext:Localize ImportStatementDescription}"
+                               FontSize="12"
+                               Margin="0,-4,0,4"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+
                         <Button Text="{ext:Localize RestoreFromBackup}"
                                 Command="{Binding RestoreCommand}"
                                 IsEnabled="{Binding IsImporting, Converter={StaticResource InvertedBoolConverter}}"
