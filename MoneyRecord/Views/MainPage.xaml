@@ -483,6 +483,63 @@
                 </VerticalStackLayout>
             </Frame>
 
+            <!-- Savings goals: the first three (today's balances, so the period doesn't apply); a tap opens Goals -->
+            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
+                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="16"
+                    IsVisible="{Binding HasGoals}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ViewAllGoalsCommand}"/>
+                </Border.GestureRecognizers>
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ext:Localize SavingsGoalsTitle}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="{ext:Localize SeeAll}"
+                               Style="{StaticResource CardLink}"/>
+                    </Grid>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding GoalSummaries}" Spacing="8">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:GoalProgress">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" RowDefinitions="Auto,Auto" RowSpacing="2">
+                                    <Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                                           Text="{Binding DisplayIcon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="22"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                    <Label Grid.Row="0" Grid.Column="1"
+                                           Text="{Binding Name}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           LineBreakMode="TailTruncation"/>
+                                    <!-- Saved of the target; hidden with the balances (the bar still shows the share) -->
+                                    <Label Grid.Row="0" Grid.Column="2"
+                                           Text="{Binding SavedOfTargetText}"
+                                           FontSize="14">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=HideBalances}"
+                                                         Value="True">
+                                                <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <ProgressBar Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                                 Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
+                                                 ProgressColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}"
+                                                 HeightRequest="4"/>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
                         </VerticalStackLayout>
                     </ScrollView>
                 </RefreshView>

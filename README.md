@@ -48,6 +48,12 @@ and Windows are maintained too. All data stays on the device.
 - Progress bars with light/dark-aware colours: green under 60%, amber 60–80%, orange 80–100%, red when exceeded.
 - Totals: budgeted, spent, remaining.
 
+### Savings goals
+- A goal is a target amount, optionally by a date, saved in one or more accounts (More → Goals). Saved = those
+  accounts' balance; an account counts for one goal only, and a goal's accounts share its currency.
+- Each goal shows what to save per month to reach it by its date, and when the last 3 months' pace would reach it
+  (On track / Behind / Reached). Home lists the first three.
+
 ### Recurring transactions
 - Daily, weekly, biweekly, monthly (optionally on a specific day) or yearly rules, with an optional end date.
 - Due transactions are created when the app starts and, on Android, by a daily background job.
@@ -204,7 +210,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 ├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
 │                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping,
 │                       LedgerTransfers, CategoryReportBuilder, RecurrenceCalculator, Debouncer
-├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction (tables)
+├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal (tables)
 │                       + display models (LedgerEntry, TransactionGroup, CategoryAmount, AccountBalanceInfo, BudgetProgress, ...)
 ├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
 ├── Services/
@@ -216,6 +222,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 │   ├── TransactionEnrichmentService             Names/icons/currencies for display
 │   ├── LedgerService                            Home list rows (transactions + whole transfers), delete one
 │   ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
+│   ├── SavingsGoalService                       Goal progress (linked accounts' balances) + projection
 │   ├── CurrencyService                          Currencies, base currency, decimals
 │   ├── RecurringTransactionService              Creates due recurring transactions
 │   ├── DataExportService                        Zip backup, restore + snapshot, CSV export
@@ -230,7 +237,7 @@ MoneyRecord/            The MAUI app
 ├── Platforms/          Android (back button, numeric entry handler), iOS, MacCatalyst, Windows
 ├── Services/           NavigationService, DialogService, PreferencesService
 ├── ViewModels/         One per page + FloatingMenuViewModel
-├── Views/              Main, AddTransaction, AddTransfer, Transfers, ManageAccounts, ManageCategories, Budget,
+├── Views/              Main, AddTransaction, AddTransfer, Transfers, ManageAccounts, ManageCategories, Budget, Goals,
 │                       RecurringTransactions, CategoryReport (Expense/Income), TrendsReport, Settings
 ├── App.xaml            Converters and styles; processes recurring transactions on start
 ├── AppShell.xaml       Flyout menu and routes

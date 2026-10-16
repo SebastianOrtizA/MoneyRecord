@@ -1,0 +1,161 @@
+using AwesomeAssertions;
+using Microsoft.Extensions.Time.Testing;
+using MoneyRecord.Helpers;
+using MoneyRecord.Models;
+using MoneyRecord.Services;
+using MoneyRecord.Services.Repositories;
+using SQLite;
+using Xunit;
+
+namespace MoneyRecord.Tests.Services;
+
+/// <summary>SavingsGoalService against a real temp SQLite file (balances and the pace are SQL totals).</summary>
+public sealed class SavingsGoalServiceTests : IAsyncLifetime
+{
+    private static readonly DateTime Today = new(2026, 10, 16);
+
+    private readonly string _appData = Path.Combine(Path.GetTempPath(), $"moneyrecord-goals-{Guid.NewGuid():N}");
+    private DatabaseInitializer _dbInitializer = null!;
+    private AccountRepository _accounts = null!;
+    private SavingsGoalService _sut = null!;
+
+    private SQLiteAsyncConnection Db { get; set; } = null!;
+
+    private static string Base => MoneyFormatter.BaseCurrency;
+
+    public async Task InitializeAsync()
+    {
+        Directory.CreateDirectory(_appData);
+        _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
+        Db = await _dbInitializer.GetConnectionAsync();
+        _accounts = new AccountRepository(_dbInitializer);
+        var balances = new BalanceService(_accounts, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer));
+        var clock = new FakeTimeProvider(new DateTimeOffset(Today.AddHours(12), TimeSpan.Zero));
+        clock.SetLocalTimeZone(TimeZoneInfo.Utc);
+        _sut = new SavingsGoalService(_dbInitializer, _accounts, balances, clock);
+    }
+
+    public async Task DisposeAsync()
+    {
+        await Db.CloseAsync();
+        Directory.Delete(_appData, recursive: true);
+    }
+
+    // Through the repository: it caches the accounts
+    private async Task<Account> AddAccountAsync(string name, decimal initial = 0, string? currencyCode = null, DateTime? created = null)
+    {
+        var account = new Account
+        {
+            Name = name, InitialBalance = initial, CurrencyCode = currencyCode ?? Base, CreatedDate = created ?? new DateTime(2026, 1, 1)
+        };
+        await _accounts.SaveAsync(account);
+        return account;
+    }
+
+    private Task AddAsync(TransactionType type, decimal amount, DateTime date, int accountId) =>
+        Db.InsertAsync(new Transaction { Type = type, Amount = amount, Date = date, AccountId = accountId, CategoryId = 1 });
+
+    private Task TransferAsync(int from, int to, decimal amount, DateTime date) =>
+        Db.InsertAsync(new Transfer { SourceAccountId = from, DestinationAccountId = to, Amount = amount, DestinationAmount = amount, Date = date });
+
+    private static SavingsGoal Goal(string name = "Trip", decimal target = 3000m, DateTime? targetDate = null) =>
+        new() { Name = name, TargetAmount = target, CurrencyCode = Base, TargetDate = targetDate };
+
+    [Fact]
+    public async Task Saved_is_the_balance_of_the_linked_accounts_and_the_pace_their_recent_change()
+    {
+        var checking = await AddAccountAsync("Checking", 5000m);
+        var savings = await AddAccountAsync("Savings", 1000m);
+        var box = await AddAccountAsync("Box", 200m);
+        // Within the last 3 months: +900 into the goal's accounts (a move between them doesn't count)
+        await TransferAsync(checking.Id, savings.Id, 600m, Today.AddMonths(-2));
+        await AddAsync(TransactionType.Income, 300m, Today.AddDays(-10), box.Id);
+        await TransferAsync(savings.Id, box.Id, 100m, Today.AddDays(-5));
+        // Before the window: in the balance, not in the pace
+        await AddAsync(TransactionType.Income, 400m, Today.AddMonths(-5), savings.Id);
+        await _sut.SaveAsync(Goal(targetDate: Today.AddMonths(6)), [savings.Id, box.Id]);
+
+        var progress = (await _sut.GetProgressAsync()).Should().ContainSingle().Subject;
+
+        progress.Saved.Should().Be(1000m + 600m + 400m + 200m + 300m);
+        progress.MonthlyPace.Should().BeApproximately(300m, 3m);
+        progress.AccountIds.Should().BeEquivalentTo([savings.Id, box.Id]);
+        progress.Status.Should().Be(GoalStatus.OnTrack, "500 left at 300 a month is reached in 2 months");
+    }
+
+    [Fact]
+    public async Task A_new_account_has_no_pace_yet()
+    {
+        var savings = await AddAccountAsync("Savings", 1000m, created: Today.AddDays(-7));
+        await _sut.SaveAsync(Goal(), [savings.Id]);
+
+        var progress = (await _sut.GetProgressAsync()).Single();
+
+        progress.MonthlyPace.Should().BeNull();
+        progress.Status.Should().Be(GoalStatus.None);
+    }
+
+    [Fact]
+    public async Task An_account_that_changed_currency_is_listed_but_not_counted()
+    {
+        var savings = await AddAccountAsync("Savings", 1000m);
+        var other = await AddAccountAsync("Other", 500m);
+        await _sut.SaveAsync(Goal(), [savings.Id, other.Id]);
+        other.CurrencyCode = Base == "EUR" ? "USD" : "EUR";
+        await _accounts.SaveAsync(other);
+
+        var progress = (await _sut.GetProgressAsync()).Single();
+
+        progress.Saved.Should().Be(1000m);
+        progress.HasUncounted.Should().BeTrue();
+        progress.AccountIds.Should().BeEquivalentTo([savings.Id, other.Id]);
+    }
+
+    [Fact]
+    public async Task Goals_list_open_ones_by_date_and_reached_ones_last()
+    {
+        var a = await AddAccountAsync("A", 5000m);
+        var b = await AddAccountAsync("B", 10m);
+        var c = await AddAccountAsync("C", 10m);
+        await _sut.SaveAsync(Goal("Done", 1000m), [a.Id]);
+        await _sut.SaveAsync(Goal("No date"), [b.Id]);
+        await _sut.SaveAsync(Goal("Soon", targetDate: Today.AddMonths(2)), [c.Id]);
+
+        (await _sut.GetProgressAsync()).Select(p => p.Name).Should().Equal("Soon", "No date", "Done");
+    }
+
+    [Fact]
+    public async Task Saving_replaces_the_accounts_and_refuses_another_goals_or_currencys_account()
+    {
+        var a = await AddAccountAsync("A");
+        var b = await AddAccountAsync("B");
+        var euros = await AddAccountAsync("Euros", currencyCode: Base == "EUR" ? "USD" : "EUR");
+        var trip = Goal("Trip");
+        await _sut.SaveAsync(trip, [a.Id]);
+        await _sut.SaveAsync(trip, [b.Id]);
+
+        (await _sut.GetLinkedAccountsAsync()).Should().BeEquivalentTo(new Dictionary<int, int> { [b.Id] = trip.Id });
+
+        var car = Goal("Car");
+        await FluentActions.Awaiting(() => _sut.SaveAsync(car, [b.Id])).Should().ThrowAsync<InvalidOperationException>();
+        await FluentActions.Awaiting(() => _sut.SaveAsync(car, [euros.Id])).Should().ThrowAsync<InvalidOperationException>();
+        (await Db.Table<SavingsGoal>().CountAsync()).Should().Be(1, "a refused goal is not added");
+    }
+
+    [Fact]
+    public async Task Deleting_a_goal_or_an_account_removes_the_links_only()
+    {
+        var a = await AddAccountAsync("A");
+        var b = await AddAccountAsync("B");
+        var trip = Goal("Trip");
+        await _sut.SaveAsync(trip, [a.Id, b.Id]);
+
+        await new AccountService(_dbInitializer, _accounts).DeleteAsync(a.Id);
+        (await _sut.GetLinkedAccountsAsync()).Keys.Should().Equal(b.Id);
+
+        await _sut.DeleteAsync(trip.Id);
+        (await Db.Table<SavingsGoalAccount>().CountAsync()).Should().Be(0);
+        (await Db.Table<SavingsGoal>().CountAsync()).Should().Be(0);
+        (await _accounts.GetByIdAsync(b.Id)).Should().NotBeNull("the account and its money stay");
+    }
+}

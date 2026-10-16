@@ -4352,5 +4352,275 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("RestoreWrongPassword", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goals.
+        /// </summary>
+        public static string SavingsGoals {
+            get {
+                return ResourceManager.GetString("SavingsGoals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Savings goals.
+        /// </summary>
+        public static string SavingsGoalsTitle {
+            get {
+                return ResourceManager.GetString("SavingsGoalsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add goal.
+        /// </summary>
+        public static string AddGoal {
+            get {
+                return ResourceManager.GetString("AddGoal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit goal.
+        /// </summary>
+        public static string EditGoal {
+            get {
+                return ResourceManager.GetString("EditGoal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string GoalName {
+            get {
+                return ResourceManager.GetString("GoalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Vacation.
+        /// </summary>
+        public static string GoalNamePlaceholder {
+            get {
+                return ResourceManager.GetString("GoalNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target amount.
+        /// </summary>
+        public static string GoalTarget {
+            get {
+                return ResourceManager.GetString("GoalTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reach it by a date.
+        /// </summary>
+        public static string GoalHasTargetDate {
+            get {
+                return ResourceManager.GetString("GoalHasTargetDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accounts that hold the savings.
+        /// </summary>
+        public static string GoalAccounts {
+            get {
+                return ResourceManager.GetString("GoalAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved = their balance. An account counts for one goal only..
+        /// </summary>
+        public static string GoalAccountsHint {
+            get {
+                return ResourceManager.GetString("GoalAccountsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No free accounts in {0}. Add one in Accounts..
+        /// </summary>
+        public static string GoalNoFreeAccounts {
+            get {
+                return ResourceManager.GetString("GoalNoFreeAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No savings goals yet.
+        /// </summary>
+        public static string NoGoalsYet {
+            get {
+                return ResourceManager.GetString("NoGoalsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a goal and link the accounts that hold its money..
+        /// </summary>
+        public static string AddGoalToStart {
+            get {
+                return ResourceManager.GetString("AddGoalToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a name for the goal.
+        /// </summary>
+        public static string PleaseEnterGoalName {
+            get {
+                return ResourceManager.GetString("PleaseEnterGoalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select at least one account.
+        /// </summary>
+        public static string PleaseSelectGoalAccount {
+            get {
+                return ResourceManager.GetString("PleaseSelectGoalAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goal added.
+        /// </summary>
+        public static string GoalAdded {
+            get {
+                return ResourceManager.GetString("GoalAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load the goals.
+        /// </summary>
+        public static string FailedToLoadGoals {
+            get {
+                return ResourceManager.GetString("FailedToLoadGoals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the goal.
+        /// </summary>
+        public static string FailedToSaveGoal {
+            get {
+                return ResourceManager.GetString("FailedToSaveGoal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete the goal.
+        /// </summary>
+        public static string FailedToDeleteGoal {
+            get {
+                return ResourceManager.GetString("FailedToDeleteGoal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the goal "{0}"? Its accounts and their money stay..
+        /// </summary>
+        public static string DeleteGoalConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteGoalConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reached.
+        /// </summary>
+        public static string GoalReached {
+            get {
+                return ResourceManager.GetString("GoalReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Behind.
+        /// </summary>
+        public static string GoalBehind {
+            get {
+                return ResourceManager.GetString("GoalBehind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string GoalSavedOfTarget {
+            get {
+                return ResourceManager.GetString("GoalSavedOfTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save {0} a month to reach it by {1}.
+        /// </summary>
+        public static string GoalNeededPerMonth {
+            get {
+                return ResourceManager.GetString("GoalNeededPerMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The target date was {0}.
+        /// </summary>
+        public static string GoalTargetDatePassed {
+            get {
+                return ResourceManager.GetString("GoalTargetDatePassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not enough history for a projection yet.
+        /// </summary>
+        public static string GoalNotEnoughHistory {
+            get {
+                return ResourceManager.GetString("GoalNotEnoughHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No savings in the last {0} months.
+        /// </summary>
+        public static string GoalNoRecentSavings {
+            get {
+                return ResourceManager.GetString("GoalNoRecentSavings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At your pace: {0}.
+        /// </summary>
+        public static string GoalAtYourPace {
+            get {
+                return ResourceManager.GetString("GoalAtYourPace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At your pace it won't be reached soon.
+        /// </summary>
+        public static string GoalNotInSight {
+            get {
+                return ResourceManager.GetString("GoalNotInSight", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not counted (other currency): {0}.
+        /// </summary>
+        public static string GoalAccountsNotCounted {
+            get {
+                return ResourceManager.GetString("GoalAccountsNotCounted", resourceCulture);
+            }
+        }
     }
 }

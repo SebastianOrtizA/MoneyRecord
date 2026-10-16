@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             x:Class="MoneyRecord.Views.GoalsPage"
+             x:DataType="viewmodels:GoalsViewModel"
+             Title="{ext:Localize SavingsGoalsTitle}">
+
+    <ContentPage.Resources>
+        <Style x:Key="GoalNote" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        </Style>
+        <Style x:Key="FormCaption" TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}"
+                     Command="{Binding LoadGoalsCommand}">
+            <!-- One card per goal (a tap opens the edit sheet), footer = empty state -->
+            <!-- The 16px gutter is inside the rows and footer, so the scrollbar sits at the screen edge -->
+            <CollectionView ItemsSource="{Binding Goals}">
+                <CollectionView.Header>
+                    <ContentView HeightRequest="6" />
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:GoalProgress">
+                        <Border Margin="16,6"
+                                Padding="14"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:GoalsViewModel}}, Path=EditGoalCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="10">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" StrokeShape="Ellipse"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                        <Label Text="{Binding DisplayIcon}"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="20"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation" />
+                                        <!-- The accounts whose balance is the saved amount -->
+                                        <Label Text="{Binding AccountNames}"
+                                               FontSize="12"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                    </VerticalStackLayout>
+
+                                    <!-- Status: icon + words + colour, so colour isn't the only signal -->
+                                    <HorizontalStackLayout Grid.Column="2" Spacing="4" VerticalOptions="Center"
+                                                           IsVisible="{Binding HasStatus}">
+                                        <Label Text="{Binding StatusIcon}"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="16"
+                                               VerticalOptions="Center"
+                                               TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
+                                        <Label Text="{Binding StatusText}"
+                                               FontSize="13"
+                                               FontAttributes="Bold"
+                                               VerticalOptions="Center"
+                                               TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+
+                                <ProgressBar Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
+                                             ProgressColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}"
+                                             BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                             HeightRequest="10" />
+
+                                <!-- Saved of the target, and the share -->
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Label Text="{Binding SavedOfTargetText}" FontSize="14" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding ProgressPercentage, StringFormat='{0:0}%'}"
+                                           FontSize="14"
+                                           FontAttributes="Bold" />
+                                </Grid>
+
+                                <!-- What it takes by the target date, and where the recent pace leads -->
+                                <Label Text="{Binding PlanText}" IsVisible="{Binding HasPlan}" Style="{StaticResource GoalNote}" />
+                                <Label Text="{Binding PaceText}" IsVisible="{Binding HasPace}" Style="{StaticResource GoalNote}" />
+                                <Label Text="{Binding UncountedText}" IsVisible="{Binding HasUncounted}" Style="{StaticResource GoalNote}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.Footer>
+                    <VerticalStackLayout>
+                        <!-- Empty state -->
+                        <VerticalStackLayout Spacing="12"
+                                             Padding="32,48"
+                                             IsVisible="{Binding HasGoals, Converter={StaticResource InvertedBoolConverter}}">
+                            <Label Text="&#xF1007;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="64"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            <Label Text="{ext:Localize NoGoalsYet}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="{ext:Localize AddGoalToStart}"
+                                   FontSize="14"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        </VerticalStackLayout>
+                        <!-- Room so the last card scrolls above the add button -->
+                        <ContentView HeightRequest="88" />
+                    </VerticalStackLayout>
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize AddGoal}"
+                IsVisible="{Binding IsFormOpen, Converter={StaticResource InvertedBoolConverter}}"
+                Command="{Binding AddGoalCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
+
+        <!-- Add / edit sheet: name, target, currency, optional date, accounts -->
+        <controls:BottomSheet IsOpen="{Binding IsFormOpen}" CloseCommand="{Binding CloseFormCommand}">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" Margin="0,0,0,4" />
+
+                <Label Text="{ext:Localize GoalName}" Style="{StaticResource FormCaption}" />
+                <Entry Text="{Binding FormName}"
+                       Placeholder="{ext:Localize GoalNamePlaceholder}"
+                       MaxLength="60"
+                       FontSize="16" />
+
+                <!-- The currency picker only shows when the accounts use several -->
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                    <Label Text="{ext:Localize GoalTarget}" Style="{StaticResource FormCaption}" />
+                    <Label Grid.Column="1"
+                           Text="{ext:Localize Currency}"
+                           IsVisible="{Binding ShowCurrencyPicker}"
+                           Style="{StaticResource FormCaption}" />
+                    <controls:DecimalEntry Grid.Row="1"
+                                           Text="{Binding FormAmount}"
+                                           Placeholder="0.00"
+                                           FontSize="16">
+                        <controls:DecimalEntry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency}" />
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
+                    <Picker Grid.Row="1" Grid.Column="1"
+                            ItemsSource="{Binding Currencies}"
+                            SelectedItem="{Binding FormCurrency}"
+                            IsVisible="{Binding ShowCurrencyPicker}"
+                            Title="{ext:Localize SelectCurrency}"
+                            WidthRequest="96"
+                            FontSize="16"
+                            MinimumHeightRequest="44" />
+                </Grid>
+
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <Label Text="{ext:Localize GoalHasTargetDate}"
+                           FontSize="16"
+                           VerticalOptions="Center" />
+                    <Switch Grid.Column="1"
+                            IsToggled="{Binding HasTargetDate}"
+                            OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                </Grid>
+                <DatePicker Date="{Binding TargetDate}"
+                            Format="D"
+                            FontSize="16"
+                            IsVisible="{Binding HasTargetDate}" />
+
+                <Label Text="{ext:Localize GoalAccounts}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding AccountChoices}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:GoalAccountChoice">
+                            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" MinimumHeightRequest="44">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnAccountRowTapped" />
+                                </Grid.GestureRecognizers>
+                                <CheckBox IsChecked="{Binding IsSelected}"
+                                          VerticalOptions="Center"
+                                          Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding Account.DisplayIcon}"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="20"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                <Label Grid.Column="2"
+                                       Text="{Binding Account.Name}"
+                                       FontSize="16"
+                                       LineBreakMode="TailTruncation"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+                <Label Text="{Binding NoFreeAccountsText}"
+                       IsVisible="{Binding HasAccountChoices, Converter={StaticResource InvertedBoolConverter}}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                <Label Text="{ext:Localize GoalAccountsHint}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+
+                <!-- Delete only when editing -->
+                <Grid ColumnDefinitions="Auto,*" Margin="0,12,0,0">
+                    <Button Text="{ext:Localize DeleteButton}"
+                            IsVisible="{Binding IsEditMode}"
+                            Command="{Binding DeleteGoalCommand}"
+                            Margin="0,0,12,0"
+                            HeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                    <Button Grid.Column="1"
+                            Text="{Binding SaveText}"
+                            Command="{Binding SaveGoalCommand}"
+                            HeightRequest="44"
+                            CornerRadius="22"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                </Grid>
+            </VerticalStackLayout>
+        </controls:BottomSheet>
+    </Grid>
+
+</ContentPage>

@@ -10,13 +10,16 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<List<Transfer>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
 
-        /// <summary>All-time totals leaving each account (unsigned, in cents), with its latest outgoing transfer date.</summary>
-        Task<List<AccountTotal>> SumCentsBySourceAsync();
+        /// <summary>
+        /// Totals leaving each account (unsigned, in cents), with its latest outgoing transfer date: all-time, or only the
+        /// transfers dated after <paramref name="after"/>.
+        /// </summary>
+        Task<List<AccountTotal>> SumCentsBySourceAsync(DateTime after = default);
 
         /// <summary>
-        /// All-time totals arriving in each account (unsigned destination amounts, in cents), with its latest incoming
-        /// transfer date.
+        /// Totals arriving in each account (unsigned destination amounts, in cents), with its latest incoming
+        /// transfer date (all-time, or after <paramref name="after"/>).
         /// </summary>
-        Task<List<AccountTotal>> SumCentsByDestinationAsync();
+        Task<List<AccountTotal>> SumCentsByDestinationAsync(DateTime after = default);
     }
 }

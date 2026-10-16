@@ -25,6 +25,7 @@ namespace MoneyRecord.ViewModels
         private readonly IDatabaseEncryption _databaseEncryption;
         private readonly IConversionService _conversion;
         private readonly IExchangeRateSettings _rateSettings;
+        private readonly ISavingsGoalService _goals;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -125,6 +126,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private int budgetsOverBudget;
 
+        /// <summary>The first goals (open ones by target date); the card shows once a goal exists.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasGoals))]
+        private List<GoalProgress> goalSummaries = [];
+
+        public bool HasGoals => GoalSummaries.Count > 0;
+
         /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
         public PeriodViewModel Period { get; }
 
@@ -132,8 +140,9 @@ namespace MoneyRecord.ViewModels
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
-            IConversionService conversion, IExchangeRateSettings rateSettings)
+            IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals)
         {
+            _goals = goals;
             _conversion = conversion;
             _rateSettings = rateSettings;
             _balanceService = balanceService;
@@ -213,7 +222,8 @@ namespace MoneyRecord.ViewModels
                 var budgetsTask = _budgetSummaryService.GetSummaryAsync(
                     Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
                 var upcomingTask = _recurringService.GetUpcomingAsync();
-                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask);
+                var goalsTask = _goals.GetProgressAsync();
+                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var balanceLines = CurrencyBalance.DisplayLines(
@@ -247,6 +257,9 @@ namespace MoneyRecord.ViewModels
                 BudgetsOverBudget = budgets.Count(b => b.IsOverBudget);
                 BudgetSummaries = new(budgets.Take(3));
                 HasBudgets = budgets.Count > 0;
+
+                // Goals don't follow the period: saved is today's balance
+                GoalSummaries = (await goalsTask).Take(3).ToList();
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -279,5 +292,8 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task ViewAllBudgetsAsync() => _navigationService.NavigateToAsync($"//{nameof(BudgetPage)}");
+
+        [RelayCommand]
+        private Task ViewAllGoalsAsync() => _navigationService.NavigateToAsync(nameof(GoalsPage));
     }
 }

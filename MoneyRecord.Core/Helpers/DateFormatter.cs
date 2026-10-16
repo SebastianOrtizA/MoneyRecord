@@ -12,7 +12,9 @@ namespace MoneyRecord.Helpers
         /// <summary>Oct 11 / 11 de oct</summary>
         MonthDay,
         /// <summary>Oct / oct (a month on a chart axis)</summary>
-        Month
+        Month,
+        /// <summary>Oct 2026 / oct de 2026</summary>
+        MonthYear
     }
 
     /// <summary>
@@ -38,6 +40,7 @@ namespace MoneyRecord.Helpers
                 DateStyle.Long => WithoutWeekday(format.LongDatePattern),
                 DateStyle.Medium => AbbreviateMonth(WithoutWeekday(format.LongDatePattern)),
                 DateStyle.Month => "MMM",
+                DateStyle.MonthYear => AbbreviateMonth(format.YearMonthPattern),
                 _ => AbbreviateMonth(format.MonthDayPattern)
             };
         }

@@ -85,11 +85,15 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         await Db.InsertAsync(new Transfer { Amount = 50m, DestinationAmount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
         await Db.InsertAsync(new Budget { CategoryId = food.Id, LimitAmount = 300m });
         await Db.InsertAsync(new RecurringTransaction { Description = "Rent", Amount = 500m, CategoryId = food.Id, AccountId = bank.Id });
+        var goal = new SavingsGoal { Name = "Trip", TargetAmount = 2000m, CurrencyCode = "USD", TargetDate = new DateTime(2027, 6, 1) };
+        await Db.InsertAsync(goal);
+        await Db.InsertAsync(new SavingsGoalAccount { GoalId = goal.Id, AccountId = bank.Id });
         var before = await DumpAsync();
         var backupPath = BackupPath("backup.zip");
         await _service.ExportBackupAsync(backupPath);
 
         // Change everything after the backup
+        await Db.DeleteAllAsync<SavingsGoalAccount>();
         await Db.DeleteAllAsync<Transaction>();
         await Db.InsertAsync(new Transaction { Description = "Later", Amount = 1m, ReceiptPhotoPath = WriteReceipt("receipt_2.jpg", "photo-2") });
         File.Delete(Path.Combine(Receipts, "receipt_1.jpg"));
@@ -104,6 +108,8 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         (lunch.ConvertedAmount, lunch.ConvertedCurrencyCode).Should().Be((3.1m, "EUR"));
         File.ReadAllText(lunch.ReceiptPhotoPath!).Should().Be("photo-1");
         Directory.GetFiles(Receipts).Select(Path.GetFileName).Should().Equal("receipt_1.jpg");
+        (await Db.Table<SavingsGoalAccount>().ToListAsync()).Should().ContainSingle()
+            .Which.Should().BeEquivalentTo(new { GoalId = goal.Id, AccountId = bank.Id }, "the goal keeps its account; a link is not counted as an item");
         File.Exists(result.SnapshotPath).Should().BeTrue();
     }
 
@@ -373,6 +379,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         rows.AddRange(await Db.Table<Transfer>().ToListAsync());
         rows.AddRange(await Db.Table<Budget>().ToListAsync());
         rows.AddRange(await Db.Table<RecurringTransaction>().ToListAsync());
+        rows.AddRange(await Db.Table<SavingsGoal>().ToListAsync());
         return rows;
     }
 }
