@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
@@ -93,7 +94,7 @@ namespace MoneyRecord.ViewModels
             FrequencyOptions = BackupFrequencyOption.All();
             KeepOptions = BackupKeepOption.All();
             SelectedFrequency = FrequencyOptions.First(o => o.Frequency == _settings.Frequency);
-            SelectedKeep = KeepOptions.FirstOrDefault(o => o.Count == _settings.Keep) ?? KeepOptions[1];
+            SelectedKeep = KeepOptions.FirstOrDefault(o => o.Count == _settings.Keep) ?? KeepOptions.First(o => o.Count == AutoBackupSettings.DefaultKeep);
             if (!IsBusy)
                 Status = StatusText();
         }

@@ -348,8 +348,6 @@
                     </VerticalStackLayout>
                 </Border>
 
-
-
                 <!-- Share logs: the error log as a zip, to report a problem -->
                 <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
                        BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"

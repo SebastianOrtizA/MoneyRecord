@@ -13,6 +13,11 @@ namespace MoneyRecord
         /// <summary>The page a tapped notification opens (a Shell route).</summary>
         public const string RouteExtra = "route";
 
+        // Activities started for a result (the backup folder picker), by request code. Static: Android may recreate the
+        // activity while the picker is open, and the new instance gets the result
+        private static readonly Dictionary<int, TaskCompletionSource<Intent?>> PendingResults = [];
+        private static int _lastRequestCode = 1000;
+
         protected override void OnCreate(Bundle? savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -25,16 +30,12 @@ namespace MoneyRecord
                 TakeNotificationRoute(Intent, openNow: false);
         }
 
-        // Activities started for a result (the backup folder picker), by request code
-        private readonly Dictionary<int, TaskCompletionSource<Intent?>> _pendingResults = [];
-        private int _lastRequestCode = 1000;
-
         /// <summary>Starts an activity and returns its result data; null when it was cancelled.</summary>
         public Task<Intent?> StartForResultAsync(Intent intent)
         {
             var requestCode = ++_lastRequestCode;
             var result = new TaskCompletionSource<Intent?>();
-            _pendingResults[requestCode] = result;
+            PendingResults[requestCode] = result;
             StartActivityForResult(intent, requestCode);
             return result.Task;
         }
@@ -42,7 +43,7 @@ namespace MoneyRecord
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            if (_pendingResults.Remove(requestCode, out var result))
+            if (PendingResults.Remove(requestCode, out var result))
                 result.TrySetResult(resultCode == Result.Ok ? data : null);
         }
 

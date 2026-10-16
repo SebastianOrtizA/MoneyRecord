@@ -8,6 +8,8 @@ namespace MoneyRecord.Services
         /// <summary>The choices Settings offers for <see cref="Keep"/>.</summary>
         public static readonly IReadOnlyList<int> KeepChoices = [3, 5, 10, 20];
 
+        public const int DefaultKeep = 5;
+
         private const string EnabledKey = "AutoBackup.Enabled";
         private const string FrequencyKey = "AutoBackup.Frequency";
         private const string KeepKey = "AutoBackup.Keep";
@@ -31,7 +33,7 @@ namespace MoneyRecord.Services
 
         public int Keep
         {
-            get => preferences.Get(KeepKey, 5) is > 0 and var keep ? keep : 5;
+            get => preferences.Get(KeepKey, DefaultKeep) is > 0 and var keep ? keep : DefaultKeep;
             set => preferences.Set(KeepKey, value);
         }
 
