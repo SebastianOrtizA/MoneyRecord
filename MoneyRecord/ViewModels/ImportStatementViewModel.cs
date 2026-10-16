@@ -25,6 +25,7 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
         private readonly IExchangeRateService _exchangeRates;
+        private readonly IStatementMappingStore _mappingStore;
 
         private CsvTable? _table;
         private StatementGuess? _guess;
@@ -34,7 +35,8 @@ namespace MoneyRecord.ViewModels
 
         public ImportStatementViewModel(IStatementImportService importService, IAccountRepository accountRepository,
             ICategoryRepository categoryRepository, IEntryDefaultsService entryDefaults, IDialogService dialogService,
-            INavigationService navigationService, IErrorHandler errorHandler, IExchangeRateService exchangeRates)
+            INavigationService navigationService, IErrorHandler errorHandler, IExchangeRateService exchangeRates,
+            IStatementMappingStore mappingStore)
         {
             _importService = importService;
             _accountRepository = accountRepository;
@@ -44,6 +46,7 @@ namespace MoneyRecord.ViewModels
             _navigationService = navigationService;
             _errorHandler = errorHandler;
             _exchangeRates = exchangeRates;
+            _mappingStore = mappingStore;
         }
 
         [ObservableProperty]
@@ -112,6 +115,10 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private bool isBusy;
+
+        /// <summary>The columns and account come from the last import of a file with this header (shown as a note).</summary>
+        [ObservableProperty]
+        private bool usesSavedMapping;
 
         /// <summary>Only a file whose dates fit both day-first and month-first needs the format picker.</summary>
         public bool HasDateChoice => DateFormats.Count > 1;
@@ -184,7 +191,10 @@ namespace MoneyRecord.ViewModels
                 }
 
                 _table = table;
-                ApplyGuess(table, guess);
+                // A bank's file seen before starts from the choices of its last import
+                var saved = _mappingStore.Find(table, guess);
+                ApplyGuess(table, guess, saved?.Mapping ?? guess.Mapping, Accounts.FirstOrDefault(a => a.Id == saved?.AccountId));
+                UsesSavedMapping = saved != null;
                 FileSummary = $"{file.FileName} · {Plurals.Rows(table.Rows.Count)}";
                 HasFile = true;
                 LoadPreviewCommand.Execute(null);
@@ -196,10 +206,9 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private void ApplyGuess(CsvTable table, StatementGuess guess)
+        private void ApplyGuess(CsvTable table, StatementGuess guess, StatementMapping mapping, Account? account)
         {
             var columns = table.Headers.Select((name, i) => new ColumnOption(i, name)).ToList();
-            var mapping = guess.Mapping;
 
             _applyingGuess = true;
             try
@@ -215,6 +224,8 @@ namespace MoneyRecord.ViewModels
                 DateFormats = guess.DateFormats[mapping.DateColumn];
                 SelectedDateFormat = mapping.DateFormat;
                 PositiveIsExpense = mapping.PositiveIsExpense;
+                if (account != null)
+                    SelectedAccount = account;
             }
             finally
             {
@@ -256,6 +267,7 @@ namespace MoneyRecord.ViewModels
             if (_applyingGuess || _mapping == null)
                 return;
             _mapping = change(_mapping);
+            UsesSavedMapping = false;
             Reload();
         }
 
@@ -368,6 +380,9 @@ namespace MoneyRecord.ViewModels
             {
                 IsBusy = false;
             }
+
+            // The next file from this bank starts with these choices
+            _mappingStore.Remember(_table!, _mapping!, account.Id);
 
             // Entries in another currency (perhaps dated before the stored rates) get their rates in the background
             if (!MoneyFormatter.SameCurrency(account.CurrencyCode, MoneyFormatter.BaseCurrency))

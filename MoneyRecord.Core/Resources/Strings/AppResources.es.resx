@@ -1497,4 +1497,7 @@ Monto: {2}</value>
   <data name="ImportLearnedCategory" xml:space="preserve">
     <value>Misma categoría que la última vez</value>
   </data>
+  <data name="ImportSavedMapping" xml:space="preserve">
+    <value>Mismas columnas y cuenta que en tu última importación de un archivo de este banco.</value>
+  </data>
 </root>

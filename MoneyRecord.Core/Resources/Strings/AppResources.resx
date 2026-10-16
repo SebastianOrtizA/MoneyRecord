@@ -1499,4 +1499,7 @@ Amount: {2}</value>
   <data name="ImportLearnedCategory" xml:space="preserve">
     <value>Same category as last time</value>
   </data>
+  <data name="ImportSavedMapping" xml:space="preserve">
+    <value>Same columns and account as your last import of this bank's file.</value>
+  </data>
 </root>

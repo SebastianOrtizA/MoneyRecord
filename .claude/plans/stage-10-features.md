@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4a in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4a done; 10.4b in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -183,6 +183,15 @@ Close the gap with competing finance apps. Each section can ship on its own.
   (pickers for account / columns / date format, "positive amounts are expenses" switch, default categories,
   preview rows with include box and tap-to-change category, pinned Import button, then Undo / OK). CsvHelper
   33.1.0 under Apache-2.0 on the About page and in THIRD-PARTY-NOTICES.md.
+  Review: `Guess` returns a `StatementGuess` (mapping + date layouts per date column + amount columns) computed once off
+  the UI thread; the VM keeps one mapping updated by each picker.
+
+  10.4b done as: Core `StatementMappingStore` (preferences JSON, last 20 layouts): after an import it saves the columns,
+  date pattern, "positive amounts are expenses" and the account under the file's layout = normalized header names
+  (`CsvTable.HasHeader`), or the column count for a header-less file ("Column n" depends on the language). A file with a
+  known layout opens with those choices if they still fit it (date column reads with the saved pattern, amount column
+  is still one), and a note says so; changing a column hides the note. Not saved: the default categories (learned
+  from history anyway). OFX/QIF stays for later.
 
 ### 10.5 Backups off the device
 - Scheduled automatic local backups (weekly, keep last N).
