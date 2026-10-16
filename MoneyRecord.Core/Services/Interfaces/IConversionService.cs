@@ -26,13 +26,19 @@ namespace MoneyRecord.Services.Interfaces
         public string FormatAmount(decimal amount, bool signed = false)
         {
             var text = signed ? MoneyFormatter.FormatSigned(amount, CurrencyCode) : MoneyFormatter.Format(amount, CurrencyCode);
-            return IsApproximate ? $"≈ {text}" : text;
+            return IsApproximate ? MoneyFormatter.ApproximateMark + text : text;
         }
 
         /// <summary>"No exchange rate yet: ¥1,000" for what couldn't be converted; empty when everything was.</summary>
         public string NotConvertedText => NotConverted.Count == 0
             ? string.Empty
             : string.Format(AppResources.NotConvertedNote, CurrencyAmount.Format(NotConverted, separator: " + "));
+    }
+
+    /// <summary>The "Show in" switch: offered (<see cref="CanConvert"/>) and on (<see cref="IsConverted"/>, implies the other).</summary>
+    public sealed record ConversionState(bool CanConvert, bool IsConverted)
+    {
+        public static readonly ConversionState Off = new(false, false);
     }
 
     /// <summary>Home's period totals: the base currency's (converted, when shown so) and every other currency's.</summary>
@@ -44,11 +50,11 @@ namespace MoneyRecord.Services.Interfaces
     /// </summary>
     public interface IConversionService
     {
-        /// <summary>Totals can be converted: the download is on and some rates are stored.</summary>
-        Task<bool> CanConvertAsync();
-
-        /// <summary>Totals are shown converted: they can be, and the user chose it (or hasn't chosen yet).</summary>
-        Task<bool> IsConvertedAsync();
+        /// <summary>
+        /// Whether totals can be converted (the accounts use several currencies, the download is on and some rates are
+        /// stored: the one rule) and are (the user chose it, or hasn't chosen yet).
+        /// </summary>
+        Task<ConversionState> GetStateAsync();
 
         /// <summary>Remembers the "Show in" choice (Home's switch, the reports' "≈" chip).</summary>
         void SetConverted(bool converted);

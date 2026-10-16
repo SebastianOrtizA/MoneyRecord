@@ -66,6 +66,9 @@ namespace MoneyRecord.Helpers
         /// </summary>
         public static string BaseCurrency => ResolveCurrencyCode(null);
 
+        /// <summary>Before an amount (or its caption) converted with downloaded rates: "≈ $1,250.00".</summary>
+        public const string ApproximateMark = "≈ ";
+
         /// <summary>True when two currency codes name the same currency (empty = the base currency; case ignored).</summary>
         public static bool SameCurrency(string? currencyCode, string? otherCurrencyCode) =>
             ResolveCurrencyCode(currencyCode) == ResolveCurrencyCode(otherCurrencyCode);

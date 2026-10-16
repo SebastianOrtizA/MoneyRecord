@@ -69,7 +69,7 @@ namespace MoneyRecord.ViewModels
         public bool ShowNoRateCaption => IsConverted && ShowOtherTotals;
 
         /// <summary>"≈ USD": the converted choice of the switch.</summary>
-        public string ConvertedChipText => $"≈ {MoneyFormatter.BaseCurrency}";
+        public string ConvertedChipText => MoneyFormatter.ApproximateMark + MoneyFormatter.BaseCurrency;
 
         /// <summary>The switch is offered: several currencies and some downloaded rates.</summary>
         [ObservableProperty]
@@ -208,16 +208,16 @@ namespace MoneyRecord.ViewModels
                 var (startDate, endDate) = Period.Range;
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
                 var totalsTask = _conversion.GetPeriodTotalsAsync(startDate, endDate);
-                var canConvertTask = _conversion.CanConvertAsync();
+                var stateTask = _conversion.GetStateAsync();
                 var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
                 var budgetsTask = _budgetSummaryService.GetSummaryAsync(
                     Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
                 var upcomingTask = _recurringService.GetUpcomingAsync();
-                await Task.WhenAll(balancesTask, totalsTask, canConvertTask, entriesTask, budgetsTask, upcomingTask);
+                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var currencyBalances = CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.BaseCurrency);
-                var balanceLines = CurrencyBalance.DisplayLines(currencyBalances);
+                var balanceLines = CurrencyBalance.DisplayLines(
+                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.BaseCurrency));
                 PrimaryBalance = balanceLines[0];
                 OtherBalances = balanceLines.Skip(1).ToList();
 
@@ -226,8 +226,8 @@ namespace MoneyRecord.ViewModels
                 BaseTotals = totals.Base;
                 OtherTotals = totals.Others;
                 IsConverted = totals.IsConverted;
-                // The switch only means something with several currencies and some rates
-                CanSwitchShowIn = await canConvertTask && currencyBalances.Count > 1;
+                // Offered with several currencies and some rates (the service's one rule)
+                CanSwitchShowIn = (await stateTask).CanConvert;
                 OnPropertyChanged(nameof(ConvertedChipText));
                 ConvertedNote = _rateSettings.LastUpdated is { } updated
                     ? string.Format(AppResources.ConvertedAtDailyRate, DateFormatter.Format(updated, DateStyle.Medium))

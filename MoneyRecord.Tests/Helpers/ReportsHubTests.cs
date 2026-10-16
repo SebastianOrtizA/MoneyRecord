@@ -3,7 +3,9 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.ViewModels;
+using NSubstitute;
 using Xunit;
 
 namespace MoneyRecord.Tests.Helpers;
@@ -151,7 +153,7 @@ public class ReportsHubTests
     [Fact]
     public void Shared_period_shows_a_month_with_one_change()
     {
-        var period = new PeriodViewModel();
+        var period = new PeriodViewModel(Substitute.For<IConversionService>());
         var changes = 0;
         period.Changed += () => changes++;
 
@@ -166,7 +168,7 @@ public class ReportsHubTests
     [Fact]
     public void Shared_period_tells_month_count_changes_apart_from_period_changes()
     {
-        var period = new PeriodViewModel();
+        var period = new PeriodViewModel(Substitute.For<IConversionService>());
         var (changes, monthChanges) = (0, 0);
         period.Changed += () => changes++;
         period.MonthCountChanged += () => monthChanges++;
@@ -191,7 +193,7 @@ public class ReportsHubTests
     [Fact]
     public void A_watch_follows_the_period_until_it_is_disposed()
     {
-        var period = new PeriodViewModel();
+        var period = new PeriodViewModel(Substitute.For<IConversionService>());
         var (changes, months) = (0, 0);
         var watch = period.WatchChanges(() => changes++);
         var monthsWatch = period.WatchMonthCount(() => months++);

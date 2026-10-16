@@ -30,6 +30,23 @@ namespace MoneyRecord.Services.Repositories
                 .GroupBy(r => r.CategoryId)
                 .ToDictionary(g => g.Key, g => CurrencyAmount.Totals(g.Select(r => r.ToAmount()), baseCurrencyCode));
 
+        public async Task<List<DailyTotal>> SumByDayAsync(DateTime startDate, DateTime endDate, string baseCurrencyCode)
+        {
+            var code = baseCurrencyCode.ToUpperInvariant();
+            // Entries with their own conversion into the base are summed as such; the rest per currency and day, for a rate
+            const string ownConversion = "t.ConvertedAmountCents IS NOT NULL AND UPPER(COALESCE(t.ConvertedCurrencyCode, '')) = ?";
+            return await (await ConnectionAsync()).QueryAsync<DailyTotal>(
+                "SELECT t.Type AS Type, t.CategoryId AS CategoryId, COALESCE(NULLIF(a.CurrencyCode, ''), ?) AS CurrencyCode, " +
+                $"t.Date / {TimeSpan.TicksPerDay} AS Day, SUM(ABS(t.AmountCents)) AS Cents, 0 AS IsOwnConversion " +
+                "FROM \"Transaction\" t LEFT JOIN \"Account\" a ON a.Id = t.AccountId " +
+                $"WHERE t.Date >= ? AND t.Date <= ? AND NOT ({ownConversion}) " +
+                "GROUP BY t.Type, t.CategoryId, COALESCE(NULLIF(a.CurrencyCode, ''), ?), t.Date / " + TimeSpan.TicksPerDay + " " +
+                "UNION ALL " +
+                "SELECT t.Type, t.CategoryId, ?, 0, SUM(ABS(t.ConvertedAmountCents)), 1 FROM \"Transaction\" t " +
+                $"WHERE t.Date >= ? AND t.Date <= ? AND {ownConversion} GROUP BY t.Type, t.CategoryId",
+                code, startDate, endDate, code, code, code, startDate, endDate, code);
+        }
+
         public async Task<Dictionary<string, DateTime>> GetFirstDatesByCurrencyAsync(string baseCurrencyCode)
         {
             var code = baseCurrencyCode.ToUpperInvariant();

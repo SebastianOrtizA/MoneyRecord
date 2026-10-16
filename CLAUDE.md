@@ -106,7 +106,8 @@ crashes at runtime (XAML is inflated at runtime there).
   MonthCountPicker / CurrencyChips (bind BindingContext to a page's `Period`; the chips hide with one currency), AddEntryButton (the one add button: opens an Expense /
   Income / Transfer sheet; on Home and Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back
   closes it first),
-  LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard)
+  LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
+  AutoFitLabel (one line; shrinks its font from `MaxFontSize` to fit: amounts in narrow places, e.g. Home's cards)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
@@ -171,7 +172,9 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   `RewritesData = true` to get a `moneyrecord.db3.bak-v{n}` backup first. Indexes are `[Indexed(Name = "IX_…")]` on the models
 - Multi-row changes go through `DatabaseInitializer.RunInTransactionAsync` (deletes in AccountService/CategoryService,
   backup snapshot, restore)
-- Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row
+- Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row; converted
+  totals too (`SumByDayAsync`: per type, category, currency and day, each day converted at its rate). Only the reports
+  load their period's rows (they chart them anyway)
 - Backups: `.zip` with `data.json` (format v4, rows keep their IDs) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization

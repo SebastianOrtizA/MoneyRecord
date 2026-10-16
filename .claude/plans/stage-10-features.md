@@ -157,8 +157,11 @@ Close the gap with competing finance apps. Each section can ship on its own.
   each month end's rate (`NetWorthBuilder.BuildConverted`; a currency missing a rate is left out and named). Rates now
   always reach back to the first of the month 12 months ago (Net worth's longest window), not just the first entry.
   **Deviation:** "rate date shown on tap" became an always-visible note under the converted totals (one tap less).
-  Open (owner): large base-currency totals (COP millions, "$ 7.771.515,00") wrap inside Home's narrow cards; that
-  predates 10.3 and needs a layout decision (smaller font, compact "7,8 M", or stacked rows).
+  Review: the "several currencies" rule lives in `ConversionService.GetStateAsync` (`ConversionState`); converted
+  Home / budget totals come from SQL day sums (`ITransactionRepository.SumByDayAsync`), not loaded rows;
+  `MoneyFormatter.ApproximateMark`; `PeriodViewModel` writes the choice through `IConversionService`. Owner request:
+  `Controls/AutoFitLabel` shrinks Home's amounts (balance lines, cards, pills) to fit one line, so COP millions
+  ("$ 7.771.515,00") no longer wrap.
 
 ### 10.4 Import from bank statements
 - CSV import with CsvHelper (use its Apache-2.0 licence): pick file → map columns (date, description, amount,

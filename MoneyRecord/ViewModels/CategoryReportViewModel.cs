@@ -115,24 +115,23 @@ namespace MoneyRecord.ViewModels
                 var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 var categoriesTask = _categoryRepository.GetByTypeAsync(Type);
                 var baseCode = MoneyFormatter.BaseCurrency;
-                var previousTask = _transactionRepository.SumByCurrencyAsync(TransactionType, previousStart, previousEnd, baseCode);
                 var accountsTask = _accountRepository.GetAllAsync();
-                var canConvertTask = _conversion.CanConvertAsync();
-                var convertedTask = _conversion.IsConvertedAsync();
-                await Task.WhenAll(transactionsTask, categoriesTask, previousTask, accountsTask, canConvertTask, convertedTask);
+                var stateTask = _conversion.GetStateAsync();
+                await Task.WhenAll(transactionsTask, categoriesTask, accountsTask, stateTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // One currency at a time (the chips list the currencies the accounts use), or all converted ("≈")
                 var accounts = await accountsTask;
                 var currencies = ReportCurrencies.InUse(accounts, baseCode);
-                var (canConvert, converted) = (await canConvertTask, await convertedTask);
-                await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies, canConvert, converted));
+                var state = await stateTask;
+                await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies, state));
                 var shown = await _conversion.ForReportAsync((await transactionsTask).Where(t => t.Type == TransactionType),
                     accounts, Period.IsConverted, Period.ReportCurrency);
                 var code = shown.CurrencyCode;
                 var previous = Period.IsConverted
                     ? await ConvertedTotalAsync(previousStart, previousEnd, accounts)
-                    : CurrencyAmount.In(await previousTask, code);
+                    : CurrencyAmount.In(
+                        await _transactionRepository.SumByCurrencyAsync(TransactionType, previousStart, previousEnd, baseCode), code);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var report = CategoryReportBuilder.Build(shown.Transactions, Type, (await categoriesTask).Select(c => c.Id), code);

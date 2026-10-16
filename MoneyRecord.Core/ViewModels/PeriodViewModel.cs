@@ -42,8 +42,8 @@ namespace MoneyRecord.ViewModels
         // The reports' currency; null = the base currency, so a base currency change in Settings is followed
         private string? _reportCurrency;
 
-        // Where the "Show in" choice is remembered (none in tests that don't need it)
-        private readonly ICurrencyDisplaySettings? _display;
+        // Remembers the "Show in" choice (the same call as Home's switch)
+        private readonly IConversionService _conversion;
 
         /// <summary>The reports' currency chips; empty with a single currency (nothing to choose).</summary>
         [ObservableProperty]
@@ -58,13 +58,9 @@ namespace MoneyRecord.ViewModels
         /// <summary>The reports show every currency converted into the base (the "≈" chip).</summary>
         public bool IsConverted { get; private set; }
 
-        public PeriodViewModel() : this(null)
+        public PeriodViewModel(IConversionService conversion)
         {
-        }
-
-        public PeriodViewModel(ICurrencyDisplaySettings? display)
-        {
-            _display = display;
+            _conversion = conversion;
             selectedPeriod = periods.First(p => p.Type == PeriodType.CalendarMonth);
             // Lives as long as the app (singleton): the pickers follow a language change
             LocalizationService.Instance.LanguageChanged += (_, _) => RefreshNames();
@@ -115,20 +111,20 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>
-        /// A report is loading: the currencies there are now (<see cref="ReportCurrencies.InUse"/>), and whether totals are
-        /// converted (<see cref="IConversionService.IsConvertedAsync"/>; the "≈" chip comes first when they can be). A
-        /// chosen currency no account uses any more falls back to the base currency.
+        /// A report is loading: the currencies there are now (<see cref="ReportCurrencies.InUse"/>), and the "Show in" state
+        /// (<see cref="IConversionService.GetStateAsync"/>; the "≈" chip comes first when totals can be converted). A chosen
+        /// currency no account uses any more falls back to the base currency.
         /// </summary>
-        public void SetCurrencies(IReadOnlyList<string> codes, bool canConvert = false, bool converted = false)
+        public void SetCurrencies(IReadOnlyList<string> codes, ConversionState state)
         {
             if (_reportCurrency != null && !codes.Contains(_reportCurrency))
                 _reportCurrency = null;
-            IsConverted = converted && canConvert && codes.Count > 1;
+            IsConverted = state.IsConverted;
 
             List<CurrencyChoice> choices = codes.Count > 1
                 ? codes.Select(c => new CurrencyChoice(c, !IsConverted && c == ReportCurrency)).ToList()
                 : [];
-            if (canConvert && codes.Count > 1)
+            if (state.CanConvert && codes.Count > 1)
                 choices.Insert(0, new CurrencyChoice(MoneyFormatter.BaseCurrency, IsConverted, IsConverted: true));
             if (!choices.SequenceEqual(CurrencyChoices))
                 CurrencyChoices = choices;
@@ -144,9 +140,7 @@ namespace MoneyRecord.ViewModels
             IsConverted = choice.IsConverted;
             if (!choice.IsConverted)
                 _reportCurrency = choice.Code == MoneyFormatter.BaseCurrency ? null : choice.Code;
-            // The same choice as Home's switch
-            if (_display != null)
-                _display.ShowConverted = choice.IsConverted;
+            _conversion.SetConverted(choice.IsConverted);
 
             CurrencyChoices = CurrencyChoices.Select(c => c with { IsSelected = c.Code == choice.Code && c.IsConverted == choice.IsConverted }).ToList();
             CurrencyChanged?.Invoke();

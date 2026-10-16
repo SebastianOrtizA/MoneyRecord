@@ -39,18 +39,35 @@ public sealed class ConversionServiceTests : IDisposable
     private static Transaction Entry(Account account, TransactionType type, decimal amount, int categoryId = 1) =>
         new() { AccountId = account.Id, Type = type, Amount = amount, Date = Oct1, CategoryId = categoryId };
 
+    private static DailyTotal Day(TransactionType type, string currency, decimal amount, int categoryId = 1, bool own = false) =>
+        new()
+        {
+            Type = type, CategoryId = categoryId, CurrencyCode = currency, Cents = (long)(amount * 100),
+            Day = own ? 0 : Oct1.Ticks / TimeSpan.TicksPerDay, IsOwnConversion = own
+        };
+
     [Fact]
     public async Task Totals_are_converted_once_rates_exist_unless_the_user_chose_by_currency()
     {
-        (await _sut.IsConvertedAsync()).Should().BeTrue("not chosen yet: converted once rates exist");
+        (await _sut.GetStateAsync()).Should().Be(new ConversionState(true, true), "not chosen yet: converted once rates exist");
 
         _sut.SetConverted(false);
-        (await _sut.IsConvertedAsync()).Should().BeFalse();
+        (await _sut.GetStateAsync()).Should().Be(new ConversionState(true, false));
 
         _sut.SetConverted(true);
         _rateSettings.Enabled = false;
-        (await _sut.IsConvertedAsync()).Should().BeFalse("without the download nothing converts");
-        (await _sut.CanConvertAsync()).Should().BeFalse();
+        (await _sut.GetStateAsync()).Should().Be(ConversionState.Off, "without the download nothing converts");
+    }
+
+    [Fact]
+    public async Task One_currency_in_use_never_converts_even_with_rates_stored()
+    {
+        _accounts.GetAllAsync().Returns([Cash]); // the other accounts were deleted, or the base changed
+        _balances.GetTotalIncomesAsync(default, default).ReturnsForAnyArgs([]);
+        _balances.GetTotalExpensesAsync(default, default).ReturnsForAnyArgs([]);
+
+        (await _sut.GetStateAsync()).Should().Be(ConversionState.Off);
+        (await _sut.GetPeriodTotalsAsync(Oct1, Oct1.AddDays(30))).IsConverted.Should().BeFalse();
     }
 
     [Fact]
@@ -73,16 +90,16 @@ public sealed class ConversionServiceTests : IDisposable
     [Fact]
     public async Task Home_shows_one_converted_total_marked_approximate_and_lists_what_had_no_rate()
     {
-        _transactions.GetByDateRangeAsync(default, default).ReturnsForAnyArgs(
+        _transactions.SumByDayAsync(default, default, default!).ReturnsForAnyArgs(
         [
-            Entry(Cash, TransactionType.Income, 100m), Entry(Pesos, TransactionType.Expense, 80_000m),
-            Entry(Yen, TransactionType.Expense, 500m)
+            Day(TransactionType.Income, "USD", 100m), Day(TransactionType.Expense, "COP", 80_000m),
+            Day(TransactionType.Expense, "USD", 9.5m, own: true), Day(TransactionType.Expense, "JPY", 500m)
         ]);
 
         var totals = await _sut.GetPeriodTotalsAsync(Oct1, Oct1.AddDays(30));
 
         totals.IsConverted.Should().BeTrue();
-        (totals.Base.Income, totals.Base.Expense, totals.Base.IsApproximate).Should().Be((100m, 20m, true));
+        (totals.Base.Income, totals.Base.Expense, totals.Base.IsApproximate).Should().Be((100m, 29.5m, true));
         totals.Base.ApproximateMark.Should().Be("≈ ");
         totals.Others.Should().ContainSingle().Which.Should().Be(new PeriodTotals("JPY", 0, 500m));
     }
@@ -104,10 +121,10 @@ public sealed class ConversionServiceTests : IDisposable
     [Fact]
     public async Task Budgets_count_converted_spending_and_list_what_had_no_rate()
     {
-        _transactions.GetByDateRangeAsync(default, default).ReturnsForAnyArgs(
+        _transactions.SumByDayAsync(default, default, default!).ReturnsForAnyArgs(
         [
-            Entry(Cash, TransactionType.Expense, 10m), Entry(Pesos, TransactionType.Expense, 8000m),
-            Entry(Yen, TransactionType.Expense, 700m), Entry(Pesos, TransactionType.Income, 4000m)
+            Day(TransactionType.Expense, "USD", 10m), Day(TransactionType.Expense, "COP", 8000m),
+            Day(TransactionType.Expense, "JPY", 700m), Day(TransactionType.Income, "COP", 4000m)
         ]);
 
         var spent = await _sut.GetExpensesByCategoryAsync(Oct1, Oct1.AddDays(30));

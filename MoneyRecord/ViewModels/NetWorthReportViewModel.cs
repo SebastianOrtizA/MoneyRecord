@@ -83,7 +83,7 @@ namespace MoneyRecord.ViewModels
             }
 
             var shown = points.Skip(1).ToList();
-            var approximate = Period.IsConverted && byCurrency.Count > 1 ? "≈ " : string.Empty;
+            var approximate = Period.IsConverted ? MoneyFormatter.ApproximateMark : string.Empty;
             HeadlineText = approximate + MoneyFormatter.Format(shown[^1].Value, code);
             DeltaText = new PeriodDelta(shown[^1].Value, points[0].Value).Text;
 

@@ -61,11 +61,6 @@ namespace MoneyRecord.Models
         /// </summary>
         public string? ConvertedCurrencyCode { get; set; }
 
-        /// <summary>
-        /// Applies the form's "Amount in {base}" field: a positive amount is the conversion into the base currency; an empty
-        /// field clears a conversion into the base but keeps one into another currency (the field didn't show it). An
-        /// account already in the base currency needs none.
-        /// </summary>
         /// <summary>A copy in <paramref name="currencyCode"/> with <paramref name="amount"/> (unsigned): a converted entry for a report.</summary>
         public Transaction WithAmount(decimal amount, string currencyCode)
         {
@@ -77,6 +72,11 @@ namespace MoneyRecord.Models
             return copy;
         }
 
+        /// <summary>
+        /// Applies the form's "Amount in {base}" field: a positive amount is the conversion into the base currency; an empty
+        /// field clears a conversion into the base but keeps one into another currency (the field didn't show it). An
+        /// account already in the base currency needs none.
+        /// </summary>
         public void SetConversion(decimal? amountInBase, string? accountCurrency, string baseCurrency)
         {
             if (MoneyFormatter.SameCurrency(accountCurrency, baseCurrency))

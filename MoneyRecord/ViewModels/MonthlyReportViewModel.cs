@@ -94,9 +94,8 @@ namespace MoneyRecord.ViewModels
         {
             var accounts = await _accountRepository.GetAllAsync();
             var currencies = ReportCurrencies.InUse(accounts, MoneyFormatter.BaseCurrency);
-            var canConvert = await _conversion.CanConvertAsync();
-            var converted = canConvert && await _conversion.IsConvertedAsync();
-            await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies, canConvert, converted));
+            var state = await _conversion.GetStateAsync();
+            await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies, state));
             return accounts;
         }
 

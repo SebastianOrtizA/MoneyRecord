@@ -12,10 +12,13 @@ namespace MoneyRecord.Services
         ITransactionRepository transactions,
         IBalanceService balances) : IConversionService
     {
-        public async Task<bool> CanConvertAsync() =>
-            rateSettings.Enabled && (await exchangeRates.GetConverterAsync()).HasRates;
-
-        public async Task<bool> IsConvertedAsync() => display.ShowConverted != false && await CanConvertAsync();
+        public async Task<ConversionState> GetStateAsync()
+        {
+            var canConvert = rateSettings.Enabled
+                && ReportCurrencies.InUse(await accounts.GetAllAsync(), MoneyFormatter.BaseCurrency).Count > 1
+                && (await exchangeRates.GetConverterAsync()).HasRates;
+            return new ConversionState(canConvert, canConvert && display.ShowConverted != false);
+        }
 
         public void SetConverted(bool converted) => display.ShowConverted = converted;
 
@@ -65,49 +68,80 @@ namespace MoneyRecord.Services
         public async Task<PeriodTotalsResult> GetPeriodTotalsAsync(DateTime startDate, DateTime endDate)
         {
             var baseCode = MoneyFormatter.BaseCurrency;
-            if (!await IsConvertedAsync())
+            if (!(await GetStateAsync()).IsConverted)
             {
                 var byCurrency = PeriodTotals.Build(await balances.GetTotalIncomesAsync(startDate, endDate),
                     await balances.GetTotalExpensesAsync(startDate, endDate), baseCode);
                 return new PeriodTotalsResult(byCurrency[0], byCurrency.Skip(1).ToList(), IsConverted: false);
             }
 
-            var result = await ConvertAsync(await transactions.GetByDateRangeAsync(startDate, endDate), await accounts.GetAllAsync());
-            var converted = result.Converted;
+            var (converted, notConverted, approximate) = await ConvertDailyTotalsAsync(startDate, endDate);
             var total = new PeriodTotals(baseCode, Sum(converted, TransactionType.Income), Sum(converted, TransactionType.Expense))
             {
-                // "≈" only when something was actually converted
-                IsApproximate = result.FromOtherCurrencies > 0
+                IsApproximate = approximate
             };
-            // Build always puts the base first (with zeros here: base entries never lack a rate)
-            var others = PeriodTotals.Build(Amounts(result.NotConverted, TransactionType.Income),
-                Amounts(result.NotConverted, TransactionType.Expense), baseCode).Skip(1).ToList();
+            // Build always puts the base first (with zeros here: base amounts never lack a rate)
+            var others = PeriodTotals.Build(Amounts(notConverted, TransactionType.Income),
+                Amounts(notConverted, TransactionType.Expense), baseCode).Skip(1).ToList();
             return new PeriodTotalsResult(total, others, IsConverted: true);
         }
 
         public async Task<Dictionary<int, BudgetSpent>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate)
         {
             var baseCode = MoneyFormatter.BaseCurrency;
-            if (!await IsConvertedAsync())
+            if (!(await GetStateAsync()).IsConverted)
             {
                 return (await balances.GetExpensesByCategoryAsync(startDate, endDate))
                     .ToDictionary(kv => kv.Key, kv => BudgetSpent.FromCurrencies(kv.Value, baseCode));
             }
 
-            var expenses = (await transactions.GetByDateRangeAsync(startDate, endDate)).Where(t => t.Type == TransactionType.Expense);
-            var result = await ConvertAsync(expenses, await accounts.GetAllAsync());
-            var counted = result.Converted.GroupBy(t => t.CategoryId).ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));
-            var uncounted = result.NotConverted.GroupBy(t => t.CategoryId).ToDictionary(g => g.Key,
-                g => CurrencyAmount.Totals(g.Select(t => new CurrencyAmount(t.CurrencyCode, t.Amount)), baseCode));
+            var (converted, notConverted, _) = await ConvertDailyTotalsAsync(startDate, endDate);
+            var counted = converted.Where(c => c.Row.Type == TransactionType.Expense)
+                .GroupBy(c => c.Row.CategoryId).ToDictionary(g => g.Key, g => g.Sum(c => c.Amount));
+            var uncounted = notConverted.Where(r => r.Type == TransactionType.Expense).GroupBy(r => r.CategoryId)
+                .ToDictionary(g => g.Key, g => CurrencyAmount.Totals(g.Select(r => new CurrencyAmount(r.CurrencyCode, r.Amount)), baseCode));
 
             return counted.Keys.Union(uncounted.Keys).ToDictionary(id => id,
                 id => new BudgetSpent(counted.GetValueOrDefault(id), uncounted.GetValueOrDefault(id) ?? []));
         }
 
-        private static decimal Sum(IEnumerable<Transaction> converted, TransactionType type) =>
-            converted.Where(t => t.Type == type).Sum(t => t.Amount);
+        /// <summary>
+        /// The range's SQL day totals (<see cref="ITransactionRepository.SumByDayAsync"/>) in the base currency: each day's
+        /// sum converted at that day's rate (no row is loaded per entry); the ones without a rate are returned as they are.
+        /// </summary>
+        private async Task<(List<(DailyTotal Row, decimal Amount)> Converted, List<DailyTotal> NotConverted, bool Approximate)>
+            ConvertDailyTotalsAsync(DateTime startDate, DateTime endDate)
+        {
+            var baseCode = MoneyFormatter.BaseCurrency;
+            var converter = await exchangeRates.GetConverterAsync();
+            var converted = new List<(DailyTotal, decimal)>();
+            var notConverted = new List<DailyTotal>();
+            var approximate = false;
+            foreach (var row in await transactions.SumByDayAsync(startDate, endDate, baseCode))
+            {
+                if (row.IsOwnConversion || MoneyFormatter.SameCurrency(row.CurrencyCode, baseCode))
+                {
+                    converted.Add((row, row.Amount));
+                    approximate |= row.IsOwnConversion;
+                }
+                else if (converter.Convert(row.Amount, row.CurrencyCode, row.Date, baseCode) is { } amount)
+                {
+                    converted.Add((row, amount));
+                    approximate = true;
+                }
+                else
+                {
+                    notConverted.Add(row);
+                }
+            }
 
-        private static IEnumerable<CurrencyAmount> Amounts(IEnumerable<Transaction> notConverted, TransactionType type) =>
-            notConverted.Where(t => t.Type == type).Select(t => new CurrencyAmount(t.CurrencyCode, t.Amount));
+            return (converted, notConverted, approximate);
+        }
+
+        private static decimal Sum(IEnumerable<(DailyTotal Row, decimal Amount)> converted, TransactionType type) =>
+            converted.Where(c => c.Row.Type == type).Sum(c => c.Amount);
+
+        private static IEnumerable<CurrencyAmount> Amounts(IEnumerable<DailyTotal> notConverted, TransactionType type) =>
+            notConverted.Where(r => r.Type == type).Select(r => new CurrencyAmount(r.CurrencyCode, r.Amount));
     }
 }

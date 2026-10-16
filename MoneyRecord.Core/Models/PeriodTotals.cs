@@ -13,7 +13,7 @@ namespace MoneyRecord.Models
         public bool IsApproximate { get; init; }
 
         /// <summary>"≈ " before a caption while approximate (on the caption, so a long amount keeps its line).</summary>
-        public string ApproximateMark => IsApproximate ? "≈ " : string.Empty;
+        public string ApproximateMark => IsApproximate ? MoneyFormatter.ApproximateMark : string.Empty;
 
         public string IncomeText => MoneyFormatter.Format(Income, CurrencyCode);
 

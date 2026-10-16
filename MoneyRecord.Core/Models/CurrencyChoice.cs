@@ -7,6 +7,6 @@ namespace MoneyRecord.Models
     public sealed record CurrencyChoice(string Code, bool IsSelected, bool IsConverted = false)
     {
         /// <summary>"COP", or "≈ USD" for the converted choice.</summary>
-        public string Label => IsConverted ? $"≈ {Code}" : Code;
+        public string Label => IsConverted ? Helpers.MoneyFormatter.ApproximateMark + Code : Code;
     }
 }
