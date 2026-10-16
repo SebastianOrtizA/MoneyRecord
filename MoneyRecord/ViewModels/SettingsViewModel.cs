@@ -47,7 +47,8 @@ namespace MoneyRecord.ViewModels
             IPreferencesService preferences, LocalizationService localization, IAppPaths paths,
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
-            IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings)
+            IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
+            AutoBackupViewModel autoBackup)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -67,10 +68,14 @@ namespace MoneyRecord.ViewModels
             _encryption = encryption;
             _exchangeRates = exchangeRates;
             _exchangeRateSettings = exchangeRateSettings;
+            AutoBackup = autoBackup;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
             exchangeRatesStatus = LastUpdatedText();
         }
+
+        /// <summary>The Automatic backups card.</summary>
+        public AutoBackupViewModel AutoBackup { get; }
 
         [ObservableProperty]
         private IReadOnlyList<LanguageOption> languages = LanguageOption.All();
@@ -94,6 +99,8 @@ namespace MoneyRecord.ViewModels
             // The daily job may have updated the rates meanwhile
             if (!UpdateExchangeRatesCommand.IsRunning)
                 ExchangeRatesStatus = LastUpdatedText();
+            // The folder may be unreachable now, or the daily job made a backup
+            AutoBackup.RefreshCommand.Execute(null);
         }
 
         // ---- Exchange rates ----
@@ -164,6 +171,7 @@ namespace MoneyRecord.ViewModels
             Themes = ThemeOption.All();
             BillReminderOptions = BillReminderOption.All();
             LockDelayOptions = LockDelayOption.All();
+            AutoBackup.RefreshNames();
             SelectPickers();
         }
 

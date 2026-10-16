@@ -9,6 +9,7 @@ namespace MoneyRecord
     {
         private readonly IRecurringTransactionService _recurringTransactionService;
         private readonly IExchangeRateService _exchangeRates;
+        private readonly IAutoBackupService _autoBackup;
         private readonly ISetupService _setupService;
         private readonly Func<SetupPage> _createSetupPage;
         private readonly AppLock _appLock;
@@ -19,13 +20,15 @@ namespace MoneyRecord
 
         public App(IRecurringTransactionService recurringTransactionService, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
-            IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, ILogger<App> logger)
+            IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
+            ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
             themeService.ApplySaved();
             _recurringTransactionService = recurringTransactionService;
             _exchangeRates = exchangeRates;
+            _autoBackup = autoBackup;
             _setupService = setupService;
             _createSetupPage = createSetupPage;
             _appLock = appLock;
@@ -48,7 +51,7 @@ namespace MoneyRecord
 
             window.Created += (s, e) =>
             {
-                _ = ProcessRecurringTransactionsAsync();
+                _ = ProcessRecurringThenBackUpAsync();
                 // Opt-in, once a day, best-effort: nothing waits for it
                 _ = _exchangeRates.UpdateIfDueAsync();
 #if ANDROID
@@ -110,7 +113,7 @@ namespace MoneyRecord
             }
         });
 
-        private async Task ProcessRecurringTransactionsAsync()
+        private async Task ProcessRecurringThenBackUpAsync()
         {
             try
             {
@@ -120,6 +123,8 @@ namespace MoneyRecord
             {
                 _logger.LogError(ex, "Failed to process recurring transactions");
             }
+            // When due (best-effort, logs its own failures); after processing, so the backup has the new transactions
+            await _autoBackup.RunIfDueAsync();
         }
     }
 }

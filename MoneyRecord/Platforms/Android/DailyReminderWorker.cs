@@ -7,8 +7,9 @@ using MoneyRecord.Services.Interfaces;
 namespace MoneyRecord.Platforms.Android
 {
     /// <summary>
-    /// The daily background job (WorkManager): reminders, recurring transactions and budget alerts while the app is
-    /// closed. The Java name is fixed because WorkManager stores it with the scheduled work.
+    /// The daily background job (WorkManager): reminders, recurring transactions, budget alerts, exchange rates and
+    /// automatic backups while the app is closed. The Java name is fixed because WorkManager stores it with the
+    /// scheduled work.
     /// </summary>
     [Register("com.sebastianortiz.moneyrecord.DailyReminderWorker")]
     public sealed class DailyReminderWorker(Context context, WorkerParameters parameters) : Worker(context, parameters)
@@ -45,6 +46,8 @@ namespace MoneyRecord.Platforms.Android
                 services.GetRequiredService<IReminderService>().RunDailyAsync().GetAwaiter().GetResult();
                 // Opt-in and best-effort (logs its own failures): a missing connection never fails the reminders
                 services.GetRequiredService<IExchangeRateService>().UpdateIfDueAsync().GetAwaiter().GetResult();
+                // Also best-effort: after the recurring transactions, so the backup has them
+                services.GetRequiredService<IAutoBackupService>().RunIfDueAsync().GetAwaiter().GetResult();
                 return Result.InvokeSuccess();
             }
             catch (Exception ex)

@@ -25,6 +25,27 @@ namespace MoneyRecord
                 TakeNotificationRoute(Intent, openNow: false);
         }
 
+        // Activities started for a result (the backup folder picker), by request code
+        private readonly Dictionary<int, TaskCompletionSource<Intent?>> _pendingResults = [];
+        private int _lastRequestCode = 1000;
+
+        /// <summary>Starts an activity and returns its result data; null when it was cancelled.</summary>
+        public Task<Intent?> StartForResultAsync(Intent intent)
+        {
+            var requestCode = ++_lastRequestCode;
+            var result = new TaskCompletionSource<Intent?>();
+            _pendingResults[requestCode] = result;
+            StartActivityForResult(intent, requestCode);
+            return result.Task;
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent? data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            if (_pendingResults.Remove(requestCode, out var result))
+                result.TrySetResult(resultCode == Result.Ok ? data : null);
+        }
+
         protected override void OnNewIntent(Intent? intent)
         {
             base.OnNewIntent(intent);
