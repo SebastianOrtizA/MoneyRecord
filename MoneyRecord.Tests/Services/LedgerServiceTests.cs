@@ -121,6 +121,24 @@ public sealed class LedgerServiceTests : IDisposable
     }
 
     [Fact]
+    public async Task Deleting_a_split_part_deletes_every_part_and_their_shared_receipt_once()
+    {
+        Directory.CreateDirectory(_paths.ReceiptsFolder);
+        var receipt = Path.Combine(_paths.ReceiptsFolder, "r.jpg");
+        File.WriteAllText(receipt, "photo");
+        _transactions.GetSplitPartsAsync("s1").Returns(new List<Transaction>
+        {
+            new() { Id = 1, SplitId = "s1", ReceiptPhotoPath = receipt }, new() { Id = 2, SplitId = "s1", ReceiptPhotoPath = receipt }
+        });
+
+        await _sut.DeleteAsync(new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 2, SplitId = "s1" });
+
+        await _transactions.Received(1).DeleteSplitAsync("s1");
+        await _transactions.DidNotReceiveWithAnyArgs().DeleteAsync(default!);
+        File.Exists(receipt).Should().BeFalse();
+    }
+
+    [Fact]
     public async Task An_entry_that_is_already_gone_is_ignored()
     {
         await _sut.DeleteAsync(new LedgerEntry { Kind = LedgerEntryKind.Income, SourceId = 99 });

@@ -121,7 +121,11 @@ namespace MoneyRecord.Services
 
             return entries
                 .Where(t => t.Type != TransactionType.Transfer)
-                .GroupBy(t => DuplicateKey(t.Date, t.Type, Math.Abs(t.AmountCents), t.Description))
+                // A split payment is one statement row: its parts count once, with their total and the first part's text
+                .GroupBy(t => t.SplitId ?? $"#{t.Id}")
+                .Select(payment => DuplicateKey(payment.First().Date, payment.First().Type,
+                    payment.Sum(t => Math.Abs(t.AmountCents)), payment.OrderBy(t => t.Id).First().Description))
+                .GroupBy(key => key)
                 .ToDictionary(g => g.Key, g => g.Count());
         }
 

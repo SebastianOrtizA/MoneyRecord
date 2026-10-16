@@ -41,6 +41,16 @@ namespace MoneyRecord.Models
         [Indexed(Name = "IX_Transaction_PayeeId")]
         public int? PayeeId { get; set; }
 
+        /// <summary>
+        /// Shared by the parts of one payment split across categories: each part is a normal transaction (its own category and
+        /// amount), so every total counts it; they are edited and deleted together. Null = not split.
+        /// </summary>
+        [Indexed(Name = "IX_Transaction_SplitId")]
+        public string? SplitId { get; set; }
+
+        [Ignore]
+        public bool IsSplit => !string.IsNullOrEmpty(SplitId);
+
         public string? Tags { get; set; }
 
         public string? ReceiptPhotoPath { get; set; }

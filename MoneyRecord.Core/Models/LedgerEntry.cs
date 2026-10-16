@@ -56,6 +56,11 @@ namespace MoneyRecord.Models
         /// <summary>The payee's name; empty when the entry has none (transfers never do).</summary>
         public string PayeeName { get; init; } = string.Empty;
 
+        /// <summary>The split payment this entry is a part of (see <see cref="Transaction.SplitId"/>); null = not split.</summary>
+        public string? SplitId { get; init; }
+
+        public bool IsSplit => !string.IsNullOrEmpty(SplitId);
+
         /// <summary>The other account of a transfer (its destination, or the source of a <see cref="LedgerEntryKind.TransferIn"/>).</summary>
         public int? CounterpartAccountId { get; init; }
 

@@ -107,6 +107,19 @@ public sealed class StatementImportServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task A_split_payment_is_one_recorded_entry_with_its_total()
+    {
+        // An imported "Supermarket" row of 50.00, later split into food and household
+        foreach (var (category, amount) in new[] { (_food.Id, 30m), (_transport.Id, 20m) })
+            await Db.InsertAsync(new Transaction { Date = new(2026, 10, 1), Description = "Supermarket", Amount = amount,
+                Type = TransactionType.Expense, CategoryId = category, AccountId = _bank.Id, SplitId = "s1" });
+
+        var rows = await PreviewAsync("Date,Description,Amount\n2026-10-01,Supermarket,-50\n2026-10-01,Supermarket,-30\n");
+
+        rows.Select(r => r.IsDuplicate).Should().Equal(true, false);
+    }
+
+    [Fact]
     public async Task Unreadable_rows_are_excluded_with_their_reason()
     {
         var rows = await PreviewAsync(

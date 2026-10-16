@@ -83,6 +83,13 @@
                                    HorizontalTextAlignment="End"
                                    TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
                             <HorizontalStackLayout Spacing="4" HorizontalOptions="End">
+                                <Label Text="&#xF00FB;"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="12"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsSplit}"
+                                       SemanticProperties.Description="{ext:Localize SplitPaymentLabel}"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                 <Label Text="&#xF04F9;"
                                        FontFamily="MaterialDesignIcons"
                                        FontSize="12"
@@ -352,6 +359,26 @@
                            IsVisible="{Binding SelectedEntry.HasTags}"
                            FontSize="15" VerticalOptions="Center" />
                 </Grid>
+
+                <!-- A split payment: every part (editing or deleting any part acts on all of them) -->
+                <VerticalStackLayout Spacing="6" IsVisible="{Binding SelectedEntry.IsSplit}">
+                    <Label Text="{Binding SplitSummaryText}" FontSize="14" FontAttributes="Bold" />
+                    <VerticalStackLayout Spacing="4" BindableLayout.ItemsSource="{Binding SelectedSplitParts}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:LedgerEntry">
+                                <Grid ColumnDefinitions="24,*,Auto" ColumnSpacing="12">
+                                    <Label Text="{Binding CategoryDisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="18"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
+                                    <Label Grid.Column="1" Text="{Binding CategoryName}" FontSize="15" VerticalOptions="Center"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Grid.Column="2" Text="{Binding AmountText}" FontSize="15" VerticalOptions="Center"
+                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
 
                 <!-- Receipt preview: tap for the full photo -->
                 <Border IsVisible="{Binding SelectedEntry.HasReceipt}"

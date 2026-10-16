@@ -44,6 +44,16 @@ namespace MoneyRecord.Services
                 return;
             }
 
+            // A split payment goes as a whole: its parts share the receipt
+            if (entry.SplitId is { Length: > 0 } splitId)
+            {
+                var parts = await _transactionRepository.GetSplitPartsAsync(splitId);
+                await _transactionRepository.DeleteSplitAsync(splitId);
+                foreach (var receipt in parts.Select(p => p.ReceiptPhotoPath).Distinct())
+                    ReceiptFiles.Delete(receipt, _paths.ReceiptsFolder);
+                return;
+            }
+
             var transaction = await _transactionRepository.GetByIdAsync(entry.SourceId);
             if (transaction != null)
             {
@@ -68,6 +78,7 @@ namespace MoneyRecord.Services
             AccountIconCode = t.AccountIconCode,
             PayeeId = t.PayeeId,
             PayeeName = t.PayeeName,
+            SplitId = t.SplitId,
             Tags = t.Tags,
             ReceiptPhotoPath = t.ReceiptPhotoPath
         };

@@ -23,6 +23,9 @@ and Windows are maintained too. All data stays on the device.
 - Optional **payee** (shop, person or company): earlier payees are suggested as you type, and picking one selects the
   category it had last time. More → Payees renames, merges (a typo into the right name) and deletes them; search finds
   transactions by payee, and the CSV export has a Payee column.
+- **Split an expense** across categories (one receipt for food and household): each part is saved as its own
+  transaction, so budgets, reports and totals count it in its category; the parts are edited and deleted together. One
+  part left empty takes what is left of the amount.
 - **Receipt photos** from the camera or gallery; unsaved photos are discarded when you cancel.
 - Amount input formatted in the **account's currency** (symbol, separators, and no decimals for currencies like JPY).
 - Optional **"Make recurring"** to create a recurring rule from the transaction.
@@ -227,6 +230,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 │   ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
 │   ├── SavingsGoalService                       Goal progress (linked accounts' balances) + projection
 │   ├── PayeeService                             Payees: found or created on save, use counts, rename / merge / delete
+│   ├── SplitService                             Saves a split expense as one transaction per category
 │   ├── CurrencyService                          Currencies, base currency, decimals
 │   ├── RecurringTransactionService              Creates due recurring transactions
 │   ├── DataExportService                        Zip backup, restore + snapshot, CSV export
