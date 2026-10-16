@@ -48,7 +48,8 @@ crashes at runtime (XAML is inflated at runtime there).
   daily rates; a cache, not in backups). Plus display models
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
   CurrencyAmount (a total in one currency; per-currency totals, never added), PeriodTotals (Home: income / expense / net
-  per currency), CurrencyChoice (report currency chip),
+  per currency), CurrencyChoice (report currency chip; the first one "≈ USD" = converted), BudgetSpent (counted vs
+  listed spending),
   LedgerEntry, TransactionGroup, TransactionFilter/FilterOption, CategoryAmount/CategoryReport (report shares + chart
   palette slot, donut slices), PeriodDelta ("vs previous period"), BudgetProgress/BudgetLevel, TypeFilterOption,
   Currency, DefaultCategory (the seed categories by resource key; also offered by the setup), LanguageOption /
@@ -74,7 +75,8 @@ crashes at runtime (XAML is inflated at runtime there).
   offer) + ReminderSettings + `INotificationService`, NotificationLaunch (a tapped notification opens its page),
   AppLock (when the app lock locks: start, back after the delay; never without a phone lock) + PrivacySettings +
   `IDeviceLock`, ExchangeRateService (opt-in Frankfurter download of the missing days, at start and in the daily
-  job) + ExchangeRateSettings + `IExchangeRateSource` = FrankfurterRateSource
+  job) + ExchangeRateSettings + `IExchangeRateSource` = FrankfurterRateSource, ConversionService (the "Show in" switch
+  applied: converted or by-currency totals for Home, reports and budgets) + CurrencyDisplaySettings
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
@@ -104,7 +106,8 @@ crashes at runtime (XAML is inflated at runtime there).
   MonthCountPicker / CurrencyChips (bind BindingContext to a page's `Period`; the chips hide with one currency), AddEntryButton (the one add button: opens an Expense /
   Income / Transfer sheet; on Home and Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back
   closes it first),
-  LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard)
+  LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
+  AutoFitLabel (one line; shrinks its font from `MaxFontSize` to fit: amounts in narrow places, e.g. Home's cards)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
@@ -169,7 +172,9 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   `RewritesData = true` to get a `moneyrecord.db3.bak-v{n}` backup first. Indexes are `[Indexed(Name = "IX_…")]` on the models
 - Multi-row changes go through `DatabaseInitializer.RunInTransactionAsync` (deletes in AccountService/CategoryService,
   backup snapshot, restore)
-- Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row
+- Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row; converted
+  totals too (`SumByDayAsync`: per type, category, currency and day, each day converted at its rate). Only the reports
+  load their period's rows (they chart them anyway)
 - Backups: `.zip` with `data.json` (format v4, rows keep their IDs) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization
@@ -200,9 +205,10 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Transfers are a **separate table** from transactions (linked via TransferId on display)
 - Each account has a **currency**; amounts are shown with `MoneyFormatter.Format(amount, currencyCode)` (`MoneyFormatter.BaseCurrency` = the resolved base code, `SameCurrency(a, b)`) / `MoneyConverter`
   / `CurrencyMoneyConverter`. An empty code means the **base currency** (Settings; default = device region currency)
-- Never add different currencies together: totals are per currency (`CurrencyAmount`, SQL `GROUP BY` the account's
-  currency; no account = base). Home lists each currency, reports show one at a time (currency chips), budgets count
-  base-currency expenses only until exchange rates exist (Stage 10.3b)
+- Never add different currencies together unconverted: totals are per currency (`CurrencyAmount`, SQL `GROUP BY`
+  the account's currency; no account = base), or converted into the base with downloaded rates ("≈") when the shared
+  "Show in" choice says so (`IConversionService`). Budgets count base-currency expenses, plus converted ones while
+  converted
 - A transfer stores what left (`AmountCents`, source currency) and what arrived (`DestinationAmountCents`, destination
   currency); they differ only between currencies
 - Accounts with transfers can't be deleted; account deletes into a different currency are refused

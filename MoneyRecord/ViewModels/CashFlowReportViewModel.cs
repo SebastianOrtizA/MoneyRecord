@@ -21,9 +21,9 @@ namespace MoneyRecord.ViewModels
         private ISeries[] cashFlowSeries = [];
 
         public CashFlowReportViewModel(PeriodViewModel period, ITransactionRepository transactionRepository,
-            IAccountRepository accountRepository, IErrorHandler errorHandler, INavigationService navigationService,
-            TransactionsDrillDown drillDown)
-            : base(period, accountRepository, errorHandler, navigationService, drillDown)
+            IAccountRepository accountRepository, IConversionService conversion, IErrorHandler errorHandler,
+            INavigationService navigationService, TransactionsDrillDown drillDown)
+            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown)
         {
             _transactionRepository = transactionRepository;
         }
@@ -36,15 +36,15 @@ namespace MoneyRecord.ViewModels
             await Task.WhenAll(transactionsTask, accountsTask);
             cancellationToken.ThrowIfCancellationRequested();
 
-            var code = Period.ReportCurrency;
-            var transactions = ReportCurrencies.Only(await transactionsTask, await accountsTask, code, MoneyFormatter.BaseCurrency);
+            var shown = await ShownAsync(await transactionsTask, await accountsTask);
+            var (code, transactions) = (shown.CurrencyCode, shown.Transactions);
 
             var totals = MonthlyTotalsBuilder.Build(transactions, firstMonth, months);
             var previous = MonthlyTotalsBuilder.Build(transactions, previousFirst, months);
 
             HasData = totals.Any(t => t.Income > 0 || t.Expense > 0);
             var net = totals.Sum(t => t.Net);
-            HeadlineText = MoneyFormatter.FormatSigned(net, code);
+            HeadlineText = shown.FormatAmount(net, signed: true);
             DeltaText = new PeriodDelta(net, previous.Sum(t => t.Net)).Text;
 
             MonthAxis = ChartFactory.LabelAxis(totals.Select(t => t.Label));

@@ -23,6 +23,9 @@ namespace MoneyRecord.Helpers
                 });
         }
 
+        /// <summary>Some rates are stored (the "≈" choices are offered only then).</summary>
+        public bool HasRates => _pairs.Count > 0;
+
         /// <summary>
         /// How many <paramref name="to"/> one <paramref name="from"/> is worth on <paramref name="date"/>: the stored pair,
         /// its inverse, or across a common base (rates downloaded for an earlier base currency still work). Null when none

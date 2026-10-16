@@ -22,6 +22,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITransactionRepository _transactionRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IAccountRepository _accountRepository;
+        private readonly IConversionService _conversion;
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
@@ -40,6 +41,10 @@ namespace MoneyRecord.ViewModels
         /// <summary>The total in the report's currency (<see cref="PeriodViewModel.ReportCurrency"/>).</summary>
         [ObservableProperty]
         private string totalText = string.Empty;
+
+        /// <summary>"No exchange rate yet: ¥1,000" while converted, for what had no rate; empty otherwise.</summary>
+        [ObservableProperty]
+        private string notConvertedText = string.Empty;
 
         /// <summary>The total against the previous period ("▲ 12% vs previous period").</summary>
         [ObservableProperty]
@@ -64,12 +69,14 @@ namespace MoneyRecord.ViewModels
 
         public CategoryReportViewModel(PeriodViewModel period, ITransactionEnrichmentService enrichmentService,
             ITransactionRepository transactionRepository, ICategoryRepository categoryRepository, IAccountRepository accountRepository,
-            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown)
+            IConversionService conversion, IErrorHandler errorHandler, INavigationService navigationService,
+            TransactionsDrillDown drillDown)
         {
             _enrichmentService = enrichmentService;
             _transactionRepository = transactionRepository;
             _categoryRepository = categoryRepository;
             _accountRepository = accountRepository;
+            _conversion = conversion;
             _errorHandler = errorHandler;
             _navigationService = navigationService;
             _drillDown = drillDown;
@@ -108,21 +115,29 @@ namespace MoneyRecord.ViewModels
                 var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(startDate, endDate);
                 var categoriesTask = _categoryRepository.GetByTypeAsync(Type);
                 var baseCode = MoneyFormatter.BaseCurrency;
-                var previousTask = _transactionRepository.SumByCurrencyAsync(TransactionType, previousStart, previousEnd, baseCode);
                 var accountsTask = _accountRepository.GetAllAsync();
-                await Task.WhenAll(transactionsTask, categoriesTask, previousTask, accountsTask);
+                var stateTask = _conversion.GetStateAsync();
+                await Task.WhenAll(transactionsTask, categoriesTask, accountsTask, stateTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                // One currency at a time: the chosen one (the chips list the currencies the accounts use)
+                // One currency at a time (the chips list the currencies the accounts use), or all converted ("≈")
                 var accounts = await accountsTask;
                 var currencies = ReportCurrencies.InUse(accounts, baseCode);
-                await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies));
-                var code = Period.ReportCurrency;
-                var transactions = ReportCurrencies.Only(await transactionsTask, accounts, code, baseCode);
+                var state = await stateTask;
+                await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies, state));
+                var shown = await _conversion.ForReportAsync((await transactionsTask).Where(t => t.Type == TransactionType),
+                    accounts, Period.IsConverted, Period.ReportCurrency);
+                var code = shown.CurrencyCode;
+                var previous = Period.IsConverted
+                    ? await ConvertedTotalAsync(previousStart, previousEnd, accounts)
+                    : CurrencyAmount.In(
+                        await _transactionRepository.SumByCurrencyAsync(TransactionType, previousStart, previousEnd, baseCode), code);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                var report = CategoryReportBuilder.Build(transactions, Type, (await categoriesTask).Select(c => c.Id), code);
-                TotalText = MoneyFormatter.Format(report.Total, code);
-                DeltaText = new PeriodDelta(report.Total, CurrencyAmount.In(await previousTask, code)).Text;
+                var report = CategoryReportBuilder.Build(shown.Transactions, Type, (await categoriesTask).Select(c => c.Id), code);
+                TotalText = shown.FormatAmount(report.Total);
+                NotConvertedText = shown.NotConvertedText;
+                DeltaText = new PeriodDelta(report.Total, previous).Text;
                 HasData = report.Total > 0;
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
@@ -145,6 +160,14 @@ namespace MoneyRecord.ViewModels
                 if (!cancellationToken.IsCancellationRequested)
                     IsLoading = false;
             }
+        }
+
+        /// <summary>The previous period's total of this type, converted into the base currency.</summary>
+        private async Task<decimal> ConvertedTotalAsync(DateTime start, DateTime end, IReadOnlyCollection<Account> accounts)
+        {
+            var previous = (await _transactionRepository.GetByDateRangeAsync(start, end)).Where(t => t.Type == TransactionType);
+            return (await _conversion.ForReportAsync(previous, accounts, converted: true, MoneyFormatter.BaseCurrency))
+                .Transactions.Sum(t => t.Amount);
         }
 
         /// <summary>A row of the list: its transactions.</summary>

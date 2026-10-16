@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
 {
@@ -41,6 +42,9 @@ namespace MoneyRecord.ViewModels
         // The reports' currency; null = the base currency, so a base currency change in Settings is followed
         private string? _reportCurrency;
 
+        // Remembers the "Show in" choice (the same call as Home's switch)
+        private readonly IConversionService _conversion;
+
         /// <summary>The reports' currency chips; empty with a single currency (nothing to choose).</summary>
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasCurrencyChoices))]
@@ -48,11 +52,15 @@ namespace MoneyRecord.ViewModels
 
         public bool HasCurrencyChoices => CurrencyChoices.Count > 1;
 
-        /// <summary>The currency every report shows (an ISO code).</summary>
-        public string ReportCurrency => _reportCurrency ?? MoneyFormatter.BaseCurrency;
+        /// <summary>The currency every report shows (an ISO code; the base currency while converted).</summary>
+        public string ReportCurrency => IsConverted ? MoneyFormatter.BaseCurrency : _reportCurrency ?? MoneyFormatter.BaseCurrency;
 
-        public PeriodViewModel()
+        /// <summary>The reports show every currency converted into the base (the "≈" chip).</summary>
+        public bool IsConverted { get; private set; }
+
+        public PeriodViewModel(IConversionService conversion)
         {
+            _conversion = conversion;
             selectedPeriod = periods.First(p => p.Type == PeriodType.CalendarMonth);
             // Lives as long as the app (singleton): the pickers follow a language change
             LocalizationService.Instance.LanguageChanged += (_, _) => RefreshNames();
@@ -103,28 +111,38 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>
-        /// A report is loading: the currencies there are now (<see cref="ReportCurrencies.InUse"/>). A chosen currency
-        /// no account uses any more falls back to the base currency.
+        /// A report is loading: the currencies there are now (<see cref="ReportCurrencies.InUse"/>), and the "Show in" state
+        /// (<see cref="IConversionService.GetStateAsync"/>; the "≈" chip comes first when totals can be converted). A chosen
+        /// currency no account uses any more falls back to the base currency.
         /// </summary>
-        public void SetCurrencies(IReadOnlyList<string> codes)
+        public void SetCurrencies(IReadOnlyList<string> codes, ConversionState state)
         {
             if (_reportCurrency != null && !codes.Contains(_reportCurrency))
                 _reportCurrency = null;
+            IsConverted = state.IsConverted;
 
-            var choices = codes.Count > 1 ? codes.Select(c => new CurrencyChoice(c, c == ReportCurrency)).ToList() : [];
+            List<CurrencyChoice> choices = codes.Count > 1
+                ? codes.Select(c => new CurrencyChoice(c, !IsConverted && c == ReportCurrency)).ToList()
+                : [];
+            if (state.CanConvert && codes.Count > 1)
+                choices.Insert(0, new CurrencyChoice(MoneyFormatter.BaseCurrency, IsConverted, IsConverted: true));
             if (!choices.SequenceEqual(CurrencyChoices))
                 CurrencyChoices = choices;
         }
 
         /// <summary>A chip was tapped: every report shows this currency, and the one on screen (watching) reloads.</summary>
         [RelayCommand]
-        private void SelectCurrency(string? code)
+        private void SelectCurrency(CurrencyChoice? choice)
         {
-            if (string.IsNullOrEmpty(code) || code == ReportCurrency)
+            if (choice == null || choice.IsSelected)
                 return;
 
-            _reportCurrency = code == MoneyFormatter.BaseCurrency ? null : code;
-            CurrencyChoices = CurrencyChoices.Select(c => c with { IsSelected = c.Code == code }).ToList();
+            IsConverted = choice.IsConverted;
+            if (!choice.IsConverted)
+                _reportCurrency = choice.Code == MoneyFormatter.BaseCurrency ? null : choice.Code;
+            _conversion.SetConverted(choice.IsConverted);
+
+            CurrencyChoices = CurrencyChoices.Select(c => c with { IsSelected = c.Code == choice.Code && c.IsConverted == choice.IsConverted }).ToList();
             CurrencyChanged?.Invoke();
         }
 

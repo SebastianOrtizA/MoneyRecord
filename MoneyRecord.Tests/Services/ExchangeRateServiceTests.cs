@@ -21,6 +21,9 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
 {
     private static readonly DateTime Today = new(2026, 10, 15);
 
+    /// <summary>Rates always reach back to the first of the month 12 months ago (Net worth's longest window).</summary>
+    private static readonly DateTime History = new(2025, 10, 1);
+
     private readonly string _appData = Path.Combine(Path.GetTempPath(), $"moneyrecord-rates-{Guid.NewGuid():N}");
     private readonly IExchangeRateSource _source = Substitute.For<IExchangeRateSource>();
     private readonly ExchangeRateSettings _settings = new(new FakePreferences());
@@ -70,19 +73,20 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Downloads_each_other_currency_from_its_first_transaction_to_today()
+    public async Task Downloads_each_other_currency_from_a_year_back_or_its_older_first_transaction_to_today()
     {
         var pesos = await AccountAsync("COP");
-        await AccountAsync("EUR"); // no transactions: just today
-        await Db.InsertAsync(new Transaction { AccountId = pesos.Id, Amount = 1m, Date = Today.AddDays(-3).AddHours(14) });
+        await AccountAsync("EUR"); // no transactions: the year back
+        await Db.InsertAsync(new Transaction { AccountId = pesos.Id, Amount = 1m, Date = History.AddDays(-3).AddHours(14) });
 
         var result = await _sut.UpdateAsync();
 
         result.Unavailable.Should().BeEmpty();
         result.Failed.Should().BeEmpty();
-        result.Saved.Should().Be(4 + 1);
-        await _source.Received(1).GetRatesAsync("USD", "COP", Today.AddDays(-3), Today, Arg.Any<CancellationToken>());
-        await _source.Received(1).GetRatesAsync("USD", "EUR", Today, Today, Arg.Any<CancellationToken>());
+        var days = (Today - History).Days + 1;
+        result.Saved.Should().Be(days + 3 + days);
+        await _source.Received(1).GetRatesAsync("USD", "COP", History.AddDays(-3), Today, Arg.Any<CancellationToken>());
+        await _source.Received(1).GetRatesAsync("USD", "EUR", History, Today, Arg.Any<CancellationToken>());
         _settings.LastUpdated.Should().Be(Today.AddHours(9));
     }
 
@@ -96,9 +100,9 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
 
         await _sut.UpdateAsync();
 
-        await _source.Received(1).GetRatesAsync("USD", "COP", Today.AddDays(-10), Today.AddDays(-6), Arg.Any<CancellationToken>());
+        await _source.Received(1).GetRatesAsync("USD", "COP", History, Today.AddDays(-6), Arg.Any<CancellationToken>());
         await _source.Received(1).GetRatesAsync("USD", "COP", Today.AddDays(-1), Today, Arg.Any<CancellationToken>());
-        (await _rates.GetCoverageAsync("usd", "cop")).Should().Be((Today.AddDays(-10), Today));
+        (await _rates.GetCoverageAsync("usd", "cop")).Should().Be((History, Today));
     }
 
     [Fact]
@@ -166,7 +170,7 @@ public sealed class ExchangeRateServiceTests : IAsyncLifetime
         await _sut.UpdateIfDueAsync();
         await _sut.UpdateIfEnabledAsync();
 
-        await _source.Received(1).GetRatesAsync("USD", "EUR", Today, Today, Arg.Any<CancellationToken>());
+        await _source.Received(1).GetRatesAsync("USD", "EUR", History, Today, Arg.Any<CancellationToken>());
     }
 
     [Fact]

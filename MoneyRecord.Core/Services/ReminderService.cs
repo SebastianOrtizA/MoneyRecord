@@ -10,7 +10,7 @@ namespace MoneyRecord.Services
         IRecurringTransactionService recurring,
         IBudgetRepository budgets,
         ICategoryRepository categories,
-        IBalanceService balances,
+        IConversionService conversion,
         IReminderSettings settings,
         INotificationService notifications,
         IDialogService dialogs,
@@ -101,7 +101,7 @@ namespace MoneyRecord.Services
             foreach (var period in active.GroupBy(b => b.Period))
             {
                 var (start, end) = DateRangeHelper.GetBudgetWindow(period.Key, now);
-                var spentByCategory = await balances.GetExpensesByCategoryAsync(start, end);
+                var spentByCategory = await conversion.GetExpensesByCategoryAsync(start, end);
 
                 foreach (var budget in period)
                 {
@@ -110,7 +110,7 @@ namespace MoneyRecord.Services
                         CategoryName = names.GetValueOrDefault(budget.CategoryId, string.Empty),
                         LimitAmount = budget.LimitAmount
                     };
-                    progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? [], MoneyFormatter.BaseCurrency);
+                    progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? BudgetSpent.None);
                     NotifyBudget(budget, start, progress);
                 }
             }

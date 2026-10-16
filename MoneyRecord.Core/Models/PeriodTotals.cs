@@ -9,6 +9,12 @@ namespace MoneyRecord.Models
 
         public bool IsNetNegative => Net < 0;
 
+        /// <summary>Converted from other currencies with downloaded rates (the captions get a "≈").</summary>
+        public bool IsApproximate { get; init; }
+
+        /// <summary>"≈ " before a caption while approximate (on the caption, so a long amount keeps its line).</summary>
+        public string ApproximateMark => IsApproximate ? MoneyFormatter.ApproximateMark : string.Empty;
+
         public string IncomeText => MoneyFormatter.Format(Income, CurrencyCode);
 
         public string ExpenseText => MoneyFormatter.Format(Expense, CurrencyCode);

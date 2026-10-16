@@ -58,10 +58,10 @@
                             </Label.Triggers>
                         </Label>
                     </HorizontalStackLayout>
-                    <Label Text="{Binding PrimaryBalance.Text}"
-                           FontSize="36"
+                    <controls:AutoFitLabel Text="{Binding PrimaryBalance.Text}"
+                           MaxFontSize="36"
                            FontAttributes="Bold"
-                           HorizontalOptions="Center"
+                           HorizontalOptions="Fill"
                            HorizontalTextAlignment="Center"
                            TextColor="White">
                         <Label.Triggers>
@@ -72,17 +72,18 @@
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding OpenAccountsCommand}" CommandParameter="{Binding PrimaryBalance}"/>
                         </Label.GestureRecognizers>
-                    </Label>
+                    </controls:AutoFitLabel>
                     <!-- One subtotal per other currency: amounts in different currencies are never added together -->
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding OtherBalances}"
                                          IsVisible="{Binding OtherBalances.Count, Converter={StaticResource IntToBoolConverter}}"
                                          Spacing="2">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:BalanceLine">
-                                <Label Text="{Binding Text}"
-                                       FontSize="20"
+                                <controls:AutoFitLabel Text="{Binding Text}"
+                                       MaxFontSize="20"
                                        FontAttributes="Bold"
-                                       HorizontalOptions="Center"
+                                       HorizontalOptions="Fill"
+                                       HorizontalTextAlignment="Center"
                                        TextColor="#FFFFFFDD">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label"
@@ -95,7 +96,7 @@
                                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=OpenAccountsCommand}"
                                                               CommandParameter="{Binding .}"/>
                                     </Label.GestureRecognizers>
-                                </Label>
+                                </controls:AutoFitLabel>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
@@ -111,6 +112,16 @@
             <!-- The period summary: base-currency cards, then the other currencies, in one container so they read as one -->
             <Border Style="{StaticResource PeriodSummary}">
                 <VerticalStackLayout Spacing="8">
+                    <!-- "Show in": one total converted into the base currency, or by currency (offered with several currencies
+                         and downloaded rates; the reports' "≈" chip is the same choice) -->
+                    <HorizontalStackLayout Spacing="8" Padding="2,2,2,0" IsVisible="{Binding CanSwitchShowIn}">
+                        <controls:FilterChip Text="{Binding ConvertedChipText}" IsActive="{Binding IsConverted}"
+                                             Command="{Binding ShowInCommand}" CommandParameter="True"/>
+                        <controls:FilterChip Text="{ext:Localize ShowByCurrency}"
+                                             IsActive="{Binding IsConverted, Converter={StaticResource InvertedBoolConverter}}"
+                                             Command="{Binding ShowInCommand}" CommandParameter="False"/>
+                    </HorizontalStackLayout>
+
                     <!-- Income / Expense / Net Row -->
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                         <!-- Incomes Card -->
@@ -126,21 +137,29 @@
                                        FontSize="20"
                                        HorizontalOptions="Center"
                                        TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
-                                <Label Text="{ext:Localize Incomes}"
-                                       FontSize="11"
+                                <!-- "≈ Incomes" while converted: the mark goes on the caption so the amount keeps its line -->
+                                <Label FontSize="11"
                                        TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="{Binding BaseTotals.IncomeText}"
-                                       FontSize="16"
+                                       HorizontalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding BaseTotals.ApproximateMark}"/>
+                                            <Span Text="{ext:Localize Incomes}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <controls:AutoFitLabel Text="{Binding BaseTotals.IncomeText}"
+                                       MaxFontSize="16"
                                        FontAttributes="Bold"
-                                       HorizontalOptions="Center"
+                                       HorizontalOptions="Fill"
+                                       HorizontalTextAlignment="Center"
                                        TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
                                             <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
-                                </Label>
+                                </controls:AutoFitLabel>
                             </VerticalStackLayout>
                         </Frame>
 
@@ -157,21 +176,28 @@
                                        FontSize="20"
                                        HorizontalOptions="Center"
                                        TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
-                                <Label Text="{ext:Localize Expenses}"
-                                       FontSize="11"
+                                <Label FontSize="11"
                                        TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"
-                                       HorizontalOptions="Center"/>
-                                <Label Text="{Binding BaseTotals.ExpenseText}"
-                                       FontSize="16"
+                                       HorizontalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding BaseTotals.ApproximateMark}"/>
+                                            <Span Text="{ext:Localize Expenses}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <controls:AutoFitLabel Text="{Binding BaseTotals.ExpenseText}"
+                                       MaxFontSize="16"
                                        FontAttributes="Bold"
-                                       HorizontalOptions="Center"
+                                       HorizontalOptions="Fill"
+                                       HorizontalTextAlignment="Center"
                                        TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFEBEE}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
                                             <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
-                                </Label>
+                                </controls:AutoFitLabel>
                             </VerticalStackLayout>
                         </Frame>
 
@@ -199,20 +225,26 @@
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </Label>
-                                <Label Text="{ext:Localize NetIncome}"
-                                       FontSize="11"
+                                <Label FontSize="11"
                                        TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
                                        HorizontalOptions="Center">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding BaseTotals.ApproximateMark}"/>
+                                            <Span Text="{ext:Localize NetIncome}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
                                             <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </Label>
-                                <Label Text="{Binding BaseTotals.NetText}"
-                                       FontSize="16"
+                                <controls:AutoFitLabel Text="{Binding BaseTotals.NetText}"
+                                       MaxFontSize="16"
                                        FontAttributes="Bold"
-                                       HorizontalOptions="Center"
+                                       HorizontalOptions="Fill"
+                                       HorizontalTextAlignment="Center"
                                        TextColor="{AppThemeBinding Light=#1B5E20, Dark=#E8F5E9}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
@@ -222,10 +254,14 @@
                                             <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
-                                </Label>
+                                </controls:AutoFitLabel>
                             </VerticalStackLayout>
                         </Frame>
                     </Grid>
+
+                    <!-- While converted, the pills hold what had no rate yet -->
+                    <Label Text="{ext:Localize NoRateYet}" IsVisible="{Binding ShowNoRateCaption}" FontSize="12"
+                           Margin="4,0" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
 
                     <!-- The same totals in other currencies, one row each, a pill under the matching card (never added together;
                          hidden with the balances) -->
@@ -236,12 +272,12 @@
                                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                                     <Border Style="{StaticResource OtherCurrencyPill}"
                                             BackgroundColor="{AppThemeBinding Light=#EEF6FE, Dark=#122B4A}">
-                                        <Label Text="{Binding IncomeText}" Style="{StaticResource OtherCurrencyTotal}"
+                                        <controls:AutoFitLabel Text="{Binding IncomeText}" Style="{StaticResource OtherCurrencyTotal}"
                                                TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
                                     </Border>
                                     <Border Grid.Column="1" Style="{StaticResource OtherCurrencyPill}"
                                             BackgroundColor="{AppThemeBinding Light=#FFF2F4, Dark=#3F1619}">
-                                        <Label Text="{Binding ExpenseText}" Style="{StaticResource OtherCurrencyTotal}"
+                                        <controls:AutoFitLabel Text="{Binding ExpenseText}" Style="{StaticResource OtherCurrencyTotal}"
                                                TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
                                     </Border>
                                     <!-- Green, or the expense palette when this currency's net is negative (like the Net card) -->
@@ -252,19 +288,22 @@
                                                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFF2F4, Dark=#3F1619}"/>
                                             </DataTrigger>
                                         </Border.Triggers>
-                                        <Label Text="{Binding NetText}" Style="{StaticResource OtherCurrencyTotal}"
+                                        <controls:AutoFitLabel Text="{Binding NetText}" Style="{StaticResource OtherCurrencyTotal}"
                                                TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
                                                     <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
                                                 </DataTrigger>
                                             </Label.Triggers>
-                                        </Label>
+                                        </controls:AutoFitLabel>
                                     </Border>
                                 </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
+
+                    <Label Text="{Binding ConvertedNote}" IsVisible="{Binding ShowConvertedNote}" FontSize="12"
+                           Margin="4,0,4,2" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                 </VerticalStackLayout>
             </Border>
 

@@ -21,6 +21,12 @@ namespace MoneyRecord.Services.Interfaces
         Task<Dictionary<int, List<CurrencyAmount>>> SumByCategoryAsync(TransactionType type, DateTime startDate,
             DateTime endDate, string baseCurrencyCode);
 
+        /// <summary>
+        /// The range's totals for a conversion, summed by SQLite: per type, category, currency and day, plus the entries' own
+        /// conversions into <paramref name="baseCurrencyCode"/> (one row per type and category). See <see cref="DailyTotal"/>.
+        /// </summary>
+        Task<List<DailyTotal>> SumByDayAsync(DateTime startDate, DateTime endDate, string baseCurrencyCode);
+
         /// <summary>The date of the first transaction in each currency (no account = the base currency).</summary>
         Task<Dictionary<string, DateTime>> GetFirstDatesByCurrencyAsync(string baseCurrencyCode);
 

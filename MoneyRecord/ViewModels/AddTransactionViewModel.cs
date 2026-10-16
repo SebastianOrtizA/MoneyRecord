@@ -25,6 +25,7 @@ namespace MoneyRecord.ViewModels
         private readonly IEntryDefaultsService _entryDefaults;
         private readonly IReminderService _reminders;
         private readonly IExchangeRateService _exchangeRates;
+        private readonly IConversionService _conversion;
 
         [ObservableProperty]
         private TransactionType transactionType;
@@ -143,7 +144,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -158,6 +159,7 @@ namespace MoneyRecord.ViewModels
             _entryDefaults = entryDefaults;
             _reminders = reminders;
             _exchangeRates = exchangeRates;
+            _conversion = conversion;
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
         }
@@ -323,9 +325,8 @@ namespace MoneyRecord.ViewModels
                 if (budget != null)
                 {
                     var (startDate, endDate) = DateRangeHelper.GetBudgetWindow(budget.Period, DateTime.Now);
-                    // A budget is in the base currency: only base-currency expenses count until rates exist
-                    spent = CurrencyAmount.In(await _balanceService.GetCategoryExpensesAsync(category.Id, startDate, endDate),
-                        MoneyFormatter.BaseCurrency);
+                    // What counts against the (base currency) limit: converted spending, or only the base currency's
+                    spent = (await _conversion.GetExpensesByCategoryAsync(startDate, endDate)).GetValueOrDefault(category.Id)?.Counted ?? 0;
                 }
 
                 // Another category was picked meanwhile: its own check shows its warning

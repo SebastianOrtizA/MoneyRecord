@@ -92,6 +92,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IExchangeRateSource>(_ => new FrankfurterRateSource(
                 new HttpClient { BaseAddress = FrankfurterRateSource.BaseAddress, Timeout = TimeSpan.FromSeconds(30) }));
             builder.Services.AddSingleton<IExchangeRateService, ExchangeRateService>();
+            builder.Services.AddSingleton<ICurrencyDisplaySettings, CurrencyDisplaySettings>();
+            builder.Services.AddSingleton<IConversionService, ConversionService>();
             // A report asks the Transactions tab to open filtered
             builder.Services.AddSingleton<TransactionsDrillDown>();
 

@@ -17,6 +17,9 @@ namespace MoneyRecord.Services
         private readonly SemaphoreSlim _updating = new(1, 1);
         private CurrencyConverter? _converter;
 
+        /// <summary>How far back rates are always downloaded: the longest Net worth window and its baseline month.</summary>
+        public const int HistoryMonths = 12;
+
         // Ranges before the stored days that came back empty (the source has nothing that old): not asked again while the
         // app runs. Only leading ranges: an empty trailing range may just be today's rate not published yet.
         private readonly HashSet<(string Base, string Quote, DateTime From, DateTime To)> _emptyLeadingRanges = [];
@@ -62,13 +65,16 @@ namespace MoneyRecord.Services
             var baseCode = MoneyFormatter.BaseCurrency;
             var quotes = ReportCurrencies.InUse(await accounts.GetAllAsync(), baseCode).Skip(1).ToList();
             var firstDates = await transactions.GetFirstDatesByCurrencyAsync(baseCode);
+            // Net worth values balances at each month end of its window (up to 12 months + the month before): rates reach
+            // back that far even without older entries
+            var historyStart = new DateTime(today.Year, today.Month, 1).AddMonths(-HistoryMonths);
 
             var saved = 0;
             var unavailable = new List<string>();
             var failed = new List<string>();
             foreach (var quote in quotes)
             {
-                var first = firstDates.TryGetValue(quote, out var date) && date.Date < today ? date.Date : today;
+                var first = firstDates.TryGetValue(quote, out var date) && date.Date < historyStart ? date.Date : historyStart;
                 try
                 {
                     var stored = await rates.GetCoverageAsync(baseCode, quote);

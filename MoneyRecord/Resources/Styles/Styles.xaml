@@ -515,11 +515,12 @@
         <Setter Property="StrokeThickness" Value="0" />
     </Style>
 
-    <!-- Home: a period total in another currency; small enough for long amounts on one line -->
-    <Style x:Key="OtherCurrencyTotal" TargetType="Label">
-        <Setter Property="FontSize" Value="11" />
+    <!-- Home: a period total in another currency; shrinks below 12 to keep a long amount on one line -->
+    <Style x:Key="OtherCurrencyTotal" TargetType="controls:AutoFitLabel">
+        <Setter Property="MaxFontSize" Value="12" />
+        <Setter Property="MinFontSize" Value="8" />
         <Setter Property="FontAttributes" Value="Bold" />
+        <Setter Property="HorizontalOptions" Value="Fill" />
         <Setter Property="HorizontalTextAlignment" Value="Center" />
-        <Setter Property="LineBreakMode" Value="NoWrap" />
     </Style>
 </ResourceDictionary>

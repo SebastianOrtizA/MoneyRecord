@@ -42,5 +42,40 @@ namespace MoneyRecord.Helpers
                 })
                 .ToList();
         }
+
+        /// <summary>
+        /// Every currency's net worth (<see cref="Build"/> per currency) converted into <paramref name="baseCode"/> at each
+        /// month end's rate (today for the current month) and added up. A currency without a rate for some month is left
+        /// out entirely (never half counted) and listed in <c>NotConverted</c>.
+        /// </summary>
+        /// <param name="currencies">Per currency code: today's balance of its accounts and their IDs.</param>
+        public static (List<NetWorthPoint> Points, List<string> NotConverted) BuildConverted(
+            IReadOnlyDictionary<string, (decimal CurrentTotal, IReadOnlyCollection<int> AccountIds)> currencies,
+            IReadOnlyCollection<Transaction> transactions, IReadOnlyCollection<Transfer> transfers, DateTime firstMonth, int months,
+            CurrencyConverter converter, string baseCode, DateTime today)
+        {
+            firstMonth = new DateTime(firstMonth.Year, firstMonth.Month, 1);
+            var totals = new decimal[months];
+            var notConverted = new List<string>();
+            foreach (var (code, (currentTotal, accountIds)) in currencies)
+            {
+                var points = Build(currentTotal, accountIds, transactions, transfers, firstMonth, months);
+                var converted = points
+                    .Select(p => converter.Convert(p.Value, code, Min(p.Month.AddMonths(1).AddDays(-1), today), baseCode))
+                    .ToList();
+                if (converted.Any(v => v == null))
+                {
+                    notConverted.Add(code);
+                    continue;
+                }
+
+                for (var i = 0; i < months; i++)
+                    totals[i] += converted[i]!.Value;
+            }
+
+            return (totals.Select((value, i) => new NetWorthPoint(firstMonth.AddMonths(i), value)).ToList(), notConverted);
+        }
+
+        private static DateTime Min(DateTime a, DateTime b) => a < b ? a : b;
     }
 }

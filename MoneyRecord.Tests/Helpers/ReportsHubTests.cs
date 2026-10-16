@@ -3,7 +3,9 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.ViewModels;
+using NSubstitute;
 using Xunit;
 
 namespace MoneyRecord.Tests.Helpers;
@@ -76,6 +78,31 @@ public class ReportsHubTests
     }
 
     [Fact]
+    public void Converted_net_worth_values_each_currency_at_its_month_end_rate_and_leaves_out_one_without_rates()
+    {
+        // USD account 1: 100 all along. COP account 2: 400,000 now, 0 before an October income. JPY account 3: no rates.
+        var converter = new CurrencyConverter(
+        [
+            new ExchangeRate { BaseCode = "USD", QuoteCode = "COP", Date = new DateTime(2026, 9, 1), Rate = 4000 },
+            new ExchangeRate { BaseCode = "USD", QuoteCode = "COP", Date = new DateTime(2026, 10, 1), Rate = 3200 }
+        ]);
+        var currencies = new Dictionary<string, (decimal, IReadOnlyCollection<int>)>
+        {
+            ["USD"] = (100m, [1]),
+            ["COP"] = (400_000m, [2]),
+            ["JPY"] = (5000m, [3])
+        };
+        var october = new Transaction { AccountId = 2, Type = TransactionType.Income, Amount = 400_000m, Date = new DateTime(2026, 10, 3) };
+
+        var (points, notConverted) = NetWorthBuilder.BuildConverted(currencies, [october], [], new DateTime(2026, 9, 1), 2,
+            converter, "USD", new DateTime(2026, 10, 15));
+
+        // September: COP 0; October: 400,000 at 3,200 = 125
+        points.Select(p => p.Value).Should().Equal(100m, 225m);
+        notConverted.Should().Equal("JPY");
+    }
+
+    [Fact]
     public void Budget_vs_actual_takes_each_budget_for_a_whole_calendar_month_and_only_budgeted_categories()
     {
         var rows = BudgetVsActualBuilder.Build(
@@ -126,7 +153,7 @@ public class ReportsHubTests
     [Fact]
     public void Shared_period_shows_a_month_with_one_change()
     {
-        var period = new PeriodViewModel();
+        var period = new PeriodViewModel(Substitute.For<IConversionService>());
         var changes = 0;
         period.Changed += () => changes++;
 
@@ -141,7 +168,7 @@ public class ReportsHubTests
     [Fact]
     public void Shared_period_tells_month_count_changes_apart_from_period_changes()
     {
-        var period = new PeriodViewModel();
+        var period = new PeriodViewModel(Substitute.For<IConversionService>());
         var (changes, monthChanges) = (0, 0);
         period.Changed += () => changes++;
         period.MonthCountChanged += () => monthChanges++;
@@ -166,7 +193,7 @@ public class ReportsHubTests
     [Fact]
     public void A_watch_follows_the_period_until_it_is_disposed()
     {
-        var period = new PeriodViewModel();
+        var period = new PeriodViewModel(Substitute.For<IConversionService>());
         var (changes, months) = (0, 0);
         var watch = period.WatchChanges(() => changes++);
         var monthsWatch = period.WatchMonthCount(() => months++);

@@ -23,7 +23,7 @@ public sealed class ReminderServiceTests : LanguageTestBase
     private readonly IRecurringTransactionService _recurring = Substitute.For<IRecurringTransactionService>();
     private readonly IBudgetRepository _budgets = Substitute.For<IBudgetRepository>();
     private readonly ICategoryRepository _categories = Substitute.For<ICategoryRepository>();
-    private readonly IBalanceService _balances = Substitute.For<IBalanceService>();
+    private readonly IConversionService _conversion = Substitute.For<IConversionService>();
     private readonly INotificationService _notifications = Substitute.For<INotificationService>();
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
     private readonly FakePreferences _preferences = new();
@@ -41,7 +41,7 @@ public sealed class ReminderServiceTests : LanguageTestBase
         _budgets.GetActiveBudgetsAsync().Returns([]);
         _categories.GetAllAsync().Returns([new Category { Id = 7, Name = "Food" }]);
 
-        _sut = new ReminderService(_recurring, _budgets, _categories, _balances, _settings, _notifications, _dialogs,
+        _sut = new ReminderService(_recurring, _budgets, _categories, _conversion, _settings, _notifications, _dialogs,
             _preferences, _clock, Substitute.For<ILogger<ReminderService>>());
     }
 
@@ -59,8 +59,8 @@ public sealed class ReminderServiceTests : LanguageTestBase
     };
 
     private void Spent(decimal food) =>
-        _balances.GetExpensesByCategoryAsync(Arg.Any<DateTime>(), Arg.Any<DateTime>())
-            .Returns(new Dictionary<int, List<CurrencyAmount>> { [7] = [new(MoneyFormatter.BaseCurrency, food)] });
+        _conversion.GetExpensesByCategoryAsync(Arg.Any<DateTime>(), Arg.Any<DateTime>())
+            .Returns(new Dictionary<int, BudgetSpent> { [7] = new(food, []) });
 
     [Fact]
     public async Task Bills_due_within_the_chosen_days_are_reminded_once()

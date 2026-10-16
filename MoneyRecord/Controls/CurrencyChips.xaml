@@ -13,10 +13,10 @@
         <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding CurrencyChoices}">
             <BindableLayout.ItemTemplate>
                 <DataTemplate x:DataType="models:CurrencyChoice">
-                    <controls:FilterChip Text="{Binding Code}"
+                    <controls:FilterChip Text="{Binding Label}"
                                          IsActive="{Binding IsSelected}"
                                          Command="{Binding SelectCurrencyCommand, Source={RelativeSource AncestorType={x:Type viewmodels:PeriodViewModel}}, x:DataType=viewmodels:PeriodViewModel}"
-                                         CommandParameter="{Binding Code}" />
+                                         CommandParameter="{Binding .}" />
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
         </HorizontalStackLayout>

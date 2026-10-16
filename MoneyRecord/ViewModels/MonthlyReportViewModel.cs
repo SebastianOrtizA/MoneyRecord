@@ -18,6 +18,7 @@ namespace MoneyRecord.ViewModels
     public abstract partial class MonthlyReportViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IConversionService _conversion;
         private readonly IErrorHandler _errorHandler;
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
@@ -36,6 +37,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string headlineText = string.Empty;
 
+        /// <summary>"No exchange rate yet: ¥1,000" while converted, for what had no rate; empty otherwise.</summary>
+        [ObservableProperty]
+        private string notConvertedText = string.Empty;
+
         /// <summary>The headline against the window before ("▲ 12% vs previous period").</summary>
         [ObservableProperty]
         private string deltaText = string.Empty;
@@ -46,10 +51,11 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private Axis[] moneyAxis = [];
 
-        protected MonthlyReportViewModel(PeriodViewModel period, IAccountRepository accountRepository, IErrorHandler errorHandler,
-            INavigationService navigationService, TransactionsDrillDown drillDown)
+        protected MonthlyReportViewModel(PeriodViewModel period, IAccountRepository accountRepository, IConversionService conversion,
+            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown)
         {
             _accountRepository = accountRepository;
+            _conversion = conversion;
             _errorHandler = errorHandler;
             _navigationService = navigationService;
             _drillDown = drillDown;
@@ -81,14 +87,24 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>
         /// Every account, after the shared currency chips are updated from them: the report then shows
-        /// <see cref="PeriodViewModel.ReportCurrency"/> only (currencies are never added together).
+        /// <see cref="PeriodViewModel.ReportCurrency"/> only, or everything converted while <see cref="PeriodViewModel.IsConverted"/>
+        /// (currencies are never added together unconverted).
         /// </summary>
         protected async Task<List<Account>> LoadAccountsAsync()
         {
             var accounts = await _accountRepository.GetAllAsync();
             var currencies = ReportCurrencies.InUse(accounts, MoneyFormatter.BaseCurrency);
-            await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies));
+            var state = await _conversion.GetStateAsync();
+            await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies, state));
             return accounts;
+        }
+
+        /// <summary>The transactions the report shows (after <see cref="LoadAccountsAsync"/>), and its note.</summary>
+        protected async Task<ReportTransactions> ShownAsync(IEnumerable<Transaction> transactions, IReadOnlyCollection<Account> accounts)
+        {
+            var shown = await _conversion.ForReportAsync(transactions, accounts, Period.IsConverted, Period.ReportCurrency);
+            NotConvertedText = shown.NotConvertedText;
+            return shown;
         }
 
         /// <summary>Loads the window [<paramref name="firstMonth"/>, this month]; charts are built here, so they follow the theme.</summary>

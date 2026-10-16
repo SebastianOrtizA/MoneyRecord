@@ -149,8 +149,6 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         await AddAsync(TransactionType.Expense, 100m, March1, categoryId: 6);
         await AddAsync(TransactionType.Income, 40m, March1, categoryId: 5);
 
-        (await _sut.GetCategoryExpensesAsync(5, March1, March31End)).Should().Equal(new CurrencyAmount(Base, 20m));
-
         var byCategory = await _sut.GetExpensesByCategoryAsync(March1, March31End);
         byCategory.Keys.Should().BeEquivalentTo([5, 6]);
         byCategory[5].Should().Equal(new CurrencyAmount(Base, 20m));
@@ -178,6 +176,39 @@ public sealed class BalanceServiceTests : IAsyncLifetime
             totals.Skip(1).Should().Equal(new CurrencyAmount("EUR", 50m), new CurrencyAmount("USD", 10m));
             byCategory[5].Should().Equal(new CurrencyAmount("COP", 40m), new CurrencyAmount("EUR", 20m), new CurrencyAmount("USD", 10m));
             byCategory[6].Should().Equal(new CurrencyAmount("EUR", 30m));
+        }
+        finally
+        {
+            MoneyFormatter.BaseCurrencyCode = previousBase;
+        }
+    }
+
+    [Fact]
+    public async Task Day_totals_sum_per_type_category_currency_and_day_and_own_conversions_apart()
+    {
+        var previousBase = MoneyFormatter.BaseCurrencyCode;
+        MoneyFormatter.BaseCurrencyCode = "USD";
+        try
+        {
+            var dollars = await AddAccountAsync("Dollars", currencyCode: "USD");
+            var pesos = await AddAccountAsync("Pesos", currencyCode: "COP");
+            await AddAsync(TransactionType.Expense, 10m, March1.AddHours(9), dollars.Id, categoryId: 5);
+            await AddAsync(TransactionType.Expense, 5m, March1.AddHours(18), dollars.Id, categoryId: 5);
+            await AddAsync(TransactionType.Expense, 8000m, March1.AddDays(1), pesos.Id, categoryId: 5);
+            await Db.InsertAsync(new Transaction
+            {
+                Type = TransactionType.Expense, Amount = 40_000m, Date = March1, AccountId = pesos.Id, CategoryId = 5,
+                ConvertedAmount = 9.5m, ConvertedCurrencyCode = "usd"
+            });
+
+            var rows = await new TransactionRepository(_dbInitializer).SumByDayAsync(March1, March31End, "USD");
+
+            rows.Select(r => (r.CurrencyCode, r.Date, r.Amount, r.IsOwnConversion)).Should().BeEquivalentTo(new[]
+            {
+                ("USD", March1, 15m, false),
+                ("COP", March1.AddDays(1), 8000m, false),
+                ("USD", DateTime.MinValue, 9.5m, true)
+            });
         }
         finally
         {
