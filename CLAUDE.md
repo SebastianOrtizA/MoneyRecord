@@ -81,7 +81,7 @@ crashes at runtime (XAML is inflated at runtime there).
   `StatementMapping` = the columns, `ImportRow` = a preview row), StatementMappingStore (the last import's
   columns + account per header layout, in preferences), AutoBackupService (scheduled backups into the picked folder:
   due by whole days, skipped while the data fingerprint is unchanged, keeps the newest N) + AutoBackupSettings +
-  `IBackupFolder`
+  `IBackupFolder`, `IBackupPasswordStore` (the backup password; `BackupPasswordException` when a backup needs it)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
@@ -95,7 +95,8 @@ crashes at runtime (XAML is inflated at runtime there).
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
   Spending / Income show, plus the shared month count of the time-series reports and the reports' currency, `ReportCurrency`), SetupViewModel (setup assistant:
-  language + base currency → starting accounts → default categories), AutoBackupViewModel (Settings → Automatic backups)
+  language + base currency → starting accounts → default categories), AutoBackupViewModel (Settings → Automatic backups), BackupPasswordViewModel (backup
+  password switch; restore asks for a protected backup's password)
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 14 ViewModels using [ObservableProperty] and [RelayCommand] source generators
@@ -103,7 +104,8 @@ crashes at runtime (XAML is inflated at runtime there).
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab. `AboutPage` / `LicensePage` show the licences (full texts in
-  `Resources/Raw/Licenses/`). `LockPage` is the app lock (modal; App pushes it on start / `Window.Activated`).
+  `Resources/Raw/Licenses/`). `LockPage` is the app lock (modal; App pushes it on start / `Window.Activated`). `PasswordPage` is
+  `IDialogService.PasswordAsync` (modal, hidden entry).
   `SetupPage` is the window's page on a new install
   (swapped for `AppShell` when done) and a pushed route from Settings
 - `Charts/` — ChartPalette (light/dark chart colours, categorical slots), ChartFactory (LiveChartsCore donut / columns /
@@ -119,7 +121,8 @@ crashes at runtime (XAML is inflated at runtime there).
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
 - `Services/` — NavigationService, DialogService (alerts/prompts/action sheets on the window's page + toast),
   ThemeService (saved System / Light / Dark → `UserAppTheme`), PreferencesService
-  (MAUI Preferences), NoNotificationService / NoDeviceLock (platforms without reminders / app lock). ViewModels use `IDialogService` /
+  (MAUI Preferences), NoNotificationService / NoDeviceLock (platforms without reminders / app lock). SecureBackupPasswordStore
+  (SecureStorage). ViewModels use `IDialogService` /
   `INavigationService`, never `Shell.Current` or `Toast`
 - `Platforms/Android/` — AndroidNotificationService (channels, `POST_NOTIFICATIONS`), DailyReminderWorker (WorkManager
   job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), AndroidBackupFolder (SAF folder picker, persisted tree permission), MainActivity

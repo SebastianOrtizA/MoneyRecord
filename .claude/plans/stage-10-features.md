@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5a in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5a done; 10.5b in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -212,6 +212,19 @@ Close the gap with competing finance apps. Each section can ship on its own.
   and never touches other files; failures logged and remembered), Core `AutoBackupViewModel` (turning on asks for a
   folder and backs up at once; "can't reach the folder" when access was lost, Back up now disabled then). Restore is
   unchanged: an automatic backup is restored with Select Backup File.
+  Review: a real-DB fingerprint test; `MainActivity`'s pending activity results are static (a recreated activity
+  completes the picker).
+
+  10.5b done as: backups are written and read with SharpZipLib 1.4.2 (MIT; About page + THIRD-PARTY-NOTICES.md), plain
+  or, with a password, every entry AES-256 (a standard zip: 7-Zip opens it). `ExportBackupAsync` / `RestoreAsync` take an
+  optional password; an encrypted backup without the right one throws `BackupPasswordException` (`WrongPassword`)
+  before anything changes; the pre-restore snapshot stays plain (app-private, needed for undo). Core
+  `IBackupPasswordStore` (app: `SecureBackupPasswordStore` = SecureStorage, out of Android backup like the database
+  key) and `BackupPasswordViewModel` (Settings switch "Protect backups with a password" + Change; setting or removing
+  it clears the automatic backup fingerprint so the next one uses it; `RestoreAsync` tries the saved password, then
+  asks until it is right or cancelled). `IDialogService.PasswordAsync` = modal `PasswordPage` (hidden entry, repeat
+  when setting, Show password, back cancels), because the page prompt can't hide what is typed. Manual and automatic
+  backups use the saved password. README Settings + PRIVACY.md describe both 10.5 parts.
 
 ### 10.6 Savings goals
 - Goal = target amount + date + linked account(s); progress from account balance; projection ("on track by …").

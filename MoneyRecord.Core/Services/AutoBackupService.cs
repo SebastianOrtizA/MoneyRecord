@@ -9,6 +9,7 @@ namespace MoneyRecord.Services
         IDataExportService export,
         IBackupFolder folder,
         IAutoBackupSettings settings,
+        IBackupPasswordStore password,
         IAppPaths paths,
         TimeProvider clock,
         ILogger<AutoBackupService> logger) : IAutoBackupService
@@ -97,7 +98,8 @@ namespace MoneyRecord.Services
             var temp = Path.Combine(paths.BackupsFolder, ".auto-backup.partial");
             try
             {
-                var fingerprint = await export.ExportBackupAsync(temp);
+                // Protected with the backup password, like the manual ones
+                var fingerprint = await export.ExportBackupAsync(temp, await password.GetAsync());
                 var now = Now;
                 folder.Write(FilePrefix + now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture) + FileExtension, temp);
 
@@ -107,7 +109,8 @@ namespace MoneyRecord.Services
             }
             finally
             {
-                File.Delete(temp);
+                if (File.Exists(temp))
+                    File.Delete(temp);
             }
 
             // The new backup is safe: failing to delete old ones only leaves a few more

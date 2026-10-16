@@ -213,6 +213,31 @@
                                     CornerRadius="10"/>
                         </Grid>
 
+                        <!-- The backup password: manual and automatic backups are encrypted with it -->
+                        <VerticalStackLayout BindingContext="{Binding BackupPassword}"
+                                             x:DataType="corevm:BackupPasswordViewModel"
+                                             Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize BackupPassword}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding IsProtected}"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                            <Label Text="{ext:Localize BackupPasswordDescription}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <Button Text="{ext:Localize ChangePassword}"
+                                    Command="{Binding SetPasswordCommand}"
+                                    IsVisible="{Binding IsProtected}"
+                                    HorizontalOptions="Start"
+                                    FontSize="14"
+                                    HeightRequest="40"
+                                    Padding="16,0"/>
+                        </VerticalStackLayout>
+
                         <Button Text="{ext:Localize ExportTransactionsCsv}"
                                 Command="{Binding ExportCsvCommand}"
                                 IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}"

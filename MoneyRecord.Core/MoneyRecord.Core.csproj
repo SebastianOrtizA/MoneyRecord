@@ -14,6 +14,7 @@
 		<!-- Bank statement import (CSV); dual MS-PL / Apache-2.0, used under Apache-2.0 -->
 		<PackageReference Include="CsvHelper" Version="33.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+		<PackageReference Include="SharpZipLib" Version="1.4.2" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
 		<!-- SQLite3 Multiple Ciphers: SQLite with encryption (see SqliteSetup). sqlite-net-pcl still brings plain SQLite
 		     (e_sqlite3), which its static constructor needs; the two SQLitePCLRaw packages are pinned to the bundle's 3.0.x. -->

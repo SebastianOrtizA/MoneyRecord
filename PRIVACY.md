@@ -12,6 +12,9 @@ private storage on your device. The developer has no copy of them and no way to 
 They leave the device only when you choose to:
 - **Export or share a backup** (Settings → Backup & Restore), a CSV file or the logs. You pick where the file
   goes.
+- **Automatic backups**, if you turn them on: copies go to the folder you picked, which can belong to a cloud app
+  (such as Google Drive) and then follow that app's terms. With a backup password set, backups are encrypted and
+  can't be read without it.
 - **Android backup:** if your device's own backup is turned on, Android copies the database, receipt photos and
   settings to your Google account or to a new device, under Google's terms. Logs and caches are left out, and so is
   the database while **Encrypt database** is on: its key never leaves your phone.

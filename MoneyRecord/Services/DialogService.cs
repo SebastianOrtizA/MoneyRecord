@@ -29,6 +29,13 @@ namespace MoneyRecord.Services
                     initialValue: initialValue ?? string.Empty,
                     keyboard: numeric ? Keyboard.Numeric : Keyboard.Default));
 
+        public async Task<string?> PasswordAsync(string title, string message, bool confirm = false)
+        {
+            var page = new Views.PasswordPage(title, message, confirm);
+            await MainThread.InvokeOnMainThreadAsync(() => CurrentPage.Navigation.PushModalAsync(page, animated: false));
+            return await page.Result;
+        }
+
         public async Task<string?> ActionSheetAsync(string title, string cancel, IReadOnlyList<string> options)
         {
             var choice = await MainThread.InvokeOnMainThreadAsync(() =>

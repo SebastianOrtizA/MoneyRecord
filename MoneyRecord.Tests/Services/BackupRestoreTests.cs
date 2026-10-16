@@ -254,6 +254,71 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Directory.GetFiles(_service.BackupsFolder, "pre-restore-*.zip").Should().HaveCount(5);
     }
 
+    [Fact]
+    public async Task Encrypted_EveryEntryIsAes256_AndNoTextIsReadable()
+    {
+        await Db.InsertAsync(new Transaction { Description = "Secret lunch", Amount = 12.34m, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
+        var backupPath = BackupPath("backup.zip");
+
+        await _service.ExportBackupAsync(backupPath, "s3cret");
+
+        using (var zip = new ICSharpCode.SharpZipLib.Zip.ZipFile(backupPath))
+        {
+            zip.Cast<ICSharpCode.SharpZipLib.Zip.ZipEntry>().Should().HaveCount(2)
+                .And.OnlyContain(e => e.IsCrypted && e.AESKeySize == 256);
+        }
+        var raw = System.Text.Encoding.UTF8.GetString(await File.ReadAllBytesAsync(backupPath));
+        raw.Should().NotContain("Secret lunch").And.NotContain("photo-1");
+    }
+
+    [Fact]
+    public async Task Encrypted_RoundTrip_RestoresRowsAndReceipts()
+    {
+        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
+        var before = await DumpAsync();
+        var backupPath = BackupPath("backup.zip");
+        await _service.ExportBackupAsync(backupPath, "s3cret");
+        await Db.DeleteAllAsync<Transaction>();
+        File.Delete(Path.Combine(Receipts, "receipt_1.jpg"));
+
+        await _service.RestoreAsync(backupPath, "s3cret");
+
+        (await DumpAsync()).Should().BeEquivalentTo(before);
+        File.ReadAllText(Path.Combine(Receipts, "receipt_1.jpg")).Should().Be("photo-1");
+    }
+
+    [Theory]
+    [InlineData(null, false)]
+    [InlineData("", false)]
+    [InlineData("wrong", true)]
+    public async Task Encrypted_WithoutTheRightPassword_IsRefusedAndNothingChanges(string? password, bool wrong)
+    {
+        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m });
+        var backupPath = BackupPath("backup.zip");
+        await _service.ExportBackupAsync(backupPath, "s3cret");
+        await Db.InsertAsync(new Transaction { Description = "Later", Amount = 1m });
+        var before = await DumpAsync();
+
+        var refused = await _service.Invoking(s => s.RestoreAsync(backupPath, password))
+            .Should().ThrowAsync<BackupPasswordException>();
+
+        refused.Which.WrongPassword.Should().Be(wrong);
+        (await DumpAsync()).Should().BeEquivalentTo(before);
+        Directory.Exists(_service.BackupsFolder).Should().BeFalse("no snapshot is taken before the backup is read");
+    }
+
+    [Fact]
+    public async Task Plain_IgnoresAPassword()
+    {
+        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m });
+        var backupPath = BackupPath("backup.zip");
+        await _service.ExportBackupAsync(backupPath);
+
+        var result = await _service.RestoreAsync(backupPath, "s3cret");
+
+        result.RecordCount.Should().BeGreaterThan(0);
+    }
+
     private string BackupPath(string name) => Path.Combine(_appData, "out", name);
 
     private string WriteReceipt(string name, string content)

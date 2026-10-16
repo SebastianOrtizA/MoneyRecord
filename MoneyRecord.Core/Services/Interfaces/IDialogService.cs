@@ -15,6 +15,12 @@ namespace MoneyRecord.Services.Interfaces
         Task<string?> PromptAsync(string title, string message, string accept, string cancel,
             string? initialValue = null, bool numeric = false);
 
+        /// <summary>
+        /// Asks for a password (typed hidden); with <paramref name="confirm"/> it is typed twice and must match. Null when
+        /// the user cancels.
+        /// </summary>
+        Task<string?> PasswordAsync(string title, string message, bool confirm = false);
+
         /// <summary>Lets the user pick one of <paramref name="options"/>; null when the user cancels.</summary>
         Task<string?> ActionSheetAsync(string title, string cancel, IReadOnlyList<string> options);
 
