@@ -3731,5 +3731,284 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("NotConvertedNote", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Column {0}.
+        /// </summary>
+        public static string ImportColumnName {
+            get {
+                return ResourceManager.GetString("ImportColumnName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import bank statement.
+        /// </summary>
+        public static string ImportStatement {
+            get {
+                return ResourceManager.GetString("ImportStatement", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add the movements of a CSV file from your bank's website to one account..
+        /// </summary>
+        public static string ImportStatementDescription {
+            get {
+                return ResourceManager.GetString("ImportStatementDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a CSV file.
+        /// </summary>
+        public static string ImportChooseFile {
+            get {
+                return ResourceManager.GetString("ImportChooseFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose another file.
+        /// </summary>
+        public static string ImportChooseAnotherFile {
+            get {
+                return ResourceManager.GetString("ImportChooseAnotherFile", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Export your movements as CSV from your bank's website, then pick the file here. You check every row before anything is added..
+        /// </summary>
+        public static string ImportIntro {
+            get {
+                return ResourceManager.GetString("ImportIntro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} row.
+        /// </summary>
+        public static string ImportRowsOne {
+            get {
+                return ResourceManager.GetString("ImportRowsOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} rows.
+        /// </summary>
+        public static string ImportRowsOther {
+            get {
+                return ResourceManager.GetString("ImportRowsOther", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No table with a date column and an amount column was found in this file..
+        /// </summary>
+        public static string ImportNoTable {
+            get {
+                return ResourceManager.GetString("ImportNoTable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't read the file.
+        /// </summary>
+        public static string ImportFailedToRead {
+            get {
+                return ResourceManager.GetString("ImportFailedToRead", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Date column.
+        /// </summary>
+        public static string ImportDateColumn {
+            get {
+                return ResourceManager.GetString("ImportDateColumn", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Date format.
+        /// </summary>
+        public static string ImportDateFormat {
+            get {
+                return ResourceManager.GetString("ImportDateFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Description column.
+        /// </summary>
+        public static string ImportDescriptionColumn {
+            get {
+                return ResourceManager.GetString("ImportDescriptionColumn", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Amount column.
+        /// </summary>
+        public static string ImportAmountColumn {
+            get {
+                return ResourceManager.GetString("ImportAmountColumn", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Positive amounts are expenses (credit card statements).
+        /// </summary>
+        public static string ImportPositiveIsExpense {
+            get {
+                return ResourceManager.GetString("ImportPositiveIsExpense", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Category for new expenses.
+        /// </summary>
+        public static string ImportExpenseCategory {
+            get {
+                return ResourceManager.GetString("ImportExpenseCategory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Category for new income.
+        /// </summary>
+        public static string ImportIncomeCategory {
+            get {
+                return ResourceManager.GetString("ImportIncomeCategory", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A description you've used before gets the same category as last time. Tap a row's category to change it..
+        /// </summary>
+        public static string ImportCategoryHint {
+            get {
+                return ResourceManager.GetString("ImportCategoryHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to New: {0} · Already recorded: {1} · Unreadable: {2}.
+        /// </summary>
+        public static string ImportSummary {
+            get {
+                return ResourceManager.GetString("ImportSummary", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Already recorded.
+        /// </summary>
+        public static string ImportAlreadyRecorded {
+            get {
+                return ResourceManager.GetString("ImportAlreadyRecorded", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unreadable date.
+        /// </summary>
+        public static string ImportProblemDate {
+            get {
+                return ResourceManager.GetString("ImportProblemDate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unreadable amount.
+        /// </summary>
+        public static string ImportProblemAmount {
+            get {
+                return ResourceManager.GetString("ImportProblemAmount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Zero amount.
+        /// </summary>
+        public static string ImportProblemZero {
+            get {
+                return ResourceManager.GetString("ImportProblemZero", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import {0} transaction.
+        /// </summary>
+        public static string ImportButtonOne {
+            get {
+                return ResourceManager.GetString("ImportButtonOne", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import {0} transactions.
+        /// </summary>
+        public static string ImportButtonOther {
+            get {
+                return ResourceManager.GetString("ImportButtonOther", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import complete.
+        /// </summary>
+        public static string ImportDoneTitle {
+            get {
+                return ResourceManager.GetString("ImportDoneTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} added to {1}..
+        /// </summary>
+        public static string ImportDoneMessage {
+            get {
+                return ResourceManager.GetString("ImportDoneMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Undo import.
+        /// </summary>
+        public static string ImportUndo {
+            get {
+                return ResourceManager.GetString("ImportUndo", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Import undone.
+        /// </summary>
+        public static string ImportUndone {
+            get {
+                return ResourceManager.GetString("ImportUndone", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't import the transactions.
+        /// </summary>
+        public static string ImportFailed {
+            get {
+                return ResourceManager.GetString("ImportFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Same category as last time.
+        /// </summary>
+        public static string ImportLearnedCategory {
+            get {
+                return ResourceManager.GetString("ImportLearnedCategory", resourceCulture);
+            }
+        }
     }
 }

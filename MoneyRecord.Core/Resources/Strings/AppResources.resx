@@ -1406,4 +1406,97 @@ Amount: {2}</value>
   <data name="NotConvertedNote" xml:space="preserve">
     <value>No exchange rate yet: {0}</value>
   </data>
+  <data name="ImportColumnName" xml:space="preserve">
+    <value>Column {0}</value>
+  </data>
+  <data name="ImportStatement" xml:space="preserve">
+    <value>Import bank statement</value>
+  </data>
+  <data name="ImportStatementDescription" xml:space="preserve">
+    <value>Add the movements of a CSV file from your bank's website to one account.</value>
+  </data>
+  <data name="ImportChooseFile" xml:space="preserve">
+    <value>Choose a CSV file</value>
+  </data>
+  <data name="ImportChooseAnotherFile" xml:space="preserve">
+    <value>Choose another file</value>
+  </data>
+  <data name="ImportIntro" xml:space="preserve">
+    <value>Export your movements as CSV from your bank's website, then pick the file here. You check every row before anything is added.</value>
+  </data>
+  <data name="ImportRowsOne" xml:space="preserve">
+    <value>{0} row</value>
+  </data>
+  <data name="ImportRowsOther" xml:space="preserve">
+    <value>{0} rows</value>
+  </data>
+  <data name="ImportNoTable" xml:space="preserve">
+    <value>No table with a date column and an amount column was found in this file.</value>
+  </data>
+  <data name="ImportFailedToRead" xml:space="preserve">
+    <value>Couldn't read the file</value>
+  </data>
+  <data name="ImportDateColumn" xml:space="preserve">
+    <value>Date column</value>
+  </data>
+  <data name="ImportDateFormat" xml:space="preserve">
+    <value>Date format</value>
+  </data>
+  <data name="ImportDescriptionColumn" xml:space="preserve">
+    <value>Description column</value>
+  </data>
+  <data name="ImportAmountColumn" xml:space="preserve">
+    <value>Amount column</value>
+  </data>
+  <data name="ImportPositiveIsExpense" xml:space="preserve">
+    <value>Positive amounts are expenses (credit card statements)</value>
+  </data>
+  <data name="ImportExpenseCategory" xml:space="preserve">
+    <value>Category for new expenses</value>
+  </data>
+  <data name="ImportIncomeCategory" xml:space="preserve">
+    <value>Category for new income</value>
+  </data>
+  <data name="ImportCategoryHint" xml:space="preserve">
+    <value>A description you've used before gets the same category as last time. Tap a row's category to change it.</value>
+  </data>
+  <data name="ImportSummary" xml:space="preserve">
+    <value>New: {0} · Already recorded: {1} · Unreadable: {2}</value>
+  </data>
+  <data name="ImportAlreadyRecorded" xml:space="preserve">
+    <value>Already recorded</value>
+  </data>
+  <data name="ImportProblemDate" xml:space="preserve">
+    <value>Unreadable date</value>
+  </data>
+  <data name="ImportProblemAmount" xml:space="preserve">
+    <value>Unreadable amount</value>
+  </data>
+  <data name="ImportProblemZero" xml:space="preserve">
+    <value>Zero amount</value>
+  </data>
+  <data name="ImportButtonOne" xml:space="preserve">
+    <value>Import {0} transaction</value>
+  </data>
+  <data name="ImportButtonOther" xml:space="preserve">
+    <value>Import {0} transactions</value>
+  </data>
+  <data name="ImportDoneTitle" xml:space="preserve">
+    <value>Import complete</value>
+  </data>
+  <data name="ImportDoneMessage" xml:space="preserve">
+    <value>{0} added to {1}.</value>
+  </data>
+  <data name="ImportUndo" xml:space="preserve">
+    <value>Undo import</value>
+  </data>
+  <data name="ImportUndone" xml:space="preserve">
+    <value>Import undone</value>
+  </data>
+  <data name="ImportFailed" xml:space="preserve">
+    <value>Couldn't import the transactions</value>
+  </data>
+  <data name="ImportLearnedCategory" xml:space="preserve">
+    <value>Same category as last time</value>
+  </data>
 </root>

@@ -350,6 +350,9 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private Task OpenAboutAsync() => _navigationService.NavigateToAsync(nameof(AboutPage));
 
+        [RelayCommand]
+        private Task OpenImportAsync() => _navigationService.NavigateToAsync(nameof(ImportStatementPage));
+
         partial void OnBaseCurrencyChanged(Currency? value)
         {
             if (value != null)

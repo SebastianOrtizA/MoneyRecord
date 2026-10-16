@@ -76,7 +76,9 @@ crashes at runtime (XAML is inflated at runtime there).
   AppLock (when the app lock locks: start, back after the delay; never without a phone lock) + PrivacySettings +
   `IDeviceLock`, ExchangeRateService (opt-in Frankfurter download of the missing days, at start and in the daily
   job) + ExchangeRateSettings + `IExchangeRateSource` = FrankfurterRateSource, ConversionService (the "Show in" switch
-  applied: converted or by-currency totals for Home, reports and budgets) + CurrencyDisplaySettings
+  applied: converted or by-currency totals for Home, reports and budgets) + CurrencyDisplaySettings,
+  StatementImportService (CSV import into one account: preview with duplicates + learned categories, import, undo;
+  `StatementMapping` = the columns, `ImportRow` = a preview row)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
@@ -84,7 +86,8 @@ crashes at runtime (XAML is inflated at runtime there).
   (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
   days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
   (currencies in use; transactions in one currency), CurrencyConverter (downloaded rates: nearest earlier day,
-  inverse, across an earlier base; a transaction's own "Amount in USD" first)
+  inverse, across an earlier base; a transaction's own "Amount in USD" first), CsvTable / StatementDate /
+  StatementAmount (bank statement CSV: table, date layouts, signed amounts)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and

@@ -22,5 +22,12 @@ namespace MoneyRecord.Helpers
 
         public static string Minutes(int count) =>
             string.Format(count == 1 ? AppResources.MinutesOne : AppResources.MinutesOther, count);
+
+        public static string Rows(int count) =>
+            string.Format(count == 1 ? AppResources.ImportRowsOne : AppResources.ImportRowsOther, count);
+
+        /// <summary>The import button: "Import 3 transactions".</summary>
+        public static string ImportButton(int count) =>
+            string.Format(count == 1 ? AppResources.ImportButtonOne : AppResources.ImportButtonOther, count);
     }
 }
