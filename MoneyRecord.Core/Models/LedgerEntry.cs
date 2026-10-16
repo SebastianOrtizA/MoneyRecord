@@ -51,6 +51,11 @@ namespace MoneyRecord.Models
 
         public string AccountIconCode { get; init; } = IconHelper.DefaultAccountIconCode;
 
+        public int? PayeeId { get; init; }
+
+        /// <summary>The payee's name; empty when the entry has none (transfers never do).</summary>
+        public string PayeeName { get; init; } = string.Empty;
+
         /// <summary>The other account of a transfer (its destination, or the source of a <see cref="LedgerEntryKind.TransferIn"/>).</summary>
         public int? CounterpartAccountId { get; init; }
 
@@ -101,6 +106,18 @@ namespace MoneyRecord.Models
         public string AccountDisplayName => Kind == LedgerEntryKind.Transfer
             ? $"{AccountName} → {CounterpartAccountName}"
             : AccountName;
+
+        public bool HasPayee => !string.IsNullOrWhiteSpace(PayeeName);
+
+        /// <summary>
+        /// The row's heading: the payee when the description is the automatic one (the category's name), otherwise the
+        /// description ("Éxito" rather than "Food" over "Food · Cash").
+        /// </summary>
+        public string Title => HasPayee && Description == CategoryName ? PayeeName : Description;
+
+        /// <summary>The row's second line: payee (unless it is the title), category and account, "Éxito · Food · Cash".</summary>
+        public string Details => string.Join(" · ",
+            new[] { Title == PayeeName ? null : PayeeName, CategoryName, AccountDisplayName }.Where(s => !string.IsNullOrEmpty(s)));
 
         public bool HasTags => !string.IsNullOrWhiteSpace(Tags);
 

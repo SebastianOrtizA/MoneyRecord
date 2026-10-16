@@ -30,6 +30,9 @@ namespace MoneyRecord.Models
 
         public int AccountId { get; set; }
 
+        /// <summary>The payee each occurrence gets (see <see cref="Payee"/>); none = no payee.</summary>
+        public int? PayeeId { get; set; }
+
         public TransactionType TransactionType { get; set; }
 
         public RecurrenceFrequency Frequency { get; set; }

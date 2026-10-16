@@ -37,6 +37,10 @@ namespace MoneyRecord.Models
         [Indexed(Name = "IX_Transaction_AccountId")]
         public int? AccountId { get; set; }
 
+        /// <summary>Who the money went to or came from (see <see cref="Payee"/>); none = no payee.</summary>
+        [Indexed(Name = "IX_Transaction_PayeeId")]
+        public int? PayeeId { get; set; }
+
         public string? Tags { get; set; }
 
         public string? ReceiptPhotoPath { get; set; }
@@ -112,6 +116,10 @@ namespace MoneyRecord.Models
 
         [Ignore]
         public string AccountName { get; set; } = string.Empty;
+
+        /// <summary>The payee's name (empty = none), filled in when the transaction is loaded for display.</summary>
+        [Ignore]
+        public string PayeeName { get; set; } = string.Empty;
 
         /// <summary>The account's currency (empty = the base currency), filled in when the transaction is loaded for display.</summary>
         [Ignore]

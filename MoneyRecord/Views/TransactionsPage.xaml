@@ -64,21 +64,15 @@
                         </Border>
 
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
-                            <Label Text="{Binding Description}"
+                            <Label Text="{Binding Title}"
                                    FontSize="15"
                                    FontAttributes="Bold"
                                    LineBreakMode="TailTruncation" />
-                            <Label FontSize="12"
+                            <!-- Payee (unless it is the title) · category · account -->
+                            <Label Text="{Binding Details}"
+                                   FontSize="12"
                                    LineBreakMode="TailTruncation"
-                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding CategoryName}" />
-                                        <Span Text=" · " />
-                                        <Span Text="{Binding AccountDisplayName}" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Grid.Column="2" Spacing="2" VerticalOptions="Center">
@@ -319,7 +313,7 @@
                                TextColor="{Binding SelectedEntry.Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
                     </Border>
                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                        <Label Text="{Binding SelectedEntry.Description}" FontSize="18" FontAttributes="Bold" />
+                        <Label Text="{Binding SelectedEntry.Title}" FontSize="18" FontAttributes="Bold" />
                         <Label Text="{Binding SelectedEntry.CategoryName}"
                                FontSize="14"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
@@ -331,7 +325,7 @@
                        FontAttributes="Bold"
                        TextColor="{Binding SelectedEntry.Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
 
-                <Grid ColumnDefinitions="24,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="10">
+                <Grid ColumnDefinitions="24,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="10">
                     <Label Text="&#xF00ED;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"
                            TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
                     <Label Grid.Column="1"
@@ -344,10 +338,17 @@
                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding SelectedEntry.AccountDisplayName}"
                            FontSize="15" VerticalOptions="Center" />
 
-                    <Label Grid.Row="2" Text="&#xF04F9;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"
+                    <Label Grid.Row="2" Text="&#xF04DC;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"
+                           IsVisible="{Binding SelectedEntry.HasPayee}"
+                           TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedEntry.PayeeName}"
+                           IsVisible="{Binding SelectedEntry.HasPayee}"
+                           FontSize="15" VerticalOptions="Center" />
+
+                    <Label Grid.Row="3" Text="&#xF04F9;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"
                            IsVisible="{Binding SelectedEntry.HasTags}"
                            TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
-                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedEntry.Tags}"
+                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding SelectedEntry.Tags}"
                            IsVisible="{Binding SelectedEntry.HasTags}"
                            FontSize="15" VerticalOptions="Center" />
                 </Grid>

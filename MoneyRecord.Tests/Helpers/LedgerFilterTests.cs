@@ -51,6 +51,14 @@ public class LedgerFilterTests
     }
 
     [Fact]
+    public void Search_matches_the_payee()
+    {
+        var bakery = Lunch with { SourceId = 4, PayeeName = "Corner Bakery" };
+
+        LedgerFilter.Apply([.. All, bakery], new TransactionFilter(SearchText: "bakery")).Should().Equal(bakery);
+    }
+
+    [Fact]
     public void Search_finds_a_transfer_by_its_destination_account()
     {
         LedgerFilter.Apply(All, new TransactionFilter(SearchText: "savings")).Should().Equal(Savings);

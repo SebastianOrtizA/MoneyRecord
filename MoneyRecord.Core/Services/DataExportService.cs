@@ -18,7 +18,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// v1: decimals only (.json). v2: also exact cents (.json). v3: a .zip with data.json + receipts/,
         /// receipt paths relative to the zip ("receipts/receipt_x.jpg"). v4: transfers also store the destination amount;
-        /// savings goals and their accounts (added before v4 shipped, so an app that can read v4 knows them).
+        /// savings goals and their accounts, payees (added before v4 shipped, so an app that can read v4 knows them).
         /// </summary>
         public const int BackupVersion = 4;
 
@@ -82,7 +82,8 @@ namespace MoneyRecord.Services
                 Budgets = conn.Table<Budget>().ToList(),
                 RecurringTransactions = conn.Table<RecurringTransaction>().ToList(),
                 SavingsGoals = conn.Table<SavingsGoal>().ToList(),
-                SavingsGoalAccounts = conn.Table<SavingsGoalAccount>().ToList()
+                SavingsGoalAccounts = conn.Table<SavingsGoalAccount>().ToList(),
+                Payees = conn.Table<Payee>().ToList()
             });
             return backup;
         }
@@ -270,6 +271,7 @@ namespace MoneyRecord.Services
             EnsureUniqueIds(backup.RecurringTransactions, r => r.Id);
             EnsureUniqueIds(backup.SavingsGoals, g => g.Id);
             EnsureUniqueIds(backup.SavingsGoalAccounts, l => l.Id);
+            EnsureUniqueIds(backup.Payees, p => p.Id);
             return backup;
         }
 
@@ -301,6 +303,7 @@ namespace MoneyRecord.Services
         /// </summary>
         private static int ReplaceAll(SQLiteConnection conn, BackupData backup)
         {
+            conn.DeleteAll<Payee>();
             conn.DeleteAll<SavingsGoalAccount>();
             conn.DeleteAll<SavingsGoal>();
             conn.DeleteAll<RecurringTransaction>();
@@ -316,7 +319,8 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.Transfers, t => t.Id)
                 + InsertKeepingIds(conn, backup.Budgets, b => b.Id)
                 + InsertKeepingIds(conn, backup.RecurringTransactions, r => r.Id)
-                + InsertKeepingIds(conn, backup.SavingsGoals, g => g.Id);
+                + InsertKeepingIds(conn, backup.SavingsGoals, g => g.Id)
+                + InsertKeepingIds(conn, backup.Payees, p => p.Id);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
 
@@ -392,9 +396,10 @@ namespace MoneyRecord.Services
             var transactions = await _transactionRepository.GetAllAsync();
             var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id);
             var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
+            var payees = (await (await _dbInitializer.GetConnectionAsync()).Table<Payee>().ToListAsync()).ToDictionary(p => p.Id, p => p.Name);
 
             var sb = new StringBuilder();
-            sb.AppendLine("Date,Description,Amount,Type,Category,Account");
+            sb.AppendLine("Date,Description,Amount,Type,Category,Account,Payee");
 
             foreach (var t in transactions.OrderByDescending(t => t.Date))
             {
@@ -411,7 +416,9 @@ namespace MoneyRecord.Services
                 sb.Append(',');
                 sb.Append(CsvEscape(categoryName));
                 sb.Append(',');
-                sb.AppendLine(CsvEscape(accountName));
+                sb.Append(CsvEscape(accountName));
+                sb.Append(',');
+                sb.AppendLine(CsvEscape(t.PayeeId is int payeeId ? payees.GetValueOrDefault(payeeId, string.Empty) : string.Empty));
             }
 
             return sb.ToString();
@@ -438,5 +445,6 @@ namespace MoneyRecord.Services
         public List<RecurringTransaction> RecurringTransactions { get; set; } = [];
         public List<SavingsGoal> SavingsGoals { get; set; } = [];
         public List<SavingsGoalAccount> SavingsGoalAccounts { get; set; } = [];
+        public List<Payee> Payees { get; set; } = [];
     }
 }

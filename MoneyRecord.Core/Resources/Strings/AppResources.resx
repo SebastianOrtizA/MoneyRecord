@@ -1706,4 +1706,67 @@ Amount: {2}</value>
   <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
     <value>Saving removes the accounts now in another currency: {0}</value>
   </data>
+  <data name="Payee" xml:space="preserve">
+    <value>Payee</value>
+  </data>
+  <data name="PayeePlaceholder" xml:space="preserve">
+    <value>Shop, person or company (optional)</value>
+  </data>
+  <data name="Payees" xml:space="preserve">
+    <value>Payees</value>
+  </data>
+  <data name="SearchPayees" xml:space="preserve">
+    <value>Search payees</value>
+  </data>
+  <data name="NoPayeesYet" xml:space="preserve">
+    <value>No payees yet. Type one when you add an expense or income and it shows up here.</value>
+  </data>
+  <data name="NoMatchingPayees" xml:space="preserve">
+    <value>No payees match your search.</value>
+  </data>
+  <data name="PayeeLastUsed" xml:space="preserve">
+    <value>last {0}</value>
+  </data>
+  <data name="RenamePayee" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="RenamePayeeMessage" xml:space="preserve">
+    <value>New name for "{0}"</value>
+  </data>
+  <data name="PayeeExistsTitle" xml:space="preserve">
+    <value>Payee already exists</value>
+  </data>
+  <data name="PayeeExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" already exists. Merge "{0}" into it?</value>
+  </data>
+  <data name="MergePayee" xml:space="preserve">
+    <value>Merge into another payee</value>
+  </data>
+  <data name="MergePayeeInto" xml:space="preserve">
+    <value>Merge "{0}" into</value>
+  </data>
+  <data name="MergePayeeConfirmMessage" xml:space="preserve">
+    <value>"{0}" is deleted and its transactions ({2}) move to "{1}".</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Merge</value>
+  </data>
+  <data name="DeletePayee" xml:space="preserve">
+    <value>Delete payee</value>
+  </data>
+  <data name="DeletePayeeConfirmation" xml:space="preserve">
+    <value>Delete "{0}"? Its transactions ({1}) stay, without a payee.</value>
+  </data>
+  <data name="PayeesMerged" xml:space="preserve">
+    <value>Payees merged</value>
+  </data>
+  <data name="PayeeDeleted" xml:space="preserve">
+    <value>Payee deleted</value>
+  </data>
+  <data name="FailedToLoadPayees" xml:space="preserve">
+    <value>Failed to load payees</value>
+  </data>
+  <data name="FailedToSavePayee" xml:space="preserve">
+    <value>Failed to update the payee</value>
+  </data>
 </root>

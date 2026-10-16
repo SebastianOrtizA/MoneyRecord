@@ -44,8 +44,9 @@ in both (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...). XAML that uses a Cor
 crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
-- `Models/` — 9 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
-  SavingsGoalAccount (a goal's accounts; one goal per account), ExchangeRate (downloaded
+- `Models/` — 10 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
+  SavingsGoalAccount (a goal's accounts; one goal per account), Payee (optional on a transaction and a recurring one;
+  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded
   daily rates; a cache, not in backups). Plus display models
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
   CurrencyAmount (a total in one currency; per-currency totals, never added), PeriodTotals (Home: income / expense / net
@@ -63,7 +64,8 @@ crashes at runtime (XAML is inflated at runtime there).
   `GetConnectionAsync`, `RunInTransactionAsync`; optional encryption), `SqliteSetup`
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M004`
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
-  as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page), SavingsGoalService (goal
+  as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page), PayeeService (found or created by name on save,
+  last category per type, rename / merge / delete), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
   categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
@@ -87,7 +89,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
-  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), RecurrenceCalculator
+  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), PayeeNames (normalize, same name ignoring case, suggestions), RecurrenceCalculator
   (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
   days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
   (currencies in use; transactions in one currency), CurrencyConverter (downloaded rates: nearest earlier day,
@@ -101,8 +103,8 @@ crashes at runtime (XAML is inflated at runtime there).
   password switch; restore asks for a protected backup's password)
 
 `MoneyRecord/` (app)
-- `ViewModels/` — 15 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 17 XAML pages with code-behind. Home keeps the summary cards; the full list is on `TransactionsPage`
+- `ViewModels/` — 16 ViewModels using [ObservableProperty] and [RelayCommand] source generators
+- `Views/` — 18 XAML pages with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab. `AboutPage` / `LicensePage` show the licences (full texts in
@@ -157,7 +159,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   `//TransactionsPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//CashFlowReportPage`,
   `//NetWorthReportPage`, `//BudgetPage`, `//MorePage`
 - Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
-  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `TransfersPage`, `SettingsPage`
+  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `PayeesPage`, `TransfersPage`, `SettingsPage`
 - Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See
   all" → `//TransactionsPage`, Upcoming "See all" → `RecurringTransactionsPage?Show=Upcoming`, budgets "See all" →
   `//BudgetPage`, goals card → `GoalsPage`

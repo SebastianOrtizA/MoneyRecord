@@ -264,6 +264,7 @@ namespace MoneyRecord.Services.Repositories
             await db.CreateTableAsync<ExchangeRate>();
             await db.CreateTableAsync<SavingsGoal>();
             await db.CreateTableAsync<SavingsGoalAccount>();
+            await db.CreateTableAsync<Payee>();
 
             if (isNewDatabase)
                 await migrations.StampLatestAsync(db);

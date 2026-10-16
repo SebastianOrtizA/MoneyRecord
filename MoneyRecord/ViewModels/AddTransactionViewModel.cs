@@ -1,6 +1,7 @@
 using MoneyRecord.Helpers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
@@ -26,6 +27,11 @@ namespace MoneyRecord.ViewModels
         private readonly IReminderService _reminders;
         private readonly IExchangeRateService _exchangeRates;
         private readonly IConversionService _conversion;
+        private readonly IPayeeService _payeeService;
+        private readonly ILogger<AddTransactionViewModel> _logger;
+
+        // Every payee with its use: the suggestions under the payee field
+        private List<PayeeSummary> _payees = [];
 
         [ObservableProperty]
         private TransactionType transactionType;
@@ -41,6 +47,16 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private string amount = string.Empty;
+
+        /// <summary>The payee's name as typed; empty = none. A new name becomes a payee on save.</summary>
+        [ObservableProperty]
+        private string payeeText = string.Empty;
+
+        /// <summary>Known payees matching <see cref="PayeeText"/> (<see cref="PayeeNames.Suggest"/>).</summary>
+        [ObservableProperty]
+        private List<PayeeSummary> payeeSuggestions = [];
+
+        partial void OnPayeeTextChanged(string value) => PayeeSuggestions = PayeeNames.Suggest(_payees, value);
 
         [ObservableProperty]
         private Category? selectedCategory;
@@ -144,7 +160,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -160,6 +176,8 @@ namespace MoneyRecord.ViewModels
             _reminders = reminders;
             _exchangeRates = exchangeRates;
             _conversion = conversion;
+            _payeeService = payeeService;
+            _logger = logger;
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
         }
@@ -175,6 +193,8 @@ namespace MoneyRecord.ViewModels
             SelectedDate = DateTime.Now;
             Description = string.Empty;
             Amount = string.Empty;
+            _payees = [];
+            PayeeText = string.Empty;
             SelectedCategory = null;
             SelectedAccount = null;
             Title = AppResources.AddTransaction;
@@ -215,6 +235,8 @@ namespace MoneyRecord.ViewModels
                 TransactionType = Transaction.Type;
                 await LoadAccountsAsync();
                 await LoadCategoriesAsync();
+                await LoadPayeesAsync();
+                PayeeText = _payees.FirstOrDefault(p => p.Id == Transaction.PayeeId)?.Name ?? string.Empty;
                 SelectedDate = Transaction.Date;
                 Description = Transaction.Description;
                 TagsText = Transaction.Tags ?? string.Empty;
@@ -255,6 +277,7 @@ namespace MoneyRecord.ViewModels
                 Title = TransactionType == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
                 await LoadAccountsAsync();
                 await LoadCategoriesAsync();
+                await LoadPayeesAsync();
 
                 // The account and category last used for this type
                 SelectedAccount = _entryDefaults.DefaultAccount(TransactionType, Accounts);
@@ -274,6 +297,29 @@ namespace MoneyRecord.ViewModels
             CategoryChoices = _entryDefaults.OrderByRecent(TransactionType, categories)
                 .Select(c => new CategoryChoice(c))
                 .ToList();
+        }
+
+        private async Task LoadPayeesAsync()
+        {
+            _payees = await _payeeService.GetAllAsync();
+        }
+
+        /// <summary>A suggestion tapped: its name, and the category its last entry of this type had (when it is offered).</summary>
+        [RelayCommand]
+        private async Task SelectPayeeAsync(PayeeSummary payee)
+        {
+            PayeeText = payee.Name;
+            try
+            {
+                var categoryId = await _payeeService.GetLastCategoryAsync(payee.Id, TransactionType);
+                if (CategoryChoices.FirstOrDefault(c => c.Category.Id == categoryId) is { } choice)
+                    SelectedCategory = choice.Category;
+            }
+            catch (Exception ex)
+            {
+                // Only a convenience: the user picks the category themselves
+                _logger.LogWarning(ex, "Could not look up the payee's last category");
+            }
         }
 
         [RelayCommand]
@@ -417,6 +463,9 @@ namespace MoneyRecord.ViewModels
                 }
             }
 
+            // After every check, so a refused save never leaves a new payee behind
+            var payeeId = await _payeeService.ResolveAsync(PayeeText);
+
             if (IsEditMode && Transaction != null)
             {
                 // Update existing transaction
@@ -426,6 +475,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.CategoryId = SelectedCategory.Id;
                 Transaction.Type = TransactionType;
                 Transaction.AccountId = accountId;
+                Transaction.PayeeId = payeeId;
                 Transaction.Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim();
                 Transaction.ReceiptPhotoPath = ReceiptPhotoPath;
                 Transaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
@@ -445,6 +495,7 @@ namespace MoneyRecord.ViewModels
                     CategoryId = SelectedCategory.Id,
                     Type = TransactionType,
                     AccountId = accountId,
+                    PayeeId = payeeId,
                     Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim(),
                     ReceiptPhotoPath = ReceiptPhotoPath
                 };
@@ -469,6 +520,7 @@ namespace MoneyRecord.ViewModels
                         Description = savedDescription,
                         CategoryId = SelectedCategory.Id,
                         AccountId = accountId,
+                        PayeeId = payeeId,
                         TransactionType = TransactionType,
                         Frequency = frequency,
                         DayOfMonth = dayOfMonth,

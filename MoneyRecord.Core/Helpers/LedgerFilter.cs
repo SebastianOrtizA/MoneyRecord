@@ -16,6 +16,7 @@ namespace MoneyRecord.Helpers
                 filtered = filtered.Where(e =>
                     Contains(e.Description, search) ||
                     Contains(e.CategoryName, search) ||
+                    Contains(e.PayeeName, search) ||
                     Contains(e.AccountName, search) ||
                     (e.IsTransfer && Contains(e.CounterpartAccountName, search)) ||
                     Contains(e.Tags, search));

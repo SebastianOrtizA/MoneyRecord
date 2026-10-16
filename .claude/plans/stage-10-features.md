@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7a in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -250,6 +250,24 @@ Close the gap with competing finance apps. Each section can ship on its own.
 ### 10.7 Split transactions and payees
 - One payment across several categories (`TransactionSplit` table); reports count splits by category.
 - Optional payee field with autocomplete.
+
+  Split by agreement (2026-10-16): **10.7a** = payees, **10.7b** = splits. Owner choices: payees are a table of their
+  own (rename / merge / delete on a Payees page) rather than free text; a split is stored as linked rows (one normal
+  transaction per category sharing a split group ID, so every total, budget, report and filter keeps working) rather
+  than a `TransactionSplit` table (deviation from the bullet above); splits for expenses only (recurring transactions and
+  the CSV import stay single-category).
+
+  10.7a done as: table `Payee` (name; unique ignoring case, enforced by the service) created from the models;
+  `Transaction.PayeeId` (indexed) and `RecurringTransaction.PayeeId` are new nullable columns (`CreateTableAsync` adds
+  them; no migration); backup format stays v4 (unshipped) with the payees; the CSV export gains a last Payee column.
+  Core `PayeeNames` (normalize spaces, same name ignoring case but not accents, suggestions ranked name prefix → word
+  prefix → contains, most used first, accent-insensitive), `PayeeService` (use counts + last use in one SQL query;
+  `ResolveAsync` finds or creates by name on save; last category per payee and type; rename refuses another payee's
+  name; merge and delete rewrite transactions and recurring transactions in one DB transaction), `PayeeRepository` for
+  display names. Recurring occurrences copy their payee. `LedgerEntry.Title` = the payee when the description is the
+  automatic one (the category name), `Details` = payee · category · account; search matches the payee. App: payee field
+  under the amount with suggestion chips (tapping one picks the category it had last time for that type), detail sheet
+  payee row, More → Payees (search, tap → Rename / Merge into / Delete; renaming to an existing name offers a merge).
 
 ### 10.8 Debts and loans
 - Track money lent/borrowed with a person; partial repayments; reminders.

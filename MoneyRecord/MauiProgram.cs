@@ -75,6 +75,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IBudgetRepository, BudgetRepository>();
             builder.Services.AddSingleton<IRecurringTransactionRepository, RecurringTransactionRepository>();
             builder.Services.AddSingleton<IExchangeRateRepository, ExchangeRateRepository>();
+            builder.Services.AddSingleton<IPayeeRepository, PayeeRepository>();
 
             // Register Business Services
             builder.Services.AddSingleton<IBalanceService, BalanceService>();
@@ -88,6 +89,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IStatementMappingStore, StatementMappingStore>();
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<ISavingsGoalService, SavingsGoalService>();
+            builder.Services.AddSingleton<IPayeeService, PayeeService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
             builder.Services.AddSingleton<ISetupService, SetupService>();
@@ -151,6 +153,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<AddEntryViewModel>();
             builder.Services.AddTransient<BudgetViewModel>();
             builder.Services.AddTransient<GoalsViewModel>();
+            builder.Services.AddTransient<PayeesViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<SetupViewModel>();
@@ -174,6 +177,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<IncomeReportPage>();
             builder.Services.AddTransient<BudgetPage>();
             builder.Services.AddTransient<GoalsPage>();
+            builder.Services.AddTransient<PayeesPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<SetupPage>();
