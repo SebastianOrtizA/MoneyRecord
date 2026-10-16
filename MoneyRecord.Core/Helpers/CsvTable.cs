@@ -63,7 +63,7 @@ namespace MoneyRecord.Helpers
             {
                 // Strict: invalid bytes throw instead of becoming "�"
                 var text = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true).GetString(bytes);
-                return text.TrimStart('﻿');
+                return text.TrimStart('\uFEFF');
             }
             catch (DecoderFallbackException)
             {

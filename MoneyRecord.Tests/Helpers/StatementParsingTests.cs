@@ -141,7 +141,7 @@ public sealed class StatementParsingTests
         table.Headers.Should().Equal("Fecha", "Descripción", "Referencia", "Importe", "Saldo");
         TestCulture.WithCulture("en-US", () =>
         {
-            var mapping = StatementMapping.Guess(table)!;
+            var mapping = StatementMapping.Guess(table)!.Mapping;
             mapping.AmountColumn.Should().Be(3);
             mapping.DateFormat.Pattern.Should().Be("d/M/yyyy", "October 1–3, not January to March");
         });
@@ -181,13 +181,28 @@ public sealed class StatementParsingTests
             02/10/2026;02/10/2026;Nómina;3.955.000,00;2.000.000,00
             """);
 
-        var mapping = StatementMapping.Guess(table)!;
+        var guess = StatementMapping.Guess(table)!;
+        var mapping = guess.Mapping;
 
         mapping.DateColumn.Should().Be(1, "an exact name beats one that contains it");
         mapping.DescriptionColumn.Should().Be(2);
         mapping.AmountColumn.Should().Be(4);
         mapping.DecimalSeparator.Should().Be(',');
         mapping.DateFormat.Pattern.Should().Be("d/M/yyyy");
+        // The screen's choices come with the guess
+        guess.DateFormats.Keys.Should().BeEquivalentTo([0, 1]);
+        guess.DateFormats[1][0].Should().Be(mapping.DateFormat);
+        guess.AmountColumns.Should().Equal(3, 4);
+    }
+
+    [Fact]
+    public void Another_amount_column_brings_its_own_separator()
+    {
+        var table = CsvTable.Parse("Date;Amount;USD\n2026-10-01;-45.000,00;-11.50\n2026-10-02;2.000.000,00;500.25\n");
+        var mapping = StatementMapping.Guess(table)!.Mapping;
+
+        mapping.DecimalSeparator.Should().Be(',');
+        mapping.WithAmountColumn(table, 2).Should().Be(mapping with { AmountColumn = 2, DecimalSeparator = '.' });
     }
 
     [Fact]
@@ -195,7 +210,7 @@ public sealed class StatementParsingTests
     {
         var table = CsvTable.Parse("2026-10-01,REF1,Coffee at the corner,-3.50\n2026-10-02,REF2,Salary October,1500.00\n");
 
-        var mapping = StatementMapping.Guess(table)!;
+        var mapping = StatementMapping.Guess(table)!.Mapping;
 
         mapping.DateColumn.Should().Be(0);
         mapping.AmountColumn.Should().Be(3);

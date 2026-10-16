@@ -50,7 +50,7 @@ public sealed class StatementImportServiceTests : IAsyncLifetime
     private Task<List<ImportRow>> PreviewAsync(string csv, bool positiveIsExpense = false)
     {
         var table = CsvTable.Parse(csv);
-        var mapping = StatementMapping.Guess(table)! with { PositiveIsExpense = positiveIsExpense };
+        var mapping = StatementMapping.Guess(table)!.Mapping with { PositiveIsExpense = positiveIsExpense };
         return _sut.PreviewAsync(table, mapping, _bank, _food, _salary);
     }
 

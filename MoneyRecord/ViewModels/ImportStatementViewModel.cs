@@ -27,6 +27,8 @@ namespace MoneyRecord.ViewModels
         private readonly IExchangeRateService _exchangeRates;
 
         private CsvTable? _table;
+        private StatementGuess? _guess;
+        private StatementMapping? _mapping;
         // Set while a file's guess fills the pickers, so each picker doesn't start its own preview
         private bool _applyingGuess;
 
@@ -63,7 +65,7 @@ namespace MoneyRecord.ViewModels
         private ColumnOption? selectedDateColumn;
 
         [ObservableProperty]
-        private List<StatementDate> dateFormats = [];
+        private IReadOnlyList<StatementDate> dateFormats = [];
 
         [ObservableProperty]
         private StatementDate? selectedDateFormat;
@@ -114,7 +116,7 @@ namespace MoneyRecord.ViewModels
         /// <summary>Only a file whose dates fit both day-first and month-first needs the format picker.</summary>
         public bool HasDateChoice => DateFormats.Count > 1;
 
-        partial void OnDateFormatsChanged(List<StatementDate> value) => OnPropertyChanged(nameof(HasDateChoice));
+        partial void OnDateFormatsChanged(IReadOnlyList<StatementDate> value) => OnPropertyChanged(nameof(HasDateChoice));
 
         public async Task InitializeAsync()
         {
@@ -168,9 +170,13 @@ namespace MoneyRecord.ViewModels
 
                 IsBusy = true;
                 await using var stream = await file.OpenReadAsync();
-                var table = await Task.Run(() => CsvTable.Read(stream));
-                var mapping = await Task.Run(() => StatementMapping.Guess(table));
-                if (mapping == null)
+                // Reading and guessing try every layout on every value: all of it off the UI thread, once
+                var (table, guess) = await Task.Run(() =>
+                {
+                    var table = CsvTable.Read(stream);
+                    return (table, StatementMapping.Guess(table));
+                });
+                if (guess == null)
                 {
                     IsBusy = false;
                     await _dialogService.AlertAsync(AppResources.ImportFailedToRead, AppResources.ImportNoTable);
@@ -178,7 +184,7 @@ namespace MoneyRecord.ViewModels
                 }
 
                 _table = table;
-                ApplyGuess(table, mapping);
+                ApplyGuess(table, guess);
                 FileSummary = $"{file.FileName} · {Plurals.Rows(table.Rows.Count)}";
                 HasFile = true;
                 LoadPreviewCommand.Execute(null);
@@ -190,24 +196,25 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private void ApplyGuess(CsvTable table, StatementMapping mapping)
+        private void ApplyGuess(CsvTable table, StatementGuess guess)
         {
             var columns = table.Headers.Select((name, i) => new ColumnOption(i, name)).ToList();
-            var dateColumns = StatementMapping.DateColumns(table);
-            var amountColumns = StatementMapping.AmountColumns(table);
+            var mapping = guess.Mapping;
 
             _applyingGuess = true;
             try
             {
-                DateColumns = columns.Where(c => dateColumns.Contains(c.Index)).ToList();
-                AmountColumns = columns.Where(c => amountColumns.Contains(c.Index)).ToList();
+                _guess = guess;
+                _mapping = mapping;
+                DateColumns = columns.Where(c => guess.DateFormats.ContainsKey(c.Index)).ToList();
+                AmountColumns = columns.Where(c => guess.AmountColumns.Contains(c.Index)).ToList();
                 DescriptionColumns = columns;
                 SelectedDateColumn = DateColumns.First(c => c.Index == mapping.DateColumn);
                 SelectedAmountColumn = AmountColumns.First(c => c.Index == mapping.AmountColumn);
                 SelectedDescriptionColumn = columns[mapping.DescriptionColumn];
-                DateFormats = StatementDate.Detect(table.Column(mapping.DateColumn));
+                DateFormats = guess.DateFormats[mapping.DateColumn];
                 SelectedDateFormat = mapping.DateFormat;
-                PositiveIsExpense = false;
+                PositiveIsExpense = mapping.PositiveIsExpense;
             }
             finally
             {
@@ -215,26 +222,40 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        // Each picker changes the one mapping; the preview follows it
+
         partial void OnSelectedAccountChanged(Account? value) => Reload();
 
-        partial void OnSelectedDescriptionColumnChanged(ColumnOption? value) => Reload();
+        partial void OnSelectedDescriptionColumnChanged(ColumnOption? value) =>
+            Update(m => value == null ? m : m with { DescriptionColumn = value.Index });
 
-        partial void OnSelectedAmountColumnChanged(ColumnOption? value) => Reload();
+        partial void OnSelectedAmountColumnChanged(ColumnOption? value) =>
+            Update(m => value == null ? m : m.WithAmountColumn(_table!, value.Index));
 
-        partial void OnSelectedDateFormatChanged(StatementDate? value) => Reload();
+        partial void OnSelectedDateFormatChanged(StatementDate? value) =>
+            Update(m => value == null ? m : m with { DateFormat = value });
 
-        partial void OnPositiveIsExpenseChanged(bool value) => Reload();
+        partial void OnPositiveIsExpenseChanged(bool value) => Update(m => m with { PositiveIsExpense = value });
 
         partial void OnSelectedDateColumnChanged(ColumnOption? value)
         {
-            if (_applyingGuess || _table == null || value == null)
+            if (_applyingGuess || _guess == null || value == null)
                 return;
 
-            // Another column may be written in another layout: its own formats, the best one picked
+            // Another column may be written in another layout: its own formats (read with the guess), the best one picked
+            var formats = _guess.DateFormats[value.Index];
             _applyingGuess = true;
-            DateFormats = StatementDate.Detect(_table.Column(value.Index));
-            SelectedDateFormat = DateFormats.FirstOrDefault();
+            DateFormats = formats;
+            SelectedDateFormat = formats[0];
             _applyingGuess = false;
+            Update(m => m with { DateColumn = value.Index, DateFormat = formats[0] });
+        }
+
+        private void Update(Func<StatementMapping, StatementMapping> change)
+        {
+            if (_applyingGuess || _mapping == null)
+                return;
+            _mapping = change(_mapping);
             Reload();
         }
 
@@ -257,17 +278,10 @@ namespace MoneyRecord.ViewModels
                 LoadPreviewCommand.Execute(null);
         }
 
-        private StatementMapping? CurrentMapping() =>
-            SelectedDateColumn is { } date && SelectedDateFormat is { } format && SelectedDescriptionColumn is { } description
-            && SelectedAmountColumn is { } amount
-                ? new StatementMapping(date.Index, format, description.Index, amount.Index,
-                    StatementAmount.DetectDecimalSeparator(_table!.Column(amount.Index)), PositiveIsExpense)
-                : null;
-
         [RelayCommand(AllowConcurrentExecutions = true)]
         private async Task LoadPreviewAsync(CancellationToken cancellationToken)
         {
-            if (_table == null || SelectedAccount == null || CurrentMapping() is not { } mapping)
+            if (_table == null || SelectedAccount == null || _mapping is not { } mapping)
                 return;
 
             try
@@ -300,7 +314,8 @@ namespace MoneyRecord.ViewModels
 
         private void OnRowChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ImportRow.IsIncluded))
+            // A row without a category (none of its type existed) counts once it gets one
+            if (e.PropertyName is nameof(ImportRow.IsIncluded) or nameof(ImportRow.Category))
                 UpdateCount();
         }
 
@@ -323,7 +338,11 @@ namespace MoneyRecord.ViewModels
             if (index < 0)
                 return;
 
-            row.Category = categories[index];
+            if (row.Category != categories[index])
+            {
+                row.Category = categories[index];
+                row.IsLearned = false; // the user's choice now, not the history's
+            }
         }
 
         private bool CanImport() => IncludedCount > 0;

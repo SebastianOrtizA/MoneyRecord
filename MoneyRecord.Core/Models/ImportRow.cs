@@ -40,8 +40,12 @@ namespace MoneyRecord.Models
         /// <summary>The account already has an entry with the same day, type, amount and description.</summary>
         public bool IsDuplicate { get; init; }
 
-        /// <summary>The category came from an earlier entry with the same description, not the import screen's default.</summary>
-        public bool IsLearned { get; init; }
+        /// <summary>
+        /// The category came from an earlier entry with the same description, not the import screen's default; cleared when
+        /// the user picks another one.
+        /// </summary>
+        [ObservableProperty]
+        private bool isLearned;
 
         public bool CanImport => Problem == ImportProblem.None;
 

@@ -87,11 +87,11 @@ namespace MoneyRecord.Helpers
                         return false;
                     number.Append('.');
                 }
-                else if (c == thousands || c == '\'' || c == ' ' || c == ' ' || c == ' ' && number.Length > 0)
+                else if (c == thousands || c == '\'' || c == '\u00A0' || c == '\u202F' || (c == ' ' && number.Length > 0))
                 {
                     // grouping (a space counts only between digits; before them it's just spacing)
                 }
-                else if (c is '-' or '−' or '+')
+                else if (c is '-' or '\u2212' or '+')
                 {
                     if (signSeen)
                         return false;

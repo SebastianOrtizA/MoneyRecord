@@ -21,19 +21,21 @@ namespace MoneyRecord.Models
             "memo", "payee", "narrative", "referencia", "movimiento", "transaccion", "transaction"];
         private static readonly string[] AmountNames = ["amount", "importe", "monto", "valor", "value", "cantidad", "total"];
 
-        /// <summary>The columns whose values are (nearly all, see <see cref="StatementAmount.IsMost"/>) dates in some layout.</summary>
-        public static List<int> DateColumns(CsvTable table) =>
-            Enumerable.Range(0, table.Headers.Count).Where(c => StatementDate.Detect(table.Column(c)).Count > 0).ToList();
-
-        /// <summary>The columns whose non-empty values are (nearly all) amounts.</summary>
-        public static List<int> AmountColumns(CsvTable table) =>
-            Enumerable.Range(0, table.Headers.Count).Where(c => IsAmountColumn(table, c)).ToList();
-
-        /// <summary>A starting mapping, or null when the file has no date column or no amount column.</summary>
-        public static StatementMapping? Guess(CsvTable table)
+        /// <summary>
+        /// A starting mapping plus the choices the import screen offers, all read from the table once (the layouts are
+        /// tried on every value of every column, so a screen must not repeat it); null when the file has no date column
+        /// or no amount column.
+        /// </summary>
+        public static StatementGuess? Guess(CsvTable table)
         {
-            var dates = DateColumns(table);
-            var amounts = AmountColumns(table).Except(dates).ToList();
+            var dateFormats = Enumerable.Range(0, table.Headers.Count)
+                .Select(c => (Column: c, Formats: StatementDate.Detect(table.Column(c))))
+                .Where(c => c.Formats.Count > 0)
+                .ToDictionary(c => c.Column, c => (IReadOnlyList<StatementDate>)c.Formats);
+            var dates = dateFormats.Keys.Order().ToList();
+            var amounts = Enumerable.Range(0, table.Headers.Count)
+                .Where(c => !dateFormats.ContainsKey(c) && IsAmountColumn(table, c))
+                .ToList();
             if (dates.Count == 0 || amounts.Count == 0)
                 return null;
 
@@ -45,14 +47,11 @@ namespace MoneyRecord.Models
                 ?? texts.OrderByDescending(c => table.Column(c).Sum(v => v.Length)).Select(c => (int?)c).FirstOrDefault()
                 ?? amount;
 
-            return new StatementMapping(date, StatementDate.Detect(table.Column(date))[0], description, amount,
-                StatementAmount.DetectDecimalSeparator(table.Column(amount)));
+            var mapping = new StatementMapping(date, dateFormats[date][0], description, 0, '.').WithAmountColumn(table, amount);
+            return new StatementGuess(mapping, dateFormats, amounts);
         }
 
-        /// <summary>This mapping with another date column: its layout and the amount separator follow the data.</summary>
-        public StatementMapping WithDateColumn(CsvTable table, int column) =>
-            this with { DateColumn = column, DateFormat = StatementDate.Detect(table.Column(column)).FirstOrDefault() ?? DateFormat };
-
+        /// <summary>This mapping with another amount column: the decimal separator follows that column's values.</summary>
         public StatementMapping WithAmountColumn(CsvTable table, int column) =>
             this with { AmountColumn = column, DecimalSeparator = StatementAmount.DetectDecimalSeparator(table.Column(column)) };
 
@@ -90,4 +89,13 @@ namespace MoneyRecord.Models
             return new string(decomposed.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray());
         }
     }
+
+    /// <summary>
+    /// What <see cref="StatementMapping.Guess"/> read from a table: the starting mapping, the date layouts that read each
+    /// date column (best first) and the amount columns.
+    /// </summary>
+    public sealed record StatementGuess(
+        StatementMapping Mapping,
+        IReadOnlyDictionary<int, IReadOnlyList<StatementDate>> DateFormats,
+        IReadOnlyList<int> AmountColumns);
 }
