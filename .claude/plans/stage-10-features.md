@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5a done; 10.5b in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -228,6 +228,24 @@ Close the gap with competing finance apps. Each section can ship on its own.
 
 ### 10.6 Savings goals
 - Goal = target amount + date + linked account(s); progress from account balance; projection ("on track by …").
+
+  Owner choices (2026-10-16): saved = the linked accounts' balance (an account counts for one goal only); one currency
+  per goal (only its accounts can be linked); both projections (needed per month by the date + the recent pace); More →
+  Goals + a Home card.
+
+  10.6 done as: tables `SavingsGoal` (name, target cents, currency, optional target date) + `SavingsGoalAccount` (unique
+  account) created from the models (new tables need no migration); backup format stays v4 (unshipped, like 10.3b) with
+  both lists; deleting an account unlinks it. Core `GoalProjection` (pace = the accounts' change over the last 3 months,
+  or since the first one was created, none under 28 days; needed per month = the rest over the months left, all of it
+  in the last month; status Reached / On track / Behind / none) and `GoalProgress` (texts), `SavingsGoalService`
+  (`IBalanceService.GetChangesAfterAsync` = the per-account SQL sums with an `after` date; save/delete in one DB
+  transaction, refuses another goal's or another currency's account). An account that changes currency later is listed
+  as not counted. `DateStyle.MonthYear`. App: `GoalsPage` (cards like Budgets, BottomSheet with name, target, currency
+  picker when the accounts use several, optional date, account checklist), More item, Home card (first three; amounts
+  hidden with the balances).
+  Review: editing a goal whose account moved to another currency says saving removes it (dropped on purpose: it can't
+  count); the per-account sums take `DateTime? since` (no filter = all-time) and the pace window includes its first day;
+  Home passes its balances to `GetProgressAsync`.
 
 ### 10.7 Split transactions and payees
 - One payment across several categories (`TransactionSplit` table); reports count splits by category.

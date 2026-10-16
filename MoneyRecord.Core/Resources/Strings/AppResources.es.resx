@@ -1611,4 +1611,97 @@ Monto: {2}</value>
   <data name="RestoreWrongPassword" xml:space="preserve">
     <value>Contraseña incorrecta. Inténtalo de nuevo.</value>
   </data>
+  <data name="SavingsGoals" xml:space="preserve">
+    <value>Metas</value>
+  </data>
+  <data name="SavingsGoalsTitle" xml:space="preserve">
+    <value>Metas de ahorro</value>
+  </data>
+  <data name="AddGoal" xml:space="preserve">
+    <value>Añadir meta</value>
+  </data>
+  <data name="EditGoal" xml:space="preserve">
+    <value>Editar meta</value>
+  </data>
+  <data name="GoalName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="GoalNamePlaceholder" xml:space="preserve">
+    <value>p. ej. Vacaciones</value>
+  </data>
+  <data name="GoalTarget" xml:space="preserve">
+    <value>Monto objetivo</value>
+  </data>
+  <data name="GoalHasTargetDate" xml:space="preserve">
+    <value>Lograrla para una fecha</value>
+  </data>
+  <data name="GoalAccounts" xml:space="preserve">
+    <value>Cuentas donde está el ahorro</value>
+  </data>
+  <data name="GoalAccountsHint" xml:space="preserve">
+    <value>Lo ahorrado = su saldo. Cada cuenta sirve para una sola meta.</value>
+  </data>
+  <data name="GoalNoFreeAccounts" xml:space="preserve">
+    <value>No hay cuentas libres en {0}. Añade una en Cuentas.</value>
+  </data>
+  <data name="NoGoalsYet" xml:space="preserve">
+    <value>Aún no hay metas de ahorro</value>
+  </data>
+  <data name="AddGoalToStart" xml:space="preserve">
+    <value>Añade una meta y vincula las cuentas donde guardas ese dinero.</value>
+  </data>
+  <data name="PleaseEnterGoalName" xml:space="preserve">
+    <value>Escribe un nombre para la meta</value>
+  </data>
+  <data name="PleaseSelectGoalAccount" xml:space="preserve">
+    <value>Selecciona al menos una cuenta</value>
+  </data>
+  <data name="GoalAdded" xml:space="preserve">
+    <value>Meta añadida</value>
+  </data>
+  <data name="FailedToLoadGoals" xml:space="preserve">
+    <value>No se pudieron cargar las metas</value>
+  </data>
+  <data name="FailedToSaveGoal" xml:space="preserve">
+    <value>No se pudo guardar la meta</value>
+  </data>
+  <data name="FailedToDeleteGoal" xml:space="preserve">
+    <value>No se pudo eliminar la meta</value>
+  </data>
+  <data name="DeleteGoalConfirmation" xml:space="preserve">
+    <value>¿Eliminar la meta "{0}"? Sus cuentas y su dinero se conservan.</value>
+  </data>
+  <data name="GoalReached" xml:space="preserve">
+    <value>Lograda</value>
+  </data>
+  <data name="GoalBehind" xml:space="preserve">
+    <value>Atrasada</value>
+  </data>
+  <data name="GoalSavedOfTarget" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="GoalNeededPerMonth" xml:space="preserve">
+    <value>Ahorra {0} al mes para lograrla el {1}</value>
+  </data>
+  <data name="GoalTargetDatePassed" xml:space="preserve">
+    <value>La fecha objetivo era el {0}</value>
+  </data>
+  <data name="GoalNotEnoughHistory" xml:space="preserve">
+    <value>Aún no hay historial suficiente para una proyección</value>
+  </data>
+  <data name="GoalNoRecentSavings" xml:space="preserve">
+    <value>Sin ahorro en los últimos {0} meses</value>
+  </data>
+  <data name="GoalAtYourPace" xml:space="preserve">
+    <value>A tu ritmo: {0}</value>
+  </data>
+  <data name="GoalNotInSight" xml:space="preserve">
+    <value>A tu ritmo no se logrará pronto</value>
+  </data>
+  <data name="GoalAccountsNotCounted" xml:space="preserve">
+    <value>No cuenta (otra moneda): {0}</value>
+  </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>Al guardar se quitan las cuentas que ahora están en otra moneda: {0}</value>
+  </data>
 </root>

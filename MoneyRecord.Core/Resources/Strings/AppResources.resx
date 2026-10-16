@@ -1613,4 +1613,97 @@ Amount: {2}</value>
   <data name="RestoreWrongPassword" xml:space="preserve">
     <value>Wrong password. Try again.</value>
   </data>
+  <data name="SavingsGoals" xml:space="preserve">
+    <value>Goals</value>
+  </data>
+  <data name="SavingsGoalsTitle" xml:space="preserve">
+    <value>Savings goals</value>
+  </data>
+  <data name="AddGoal" xml:space="preserve">
+    <value>Add goal</value>
+  </data>
+  <data name="EditGoal" xml:space="preserve">
+    <value>Edit goal</value>
+  </data>
+  <data name="GoalName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="GoalNamePlaceholder" xml:space="preserve">
+    <value>e.g. Vacation</value>
+  </data>
+  <data name="GoalTarget" xml:space="preserve">
+    <value>Target amount</value>
+  </data>
+  <data name="GoalHasTargetDate" xml:space="preserve">
+    <value>Reach it by a date</value>
+  </data>
+  <data name="GoalAccounts" xml:space="preserve">
+    <value>Accounts that hold the savings</value>
+  </data>
+  <data name="GoalAccountsHint" xml:space="preserve">
+    <value>Saved = their balance. An account counts for one goal only.</value>
+  </data>
+  <data name="GoalNoFreeAccounts" xml:space="preserve">
+    <value>No free accounts in {0}. Add one in Accounts.</value>
+  </data>
+  <data name="NoGoalsYet" xml:space="preserve">
+    <value>No savings goals yet</value>
+  </data>
+  <data name="AddGoalToStart" xml:space="preserve">
+    <value>Add a goal and link the accounts that hold its money.</value>
+  </data>
+  <data name="PleaseEnterGoalName" xml:space="preserve">
+    <value>Please enter a name for the goal</value>
+  </data>
+  <data name="PleaseSelectGoalAccount" xml:space="preserve">
+    <value>Select at least one account</value>
+  </data>
+  <data name="GoalAdded" xml:space="preserve">
+    <value>Goal added</value>
+  </data>
+  <data name="FailedToLoadGoals" xml:space="preserve">
+    <value>Failed to load the goals</value>
+  </data>
+  <data name="FailedToSaveGoal" xml:space="preserve">
+    <value>Failed to save the goal</value>
+  </data>
+  <data name="FailedToDeleteGoal" xml:space="preserve">
+    <value>Failed to delete the goal</value>
+  </data>
+  <data name="DeleteGoalConfirmation" xml:space="preserve">
+    <value>Delete the goal "{0}"? Its accounts and their money stay.</value>
+  </data>
+  <data name="GoalReached" xml:space="preserve">
+    <value>Reached</value>
+  </data>
+  <data name="GoalBehind" xml:space="preserve">
+    <value>Behind</value>
+  </data>
+  <data name="GoalSavedOfTarget" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="GoalNeededPerMonth" xml:space="preserve">
+    <value>Save {0} a month to reach it by {1}</value>
+  </data>
+  <data name="GoalTargetDatePassed" xml:space="preserve">
+    <value>The target date was {0}</value>
+  </data>
+  <data name="GoalNotEnoughHistory" xml:space="preserve">
+    <value>Not enough history for a projection yet</value>
+  </data>
+  <data name="GoalNoRecentSavings" xml:space="preserve">
+    <value>No savings in the last {0} months</value>
+  </data>
+  <data name="GoalAtYourPace" xml:space="preserve">
+    <value>At your pace: {0}</value>
+  </data>
+  <data name="GoalNotInSight" xml:space="preserve">
+    <value>At your pace it won't be reached soon</value>
+  </data>
+  <data name="GoalAccountsNotCounted" xml:space="preserve">
+    <value>Not counted (other currency): {0}</value>
+  </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>Saving removes the accounts now in another currency: {0}</value>
+  </data>
 </root>

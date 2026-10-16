@@ -30,6 +30,7 @@ namespace MoneyRecord.ViewModels
             new("\U000F0070", AppResources.Accounts, nameof(ManageAccountsPage)),
             new("\U000F0831", AppResources.Categories, nameof(ManageCategoriesPage)),
             new("\U000F0456", AppResources.RecurringTransactions, nameof(RecurringTransactionsPage)),
+            new("\U000F1007", AppResources.SavingsGoals, nameof(GoalsPage)),
             new("\U000F04E1", AppResources.Transfers, nameof(TransfersPage)),
             new("\U000F0493", AppResources.Settings, nameof(SettingsPage)),
         ];

@@ -15,6 +15,12 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>Every account's balance in its own currency and its latest activity (or creation) date.</summary>
         Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync();
 
+        /// <summary>
+        /// How much each account's balance changed through the transactions and transfers dated on or after <paramref name="since"/>
+        /// (in its own currency); accounts without any are absent.
+        /// </summary>
+        Task<Dictionary<int, decimal>> GetChangesSinceAsync(DateTime since);
+
         /// <summary>Expenses in the range per category ID, in one query; categories without any are absent.</summary>
         Task<Dictionary<int, List<CurrencyAmount>>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate);
     }

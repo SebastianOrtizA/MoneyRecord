@@ -14,7 +14,7 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>
         /// In one database transaction: moves the account's transactions and recurring rules to the default
-        /// account, then deletes it.
+        /// account, unlinks it from its savings goal, then deletes it.
         /// </summary>
         /// <exception cref="InvalidOperationException">
         /// The account is the default one, or transfers still use it (moving them could make a transfer from an

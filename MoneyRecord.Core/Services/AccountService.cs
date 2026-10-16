@@ -54,6 +54,8 @@ namespace MoneyRecord.Services
 
                     db.Execute("UPDATE \"Transaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
                     db.Execute("UPDATE \"RecurringTransaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
+                    // Its goals keep their other accounts
+                    db.Execute("DELETE FROM \"SavingsGoalAccount\" WHERE AccountId = ?", accountId);
                     db.Delete<Account>(accountId);
                 });
             }
