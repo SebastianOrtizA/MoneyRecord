@@ -1500,4 +1500,61 @@ Monto: {2}</value>
   <data name="ImportSavedMapping" xml:space="preserve">
     <value>Mismas columnas y cuenta que en tu última importación de un archivo de este banco.</value>
   </data>
+  <data name="AutoBackups" xml:space="preserve">
+    <value>Copias automáticas</value>
+  </data>
+  <data name="AutoBackupsDescription" xml:space="preserve">
+    <value>Una copia de todos tus datos, hecha sola en una carpeta que elijas: en una tarjeta SD o en una app en la nube como Google Drive</value>
+  </data>
+  <data name="BackupFolder" xml:space="preserve">
+    <value>Carpeta</value>
+  </data>
+  <data name="BackupFolderNone" xml:space="preserve">
+    <value>Sin elegir</value>
+  </data>
+  <data name="ChooseFolder" xml:space="preserve">
+    <value>Elegir</value>
+  </data>
+  <data name="BackupFrequency" xml:space="preserve">
+    <value>Frecuencia</value>
+  </data>
+  <data name="BackupDaily" xml:space="preserve">
+    <value>Cada día</value>
+  </data>
+  <data name="BackupWeekly" xml:space="preserve">
+    <value>Cada semana</value>
+  </data>
+  <data name="BackupMonthly" xml:space="preserve">
+    <value>Cada mes</value>
+  </data>
+  <data name="BackupsToKeep" xml:space="preserve">
+    <value>Conservar</value>
+  </data>
+  <data name="BackupsOne" xml:space="preserve">
+    <value>{0} copia</value>
+  </data>
+  <data name="BackupsOther" xml:space="preserve">
+    <value>{0} copias</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Última copia: {0}</value>
+  </data>
+  <data name="NoBackupYet" xml:space="preserve">
+    <value>Todavía no hay copias</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Creando copia…</value>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>La última copia falló ({0})</value>
+  </data>
+  <data name="BackupFolderUnavailable" xml:space="preserve">
+    <value>La app ya no puede acceder a la carpeta. Vuelve a elegirla.</value>
+  </data>
+  <data name="BackUpNow" xml:space="preserve">
+    <value>Copiar ahora</value>
+  </data>
+  <data name="AutoBackupNote" xml:space="preserve">
+    <value>Solo se conservan las copias automáticas más recientes, y solo se hace una nueva si algo cambió. Para restaurar una, usa Restaurar desde Copia de Seguridad → Seleccionar Archivo de Copia de Seguridad.</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4a done; 10.4b in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5a in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -197,6 +197,21 @@ Close the gap with competing finance apps. Each section can ship on its own.
 - Scheduled automatic local backups (weekly, keep last N).
 - Optional cloud: Google Drive appDataFolder (Google.Apis.Drive.v3, Apache-2.0) or WebDAV/Nextcloud
   (WebDav.Client, MIT). Encrypted zip. (Replaces Stage 5.2 cloud sync for v1; real two-way sync stays out of scope.)
+
+  Split by agreement (2026-10-16): **10.5a** = scheduled backups to a folder the user picks, **10.5b** = optional
+  password (AES zip) for manual and automatic backups, asked on restore. Owner choices: the system folder picker (any
+  provider: phone storage, SD card, Google Drive / Nextcloud apps) instead of the Drive API or WebDAV (no OAuth, no new
+  dependency); optional password; daily / weekly / monthly, keep N.
+
+  10.5a done as: Core `IBackupFolder` (Android `AndroidBackupFolder` = Storage Access Framework tree with a persisted
+  permission, `MainActivity.StartForResultAsync`; `NoBackupFolder` elsewhere, card hidden), `AutoBackupSettings`
+  (off, weekly, keep 5 by default), `AutoBackupService` (`RunIfDueAsync` from the daily job and at app start after
+  recurring processing; due by whole days since the last backup; skipped while the data's fingerprint
+  (`IDataExportService.GetFingerprintAsync`: SHA-256 of the rows, not the export time) is unchanged and a backup is
+  still in the folder; written in the app folder first, then copied; keeps the newest N `MoneyRecord_AutoBackup_*.zip`
+  and never touches other files; failures logged and remembered), Core `AutoBackupViewModel` (turning on asks for a
+  folder and backs up at once; "can't reach the folder" when access was lost, Back up now disabled then). Restore is
+  unchanged: an automatic backup is restored with Select Backup File.
 
 ### 10.6 Savings goals
 - Goal = target amount + date + linked account(s); progress from account balance; projection ("on track by …").

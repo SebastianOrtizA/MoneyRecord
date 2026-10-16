@@ -79,7 +79,9 @@ crashes at runtime (XAML is inflated at runtime there).
   applied: converted or by-currency totals for Home, reports and budgets) + CurrencyDisplaySettings,
   StatementImportService (CSV import into one account: preview with duplicates + learned categories, import, undo;
   `StatementMapping` = the columns, `ImportRow` = a preview row), StatementMappingStore (the last import's
-  columns + account per header layout, in preferences)
+  columns + account per header layout, in preferences), AutoBackupService (scheduled backups into the picked folder:
+  due by whole days, skipped while the data fingerprint is unchanged, keeps the newest N) + AutoBackupSettings +
+  `IBackupFolder`
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
@@ -93,7 +95,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
   Spending / Income show, plus the shared month count of the time-series reports and the reports' currency, `ReportCurrency`), SetupViewModel (setup assistant:
-  language + base currency → starting accounts → default categories)
+  language + base currency → starting accounts → default categories), AutoBackupViewModel (Settings → Automatic backups)
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 14 ViewModels using [ObservableProperty] and [RelayCommand] source generators
@@ -120,7 +122,7 @@ crashes at runtime (XAML is inflated at runtime there).
   (MAUI Preferences), NoNotificationService / NoDeviceLock (platforms without reminders / app lock). ViewModels use `IDialogService` /
   `INavigationService`, never `Shell.Current` or `Toast`
 - `Platforms/Android/` — AndroidNotificationService (channels, `POST_NOTIFICATIONS`), DailyReminderWorker (WorkManager
-  job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), MainActivity
+  job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), AndroidBackupFolder (SAF folder picker, persisted tree permission), MainActivity
   (notification route extra)
 - `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
 

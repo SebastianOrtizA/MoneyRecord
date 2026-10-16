@@ -1502,4 +1502,61 @@ Amount: {2}</value>
   <data name="ImportSavedMapping" xml:space="preserve">
     <value>Same columns and account as your last import of this bank's file.</value>
   </data>
+  <data name="AutoBackups" xml:space="preserve">
+    <value>Automatic backups</value>
+  </data>
+  <data name="AutoBackupsDescription" xml:space="preserve">
+    <value>A copy of all your data, made on its own in a folder you choose: on an SD card or in a cloud app such as Google Drive</value>
+  </data>
+  <data name="BackupFolder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="BackupFolderNone" xml:space="preserve">
+    <value>Not chosen</value>
+  </data>
+  <data name="ChooseFolder" xml:space="preserve">
+    <value>Choose</value>
+  </data>
+  <data name="BackupFrequency" xml:space="preserve">
+    <value>How often</value>
+  </data>
+  <data name="BackupDaily" xml:space="preserve">
+    <value>Every day</value>
+  </data>
+  <data name="BackupWeekly" xml:space="preserve">
+    <value>Every week</value>
+  </data>
+  <data name="BackupMonthly" xml:space="preserve">
+    <value>Every month</value>
+  </data>
+  <data name="BackupsToKeep" xml:space="preserve">
+    <value>Keep</value>
+  </data>
+  <data name="BackupsOne" xml:space="preserve">
+    <value>{0} backup</value>
+  </data>
+  <data name="BackupsOther" xml:space="preserve">
+    <value>{0} backups</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Last backup: {0}</value>
+  </data>
+  <data name="NoBackupYet" xml:space="preserve">
+    <value>No backup yet</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Backing up…</value>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>The last backup failed ({0})</value>
+  </data>
+  <data name="BackupFolderUnavailable" xml:space="preserve">
+    <value>The app can't reach the folder any more. Choose it again.</value>
+  </data>
+  <data name="BackUpNow" xml:space="preserve">
+    <value>Back up now</value>
+  </data>
+  <data name="AutoBackupNote" xml:space="preserve">
+    <value>Only the newest automatic backups are kept, and a new one is made only when something changed. To restore one, use Restore from Backup → Select Backup File.</value>
+  </data>
 </root>

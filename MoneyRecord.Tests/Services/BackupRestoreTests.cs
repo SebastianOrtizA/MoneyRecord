@@ -58,6 +58,24 @@ public sealed class BackupRestoreTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Fingerprint_IsStableForTheSameData_AndChangesWithARow()
+    {
+        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
+
+        var first = await _service.GetFingerprintAsync();
+
+        (await _service.ExportBackupAsync(BackupPath("backup.zip"))).Should().Be(first, "the backup holds the same data");
+        (await _service.GetFingerprintAsync()).Should().Be(first, "the export time is not part of it");
+
+        await Db.InsertAsync(new Transaction { Description = "Dinner", Amount = 20m });
+        var changed = await _service.GetFingerprintAsync();
+        changed.Should().NotBe(first);
+
+        await Db.ExecuteAsync("UPDATE \"Transaction\" SET AmountCents = 2001 WHERE Description = 'Dinner'");
+        (await _service.GetFingerprintAsync()).Should().NotBe(changed, "an edited amount is a change too");
+    }
+
+    [Fact]
     public async Task RoundTrip_RestoresRowsIdsAndReceipts()
     {
         var food = await AddCategoryAsync("Food");

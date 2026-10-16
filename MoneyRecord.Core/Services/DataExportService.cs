@@ -5,6 +5,7 @@ using MoneyRecord.Services.Repositories;
 using MoneyRecord.Services.Repositories.Migrations;
 using SQLite;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
@@ -49,7 +50,22 @@ namespace MoneyRecord.Services
 
         // ---- Backup ----
 
-        public async Task ExportBackupAsync(string destinationPath)
+        public async Task<string> ExportBackupAsync(string destinationPath)
+        {
+            var backup = await ReadDataAsync();
+            // Before WriteZip, which rewrites the receipt paths
+            var fingerprint = Fingerprint(backup);
+            await Task.Run(() => WriteZip(backup, destinationPath));
+            return fingerprint;
+        }
+
+        public async Task<string> GetFingerprintAsync() => Fingerprint(await ReadDataAsync());
+
+        /// <summary>A hash of the rows (not the export time): equal fingerprints = a backup would hold the same data.</summary>
+        private static string Fingerprint(BackupData backup) =>
+            Convert.ToHexString(SHA256.HashData(JsonSerializer.SerializeToUtf8Bytes(backup with { ExportDate = default })));
+
+        private async Task<BackupData> ReadDataAsync()
         {
             // One transaction: a point-in-time copy, even if recurring processing writes meanwhile
             BackupData backup = null!;
@@ -64,8 +80,7 @@ namespace MoneyRecord.Services
                 Budgets = conn.Table<Budget>().ToList(),
                 RecurringTransactions = conn.Table<RecurringTransaction>().ToList()
             });
-
-            await Task.Run(() => WriteZip(backup, destinationPath));
+            return backup;
         }
 
         private void WriteZip(BackupData backup, string destinationPath)
@@ -352,7 +367,7 @@ namespace MoneyRecord.Services
         }
     }
 
-    internal class BackupData
+    internal record BackupData
     {
         public DateTime ExportDate { get; set; }
         public int Version { get; set; }

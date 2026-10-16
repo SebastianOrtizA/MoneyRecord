@@ -4019,5 +4019,176 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ImportSavedMapping", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic backups.
+        /// </summary>
+        public static string AutoBackups {
+            get {
+                return ResourceManager.GetString("AutoBackups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A copy of all your data, made on its own in a folder you choose: on an SD card or in a cloud app such as Google Drive.
+        /// </summary>
+        public static string AutoBackupsDescription {
+            get {
+                return ResourceManager.GetString("AutoBackupsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder.
+        /// </summary>
+        public static string BackupFolder {
+            get {
+                return ResourceManager.GetString("BackupFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not chosen.
+        /// </summary>
+        public static string BackupFolderNone {
+            get {
+                return ResourceManager.GetString("BackupFolderNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose.
+        /// </summary>
+        public static string ChooseFolder {
+            get {
+                return ResourceManager.GetString("ChooseFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How often.
+        /// </summary>
+        public static string BackupFrequency {
+            get {
+                return ResourceManager.GetString("BackupFrequency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every day.
+        /// </summary>
+        public static string BackupDaily {
+            get {
+                return ResourceManager.GetString("BackupDaily", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every week.
+        /// </summary>
+        public static string BackupWeekly {
+            get {
+                return ResourceManager.GetString("BackupWeekly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every month.
+        /// </summary>
+        public static string BackupMonthly {
+            get {
+                return ResourceManager.GetString("BackupMonthly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep.
+        /// </summary>
+        public static string BackupsToKeep {
+            get {
+                return ResourceManager.GetString("BackupsToKeep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} backup.
+        /// </summary>
+        public static string BackupsOne {
+            get {
+                return ResourceManager.GetString("BackupsOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} backups.
+        /// </summary>
+        public static string BackupsOther {
+            get {
+                return ResourceManager.GetString("BackupsOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last backup: {0}.
+        /// </summary>
+        public static string LastBackup {
+            get {
+                return ResourceManager.GetString("LastBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No backup yet.
+        /// </summary>
+        public static string NoBackupYet {
+            get {
+                return ResourceManager.GetString("NoBackupYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backing up….
+        /// </summary>
+        public static string BackingUp {
+            get {
+                return ResourceManager.GetString("BackingUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The last backup failed ({0}).
+        /// </summary>
+        public static string BackupFailed {
+            get {
+                return ResourceManager.GetString("BackupFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The app can't reach the folder any more. Choose it again..
+        /// </summary>
+        public static string BackupFolderUnavailable {
+            get {
+                return ResourceManager.GetString("BackupFolderUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back up now.
+        /// </summary>
+        public static string BackUpNow {
+            get {
+                return ResourceManager.GetString("BackUpNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the newest automatic backups are kept, and a new one is made only when something changed. To restore one, use Restore from Backup → Select Backup File..
+        /// </summary>
+        public static string AutoBackupNote {
+            get {
+                return ResourceManager.GetString("AutoBackupNote", resourceCulture);
+            }
+        }
     }
 }

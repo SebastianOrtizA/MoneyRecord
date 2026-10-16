@@ -9,8 +9,12 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>
         /// Writes a full backup to <paramref name="destinationPath"/>: a .zip with data.json and the receipt photos.
+        /// Returns the fingerprint of the data it holds (see <see cref="GetFingerprintAsync"/>).
         /// </summary>
-        Task ExportBackupAsync(string destinationPath);
+        Task<string> ExportBackupAsync(string destinationPath);
+
+        /// <summary>A hash of all rows: a backup made now would hold the same data as one with this fingerprint.</summary>
+        Task<string> GetFingerprintAsync();
 
         /// <summary>
         /// Replaces all data with a backup (.zip, or a .json from an older app version). Current data is saved to a

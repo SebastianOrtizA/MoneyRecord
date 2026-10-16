@@ -109,6 +109,16 @@ namespace MoneyRecord
             builder.Services.AddSingleton<INotificationService, NoNotificationService>();
 #endif
 
+            // Automatic backups into a folder the user picks (Android: the system folder picker), from the daily job
+            builder.Services.AddSingleton<IAutoBackupSettings, AutoBackupSettings>();
+            builder.Services.AddSingleton<IAutoBackupService, AutoBackupService>();
+#if ANDROID
+            builder.Services.AddSingleton<IBackupFolder, Platforms.Android.AndroidBackupFolder>();
+#else
+            builder.Services.AddSingleton<IBackupFolder, NoBackupFolder>();
+#endif
+            builder.Services.AddTransient<AutoBackupViewModel>();
+
             // App lock (the phone's own lock) and hidden balances
             builder.Services.AddSingleton<IPrivacySettings, PrivacySettings>();
             builder.Services.AddSingleton<AppLock>();
