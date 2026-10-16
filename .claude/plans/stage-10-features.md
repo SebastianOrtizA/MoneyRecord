@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3a done; 10.3b-1 in progress)
+**Status**: In progress (10.1 done; 10.2 done; 10.3a done; 10.3b-1 done; 10.3b-2 in progress)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -146,6 +146,19 @@ Close the gap with competing finance apps. Each section can ship on its own.
   conversion into the current base); the add/edit form's More details shows "Amount in USD" + the rate when the
   account isn't in the base. PRIVACY.md / README: the opt-in download sends currency codes and dates only.
   Backup format stays v4 (the override is two optional fields; 10.3a's v4 hasn't shipped yet).
+- 10.3b-2 done as: one shared "Show in" choice (`ICurrencyDisplaySettings`, unset = converted once rates exist):
+  Home's "≈ USD / By currency" switch and the reports' first chip "≈ USD" set it. Core `ConversionService`
+  (`CanConvertAsync` = download on + rates stored; `IsConvertedAsync`; `ConvertAsync` per transaction at its date's
+  rate, own "Amount in USD" first; `ForReportAsync`; `GetPeriodTotalsAsync` for Home; `GetExpensesByCategoryAsync` →
+  `BudgetSpent` for the Budget page, Home card, add-form warning and budget alerts). Home converted: one "≈" total in
+  the cards (the mark on the captions, so a long amount keeps its line), the pills list what had no rate yet under
+  "No exchange rate yet", and "≈ At each day's exchange rate · updated …". Reports converted: every currency in the
+  base, headline "≈ …", "No exchange rate yet: …" note; Trends compares budgets; Net worth values each currency at
+  each month end's rate (`NetWorthBuilder.BuildConverted`; a currency missing a rate is left out and named). Rates now
+  always reach back to the first of the month 12 months ago (Net worth's longest window), not just the first entry.
+  **Deviation:** "rate date shown on tap" became an always-visible note under the converted totals (one tap less).
+  Open (owner): large base-currency totals (COP millions, "$ 7.771.515,00") wrap inside Home's narrow cards; that
+  predates 10.3 and needs a layout decision (smaller font, compact "7,8 M", or stacked rows).
 
 ### 10.4 Import from bank statements
 - CSV import with CsvHelper (use its Apache-2.0 licence): pick file → map columns (date, description, amount,

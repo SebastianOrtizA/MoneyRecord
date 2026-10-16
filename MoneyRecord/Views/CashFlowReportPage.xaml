@@ -41,6 +41,8 @@
                         <Label Text="{ext:Localize NetCashFlow}" Style="{StaticResource ReportHeadlineLabel}" />
                         <Label Text="{Binding HeadlineText}" Style="{StaticResource ReportHeadline}" />
                         <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}" />
+                        <Label Text="{Binding NotConvertedText}" Style="{StaticResource ReportDelta}"
+                               IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
                         <lvc:CartesianChart HeightRequest="260"
                                             Margin="0,8,0,0"
                                             Series="{Binding CashFlowSeries}"

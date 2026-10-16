@@ -39,7 +39,7 @@ public class PeriodViewModelTests
         using var monthWatch = sut.WatchMonthCount(() => monthChanges++);
         using var currencyWatch = sut.WatchCurrency(() => currencyChanges++);
 
-        sut.SelectCurrencyCommand.Execute("ZZA");
+        sut.SelectCurrencyCommand.Execute(sut.CurrencyChoices.Single(c => c.Code == "ZZA"));
 
         sut.ReportCurrency.Should().Be("ZZA");
         sut.CurrencyChoices.Should().ContainSingle(c => c.IsSelected).Which.Code.Should().Be("ZZA");
@@ -52,12 +52,41 @@ public class PeriodViewModelTests
         var sut = new PeriodViewModel();
         var baseCode = MoneyFormatter.BaseCurrency;
         sut.SetCurrencies([baseCode, "ZZA"]);
-        sut.SelectCurrencyCommand.Execute("ZZA");
+        sut.SelectCurrencyCommand.Execute(sut.CurrencyChoices.Single(c => c.Code == "ZZA"));
 
         sut.SetCurrencies([baseCode]);
 
         sut.ReportCurrency.Should().Be(baseCode);
         sut.HasCurrencyChoices.Should().BeFalse();
+    }
+
+    [Fact]
+    public void The_converted_chip_comes_first_when_rates_exist_and_is_remembered_for_Home()
+    {
+        var display = new CurrencyDisplaySettings(new FakePreferences());
+        var sut = new PeriodViewModel(display);
+        var baseCode = MoneyFormatter.BaseCurrency;
+
+        sut.SetCurrencies([baseCode, "ZZA"], canConvert: true, converted: false);
+        sut.CurrencyChoices.Select(c => c.Label).Should().Equal($"≈ {baseCode}", baseCode, "ZZA");
+
+        sut.SelectCurrencyCommand.Execute(sut.CurrencyChoices[0]);
+        (sut.IsConverted, sut.ReportCurrency, display.ShowConverted).Should().Be((true, baseCode, true));
+        sut.CurrencyChoices.Should().ContainSingle(c => c.IsSelected).Which.IsConverted.Should().BeTrue();
+
+        sut.SelectCurrencyCommand.Execute(sut.CurrencyChoices.Single(c => c.Code == "ZZA"));
+        (sut.IsConverted, sut.ReportCurrency, display.ShowConverted).Should().Be((false, "ZZA", false));
+    }
+
+    [Fact]
+    public void Without_rates_there_is_no_converted_chip()
+    {
+        var sut = new PeriodViewModel();
+
+        sut.SetCurrencies([MoneyFormatter.BaseCurrency, "ZZA"], canConvert: false, converted: true);
+
+        sut.IsConverted.Should().BeFalse();
+        sut.CurrencyChoices.Should().NotContain(c => c.IsConverted);
     }
 }
 

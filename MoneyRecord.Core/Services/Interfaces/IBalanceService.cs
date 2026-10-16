@@ -15,8 +15,6 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>Every account's balance in its own currency and its latest activity (or creation) date.</summary>
         Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync();
 
-        Task<List<CurrencyAmount>> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate);
-
         /// <summary>Expenses in the range per category ID, in one query; categories without any are absent.</summary>
         Task<Dictionary<int, List<CurrencyAmount>>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate);
     }

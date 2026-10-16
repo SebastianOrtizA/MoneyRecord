@@ -52,6 +52,10 @@
                             </VerticalStackLayout>
                         </Grid>
                     </Border>
+
+                    <!-- While converted: what had no exchange rate yet (left out of the chart) -->
+                    <Label Text="{Binding NotConvertedText}" Style="{StaticResource ReportDelta}"
+                           IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
                 </VerticalStackLayout>
             </CollectionView.Header>
 

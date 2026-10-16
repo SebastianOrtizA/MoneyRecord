@@ -23,6 +23,8 @@ namespace MoneyRecord.ViewModels
         private readonly NotificationLaunch _notificationLaunch;
         private readonly IPrivacySettings _privacy;
         private readonly IDatabaseEncryption _databaseEncryption;
+        private readonly IConversionService _conversion;
+        private readonly IExchangeRateSettings _rateSettings;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -38,7 +40,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>Privacy mode: the balance card and the period totals show "••••••" (saved).</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowOtherTotals))]
+        [NotifyPropertyChangedFor(nameof(ShowOtherTotals), nameof(ShowNoRateCaption))]
         private bool hideBalances;
 
         partial void OnHideBalancesChanged(bool value) => _privacy.HideBalances = value;
@@ -52,11 +54,45 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The period's totals in every other currency, one row each under the cards (never added together).</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowOtherTotals))]
+        [NotifyPropertyChangedFor(nameof(ShowOtherTotals), nameof(ShowNoRateCaption))]
         private List<PeriodTotals> otherTotals = [];
 
         /// <summary>The other-currency rows show when there are any and balances aren't hidden.</summary>
         public bool ShowOtherTotals => OtherTotals.Count > 0 && !HideBalances;
+
+        /// <summary>The totals are converted into the base currency (the "≈" choice of the "Show in" switch).</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowConvertedNote), nameof(ShowNoRateCaption))]
+        private bool isConverted;
+
+        /// <summary>While converted, the pills hold the amounts without a rate yet: a caption says so.</summary>
+        public bool ShowNoRateCaption => IsConverted && ShowOtherTotals;
+
+        /// <summary>"≈ USD": the converted choice of the switch.</summary>
+        public string ConvertedChipText => $"≈ {MoneyFormatter.BaseCurrency}";
+
+        /// <summary>The switch is offered: several currencies and some downloaded rates.</summary>
+        [ObservableProperty]
+        private bool canSwitchShowIn;
+
+        /// <summary>"≈ At each day's exchange rate · updated Oct 15, 2026" while converted.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowConvertedNote))]
+        private string convertedNote = string.Empty;
+
+        public bool ShowConvertedNote => IsConverted && !string.IsNullOrEmpty(ConvertedNote);
+
+        /// <summary>Home's "Show in" switch (the reports' "≈" chip is the same choice).</summary>
+        [RelayCommand]
+        private void ShowIn(string? converted)
+        {
+            var value = converted == bool.TrueString;
+            if (value == IsConverted)
+                return;
+
+            _conversion.SetConverted(value);
+            LoadDataCommand.Execute(null);
+        }
 
         [ObservableProperty]
         private DateTime currentDate = DateTime.Now;
@@ -95,8 +131,11 @@ namespace MoneyRecord.ViewModels
         public MainViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, IBudgetSummaryService budgetSummaryService,
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
-            NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption)
+            NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
+            IConversionService conversion, IExchangeRateSettings rateSettings)
         {
+            _conversion = conversion;
+            _rateSettings = rateSettings;
             _balanceService = balanceService;
             _ledgerService = ledgerService;
             _budgetSummaryService = budgetSummaryService;
@@ -168,24 +207,31 @@ namespace MoneyRecord.ViewModels
 
                 var (startDate, endDate) = Period.Range;
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
-                var incomesTask = _balanceService.GetTotalIncomesAsync(startDate, endDate);
-                var expensesTask = _balanceService.GetTotalExpensesAsync(startDate, endDate);
+                var totalsTask = _conversion.GetPeriodTotalsAsync(startDate, endDate);
+                var canConvertTask = _conversion.CanConvertAsync();
                 var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
                 var budgetsTask = _budgetSummaryService.GetSummaryAsync(
                     Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
                 var upcomingTask = _recurringService.GetUpcomingAsync();
-                await Task.WhenAll(balancesTask, incomesTask, expensesTask, entriesTask, budgetsTask, upcomingTask);
+                await Task.WhenAll(balancesTask, totalsTask, canConvertTask, entriesTask, budgetsTask, upcomingTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var balanceLines = CurrencyBalance.DisplayLines(
-                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.BaseCurrency));
+                var currencyBalances = CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.BaseCurrency);
+                var balanceLines = CurrencyBalance.DisplayLines(currencyBalances);
                 PrimaryBalance = balanceLines[0];
                 OtherBalances = balanceLines.Skip(1).ToList();
 
                 // A new record even when the values didn't change: the base currency may have (Settings)
-                var totals = PeriodTotals.Build(await incomesTask, await expensesTask, MoneyFormatter.BaseCurrency);
-                BaseTotals = totals[0];
-                OtherTotals = totals.Skip(1).ToList();
+                var totals = await totalsTask;
+                BaseTotals = totals.Base;
+                OtherTotals = totals.Others;
+                IsConverted = totals.IsConverted;
+                // The switch only means something with several currencies and some rates
+                CanSwitchShowIn = await canConvertTask && currencyBalances.Count > 1;
+                OnPropertyChanged(nameof(ConvertedChipText));
+                ConvertedNote = _rateSettings.LastUpdated is { } updated
+                    ? string.Format(AppResources.ConvertedAtDailyRate, DateFormatter.Format(updated, DateStyle.Medium))
+                    : string.Empty;
 
                 // Whole transfers: the Recent card lists a transfer once
                 var entries = await entriesTask;

@@ -12,14 +12,13 @@ public class BudgetSummaryServiceTests
 {
     private readonly IBudgetRepository _budgets = Substitute.For<IBudgetRepository>();
     private readonly ICategoryRepository _categories = Substitute.For<ICategoryRepository>();
-    private readonly IBalanceService _balance = Substitute.For<IBalanceService>();
+    private readonly IConversionService _conversion = Substitute.For<IConversionService>();
     private readonly BudgetSummaryService _sut;
-    private static string Base => MoneyFormatter.BaseCurrency;
 
     public BudgetSummaryServiceTests()
     {
-        _sut = new BudgetSummaryService(_budgets, _categories, _balance);
-        _balance.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, List<CurrencyAmount>>());
+        _sut = new BudgetSummaryService(_budgets, _categories, _conversion);
+        _conversion.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, BudgetSpent>());
         _categories.GetAllAsync().Returns(new List<Category>
         {
             new() { Id = 1, Name = "Food", IconCode = "F0001" },
@@ -44,7 +43,7 @@ public class BudgetSummaryServiceTests
             new() { Id = 11, CategoryId = 2, LimitAmount = 100m, Period = BudgetPeriod.Month }
         });
         var (start, end) = DateRangeHelper.GetDateRange(PeriodType.CalendarMonth);
-        _balance.GetExpensesByCategoryAsync(start, end).Returns(new Dictionary<int, List<CurrencyAmount>> { [1] = [new(Base, 20m)], [2] = [new(Base, 120m)] });
+        _conversion.GetExpensesByCategoryAsync(start, end).Returns(new Dictionary<int, BudgetSpent> { [1] = new(20m, []), [2] = new(120m, []) });
 
         var summary = await _sut.GetSummaryAsync(PeriodType.CalendarMonth);
 
@@ -82,15 +81,15 @@ public class BudgetSummaryServiceTests
     }
 
     [Fact]
-    public async Task Only_base_currency_expenses_count_and_the_others_are_listed()
+    public async Task Only_the_counted_spending_counts_and_the_rest_is_listed()
     {
         _budgets.GetActiveBudgetsAsync().Returns(new List<Budget>
         {
             new() { Id = 10, CategoryId = 1, LimitAmount = 100m, Period = BudgetPeriod.Month }
         });
-        _balance.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, List<CurrencyAmount>>
+        _conversion.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, BudgetSpent>
         {
-            [1] = [new(Base, 30m), new("ZZZ", 500m)]
+            [1] = new(30m, [new("ZZZ", 500m)])
         });
 
         var progress = (await _sut.GetSummaryAsync(PeriodType.CalendarMonth)).Single();

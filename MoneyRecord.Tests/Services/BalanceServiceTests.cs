@@ -149,8 +149,6 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         await AddAsync(TransactionType.Expense, 100m, March1, categoryId: 6);
         await AddAsync(TransactionType.Income, 40m, March1, categoryId: 5);
 
-        (await _sut.GetCategoryExpensesAsync(5, March1, March31End)).Should().Equal(new CurrencyAmount(Base, 20m));
-
         var byCategory = await _sut.GetExpensesByCategoryAsync(March1, March31End);
         byCategory.Keys.Should().BeEquivalentTo([5, 6]);
         byCategory[5].Should().Equal(new CurrencyAmount(Base, 20m));

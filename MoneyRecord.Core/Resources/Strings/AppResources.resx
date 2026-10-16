@@ -1394,4 +1394,16 @@ Amount: {2}</value>
   <data name="ConvertedAmountHint" xml:space="preserve">
     <value>Optional: what it cost in {0}, as your statement shows it. Leave it empty to use the downloaded rate.</value>
   </data>
+  <data name="ShowByCurrency" xml:space="preserve">
+    <value>By currency</value>
+  </data>
+  <data name="ConvertedAtDailyRate" xml:space="preserve">
+    <value>≈ At each day's exchange rate · updated {0}</value>
+  </data>
+  <data name="NoRateYet" xml:space="preserve">
+    <value>No exchange rate yet</value>
+  </data>
+  <data name="NotConvertedNote" xml:space="preserve">
+    <value>No exchange rate yet: {0}</value>
+  </data>
 </root>

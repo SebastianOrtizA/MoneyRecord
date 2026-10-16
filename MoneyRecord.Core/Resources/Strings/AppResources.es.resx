@@ -1392,4 +1392,16 @@ Monto: {2}</value>
   <data name="ConvertedAmountHint" xml:space="preserve">
     <value>Opcional: cuánto costó en {0}, como lo muestra tu extracto. Déjalo vacío para usar la tasa descargada.</value>
   </data>
+  <data name="ShowByCurrency" xml:space="preserve">
+    <value>Por moneda</value>
+  </data>
+  <data name="ConvertedAtDailyRate" xml:space="preserve">
+    <value>≈ Con la tasa de cambio de cada día · actualizada {0}</value>
+  </data>
+  <data name="NoRateYet" xml:space="preserve">
+    <value>Aún sin tasa de cambio</value>
+  </data>
+  <data name="NotConvertedNote" xml:space="preserve">
+    <value>Aún sin tasa de cambio: {0}</value>
+  </data>
 </root>

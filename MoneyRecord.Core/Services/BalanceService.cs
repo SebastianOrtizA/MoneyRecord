@@ -32,9 +32,6 @@ namespace MoneyRecord.Services
         public Task<List<CurrencyAmount>> GetTotalExpensesAsync(DateTime startDate, DateTime endDate) =>
             _transactionRepository.SumByCurrencyAsync(TransactionType.Expense, startDate, endDate, MoneyFormatter.BaseCurrency);
 
-        public async Task<List<CurrencyAmount>> GetCategoryExpensesAsync(int categoryId, DateTime startDate, DateTime endDate) =>
-            (await GetExpensesByCategoryAsync(startDate, endDate)).GetValueOrDefault(categoryId) ?? [];
-
         public Task<Dictionary<int, List<CurrencyAmount>>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate) =>
             _transactionRepository.SumByCategoryAsync(TransactionType.Expense, startDate, endDate, MoneyFormatter.BaseCurrency);
 

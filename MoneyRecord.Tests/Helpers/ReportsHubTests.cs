@@ -76,6 +76,31 @@ public class ReportsHubTests
     }
 
     [Fact]
+    public void Converted_net_worth_values_each_currency_at_its_month_end_rate_and_leaves_out_one_without_rates()
+    {
+        // USD account 1: 100 all along. COP account 2: 400,000 now, 0 before an October income. JPY account 3: no rates.
+        var converter = new CurrencyConverter(
+        [
+            new ExchangeRate { BaseCode = "USD", QuoteCode = "COP", Date = new DateTime(2026, 9, 1), Rate = 4000 },
+            new ExchangeRate { BaseCode = "USD", QuoteCode = "COP", Date = new DateTime(2026, 10, 1), Rate = 3200 }
+        ]);
+        var currencies = new Dictionary<string, (decimal, IReadOnlyCollection<int>)>
+        {
+            ["USD"] = (100m, [1]),
+            ["COP"] = (400_000m, [2]),
+            ["JPY"] = (5000m, [3])
+        };
+        var october = new Transaction { AccountId = 2, Type = TransactionType.Income, Amount = 400_000m, Date = new DateTime(2026, 10, 3) };
+
+        var (points, notConverted) = NetWorthBuilder.BuildConverted(currencies, [october], [], new DateTime(2026, 9, 1), 2,
+            converter, "USD", new DateTime(2026, 10, 15));
+
+        // September: COP 0; October: 400,000 at 3,200 = 125
+        points.Select(p => p.Value).Should().Equal(100m, 225m);
+        notConverted.Should().Equal("JPY");
+    }
+
+    [Fact]
     public void Budget_vs_actual_takes_each_budget_for_a_whole_calendar_month_and_only_budgeted_categories()
     {
         var rows = BudgetVsActualBuilder.Build(

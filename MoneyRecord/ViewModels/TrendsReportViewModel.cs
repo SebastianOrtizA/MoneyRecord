@@ -28,9 +28,9 @@ namespace MoneyRecord.ViewModels
         private bool hasBudgets;
 
         public TrendsReportViewModel(PeriodViewModel period, ITransactionRepository transactionRepository,
-            IBudgetRepository budgetRepository, IAccountRepository accountRepository, IErrorHandler errorHandler,
-            INavigationService navigationService, TransactionsDrillDown drillDown)
-            : base(period, accountRepository, errorHandler, navigationService, drillDown)
+            IBudgetRepository budgetRepository, IAccountRepository accountRepository, IConversionService conversion,
+            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown)
+            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown)
         {
             _transactionRepository = transactionRepository;
             _budgetRepository = budgetRepository;
@@ -46,18 +46,18 @@ namespace MoneyRecord.ViewModels
             await Task.WhenAll(transactionsTask, budgetsTask, accountsTask);
             cancellationToken.ThrowIfCancellationRequested();
 
-            var code = Period.ReportCurrency;
-            var transactions = ReportCurrencies.Only(await transactionsTask, await accountsTask, code, MoneyFormatter.BaseCurrency);
+            var shown = await ShownAsync(await transactionsTask, await accountsTask);
+            var (code, transactions) = (shown.CurrencyCode, shown.Transactions);
             var budgets = await budgetsTask;
             var totals = MonthlyTotalsBuilder.Build(transactions, firstMonth, months);
             var previous = MonthlyTotalsBuilder.Build(transactions, previousFirst, months);
             var budgetRows = BudgetVsActualBuilder.Build(budgets, transactions, firstMonth, months);
 
             HasData = totals.Any(t => t.Expense > 0);
-            // Budgets are in the base currency: no comparison while another currency is shown
+            // Budgets are in the base currency: compared while it (or everything converted into it) is shown
             HasBudgets = budgets.Count > 0 && code == MoneyFormatter.BaseCurrency;
             var spending = totals.Sum(t => t.Expense);
-            HeadlineText = MoneyFormatter.Format(spending, code);
+            HeadlineText = shown.FormatAmount(spending);
             DeltaText = new PeriodDelta(spending, previous.Sum(t => t.Expense)).Text;
 
             MonthAxis = ChartFactory.LabelAxis(totals.Select(t => t.Label));

@@ -66,6 +66,17 @@ namespace MoneyRecord.Models
         /// field clears a conversion into the base but keeps one into another currency (the field didn't show it). An
         /// account already in the base currency needs none.
         /// </summary>
+        /// <summary>A copy in <paramref name="currencyCode"/> with <paramref name="amount"/> (unsigned): a converted entry for a report.</summary>
+        public Transaction WithAmount(decimal amount, string currencyCode)
+        {
+            var copy = (Transaction)MemberwiseClone();
+            copy.Amount = Math.Abs(amount);
+            copy.CurrencyCode = currencyCode;
+            copy.ConvertedAmount = null;
+            copy.ConvertedCurrencyCode = null;
+            return copy;
+        }
+
         public void SetConversion(decimal? amountInBase, string? accountCurrency, string baseCurrency)
         {
             if (MoneyFormatter.SameCurrency(accountCurrency, baseCurrency))

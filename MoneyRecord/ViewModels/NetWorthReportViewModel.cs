@@ -19,6 +19,7 @@ namespace MoneyRecord.ViewModels
         private readonly IBalanceService _balanceService;
         private readonly ITransactionRepository _transactionRepository;
         private readonly ITransferRepository _transferRepository;
+        private readonly IExchangeRateService _exchangeRates;
 
         [ObservableProperty]
         private ISeries[] netWorthSeries = [];
@@ -28,10 +29,12 @@ namespace MoneyRecord.ViewModels
         private string currencyNote = string.Empty;
 
         public NetWorthReportViewModel(PeriodViewModel period, IAccountRepository accountRepository, IBalanceService balanceService,
-            ITransactionRepository transactionRepository, ITransferRepository transferRepository,
-            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown)
-            : base(period, accountRepository, errorHandler, navigationService, drillDown)
+            ITransactionRepository transactionRepository, ITransferRepository transferRepository, IConversionService conversion,
+            IExchangeRateService exchangeRates, IErrorHandler errorHandler, INavigationService navigationService,
+            TransactionsDrillDown drillDown)
+            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown)
         {
+            _exchangeRates = exchangeRates;
             _balanceService = balanceService;
             _transactionRepository = transactionRepository;
             _transferRepository = transferRepository;
@@ -50,19 +53,38 @@ namespace MoneyRecord.ViewModels
 
             var code = Period.ReportCurrency;
             var accounts = await accountsTask;
-            var counted = accounts
-                .Where(a => MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode, MoneyFormatter.BaseCurrency) == code)
-                .Select(a => a.Id)
-                .ToHashSet();
-            var currentTotal = (await balancesTask).Where(b => counted.Contains(b.AccountId)).Sum(b => b.CurrentBalance);
+            var balances = await balancesTask;
+            var currencyOf = accounts.ToDictionary(a => a.Id, a => MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode, MoneyFormatter.BaseCurrency));
+            var byCurrency = currencyOf.GroupBy(kv => kv.Value).ToDictionary(g => g.Key, g =>
+            {
+                var ids = g.Select(kv => kv.Key).ToHashSet();
+                return (CurrentTotal: balances.Where(b => ids.Contains(b.AccountId)).Sum(b => b.CurrentBalance),
+                    AccountIds: (IReadOnlyCollection<int>)ids);
+            });
 
-            var points = NetWorthBuilder.Build(currentTotal, counted, await transactionsTask, await transfersTask,
-                baselineMonth, months + 1);
+            List<NetWorthPoint> points;
+            if (Period.IsConverted)
+            {
+                // Each currency valued at each month end's rate, then added up
+                (points, var notConverted) = NetWorthBuilder.BuildConverted(byCurrency, await transactionsTask, await transfersTask,
+                    baselineMonth, months + 1, await _exchangeRates.GetConverterAsync(), code, DateTime.Today);
+                HasData = byCurrency.Count > notConverted.Count;
+                CurrencyNote = notConverted.Count > 0
+                    ? string.Format(AppResources.NotConvertedNote, string.Join(", ", notConverted))
+                    : string.Empty;
+            }
+            else
+            {
+                var counted = byCurrency.GetValueOrDefault(code);
+                points = NetWorthBuilder.Build(counted.CurrentTotal, counted.AccountIds ?? [], await transactionsTask,
+                    await transfersTask, baselineMonth, months + 1);
+                HasData = counted.AccountIds?.Count > 0;
+                CurrencyNote = byCurrency.Count > 1 ? string.Format(AppResources.NetWorthCurrencyOnly, code) : string.Empty;
+            }
+
             var shown = points.Skip(1).ToList();
-
-            HasData = counted.Count > 0;
-            CurrencyNote = counted.Count < accounts.Count ? string.Format(AppResources.NetWorthCurrencyOnly, code) : string.Empty;
-            HeadlineText = MoneyFormatter.Format(shown[^1].Value, code);
+            var approximate = Period.IsConverted && byCurrency.Count > 1 ? "≈ " : string.Empty;
+            HeadlineText = approximate + MoneyFormatter.Format(shown[^1].Value, code);
             DeltaText = new PeriodDelta(shown[^1].Value, points[0].Value).Text;
 
             MonthAxis = ChartFactory.LabelAxis(shown.Select(p => p.Label));

@@ -12,8 +12,8 @@ namespace MoneyRecord.Services.Interfaces
     public interface IExchangeRateService
     {
         /// <summary>
-        /// Downloads what is missing: for every account currency other than the base, from its first transaction (or
-        /// today) to today, around the days already stored.
+        /// Downloads what is missing: for every account currency other than the base, from its first transaction (or the
+        /// first day of the month 12 months ago, if that is earlier) to today, around the days already stored.
         /// </summary>
         Task<RateUpdateResult> UpdateAsync(CancellationToken cancellationToken = default);
 

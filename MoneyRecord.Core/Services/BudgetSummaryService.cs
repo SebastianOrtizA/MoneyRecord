@@ -8,13 +8,13 @@ namespace MoneyRecord.Services
     {
         private readonly IBudgetRepository _budgetRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IBalanceService _balanceService;
+        private readonly IConversionService _conversion;
 
-        public BudgetSummaryService(IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IBalanceService balanceService)
+        public BudgetSummaryService(IBudgetRepository budgetRepository, ICategoryRepository categoryRepository, IConversionService conversion)
         {
             _budgetRepository = budgetRepository;
             _categoryRepository = categoryRepository;
-            _balanceService = balanceService;
+            _conversion = conversion;
         }
 
         public async Task<List<BudgetProgress>> GetSummaryAsync(PeriodType period, DateTime customStartDate = default, DateTime customEndDate = default)
@@ -25,7 +25,7 @@ namespace MoneyRecord.Services
 
             var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id);
             var (startDate, endDate) = DateRangeHelper.GetDateRange(period, customStartDate, customEndDate);
-            var spentByCategory = await _balanceService.GetExpensesByCategoryAsync(startDate, endDate);
+            var spentByCategory = await _conversion.GetExpensesByCategoryAsync(startDate, endDate);
             var progressList = new List<BudgetProgress>();
 
             foreach (var budget in budgets)
@@ -44,7 +44,7 @@ namespace MoneyRecord.Services
                     LimitAmount = BudgetProjectionHelper.CalculateProjectedLimit(
                         budget.LimitAmount, budget.Period, period, customStartDate, customEndDate),
                 };
-                progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? [], MoneyFormatter.BaseCurrency);
+                progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? BudgetSpent.None);
                 progressList.Add(progress);
             }
 

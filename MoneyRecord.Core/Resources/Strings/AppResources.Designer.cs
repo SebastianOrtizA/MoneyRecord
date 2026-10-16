@@ -3695,5 +3695,41 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ConvertedAmountHint", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to By currency.
+        /// </summary>
+        public static string ShowByCurrency {
+            get {
+                return ResourceManager.GetString("ShowByCurrency", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ≈ At each day's exchange rate · updated {0}.
+        /// </summary>
+        public static string ConvertedAtDailyRate {
+            get {
+                return ResourceManager.GetString("ConvertedAtDailyRate", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No exchange rate yet.
+        /// </summary>
+        public static string NoRateYet {
+            get {
+                return ResourceManager.GetString("NoRateYet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No exchange rate yet: {0}.
+        /// </summary>
+        public static string NotConvertedNote {
+            get {
+                return ResourceManager.GetString("NotConvertedNote", resourceCulture);
+            }
+        }
     }
 }
