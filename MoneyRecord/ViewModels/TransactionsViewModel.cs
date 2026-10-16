@@ -62,6 +62,22 @@ namespace MoneyRecord.ViewModels
         [NotifyPropertyChangedFor(nameof(IsDetailsOpen))]
         private LedgerEntry? selectedEntry;
 
+        /// <summary>Every part of the selected split payment (empty when it isn't one), for the detail sheet.</summary>
+        [ObservableProperty]
+        private List<LedgerEntry> selectedSplitParts = [];
+
+        /// <summary>"Split payment of $50.00 in 2 parts"; empty when the selected entry isn't split.</summary>
+        [ObservableProperty]
+        private string splitSummaryText = string.Empty;
+
+        partial void OnSelectedEntryChanged(LedgerEntry? value)
+        {
+            SelectedSplitParts = SplitPartsOf(value);
+            SplitSummaryText = SelectedSplitParts.Count > 0
+                ? string.Format(AppResources.SplitPaymentTotal, SplitTotalText(SelectedSplitParts), SelectedSplitParts.Count)
+                : string.Empty;
+        }
+
         /// <summary>The selected entry's receipt shown full screen.</summary>
         [ObservableProperty]
         private bool isReceiptOpen;
@@ -194,6 +210,13 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private void ToggleGroupExpanded(TransactionGroup group) => group?.ToggleExpanded();
 
+        private List<LedgerEntry> SplitPartsOf(LedgerEntry? entry) => entry is { IsSplit: true }
+            ? _entries.Where(e => e.SplitId == entry.SplitId).OrderBy(e => e.SourceId).ToList()
+            : [];
+
+        private static string SplitTotalText(List<LedgerEntry> parts) =>
+            MoneyFormatter.Format(Money.FromCents(parts.Sum(p => p.AmountCents)), parts[0].CurrencyCode);
+
         [RelayCommand]
         private void ShowDetails(LedgerEntry entry) => SelectedEntry = entry;
 
@@ -272,7 +295,11 @@ namespace MoneyRecord.ViewModels
                 return false;
 
             var amount = MoneyFormatter.Format(entry.Amount, entry.CurrencyCode);
-            var confirmMessage = entry.IsTransfer
+            // Any part deletes the whole split payment, so the question names all of it
+            var splitParts = SplitPartsOf(entry);
+            var confirmMessage = splitParts.Count > 0
+                ? string.Format(AppResources.ConfirmDeleteSplitMessage, SplitTotalText(splitParts), splitParts.Count)
+                : entry.IsTransfer
                 ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, entry.Description, amount)
                 : string.Format(AppResources.ConfirmDeleteTransactionMessage, entry.Description, amount);
 

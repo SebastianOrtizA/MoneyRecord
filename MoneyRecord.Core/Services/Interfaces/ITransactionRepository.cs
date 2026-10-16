@@ -10,6 +10,12 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
 
+        /// <summary>The parts of a split payment (see <see cref="Transaction.SplitId"/>), in the order they were saved.</summary>
+        Task<List<Transaction>> GetSplitPartsAsync(string splitId);
+
+        /// <summary>Deletes every part of a split payment.</summary>
+        Task DeleteSplitAsync(string splitId);
+
         /// <summary>
         /// Totals (unsigned) of one type in the range, one per currency (an account's; no account = the base currency),
         /// base currency first. Summed by SQLite; currencies are never added together.

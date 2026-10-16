@@ -4838,5 +4838,113 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("RecurringCountOther", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split between categories.
+        /// </summary>
+        public static string SplitPayment {
+            get {
+                return ResourceManager.GetString("SplitPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add category.
+        /// </summary>
+        public static string AddSplitPart {
+            get {
+                return ResourceManager.GetString("AddSplitPart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each part's category.
+        /// </summary>
+        public static string SplitDescriptionPlaceholder {
+            get {
+                return ResourceManager.GetString("SplitDescriptionPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left to assign: {0}.
+        /// </summary>
+        public static string SplitLeftToAssign {
+            get {
+                return ResourceManager.GetString("SplitLeftToAssign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Over the amount by {0}.
+        /// </summary>
+        public static string SplitOverBy {
+            get {
+                return ResourceManager.GetString("SplitOverBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fully assigned.
+        /// </summary>
+        public static string SplitFullyAssigned {
+            get {
+                return ResourceManager.GetString("SplitFullyAssigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a category for every part.
+        /// </summary>
+        public static string SplitPartNeedsCategory {
+            get {
+                return ResourceManager.GetString("SplitPartNeedsCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter an amount for every part.
+        /// </summary>
+        public static string SplitPartNeedsAmount {
+            get {
+                return ResourceManager.GetString("SplitPartNeedsAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The parts must add up to {0}.
+        /// </summary>
+        public static string SplitMustAddUp {
+            get {
+                return ResourceManager.GetString("SplitMustAddUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split payment.
+        /// </summary>
+        public static string SplitPaymentLabel {
+            get {
+                return ResourceManager.GetString("SplitPaymentLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split payment of {0} in {1} parts.
+        /// </summary>
+        public static string SplitPaymentTotal {
+            get {
+                return ResourceManager.GetString("SplitPaymentTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this split payment of {0}? All {1} parts are deleted..
+        /// </summary>
+        public static string ConfirmDeleteSplitMessage {
+            get {
+                return ResourceManager.GetString("ConfirmDeleteSplitMessage", resourceCulture);
+            }
+        }
     }
 }

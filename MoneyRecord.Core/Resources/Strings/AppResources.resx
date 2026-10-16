@@ -1775,4 +1775,40 @@ Amount: {2}</value>
   <data name="RecurringCountOther" xml:space="preserve">
     <value>{0} recurring</value>
   </data>
+  <data name="SplitPayment" xml:space="preserve">
+    <value>Split between categories</value>
+  </data>
+  <data name="AddSplitPart" xml:space="preserve">
+    <value>Add category</value>
+  </data>
+  <data name="SplitDescriptionPlaceholder" xml:space="preserve">
+    <value>Each part's category</value>
+  </data>
+  <data name="SplitLeftToAssign" xml:space="preserve">
+    <value>Left to assign: {0}</value>
+  </data>
+  <data name="SplitOverBy" xml:space="preserve">
+    <value>Over the amount by {0}</value>
+  </data>
+  <data name="SplitFullyAssigned" xml:space="preserve">
+    <value>Fully assigned</value>
+  </data>
+  <data name="SplitPartNeedsCategory" xml:space="preserve">
+    <value>Please select a category for every part</value>
+  </data>
+  <data name="SplitPartNeedsAmount" xml:space="preserve">
+    <value>Please enter an amount for every part</value>
+  </data>
+  <data name="SplitMustAddUp" xml:space="preserve">
+    <value>The parts must add up to {0}</value>
+  </data>
+  <data name="SplitPaymentLabel" xml:space="preserve">
+    <value>Split payment</value>
+  </data>
+  <data name="SplitPaymentTotal" xml:space="preserve">
+    <value>Split payment of {0} in {1} parts</value>
+  </data>
+  <data name="ConfirmDeleteSplitMessage" xml:space="preserve">
+    <value>Delete this split payment of {0}? All {1} parts are deleted.</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7a in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7a done; 10.7b in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -272,6 +272,24 @@ Close the gap with competing finance apps. Each section can ship on its own.
   "what uses it"); a known payee typed in full picks its last category too, unless a category was tapped in the form
   (or the entry is being edited), while a chip always does; names compare invariant ignoring case; the CSV reads
   payees through `IPayeeRepository`; the detail sheet hides the payee row when the payee is the heading.
+
+  10.7b done as: `Transaction.SplitId` (indexed, nullable; no migration, backups carry it) links the parts of a split
+  expense; each part is a normal transaction with its own category, amount and description, so totals, budgets, reports,
+  filters and search count it unchanged. Core `SplitService.SaveAsync` replaces the edited rows with one row per part in
+  one DB transaction (one part = a plain transaction again; the split ID is kept on edit), copying date, account, payee,
+  tags and receipt and sharing the own "Amount in USD" out in proportion (`SplitAllocation.Share`, exact to the cent);
+  `TransactionRepository.GetSplitPartsAsync` / `DeleteSplitAsync`; `LedgerService.DeleteAsync` deletes every part and
+  their shared receipt once. The CSV import counts a split payment once with its total when looking for duplicates. App:
+  "Split between categories" switch under the grid (expenses only; hides the grid, budget warning and Make recurring): the
+  selected category starts part 1 with the whole amount, "Add category", remove at 3+ parts, "Left to assign" / "Over by" /
+  "Fully assigned"; on save one empty part takes the rest, then every part needs a category and a positive amount and they
+  must add up. Editing any part loads the whole payment; switching it off saves one transaction. Rows show a split icon;
+  the detail sheet lists the parts with the total; delete asks about the whole payment. Not changed: CSV export (parts are
+  rows of their own), recurring transactions, the CSV import (single category).
+  Review: the rules for completing the parts moved to Core `SplitAllocation.Complete` (one empty part takes the rest;
+  `SplitProblem` MissingAmount / DoesNotAddUp), tested; editing treats the description as typed only when every part
+  has the same one (a renamed category no longer spreads part 1's old name to the others); the reset clears the parts
+  first; unused `Transaction.IsSplit` and the delete count removed; the detail sheet computes the parts once.
 
 ### 10.8 Debts and loans
 - Track money lent/borrowed with a person; partial repayments; reminders.

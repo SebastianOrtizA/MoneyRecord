@@ -12,7 +12,8 @@ namespace MoneyRecord.Services.Interfaces
         Task<List<LedgerEntry>> GetEntriesAsync(DateTime startDate, DateTime endDate);
 
         /// <summary>
-        /// Deletes the entry's transaction (and its receipt photo) or its whole transfer, whichever half was chosen.
+        /// Deletes the entry's transaction (and its receipt photo), every part of its split payment, or its whole transfer,
+        /// whichever half was chosen.
         /// An entry that is already gone is ignored.
         /// </summary>
         Task DeleteAsync(LedgerEntry entry);

@@ -46,8 +46,8 @@ crashes at runtime (XAML is inflated at runtime there).
 `MoneyRecord.Core/`
 - `Models/` — 10 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
   SavingsGoalAccount (a goal's accounts; one goal per account), Payee (optional on a transaction and a recurring one;
-  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded
-  daily rates; a cache, not in backups). Plus display models
+  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups).
+  `Transaction.SplitId`: the parts of a split expense are plain transactions sharing the ID (`SplitPart` = one part to save). Plus display models
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
   CurrencyAmount (a total in one currency; per-currency totals, never added), PeriodTotals (Home: income / expense / net
   per currency), GoalProgress (a goal's saved / status / plan texts), CurrencyChoice (report currency chip; the first one "≈ USD" = converted), BudgetSpent (counted vs
@@ -65,7 +65,8 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M004`
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
   as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page), PayeeService (found or created by name on save,
-  last category per type, rename / merge / delete), SavingsGoalService (goal
+  last category per type, rename / merge / delete), SplitService (saves a split expense: one transaction per part in one DB
+  transaction, replacing the edited ones; the own conversion shared out), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
   categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
@@ -89,7 +90,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
-  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), PayeeNames (normalize, same name ignoring case, suggestions), RecurrenceCalculator
+  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), PayeeNames (normalize, same name ignoring case, suggestions), SplitAllocation (left to assign; a total shared in proportion), RecurrenceCalculator
   (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
   days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
   (currencies in use; transactions in one currency), CurrencyConverter (downloaded rates: nearest earlier day,

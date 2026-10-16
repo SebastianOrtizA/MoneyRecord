@@ -19,6 +19,15 @@ namespace MoneyRecord.Services.Repositories
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
 
+        public async Task<List<Transaction>> GetSplitPartsAsync(string splitId) =>
+            await (await TableAsync()).Where(t => t.SplitId == splitId).OrderBy(t => t.Id).ToListAsync();
+
+        public async Task DeleteSplitAsync(string splitId)
+        {
+            await (await ConnectionAsync()).ExecuteAsync("DELETE FROM \"Transaction\" WHERE SplitId = ?", splitId);
+            OnChanged();
+        }
+
         public async Task<List<CurrencyAmount>> SumByCurrencyAsync(TransactionType type, DateTime startDate, DateTime endDate,
             string baseCurrencyCode) =>
             CurrencyAmount.Totals((await SumByCategoryRowsAsync(type, startDate, endDate, baseCurrencyCode)).Select(r => r.ToAmount()),

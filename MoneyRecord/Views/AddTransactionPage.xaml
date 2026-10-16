@@ -78,7 +78,8 @@
 
                 <!-- Category grid, recently used first -->
                 <Label Text="{ext:Localize Category}" FontSize="16" FontAttributes="Bold"/>
-                <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding CategoryChoices}">
+                <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding CategoryChoices}"
+                            IsVisible="{Binding IsSplit, Converter={StaticResource InvertedBoolConverter}}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="viewmodels:CategoryChoice">
                             <Border FlexLayout.Basis="25%"
@@ -116,6 +117,71 @@
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
                 </FlexLayout>
+
+                <!-- Split: one expense across several categories; the parts replace the grid -->
+                <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding CanSplit}">
+                    <Label Text="{ext:Localize SplitPayment}" FontSize="16" VerticalOptions="Center"/>
+                    <Switch Grid.Column="1"
+                            IsToggled="{Binding IsSplit}"
+                            OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                </Grid>
+
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding IsSplit}">
+                    <VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding SplitParts}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:SplitPartViewModel">
+                                <Grid ColumnDefinitions="*,130,Auto" ColumnSpacing="8">
+                                    <Picker ItemsSource="{Binding Categories}"
+                                            SelectedItem="{Binding Category}"
+                                            ItemDisplayBinding="{Binding Name, x:DataType=models:Category}"
+                                            Title="{ext:Localize Category}"
+                                            FontSize="16"/>
+                                    <controls:DecimalEntry Grid.Column="1"
+                                                           Text="{Binding Amount}"
+                                                           Placeholder="0.00"
+                                                           FontSize="16"
+                                                           HorizontalTextAlignment="End"
+                                                           SemanticProperties.Description="{ext:Localize Amount}">
+                                        <controls:DecimalEntry.Behaviors>
+                                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding CurrencyCode}"/>
+                                        </controls:DecimalEntry.Behaviors>
+                                    </controls:DecimalEntry>
+                                    <!-- Hidden at two parts: fewer is no split (switch it off instead) -->
+                                    <Button Grid.Column="2"
+                                            Text="&#xF015A;"
+                                            FontFamily="MaterialDesignIcons"
+                                            FontSize="22"
+                                            WidthRequest="44"
+                                            HeightRequest="44"
+                                            Padding="0"
+                                            BackgroundColor="Transparent"
+                                            TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"
+                                            IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AddTransactionViewModel}}, Path=CanRemoveSplitParts}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AddTransactionViewModel}}, Path=RemoveSplitPartCommand}"
+                                            CommandParameter="{Binding .}"
+                                            SemanticProperties.Description="{ext:Localize DeleteButton}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Button Text="{ext:Localize AddSplitPart}"
+                                Command="{Binding AddSplitPartCommand}"
+                                FontSize="14"
+                                Padding="12,0"
+                                HeightRequest="40"
+                                CornerRadius="20"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                        <!-- What the parts still need to make the amount -->
+                        <Label Grid.Column="1"
+                               Text="{Binding SplitRemainingText}"
+                               FontSize="14"
+                               HorizontalTextAlignment="End"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </Grid>
+                </VerticalStackLayout>
 
                 <!-- Budget Warning Banner -->
                 <Border IsVisible="{Binding ShowBudgetWarning}"
@@ -161,7 +227,7 @@
                 <VerticalStackLayout Spacing="16" IsVisible="{Binding IsMoreDetailsOpen}">
                     <Label Text="{ext:Localize Description}" FontSize="16" FontAttributes="Bold"/>
                     <Entry Text="{Binding Description}"
-                           Placeholder="{Binding SelectedCategory.Name}"
+                           Placeholder="{Binding DescriptionPlaceholder}"
                            FontSize="16"/>
 
                     <Label Text="{ext:Localize Tags}" FontSize="16" FontAttributes="Bold"/>
@@ -236,7 +302,7 @@
 
                     <!-- Make Recurring Section (only for new transactions) -->
                     <VerticalStackLayout Spacing="12"
-                                         IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
+                                         IsVisible="{Binding CanMakeRecurring}">
                         <Grid ColumnDefinitions="*,Auto" Padding="0">
                             <Label Grid.Column="0"
                                    Text="{ext:Localize MakeRecurring}"

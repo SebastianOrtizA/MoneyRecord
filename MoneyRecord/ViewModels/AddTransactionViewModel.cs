@@ -1,4 +1,5 @@
 using MoneyRecord.Helpers;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,7 @@ namespace MoneyRecord.ViewModels
         private readonly IExchangeRateService _exchangeRates;
         private readonly IConversionService _conversion;
         private readonly IPayeeService _payeeService;
+        private readonly ISplitService _splitService;
         private readonly ILogger<AddTransactionViewModel> _logger;
 
         // Every payee with its use: the suggestions under the payee field
@@ -37,6 +39,7 @@ namespace MoneyRecord.ViewModels
         private bool _categoryChosen;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanSplit))]
         private TransactionType transactionType;
 
         [ObservableProperty]
@@ -68,11 +71,42 @@ namespace MoneyRecord.ViewModels
         }
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(DescriptionPlaceholder))]
         private Category? selectedCategory;
 
         /// <summary>The category grid: recently used first (<see cref="IEntryDefaultsService.OrderByRecent"/>).</summary>
         [ObservableProperty]
         private List<CategoryChoice> categoryChoices = [];
+
+        /// <summary>The categories a split part can take (the grid's, in its order).</summary>
+        private List<Category> SplitCategories => CategoryChoices.Select(c => c.Category).ToList();
+
+        /// <summary>Only an expense can be split across categories.</summary>
+        public bool CanSplit => TransactionType == TransactionType.Expense;
+
+        /// <summary>The payment is split across categories: the parts replace the category grid.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanMakeRecurring))]
+        [NotifyPropertyChangedFor(nameof(DescriptionPlaceholder))]
+        private bool isSplit;
+
+        public ObservableCollection<SplitPartViewModel> SplitParts { get; } = [];
+
+        /// <summary>"Make recurring" is offered for a new entry in one category (recurring transactions aren't split).</summary>
+        public bool CanMakeRecurring => !IsEditMode && !IsSplit;
+
+        /// <summary>A part can be removed while there are more than two (fewer is no split: switch it off instead).</summary>
+        public bool CanRemoveSplitParts => SplitParts.Count > 2;
+
+        /// <summary>"Left to assign: $20.00", "Over the amount by $5.00" or "Fully assigned".</summary>
+        [ObservableProperty]
+        private string splitRemainingText = string.Empty;
+
+        /// <summary>An empty description is saved as the category's name; a split part uses its own.</summary>
+        public string DescriptionPlaceholder => IsSplit ? AppResources.SplitDescriptionPlaceholder : SelectedCategory?.Name ?? string.Empty;
+
+        // The rows of the split being edited (replaced on save); empty when it isn't one
+        private List<Transaction> _editedParts = [];
 
         /// <summary>Description, tags, receipt and recurrence sit under "More details".</summary>
         [ObservableProperty]
@@ -88,6 +122,7 @@ namespace MoneyRecord.ViewModels
         private string title = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanMakeRecurring))]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -169,7 +204,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -186,6 +221,12 @@ namespace MoneyRecord.ViewModels
             _exchangeRates = exchangeRates;
             _conversion = conversion;
             _payeeService = payeeService;
+            _splitService = splitService;
+            SplitParts.CollectionChanged += (_, _) =>
+            {
+                OnPropertyChanged(nameof(CanRemoveSplitParts));
+                UpdateSplitRemaining();
+            };
             _logger = logger;
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
@@ -223,7 +264,112 @@ namespace MoneyRecord.ViewModels
             EndDate = DateTime.Now.AddMonths(6);
             UseSpecificDay = false;
             SelectedDayOfMonth = 1;
+            _editedParts = [];
+            // Parts first: switching the split off then has nothing to carry back into the category
+            ClearSplitParts();
+            IsSplit = false;
         }
+
+        /// <summary>Editing a split payment: the whole payment (its total, shared fields and every part) fills the form.</summary>
+        private async Task LoadSplitAsync(string splitId)
+        {
+            _editedParts = await _transactionRepository.GetSplitPartsAsync(splitId);
+            if (_editedParts.Count == 0)
+                return;
+
+            var names = SplitCategories.ToDictionary(c => c.Id, c => c.Name);
+            // A typed description is saved on every part; automatic ones differ per category (or name a since renamed one)
+            var descriptions = _editedParts.Select(p => p.Description).Distinct().ToList();
+            Description = descriptions.Count == 1
+                ? EntryDescription.ForEditing(descriptions[0], names.GetValueOrDefault(_editedParts[0].CategoryId))
+                : string.Empty;
+            Amount = Money.FromCents(_editedParts.Sum(p => p.AmountCents)).ToString();
+            ConvertedAmount = CanConvert && _editedParts.All(p => p.ConvertedAmountCents != null
+                    && MoneyFormatter.SameCurrency(p.ConvertedCurrencyCode, BaseCurrencyCode))
+                ? Money.FromCents(_editedParts.Sum(p => p.ConvertedAmountCents!.Value)).ToString()
+                : string.Empty;
+            IsMoreDetailsOpen = Description.Length > 0 || Transaction?.HasTags == true || Transaction?.HasReceipt == true
+                || ConvertedAmount.Length > 0;
+
+            foreach (var part in _editedParts)
+                AddSplitPart(SplitCategories.FirstOrDefault(c => c.Id == part.CategoryId), Money.FromCents(part.AmountCents).ToString());
+            IsSplit = true;
+        }
+
+        partial void OnIsSplitChanged(bool value)
+        {
+            if (value)
+            {
+                // A split never repeats (recurring transactions stay single-category) and has no single budget to warn about
+                IsRecurring = false;
+                ShowBudgetWarning = false;
+                if (SplitParts.Count == 0)
+                {
+                    // The chosen category starts the first part, with the whole amount until the user divides it
+                    AddSplitPart(SelectedCategory, Amount);
+                    AddSplitPart(null, string.Empty);
+                }
+            }
+            else
+            {
+                // Back to one category: the first part's, if it has one
+                if (SplitParts.FirstOrDefault()?.Category is { } first)
+                    SelectedCategory = CategoryChoices.FirstOrDefault(c => c.Category.Id == first.Id)?.Category;
+                ClearSplitParts();
+                _ = CheckBudgetAsync();
+            }
+        }
+
+        [RelayCommand]
+        private void AddSplitPart() => AddSplitPart(null, string.Empty);
+
+        [RelayCommand]
+        private void RemoveSplitPart(SplitPartViewModel part)
+        {
+            if (!CanRemoveSplitParts)
+                return;
+            part.Changed -= OnSplitPartChanged;
+            SplitParts.Remove(part);
+        }
+
+        private void AddSplitPart(Category? category, string amount)
+        {
+            var part = new SplitPartViewModel(SplitCategories) { Category = category, Amount = amount, CurrencyCode = SelectedAccount?.CurrencyCode ?? string.Empty };
+            part.Changed += OnSplitPartChanged;
+            SplitParts.Add(part);
+        }
+
+        private void ClearSplitParts()
+        {
+            foreach (var part in SplitParts)
+                part.Changed -= OnSplitPartChanged;
+            SplitParts.Clear();
+        }
+
+        private void OnSplitPartChanged(object? sender, EventArgs e) => UpdateSplitRemaining();
+
+        private void UpdateSplitRemaining()
+        {
+            if (!IsSplit && SplitParts.Count == 0)
+            {
+                SplitRemainingText = string.Empty;
+                return;
+            }
+
+            var currency = SelectedAccount?.CurrencyCode;
+            var remaining = Money.FromCents(SplitAllocation.Remaining(Money.ToCents(AmountParser.Parse(Amount, currency)),
+                SplitParts.Select(p => ParsePartCents(p, currency))));
+            SplitRemainingText = remaining switch
+            {
+                > 0 => string.Format(AppResources.SplitLeftToAssign, MoneyFormatter.Format(remaining, currency)),
+                < 0 => string.Format(AppResources.SplitOverBy, MoneyFormatter.Format(-remaining, currency)),
+                _ => AppResources.SplitFullyAssigned
+            };
+        }
+
+        /// <summary>The part's amount in cents; null while it is empty.</summary>
+        private static long? ParsePartCents(SplitPartViewModel part, string? currency) =>
+            string.IsNullOrWhiteSpace(part.Amount) ? null : Money.ToCents(AmountParser.Parse(part.Amount, currency));
 
         public async Task InitializeAsync()
         {
@@ -280,6 +426,9 @@ namespace MoneyRecord.ViewModels
                 if (Transaction.ConvertedAmount is { } converted && CanConvert
                     && MoneyFormatter.SameCurrency(Transaction.ConvertedCurrencyCode, BaseCurrencyCode))
                     ConvertedAmount = converted.ToString();
+
+                if (Transaction.SplitId is { Length: > 0 } splitId)
+                    await LoadSplitAsync(splitId);
             }
             else
             {
@@ -331,7 +480,7 @@ namespace MoneyRecord.ViewModels
             {
                 var categoryId = await _payeeService.GetLastCategoryAsync(payee.Id, TransactionType);
                 // Meanwhile the user may have picked a category or typed another payee
-                if (_categoryChosen || !PayeeNames.Same(PayeeText, payee.Name))
+                if (_categoryChosen || IsSplit || !PayeeNames.Same(PayeeText, payee.Name))
                     return;
                 if (CategoryChoices.FirstOrDefault(c => c.Category.Id == categoryId) is { } choice)
                     SelectedCategory = choice.Category;
@@ -357,9 +506,16 @@ namespace MoneyRecord.ViewModels
         {
             CanConvert = value != null && !MoneyFormatter.SameCurrency(value.CurrencyCode, BaseCurrencyCode);
             UpdateConvertedRate();
+            foreach (var part in SplitParts)
+                part.CurrencyCode = value?.CurrencyCode ?? string.Empty;
+            UpdateSplitRemaining();
         }
 
-        partial void OnAmountChanged(string value) => UpdateConvertedRate();
+        partial void OnAmountChanged(string value)
+        {
+            UpdateConvertedRate();
+            UpdateSplitRemaining();
+        }
 
         partial void OnConvertedAmountChanged(string value) => UpdateConvertedRate();
 
@@ -383,7 +539,7 @@ namespace MoneyRecord.ViewModels
         private async Task CheckBudgetAsync()
         {
             var category = SelectedCategory;
-            if (TransactionType != TransactionType.Expense || category == null)
+            if (TransactionType != TransactionType.Expense || category == null || IsSplit)
             {
                 ShowBudgetWarning = false;
                 return;
@@ -400,8 +556,8 @@ namespace MoneyRecord.ViewModels
                     spent = (await _conversion.GetExpensesByCategoryAsync(startDate, endDate)).GetValueOrDefault(category.Id)?.Counted ?? 0;
                 }
 
-                // Another category was picked meanwhile: its own check shows its warning
-                if (category != SelectedCategory)
+                // Another category was picked meanwhile (its own check shows its warning), or the payment was split
+                if (category != SelectedCategory || IsSplit)
                     return;
 
                 if (budget == null)
@@ -449,7 +605,14 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            if (SelectedCategory == null)
+            List<SplitPart>? parts = null;
+            if (IsSplit)
+            {
+                parts = await BuildSplitPartsAsync(amountValue);
+                if (parts == null)
+                    return;
+            }
+            else if (SelectedCategory == null)
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseSelectCategory);
                 return;
@@ -468,7 +631,6 @@ namespace MoneyRecord.ViewModels
             }
 
             int accountId = SelectedAccount.Id;
-            var savedDescription = EntryDescription.Resolve(Description, SelectedCategory.Name);
 
             // Validate balance for expense transactions if account doesn't allow negative balance
             if (TransactionType == TransactionType.Expense && !SelectedAccount.AllowNegativeBalance)
@@ -478,7 +640,8 @@ namespace MoneyRecord.ViewModels
                 decimal adjustedBalance = currentBalance;
                 if (IsEditMode && Transaction != null && Transaction.Type == TransactionType.Expense)
                 {
-                    adjustedBalance += Transaction.Amount;
+                    // What the edited entry took out: a split payment's whole total
+                    adjustedBalance += _editedParts.Count > 0 ? Money.FromCents(_editedParts.Sum(p => p.AmountCents)) : Transaction.Amount;
                 }
 
                 if (adjustedBalance - amountValue < 0)
@@ -491,8 +654,16 @@ namespace MoneyRecord.ViewModels
             // After every check, so a refused save never leaves a new payee behind
             var payeeId = await _payeeService.ResolveAsync(PayeeText);
 
-            if (IsEditMode && Transaction != null)
+            // A split payment, or an edited one put back into one category, is replaced as a whole
+            if (parts != null || _editedParts.Count > 0)
             {
+                parts ??= [new SplitPart(SelectedCategory!.Id, Money.ToCents(amountValue), EntryDescription.Resolve(Description, SelectedCategory.Name))];
+                await SaveSplitAsync(parts, accountId, payeeId, convertedValue);
+            }
+            else if (IsEditMode && Transaction != null)
+            {
+                var savedDescription = EntryDescription.Resolve(Description, SelectedCategory!.Name);
+
                 // Update existing transaction
                 Transaction.Date = SelectedDate;
                 Transaction.Description = savedDescription;
@@ -511,6 +682,8 @@ namespace MoneyRecord.ViewModels
             }
             else
             {
+                var savedDescription = EntryDescription.Resolve(Description, SelectedCategory!.Name);
+
                 // Create new transaction
                 var newTransaction = new Transaction
                 {
@@ -571,6 +744,60 @@ namespace MoneyRecord.ViewModels
                 _ = _exchangeRates.UpdateIfEnabledAsync();
 
             await _navigationService.GoBackAsync();
+        }
+
+        /// <summary>
+        /// The split's parts, checked: each has a category and a positive amount, and together they make the total. One part
+        /// left empty takes what is left. Null after telling the user what to fix.
+        /// </summary>
+        private async Task<List<SplitPart>?> BuildSplitPartsAsync(decimal total)
+        {
+            if (SplitParts.Any(p => p.Category == null))
+            {
+                await _errorHandler.HandleAsync(AppResources.SplitPartNeedsCategory);
+                return null;
+            }
+
+            var currency = SelectedAccount?.CurrencyCode;
+            var completion = SplitAllocation.Complete(Money.ToCents(total), SplitParts.Select(p => ParsePartCents(p, currency)).ToList());
+            if (completion.Cents is not { } cents)
+            {
+                await _errorHandler.HandleAsync(completion.Problem == SplitProblem.DoesNotAddUp
+                    ? string.Format(AppResources.SplitMustAddUp, MoneyFormatter.Format(total, currency))
+                    : AppResources.SplitPartNeedsAmount);
+                return null;
+            }
+
+            return SplitParts
+                .Select((p, i) => new SplitPart(p.Category!.Id, cents[i], EntryDescription.Resolve(Description, p.Category.Name)))
+                .ToList();
+        }
+
+        /// <summary>Saves the payment as its parts, replacing the transaction or split being edited.</summary>
+        private async Task SaveSplitAsync(List<SplitPart> parts, int accountId, int? payeeId, decimal? convertedValue)
+        {
+            var template = new Transaction
+            {
+                Date = SelectedDate,
+                Type = TransactionType,
+                AccountId = accountId,
+                PayeeId = payeeId,
+                Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim(),
+                ReceiptPhotoPath = ReceiptPhotoPath,
+                SplitId = _editedParts.FirstOrDefault()?.SplitId
+            };
+            template.SetConversion(convertedValue, SelectedAccount?.CurrencyCode, BaseCurrencyCode);
+
+            List<int> replaced = _editedParts.Count > 0 ? _editedParts.Select(p => p.Id).ToList()
+                : IsEditMode && Transaction != null ? [Transaction.Id]
+                : [];
+            await _splitService.SaveAsync(template, parts, replaced);
+            _receipt.Commit(); // deletes a removed or replaced receipt
+
+            if (IsEditMode)
+                await _dialogService.ToastAsync(AppResources.TransactionUpdatedSuccessfully);
+            else
+                _entryDefaults.Remember(TransactionType, accountId, parts[0].CategoryId);
         }
 
         [RelayCommand]
