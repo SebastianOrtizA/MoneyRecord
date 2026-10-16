@@ -19,6 +19,9 @@ namespace MoneyRecord.Services.Interfaces
         void Remember(CsvTable table, StatementMapping mapping, int accountId);
     }
 
-    /// <summary>A saved mapping, ready to use: the columns and the account the last import of this layout went into.</summary>
-    public sealed record SavedStatementMapping(StatementMapping Mapping, int AccountId);
+    /// <summary>
+    /// A saved mapping, ready to use: the columns and the account the last import of this layout went into (null for a
+    /// file without a header, which doesn't identify the bank).
+    /// </summary>
+    public sealed record SavedStatementMapping(StatementMapping Mapping, int? AccountId);
 }

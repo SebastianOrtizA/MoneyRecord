@@ -70,13 +70,15 @@ public sealed class StatementMappingStoreTests
     }
 
     [Fact]
-    public void Files_without_a_header_are_matched_by_their_column_count()
+    public void Files_without_a_header_reuse_the_columns_but_not_the_account()
     {
         var (table, guess) = Read("2026-10-01,Coffee,-3.50\n2026-10-02,Salary,1500.00\n");
         _sut.Remember(table, guess.Mapping with { PositiveIsExpense = true }, accountId: 3);
 
         var (next, nextGuess) = Read("2026-11-01,Bakery,-4.00\n2026-11-02,Rent,-900.00\n");
-        _sut.Find(next, nextGuess)!.Mapping.PositiveIsExpense.Should().BeTrue();
+        var saved = _sut.Find(next, nextGuess)!;
+        saved.Mapping.PositiveIsExpense.Should().BeTrue();
+        saved.AccountId.Should().BeNull("a column count doesn't tell two banks apart");
     }
 
     [Fact]

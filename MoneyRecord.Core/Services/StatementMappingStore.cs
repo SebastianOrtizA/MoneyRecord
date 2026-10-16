@@ -18,17 +18,19 @@ namespace MoneyRecord.Services
 
         public SavedStatementMapping? Find(CsvTable table, StatementGuess guess)
         {
-            var saved = Load().FirstOrDefault(e => e.Layout == Layout(table));
+            var layout = Layout(table);
+            var saved = Load().FirstOrDefault(e => e.Layout == layout);
             if (saved == null
                 || !guess.DateFormats.TryGetValue(saved.DateColumn, out var formats)
                 || formats.FirstOrDefault(f => f.Pattern == saved.DatePattern) is not { } format
-                || !guess.AmountColumns.Contains(saved.AmountColumn)
-                || saved.DescriptionColumn >= table.Headers.Count)
+                || !guess.AmountColumns.Contains(saved.AmountColumn))
                 return null;
 
             var mapping = new StatementMapping(saved.DateColumn, format, saved.DescriptionColumn, saved.AmountColumn, '.',
                 saved.PositiveIsExpense).WithAmountColumn(table, saved.AmountColumn);
-            return new SavedStatementMapping(mapping, saved.AccountId);
+            // Only a header names the bank: header-less files of two banks may have the same column count, so their columns
+            // (checked above) are reused but not the account, where a wrong guess would go unnoticed
+            return new SavedStatementMapping(mapping, table.HasHeader ? saved.AccountId : null);
         }
 
         public void Remember(CsvTable table, StatementMapping mapping, int accountId)
