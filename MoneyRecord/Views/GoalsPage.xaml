@@ -231,6 +231,11 @@
                        FontSize="14"
                        TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
                 <Label Text="{ext:Localize GoalAccountsHint}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                <!-- Accounts now in another currency: not offered, so saving unlinks them -->
+                <Label Text="{Binding RemovedAccountsText}"
+                       IsVisible="{Binding HasRemovedAccounts}"
+                       FontSize="14"
+                       TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
 
                 <!-- Delete only when editing -->
                 <Grid ColumnDefinitions="Auto,*" Margin="0,12,0,0">

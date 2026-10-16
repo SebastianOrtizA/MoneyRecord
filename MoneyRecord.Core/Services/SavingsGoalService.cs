@@ -21,7 +21,7 @@ namespace MoneyRecord.Services
             _time = time;
         }
 
-        public async Task<List<GoalProgress>> GetProgressAsync()
+        public async Task<List<GoalProgress>> GetProgressAsync(IReadOnlyList<AccountBalanceInfo>? balances = null)
         {
             var db = await _dbInitializer.GetConnectionAsync();
             var goals = await db.Table<SavingsGoal>().ToListAsync();
@@ -30,10 +30,11 @@ namespace MoneyRecord.Services
 
             var links = await db.Table<SavingsGoalAccount>().ToListAsync();
             var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
-            var balances = (await _balanceService.GetAllAccountBalancesAsync()).ToDictionary(b => b.AccountId, b => b.CurrentBalance);
+            var balanceOf = (balances ?? await _balanceService.GetAllAccountBalancesAsync())
+                .ToDictionary(b => b.AccountId, b => b.CurrentBalance);
             var today = _time.GetLocalNow().Date;
             // The pace window usually starts on the same day for every goal: one query per distinct start
-            var changesAfter = new Dictionary<DateTime, Dictionary<int, decimal>>();
+            var changesSince = new Dictionary<DateTime, Dictionary<int, decimal>>();
 
             var progress = new List<GoalProgress>();
             foreach (var goal in goals)
@@ -45,14 +46,14 @@ namespace MoneyRecord.Services
                 // An account whose currency changed after it was linked can't be added to the goal's amounts
                 var counted = linked.Where(a => MoneyFormatter.SameCurrency(a.CurrencyCode, goal.CurrencyCode)).ToList();
                 var uncounted = linked.Except(counted).ToList();
-                var saved = counted.Sum(a => balances.GetValueOrDefault(a.Id));
+                var saved = counted.Sum(a => balanceOf.GetValueOrDefault(a.Id));
 
                 decimal? pace = null;
                 if (counted.Count > 0)
                 {
                     var start = GoalProjection.PaceStart(today, counted.Min(a => a.CreatedDate));
-                    if (!changesAfter.TryGetValue(start, out var changes))
-                        changesAfter[start] = changes = await _balanceService.GetChangesAfterAsync(start);
+                    if (!changesSince.TryGetValue(start, out var changes))
+                        changesSince[start] = changes = await _balanceService.GetChangesSinceAsync(start);
                     pace = GoalProjection.MonthlyPace(counted.Sum(a => changes.GetValueOrDefault(a.Id)), start, today);
                 }
 

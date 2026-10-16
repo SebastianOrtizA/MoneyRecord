@@ -28,9 +28,10 @@ namespace MoneyRecord.Models
             Goal = goal;
             AccountIds = accounts.Concat(uncounted).Select(a => a.Id).ToList();
             AccountNames = string.Join(" · ", accounts.Select(a => a.Name));
+            UncountedAccountNames = string.Join(", ", uncounted.Select(a => a.Name));
             UncountedText = uncounted.Count == 0
                 ? string.Empty
-                : string.Format(AppResources.GoalAccountsNotCounted, string.Join(", ", uncounted.Select(a => a.Name)));
+                : string.Format(AppResources.GoalAccountsNotCounted, UncountedAccountNames);
             Saved = saved;
             MonthlyPace = monthlyPace;
 
@@ -66,6 +67,9 @@ namespace MoneyRecord.Models
         public string UncountedText { get; }
 
         public bool HasUncounted => UncountedText.Length > 0;
+
+        /// <summary>"Euros, Cuenta USD": the linked accounts that aren't counted; empty when all are.</summary>
+        public string UncountedAccountNames { get; }
 
         public decimal Saved { get; }
 

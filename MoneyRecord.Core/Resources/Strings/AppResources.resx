@@ -1703,4 +1703,7 @@ Amount: {2}</value>
   <data name="GoalAccountsNotCounted" xml:space="preserve">
     <value>Not counted (other currency): {0}</value>
   </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>Saving removes the accounts now in another currency: {0}</value>
+  </data>
 </root>

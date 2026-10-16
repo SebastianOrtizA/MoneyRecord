@@ -96,6 +96,31 @@ public sealed class SavingsGoalServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task The_pace_counts_entries_from_the_first_day_of_the_window()
+    {
+        var created = Today.AddDays(-60);
+        var savings = await AddAccountAsync("Savings", created: created);
+        // A statement import or recurring row on the creation day is dated 00:00
+        await AddAsync(TransactionType.Income, 600m, created, savings.Id);
+        await _sut.SaveAsync(Goal(), [savings.Id]);
+
+        var progress = (await _sut.GetProgressAsync()).Single();
+
+        progress.MonthlyPace.Should().BeApproximately(300m, 10m, "600 over about two months");
+    }
+
+    [Fact]
+    public async Task Balances_the_caller_already_has_are_used()
+    {
+        var savings = await AddAccountAsync("Savings", 1000m);
+        await _sut.SaveAsync(Goal(), [savings.Id]);
+
+        var progress = (await _sut.GetProgressAsync([new AccountBalanceInfo { AccountId = savings.Id, CurrentBalance = 1234m }])).Single();
+
+        progress.Saved.Should().Be(1234m);
+    }
+
+    [Fact]
     public async Task An_account_that_changed_currency_is_listed_but_not_counted()
     {
         var savings = await AddAccountAsync("Savings", 1000m);
@@ -109,6 +134,7 @@ public sealed class SavingsGoalServiceTests : IAsyncLifetime
         progress.Saved.Should().Be(1000m);
         progress.HasUncounted.Should().BeTrue();
         progress.AccountIds.Should().BeEquivalentTo([savings.Id, other.Id]);
+        progress.UncountedAccountNames.Should().Be("Other");
     }
 
     [Fact]

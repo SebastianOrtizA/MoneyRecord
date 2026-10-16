@@ -31,9 +31,9 @@ namespace MoneyRecord.Services.Interfaces
         Task<Dictionary<string, DateTime>> GetFirstDatesByCurrencyAsync(string baseCurrencyCode);
 
         /// <summary>
-        /// Totals of one type per account, with each account's latest date of that type: all-time, or only the entries dated
-        /// after <paramref name="after"/>.
+        /// Totals of one type per account, with each account's latest date of that type: all-time (no <paramref name="since"/>),
+        /// or only the entries dated on or after <paramref name="since"/>.
         /// </summary>
-        Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime after = default);
+        Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime? since = null);
     }
 }

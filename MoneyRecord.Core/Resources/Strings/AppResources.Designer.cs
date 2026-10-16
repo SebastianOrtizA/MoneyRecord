@@ -4622,5 +4622,14 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("GoalAccountsNotCounted", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving removes the accounts now in another currency: {0}.
+        /// </summary>
+        public static string GoalAccountsRemovedOnSave {
+            get {
+                return ResourceManager.GetString("GoalAccountsRemovedOnSave", resourceCulture);
+            }
+        }
     }
 }

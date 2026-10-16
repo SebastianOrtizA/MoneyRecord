@@ -59,11 +59,11 @@ namespace MoneyRecord.Services.Repositories
                 .ToDictionary(g => g.Key, g => new DateTime(g.Min(r => r.FirstTicks)));
         }
 
-        public async Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime after = default) =>
+        public async Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime? since = null) =>
             await (await ConnectionAsync()).QueryAsync<AccountTotal>(
                 "SELECT AccountId, SUM(ABS(AmountCents)) AS Cents, MAX(Date) AS LastDateTicks FROM \"Transaction\" " +
-                "WHERE Type = ? AND AccountId IS NOT NULL AND Date > ? GROUP BY AccountId",
-                type, after);
+                "WHERE Type = ? AND AccountId IS NOT NULL " + (since == null ? "" : "AND Date >= ? ") + "GROUP BY AccountId",
+                since == null ? [type] : [type, since.Value]);
 
         private async Task<List<CategoryCurrencyTotal>> SumByCategoryRowsAsync(TransactionType type, DateTime startDate,
             DateTime endDate, string baseCurrencyCode)

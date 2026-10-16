@@ -6,7 +6,8 @@ namespace MoneyRecord.Services.Interfaces
     public interface ISavingsGoalService
     {
         /// <summary>Every goal's progress: open goals first (earliest target date first, no date last), reached ones last.</summary>
-        Task<List<GoalProgress>> GetProgressAsync();
+        /// <param name="balances">Every account's balance when the caller has them already (Home); loaded otherwise.</param>
+        Task<List<GoalProgress>> GetProgressAsync(IReadOnlyList<AccountBalanceInfo>? balances = null);
 
         /// <summary>Which goal each linked account belongs to (account ID → goal ID).</summary>
         Task<Dictionary<int, int>> GetLinkedAccountsAsync();

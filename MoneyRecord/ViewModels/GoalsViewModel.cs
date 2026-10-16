@@ -36,7 +36,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The goal the sheet edits; null when it adds one.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsEditMode), nameof(FormTitle), nameof(SaveText))]
+        [NotifyPropertyChangedFor(nameof(IsEditMode), nameof(FormTitle), nameof(SaveText), nameof(RemovedAccountsText), nameof(HasRemovedAccounts))]
         private GoalProgress? editingGoal;
 
         public bool IsEditMode => EditingGoal != null;
@@ -44,6 +44,16 @@ namespace MoneyRecord.ViewModels
         public string FormTitle => IsEditMode ? AppResources.EditGoal : AppResources.AddGoal;
 
         public string SaveText => IsEditMode ? AppResources.Save : AppResources.AddGoal;
+
+        /// <summary>
+        /// Linked accounts that moved to another currency can't count and aren't offered (the list holds the goal's currency),
+        /// so saving drops them on purpose; the sheet says so first.
+        /// </summary>
+        public string RemovedAccountsText => EditingGoal is { HasUncounted: true } goal
+            ? string.Format(AppResources.GoalAccountsRemovedOnSave, goal.UncountedAccountNames)
+            : string.Empty;
+
+        public bool HasRemovedAccounts => RemovedAccountsText.Length > 0;
 
         [ObservableProperty]
         private string formName = string.Empty;

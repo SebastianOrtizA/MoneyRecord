@@ -243,6 +243,9 @@ Close the gap with competing finance apps. Each section can ship on its own.
   as not counted. `DateStyle.MonthYear`. App: `GoalsPage` (cards like Budgets, BottomSheet with name, target, currency
   picker when the accounts use several, optional date, account checklist), More item, Home card (first three; amounts
   hidden with the balances).
+  Review: editing a goal whose account moved to another currency says saving removes it (dropped on purpose: it can't
+  count); the per-account sums take `DateTime? since` (no filter = all-time) and the pace window includes its first day;
+  Home passes its balances to `GetProgressAsync`.
 
 ### 10.7 Split transactions and payees
 - One payment across several categories (`TransactionSplit` table); reports count splits by category.

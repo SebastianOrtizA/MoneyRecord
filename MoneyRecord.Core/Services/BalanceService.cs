@@ -35,12 +35,12 @@ namespace MoneyRecord.Services
         public Task<Dictionary<int, List<CurrencyAmount>>> GetExpensesByCategoryAsync(DateTime startDate, DateTime endDate) =>
             _transactionRepository.SumByCategoryAsync(TransactionType.Expense, startDate, endDate, MoneyFormatter.BaseCurrency);
 
-        public async Task<Dictionary<int, decimal>> GetChangesAfterAsync(DateTime after)
+        public async Task<Dictionary<int, decimal>> GetChangesSinceAsync(DateTime since)
         {
-            var incomesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Income, after);
-            var expensesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Expense, after);
-            var outgoingTask = _transferRepository.SumCentsBySourceAsync(after);
-            var incomingTask = _transferRepository.SumCentsByDestinationAsync(after);
+            var incomesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Income, since);
+            var expensesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Expense, since);
+            var outgoingTask = _transferRepository.SumCentsBySourceAsync(since);
+            var incomingTask = _transferRepository.SumCentsByDestinationAsync(since);
             await Task.WhenAll(incomesTask, expensesTask, outgoingTask, incomingTask);
 
             var changes = new Dictionary<int, decimal>();

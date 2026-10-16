@@ -222,7 +222,9 @@ namespace MoneyRecord.ViewModels
                 var budgetsTask = _budgetSummaryService.GetSummaryAsync(
                     Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
                 var upcomingTask = _recurringService.GetUpcomingAsync();
-                var goalsTask = _goals.GetProgressAsync();
+                // Goals reuse the balances above instead of loading them again
+                var goalsTask = GoalsAsync();
+                async Task<List<GoalProgress>> GoalsAsync() => await _goals.GetProgressAsync(await balancesTask);
                 await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
