@@ -6,7 +6,8 @@ using MoneyRecord.Services.Repositories.Migrations;
 using SQLite;
 using System.Globalization;
 using System.Security.Cryptography;
-using System.IO.Compression;
+using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.Zip.Compression;
 using System.Text;
 using System.Text.Json;
 
@@ -50,12 +51,12 @@ namespace MoneyRecord.Services
 
         // ---- Backup ----
 
-        public async Task<string> ExportBackupAsync(string destinationPath)
+        public async Task<string> ExportBackupAsync(string destinationPath, string? password = null)
         {
             var backup = await ReadDataAsync();
             // Before WriteZip, which rewrites the receipt paths
             var fingerprint = Fingerprint(backup);
-            await Task.Run(() => WriteZip(backup, destinationPath));
+            await Task.Run(() => WriteZip(backup, destinationPath, password));
             return fingerprint;
         }
 
@@ -83,7 +84,10 @@ namespace MoneyRecord.Services
             return backup;
         }
 
-        private void WriteZip(BackupData backup, string destinationPath)
+        /// <summary>
+        /// A standard zip; with a password every entry is AES-256 encrypted (7-Zip and other zip tools open it too).
+        /// </summary>
+        private void WriteZip(BackupData backup, string destinationPath, string? password)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(destinationPath))!);
 
@@ -92,14 +96,16 @@ namespace MoneyRecord.Services
             File.Delete(tempPath);
             try
             {
-                using (var zip = ZipFile.Open(tempPath, ZipArchiveMode.Create))
+                using (var zip = new ZipOutputStream(File.Create(tempPath)))
                 {
+                    if (!string.IsNullOrEmpty(password))
+                        zip.Password = password;
+
                     var added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var transaction in backup.Transactions)
                         transaction.ReceiptPhotoPath = AddReceipt(zip, transaction.ReceiptPhotoPath, added);
 
-                    using var data = zip.CreateEntry(DataEntryName, CompressionLevel.Optimal).Open();
-                    JsonSerializer.Serialize(data, backup, JsonOptions);
+                    PutEntry(zip, DataEntryName, output => JsonSerializer.Serialize(output, backup, JsonOptions));
                 }
                 File.Move(tempPath, destinationPath, overwrite: true);
             }
@@ -113,27 +119,46 @@ namespace MoneyRecord.Services
         /// <summary>
         /// Copies a receipt photo into the zip and returns its path inside the zip; null when the file is gone.
         /// </summary>
-        private string? AddReceipt(ZipArchive zip, string? path, HashSet<string> added)
+        private string? AddReceipt(ZipOutputStream zip, string? path, HashSet<string> added)
         {
             if (!ReceiptFiles.IsInFolder(path, ReceiptsFolder) || !File.Exists(path))
                 return null;
 
             var entryName = $"{ReceiptFiles.FolderName}/{Path.GetFileName(path)}";
             if (added.Add(entryName))
-                zip.CreateEntryFromFile(path!, entryName, CompressionLevel.NoCompression); // photos are already compressed
+            {
+                // Photos are already compressed: no CPU spent deflating them again
+                PutEntry(zip, entryName, output =>
+                {
+                    using var photo = File.OpenRead(path!);
+                    photo.CopyTo(output);
+                }, compress: false);
+            }
             return entryName;
+        }
+
+        private static void PutEntry(ZipOutputStream zip, string name, Action<Stream> write, bool compress = true)
+        {
+            // Level 0 writes stored blocks: one code path for every entry, plain or encrypted
+            zip.SetLevel(compress ? Deflater.DEFAULT_COMPRESSION : Deflater.NO_COMPRESSION);
+            var entry = new ZipEntry(name) { DateTime = DateTime.Now };
+            if (zip.Password != null)
+                entry.AESKeySize = 256;
+            zip.PutNextEntry(entry);
+            write(zip);
+            zip.CloseEntry();
         }
 
         // ---- Restore ----
 
-        public async Task<RestoreResult> RestoreAsync(string backupPath)
+        public async Task<RestoreResult> RestoreAsync(string backupPath, string? password = null)
         {
             // Receipts are unpacked next to the live folder and only moved in once the database restore succeeded
             var staging = ReceiptsFolder + ".restoring";
             DeleteDirectory(staging);
             try
             {
-                var (backup, hasReceipts) = await Task.Run(() => ReadBackup(backupPath, staging));
+                var (backup, hasReceipts) = await Task.Run(() => ReadBackup(backupPath, staging, password));
                 ResolveReceiptPaths(backup, hasReceipts ? staging : ReceiptsFolder);
 
                 // The safety net: no snapshot, no restore
@@ -166,9 +191,10 @@ namespace MoneyRecord.Services
 
         /// <summary>
         /// Reads and validates the whole backup before anything is changed. A .zip's receipts are unpacked into
-        /// <paramref name="staging"/>; an old .json backup has none.
+        /// <paramref name="staging"/>; an old .json backup has none. An encrypted zip needs its password
+        /// (<see cref="BackupPasswordException"/> otherwise).
         /// </summary>
-        private static (BackupData Backup, bool HasReceipts) ReadBackup(string backupPath, string staging)
+        private static (BackupData Backup, bool HasReceipts) ReadBackup(string backupPath, string staging, string? password)
         {
             using var file = File.OpenRead(backupPath);
             var isZip = file.ReadByte() == 'P' && file.ReadByte() == 'K';
@@ -177,29 +203,52 @@ namespace MoneyRecord.Services
             if (!isZip)
                 return (Deserialize(file), false);
 
-            using var zip = new ZipArchive(file, ZipArchiveMode.Read);
+            using var zip = new ZipFile(file, leaveOpen: true);
             var dataEntry = zip.GetEntry(DataEntryName)
                 ?? throw new InvalidDataException("Not a MoneyRecord backup: data.json is missing");
+            if (dataEntry.IsCrypted)
+            {
+                if (string.IsNullOrEmpty(password))
+                    throw new BackupPasswordException(wrongPassword: false);
+                zip.Password = password;
+            }
 
             BackupData backup;
-            using (var data = dataEntry.Open())
+            using (var data = OpenEntry(zip, dataEntry))
                 backup = Deserialize(data);
 
             Directory.CreateDirectory(staging);
-            foreach (var entry in zip.Entries)
+            const string receiptsPrefix = ReceiptFiles.FolderName + "/";
+            foreach (ZipEntry entry in zip)
             {
-                if (!entry.FullName.StartsWith(ReceiptFiles.FolderName + "/", StringComparison.Ordinal))
+                if (!entry.IsFile || !entry.Name.StartsWith(receiptsPrefix, StringComparison.Ordinal))
                     continue;
 
                 // Only plain file names: an entry can never write outside the staging folder
-                var name = entry.Name;
-                if (name.Length == 0 || name is "." or ".." || name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                var name = entry.Name[receiptsPrefix.Length..];
+                if (name.Length == 0 || name is "." or ".." || name.Contains('/')
+                    || name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
                     continue;
 
-                entry.ExtractToFile(Path.Combine(staging, name), overwrite: true);
+                using var input = OpenEntry(zip, entry);
+                using var output = File.Create(Path.Combine(staging, name));
+                input.CopyTo(output);
             }
 
             return (backup, true);
+        }
+
+        /// <summary>A wrong password shows when an encrypted entry is opened (AES keeps a password check value).</summary>
+        private static Stream OpenEntry(ZipFile zip, ZipEntry entry)
+        {
+            try
+            {
+                return zip.GetInputStream(entry);
+            }
+            catch (ZipException) when (entry.IsCrypted)
+            {
+                throw new BackupPasswordException(wrongPassword: true);
+            }
         }
 
         private static BackupData Deserialize(Stream json)

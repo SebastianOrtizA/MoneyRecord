@@ -23,6 +23,7 @@ public sealed class AutoBackupServiceTests : IDisposable
     private readonly IDataExportService _export = Substitute.For<IDataExportService>();
     private readonly FakeBackupFolder _folder = new();
     private readonly AutoBackupSettings _settings = new(new FakePreferences()) { Enabled = true };
+    private readonly FakeBackupPasswordStore _password = new();
     private readonly AutoBackupService _sut;
     private string _fingerprint = "data-1";
 
@@ -30,14 +31,14 @@ public sealed class AutoBackupServiceTests : IDisposable
     {
         _clock.SetLocalTimeZone(TimeZoneInfo.Utc);
         _export.GetFingerprintAsync().Returns(_ => _fingerprint);
-        _export.ExportBackupAsync(Arg.Any<string>()).Returns(call =>
+        _export.ExportBackupAsync(Arg.Any<string>(), Arg.Any<string?>()).Returns(call =>
         {
-            var path = call.Arg<string>();
+            var path = call.ArgAt<string>(0);
             Directory.CreateDirectory(Path.GetDirectoryName(path)!);
             File.WriteAllText(path, _fingerprint);
             return _fingerprint;
         });
-        _sut = new AutoBackupService(_export, _folder, _settings, new AppPaths(_appData), _clock,
+        _sut = new AutoBackupService(_export, _folder, _settings, _password, new AppPaths(_appData), _clock,
             Substitute.For<ILogger<AutoBackupService>>());
     }
 
@@ -72,6 +73,16 @@ public sealed class AutoBackupServiceTests : IDisposable
         _settings.LastBackup.Should().Be(Now);
         _settings.LastFingerprint.Should().Be("data-1");
         Directory.GetFiles(Path.Combine(_appData, AppPaths.BackupsFolderName)).Should().BeEmpty("the temp copy is deleted");
+    }
+
+    [Fact]
+    public async Task RunIfDue_UsesTheBackupPassword()
+    {
+        _password.Password = "s3cret";
+
+        await _sut.RunIfDueAsync();
+
+        await _export.Received(1).ExportBackupAsync(Arg.Any<string>(), "s3cret");
     }
 
     [Fact]
@@ -173,7 +184,7 @@ public sealed class AutoBackupServiceTests : IDisposable
     [Fact]
     public async Task BackUpNow_Failure_IsRememberedAndThrown()
     {
-        _export.ExportBackupAsync(Arg.Any<string>()).ThrowsAsync(new IOException("disk full"));
+        _export.ExportBackupAsync(Arg.Any<string>(), Arg.Any<string?>()).ThrowsAsync(new IOException("disk full"));
 
         await _sut.Invoking(s => s.BackUpNowAsync()).Should().ThrowAsync<IOException>();
 
@@ -211,4 +222,20 @@ internal sealed class FakeBackupFolder : IBackupFolder
     }
 
     public void Delete(string fileName) => Files.Remove(fileName);
+}
+
+/// <summary>The backup password in memory.</summary>
+internal sealed class FakeBackupPasswordStore : IBackupPasswordStore
+{
+    public bool IsSupported => true;
+
+    public string? Password { get; set; }
+
+    public Task<string?> GetAsync() => Task.FromResult(Password);
+
+    public Task SetAsync(string? password)
+    {
+        Password = string.IsNullOrEmpty(password) ? null : password;
+        return Task.CompletedTask;
+    }
 }

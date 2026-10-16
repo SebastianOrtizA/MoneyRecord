@@ -4190,5 +4190,167 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("AutoBackupNote", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protect backups with a password.
+        /// </summary>
+        public static string BackupPassword {
+            get {
+                return ResourceManager.GetString("BackupPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backups, also the automatic ones, are encrypted. Without the password they can't be restored, so keep it somewhere safe..
+        /// </summary>
+        public static string BackupPasswordDescription {
+            get {
+                return ResourceManager.GetString("BackupPasswordDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change password.
+        /// </summary>
+        public static string ChangePassword {
+            get {
+                return ResourceManager.GetString("ChangePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup password.
+        /// </summary>
+        public static string BackupPasswordTitle {
+            get {
+                return ResourceManager.GetString("BackupPasswordTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backups can only be restored with this password. If you forget it, they can't be opened..
+        /// </summary>
+        public static string BackupPasswordMessage {
+            get {
+                return ResourceManager.GetString("BackupPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat the password.
+        /// </summary>
+        public static string RepeatPassword {
+            get {
+                return ResourceManager.GetString("RepeatPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The passwords don't match.
+        /// </summary>
+        public static string PasswordsDontMatch {
+            get {
+                return ResourceManager.GetString("PasswordsDontMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a password.
+        /// </summary>
+        public static string PasswordEmpty {
+            get {
+                return ResourceManager.GetString("PasswordEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show password.
+        /// </summary>
+        public static string ShowPassword {
+            get {
+                return ResourceManager.GetString("ShowPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove the backup password?.
+        /// </summary>
+        public static string RemoveBackupPasswordTitle {
+            get {
+                return ResourceManager.GetString("RemoveBackupPasswordTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New backups won't be encrypted. Backups made with the password still need it..
+        /// </summary>
+        public static string RemoveBackupPasswordMessage {
+            get {
+                return ResourceManager.GetString("RemoveBackupPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string RemovePassword {
+            get {
+                return ResourceManager.GetString("RemovePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup password saved.
+        /// </summary>
+        public static string BackupPasswordSaved {
+            get {
+                return ResourceManager.GetString("BackupPasswordSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup password removed.
+        /// </summary>
+        public static string BackupPasswordRemoved {
+            get {
+                return ResourceManager.GetString("BackupPasswordRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Protected backup.
+        /// </summary>
+        public static string RestorePasswordTitle {
+            get {
+                return ResourceManager.GetString("RestorePasswordTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter the password this backup was made with..
+        /// </summary>
+        public static string RestorePasswordMessage {
+            get {
+                return ResourceManager.GetString("RestorePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong password. Try again..
+        /// </summary>
+        public static string RestoreWrongPassword {
+            get {
+                return ResourceManager.GetString("RestoreWrongPassword", resourceCulture);
+            }
+        }
     }
 }

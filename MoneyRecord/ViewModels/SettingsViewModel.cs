@@ -48,7 +48,7 @@ namespace MoneyRecord.ViewModels
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
             IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
-            AutoBackupViewModel autoBackup)
+            AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -69,6 +69,7 @@ namespace MoneyRecord.ViewModels
             _exchangeRates = exchangeRates;
             _exchangeRateSettings = exchangeRateSettings;
             AutoBackup = autoBackup;
+            BackupPassword = backupPassword;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
             exchangeRatesStatus = LastUpdatedText();
@@ -76,6 +77,9 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The Automatic backups card.</summary>
         public AutoBackupViewModel AutoBackup { get; }
+
+        /// <summary>The backup password switch, and restoring a protected backup.</summary>
+        public BackupPasswordViewModel BackupPassword { get; }
 
         [ObservableProperty]
         private IReadOnlyList<LanguageOption> languages = LanguageOption.All();
@@ -101,6 +105,7 @@ namespace MoneyRecord.ViewModels
                 ExchangeRatesStatus = LastUpdatedText();
             // The folder may be unreachable now, or the daily job made a backup
             AutoBackup.RefreshCommand.Execute(null);
+            BackupPassword.RefreshCommand.Execute(null);
         }
 
         // ---- Exchange rates ----
@@ -378,7 +383,7 @@ namespace MoneyRecord.ViewModels
                 IsExporting = true;
 
                 var filePath = Path.Combine(_dataExportService.BackupsFolder, BackupFileName());
-                await _dataExportService.ExportBackupAsync(filePath);
+                await _dataExportService.ExportBackupAsync(filePath, await BackupPassword.GetPasswordAsync());
 
                 await _dialogService.ToastAsync(AppResources.BackupCreatedSuccessfully);
             }
@@ -400,7 +405,7 @@ namespace MoneyRecord.ViewModels
                 IsExporting = true;
 
                 var filePath = NewCacheFile("MoneyRecord_Backup", ".zip");
-                await _dataExportService.ExportBackupAsync(filePath);
+                await _dataExportService.ExportBackupAsync(filePath, await BackupPassword.GetPasswordAsync());
 
                 await Share.Default.RequestAsync(new ShareFileRequest
                 {
@@ -534,8 +539,10 @@ namespace MoneyRecord.ViewModels
                 if (!confirm) return;
 
                 IsImporting = true;
-                var result = await _dataExportService.RestoreAsync(backupPath);
+                // Asks for the password of a protected backup (null = cancelled)
+                var result = await BackupPassword.RestoreAsync(backupPath);
                 IsImporting = false;
+                if (result == null) return;
 
                 var undo = await _dialogService.ConfirmAsync(
                     AppResources.RestoreComplete,

@@ -19,6 +19,7 @@ package reference is listed and that this file matches the app's list (`ThirdPar
 | SQLite3 Multiple Ciphers | MIT | Ulrich Telle | https://github.com/utelle/SQLite3MultipleCiphers | [SQLite3MultipleCiphers.txt](MoneyRecord/Resources/Raw/Licenses/SQLite3MultipleCiphers.txt) |
 | Serilog | Apache-2.0 | Serilog Contributors | https://github.com/serilog/serilog | [Apache-2.0.txt](MoneyRecord/Resources/Raw/Licenses/Apache-2.0.txt) |
 | CsvHelper | Apache-2.0 (dual MS-PL / Apache-2.0) | Josh Close | https://github.com/JoshClose/CsvHelper | [Apache-2.0.txt](MoneyRecord/Resources/Raw/Licenses/Apache-2.0.txt) |
+| SharpZipLib | MIT | SharpZipLib Contributors | https://github.com/icsharpcode/SharpZipLib | [SharpZipLib.txt](MoneyRecord/Resources/Raw/Licenses/SharpZipLib.txt) |
 | Sentry SDKs (.NET, Android, Native) | MIT | Sentry and individual contributors | https://github.com/getsentry/sentry-dotnet | [Sentry.txt](MoneyRecord/Resources/Raw/Licenses/Sentry.txt) |
 | SQLite | Public domain |  | https://sqlite.org/copyright.html |  |
 | LiveCharts2 | MIT | Alberto Rodriguez Orozco | https://github.com/beto-rodriguez/LiveCharts2 | [LiveCharts2.txt](MoneyRecord/Resources/Raw/Licenses/LiveCharts2.txt) |

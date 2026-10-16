@@ -1557,4 +1557,58 @@ Monto: {2}</value>
   <data name="AutoBackupNote" xml:space="preserve">
     <value>Solo se conservan las copias automáticas más recientes, y solo se hace una nueva si algo cambió. Para restaurar una, usa Restaurar desde Copia de Seguridad → Seleccionar Archivo de Copia de Seguridad.</value>
   </data>
+  <data name="BackupPassword" xml:space="preserve">
+    <value>Proteger las copias con contraseña</value>
+  </data>
+  <data name="BackupPasswordDescription" xml:space="preserve">
+    <value>Las copias, también las automáticas, se cifran. Sin la contraseña no se pueden restaurar, así que guárdala en un lugar seguro.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Cambiar contraseña</value>
+  </data>
+  <data name="BackupPasswordTitle" xml:space="preserve">
+    <value>Contraseña de las copias</value>
+  </data>
+  <data name="BackupPasswordMessage" xml:space="preserve">
+    <value>Las copias solo se pueden restaurar con esta contraseña. Si la olvidas, no se podrán abrir.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>Repite la contraseña</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>Las contraseñas no coinciden</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Escribe una contraseña</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Mostrar contraseña</value>
+  </data>
+  <data name="RemoveBackupPasswordTitle" xml:space="preserve">
+    <value>¿Quitar la contraseña de las copias?</value>
+  </data>
+  <data name="RemoveBackupPasswordMessage" xml:space="preserve">
+    <value>Las copias nuevas no se cifrarán. Las copias hechas con contraseña la siguen necesitando.</value>
+  </data>
+  <data name="RemovePassword" xml:space="preserve">
+    <value>Quitar</value>
+  </data>
+  <data name="BackupPasswordSaved" xml:space="preserve">
+    <value>Contraseña guardada</value>
+  </data>
+  <data name="BackupPasswordRemoved" xml:space="preserve">
+    <value>Contraseña quitada</value>
+  </data>
+  <data name="RestorePasswordTitle" xml:space="preserve">
+    <value>Copia protegida</value>
+  </data>
+  <data name="RestorePasswordMessage" xml:space="preserve">
+    <value>Escribe la contraseña con la que se hizo esta copia.</value>
+  </data>
+  <data name="RestoreWrongPassword" xml:space="preserve">
+    <value>Contraseña incorrecta. Inténtalo de nuevo.</value>
+  </data>
 </root>

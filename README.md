@@ -64,6 +64,12 @@ and Windows are maintained too. All data stays on the device.
 ### Settings, backup & restore
 - **Base currency** (default: the device region's), used for totals that span accounts.
 - **Full backup** as a `.zip` (`data.json` + receipt photos), saved locally or shared.
+- **Backup password** (opt-in): backups, manual and automatic, are AES-256 encrypted zips (7-Zip and other zip tools
+  open them with the password). The password is kept in SecureStorage for the automatic backups and asked for on
+  restore when it's missing or different.
+- **Automatic backups** (Android, opt-in): daily, weekly or monthly into a folder picked with the system folder picker
+  (phone storage, SD card, or a cloud app such as Google Drive), keeping the newest 3–20; skipped while nothing
+  changed.
 - **Restore** from a local or picked backup (also older `.json` backups). The restore is all-or-nothing; the current data
   is saved to an automatic snapshot first (the last 5 are kept) and the "Restore complete" dialog offers **Undo**.
 - **CSV export** of transactions.
@@ -72,7 +78,7 @@ and Windows are maintained too. All data stays on the device.
   doesn't show its content while the lock is on.
 - **Encrypt database** (Android, opt-in): the database is encrypted (SQLite3 Multiple Ciphers) with a random key kept
   in the Android Keystore through SecureStorage. While it is on, Android backup leaves the database out (the key can't
-  leave the phone), so move to a new phone with a backup from **Settings → Backup**; backup files are not encrypted.
+  leave the phone), so move to a new phone with a backup from **Settings → Backup** (protect it with the backup password).
 
 ### Localization
 - English and Spanish, picked from the device language; the device region is kept for currency and number formats

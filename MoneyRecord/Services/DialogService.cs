@@ -29,6 +29,18 @@ namespace MoneyRecord.Services
                     initialValue: initialValue ?? string.Empty,
                     keyboard: numeric ? Keyboard.Numeric : Keyboard.Default));
 
+        public async Task<string?> PasswordAsync(string title, string message, bool confirm = false)
+        {
+            // The page is created on the UI thread too, like every dialog here
+            var page = await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                var created = new Views.PasswordPage(title, message, confirm);
+                await CurrentPage.Navigation.PushModalAsync(created, animated: false);
+                return created;
+            });
+            return await page.Result;
+        }
+
         public async Task<string?> ActionSheetAsync(string title, string cancel, IReadOnlyList<string> options)
         {
             var choice = await MainThread.InvokeOnMainThreadAsync(() =>

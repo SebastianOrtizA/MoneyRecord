@@ -1559,4 +1559,58 @@ Amount: {2}</value>
   <data name="AutoBackupNote" xml:space="preserve">
     <value>Only the newest automatic backups are kept, and a new one is made only when something changed. To restore one, use Restore from Backup → Select Backup File.</value>
   </data>
+  <data name="BackupPassword" xml:space="preserve">
+    <value>Protect backups with a password</value>
+  </data>
+  <data name="BackupPasswordDescription" xml:space="preserve">
+    <value>Backups, also the automatic ones, are encrypted. Without the password they can't be restored, so keep it somewhere safe.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="BackupPasswordTitle" xml:space="preserve">
+    <value>Backup password</value>
+  </data>
+  <data name="BackupPasswordMessage" xml:space="preserve">
+    <value>Backups can only be restored with this password. If you forget it, they can't be opened.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>Repeat the password</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>The passwords don't match</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Enter a password</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Show password</value>
+  </data>
+  <data name="RemoveBackupPasswordTitle" xml:space="preserve">
+    <value>Remove the backup password?</value>
+  </data>
+  <data name="RemoveBackupPasswordMessage" xml:space="preserve">
+    <value>New backups won't be encrypted. Backups made with the password still need it.</value>
+  </data>
+  <data name="RemovePassword" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="BackupPasswordSaved" xml:space="preserve">
+    <value>Backup password saved</value>
+  </data>
+  <data name="BackupPasswordRemoved" xml:space="preserve">
+    <value>Backup password removed</value>
+  </data>
+  <data name="RestorePasswordTitle" xml:space="preserve">
+    <value>Protected backup</value>
+  </data>
+  <data name="RestorePasswordMessage" xml:space="preserve">
+    <value>Enter the password this backup was made with.</value>
+  </data>
+  <data name="RestoreWrongPassword" xml:space="preserve">
+    <value>Wrong password. Try again.</value>
+  </data>
 </root>
