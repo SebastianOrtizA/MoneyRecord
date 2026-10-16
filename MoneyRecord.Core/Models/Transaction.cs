@@ -48,9 +48,6 @@ namespace MoneyRecord.Models
         [Indexed(Name = "IX_Transaction_SplitId")]
         public string? SplitId { get; set; }
 
-        [Ignore]
-        public bool IsSplit => !string.IsNullOrEmpty(SplitId);
-
         public string? Tags { get; set; }
 
         public string? ReceiptPhotoPath { get; set; }

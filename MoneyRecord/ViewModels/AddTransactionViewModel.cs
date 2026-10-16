@@ -265,8 +265,9 @@ namespace MoneyRecord.ViewModels
             UseSpecificDay = false;
             SelectedDayOfMonth = 1;
             _editedParts = [];
-            IsSplit = false;
+            // Parts first: switching the split off then has nothing to carry back into the category
             ClearSplitParts();
+            IsSplit = false;
         }
 
         /// <summary>Editing a split payment: the whole payment (its total, shared fields and every part) fills the form.</summary>
@@ -277,10 +278,11 @@ namespace MoneyRecord.ViewModels
                 return;
 
             var names = SplitCategories.ToDictionary(c => c.Id, c => c.Name);
-            // The description is shared: automatic when every part shows its own category's name
-            Description = _editedParts.All(p => p.Description == names.GetValueOrDefault(p.CategoryId))
-                ? string.Empty
-                : _editedParts[0].Description;
+            // A typed description is saved on every part; automatic ones differ per category (or name a since renamed one)
+            var descriptions = _editedParts.Select(p => p.Description).Distinct().ToList();
+            Description = descriptions.Count == 1
+                ? EntryDescription.ForEditing(descriptions[0], names.GetValueOrDefault(_editedParts[0].CategoryId))
+                : string.Empty;
             Amount = Money.FromCents(_editedParts.Sum(p => p.AmountCents)).ToString();
             ConvertedAmount = CanConvert && _editedParts.All(p => p.ConvertedAmountCents != null
                     && MoneyFormatter.SameCurrency(p.ConvertedCurrencyCode, BaseCurrencyCode))
@@ -757,26 +759,17 @@ namespace MoneyRecord.ViewModels
             }
 
             var currency = SelectedAccount?.CurrencyCode;
-            var totalCents = Money.ToCents(total);
-            var cents = SplitParts.Select(p => ParsePartCents(p, currency)).ToList();
-            // The one empty part gets the rest
-            if (cents.Count(c => c == null) == 1)
-                cents[cents.IndexOf(null)] = SplitAllocation.Remaining(totalCents, cents);
-
-            if (cents.Any(c => c is null or <= 0))
+            var completion = SplitAllocation.Complete(Money.ToCents(total), SplitParts.Select(p => ParsePartCents(p, currency)).ToList());
+            if (completion.Cents is not { } cents)
             {
-                await _errorHandler.HandleAsync(AppResources.SplitPartNeedsAmount);
-                return null;
-            }
-
-            if (cents.Sum() != totalCents)
-            {
-                await _errorHandler.HandleAsync(string.Format(AppResources.SplitMustAddUp, MoneyFormatter.Format(total, currency)));
+                await _errorHandler.HandleAsync(completion.Problem == SplitProblem.DoesNotAddUp
+                    ? string.Format(AppResources.SplitMustAddUp, MoneyFormatter.Format(total, currency))
+                    : AppResources.SplitPartNeedsAmount);
                 return null;
             }
 
             return SplitParts
-                .Select((p, i) => new SplitPart(p.Category!.Id, cents[i]!.Value, EntryDescription.Resolve(Description, p.Category.Name)))
+                .Select((p, i) => new SplitPart(p.Category!.Id, cents[i], EntryDescription.Resolve(Description, p.Category.Name)))
                 .ToList();
         }
 

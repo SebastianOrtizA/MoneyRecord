@@ -22,11 +22,10 @@ namespace MoneyRecord.Services.Repositories
         public async Task<List<Transaction>> GetSplitPartsAsync(string splitId) =>
             await (await TableAsync()).Where(t => t.SplitId == splitId).OrderBy(t => t.Id).ToListAsync();
 
-        public async Task<int> DeleteSplitAsync(string splitId)
+        public async Task DeleteSplitAsync(string splitId)
         {
-            var deleted = await (await ConnectionAsync()).ExecuteAsync("DELETE FROM \"Transaction\" WHERE SplitId = ?", splitId);
+            await (await ConnectionAsync()).ExecuteAsync("DELETE FROM \"Transaction\" WHERE SplitId = ?", splitId);
             OnChanged();
-            return deleted;
         }
 
         public async Task<List<CurrencyAmount>> SumByCurrencyAsync(TransactionType type, DateTime startDate, DateTime endDate,

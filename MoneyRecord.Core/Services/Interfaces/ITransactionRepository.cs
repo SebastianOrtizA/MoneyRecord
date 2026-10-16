@@ -13,8 +13,8 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>The parts of a split payment (see <see cref="Transaction.SplitId"/>), in the order they were saved.</summary>
         Task<List<Transaction>> GetSplitPartsAsync(string splitId);
 
-        /// <summary>Deletes every part of a split payment; returns how many were deleted.</summary>
-        Task<int> DeleteSplitAsync(string splitId);
+        /// <summary>Deletes every part of a split payment.</summary>
+        Task DeleteSplitAsync(string splitId);
 
         /// <summary>
         /// Totals (unsigned) of one type in the range, one per currency (an account's; no account = the base currency),

@@ -14,6 +14,31 @@ public class SplitAllocationTests
     }
 
     [Fact]
+    public void Complete_gives_the_one_empty_part_what_is_left()
+    {
+        SplitAllocation.Complete(5_000, [3_000, null]).Problem.Should().Be(SplitProblem.None);
+        SplitAllocation.Complete(5_000, [3_000, null]).Cents.Should().Equal(3_000, 2_000);
+        SplitAllocation.Complete(5_000, [1_000, null, 1_500]).Cents.Should().Equal(1_000, 2_500, 1_500);
+        SplitAllocation.Complete(5_000, [3_000, 2_000]).Cents.Should().Equal(3_000, 2_000);
+    }
+
+    [Theory]
+    [InlineData(5_000L, new long[] { 3_000, -1, -1 }, SplitProblem.MissingAmount)] // two empty parts: nothing to guess
+    [InlineData(5_000L, new long[] { 5_000, -1 }, SplitProblem.MissingAmount)]     // nothing left for the empty one
+    [InlineData(5_000L, new long[] { 6_000, -1 }, SplitProblem.DoesNotAddUp)]      // the others are over already
+    [InlineData(5_000L, new long[] { 3_000, 0 }, SplitProblem.MissingAmount)]
+    [InlineData(5_000L, new long[] { 3_000, 1_000 }, SplitProblem.DoesNotAddUp)]
+    [InlineData(5_000L, new long[] { 3_000, 3_000 }, SplitProblem.DoesNotAddUp)]
+    public void Complete_names_what_to_fix(long total, long[] parts, SplitProblem expected)
+    {
+        // -1 stands for an empty part
+        var completion = SplitAllocation.Complete(total, parts.Select(p => p == -1 ? (long?)null : p).ToList());
+
+        completion.Problem.Should().Be(expected);
+        completion.Cents.Should().BeNull();
+    }
+
+    [Fact]
     public void Share_follows_the_parts_and_adds_up_exactly()
     {
         SplitAllocation.Share(1_000, [3_000, 2_000]).Should().Equal(600, 400);

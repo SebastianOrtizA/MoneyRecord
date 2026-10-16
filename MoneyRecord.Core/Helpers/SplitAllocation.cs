@@ -8,6 +8,30 @@ namespace MoneyRecord.Helpers
             totalCents - partCents.Sum(c => c ?? 0);
 
         /// <summary>
+        /// The parts of a split as saved: one part left empty (null) takes what is left of the total; then every part needs a
+        /// positive amount and together they must make the total. <see cref="SplitCompletion.Cents"/> is null when a
+        /// <see cref="SplitProblem"/> says what to fix.
+        /// </summary>
+        public static SplitCompletion Complete(long totalCents, IReadOnlyList<long?> partCents)
+        {
+            var cents = partCents.ToList();
+            if (cents.Count(c => c == null) == 1)
+            {
+                var rest = Remaining(totalCents, cents);
+                // The others already make the total (nothing left for it) or more
+                if (rest <= 0)
+                    return new(null, rest < 0 ? SplitProblem.DoesNotAddUp : SplitProblem.MissingAmount);
+                cents[cents.IndexOf(null)] = rest;
+            }
+
+            if (cents.Any(c => c is null or <= 0))
+                return new(null, SplitProblem.MissingAmount);
+            if (cents.Sum() != totalCents)
+                return new(null, SplitProblem.DoesNotAddUp);
+            return new(cents.Select(c => c!.Value).ToArray(), SplitProblem.None);
+        }
+
+        /// <summary>
         /// <paramref name="totalCents"/> shared in proportion to <paramref name="weights"/> (all positive), adding up exactly:
         /// each share is rounded down and the leftover cents go to the parts with the largest fractions (ties: earlier part).
         /// The user's own "Amount in USD" for a split payment, shared out over its parts.
@@ -35,4 +59,17 @@ namespace MoneyRecord.Helpers
             return shares;
         }
     }
+
+    /// <summary>Why a split can't be saved yet.</summary>
+    public enum SplitProblem
+    {
+        None,
+        /// <summary>A part has no amount (or nothing is left for the one empty part).</summary>
+        MissingAmount,
+        /// <summary>The parts don't make the total.</summary>
+        DoesNotAddUp
+    }
+
+    /// <summary>The completed parts in cents (null with a problem), see <see cref="SplitAllocation.Complete"/>.</summary>
+    public sealed record SplitCompletion(long[]? Cents, SplitProblem Problem);
 }

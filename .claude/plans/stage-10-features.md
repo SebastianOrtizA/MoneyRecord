@@ -286,6 +286,10 @@ Close the gap with competing finance apps. Each section can ship on its own.
   must add up. Editing any part loads the whole payment; switching it off saves one transaction. Rows show a split icon;
   the detail sheet lists the parts with the total; delete asks about the whole payment. Not changed: CSV export (parts are
   rows of their own), recurring transactions, the CSV import (single category).
+  Review: the rules for completing the parts moved to Core `SplitAllocation.Complete` (one empty part takes the rest;
+  `SplitProblem` MissingAmount / DoesNotAddUp), tested; editing treats the description as typed only when every part
+  has the same one (a renamed category no longer spreads part 1's old name to the others); the reset clears the parts
+  first; unused `Transaction.IsSplit` and the delete count removed; the detail sheet computes the parts once.
 
 ### 10.8 Debts and loans
 - Track money lent/borrowed with a person; partial repayments; reminders.

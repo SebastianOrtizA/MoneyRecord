@@ -59,16 +59,24 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The entry shown in the detail sheet; null = closed.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsDetailsOpen), nameof(SelectedSplitParts), nameof(SplitSummaryText))]
+        [NotifyPropertyChangedFor(nameof(IsDetailsOpen))]
         private LedgerEntry? selectedEntry;
 
         /// <summary>Every part of the selected split payment (empty when it isn't one), for the detail sheet.</summary>
-        public List<LedgerEntry> SelectedSplitParts => SplitPartsOf(SelectedEntry);
+        [ObservableProperty]
+        private List<LedgerEntry> selectedSplitParts = [];
 
         /// <summary>"Split payment of $50.00 in 2 parts"; empty when the selected entry isn't split.</summary>
-        public string SplitSummaryText => SelectedSplitParts is { Count: > 0 } parts
-            ? string.Format(AppResources.SplitPaymentTotal, SplitTotalText(parts), parts.Count)
-            : string.Empty;
+        [ObservableProperty]
+        private string splitSummaryText = string.Empty;
+
+        partial void OnSelectedEntryChanged(LedgerEntry? value)
+        {
+            SelectedSplitParts = SplitPartsOf(value);
+            SplitSummaryText = SelectedSplitParts.Count > 0
+                ? string.Format(AppResources.SplitPaymentTotal, SplitTotalText(SelectedSplitParts), SelectedSplitParts.Count)
+                : string.Empty;
+        }
 
         /// <summary>The selected entry's receipt shown full screen.</summary>
         [ObservableProperty]
