@@ -57,6 +57,23 @@ public class PayeeNamesTests
     }
 
     [Theory]
+    [InlineData("  corner   BAKERY ", "Corner Bakery")]
+    [InlineData("Corner", null)]
+    [InlineData(" ", null)]
+    public void Find_returns_the_payee_typed_in_full(string typed, string? expected)
+    {
+        (PayeeNames.Find([Payee("Corner Bakery"), Payee("Corner Shop")], typed)?.Name).Should().Be(expected);
+    }
+
+    [Fact]
+    public void Uses_text_adds_recurring_transactions_only_when_there_are_some()
+    {
+        new PayeeSummary(1, "Gym", 2, null).UsesText.Should().Be(Plurals.Transactions(2));
+        new PayeeSummary(1, "Gym", 0, null, RecurringCount: 1).UsesText
+            .Should().Be($"{Plurals.Transactions(0)}, {Plurals.Recurring(1)}", "a payee only a schedule uses is not unused");
+    }
+
+    [Theory]
     [InlineData("", true)]
     [InlineData("bak", true)]
     [InlineData("CAFE", true)]

@@ -115,6 +115,9 @@ namespace MoneyRecord.Models
         /// </summary>
         public string Title => HasPayee && Description == CategoryName ? PayeeName : Description;
 
+        /// <summary>The detail sheet's payee row: shown unless the payee is already the heading.</summary>
+        public bool ShowsPayeeRow => HasPayee && Title != PayeeName;
+
         /// <summary>The row's second line: payee (unless it is the title), category and account, "Éxito · Food · Cash".</summary>
         public string Details => string.Join(" · ",
             new[] { Title == PayeeName ? null : PayeeName, CategoryName, AccountDisplayName }.Where(s => !string.IsNullOrEmpty(s)));

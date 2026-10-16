@@ -30,6 +30,7 @@ namespace MoneyRecord.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IPayeeRepository _payeeRepository;
         private readonly IAppPaths _paths;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
@@ -37,12 +38,13 @@ namespace MoneyRecord.Services
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, IAppPaths paths)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, IPayeeRepository payeeRepository, IAppPaths paths)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
             _transactionRepository = transactionRepository;
+            _payeeRepository = payeeRepository;
             _paths = paths;
         }
 
@@ -396,7 +398,7 @@ namespace MoneyRecord.Services
             var transactions = await _transactionRepository.GetAllAsync();
             var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id);
             var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
-            var payees = (await (await _dbInitializer.GetConnectionAsync()).Table<Payee>().ToListAsync()).ToDictionary(p => p.Id, p => p.Name);
+            var payees = (await _payeeRepository.GetAllAsync()).ToDictionary(p => p.Id, p => p.Name);
 
             var sb = new StringBuilder();
             sb.AppendLine("Date,Description,Amount,Type,Category,Account,Payee");

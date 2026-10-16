@@ -4750,7 +4750,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to "{0}" is deleted and its transactions ({2}) move to "{1}"..
+        ///   Looks up a localized string similar to "{0}" is deleted and what uses it ({2}) moves to "{1}"..
         /// </summary>
         public static string MergePayeeConfirmMessage {
             get {
@@ -4777,7 +4777,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete "{0}"? Its transactions ({1}) stay, without a payee..
+        ///   Looks up a localized string similar to Delete "{0}"? What uses it ({1}) stays, without a payee..
         /// </summary>
         public static string DeletePayeeConfirmation {
             get {
@@ -4818,6 +4818,24 @@ namespace MoneyRecord.Resources.Strings {
         public static string FailedToSavePayee {
             get {
                 return ResourceManager.GetString("FailedToSavePayee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recurring.
+        /// </summary>
+        public static string RecurringCountOne {
+            get {
+                return ResourceManager.GetString("RecurringCountOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} recurring.
+        /// </summary>
+        public static string RecurringCountOther {
+            get {
+                return ResourceManager.GetString("RecurringCountOther", resourceCulture);
             }
         }
     }

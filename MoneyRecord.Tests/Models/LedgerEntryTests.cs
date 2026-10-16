@@ -26,6 +26,7 @@ public class LedgerEntryTests
         var entry = Entry("Food", payee: "Corner Bakery");
 
         (entry.Title, entry.Details).Should().Be(("Corner Bakery", "Food · Cash"));
+        entry.ShowsPayeeRow.Should().BeFalse("the heading already names the payee");
     }
 
     [Fact]
@@ -34,6 +35,7 @@ public class LedgerEntryTests
         var entry = Entry("Birthday cake", payee: "Corner Bakery");
 
         (entry.Title, entry.Details).Should().Be(("Birthday cake", "Corner Bakery · Food · Cash"));
+        entry.ShowsPayeeRow.Should().BeTrue();
     }
 
     [Fact]

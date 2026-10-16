@@ -268,6 +268,10 @@ Close the gap with competing finance apps. Each section can ship on its own.
   automatic one (the category name), `Details` = payee · category · account; search matches the payee. App: payee field
   under the amount with suggestion chips (tapping one picks the category it had last time for that type), detail sheet
   payee row, More → Payees (search, tap → Rename / Merge into / Delete; renaming to an existing name offers a merge).
+  Review: use counts include recurring transactions ("0 transactions, 1 recurring"; the merge and delete prompts say
+  "what uses it"); a known payee typed in full picks its last category too, unless a category was tapped in the form
+  (or the entry is being edited), while a chip always does; names compare invariant ignoring case; the CSV reads
+  payees through `IPayeeRepository`; the detail sheet hides the payee row when the payee is the heading.
 
 ### 10.8 Debts and loans
 - Track money lent/borrowed with a person; partial repayments; reminders.

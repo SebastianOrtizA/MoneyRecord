@@ -26,6 +26,9 @@ namespace MoneyRecord.Helpers
         public static string Backups(int count) =>
             string.Format(count == 1 ? AppResources.BackupsOne : AppResources.BackupsOther, count);
 
+        public static string Recurring(int count) =>
+            string.Format(count == 1 ? AppResources.RecurringCountOne : AppResources.RecurringCountOther, count);
+
         public static string Rows(int count) =>
             string.Format(count == 1 ? AppResources.ImportRowsOne : AppResources.ImportRowsOther, count);
 

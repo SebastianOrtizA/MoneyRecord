@@ -1746,7 +1746,7 @@ Amount: {2}</value>
     <value>Merge "{0}" into</value>
   </data>
   <data name="MergePayeeConfirmMessage" xml:space="preserve">
-    <value>"{0}" is deleted and its transactions ({2}) move to "{1}".</value>
+    <value>"{0}" is deleted and what uses it ({2}) moves to "{1}".</value>
   </data>
   <data name="MergeButton" xml:space="preserve">
     <value>Merge</value>
@@ -1755,7 +1755,7 @@ Amount: {2}</value>
     <value>Delete payee</value>
   </data>
   <data name="DeletePayeeConfirmation" xml:space="preserve">
-    <value>Delete "{0}"? Its transactions ({1}) stay, without a payee.</value>
+    <value>Delete "{0}"? What uses it ({1}) stays, without a payee.</value>
   </data>
   <data name="PayeesMerged" xml:space="preserve">
     <value>Payees merged</value>
@@ -1768,5 +1768,11 @@ Amount: {2}</value>
   </data>
   <data name="FailedToSavePayee" xml:space="preserve">
     <value>Failed to update the payee</value>
+  </data>
+  <data name="RecurringCountOne" xml:space="preserve">
+    <value>{0} recurring</value>
+  </data>
+  <data name="RecurringCountOther" xml:space="preserve">
+    <value>{0} recurring</value>
   </data>
 </root>

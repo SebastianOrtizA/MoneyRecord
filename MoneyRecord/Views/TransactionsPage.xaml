@@ -339,10 +339,10 @@
                            FontSize="15" VerticalOptions="Center" />
 
                     <Label Grid.Row="2" Text="&#xF04DC;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"
-                           IsVisible="{Binding SelectedEntry.HasPayee}"
+                           IsVisible="{Binding SelectedEntry.ShowsPayeeRow}"
                            TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
                     <Label Grid.Row="2" Grid.Column="1" Text="{Binding SelectedEntry.PayeeName}"
-                           IsVisible="{Binding SelectedEntry.HasPayee}"
+                           IsVisible="{Binding SelectedEntry.ShowsPayeeRow}"
                            FontSize="15" VerticalOptions="Center" />
 
                     <Label Grid.Row="3" Text="&#xF04F9;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"

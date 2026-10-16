@@ -12,9 +12,16 @@ namespace MoneyRecord.Helpers
         public static string Normalize(string? name) =>
             string.Join(' ', (name ?? string.Empty).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 
-        /// <summary>The same payee: equal after <see cref="Normalize"/>, ignoring case ("éxito" = "Éxito", not "Exito").</summary>
+        /// <summary>
+        /// The same payee: equal after <see cref="Normalize"/>, ignoring case ("éxito" = "Éxito", not "Exito"). Invariant, so
+        /// two names compare the same way in every app language.
+        /// </summary>
         public static bool Same(string? a, string? b) =>
-            string.Equals(Normalize(a), Normalize(b), StringComparison.CurrentCultureIgnoreCase);
+            string.Equals(Normalize(a), Normalize(b), StringComparison.InvariantCultureIgnoreCase);
+
+        /// <summary>The payee whose name is typed in full (<see cref="Same"/>), if there is one.</summary>
+        public static PayeeSummary? Find(IEnumerable<PayeeSummary> payees, string? text) =>
+            Normalize(text) is { Length: > 0 } typed ? payees.FirstOrDefault(p => Same(p.Name, typed)) : null;
 
         /// <summary>
         /// Payees matching what is typed (ignoring case and accents): names starting with it first, then a word starting with
@@ -27,7 +34,7 @@ namespace MoneyRecord.Helpers
                 return [];
 
             var all = payees.ToList();
-            if (all.Any(p => Same(p.Name, typed)))
+            if (Find(all, typed) != null)
                 return [];
 
             return all

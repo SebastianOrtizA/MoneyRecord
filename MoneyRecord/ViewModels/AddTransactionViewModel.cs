@@ -33,6 +33,9 @@ namespace MoneyRecord.ViewModels
         // Every payee with its use: the suggestions under the payee field
         private List<PayeeSummary> _payees = [];
 
+        // The user tapped a category in this form (or is editing a saved entry): a typed payee no longer changes it
+        private bool _categoryChosen;
+
         [ObservableProperty]
         private TransactionType transactionType;
 
@@ -56,7 +59,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private List<PayeeSummary> payeeSuggestions = [];
 
-        partial void OnPayeeTextChanged(string value) => PayeeSuggestions = PayeeNames.Suggest(_payees, value);
+        partial void OnPayeeTextChanged(string value)
+        {
+            PayeeSuggestions = PayeeNames.Suggest(_payees, value);
+            // A known payee typed in full (or taken from the keyboard's suggestions) picks its category too, like a chip
+            if (!_categoryChosen && PayeeNames.Find(_payees, value) is { } payee)
+                _ = SelectLastCategoryAsync(payee);
+        }
 
         [ObservableProperty]
         private Category? selectedCategory;
@@ -194,6 +203,7 @@ namespace MoneyRecord.ViewModels
             Description = string.Empty;
             Amount = string.Empty;
             _payees = [];
+            _categoryChosen = false;
             PayeeText = string.Empty;
             SelectedCategory = null;
             SelectedAccount = null;
@@ -232,6 +242,7 @@ namespace MoneyRecord.ViewModels
             {
                 // Edit mode
                 IsEditMode = true;
+                _categoryChosen = true;
                 TransactionType = Transaction.Type;
                 await LoadAccountsAsync();
                 await LoadCategoriesAsync();
@@ -304,14 +315,24 @@ namespace MoneyRecord.ViewModels
             _payees = await _payeeService.GetAllAsync();
         }
 
-        /// <summary>A suggestion tapped: its name, and the category its last entry of this type had (when it is offered).</summary>
+        /// <summary>A suggestion tapped: its name, and the category its last entry of this type had (even over a chosen one).</summary>
         [RelayCommand]
-        private async Task SelectPayeeAsync(PayeeSummary payee)
+        private void SelectPayee(PayeeSummary payee)
         {
+            // An explicit pick: the payee's category wins, and typing the name in full is handled the same way
+            _categoryChosen = false;
             PayeeText = payee.Name;
+        }
+
+        /// <summary>Selects the category of the payee's latest entry of this type, when it is offered and still wanted.</summary>
+        private async Task SelectLastCategoryAsync(PayeeSummary payee)
+        {
             try
             {
                 var categoryId = await _payeeService.GetLastCategoryAsync(payee.Id, TransactionType);
+                // Meanwhile the user may have picked a category or typed another payee
+                if (_categoryChosen || !PayeeNames.Same(PayeeText, payee.Name))
+                    return;
                 if (CategoryChoices.FirstOrDefault(c => c.Category.Id == categoryId) is { } choice)
                     SelectedCategory = choice.Category;
             }
@@ -323,7 +344,11 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private void SelectCategory(CategoryChoice choice) => SelectedCategory = choice.Category;
+        private void SelectCategory(CategoryChoice choice)
+        {
+            _categoryChosen = true;
+            SelectedCategory = choice.Category;
+        }
 
         [RelayCommand]
         private void ToggleMoreDetails() => IsMoreDetailsOpen = !IsMoreDetailsOpen;

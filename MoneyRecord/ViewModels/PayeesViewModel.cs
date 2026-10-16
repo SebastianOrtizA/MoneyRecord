@@ -133,7 +133,7 @@ namespace MoneyRecord.ViewModels
 
             var target = targets[index];
             if (await _dialogService.ConfirmAsync(AppResources.MergePayee,
-                    string.Format(AppResources.MergePayeeConfirmMessage, payee.Name, target.Name, Plurals.Transactions(payee.TransactionCount)),
+                    string.Format(AppResources.MergePayeeConfirmMessage, payee.Name, target.Name, payee.UsesText),
                     AppResources.MergeButton, AppResources.Cancel))
                 await MergeAsync(payee, target);
         }
@@ -148,7 +148,7 @@ namespace MoneyRecord.ViewModels
         private async Task DeleteAsync(PayeeSummary payee)
         {
             if (!await _dialogService.ConfirmAsync(AppResources.DeletePayee,
-                    string.Format(AppResources.DeletePayeeConfirmation, payee.Name, Plurals.Transactions(payee.TransactionCount)),
+                    string.Format(AppResources.DeletePayeeConfirmation, payee.Name, payee.UsesText),
                     AppResources.DeleteButton, AppResources.Cancel))
                 return;
 

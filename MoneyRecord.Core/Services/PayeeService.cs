@@ -18,10 +18,13 @@ namespace MoneyRecord.Services
         {
             var db = await _dbInitializer.GetConnectionAsync();
             var rows = await db.QueryAsync<SummaryRow>(
-                "SELECT p.Id AS Id, p.Name AS Name, COUNT(t.Id) AS TransactionCount, MAX(t.Date) AS LastUsed " +
-                "FROM \"Payee\" p LEFT JOIN \"Transaction\" t ON t.PayeeId = p.Id GROUP BY p.Id, p.Name");
+                "SELECT p.Id AS Id, p.Name AS Name, " +
+                "(SELECT COUNT(*) FROM \"Transaction\" t WHERE t.PayeeId = p.Id) AS TransactionCount, " +
+                "(SELECT MAX(t.Date) FROM \"Transaction\" t WHERE t.PayeeId = p.Id) AS LastUsed, " +
+                "(SELECT COUNT(*) FROM \"RecurringTransaction\" r WHERE r.PayeeId = p.Id) AS RecurringCount " +
+                "FROM \"Payee\" p");
             return rows
-                .Select(r => new PayeeSummary(r.Id, r.Name, r.TransactionCount, r.TransactionCount > 0 ? r.LastUsed : null))
+                .Select(r => new PayeeSummary(r.Id, r.Name, r.TransactionCount, r.TransactionCount > 0 ? r.LastUsed : null, r.RecurringCount))
                 .OrderBy(p => p.Name, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();
         }
@@ -101,6 +104,7 @@ namespace MoneyRecord.Services
             public string Name { get; set; } = string.Empty;
             public int TransactionCount { get; set; }
             public DateTime LastUsed { get; set; }
+            public int RecurringCount { get; set; }
         }
     }
 }

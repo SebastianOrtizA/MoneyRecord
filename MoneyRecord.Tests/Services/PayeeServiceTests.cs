@@ -72,19 +72,23 @@ public sealed class PayeeServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task GetAll_counts_transactions_and_their_latest_date_by_name()
+    public async Task GetAll_counts_transactions_their_latest_date_and_recurring_ones_by_name()
     {
         var shop = await AddPayeeAsync("shop");
         var bakery = await AddPayeeAsync("Bakery");
         var unused = await AddPayeeAsync("Unused");
+        var scheduled = await AddPayeeAsync("Gym");
         await AddAsync(shop, new DateTime(2026, 10, 1));
         await AddAsync(shop, new DateTime(2026, 10, 9));
         await AddAsync(bakery, new DateTime(2026, 9, 3));
         await AddAsync(null, new DateTime(2026, 10, 12));
+        await Db.InsertAsync(new RecurringTransaction { Description = "Weekly", PayeeId = shop });
+        await Db.InsertAsync(new RecurringTransaction { Description = "Gym", PayeeId = scheduled });
 
         (await _sut.GetAllAsync()).Should().Equal(
             new PayeeSummary(bakery, "Bakery", 1, new DateTime(2026, 9, 3)),
-            new PayeeSummary(shop, "shop", 2, new DateTime(2026, 10, 9)),
+            new PayeeSummary(scheduled, "Gym", 0, null, RecurringCount: 1),
+            new PayeeSummary(shop, "shop", 2, new DateTime(2026, 10, 9), RecurringCount: 1),
             new PayeeSummary(unused, "Unused", 0, null));
     }
 

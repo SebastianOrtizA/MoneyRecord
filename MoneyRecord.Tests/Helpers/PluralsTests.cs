@@ -23,6 +23,13 @@ public class PluralsTests
     }
 
     [Fact]
+    public void Recurring_UseSingularAndPlural()
+    {
+        Plurals.Recurring(1).Should().Be(string.Format(LocalizationService.Instance.GetString("RecurringCountOne"), 1));
+        Plurals.Recurring(2).Should().Be(string.Format(LocalizationService.Instance.GetString("RecurringCountOther"), 2));
+    }
+
+    [Fact]
     public void Accounts_UseSingularAndPlural()
     {
         Plurals.Accounts(1).Should().Be(string.Format(LocalizationService.Instance.GetString("AccountCountOne"), 1));
