@@ -71,6 +71,20 @@ public sealed class ReportExportViewModelTests : IDisposable
     }
 
     [Fact]
+    public async Task The_button_is_disabled_from_the_tap_until_the_export_is_done()
+    {
+        var sheet = new TaskCompletionSource<string?>();
+        _dialogs.ActionSheetAsync(default!, default!, default!).ReturnsForAnyArgs(sheet.Task);
+
+        var export = _sut.ExportCommand.ExecuteAsync(null);
+
+        _sut.ExportCommand.CanExecute(null).Should().BeFalse("a second tap would open a second choice");
+        sheet.SetResult(AppResources.ExportPdfReport);
+        await export;
+        _sut.ExportCommand.CanExecute(null).Should().BeTrue();
+    }
+
+    [Fact]
     public async Task The_csv_has_the_requested_range()
     {
         Choose(AppResources.ExportPeriodCsv);

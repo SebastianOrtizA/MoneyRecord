@@ -38,7 +38,7 @@ namespace MoneyRecord.Services.Pdf
         public static Document Build(PeriodReport report)
         {
             var document = new Document();
-            document.Info.Title = $"{AppResources.ReportTitle} · {PeriodText(report.Request)}";
+            document.Info.Title = $"{AppResources.ReportTitle} · {DateFormatter.FormatRange(report.Request.Start, report.Request.End)}";
             document.Info.Author = AppResources.AppTitle;
             DefineStyles(document);
 
@@ -96,14 +96,6 @@ namespace MoneyRecord.Services.Pdf
             }
         }
 
-        /// <summary>"Oct 1, 2026 – Oct 31, 2026", or one date for a single day.</summary>
-        public static string PeriodText(ReportRequest request)
-        {
-            var start = DateFormatter.Format(request.Start, DateStyle.Medium);
-            var end = DateFormatter.Format(request.End, DateStyle.Medium);
-            return request.Start.Date == request.End.Date ? start : $"{start} – {end}";
-        }
-
         private static void DefineStyles(Document document)
         {
             var normal = document.Styles[StyleNames.Normal]!;
@@ -148,7 +140,7 @@ namespace MoneyRecord.Services.Pdf
             title.Format.Font.Bold = true;
             title.Format.Font.Color = Primary;
 
-            var period = section.AddParagraph(PeriodText(report.Request));
+            var period = section.AddParagraph(DateFormatter.FormatRange(report.Request.Start, report.Request.End));
             period.Format.Font.Size = 12;
             period.Format.SpaceBefore = Unit.FromPoint(2);
 

@@ -30,6 +30,7 @@ namespace MoneyRecord.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly ITransferRepository _transferRepository;
         private readonly IPayeeRepository _payeeRepository;
         private readonly IAppPaths _paths;
 
@@ -38,12 +39,13 @@ namespace MoneyRecord.Services
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, IPayeeRepository payeeRepository, IAppPaths paths)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
             _transactionRepository = transactionRepository;
+            _transferRepository = transferRepository;
             _payeeRepository = payeeRepository;
             _paths = paths;
         }
@@ -400,11 +402,9 @@ namespace MoneyRecord.Services
         public async Task<string> ExportCsvAsync(DateTime? startDate = null, DateTime? endDate = null)
         {
             var (start, end) = (startDate ?? DateTime.MinValue, endDate ?? DateTime.MaxValue);
-            var transactions = startDate == null && endDate == null
-                ? await _transactionRepository.GetAllAsync()
-                : await _transactionRepository.GetByDateRangeAsync(start, end);
-            var conn = await _dbInitializer.GetConnectionAsync();
-            var transfers = await conn.Table<Transfer>().Where(t => t.Date >= start && t.Date <= end).ToListAsync();
+            var allTime = startDate == null && endDate == null;
+            var transactions = allTime ? await _transactionRepository.GetAllAsync() : await _transactionRepository.GetByDateRangeAsync(start, end);
+            var transfers = allTime ? await _transferRepository.GetAllAsync() : await _transferRepository.GetByDateRangeAsync(start, end);
             var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id, c => c.Name);
             var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
             var payees = (await _payeeRepository.GetAllAsync()).ToDictionary(p => p.Id, p => p.Name);

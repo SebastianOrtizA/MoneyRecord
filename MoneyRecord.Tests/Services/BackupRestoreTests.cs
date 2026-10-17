@@ -31,7 +31,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Db = await _dbInitializer.GetConnectionAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
-        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData));
+        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData));
     }
 
     public async Task DisposeAsync()

@@ -1,9 +1,9 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
-using MoneyRecord.Services.Pdf;
 
 namespace MoneyRecord.ViewModels
 {
@@ -24,7 +24,9 @@ namespace MoneyRecord.ViewModels
         /// <summary>The command parameter of the time-series reports.</summary>
         public const string Months = "Months";
 
+        /// <summary>From the tap to the share sheet: the button is disabled, so a double tap opens one choice only.</summary>
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExportCommand))]
         private bool isExporting;
 
         /// <summary>What an export from a tab covers (see the class summary).</summary>
@@ -37,29 +39,26 @@ namespace MoneyRecord.ViewModels
                     period.ReportCurrency, period.IsConverted);
             }
 
-            // The same window as the time-series reports: the last N months, this one included
-            var today = DateTime.Today;
-            var thisMonth = new DateTime(today.Year, today.Month, 1);
-            return new ReportRequest(thisMonth.AddMonths(-(period.MonthCount - 1)), thisMonth.AddMonths(1).AddTicks(-1),
-                PeriodType.CustomPeriod, period.ReportCurrency, period.IsConverted);
+            var (first, last) = DateRangeHelper.GetLastMonths(period.MonthCount, DateTime.Today);
+            return new ReportRequest(first, last, PeriodType.CustomPeriod, period.ReportCurrency, period.IsConverted);
         }
 
-        [RelayCommand]
+        private bool CanExport() => !IsExporting;
+
+        [RelayCommand(CanExecute = nameof(CanExport))]
         private async Task ExportAsync(string? window)
         {
-            if (IsExporting)
-                return;
-
-            var request = Request(window == Months);
-            var choice = await dialogs.ActionSheetAsync(string.Format(AppResources.ExportReportFor, PeriodReportPdf.PeriodText(request)),
-                AppResources.Cancel, [AppResources.ExportPdfReport, AppResources.ExportPeriodCsv]);
-            var pdf = choice == AppResources.ExportPdfReport;
-            if (!pdf && choice != AppResources.ExportPeriodCsv)
-                return;
-
+            IsExporting = true;
             try
             {
-                IsExporting = true;
+                var request = Request(window == Months);
+                var choice = await dialogs.ActionSheetAsync(
+                    string.Format(AppResources.ExportReportFor, DateFormatter.FormatRange(request.Start, request.End)),
+                    AppResources.Cancel, [AppResources.ExportPdfReport, AppResources.ExportPeriodCsv]);
+                var pdf = choice == AppResources.ExportPdfReport;
+                if (!pdf && choice != AppResources.ExportPeriodCsv)
+                    return;
+
                 string path;
                 if (pdf)
                 {

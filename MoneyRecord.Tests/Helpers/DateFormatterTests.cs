@@ -54,4 +54,13 @@ public class DateFormatterTests
             text.Should().NotStartWith(",").And.NotEndWith(",");
         }
     }
+
+    [Fact]
+    public void FormatRange_shows_one_date_for_a_single_day()
+    {
+        var culture = new CultureInfo("en-US");
+
+        DateFormatter.FormatRange(Date, Date.AddDays(1).AddTicks(-1), culture).Should().Be(DateFormatter.Format(Date, DateStyle.Medium, culture));
+        DateFormatter.FormatRange(new DateTime(2026, 10, 1), new DateTime(2026, 10, 31), culture).Should().Be("Oct 1, 2026 – Oct 31, 2026");
+    }
 }

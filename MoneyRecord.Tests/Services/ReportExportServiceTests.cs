@@ -3,7 +3,6 @@ using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
-using MoneyRecord.Services.Pdf;
 using NSubstitute;
 using PdfSharp.Pdf.IO;
 using System.Globalization;
@@ -170,14 +169,5 @@ public sealed class ReportExportServiceTests : IDisposable
 
         using var document = PdfReader.Open(_pdf, PdfDocumentOpenMode.Import);
         document.PageCount.Should().Be(1);
-    }
-
-    [Fact]
-    public void A_single_day_shows_one_date()
-    {
-        var day = new DateTime(2026, 10, 16);
-        PeriodReportPdf.PeriodText(new ReportRequest(day, day.AddDays(1).AddTicks(-1), PeriodType.Today, "USD", false))
-            .Should().NotContain("–");
-        PeriodReportPdf.PeriodText(Request()).Should().Contain("–");
     }
 }

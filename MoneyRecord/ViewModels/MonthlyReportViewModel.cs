@@ -122,8 +122,7 @@ namespace MoneyRecord.ViewModels
             {
                 IsLoading = true;
                 var months = Period.MonthCount;
-                var today = DateTime.Today;
-                FirstMonth = new DateTime(today.Year, today.Month, 1).AddMonths(-(months - 1));
+                FirstMonth = DateRangeHelper.GetLastMonths(months, DateTime.Today).startDate;
                 await BuildAsync(FirstMonth, months, cancellationToken);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

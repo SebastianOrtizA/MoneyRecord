@@ -74,6 +74,16 @@ namespace MoneyRecord.Helpers
         }
 
         /// <summary>
+        /// The last <paramref name="months"/> calendar months up to <paramref name="today"/>'s, this one included: the window of
+        /// the time-series reports (Trends, Cash flow, Net worth) and of their export.
+        /// </summary>
+        public static (DateTime startDate, DateTime endDate) GetLastMonths(int months, DateTime today)
+        {
+            var thisMonth = new DateTime(today.Year, today.Month, 1);
+            return (thisMonth.AddMonths(-(months - 1)), thisMonth.AddMonths(1).AddTicks(-1));
+        }
+
+        /// <summary>
         /// The period just before [<paramref name="start"/>, <paramref name="end"/>]: whole calendar months move back by
         /// as many months (October → September, a calendar year → the year before), any other range by its own length.
         /// </summary>
