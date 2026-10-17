@@ -135,6 +135,8 @@ namespace MoneyRecord.Services
 
         string ICurrencyService.GetSymbol(string code) => GetSymbol(code);
 
+        bool ICurrencyService.HasCents(string code) => HasCents(code);
+
         /// <summary>The currency new accounts start with: the base currency.</summary>
         public string GetDefaultCurrencyCode() => GetBaseCurrencyCode();
 

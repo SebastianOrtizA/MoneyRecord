@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
-using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
@@ -15,14 +14,23 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private IReadOnlyList<CurrencyCentsOption> currencyOptions = [];
 
-        [RelayCommand]
-        private async Task RefreshAsync()
+        /// <summary>Runs on appearing and when the base currency changes; a newer run cancels the older one.</summary>
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private async Task RefreshAsync(CancellationToken cancellationToken)
         {
-            var codes = ReportCurrencies.InUse(await accounts.GetAllAsync(), currencies.GetBaseCurrencyCode());
-            CurrencyOptions = codes
-                .Where(CurrencyService.HasCents)
-                .Select(code => new CurrencyCentsOption(code, currencies))
-                .ToList();
+            try
+            {
+                var all = await accounts.GetAllAsync();
+                cancellationToken.ThrowIfCancellationRequested();
+                CurrencyOptions = ReportCurrencies.InUse(all, currencies.GetBaseCurrencyCode())
+                    .Where(currencies.HasCents)
+                    .Select(code => new CurrencyCentsOption(code, currencies))
+                    .ToList();
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // A newer refresh replaced this one
+            }
         }
     }
 

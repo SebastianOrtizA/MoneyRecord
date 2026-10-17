@@ -15,6 +15,9 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>Amounts in the currency show cents (Settings; on by default, never for JPY, CLP or KRW).</summary>
         bool ShowsCents(string code);
+
+        /// <summary>The currency has cents to show or hide (not JPY, CLP or KRW).</summary>
+        bool HasCents(string code);
         void SetShowsCents(string code, bool show);
         string FormatAmount(decimal amount, string currencyCode);
     }
