@@ -19,15 +19,14 @@
             
             
             <!-- Total Balance Card (Prominent) -->
-            <Frame BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#7B5FDB}"
-                   BorderColor="Transparent"
-                   CornerRadius="16"
-                   Padding="20"
-                   HasShadow="True">
-                <Frame.GestureRecognizers>
+            <Border BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#7B5FDB}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16"
+                    Padding="20">
+                <Border.GestureRecognizers>
                     <!-- The card opens all accounts; each currency line below opens that currency's accounts -->
                     <TapGestureRecognizer Command="{Binding OpenAccountsCommand}"/>
-                </Frame.GestureRecognizers>
+                </Border.GestureRecognizers>
                 <VerticalStackLayout Spacing="8">
                     <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
                         <Label Text="&#xF0070;"
@@ -105,7 +104,7 @@
                            TextColor="#FFFFFF99"
                            HorizontalOptions="Center"/>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <controls:PeriodPicker BindingContext="{Binding Period}" />
 
@@ -125,12 +124,11 @@
                     <!-- Income / Expense / Net Row -->
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                         <!-- Incomes Card -->
-                        <Frame Grid.Column="0"
-                               BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
-                               BorderColor="Transparent"
-                               CornerRadius="12"
-                               Padding="10"
-                               HasShadow="False">
+                        <Border Grid.Column="0"
+                                BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="10">
                             <VerticalStackLayout Spacing="4">
                                 <Label Text="&#xF0415;"
                                        FontFamily="MaterialDesignIcons"
@@ -161,15 +159,14 @@
                                     </Label.Triggers>
                                 </controls:AutoFitLabel>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                         <!-- Expenses Card -->
-                        <Frame Grid.Column="1"
-                               BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"
-                               BorderColor="Transparent"
-                               CornerRadius="12"
-                               Padding="10"
-                               HasShadow="False">
+                        <Border Grid.Column="1"
+                                BackgroundColor="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="10">
                             <VerticalStackLayout Spacing="4">
                                 <Label Text="&#xF0374;"
                                        FontFamily="MaterialDesignIcons"
@@ -199,20 +196,19 @@
                                     </Label.Triggers>
                                 </controls:AutoFitLabel>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                         <!-- Net Card: green, or the expense palette when net is negative -->
-                        <Frame Grid.Column="2"
-                               BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
-                               BorderColor="Transparent"
-                               CornerRadius="12"
-                               Padding="10"
-                               HasShadow="False">
-                            <Frame.Triggers>
-                                <DataTrigger TargetType="Frame" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
+                        <Border Grid.Column="2"
+                                BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="10">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
                                     <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFEBEE, Dark=#B71C1C}"/>
                                 </DataTrigger>
-                            </Frame.Triggers>
+                            </Border.Triggers>
                             <VerticalStackLayout Spacing="4">
                                 <Label Text="&#xF04E1;"
                                        FontFamily="MaterialDesignIcons"
@@ -256,7 +252,7 @@
                                     </Label.Triggers>
                                 </controls:AutoFitLabel>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
                     </Grid>
 
                     <!-- While converted, the pills hold what had no rate yet -->
@@ -308,12 +304,8 @@
             </Border>
 
             <!-- Recent Transactions Quick View -->
-            <Frame BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                   BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
-                   CornerRadius="12"
-                   Padding="16"
-                   HasShadow="True"
-                   IsVisible="{Binding HasRecentTransactions}">
+            <Border Style="{StaticResource Card}"
+                    IsVisible="{Binding HasRecentTransactions}">
                 <VerticalStackLayout Spacing="10">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="{ext:Localize RecentTransactions}"
@@ -359,14 +351,10 @@
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Upcoming: the next scheduled recurring transactions -->
-            <!-- A Border with the look of the Frames around it (Frame is obsolete; 11.5 converts the rest) -->
-            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="16"
+            <Border Style="{StaticResource Card}"
                     IsVisible="{Binding HasUpcoming}">
                 <VerticalStackLayout Spacing="10">
                     <Grid ColumnDefinitions="*,Auto">
@@ -393,12 +381,7 @@
             </Border>
 
             <!-- Budget Summary Section -->
-            <Frame IsVisible="{Binding HasBudgets}"
-                   BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                   BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
-                   CornerRadius="12"
-                   Padding="16"
-                   HasShadow="True">
+            <Border Style="{StaticResource Card}" IsVisible="{Binding HasBudgets}">
                 <VerticalStackLayout Spacing="10">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="{ext:Localize BudgetSummary}"
@@ -481,13 +464,10 @@
                         </Label.GestureRecognizers>
                     </Label>
                 </VerticalStackLayout>
-            </Frame>
+            </Border>
 
             <!-- Savings goals: the first three (today's balances, so the period doesn't apply); a tap opens Goals -->
-            <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
-                    StrokeShape="RoundRectangle 12"
-                    Padding="16"
+            <Border Style="{StaticResource Card}"
                     IsVisible="{Binding HasGoals}">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ViewAllGoalsCommand}"/>

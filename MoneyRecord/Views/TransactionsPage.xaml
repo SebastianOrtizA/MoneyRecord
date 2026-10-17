@@ -42,11 +42,7 @@
                     </SwipeItems>
                 </SwipeView.RightItems>
 
-                <Border Padding="12"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12"
-                        Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                        BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                <Border Style="{StaticResource Card}" Padding="12">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=ShowDetailsCommand}"
                                               CommandParameter="{Binding .}" />

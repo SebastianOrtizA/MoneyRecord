@@ -47,9 +47,7 @@
                         <Label Text="{ext:Localize UpcomingSubtitle}"
                                FontSize="14"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                                Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
-                                StrokeShape="RoundRectangle 12"
+                        <Border Style="{StaticResource Card}"
                                 Padding="12,8"
                                 IsVisible="{Binding HasUpcoming}">
                             <VerticalStackLayout BindableLayout.ItemsSource="{Binding UpcomingEntries}" Spacing="4">
@@ -80,11 +78,11 @@
                                          IsVisible="{Binding IsUpcomingView, Converter={StaticResource InvertedBoolConverter}}">
 
                         <!-- Edit Form -->
-                        <Frame BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#3D3D1F}"
-                               BorderColor="{AppThemeBinding Light=#FFD54F, Dark=#FFD54F}"
-                               CornerRadius="12"
-                               Padding="16"
-                               IsVisible="{Binding IsEditMode}">
+                        <Border BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#3D3D1F}"
+                                Stroke="{AppThemeBinding Light=#FFD54F, Dark=#FFD54F}"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="16"
+                                IsVisible="{Binding IsEditMode}">
                             <VerticalStackLayout Spacing="16">
                                 <Label Text="{ext:Localize EditRecurring}"
                                        FontSize="18"
@@ -151,19 +149,14 @@
                                             CornerRadius="8"/>
                                 </Grid>
                             </VerticalStackLayout>
-                        </Frame>
+                        </Border>
 
                         <!-- Recurring Transaction Cards -->
                         <CollectionView ItemsSource="{Binding RecurringTransactions}"
                                         IsVisible="{Binding HasRecurringTransactions}">
                             <CollectionView.ItemTemplate>
                                 <DataTemplate x:DataType="models:RecurringTransaction">
-                                    <Frame Margin="0,6"
-                                           Padding="16"
-                                           BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                                           BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                                           CornerRadius="12"
-                                           HasShadow="True">
+                                    <Border Style="{StaticResource Card}" Margin="0,6">
                                         <VerticalStackLayout Spacing="10">
                                             <!-- Header: Icon + Description + Edit + Delete -->
                                             <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
@@ -250,11 +243,10 @@
                                             </Grid>
 
                                             <!-- Next Occurrence -->
-                                            <Frame Padding="10"
-                                                   CornerRadius="8"
-                                                   HasShadow="False"
-                                                   BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1A3A5C}"
-                                                   BorderColor="{AppThemeBinding Light=#90CAF9, Dark=#1565C0}">
+                                            <Border Padding="10"
+                                                    StrokeShape="RoundRectangle 8"
+                                                    BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#1A3A5C}"
+                                                    Stroke="{AppThemeBinding Light=#90CAF9, Dark=#1565C0}">
                                                 <Grid ColumnDefinitions="Auto,*,Auto">
                                                     <Label Grid.Column="0"
                                                            Text="&#xF00ED;"
@@ -275,9 +267,9 @@
                                                            VerticalOptions="Center"
                                                            TextColor="{AppThemeBinding Light=#1565C0, Dark=#FFFFFF}"/>
                                                 </Grid>
-                                            </Frame>
+                                            </Border>
                                         </VerticalStackLayout>
-                                    </Frame>
+                                    </Border>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                         </CollectionView>

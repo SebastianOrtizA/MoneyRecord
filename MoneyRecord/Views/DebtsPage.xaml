@@ -100,12 +100,8 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:DebtSummary">
-                        <Border Margin="16,6"
-                                Padding="14"
-                                StrokeThickness="1"
-                                StrokeShape="RoundRectangle 12"
-                                Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                        <Border Style="{StaticResource Card}" Margin="16,6"
+                                Padding="14">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DebtsViewModel}}, Path=OpenDebtCommand}"
                                                       CommandParameter="{Binding .}" />

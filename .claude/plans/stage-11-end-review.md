@@ -1,6 +1,6 @@
 # Stage 11: End Review
 
-**Status**: In progress (11.1, 11.2, 11.3 done; 11.4 + 11.6 in review)
+**Status**: In progress (11.1, 11.2, 11.3, 11.4, 11.6 done; 11.5 in review)
 **Source**: Issues and small requests the user noted while reviewing Stages 8.7a–8.7b (2026-10-13)
 
 ## Decisions (owner, 2026-10-16)
@@ -64,6 +64,12 @@
 - `Frame` is obsolete since .NET 9. Settings (and other older pages) still use it for cards, while newer pages
   (About, Accounts, Budgets) use `Border`. Replace the remaining `Frame`s with `Border` + a shared card style so
   every card looks the same (raised in the 8.9 review).
+- Done as: no `Frame` is left. A `Card` style (Styles.xaml: white / #1E1E1E background, 1 px #E0E0E0 / #404040 stroke,
+  radius 12, padding 16) is used by every white panel and list row (Home, Settings, About, Setup, Accounts, Categories,
+  Budgets, Goals, Debts, Payees, Transactions, Recurring, Transfers, Import), which before mixed #3A3A3A and #404040
+  dark strokes; pages keep their own Padding / Margin. `ChartCard` is based on it. Tinted cards (Home balance and
+  period totals, the Recurring edit form and next-occurrence box) became plain Borders with their own colours. The
+  Frames' Android shadow is gone: every card is flat with an outline, like the newer pages.
 
 ### 11.6 Small things seen in the store screenshots (9.6)
 - Utilities and Home seed categories share the icon `F0D15` (`DefaultCategory`); give Utilities its own.
