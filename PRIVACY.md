@@ -84,9 +84,13 @@ almacenamiento privado de la app en tu dispositivo. El desarrollador no tiene co
 Solo salen del dispositivo cuando tú lo decides:
 - **Exportar o compartir una copia de seguridad** (Configuración → Copia de Seguridad y Restauración), un archivo
   CSV o los registros. Tú eliges a dónde va el archivo.
+- **Copias automáticas**, si las activas: las copias van a la carpeta que elegiste, que puede pertenecer
+  a una app en la nube (como Google Drive) y entonces quedan sujetas a sus condiciones. Con una contraseña de copia de
+  seguridad, las copias se cifran y no se pueden leer sin ella.
 - **Copia de seguridad de Android:** si la copia de seguridad del dispositivo está activada, Android copia la base de
   datos, las fotos de recibos y los ajustes a tu cuenta de Google o a un dispositivo nuevo, según las condiciones de
-  Google. Los registros y la caché quedan fuera.
+  Google. Los registros y la caché quedan fuera, y también la base de datos mientras **Cifrar la base de datos**
+  está activado: su clave nunca sale de tu teléfono.
 
 ## Informes de errores (opcionales, desactivados por defecto)
 Tras una semana de uso, la app pregunta una sola vez si puede enviar informes de errores; puedes cambiar la respuesta
