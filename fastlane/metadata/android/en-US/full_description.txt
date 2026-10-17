@@ -1,31 +1,41 @@
-MoneyRecord is a simple, private money tracker. Record what you spend and earn, see where your money goes, and stay on budget. Your data stays on your phone: no account, no ads, no tracking.
+MoneyRecord is a simple, private money tracker. Record what you spend and earn, see where your money goes, stay on budget and save for your goals. Your data stays on your phone: no sign-up, no ads.
 
 <b>Fast entry</b>
 • Add an expense, income or transfer in a few taps: amount first, then a category from a grid that puts your recent ones first.
-• Optional description, tags, receipt photo (camera or gallery) and recurrence.
+• Scan a receipt: its total and date are read on your phone.
+• Payees with suggestions, tags, receipt photos and descriptions, if you want them.
+• Split one receipt across several categories.
 
 <b>Accounts and currencies</b>
 • Cash, bank, savings, credit cards… each with its own currency.
-• Balances in different currencies are shown side by side, never added together.
+• Totals per currency, or converted into your main currency with daily exchange rates (optional).
+• Hide the cents of the currencies that don't need them.
 
-<b>Budgets</b>
-• Spending limits per category, per day, month or year.
-• Clear status at a glance: on track, near limit, over budget.
+<b>Budgets and savings goals</b>
+• Spending limits per category, per day, month or year: on track, near limit or over budget at a glance.
+• Savings goals with a target date: how much to save each month, and whether your pace gets you there.
+
+<b>Recurring and upcoming</b>
+• Salary, rent, subscriptions: daily, weekly, every two weeks, monthly or yearly, starting today or on a future date.
+• See what is coming in the next 30 days, with reminders before bills are due and when a budget runs out.
+
+<b>Money lent and borrowed</b>
+• Keep track of what friends owe you and what you owe them, with payments on a schedule.
 
 <b>Reports</b>
-• Spending and income by category, with a donut chart.
-• Trends, cash flow and net worth over the last months, budget vs. actual.
+• Spending and income by category, trends, cash flow and net worth.
 • Tap a chart to see the transactions behind it.
-
-<b>Recurring transactions</b>
-• Salary, rent, subscriptions: daily, weekly, every two weeks, monthly or yearly, with an optional end date. Missed occurrences are added when you open the app.
+• Export a PDF report or a CSV file of any period.
 
 <b>Your data, your control</b>
-• Full backup as a .zip file (with receipt photos), saved on the device or shared; restore with undo.
-• Export transactions as CSV.
-• Works offline. Optional crash reports, off unless you turn them on.
+• Works offline. No account, no ads.
+• Full backups, by hand or automatic (daily, weekly or monthly) into any folder, Google Drive included, with an optional password.
+• Import bank statements from CSV, with duplicates found and categories suggested.
+• App lock with fingerprint, face or screen lock, and an encrypted database.
+• Optional crash reports, off unless you turn them on.
 
 <b>Made for you</b>
+• Home-screen widget with your balance and quick add buttons.
 • English and Spanish, light and dark theme, a quick setup on first start.
 
 MoneyRecord is free and open source (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

@@ -1,31 +1,41 @@
-MoneyRecord es una app sencilla y privada para llevar tus cuentas. Registra lo que gastas y ganas, mira a dónde va tu dinero y cumple tu presupuesto. Tus datos se quedan en tu teléfono: sin cuenta, sin anuncios, sin rastreo.
+MoneyRecord es una app sencilla y privada para llevar tus cuentas. Registra lo que gastas y ganas, mira a dónde va tu dinero, cumple tu presupuesto y ahorra para tus metas. Tus datos se quedan en tu teléfono: sin registro, sin anuncios.
 
 <b>Registro rápido</b>
 • Agrega un gasto, un ingreso o una transferencia en pocos toques: primero el importe, luego la categoría en una cuadrícula que pone primero las que más usas.
-• Descripción, etiquetas, foto del recibo (cámara o galería) y repetición, si quieres.
+• Escanea un recibo: el total y la fecha se leen en tu teléfono.
+• Beneficiarios con sugerencias, etiquetas, fotos de recibos y descripciones, si quieres.
+• Divide un recibo entre varias categorías.
 
 <b>Cuentas y monedas</b>
 • Efectivo, banco, ahorros, tarjetas de crédito… cada una con su moneda.
-• Los saldos en monedas distintas se muestran uno al lado del otro, nunca sumados.
+• Totales por moneda, o convertidos a tu moneda principal con tipos de cambio diarios (opcional).
+• Oculta los centavos de las monedas que no los necesitan.
 
-<b>Presupuestos</b>
-• Límites de gasto por categoría, por día, mes o año.
-• El estado de un vistazo: en orden, cerca del límite, sobre presupuesto.
+<b>Presupuestos y metas de ahorro</b>
+• Límites de gasto por categoría, por día, mes o año: en orden, cerca del límite o sobre presupuesto de un vistazo.
+• Metas de ahorro con fecha: cuánto ahorrar cada mes y si a tu ritmo llegas.
+
+<b>Recurrentes y próximos</b>
+• Salario, arriendo, suscripciones: diarios, semanales, cada dos semanas, mensuales o anuales, desde hoy o desde una fecha futura.
+• Mira lo que viene en los próximos 30 días, con recordatorios antes de cada pago y cuando un presupuesto se agota.
+
+<b>Dinero prestado</b>
+• Lleva la cuenta de lo que te deben tus amigos y de lo que debes tú, con pagos programados.
 
 <b>Informes</b>
-• Gastos e ingresos por categoría, con un gráfico de anillo.
-• Tendencias, flujo de caja y patrimonio de los últimos meses, presupuesto frente a lo real.
+• Gastos e ingresos por categoría, tendencias, flujo de caja y patrimonio.
 • Toca un gráfico para ver las transacciones que lo forman.
-
-<b>Transacciones recurrentes</b>
-• Salario, arriendo, suscripciones: diarias, semanales, cada dos semanas, mensuales o anuales, con fecha de fin opcional. Las que faltaron se agregan al abrir la app.
+• Exporta un informe en PDF o un archivo CSV de cualquier periodo.
 
 <b>Tus datos, bajo tu control</b>
-• Copia de seguridad completa en un archivo .zip (con las fotos de recibos), guardada en el dispositivo o compartida; restauración que se puede deshacer.
-• Exporta las transacciones a CSV.
-• Funciona sin conexión. Informes de errores opcionales, desactivados salvo que los actives.
+• Funciona sin conexión. Sin cuenta, sin anuncios.
+• Copias de seguridad completas, a mano o automáticas (diarias, semanales o mensuales) en cualquier carpeta, también Google Drive, con contraseña opcional.
+• Importa extractos bancarios en CSV, con duplicados detectados y categorías sugeridas.
+• Bloqueo de la app con huella, rostro o bloqueo de pantalla, y base de datos cifrada.
+• Informes de errores opcionales, desactivados salvo que los actives.
 
 <b>Hecha para ti</b>
+• Widget en la pantalla de inicio con tu saldo y botones para agregar.
 • Español e inglés, tema claro y oscuro, una configuración rápida al empezar.
 
 MoneyRecord es gratuita y de código abierto (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord
