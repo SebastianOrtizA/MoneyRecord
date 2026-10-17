@@ -59,6 +59,11 @@ namespace MoneyRecord.Models
         /// <summary>The split payment this entry is a part of (see <see cref="Transaction.SplitId"/>); null = not split.</summary>
         public string? SplitId { get; init; }
 
+        /// <summary>The trip this expense belongs to (see <see cref="Transaction.TripId"/>) and its trip category; null = none.</summary>
+        public int? TripId { get; init; }
+
+        public int? TripCategoryId { get; init; }
+
         public bool IsSplit => !string.IsNullOrEmpty(SplitId);
 
         /// <summary>The other account of a transfer (its destination, or the source of a <see cref="LedgerEntryKind.TransferIn"/>).</summary>

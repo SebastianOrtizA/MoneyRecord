@@ -24,6 +24,12 @@ namespace MoneyRecord.Models
         public bool IsDebtInterest { get; set; }
 
         /// <summary>
+        /// The "Travel" category trip expenses sit in while their trip is active (one, created by the app on first use, see
+        /// <see cref="Services.TripService"/>). Found by this mark; not offered where an expense is entered without a trip.
+        /// </summary>
+        public bool IsTravel { get; set; }
+
+        /// <summary>
         /// Gets the displayable icon character from the unicode code
         /// </summary>
         [Ignore]

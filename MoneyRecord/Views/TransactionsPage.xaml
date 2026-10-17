@@ -328,7 +328,7 @@
                        FontAttributes="Bold"
                        TextColor="{Binding SelectedEntry.Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
 
-                <Grid ColumnDefinitions="24,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="10">
+                <Grid ColumnDefinitions="24,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12" RowSpacing="10">
                     <Label Text="&#xF00ED;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"
                            TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
                     <Label Grid.Column="1"
@@ -353,6 +353,13 @@
                            TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
                     <Label Grid.Row="3" Grid.Column="1" Text="{Binding SelectedEntry.Tags}"
                            IsVisible="{Binding SelectedEntry.HasTags}"
+                           FontSize="15" VerticalOptions="Center" />
+
+                    <Label Grid.Row="4" Text="&#xF001D;" FontFamily="MaterialDesignIcons" FontSize="18" VerticalOptions="Center"
+                           IsVisible="{Binding HasTripText}"
+                           TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}" />
+                    <Label Grid.Row="4" Grid.Column="1" Text="{Binding TripText}"
+                           IsVisible="{Binding HasTripText}"
                            FontSize="15" VerticalOptions="Center" />
                 </Grid>
 

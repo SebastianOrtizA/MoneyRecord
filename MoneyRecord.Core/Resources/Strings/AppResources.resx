@@ -2136,4 +2136,160 @@ Amount: {2}</value>
   <data name="RecurringScheduled" xml:space="preserve">
     <value>Recurring transaction scheduled</value>
   </data>
+  <data name="TripCategoryLodging" xml:space="preserve">
+    <value>Lodging</value>
+  </data>
+  <data name="TripCategoryFlights" xml:space="preserve">
+    <value>Flights</value>
+  </data>
+  <data name="TripCategoryTransport" xml:space="preserve">
+    <value>Transport</value>
+  </data>
+  <data name="TripCategoryFood" xml:space="preserve">
+    <value>Food</value>
+  </data>
+  <data name="TripCategoryActivities" xml:space="preserve">
+    <value>Activities</value>
+  </data>
+  <data name="TripCategoryShopping" xml:space="preserve">
+    <value>Shopping</value>
+  </data>
+  <data name="TripCategoryOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="TravelCategory" xml:space="preserve">
+    <value>Travel</value>
+  </data>
+  <data name="TripActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="TripEnded" xml:space="preserve">
+    <value>Ended</value>
+  </data>
+  <data name="TripSince" xml:space="preserve">
+    <value>Since {0}</value>
+  </data>
+  <data name="SpentOfBudget" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="TripSpent" xml:space="preserve">
+    <value>{0} spent</value>
+  </data>
+  <data name="TripNotConverted" xml:space="preserve">
+    <value>Not converted: {0}</value>
+  </data>
+  <data name="TripBanner" xml:space="preserve">
+    <value>Trip: {0}</value>
+  </data>
+  <data name="NotPartOfTrip" xml:space="preserve">
+    <value>Not part of the trip</value>
+  </data>
+  <data name="TripInfo" xml:space="preserve">
+    <value>Trip: {0} · {1}</value>
+  </data>
+  <data name="TripInfoOnly" xml:space="preserve">
+    <value>Trip: {0}</value>
+  </data>
+  <data name="TripsTitle" xml:space="preserve">
+    <value>Trips</value>
+  </data>
+  <data name="TripCategoriesTitle" xml:space="preserve">
+    <value>Trip categories</value>
+  </data>
+  <data name="AddTripCategory" xml:space="preserve">
+    <value>Add trip category</value>
+  </data>
+  <data name="EditTripCategory" xml:space="preserve">
+    <value>Edit trip category</value>
+  </data>
+  <data name="FailedToLoadTrips" xml:space="preserve">
+    <value>Failed to load trips</value>
+  </data>
+  <data name="FailedToSaveTrip" xml:space="preserve">
+    <value>Failed to save the trip</value>
+  </data>
+  <data name="FailedToDeleteTrip" xml:space="preserve">
+    <value>Failed to delete the trip</value>
+  </data>
+  <data name="FailedToSaveTripCategory" xml:space="preserve">
+    <value>Failed to save the trip category</value>
+  </data>
+  <data name="FailedToDeleteTripCategory" xml:space="preserve">
+    <value>Failed to delete the trip category</value>
+  </data>
+  <data name="LastTripCategoryCannotDelete" xml:space="preserve">
+    <value>This is the only trip category and it is in use, so it can't be deleted.</value>
+  </data>
+  <data name="TripCategoryInUse" xml:space="preserve">
+    <value>"{0}" is used by trip expenses or limits. Move them to:</value>
+  </data>
+  <data name="DeleteTripCategoryConfirmation" xml:space="preserve">
+    <value>Delete the trip category "{0}"?</value>
+  </data>
+  <data name="StartTrip" xml:space="preserve">
+    <value>Start trip</value>
+  </data>
+  <data name="EditTrip" xml:space="preserve">
+    <value>Edit trip</value>
+  </data>
+  <data name="TripName" xml:space="preserve">
+    <value>Trip name</value>
+  </data>
+  <data name="TripNamePlaceholder" xml:space="preserve">
+    <value>Lisbon, summer</value>
+  </data>
+  <data name="TripStartDate" xml:space="preserve">
+    <value>Start date</value>
+  </data>
+  <data name="TripBudgetOptional" xml:space="preserve">
+    <value>Budget (optional)</value>
+  </data>
+  <data name="TripDefaultAccount" xml:space="preserve">
+    <value>Account the trip pays from</value>
+  </data>
+  <data name="TripNoAccount" xml:space="preserve">
+    <value>None (last used)</value>
+  </data>
+  <data name="TripLimits" xml:space="preserve">
+    <value>Limit per trip category (optional)</value>
+  </data>
+  <data name="TripLimitsHint" xml:space="preserve">
+    <value>In the trip's currency. Leave empty for no limit.</value>
+  </data>
+  <data name="PleaseEnterTripName" xml:space="preserve">
+    <value>Please enter a trip name</value>
+  </data>
+  <data name="TripEndBeforeStart" xml:space="preserve">
+    <value>The trip can't end before it starts</value>
+  </data>
+  <data name="TripAlreadyActive" xml:space="preserve">
+    <value>Another trip is active. End it first.</value>
+  </data>
+  <data name="TripStarted" xml:space="preserve">
+    <value>Trip started</value>
+  </data>
+  <data name="NoTripsYet" xml:space="preserve">
+    <value>No trips yet</value>
+  </data>
+  <data name="AddTripToStart" xml:space="preserve">
+    <value>Start a trip to record its spending apart from your everyday expenses.</value>
+  </data>
+  <data name="DeleteTripConfirmation" xml:space="preserve">
+    <value>Delete the trip "{0}"? Its expenses stay in your transactions.</value>
+  </data>
+  <data name="TripDeleteNeedsEnd" xml:space="preserve">
+    <value>End the trip before deleting it.</value>
+  </data>
+  <data name="TripCategoriesBreakdown" xml:space="preserve">
+    <value>By category</value>
+  </data>
+  <data name="TripExpenses" xml:space="preserve">
+    <value>Expenses</value>
+  </data>
+  <data name="NoTripExpenses" xml:space="preserve">
+    <value>No expenses yet</value>
+  </data>
+  <data name="TravelCategoryCannotDelete" xml:space="preserve">
+    <value>The Travel category holds the expenses of your trips, so it can't be deleted. You can rename it.</value>
+  </data>
 </root>

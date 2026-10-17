@@ -2133,4 +2133,160 @@ Monto: {2}</value>
   <data name="RecurringScheduled" xml:space="preserve">
     <value>Transacción recurrente programada</value>
   </data>
+  <data name="TripCategoryLodging" xml:space="preserve">
+    <value>Alojamiento</value>
+  </data>
+  <data name="TripCategoryFlights" xml:space="preserve">
+    <value>Vuelos</value>
+  </data>
+  <data name="TripCategoryTransport" xml:space="preserve">
+    <value>Transporte</value>
+  </data>
+  <data name="TripCategoryFood" xml:space="preserve">
+    <value>Comida</value>
+  </data>
+  <data name="TripCategoryActivities" xml:space="preserve">
+    <value>Actividades</value>
+  </data>
+  <data name="TripCategoryShopping" xml:space="preserve">
+    <value>Compras</value>
+  </data>
+  <data name="TripCategoryOther" xml:space="preserve">
+    <value>Otros</value>
+  </data>
+  <data name="TravelCategory" xml:space="preserve">
+    <value>Viajes</value>
+  </data>
+  <data name="TripActive" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="TripEnded" xml:space="preserve">
+    <value>Terminado</value>
+  </data>
+  <data name="TripSince" xml:space="preserve">
+    <value>Desde el {0}</value>
+  </data>
+  <data name="SpentOfBudget" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="TripSpent" xml:space="preserve">
+    <value>{0} gastados</value>
+  </data>
+  <data name="TripNotConverted" xml:space="preserve">
+    <value>Sin convertir: {0}</value>
+  </data>
+  <data name="TripBanner" xml:space="preserve">
+    <value>Viaje: {0}</value>
+  </data>
+  <data name="NotPartOfTrip" xml:space="preserve">
+    <value>No es parte del viaje</value>
+  </data>
+  <data name="TripInfo" xml:space="preserve">
+    <value>Viaje: {0} · {1}</value>
+  </data>
+  <data name="TripInfoOnly" xml:space="preserve">
+    <value>Viaje: {0}</value>
+  </data>
+  <data name="TripsTitle" xml:space="preserve">
+    <value>Viajes</value>
+  </data>
+  <data name="TripCategoriesTitle" xml:space="preserve">
+    <value>Categorías de viaje</value>
+  </data>
+  <data name="AddTripCategory" xml:space="preserve">
+    <value>Añadir categoría de viaje</value>
+  </data>
+  <data name="EditTripCategory" xml:space="preserve">
+    <value>Editar categoría de viaje</value>
+  </data>
+  <data name="FailedToLoadTrips" xml:space="preserve">
+    <value>No se pudieron cargar los viajes</value>
+  </data>
+  <data name="FailedToSaveTrip" xml:space="preserve">
+    <value>No se pudo guardar el viaje</value>
+  </data>
+  <data name="FailedToDeleteTrip" xml:space="preserve">
+    <value>No se pudo eliminar el viaje</value>
+  </data>
+  <data name="FailedToSaveTripCategory" xml:space="preserve">
+    <value>No se pudo guardar la categoría de viaje</value>
+  </data>
+  <data name="FailedToDeleteTripCategory" xml:space="preserve">
+    <value>No se pudo eliminar la categoría de viaje</value>
+  </data>
+  <data name="LastTripCategoryCannotDelete" xml:space="preserve">
+    <value>Es la única categoría de viaje y está en uso, así que no se puede eliminar.</value>
+  </data>
+  <data name="TripCategoryInUse" xml:space="preserve">
+    <value>"{0}" se usa en gastos o límites de viajes. Moverlos a:</value>
+  </data>
+  <data name="DeleteTripCategoryConfirmation" xml:space="preserve">
+    <value>¿Eliminar la categoría de viaje "{0}"?</value>
+  </data>
+  <data name="StartTrip" xml:space="preserve">
+    <value>Empezar viaje</value>
+  </data>
+  <data name="EditTrip" xml:space="preserve">
+    <value>Editar viaje</value>
+  </data>
+  <data name="TripName" xml:space="preserve">
+    <value>Nombre del viaje</value>
+  </data>
+  <data name="TripNamePlaceholder" xml:space="preserve">
+    <value>Lisboa, verano</value>
+  </data>
+  <data name="TripStartDate" xml:space="preserve">
+    <value>Fecha de inicio</value>
+  </data>
+  <data name="TripBudgetOptional" xml:space="preserve">
+    <value>Presupuesto (opcional)</value>
+  </data>
+  <data name="TripDefaultAccount" xml:space="preserve">
+    <value>Cuenta con la que se paga el viaje</value>
+  </data>
+  <data name="TripNoAccount" xml:space="preserve">
+    <value>Ninguna (la última usada)</value>
+  </data>
+  <data name="TripLimits" xml:space="preserve">
+    <value>Límite por categoría de viaje (opcional)</value>
+  </data>
+  <data name="TripLimitsHint" xml:space="preserve">
+    <value>En la moneda del viaje. Déjalo vacío para no poner límite.</value>
+  </data>
+  <data name="PleaseEnterTripName" xml:space="preserve">
+    <value>Introduce un nombre para el viaje</value>
+  </data>
+  <data name="TripEndBeforeStart" xml:space="preserve">
+    <value>El viaje no puede terminar antes de empezar</value>
+  </data>
+  <data name="TripAlreadyActive" xml:space="preserve">
+    <value>Hay otro viaje activo. Termínalo primero.</value>
+  </data>
+  <data name="TripStarted" xml:space="preserve">
+    <value>Viaje empezado</value>
+  </data>
+  <data name="NoTripsYet" xml:space="preserve">
+    <value>Aún no hay viajes</value>
+  </data>
+  <data name="AddTripToStart" xml:space="preserve">
+    <value>Empieza un viaje para registrar sus gastos aparte de los del día a día.</value>
+  </data>
+  <data name="DeleteTripConfirmation" xml:space="preserve">
+    <value>¿Eliminar el viaje "{0}"? Sus gastos siguen en tus transacciones.</value>
+  </data>
+  <data name="TripDeleteNeedsEnd" xml:space="preserve">
+    <value>Termina el viaje antes de eliminarlo.</value>
+  </data>
+  <data name="TripCategoriesBreakdown" xml:space="preserve">
+    <value>Por categoría</value>
+  </data>
+  <data name="TripExpenses" xml:space="preserve">
+    <value>Gastos</value>
+  </data>
+  <data name="NoTripExpenses" xml:space="preserve">
+    <value>Aún no hay gastos</value>
+  </data>
+  <data name="TravelCategoryCannotDelete" xml:space="preserve">
+    <value>La categoría Viajes guarda los gastos de tus viajes, así que no se puede eliminar. Sí puedes cambiarle el nombre.</value>
+  </data>
 </root>

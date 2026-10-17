@@ -38,6 +38,8 @@ namespace MoneyRecord.Services
                 ConvertedAmountCents = converted?[i],
                 ConvertedCurrencyCode = converted == null ? null : template.ConvertedCurrencyCode,
                 SplitId = splitId,
+                TripId = template.TripId,
+                TripCategoryId = template.TripCategoryId,
                 CategoryId = part.CategoryId,
                 AmountCents = part.AmountCents,
                 Description = part.Description

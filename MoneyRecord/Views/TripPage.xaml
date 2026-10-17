@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.TripPage"
+             x:DataType="viewmodels:TripViewModel"
+             Title="{Binding Title}">
+
+    <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="12" IsVisible="{Binding HasTrip}">
+                <!-- Summary -->
+                <Border Style="{StaticResource Card}" Padding="14">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Label Text="{Binding Card.DatesText}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <Label Grid.Column="1" Text="{Binding Card.StateText}" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </Grid>
+                        <Label Text="{Binding Card.SpentText}" FontSize="20" FontAttributes="Bold" />
+                        <ProgressBar IsVisible="{Binding Card.HasBudget}"
+                                     Progress="{Binding Card.ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
+                                     ProgressColor="{Binding Card.Level, Converter={StaticResource BudgetLevelToColorConverter}}"
+                                     BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                     HeightRequest="10" />
+                        <Label Text="{Binding Card.StatusText}" IsVisible="{Binding Card.HasBudget}" FontSize="13" FontAttributes="Bold"
+                               TextColor="{Binding Card.Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
+                        <Label Text="{Binding Card.NotConvertedText}" IsVisible="{Binding Card.HasNotConverted}" FontSize="13"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Per trip category -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding HasCategories}">
+                    <Label Text="{ext:Localize TripCategoriesBreakdown}" FontSize="16" FontAttributes="Bold" />
+                    <VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Categories}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:TripCategoryRow">
+                                <Border Style="{StaticResource Card}" Padding="12">
+                                    <VerticalStackLayout Spacing="6">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                            <Label Text="{Binding DisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                            <Label Grid.Column="1" Text="{Binding Name}" FontSize="15" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                            <Label Grid.Column="2" Text="{Binding SpentText}" FontSize="14" VerticalOptions="Center" />
+                                        </Grid>
+                                        <ProgressBar IsVisible="{Binding HasLimit}"
+                                                     Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
+                                                     ProgressColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}"
+                                                     BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                                     HeightRequest="8" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <!-- Expenses -->
+                <Label Text="{ext:Localize TripExpenses}" FontSize="16" FontAttributes="Bold" />
+                <Label Text="{ext:Localize NoTripExpenses}" IsVisible="{Binding HasEntries, Converter={StaticResource InvertedBoolConverter}}"
+                       FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                <VerticalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Entries}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:TripEntryRow">
+                            <Border Style="{StaticResource Card}" Padding="12">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="{Binding Title}" FontSize="15" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Details}" FontSize="12" LineBreakMode="TailTruncation"
+                                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="{Binding AmountText}" FontSize="15" FontAttributes="Bold" VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                    <Button Text="{ext:Localize Edit}" Command="{Binding EditCommand}"
+                            HeightRequest="44" CornerRadius="22"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                    <Button Grid.Column="1" Text="{ext:Localize DeleteButton}" Command="{Binding DeleteCommand}"
+                            HeightRequest="44" CornerRadius="22" BorderWidth="1" BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                </Grid>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>

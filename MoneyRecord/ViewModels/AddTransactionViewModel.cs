@@ -33,6 +33,7 @@ namespace MoneyRecord.ViewModels
         private readonly IConversionService _conversion;
         private readonly IPayeeService _payeeService;
         private readonly ISplitService _splitService;
+        private readonly ITripService _trips;
         private readonly IReceiptScanner _receiptScanner;
         private readonly TimeProvider _clock;
         private readonly ILogger<AddTransactionViewModel> _logger;
@@ -132,6 +133,47 @@ namespace MoneyRecord.ViewModels
                 _ = SelectLastCategoryAsync(payee);
         }
 
+        /// <summary>
+        /// The active trip this expense belongs to or may belong to (a new expense, or editing one of the active trip's); null =
+        /// none. The grid then offers its trip categories (as <see cref="Category"/> rows: the IDs are trip category IDs).
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasTrip), nameof(IsTripMode), nameof(TripBannerText), nameof(CanSplit), nameof(CanMakeRecurring))]
+        private Trip? tripForEntry;
+
+        /// <summary>"Not part of the trip": the normal categories, and the expense stays out of the trip.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsTripMode), nameof(CanSplit), nameof(CanMakeRecurring))]
+        private bool isOutsideTrip;
+
+        public bool HasTrip => TripForEntry != null;
+
+        public bool IsTripMode => TripForEntry != null && !IsOutsideTrip;
+
+        public string TripBannerText => TripForEntry == null ? string.Empty : string.Format(AppResources.TripBanner, TripForEntry.Name);
+
+        /// <summary>"Trip: Lisbon · Lodging" under an expense of an ended trip (read only); empty otherwise.</summary>
+        [ObservableProperty]
+        private string tripInfoText = string.Empty;
+
+        partial void OnIsOutsideTripChanged(bool value)
+        {
+            if (_loadingTrip)
+                return;
+            _categoryChosen = false;
+            _ = ReloadCategoriesForTripAsync();
+        }
+
+        private bool _loadingTrip;
+
+        private async Task ReloadCategoriesForTripAsync()
+        {
+            await LoadCategoriesAsync();
+            SelectedCategory = IsTripMode
+                ? CategoryChoices.FirstOrDefault()?.Category
+                : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+        }
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DescriptionPlaceholder))]
         private Category? selectedCategory;
@@ -144,7 +186,7 @@ namespace MoneyRecord.ViewModels
         private List<Category> SplitCategories => CategoryChoices.Select(c => c.Category).ToList();
 
         /// <summary>Only an expense can be split across categories (recurring transactions aren't split).</summary>
-        public bool CanSplit => TransactionType == TransactionType.Expense && !IsScheduleMode;
+        public bool CanSplit => TransactionType == TransactionType.Expense && !IsScheduleMode && !IsTripMode;
 
         /// <summary>The payment is split across categories: the parts replace the category grid.</summary>
         [ObservableProperty]
@@ -155,7 +197,7 @@ namespace MoneyRecord.ViewModels
         public ObservableCollection<SplitPartViewModel> SplitParts { get; } = [];
 
         /// <summary>"Make recurring" is offered for a new entry in one category (recurring transactions aren't split).</summary>
-        public bool CanMakeRecurring => !IsEditMode && !IsSplit;
+        public bool CanMakeRecurring => !IsEditMode && !IsSplit && !IsTripMode;
 
         /// <summary>A part can be removed while there are more than two (fewer is no split: switch it off instead).</summary>
         public bool CanRemoveSplitParts => SplitParts.Count > 2;
@@ -275,7 +317,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, ITripService trips, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -293,6 +335,7 @@ namespace MoneyRecord.ViewModels
             _conversion = conversion;
             _payeeService = payeeService;
             _splitService = splitService;
+            _trips = trips;
             _receiptScanner = receiptScanner;
             _clock = clock;
             SplitParts.CollectionChanged += (_, _) =>
@@ -317,6 +360,11 @@ namespace MoneyRecord.ViewModels
             Description = string.Empty;
             Amount = string.Empty;
             _payees = [];
+            _loadingTrip = true;
+            TripForEntry = null;
+            IsOutsideTrip = false;
+            TripInfoText = string.Empty;
+            _loadingTrip = false;
             _categoryChosen = false;
             PayeeText = string.Empty;
             SelectedCategory = null;
@@ -464,6 +512,7 @@ namespace MoneyRecord.ViewModels
                 _categoryChosen = true;
                 TransactionType = Transaction.Type;
                 await LoadAccountsAsync();
+                await LoadTripAsync(Transaction);
                 await LoadCategoriesAsync();
                 await LoadPayeesAsync();
                 PayeeText = _payees.FirstOrDefault(p => p.Id == Transaction.PayeeId)?.Name ?? string.Empty;
@@ -475,7 +524,7 @@ namespace MoneyRecord.ViewModels
 
                 Title = TransactionType == TransactionType.Income ? AppResources.EditIncome : AppResources.EditExpense;
                 
-                SelectedCategory = CategoryChoices.FirstOrDefault(c => c.Category.Id == Transaction.CategoryId)?.Category;
+                SelectedCategory = CategoryChoices.FirstOrDefault(c => c.Category.Id == (IsTripMode ? Transaction.TripCategoryId : Transaction.CategoryId))?.Category;
 
                 // An automatic description (the category name) shows as the placeholder, so it follows a category change
                 Description = EntryDescription.ForEditing(Transaction.Description, SelectedCategory?.Name);
@@ -509,13 +558,18 @@ namespace MoneyRecord.ViewModels
                 IsEditMode = false;
                 Title = TransactionType == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
                 await LoadAccountsAsync();
+                await LoadTripAsync(null);
                 await LoadCategoriesAsync();
                 await LoadPayeesAsync();
 
                 // The account the widget asked for, else the account and category last used for this type
                 SelectedAccount = (int.TryParse(AccountIdString, out var accountId) ? Accounts.FirstOrDefault(a => a.Id == accountId) : null)
                     ?? _entryDefaults.DefaultAccount(TransactionType, Accounts);
-                SelectedCategory = _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+                SelectedCategory = IsTripMode
+                    ? CategoryChoices.FirstOrDefault()?.Category
+                    : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+                if (IsTripMode && TripForEntry!.AccountId is { } tripAccountId && int.TryParse(AccountIdString, out _) == false)
+                    SelectedAccount = Accounts.FirstOrDefault(a => a.Id == tripAccountId) ?? SelectedAccount;
 
                 if (IsScheduleMode)
                 {
@@ -533,10 +587,45 @@ namespace MoneyRecord.ViewModels
             Accounts = await _accountRepository.GetOwnAsync();
         }
 
+        /// <summary>
+        /// Sets the trip the form belongs to: the active one for a new expense (not a schedule), or for an edited expense of it;
+        /// an expense of an ended trip shows its trip read only.
+        /// </summary>
+        private async Task LoadTripAsync(Transaction? edited)
+        {
+            _loadingTrip = true;
+            try
+            {
+                var active = TransactionType == TransactionType.Expense && !IsScheduleMode ? await _trips.GetActiveAsync() : null;
+                TripForEntry = edited == null ? active : edited.TripId is { } id && active?.Id == id ? active : null;
+                IsOutsideTrip = false;
+                TripInfoText = string.Empty;
+                if (edited?.TripId is { } tripId && TripForEntry == null && await _trips.GetAsync(tripId) is { } trip)
+                {
+                    var category = (await _trips.GetCategoriesAsync()).FirstOrDefault(c => c.Id == edited.TripCategoryId);
+                    TripInfoText = category == null ? string.Format(AppResources.TripInfoOnly, trip.Name) : string.Format(AppResources.TripInfo, trip.Name, category.Name);
+                }
+            }
+            finally
+            {
+                _loadingTrip = false;
+            }
+        }
+
         private async Task LoadCategoriesAsync()
         {
             var categoryType = TransactionType == TransactionType.Income ? CategoryType.Income : CategoryType.Expense;
+            if (IsTripMode)
+            {
+                CategoryChoices = (await _trips.GetCategoriesAsync())
+                    .Select(c => new CategoryChoice(new Category { Id = c.Id, Name = c.Name, IconCode = c.IconCode, Type = CategoryType.Expense }))
+                    .ToList();
+                return;
+            }
+
             var categories = await _categoryRepository.GetByTypeAsync(categoryType);
+            // "Travel" holds trip expenses only: never picked for one that is not part of a trip
+            categories = categories.Where(c => !c.IsTravel).ToList();
             CategoryChoices = _entryDefaults.OrderByRecent(TransactionType, categories)
                 .Select(c => new CategoryChoice(c))
                 .ToList();
@@ -563,7 +652,7 @@ namespace MoneyRecord.ViewModels
             {
                 var categoryId = await _payeeService.GetLastCategoryAsync(payee.Id, TransactionType);
                 // Meanwhile the user may have picked a category or typed another payee
-                if (_categoryChosen || IsSplit || !PayeeNames.Same(PayeeText, payee.Name))
+                if (_categoryChosen || IsSplit || IsTripMode || !PayeeNames.Same(PayeeText, payee.Name))
                     return;
                 if (CategoryChoices.FirstOrDefault(c => c.Category.Id == categoryId) is { } choice)
                     SelectedCategory = choice.Category;
@@ -622,7 +711,7 @@ namespace MoneyRecord.ViewModels
         private async Task CheckBudgetAsync()
         {
             var category = SelectedCategory;
-            if (TransactionType != TransactionType.Expense || category == null || IsSplit)
+            if (TransactionType != TransactionType.Expense || category == null || IsSplit || IsTripMode)
             {
                 ShowBudgetWarning = false;
                 return;
@@ -774,7 +863,14 @@ namespace MoneyRecord.ViewModels
                 Transaction.Date = SelectedDate;
                 Transaction.Description = savedDescription;
                 Transaction.Amount = amountValue;
-                Transaction.CategoryId = SelectedCategory.Id;
+                Transaction.CategoryId = await CategoryIdToSaveAsync();
+                if (TripForEntry != null)
+                {
+                    // "Not part of the trip" takes an expense of the active trip out of it
+                    Transaction.TripId = IsTripMode ? TripForEntry.Id : null;
+                    Transaction.TripCategoryId = IsTripMode ? SelectedCategory.Id : null;
+                }
+
                 Transaction.Type = TransactionType;
                 Transaction.AccountId = accountId;
                 Transaction.PayeeId = payeeId;
@@ -796,7 +892,9 @@ namespace MoneyRecord.ViewModels
                     Date = SelectedDate,
                     Description = savedDescription,
                     Amount = amountValue,
-                    CategoryId = SelectedCategory.Id,
+                    CategoryId = await CategoryIdToSaveAsync(),
+                    TripId = IsTripMode ? TripForEntry!.Id : null,
+                    TripCategoryId = IsTripMode ? SelectedCategory.Id : null,
                     Type = TransactionType,
                     AccountId = accountId,
                     PayeeId = payeeId,
@@ -807,7 +905,8 @@ namespace MoneyRecord.ViewModels
 
                 await _transactionRepository.SaveAsync(newTransaction);
                 _receipt.Commit();
-                _entryDefaults.Remember(TransactionType, accountId, SelectedCategory.Id);
+                if (!IsTripMode)
+                    _entryDefaults.Remember(TransactionType, accountId, SelectedCategory.Id);
 
                 if (start != null)
                     await SaveRecurringAsync(start, amountValue, savedDescription, accountId, payeeId);
@@ -823,6 +922,9 @@ namespace MoneyRecord.ViewModels
 
             await _navigationService.GoBackAsync();
         }
+
+        /// <summary>The ledger category to save: "Travel" while the expense is part of the active trip, else the picked one.</summary>
+        private async Task<int> CategoryIdToSaveAsync() => IsTripMode ? await _trips.GetTravelCategoryIdAsync() : SelectedCategory!.Id;
 
         /// <summary>The chosen day of the month: only for a monthly recurrence with "Specific day" on.</summary>
         private int? DayOfMonthChoice =>

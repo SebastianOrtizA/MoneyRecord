@@ -266,6 +266,9 @@ namespace MoneyRecord.Services.Repositories
             await db.CreateTableAsync<SavingsGoalAccount>();
             await db.CreateTableAsync<Payee>();
             await db.CreateTableAsync<Debt>();
+            await db.CreateTableAsync<Trip>();
+            await db.CreateTableAsync<TripCategory>();
+            await db.CreateTableAsync<TripBudget>();
 
             if (isNewDatabase)
                 await migrations.StampLatestAsync(db);
@@ -280,6 +283,10 @@ namespace MoneyRecord.Services.Repositories
 
             if (await db.Table<Account>().CountAsync() == 0)
                 await AddDefaultAccountAsync(db);
+
+            if (await db.Table<TripCategory>().CountAsync() == 0)
+                foreach (var category in DefaultTripCategory.All)
+                    await db.InsertAsync(category.ToTripCategory());
         }
 
         private static async Task AddDefaultCategoriesAsync(SQLiteAsyncConnection db)

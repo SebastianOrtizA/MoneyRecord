@@ -138,7 +138,7 @@ namespace MoneyRecord.ViewModels
                 var accounts = await _accountRepository.GetOwnAsync();
                 var categories = await _categoryRepository.GetAllAsync();
                 ExpenseCategories = _entryDefaults.OrderByRecent(TransactionType.Expense,
-                    categories.Where(c => c.Type == CategoryType.Expense));
+                    categories.Where(c => c.Type == CategoryType.Expense && !c.IsTravel));
                 IncomeCategories = _entryDefaults.OrderByRecent(TransactionType.Income,
                     categories.Where(c => c.Type == CategoryType.Income));
 

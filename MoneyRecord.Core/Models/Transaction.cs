@@ -52,6 +52,13 @@ namespace MoneyRecord.Models
         [Indexed(Name = "IX_Transaction_DebtId")]
         public int? DebtId { get; set; }
 
+        /// <summary>The <see cref="Trip"/> this expense belongs to; null = not a trip expense.</summary>
+        [Indexed(Name = "IX_Transaction_TripId")]
+        public int? TripId { get; set; }
+
+        /// <summary>Its <see cref="TripCategory"/> within the trip (Lodging, Flights...); null with no trip.</summary>
+        public int? TripCategoryId { get; set; }
+
         public string? Tags { get; set; }
 
         public string? ReceiptPhotoPath { get; set; }
