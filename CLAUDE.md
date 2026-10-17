@@ -71,7 +71,8 @@ crashes at runtime (XAML is inflated at runtime there).
   hidden accounts out of pickers and lists), SplitService (saves a split expense: one transaction per part in one DB
   transaction, replacing the edited ones; the own conversion shared out), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
-  TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
+  PartyService (friends list, parties with members, expenses split evenly minus exclusions, contributions to a common pot;
+  summary = balances + settle-up payments),   TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
   categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
   (zip backup/restore, CSV), CategoryIconService, SetupService (first-run setup: pending only on a new install;
@@ -101,7 +102,7 @@ crashes at runtime (XAML is inflated at runtime there).
   account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), PayeeNames (normalize, same name ignoring case, suggestions), SplitAllocation (left to assign; a total shared in proportion), RecurringStart (a new schedule: first entry now, or only the schedule for a future date), RecurrenceCalculator
   (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
   days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
-  (currencies in use; transactions in one currency), CurrencyConverter (downloaded rates: nearest earlier day,
+  (currencies in use; transactions in one currency), PartyLedger (a party's even split with rotating leftover cents, balances with the pot as line ID 0, settle-up: largest debtor pays largest creditor), CurrencyConverter (downloaded rates: nearest earlier day,
   inverse, across an earlier base; a transaction's own "Amount in USD" first), CsvTable / StatementDate /
   StatementAmount (bank statement CSV: table, date layouts, signed amounts), ReceiptReader (a receipt's
   OCR lines → rows → total + date), ReceiptFill (what a reading changes in the add form)
