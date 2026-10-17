@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
@@ -145,23 +146,23 @@ namespace MoneyRecord.ViewModels
 
             try
             {
+                if (Categories.Count <= 1)
+                {
+                    await _dialogService.AlertAsync(AppResources.CannotDelete, AppResources.LastTripCategoryCannotDelete);
+                    return;
+                }
+
                 var others = Categories.Where(c => c.Id != category.Id).ToList();
                 int? replacementId = null;
                 if (await _trips.CountCategoryUsesAsync(category.Id) > 0)
                 {
-                    if (others.Count == 0)
-                    {
-                        await _dialogService.AlertAsync(AppResources.CannotDelete, AppResources.LastTripCategoryCannotDelete);
-                        return;
-                    }
-
+                    var labels = PickList.UniqueLabels(others.Select(c => c.Name));
                     var picked = await _dialogService.ActionSheetAsync(
-                        string.Format(AppResources.TripCategoryInUse, category.Name), AppResources.Cancel, others.Select(c => c.Name).ToArray());
-                    if (picked == null)
+                        string.Format(AppResources.TripCategoryInUse, category.Name), AppResources.Cancel, labels);
+                    var index = picked == null ? -1 : labels.IndexOf(picked);
+                    if (index < 0)
                         return;
-                    replacementId = others.FirstOrDefault(c => c.Name == picked)?.Id;
-                    if (replacementId == null)
-                        return;
+                    replacementId = others[index].Id;
                 }
                 else if (!await _dialogService.ConfirmAsync(AppResources.ConfirmDelete,
                              string.Format(AppResources.DeleteTripCategoryConfirmation, category.Name), AppResources.YesDelete, AppResources.Cancel))

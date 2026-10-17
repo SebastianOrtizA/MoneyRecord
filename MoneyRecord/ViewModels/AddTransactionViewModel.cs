@@ -166,14 +166,30 @@ namespace MoneyRecord.ViewModels
 
         private bool _loadingTrip;
 
+        // Each toggle starts a reload; a newer one makes an older one that is still waiting give up
+        private int _tripReloadVersion;
+
         private async Task ReloadCategoriesForTripAsync()
         {
-            await LoadCategoriesAsync();
-            SelectedCategory = IsTripMode
-                ? CategoryChoices.FirstOrDefault()?.Category
-                : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+            var version = ++_tripReloadVersion;
+            try
+            {
+                await LoadCategoriesAsync();
+                if (version != _tripReloadVersion)
+                    return;
+
+                SelectedCategory = IsTripMode
+                    ? CategoryChoices.FirstOrDefault()?.Category
+                    : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadTrips);
+            }
         }
 
+        // In trip mode (<see cref="IsTripMode"/>) this is a fake Category carrying a TRIP category's ID: every use of its ID
+        // (budget check, payee's last category, entry defaults, the saves) must be guarded with IsTripMode.
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(DescriptionPlaceholder))]
         private Category? selectedCategory;
@@ -564,12 +580,11 @@ namespace MoneyRecord.ViewModels
 
                 // The account the widget asked for, else the account and category last used for this type
                 SelectedAccount = (int.TryParse(AccountIdString, out var accountId) ? Accounts.FirstOrDefault(a => a.Id == accountId) : null)
+                    ?? (IsTripMode ? Accounts.FirstOrDefault(a => a.Id == TripForEntry!.AccountId) : null)
                     ?? _entryDefaults.DefaultAccount(TransactionType, Accounts);
                 SelectedCategory = IsTripMode
                     ? CategoryChoices.FirstOrDefault()?.Category
                     : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
-                if (IsTripMode && TripForEntry!.AccountId is { } tripAccountId && int.TryParse(AccountIdString, out _) == false)
-                    SelectedAccount = Accounts.FirstOrDefault(a => a.Id == tripAccountId) ?? SelectedAccount;
 
                 if (IsScheduleMode)
                 {

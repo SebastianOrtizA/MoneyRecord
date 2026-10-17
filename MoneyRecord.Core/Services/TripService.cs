@@ -238,10 +238,17 @@ namespace MoneyRecord.Services
             {
                 var uses = db.Table<Transaction>().Count(t => t.TripCategoryId == tripCategoryId);
                 var limits = db.Table<TripBudget>().Where(b => b.TripCategoryId == tripCategoryId).ToList();
-                if ((uses > 0 || limits.Count > 0) && (replacementId is null || replacementId == tripCategoryId))
+                if (db.Table<TripCategory>().Count() <= 1)
+                    throw new InvalidOperationException("The last trip category can't be deleted.");
+                if (uses > 0 && (replacementId is null || replacementId == tripCategoryId))
                     throw new InvalidOperationException("The trip category is in use: choose a replacement.");
+                if (replacementId == tripCategoryId)
+                    replacementId = null;
+                // A limit on a category that no longer exists has no value
+                if (replacementId is null)
+                    db.Execute("DELETE FROM \"TripBudget\" WHERE TripCategoryId = ?", tripCategoryId);
 
-                if (replacementId is { } newId)
+                if (replacementId is { } newId && uses + limits.Count > 0)
                 {
                     db.Execute("UPDATE \"Transaction\" SET TripCategoryId = ? WHERE TripCategoryId = ?", newId, tripCategoryId);
                     foreach (var limit in limits)

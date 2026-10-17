@@ -134,6 +134,18 @@ public sealed class BackupRestoreTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Restore_OfABackupWithoutTripCategories_SeedsTheDefaults()
+    {
+        await Db.DeleteAllAsync<TripCategory>();
+        var backupPath = BackupPath("old.zip");
+        await _service.ExportBackupAsync(backupPath);
+
+        await _service.RestoreAsync(backupPath);
+
+        (await Db.Table<TripCategory>().CountAsync()).Should().Be(DefaultTripCategory.All.Count);
+    }
+
+    [Fact]
     public async Task Csv_HasAPayeeColumn_EmptyWithoutOne()
     {
         var bakery = new Payee { Name = "Bakery, Main St" };

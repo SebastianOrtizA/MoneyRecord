@@ -344,6 +344,10 @@ namespace MoneyRecord.Services
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
 
+            // A backup from before trips has no trip categories: start with the defaults, as a new database does
+            if (backup.TripCategories.Count == 0)
+                DatabaseInitializer.SeedTripCategories(conn);
+
             // A backup from before account currencies: give its accounts a fixed currency, as migration 3 does
             M003_AccountCurrencyCodes.FillMissing(conn, MoneyFormatter.BaseCurrency);
             // A backup from before destination amounts (v3 and older): what arrived is what left, as migration 4 does

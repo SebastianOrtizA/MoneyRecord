@@ -226,6 +226,30 @@ public sealed class TripServiceTests : LanguageTestBase, IAsyncLifetime
     }
 
     [Fact]
+    public async Task DeleteCategory_WithOnlyALimit_DeletesCleanlyAndDropsTheLimit()
+    {
+        var lodging = (await TripCategoriesAsync())[0];
+        var id = await _sut.SaveAsync(new Trip { Name = "Lisbon", CurrencyCode = Base }, new Dictionary<int, decimal> { [lodging.Id] = 100m });
+
+        await _sut.DeleteCategoryAsync(lodging.Id, null);
+
+        (await _sut.GetLimitsAsync(id)).Should().BeEmpty();
+        (await _sut.GetCategoriesAsync()).Should().NotContain(c => c.Id == lodging.Id);
+    }
+
+    [Fact]
+    public async Task DeleteCategory_TheLastOne_IsRefused()
+    {
+        foreach (var category in (await TripCategoriesAsync()).Skip(1))
+            await _sut.DeleteCategoryAsync(category.Id, null);
+
+        var last = (await TripCategoriesAsync()).Single();
+        var delete = () => _sut.DeleteCategoryAsync(last.Id, null);
+
+        await delete.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
     public async Task DeleteCategory_InUse_NeedsAReplacement_ThenMovesExpensesAndLimits()
     {
         var categories = await TripCategoriesAsync();

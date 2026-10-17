@@ -264,7 +264,7 @@ namespace MoneyRecord.ViewModels
                 if (adding)
                     await _dialogService.ToastAsync(AppResources.TripStarted);
             }
-            catch (InvalidOperationException)
+            catch (InvalidOperationException) when (adding)
             {
                 await _dialogService.AlertAsync(AppResources.Error, AppResources.TripAlreadyActive);
             }

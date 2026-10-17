@@ -285,8 +285,14 @@ namespace MoneyRecord.Services.Repositories
                 await AddDefaultAccountAsync(db);
 
             if (await db.Table<TripCategory>().CountAsync() == 0)
-                foreach (var category in DefaultTripCategory.All)
-                    await db.InsertAsync(category.ToTripCategory());
+                await db.RunInTransactionAsync(SeedTripCategories);
+        }
+
+        /// <summary>Inserts the default trip categories (a new database, an old one, and a restore of a backup that has none).</summary>
+        internal static void SeedTripCategories(SQLiteConnection db)
+        {
+            foreach (var category in DefaultTripCategory.All)
+                db.Insert(category.ToTripCategory());
         }
 
         private static async Task AddDefaultCategoriesAsync(SQLiteAsyncConnection db)
