@@ -91,11 +91,13 @@
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
 	</ItemGroup>
 
-	<!-- Android only: the daily background job (WorkManager) and the app lock (Biometric) -->
+	<!-- Android only: the daily background job (WorkManager), the app lock (Biometric) and receipt reading (ML Kit) -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.10.3" />
 		<!-- App lock: the phone's fingerprint / face / screen lock (BiometricPrompt) -->
 		<PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0.30" />
+		<!-- Receipt OCR: ML Kit text recognition with the model bundled in the APK (on the phone, no Play Services needed) -->
+		<PackageReference Include="Xamarin.Google.MLKit.TextRecognition" Version="116.0.1.4" />
 	</ItemGroup>
 
 	<ItemGroup>

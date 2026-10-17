@@ -32,6 +32,7 @@ namespace MoneyRecord.ViewModels
         private readonly IConversionService _conversion;
         private readonly IPayeeService _payeeService;
         private readonly ISplitService _splitService;
+        private readonly IReceiptScanner _receiptScanner;
         private readonly ILogger<AddTransactionViewModel> _logger;
 
         // Every payee with its use: the suggestions under the payee field
@@ -210,6 +211,13 @@ namespace MoneyRecord.ViewModels
 
         private readonly ReceiptDraft _receipt;
 
+        /// <summary>A receipt photo can be read on this platform: the scan button beside the amount.</summary>
+        public bool CanScanReceipt => _receiptScanner.IsSupported;
+
+        /// <summary>A new photo's text is being read (its total and date fill in the form).</summary>
+        [ObservableProperty]
+        private bool isReadingReceipt;
+
         [ObservableProperty]
         private bool isMonthlyFrequency;
 
@@ -220,7 +228,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, IReceiptScanner receiptScanner, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -238,6 +246,7 @@ namespace MoneyRecord.ViewModels
             _conversion = conversion;
             _payeeService = payeeService;
             _splitService = splitService;
+            _receiptScanner = receiptScanner;
             SplitParts.CollectionChanged += (_, _) =>
             {
                 OnPropertyChanged(nameof(CanRemoveSplitParts));
@@ -820,6 +829,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task TakePhotoAsync()
         {
+            string? path = null;
             try
             {
                 if (!MediaPicker.Default.IsCaptureSupported)
@@ -830,31 +840,38 @@ namespace MoneyRecord.ViewModels
 
                 var photo = await MediaPicker.Default.CapturePhotoAsync();
                 if (photo != null)
-                    await SaveReceiptPhotoAsync(photo);
+                    path = await SaveReceiptPhotoAsync(photo);
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToTakePhoto);
             }
+            // After the photo is in: a failed reading is not a failed photo
+            if (path != null)
+                await ReadReceiptAsync(path);
         }
 
         [RelayCommand]
         private async Task PickPhotoAsync()
         {
+            string? path = null;
             try
             {
                 var photos = await MediaPicker.Default.PickPhotosAsync();
                 var photo = photos?.FirstOrDefault();
                 if (photo != null)
-                    await SaveReceiptPhotoAsync(photo);
+                    path = await SaveReceiptPhotoAsync(photo);
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToPickPhoto);
             }
+            if (path != null)
+                await ReadReceiptAsync(path);
         }
 
-        private async Task SaveReceiptPhotoAsync(FileResult photo)
+        /// <summary>Copies the photo into the receipts folder and shows it; returns its path.</summary>
+        private async Task<string> SaveReceiptPhotoAsync(FileResult photo)
         {
             var receiptsDir = _paths.ReceiptsFolder;
             Directory.CreateDirectory(receiptsDir);
@@ -868,6 +885,71 @@ namespace MoneyRecord.ViewModels
 
             _receipt.Set(filePath);
             ShowReceipt();
+            return filePath;
+        }
+
+        /// <summary>The scan button beside the amount: a receipt photo from the camera or the gallery, then read.</summary>
+        [RelayCommand]
+        private async Task ScanReceiptAsync()
+        {
+            var choice = await _dialogService.ActionSheetAsync(AppResources.ScanReceipt, AppResources.Cancel,
+                [AppResources.TakePhoto, AppResources.ChoosePhoto]);
+            if (choice == AppResources.TakePhoto)
+                await TakePhotoAsync();
+            else if (choice == AppResources.ChoosePhoto)
+                await PickPhotoAsync();
+        }
+
+        /// <summary>Reads a new receipt photo and fills the form as <see cref="ReceiptFill"/> says, with a toast.</summary>
+        private async Task ReadReceiptAsync(string path)
+        {
+            if (!_receiptScanner.IsSupported)
+                return;
+
+            ReceiptReading reading;
+            IsReadingReceipt = true;
+            try
+            {
+                var lines = await _receiptScanner.ReadLinesAsync(path);
+                reading = ReceiptReader.Read(lines, DateTime.Today);
+            }
+            catch (Exception ex)
+            {
+                // The photo stays attached; the form is filled by hand as before
+                _logger.LogWarning(ex, "Reading the receipt failed");
+                reading = ReceiptReading.None;
+            }
+            finally
+            {
+                IsReadingReceipt = false;
+            }
+
+            // Another photo (or none) since: this reading no longer applies
+            if (_receipt.Path != path)
+                return;
+
+            var currency = SelectedAccount?.CurrencyCode;
+            long? typedCents = string.IsNullOrWhiteSpace(Amount) ? null : Money.ToCents(AmountParser.Parse(Amount, currency));
+            var fill = ReceiptFill.Apply(reading, typedCents, !IsEditMode, SelectedDate);
+
+            var filled = new List<string>();
+            if (fill.Amount is { } amount)
+            {
+                Amount = amount.ToString();
+                filled.Add(MoneyFormatter.Format(amount, currency));
+            }
+            if (fill.Date is { } date)
+            {
+                SelectedDate = date;
+                filled.Add(DateFormatter.Format(date, DateStyle.Medium));
+            }
+
+            if (fill.Differs is { } total)
+                await _dialogService.ToastAsync(string.Format(AppResources.ReceiptSays, MoneyFormatter.Format(total, currency)));
+            else if (filled.Count > 0)
+                await _dialogService.ToastAsync(string.Format(AppResources.ReceiptFilledIn, string.Join(" · ", filled)));
+            else if (reading.IsEmpty)
+                await _dialogService.ToastAsync(AppResources.ReceiptNotRead);
         }
 
         [RelayCommand]

@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7 done; 10.8 done; 10.9 in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7 done; 10.8 done; 10.9 done; 10.10 in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -359,6 +359,24 @@ Close the gap with competing finance apps. Each section can ship on its own.
 
 ### 10.10 Receipt OCR
 - Plugin.Maui.OCR (confirm licence on the repo first) to pre-fill amount/date from a receipt photo.
+
+  Owner choice (2026-10-16): ML Kit text recognition, knowing it is Google's proprietary SDK (not open source) and
+  sends Google usage diagnostics.
+
+  10.10 done as: Core `IReceiptScanner` (`NoReceiptScanner` off Android) + `ReceiptLine` / `ReceiptReading` +
+  `ReceiptReader` (lines side by side joined into rows by their boxes; total = last amount on a "Total a pagar" /
+  "Amount due" row, then a plain "Total" / "Importe" row, never subtotal, tax (unless "incl."), discount, cash or change
+  rows; else the largest price; "1.234,56", "1,234.56", "$25.000" read per token; first date in range (not future, at
+  most 5 years old), numeric day/month order by culture with the other order when the first is in the future, month
+  names in the app culture, English or Spanish), tested. `ReceiptFill` (tested) decides what a reading changes in the form. Android `AndroidReceiptScanner` = ML Kit Latin text
+  recognition, model bundled in the APK. Add form: a scan button beside the amount (camera or gallery); any new receipt
+  photo is read: its total fills an empty amount, its date a new entry's date, with a toast; a different typed amount
+  is kept ("The receipt says …") and the date left alone.
+  **Deviation / notes:** the `Xamarin.Google.MLKit.TextRecognition` binding (116.0.1.4) directly instead of
+  Plugin.Maui.OCR (MAUI 9 + Controls.Compatibility dependencies; Core keeps the parsing testable). 116.0.1.9 pulls
+  AndroidX Lifecycle 2.11 (NU1608 like WorkManager) and a minSdk 23 library, so 116.0.1.4. Build warning XA4301: two
+  ML Kit packages ship `libmlkit_google_ocr_pipeline.so` (one is kept; OCR verified on the emulator). PRIVACY.md /
+  README disclose ML Kit's diagnostics; the Play Data safety form needs updating. iOS / Windows OCR not done.
 
 ### 10.11 PDF / CSV report export
 - Monthly report PDF with PDFsharp/MigraDoc (MIT); not QuestPDF (licence).

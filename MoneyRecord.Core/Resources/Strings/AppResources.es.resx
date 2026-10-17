@@ -2025,4 +2025,25 @@ Monto: {2}</value>
   <data name="WidgetPickAccount" xml:space="preserve">
     <value>¿Qué cuenta debe mostrar el widget?</value>
   </data>
+  <data name="ScanReceipt" xml:space="preserve">
+    <value>Escanear recibo</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Hacer foto</value>
+  </data>
+  <data name="ChoosePhoto" xml:space="preserve">
+    <value>Elegir de la galería</value>
+  </data>
+  <data name="ReadingReceipt" xml:space="preserve">
+    <value>Leyendo el recibo…</value>
+  </data>
+  <data name="ReceiptFilledIn" xml:space="preserve">
+    <value>Completado con el recibo: {0}</value>
+  </data>
+  <data name="ReceiptSays" xml:space="preserve">
+    <value>El recibo indica {0}</value>
+  </data>
+  <data name="ReceiptNotRead" xml:space="preserve">
+    <value>No se encontró un total ni una fecha en el recibo</value>
+  </data>
 </root>

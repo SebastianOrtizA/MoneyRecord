@@ -20,17 +20,41 @@
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="16">
 
-                <controls:DecimalEntry x:Name="AmountEntry"
-                                       Text="{Binding Amount}"
-                                       Placeholder="0.00"
-                                       FontSize="32"
-                                       FontAttributes="Bold"
-                                       HorizontalTextAlignment="Center"
-                                       SemanticProperties.Description="{ext:Localize Amount}">
-                    <controls:DecimalEntry.Behaviors>
-                        <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding SelectedAccount.CurrencyCode}"/>
-                    </controls:DecimalEntry.Behaviors>
-                </controls:DecimalEntry>
+                <!-- The amount, centred; the scan button beside it reads a receipt photo's total and date -->
+                <Grid ColumnDefinitions="44,*,44" ColumnSpacing="8">
+                    <controls:DecimalEntry x:Name="AmountEntry"
+                                           Grid.Column="1"
+                                           Text="{Binding Amount}"
+                                           Placeholder="0.00"
+                                           FontSize="32"
+                                           FontAttributes="Bold"
+                                           HorizontalTextAlignment="Center"
+                                           SemanticProperties.Description="{ext:Localize Amount}">
+                        <controls:DecimalEntry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding SelectedAccount.CurrencyCode}"/>
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
+                    <Button Grid.Column="2"
+                            Text="&#xF19DC;"
+                            FontFamily="MaterialDesignIcons"
+                            FontSize="24"
+                            HeightRequest="44"
+                            WidthRequest="44"
+                            Padding="0"
+                            CornerRadius="22"
+                            VerticalOptions="Center"
+                            IsVisible="{Binding CanScanReceipt}"
+                            Command="{Binding ScanReceiptCommand}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=White}"
+                            SemanticProperties.Description="{ext:Localize ScanReceipt}"
+                            ToolTipProperties.Text="{ext:Localize ScanReceipt}"/>
+                </Grid>
+                <HorizontalStackLayout Spacing="8" HorizontalOptions="Center" IsVisible="{Binding IsReadingReceipt}">
+                    <ActivityIndicator IsRunning="{Binding IsReadingReceipt}" HeightRequest="20" WidthRequest="20"/>
+                    <Label Text="{ext:Localize ReadingReceipt}" FontSize="14" VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                </HorizontalStackLayout>
 
                 <!-- Payee (optional): earlier payees are suggested; tapping one picks the category it had last time -->
                 <Label Text="{ext:Localize Payee}" FontSize="16" FontAttributes="Bold"/>
@@ -259,6 +283,7 @@
                             <Button Text="&#xF0100;"
                                     FontFamily="MaterialDesignIcons"
                                     Command="{Binding TakePhotoCommand}"
+                                    SemanticProperties.Description="{ext:Localize TakePhoto}"
                                     FontSize="20"
                                     HeightRequest="44"
                                     WidthRequest="44"
@@ -269,6 +294,7 @@
                             <Button Text="&#xF02E9;"
                                     FontFamily="MaterialDesignIcons"
                                     Command="{Binding PickPhotoCommand}"
+                                    SemanticProperties.Description="{ext:Localize ChoosePhoto}"
                                     FontSize="20"
                                     HeightRequest="44"
                                     WidthRequest="44"

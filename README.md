@@ -27,6 +27,8 @@ and Windows are maintained too. All data stays on the device.
   transaction, so budgets, reports and totals count it in its category; the parts are edited and deleted together. One
   part left empty takes what is left of the amount.
 - **Receipt photos** from the camera or gallery; unsaved photos are discarded when you cancel.
+- **Receipt scan** (Android): the button beside the amount reads a receipt photo on the phone (ML Kit text
+  recognition) and fills in its total and date.
 - Amount input formatted in the **account's currency** (symbol, separators, and no decimals for currencies like JPY).
 - Optional **"Make recurring"** to create a recurring rule from the transaction.
 - Edit and delete (with confirmation; deleting a transaction also deletes its receipt photo).
@@ -125,8 +127,8 @@ and Windows are maintained too. All data stays on the device.
 The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
 
 - **Offline:** your data never leaves the device unless you export or share a backup yourself. The internet permission
-  is there only for opt-in crash reports and exchange rates (below).
-- **No accounts, ads, analytics or tracking.**
+  is there for opt-in crash reports and exchange rates, and ML Kit's diagnostics when you scan a receipt (below).
+- **No accounts, ads, analytics or tracking** of its own (ML Kit's diagnostics are described below).
 - **Crash reports (opt-in, off by default):** after a week of use the app asks once whether it may send crash reports
   to the developer through [Sentry](https://sentry.io), and **Settings → Send crash reports** changes the answer.
   A report holds the error, the app version, device details such as the Android version and model, and the
@@ -135,6 +137,11 @@ The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
   on **Prevent Storing of IP Addresses** being on in the project's Security & Privacy settings; turn it on again if
   the project is ever recreated).
   Only official builds can send reports; builds from source have no Sentry address and never ask.
+- **Receipt reading (Android):** a scanned receipt is read on the phone by Google's ML Kit (model inside the APK; no
+  Play Services needed). The photo and its text stay on the device, but ML Kit sends Google usage diagnostics (device
+  and app info, a per-install ID, performance metrics; no image), as its
+  [data disclosure](https://developers.google.com/ml-kit/android-data-disclosure) describes. ML Kit is under
+  [Google's terms](https://developers.google.com/ml-kit/terms), not an open-source licence.
 - **Exchange rates (opt-in, off by default):** **Settings → Exchange rates** downloads daily rates from
   [Frankfurter](https://frankfurter.dev); a request holds only currency codes and dates, never your amounts.
 - **Permissions:** the camera, only when you take a receipt photo. On Android 12 and older, the storage-write permission
