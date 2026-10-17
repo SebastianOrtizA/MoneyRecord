@@ -23,18 +23,21 @@ namespace MoneyRecord.Platforms.Android.Handlers
         private sealed class ReselectTracker(IShellBottomNavViewAppearanceTracker inner, ShellItem shellItem)
             : IShellBottomNavViewAppearanceTracker
         {
+            private readonly ReselectListener _listener = new(shellItem);
+
             public void SetAppearance(BottomNavigationView bottomView, IShellAppearanceElement appearance)
             {
                 inner.SetAppearance(bottomView, appearance);
-                bottomView.SetOnItemReselectedListener(new ReselectListener(shellItem));
+                bottomView.SetOnItemReselectedListener(_listener);
             }
 
             public void ResetAppearance(BottomNavigationView bottomView)
             {
                 inner.ResetAppearance(bottomView);
-                bottomView.SetOnItemReselectedListener(new ReselectListener(shellItem));
+                bottomView.SetOnItemReselectedListener(_listener);
             }
 
+            // The listener stays with the bottom bar, which may still call it: left to the GC with the bar
             public void Dispose() => inner.Dispose();
         }
 

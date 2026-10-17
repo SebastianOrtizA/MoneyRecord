@@ -72,8 +72,8 @@ public class CurrencyFormattingTests : IDisposable
     [InlineData("USD", 1200, "en-US", "$1,200.00 USD")]
     [InlineData("EUR", 300, "en-US", "€300.00 EUR")]
     [InlineData("JPY", 1500, "en-US", "¥1,500 JPY")]
-    [InlineData("CHF", 5, "en-US", "CHF5.00")]
-    [InlineData("XYZ", 5, "en-US", "XYZ5.00")]
+    [InlineData("CHF", 5, "en-US", "CHF 5.00")]
+    [InlineData("XYZ", 5, "en-US", "XYZ 5.00")]
     public void FormatWithCode_UsesTheBareSignThenTheCode(string code, double amount, string culture, string expected)
     {
         MoneyFormatter.FormatWithCode((decimal)amount, code, new CultureInfo(culture))
@@ -94,7 +94,13 @@ public class CurrencyFormattingTests : IDisposable
     [InlineData("COP", 6000300, "es-ES", "$6.000.300,00")]
     [InlineData("USD", -12.5, "es-ES", "-$12,50")]
     [InlineData("COP", 300, "en-US", "$300.00")]
-    [InlineData("CHF", 5, "en-US", "CHF5.00")]
+    [InlineData("CHF", 5, "en-US", "CHF 5.00")]
+    [InlineData("CHF", -5, "en-US", "-CHF 5.00")]
+    [InlineData("SEK", 5, "es-ES", "kr 5,00")]
+    [InlineData("PLN", 5, "es-ES", "zł 5,00")]
+    [InlineData("PEN", 5, "en-US", "S/. 5.00")]
+    [InlineData("ZAR", 5, "en-US", "R 5.00")]
+    [InlineData("BRL", 5, "en-US", "R$5.00")]
     public void FormatBesideCode_IsTheSameFormWithoutTheCode(string code, double amount, string culture, string expected)
     {
         MoneyFormatter.FormatBesideCode((decimal)amount, code, new CultureInfo(culture)).Should().Be(expected);

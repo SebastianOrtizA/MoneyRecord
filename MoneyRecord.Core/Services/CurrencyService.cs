@@ -39,6 +39,10 @@ namespace MoneyRecord.Services
         private static readonly Dictionary<string, Currency> _currencyMap =
             _currencies.ToDictionary(c => c.Code, StringComparer.OrdinalIgnoreCase);
 
+        /// <summary>Symbols that several currencies use ("$", "¥", "kr"): alone they don't say which currency.</summary>
+        private static readonly HashSet<string> _sharedSymbols = _currencies
+            .GroupBy(c => c.Symbol).Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet();
+
         public const string BaseCurrencyPreferenceKey = "BaseCurrencyCode";
 
         private readonly IPreferencesService _preferences;
@@ -83,10 +87,6 @@ namespace MoneyRecord.Services
                 code = MoneyFormatter.BaseCurrency;
             return _currencyMap.TryGetValue(code, out var currency) ? currency.Symbol : code;
         }
-
-        /// <summary>Symbols that several currencies use ("$", "¥", "kr"): alone they don't say which currency.</summary>
-        private static readonly HashSet<string> _sharedSymbols = _currencies
-            .GroupBy(c => c.Symbol).Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet();
 
         /// <summary>True when the currency's symbol also belongs to another currency ("$" for COP and USD).</summary>
         public static bool HasSharedSymbol(string code) => _sharedSymbols.Contains(GetSymbol(code));

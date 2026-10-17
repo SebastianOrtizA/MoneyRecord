@@ -48,7 +48,7 @@ namespace MoneyRecord.Helpers
 
         /// <summary>
         /// The amount, then always its code ("$6,000,300.00 COP"), for lines that tell currencies apart by their code.
-        /// A currency whose symbol is its code shows it once ("CHF5.00").
+        /// A currency whose symbol is its code shows it once ("CHF 5.00").
         /// </summary>
         public static string FormatWithCode(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
         {
@@ -73,8 +73,10 @@ namespace MoneyRecord.Helpers
 
             format.CurrencySymbol = symbol;
             format.CurrencyDecimalDigits = decimals;
-            format.CurrencyPositivePattern = 0; // $n in every culture
-            format.CurrencyNegativePattern = 1; // -$n
+            // In front in every culture; a symbol ending in a letter or dot keeps a space from the digits ("CHF 5.00")
+            var spaced = char.IsLetter(symbol[^1]) || symbol[^1] == '.';
+            format.CurrencyPositivePattern = spaced ? 2 : 0; // "CHF n" / "$n"
+            format.CurrencyNegativePattern = spaced ? 9 : 1; // "-CHF n" / "-$n"
             return amount.ToString("C", format);
         }
 
