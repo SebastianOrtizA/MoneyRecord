@@ -95,6 +95,11 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var debt = new Debt { PayeeId = bakery.Id, AccountId = ledger.Id, Direction = DebtDirection.Lent, DueDate = new DateTime(2026, 12, 1) };
         await Db.InsertAsync(debt);
         await Db.InsertAsync(new Transaction { Description = "Interest", Amount = 2m, DebtId = debt.Id, CategoryId = food.Id, AccountId = bank.Id });
+        var trip = new Trip { Name = "Lisbon", CurrencyCode = "EUR", Budget = 300m, StartDate = new DateTime(2026, 3, 1) };
+        await Db.InsertAsync(trip);
+        var tripCategory = (await Db.Table<TripCategory>().FirstAsync());
+        await Db.InsertAsync(new TripBudget { TripId = trip.Id, TripCategoryId = tripCategory.Id, LimitCents = 10000 });
+        await Db.InsertAsync(new Transaction { Description = "Hotel", Amount = 90m, TripId = trip.Id, TripCategoryId = tripCategory.Id, CategoryId = food.Id, AccountId = bank.Id });
         var before = await DumpAsync();
         var backupPath = BackupPath("backup.zip");
         await _service.ExportBackupAsync(backupPath);
@@ -115,6 +120,9 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var lunch = await Db.Table<Transaction>().FirstAsync(t => t.Description == "Lunch");
         (await Db.Table<Debt>().ToListAsync()).Should().ContainSingle().Which.AccountId.Should().Be(ledger.Id);
         (await Db.Table<Transaction>().FirstAsync(t => t.DebtId != null)).DebtId.Should().Be(debt.Id);
+        (await Db.Table<Trip>().ToListAsync()).Should().ContainSingle().Which.Budget.Should().Be(300m);
+        (await Db.Table<Transaction>().FirstAsync(t => t.TripId != null)).TripCategoryId.Should().Be(tripCategory.Id);
+        (await Db.Table<TripBudget>().ToListAsync()).Should().ContainSingle().Which.LimitCents.Should().Be(10000);
         lunch.ReceiptPhotoPath.Should().Be(Path.Combine(Receipts, "receipt_1.jpg"));
         (lunch.ConvertedAmount, lunch.ConvertedCurrencyCode).Should().Be((3.1m, "EUR"));
         lunch.PayeeId.Should().Be(bakery.Id);
@@ -123,6 +131,18 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         (await Db.Table<SavingsGoalAccount>().ToListAsync()).Should().ContainSingle()
             .Which.Should().BeEquivalentTo(new { GoalId = goal.Id, AccountId = bank.Id }, "the goal keeps its account; a link is not counted as an item");
         File.Exists(result.SnapshotPath).Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Restore_OfABackupWithoutTripCategories_SeedsTheDefaults()
+    {
+        await Db.DeleteAllAsync<TripCategory>();
+        var backupPath = BackupPath("old.zip");
+        await _service.ExportBackupAsync(backupPath);
+
+        await _service.RestoreAsync(backupPath);
+
+        (await Db.Table<TripCategory>().CountAsync()).Should().Be(DefaultTripCategory.All.Count);
     }
 
     [Fact]
@@ -153,9 +173,9 @@ public sealed class BackupRestoreTests : IAsyncLifetime
 
         var lines = (await _service.ExportCsvAsync()).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        lines[0].Should().Be("Date,Description,Amount,Currency,Type,Category,Account,Payee,ToAccount,ToAmount,ToCurrency,SplitId");
-        lines[1].Should().Be("2026-10-04,,100.00,USD,Transfer,,Wallet,,Euros,92.50,EUR,");
-        lines[2].Should().Be($"2026-10-03,Dinner,20.00,EUR,Expense,{food.Name},Euros,,,,,s1");
+        lines[0].Should().Be("Date,Description,Amount,Currency,Type,Category,Account,Payee,ToAccount,ToAmount,ToCurrency,SplitId,Trip,TripCategory");
+        lines[1].Should().Be("2026-10-04,,100.00,USD,Transfer,,Wallet,,Euros,92.50,EUR,,,");
+        lines[2].Should().Be($"2026-10-03,Dinner,20.00,EUR,Expense,{food.Name},Euros,,,,,s1,,");
     }
 
     [Fact]
@@ -440,6 +460,9 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         rows.AddRange(await Db.Table<SavingsGoal>().ToListAsync());
         rows.AddRange(await Db.Table<Payee>().ToListAsync());
         rows.AddRange(await Db.Table<Debt>().ToListAsync());
+        rows.AddRange(await Db.Table<Trip>().ToListAsync());
+        rows.AddRange(await Db.Table<TripCategory>().ToListAsync());
+        rows.AddRange(await Db.Table<TripBudget>().ToListAsync());
         return rows;
     }
 }

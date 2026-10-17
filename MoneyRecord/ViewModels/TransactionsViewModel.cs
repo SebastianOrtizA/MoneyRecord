@@ -70,8 +70,37 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string splitSummaryText = string.Empty;
 
+        /// <summary>"Lisbon · Lodging" for the selected expense of a trip; empty otherwise.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasTripText))]
+        private string tripText = string.Empty;
+
+        public bool HasTripText => TripText.Length > 0;
+
+        private readonly ITripService _trips;
+
+        private async Task LoadTripTextAsync(LedgerEntry? entry)
+        {
+            TripText = string.Empty;
+            if (entry?.TripId is not { } tripId)
+                return;
+
+            try
+            {
+                var trip = await _trips.GetAsync(tripId);
+                var category = (await _trips.GetCategoriesAsync()).FirstOrDefault(c => c.Id == entry.TripCategoryId);
+                if (trip != null && SelectedEntry == entry)
+                    TripText = category == null ? trip.Name : $"{trip.Name} · {category.Name}";
+            }
+            catch (Exception)
+            {
+                // Only an extra line in the sheet
+            }
+        }
+
         partial void OnSelectedEntryChanged(LedgerEntry? value)
         {
+            _ = LoadTripTextAsync(value);
             SelectedSplitParts = SplitPartsOf(value);
             SplitSummaryText = SelectedSplitParts.Count > 0
                 ? string.Format(AppResources.SplitPaymentTotal, SplitTotalText(SelectedSplitParts), SelectedSplitParts.Count)
@@ -95,8 +124,9 @@ namespace MoneyRecord.ViewModels
 
         public TransactionsViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
             IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService,
-            TransactionsDrillDown drillDown)
+            TransactionsDrillDown drillDown, ITripService trips)
         {
+            _trips = trips;
             _balanceService = balanceService;
             _ledgerService = ledgerService;
             _transactionRepository = transactionRepository;

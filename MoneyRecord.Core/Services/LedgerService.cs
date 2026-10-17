@@ -79,6 +79,8 @@ namespace MoneyRecord.Services
             PayeeId = t.PayeeId,
             PayeeName = t.PayeeName,
             SplitId = t.SplitId,
+            TripId = t.TripId,
+            TripCategoryId = t.TripCategoryId,
             Tags = t.Tags,
             ReceiptPhotoPath = t.ReceiptPhotoPath
         };

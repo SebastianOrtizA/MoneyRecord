@@ -18,7 +18,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// v1: decimals only (.json). v2: also exact cents (.json). v3: a .zip with data.json + receipts/,
         /// receipt paths relative to the zip ("receipts/receipt_x.jpg"). v4: transfers also store the destination amount;
-        /// savings goals and their accounts, payees (added before v4 shipped, so an app that can read v4 knows them).
+        /// savings goals and their accounts, payees, debts, trips (added before v4 shipped, so an app that can read v4 knows them).
         /// </summary>
         public const int BackupVersion = 4;
 
@@ -88,7 +88,10 @@ namespace MoneyRecord.Services
                 SavingsGoals = conn.Table<SavingsGoal>().ToList(),
                 SavingsGoalAccounts = conn.Table<SavingsGoalAccount>().ToList(),
                 Payees = conn.Table<Payee>().ToList(),
-                Debts = conn.Table<Debt>().ToList()
+                Debts = conn.Table<Debt>().ToList(),
+                Trips = conn.Table<Trip>().ToList(),
+                TripCategories = conn.Table<TripCategory>().ToList(),
+                TripBudgets = conn.Table<TripBudget>().ToList()
             });
             return backup;
         }
@@ -278,6 +281,9 @@ namespace MoneyRecord.Services
             EnsureUniqueIds(backup.SavingsGoalAccounts, l => l.Id);
             EnsureUniqueIds(backup.Payees, p => p.Id);
             EnsureUniqueIds(backup.Debts, d => d.Id);
+            EnsureUniqueIds(backup.Trips, t => t.Id);
+            EnsureUniqueIds(backup.TripCategories, c => c.Id);
+            EnsureUniqueIds(backup.TripBudgets, b => b.Id);
             return backup;
         }
 
@@ -309,6 +315,9 @@ namespace MoneyRecord.Services
         /// </summary>
         private static int ReplaceAll(SQLiteConnection conn, BackupData backup)
         {
+            conn.DeleteAll<TripBudget>();
+            conn.DeleteAll<TripCategory>();
+            conn.DeleteAll<Trip>();
             conn.DeleteAll<Debt>();
             conn.DeleteAll<Payee>();
             conn.DeleteAll<SavingsGoalAccount>();
@@ -328,9 +337,16 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.RecurringTransactions, r => r.Id)
                 + InsertKeepingIds(conn, backup.SavingsGoals, g => g.Id)
                 + InsertKeepingIds(conn, backup.Payees, p => p.Id)
-                + InsertKeepingIds(conn, backup.Debts, d => d.Id);
+                + InsertKeepingIds(conn, backup.Debts, d => d.Id)
+                + InsertKeepingIds(conn, backup.Trips, t => t.Id)
+                + InsertKeepingIds(conn, backup.TripCategories, c => c.Id)
+                + InsertKeepingIds(conn, backup.TripBudgets, b => b.Id);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
+
+            // A backup from before trips has no trip categories: start with the defaults, as a new database does
+            if (backup.TripCategories.Count == 0)
+                DatabaseInitializer.SeedTripCategories(conn);
 
             // A backup from before account currencies: give its accounts a fixed currency, as migration 3 does
             M003_AccountCurrencyCodes.FillMissing(conn, MoneyFormatter.BaseCurrency);
@@ -408,11 +424,15 @@ namespace MoneyRecord.Services
             var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id, c => c.Name);
             var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
             var payees = (await _payeeRepository.GetAllAsync()).ToDictionary(p => p.Id, p => p.Name);
+            var db = await _dbInitializer.GetConnectionAsync();
+            var trips = (await db.Table<Trip>().ToListAsync()).ToDictionary(t => t.Id, t => t.Name);
+            var tripCategories = (await db.Table<TripCategory>().ToListAsync()).ToDictionary(c => c.Id, c => c.Name);
 
             string AccountName(int? id) => id is int accountId && accounts.TryGetValue(accountId, out var account) ? account.Name : string.Empty;
             // No account (or an unknown one) = the base currency, like everywhere else
             string Currency(int? id) => MoneyFormatter.ResolveCurrencyCode(
                 id is int accountId && accounts.TryGetValue(accountId, out var account) ? account.CurrencyCode : null);
+            string TripName(int? id) => id is int tripId ? trips.GetValueOrDefault(tripId, string.Empty) : string.Empty;
             static string Amount(decimal amount) => Math.Abs(amount).ToString("F2", CultureInfo.InvariantCulture);
 
             var rows = transactions.Select(t => (t.Date, Fields: new[]
@@ -420,17 +440,18 @@ namespace MoneyRecord.Services
                     t.Description, Amount(t.Amount), Currency(t.AccountId), t.Type.ToString(),
                     categories.GetValueOrDefault(t.CategoryId, string.Empty), AccountName(t.AccountId),
                     t.PayeeId is int payeeId ? payees.GetValueOrDefault(payeeId, string.Empty) : string.Empty,
-                    string.Empty, string.Empty, string.Empty, t.SplitId ?? string.Empty
+                    string.Empty, string.Empty, string.Empty, t.SplitId ?? string.Empty,
+                    TripName(t.TripId), t.TripCategoryId is int tripCategoryId ? tripCategories.GetValueOrDefault(tripCategoryId, string.Empty) : string.Empty
                 }))
                 .Concat(transfers.Select(t => (t.Date, Fields: new[]
                 {
                     t.Description, Amount(t.Amount), Currency(t.SourceAccountId), "Transfer", string.Empty,
                     AccountName(t.SourceAccountId), string.Empty, AccountName(t.DestinationAccountId),
-                    Amount(t.DestinationAmount), Currency(t.DestinationAccountId), string.Empty
+                    Amount(t.DestinationAmount), Currency(t.DestinationAccountId), string.Empty, string.Empty, string.Empty
                 })));
 
             var sb = new StringBuilder();
-            sb.AppendLine("Date,Description,Amount,Currency,Type,Category,Account,Payee,ToAccount,ToAmount,ToCurrency,SplitId");
+            sb.AppendLine("Date,Description,Amount,Currency,Type,Category,Account,Payee,ToAccount,ToAmount,ToCurrency,SplitId,Trip,TripCategory");
             foreach (var (date, fields) in rows.OrderByDescending(r => r.Date))
             {
                 sb.Append(date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
@@ -465,5 +486,8 @@ namespace MoneyRecord.Services
         public List<SavingsGoalAccount> SavingsGoalAccounts { get; set; } = [];
         public List<Payee> Payees { get; set; } = [];
         public List<Debt> Debts { get; set; } = [];
+        public List<Trip> Trips { get; set; } = [];
+        public List<TripCategory> TripCategories { get; set; } = [];
+        public List<TripBudget> TripBudgets { get; set; } = [];
     }
 }

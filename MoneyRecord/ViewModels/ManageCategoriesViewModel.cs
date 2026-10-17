@@ -173,6 +173,13 @@ namespace MoneyRecord.ViewModels
             if (category == null)
                 return;
 
+            // Trip expenses sit in it while their trip is active
+            if (category.IsTravel)
+            {
+                await _dialogService.AlertAsync(AppResources.CannotDelete, AppResources.TravelCategoryCannotDelete);
+                return;
+            }
+
             try
             {
                 var usage = await _categoryService.GetUsageAsync(category.Id);

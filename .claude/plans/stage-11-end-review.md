@@ -1,6 +1,6 @@
 # Stage 11: End Review
 
-**Status**: In progress (11.1–11.6 done; 11.7 in review)
+**Status**: Done (11.1–11.7; Stage 11 complete)
 **Source**: Issues and small requests the user noted while reviewing Stages 8.7a–8.7b (2026-10-13)
 
 ## Decisions (owner, 2026-10-16)

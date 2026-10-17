@@ -100,6 +100,23 @@
                     </FlexLayout>
                 </VerticalStackLayout>
 
+                <!-- An active trip: its banner and the switch to leave this expense out of it; an ended trip shows read only -->
+                <Border Style="{StaticResource Card}" Padding="12" IsVisible="{Binding HasTrip}">
+                    <VerticalStackLayout Spacing="8">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="&#xF001D;" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                            <Label Text="{Binding TripBannerText}" FontAttributes="Bold" VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{ext:Localize NotPartOfTrip}" VerticalOptions="Center"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding IsOutsideTrip}"
+                                    OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+                <Label Text="{Binding TripInfoText}" FontSize="14" IsVisible="{Binding TripInfoText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"/>
+
                 <!-- Category grid, recently used first -->
                 <Label Text="{ext:Localize Category}" FontSize="16" FontAttributes="Bold"/>
                 <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding CategoryChoices}"
@@ -415,7 +432,7 @@
                     CornerRadius="24"
                     FontAttributes="Bold"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"/>
+                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDark}}"/>
         </Border>
     </Grid>
 

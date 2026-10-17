@@ -94,8 +94,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ISavingsGoalService, SavingsGoalService>();
             builder.Services.AddSingleton<IPayeeService, PayeeService>();
             builder.Services.AddSingleton<IDebtService, DebtService>();
-            builder.Services.AddSingleton<IDebtService, DebtService>();
             builder.Services.AddSingleton<ISplitService, SplitService>();
+            builder.Services.AddSingleton<ITripService, TripService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
             builder.Services.AddSingleton<ISetupService, SetupService>();
@@ -178,6 +178,9 @@ namespace MoneyRecord
             builder.Services.AddTransient<BudgetViewModel>();
             builder.Services.AddTransient<GoalsViewModel>();
             builder.Services.AddTransient<DebtsViewModel>();
+            builder.Services.AddTransient<TripsViewModel>();
+            builder.Services.AddTransient<TripViewModel>();
+            builder.Services.AddTransient<TripCategoriesViewModel>();
             builder.Services.AddTransient<PayeesViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
@@ -203,6 +206,9 @@ namespace MoneyRecord
             builder.Services.AddTransient<BudgetPage>();
             builder.Services.AddTransient<GoalsPage>();
             builder.Services.AddTransient<DebtsPage>();
+            builder.Services.AddTransient<TripsPage>();
+            builder.Services.AddTransient<TripPage>();
+            builder.Services.AddTransient<TripCategoriesPage>();
             builder.Services.AddTransient<PayeesPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();

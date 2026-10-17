@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.TripCategoriesPage"
+             x:DataType="viewmodels:TripCategoriesViewModel"
+             Title="{ext:Localize TripCategoriesTitle}">
+
+    <Grid>
+        <!-- A tap opens the edit sheet -->
+        <CollectionView ItemsSource="{Binding Categories}">
+            <CollectionView.Header>
+                <ContentView HeightRequest="6" />
+            </CollectionView.Header>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TripCategory">
+                    <Border Style="{StaticResource Card}" Margin="16,4" Padding="12">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TripCategoriesViewModel}}, Path=EditCategoryCommand}"
+                                                  CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Text="{Binding DisplayIcon}"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="24"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            <Label Grid.Column="1" Text="{Binding Name}" FontSize="16" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <!-- Room so the last card scrolls above the add button -->
+                <ContentView HeightRequest="88" />
+            </CollectionView.Footer>
+        </CollectionView>
+
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize AddTripCategory}"
+                IsVisible="{Binding IsFormOpen, Converter={StaticResource InvertedBoolConverter}}"
+                Command="{Binding AddCategoryCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
+
+        <!-- Add / edit sheet -->
+        <controls:BottomSheet Scroll="{x:Reference FormScroll}"
+                              IsOpen="{Binding IsFormOpen}"
+                              CloseCommand="{Binding CloseFormCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
+
+                <ScrollView Grid.Row="1" x:Name="FormScroll">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{ext:Localize CategoryName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <Entry Text="{Binding FormName}"
+                               Placeholder="{ext:Localize CategoryName}"
+                               MaxLength="40"
+                               FontSize="16" />
+
+                        <Label Text="{ext:Localize SelectIcon}" FontSize="14" Margin="0,4,0,0" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="Start"
+                                    AlignItems="Center"
+                                    BindableLayout.ItemsSource="{Binding AvailableIcons}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:CategoryIcon">
+                                    <Border StrokeThickness="3"
+                                            Padding="10"
+                                            Margin="4"
+                                            WidthRequest="52"
+                                            HeightRequest="52"
+                                            StrokeShape="RoundRectangle 10"
+                                            BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToSelectedBackgroundConverter}}">
+                                        <Border.Stroke>
+                                            <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}" />
+                                        </Border.Stroke>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TripCategoriesViewModel}}, Path=SelectIconCommand}"
+                                                                  CommandParameter="{Binding Code}" />
+                                        </Border.GestureRecognizers>
+                                        <Label Text="{Binding DisplayIcon}"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="24"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}" />
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Delete only for an existing category -->
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+                    <Button Text="{ext:Localize DeleteButton}"
+                            IsVisible="{Binding IsEditMode}"
+                            Command="{Binding DeleteCategoryCommand}"
+                            Margin="0,0,12,0"
+                            HeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                    <Button Grid.Column="1"
+                            Text="{Binding SaveText}"
+                            Command="{Binding SaveCategoryCommand}"
+                            HeightRequest="44"
+                            CornerRadius="22"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                </Grid>
+            </Grid>
+        </controls:BottomSheet>
+    </Grid>
+
+</ContentPage>

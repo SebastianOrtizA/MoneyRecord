@@ -5912,5 +5912,473 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("RecurringScheduled", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lodging.
+        /// </summary>
+        public static string TripCategoryLodging {
+            get {
+                return ResourceManager.GetString("TripCategoryLodging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flights.
+        /// </summary>
+        public static string TripCategoryFlights {
+            get {
+                return ResourceManager.GetString("TripCategoryFlights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transport.
+        /// </summary>
+        public static string TripCategoryTransport {
+            get {
+                return ResourceManager.GetString("TripCategoryTransport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Food.
+        /// </summary>
+        public static string TripCategoryFood {
+            get {
+                return ResourceManager.GetString("TripCategoryFood", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Activities.
+        /// </summary>
+        public static string TripCategoryActivities {
+            get {
+                return ResourceManager.GetString("TripCategoryActivities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shopping.
+        /// </summary>
+        public static string TripCategoryShopping {
+            get {
+                return ResourceManager.GetString("TripCategoryShopping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Other.
+        /// </summary>
+        public static string TripCategoryOther {
+            get {
+                return ResourceManager.GetString("TripCategoryOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Travel.
+        /// </summary>
+        public static string TravelCategory {
+            get {
+                return ResourceManager.GetString("TravelCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active.
+        /// </summary>
+        public static string TripActive {
+            get {
+                return ResourceManager.GetString("TripActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ended.
+        /// </summary>
+        public static string TripEnded {
+            get {
+                return ResourceManager.GetString("TripEnded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Since {0}.
+        /// </summary>
+        public static string TripSince {
+            get {
+                return ResourceManager.GetString("TripSince", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1}.
+        /// </summary>
+        public static string SpentOfBudget {
+            get {
+                return ResourceManager.GetString("SpentOfBudget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} spent.
+        /// </summary>
+        public static string TripSpent {
+            get {
+                return ResourceManager.GetString("TripSpent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not converted: {0}.
+        /// </summary>
+        public static string TripNotConverted {
+            get {
+                return ResourceManager.GetString("TripNotConverted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trip: {0}.
+        /// </summary>
+        public static string TripBanner {
+            get {
+                return ResourceManager.GetString("TripBanner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not part of the trip.
+        /// </summary>
+        public static string NotPartOfTrip {
+            get {
+                return ResourceManager.GetString("NotPartOfTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trip: {0} · {1}.
+        /// </summary>
+        public static string TripInfo {
+            get {
+                return ResourceManager.GetString("TripInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trip: {0}.
+        /// </summary>
+        public static string TripInfoOnly {
+            get {
+                return ResourceManager.GetString("TripInfoOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trips.
+        /// </summary>
+        public static string TripsTitle {
+            get {
+                return ResourceManager.GetString("TripsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trip categories.
+        /// </summary>
+        public static string TripCategoriesTitle {
+            get {
+                return ResourceManager.GetString("TripCategoriesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add trip category.
+        /// </summary>
+        public static string AddTripCategory {
+            get {
+                return ResourceManager.GetString("AddTripCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit trip category.
+        /// </summary>
+        public static string EditTripCategory {
+            get {
+                return ResourceManager.GetString("EditTripCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load trips.
+        /// </summary>
+        public static string FailedToLoadTrips {
+            get {
+                return ResourceManager.GetString("FailedToLoadTrips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the trip.
+        /// </summary>
+        public static string FailedToSaveTrip {
+            get {
+                return ResourceManager.GetString("FailedToSaveTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete the trip.
+        /// </summary>
+        public static string FailedToDeleteTrip {
+            get {
+                return ResourceManager.GetString("FailedToDeleteTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the trip category.
+        /// </summary>
+        public static string FailedToSaveTripCategory {
+            get {
+                return ResourceManager.GetString("FailedToSaveTripCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete the trip category.
+        /// </summary>
+        public static string FailedToDeleteTripCategory {
+            get {
+                return ResourceManager.GetString("FailedToDeleteTripCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This is the only trip category and it is in use, so it can't be deleted..
+        /// </summary>
+        public static string LastTripCategoryCannotDelete {
+            get {
+                return ResourceManager.GetString("LastTripCategoryCannotDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to "{0}" is used by trip expenses or limits. Move them to:.
+        /// </summary>
+        public static string TripCategoryInUse {
+            get {
+                return ResourceManager.GetString("TripCategoryInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the trip category "{0}"?.
+        /// </summary>
+        public static string DeleteTripCategoryConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteTripCategoryConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start trip.
+        /// </summary>
+        public static string StartTrip {
+            get {
+                return ResourceManager.GetString("StartTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit trip.
+        /// </summary>
+        public static string EditTrip {
+            get {
+                return ResourceManager.GetString("EditTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trip name.
+        /// </summary>
+        public static string TripName {
+            get {
+                return ResourceManager.GetString("TripName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lisbon, summer.
+        /// </summary>
+        public static string TripNamePlaceholder {
+            get {
+                return ResourceManager.GetString("TripNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date.
+        /// </summary>
+        public static string TripStartDate {
+            get {
+                return ResourceManager.GetString("TripStartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget (optional).
+        /// </summary>
+        public static string TripBudgetOptional {
+            get {
+                return ResourceManager.GetString("TripBudgetOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account the trip pays from.
+        /// </summary>
+        public static string TripDefaultAccount {
+            get {
+                return ResourceManager.GetString("TripDefaultAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None (last used).
+        /// </summary>
+        public static string TripNoAccount {
+            get {
+                return ResourceManager.GetString("TripNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit per trip category (optional).
+        /// </summary>
+        public static string TripLimits {
+            get {
+                return ResourceManager.GetString("TripLimits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In the trip's currency. Leave empty for no limit..
+        /// </summary>
+        public static string TripLimitsHint {
+            get {
+                return ResourceManager.GetString("TripLimitsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a trip name.
+        /// </summary>
+        public static string PleaseEnterTripName {
+            get {
+                return ResourceManager.GetString("PleaseEnterTripName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The trip can't end before it starts.
+        /// </summary>
+        public static string TripEndBeforeStart {
+            get {
+                return ResourceManager.GetString("TripEndBeforeStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Another trip is active. End it first..
+        /// </summary>
+        public static string TripAlreadyActive {
+            get {
+                return ResourceManager.GetString("TripAlreadyActive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trip started.
+        /// </summary>
+        public static string TripStarted {
+            get {
+                return ResourceManager.GetString("TripStarted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No trips yet.
+        /// </summary>
+        public static string NoTripsYet {
+            get {
+                return ResourceManager.GetString("NoTripsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start a trip to record its spending apart from your everyday expenses..
+        /// </summary>
+        public static string AddTripToStart {
+            get {
+                return ResourceManager.GetString("AddTripToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the trip "{0}"? Its expenses stay in your transactions..
+        /// </summary>
+        public static string DeleteTripConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteTripConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End the trip before deleting it..
+        /// </summary>
+        public static string TripDeleteNeedsEnd {
+            get {
+                return ResourceManager.GetString("TripDeleteNeedsEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By category.
+        /// </summary>
+        public static string TripCategoriesBreakdown {
+            get {
+                return ResourceManager.GetString("TripCategoriesBreakdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expenses.
+        /// </summary>
+        public static string TripExpenses {
+            get {
+                return ResourceManager.GetString("TripExpenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No expenses yet.
+        /// </summary>
+        public static string NoTripExpenses {
+            get {
+                return ResourceManager.GetString("NoTripExpenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Travel category holds the expenses of your trips, so it can't be deleted. You can rename it..
+        /// </summary>
+        public static string TravelCategoryCannotDelete {
+            get {
+                return ResourceManager.GetString("TravelCategoryCannotDelete", resourceCulture);
+            }
+        }
     }
 }

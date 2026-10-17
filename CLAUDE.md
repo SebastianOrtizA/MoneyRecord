@@ -44,9 +44,9 @@ in both (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...). XAML that uses a Cor
 crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
-- `Models/` — 11 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
+- `Models/` — 14 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
   SavingsGoalAccount (a goal's accounts; one goal per account), Payee (optional on a transaction and a recurring one;
-  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups), Debt (money lent / borrowed: a payee + a hidden account, `Account.IsDebt`,
+  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups), Trip + TripCategory + TripBudget (a trip, its shared trip categories, its per-category limits; `Transaction.TripId`/`TripCategoryId`, `Category.IsTravel` = the system "Travel" category trip expenses sit in while the trip is active; `TripCard`/`TripSummary` display it), Debt (money lent / borrowed: a payee + a hidden account, `Account.IsDebt`,
   whose transfers are the debt's money; `DebtSummary` / `DebtMovement` display it).
   `Transaction.SplitId`: the parts of a split expense are plain transactions sharing the ID (`SplitPart` = one part to save). Plus display models
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
@@ -71,6 +71,7 @@ crashes at runtime (XAML is inflated at runtime there).
   hidden accounts out of pickers and lists), SplitService (saves a split expense: one transaction per part in one DB
   transaction, replacing the edited ones; the own conversion shared out), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
+  TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
   categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
   (zip backup/restore, CSV), CategoryIconService, SetupService (first-run setup: pending only on a new install;
@@ -170,7 +171,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   `//TransactionsPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//CashFlowReportPage`,
   `//NetWorthReportPage`, `//BudgetPage`, `//MorePage`
 - Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
-  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `PayeesPage`, `TransfersPage`, `SettingsPage`
+  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `PayeesPage`, `TripsPage`, `TripPage`, `TripCategoriesPage`, `TransfersPage`, `SettingsPage`
 - Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See
   all" → `//TransactionsPage`, Upcoming "See all" → `RecurringTransactionsPage?Show=Upcoming`, budgets "See all" →
   `//BudgetPage`, goals card → `GoalsPage`
