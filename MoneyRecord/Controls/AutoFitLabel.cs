@@ -22,6 +22,7 @@ namespace MoneyRecord.Controls
         // The width and text the font was last fitted to: a resize from the font change itself doesn't refit
         private (double Width, string? Text) _fitted;
         private bool _fitting;
+        private double? _wrappedHeight;
 
         public AutoFitLabel()
         {
@@ -67,6 +68,7 @@ namespace MoneyRecord.Controls
         private void Refit()
         {
             _fitted = default;
+            _wrappedHeight = null;
             Fit(Width);
         }
 
@@ -124,8 +126,19 @@ namespace MoneyRecord.Controls
         protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
             var size = base.MeasureOverride(widthConstraint, heightConstraint);
+            return WrappedHeight() is { } height ? new Size(size.Width, height) : size;
+        }
+
+        /// <summary>
+        /// <c>MaxLines</c> lines at <see cref="MaxFontSize"/>, or null for a one-line label (or before the platform view
+        /// exists). Kept until <see cref="Refit"/>: it depends only on those two and the font scale.
+        /// </summary>
+        private double? WrappedHeight()
+        {
+            if (_wrappedHeight != null || MaxLines <= 1)
+                return _wrappedHeight;
 #if ANDROID
-            if (MaxLines > 1 && OperatingSystem.IsAndroidVersionAtLeast(23)
+            if (OperatingSystem.IsAndroidVersionAtLeast(23)
                 && Handler?.PlatformView is Android.Widget.TextView view
                 && view.Context?.Resources?.DisplayMetrics is { } metrics)
             {
@@ -133,10 +146,10 @@ namespace MoneyRecord.Controls
                 paint.TextSize = Android.Util.TypedValue.ApplyDimension(Android.Util.ComplexUnitType.Sp, (float)MaxFontSize, metrics);
                 var lines = string.Join('\n', Enumerable.Repeat("Ag", MaxLines));
                 using var layout = Android.Text.StaticLayout.Builder.Obtain(lines, 0, lines.Length, paint, int.MaxValue / 2).Build();
-                size = new Size(size.Width, Math.Ceiling(layout.Height / metrics.Density));
+                _wrappedHeight = Math.Ceiling(layout.Height / metrics.Density);
             }
 #endif
-            return size;
+            return _wrappedHeight;
         }
     }
 }
