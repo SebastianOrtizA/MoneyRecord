@@ -42,8 +42,7 @@
         <CollectionView Grid.Row="1" ItemsSource="{Binding Categories}">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Category">
-                    <Border Style="{StaticResource Card}" Margin="16,4"
-                            Padding="12">
+                    <Border Style="{StaticResource Card}" Margin="16,4" Padding="12">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageCategoriesViewModel}}, Path=EditCategoryCommand}"
                                                   CommandParameter="{Binding .}" />

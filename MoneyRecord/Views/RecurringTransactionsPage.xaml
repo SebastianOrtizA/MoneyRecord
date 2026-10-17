@@ -79,7 +79,7 @@
 
                         <!-- Edit Form -->
                         <Border BackgroundColor="{AppThemeBinding Light=#FFF8E1, Dark=#3D3D1F}"
-                                Stroke="{AppThemeBinding Light=#FFD54F, Dark=#FFD54F}"
+                                Stroke="#FFD54F"
                                 StrokeShape="RoundRectangle 12"
                                 Padding="16"
                                 IsVisible="{Binding IsEditMode}">

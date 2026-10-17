@@ -22,7 +22,8 @@
             <Border BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#7B5FDB}"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 16"
-                    Padding="20">
+                    Padding="20"
+                    Shadow="{Shadow Brush=Black, Offset='0,2', Radius=8, Opacity=0.25}">
                 <Border.GestureRecognizers>
                     <!-- The card opens all accounts; each currency line below opens that currency's accounts -->
                     <TapGestureRecognizer Command="{Binding OpenAccountsCommand}"/>

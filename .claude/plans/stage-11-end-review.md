@@ -69,7 +69,8 @@
   Budgets, Goals, Debts, Payees, Transactions, Recurring, Transfers, Import), which before mixed #3A3A3A and #404040
   dark strokes; pages keep their own Padding / Margin. `ChartCard` is based on it. Tinted cards (Home balance and
   period totals, the Recurring edit form and next-occurrence box) became plain Borders with their own colours. The
-  Frames' Android shadow is gone: every card is flat with an outline, like the newer pages.
+  Frames' Android shadow is gone: every card is flat with an outline, like the newer pages, except Home's balance card,
+  which keeps a light `Shadow` (review).
 
 ### 11.6 Small things seen in the store screenshots (9.6)
 - Utilities and Home seed categories share the icon `F0D15` (`DefaultCategory`); give Utilities its own.

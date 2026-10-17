@@ -148,8 +148,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:ImportRow">
-                    <Border Style="{StaticResource Card}" Margin="16,4"
-                            Padding="8,10,12,10">
+                    <Border Style="{StaticResource Card}" Margin="16,4" Padding="8,10,12,10">
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
                             <CheckBox IsChecked="{Binding IsIncluded}"
                                       IsEnabled="{Binding CanImport}"

@@ -50,8 +50,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AccountListItem">
-                    <Border Style="{StaticResource Card}" Margin="16,4"
-                            Padding="12">
+                    <Border Style="{StaticResource Card}" Margin="16,4" Padding="12">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditAccountCommand}"
                                                   CommandParameter="{Binding .}" />
