@@ -2499,4 +2499,28 @@ Amount: {2}</value>
   <data name="PartyShareLine" xml:space="preserve">
     <value>Share {0}</value>
   </data>
+  <data name="PartySettleUp" xml:space="preserve">
+    <value>Settle up</value>
+  </data>
+  <data name="PartyPaysLine" xml:space="preserve">
+    <value>{0} pays {1} {2}</value>
+  </data>
+  <data name="PartyAllSettled" xml:space="preserve">
+    <value>Everybody is even</value>
+  </data>
+  <data name="PartyMarkPaid" xml:space="preserve">
+    <value>Mark paid</value>
+  </data>
+  <data name="PartyPaymentsMade" xml:space="preserve">
+    <value>Payments made</value>
+  </data>
+  <data name="SharePartySummary" xml:space="preserve">
+    <value>Share summary</value>
+  </data>
+  <data name="DeletePartyPaymentQuestion" xml:space="preserve">
+    <value>Delete this payment? It will count as unpaid again.</value>
+  </data>
+  <data name="FailedToSavePartyPayment" xml:space="preserve">
+    <value>Could not save the payment</value>
+  </data>
 </root>

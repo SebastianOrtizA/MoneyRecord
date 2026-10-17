@@ -14,5 +14,8 @@ namespace MoneyRecord.Services
 
         public Task ShareAsync(string path, string title) =>
             Share.Default.RequestAsync(new ShareFileRequest { Title = title, File = new ShareFile(path) });
+
+        public Task ShareTextAsync(string text, string title) =>
+            Share.Default.RequestAsync(new ShareTextRequest { Title = title, Text = text });
     }
 }

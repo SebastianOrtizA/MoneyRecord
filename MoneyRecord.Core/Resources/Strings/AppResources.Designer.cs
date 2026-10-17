@@ -7001,5 +7001,77 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("PartyShareLine", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settle up.
+        /// </summary>
+        public static string PartySettleUp {
+            get {
+                return ResourceManager.GetString("PartySettleUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} pays {1} {2}.
+        /// </summary>
+        public static string PartyPaysLine {
+            get {
+                return ResourceManager.GetString("PartyPaysLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everybody is even.
+        /// </summary>
+        public static string PartyAllSettled {
+            get {
+                return ResourceManager.GetString("PartyAllSettled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark paid.
+        /// </summary>
+        public static string PartyMarkPaid {
+            get {
+                return ResourceManager.GetString("PartyMarkPaid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payments made.
+        /// </summary>
+        public static string PartyPaymentsMade {
+            get {
+                return ResourceManager.GetString("PartyPaymentsMade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share summary.
+        /// </summary>
+        public static string SharePartySummary {
+            get {
+                return ResourceManager.GetString("SharePartySummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this payment? It will count as unpaid again..
+        /// </summary>
+        public static string DeletePartyPaymentQuestion {
+            get {
+                return ResourceManager.GetString("DeletePartyPaymentQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not save the payment.
+        /// </summary>
+        public static string FailedToSavePartyPayment {
+            get {
+                return ResourceManager.GetString("FailedToSavePartyPayment", resourceCulture);
+            }
+        }
     }
 }

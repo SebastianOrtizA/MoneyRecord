@@ -34,10 +34,12 @@ namespace MoneyRecord.Helpers
 
         /// <summary>
         /// Paid, handed in and share per member, then the pot's line. An expense is shared between the members it doesn't
-        /// exclude; <paramref name="exclusions"/> maps an expense ID to the member IDs left out.
+        /// exclude; <paramref name="exclusions"/> maps an expense ID to the member IDs left out. Settle-up payments made
+        /// move the payer's balance up and the receiver's down, so what is still to settle shrinks.
         /// </summary>
         public static List<PartyBalance> Balances(IReadOnlyList<Participant> members, IEnumerable<PartyExpense> expenses,
-            IReadOnlyDictionary<int, HashSet<int>> exclusions, IEnumerable<PartyContribution> contributions)
+            IReadOnlyDictionary<int, HashSet<int>> exclusions, IEnumerable<PartyContribution> contributions,
+            IEnumerable<PartyPayment>? payments = null)
         {
             var paid = members.ToDictionary(m => m.Id, _ => 0L);
             var handedIn = members.ToDictionary(m => m.Id, _ => 0L);
@@ -62,9 +64,17 @@ namespace MoneyRecord.Helpers
                 pot += contribution.AmountCents;
             }
 
-            var lines = members.Select(m => new PartyBalance(m.Id, m.Name, paid[m.Id], handedIn[m.Id], share[m.Id])).ToList();
+            var settled = members.ToDictionary(m => m.Id, _ => 0L);
+            long potSettled = 0;
+            foreach (var payment in payments ?? [])
+            {
+                if (payment.FromId == PotId) potSettled += payment.AmountCents; else settled[payment.FromId] += payment.AmountCents;
+                if (payment.ToId == PotId) potSettled -= payment.AmountCents; else settled[payment.ToId] -= payment.AmountCents;
+            }
+
+            var lines = members.Select(m => new PartyBalance(m.Id, m.Name, paid[m.Id], handedIn[m.Id], share[m.Id], settled[m.Id])).ToList();
             // The pot holds what was handed in less what it paid; its line is the opposite so that the lines sum to zero
-            lines.Add(new PartyBalance(PotId, string.Empty, PaidCents: 0, ContributedCents: -pot, ShareCents: 0));
+            lines.Add(new PartyBalance(PotId, string.Empty, PaidCents: 0, ContributedCents: -pot, ShareCents: 0, potSettled));
             return lines;
         }
 

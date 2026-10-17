@@ -20,6 +20,7 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly TimeProvider _clock;
+        private readonly IFileSharer _sharer;
 
         private List<Participant> _members = [];
 
@@ -53,14 +54,28 @@ namespace MoneyRecord.ViewModels
 
         public bool HasNoContributions => Contributions.Count == 0;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsSettled))]
+        private List<PartySettleRow> settleRows = [];
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasPayments))]
+        private List<PartyPaymentRow> payments = [];
+
+        /// <summary>Nothing left to pay.</summary>
+        public bool IsSettled => SettleRows.Count == 0;
+
+        public bool HasPayments => Payments.Count > 0;
+
         public PartyViewModel(IPartyService parties, INavigationService navigation, IErrorHandler errorHandler,
-            IDialogService dialogService, TimeProvider clock)
+            IDialogService dialogService, TimeProvider clock, IFileSharer sharer)
         {
             _parties = parties;
             _navigation = navigation;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _clock = clock;
+            _sharer = sharer;
         }
 
         public Task InitializeAsync() => LoadCommand.ExecuteAsync(null);
@@ -75,6 +90,7 @@ namespace MoneyRecord.ViewModels
             {
                 IsLoading = true;
                 var summary = await _parties.GetSummaryAsync(partyId);
+                var paymentList = await _parties.GetPaymentsAsync(partyId);
                 var members = await _parties.GetMembersAsync(partyId);
                 var expenseList = await _parties.GetExpensesAsync(partyId);
                 var exclusions = await _parties.GetExclusionsAsync(partyId);
@@ -100,6 +116,12 @@ namespace MoneyRecord.ViewModels
                     names.GetValueOrDefault(c.ParticipantId, string.Empty),
                     DateFormatter.Format(c.Date, DateStyle.Medium),
                     MoneyFormatter.Format(c.Amount, code))).ToList();
+                SettleRows = summary.Payments.Select(p => new PartySettleRow(p.FromId, p.ToId, p.AmountCents, names, code)).ToList();
+                Payments = paymentList.Select(p =>
+                {
+                    var row = new PartySettleRow(p.FromId, p.ToId, p.AmountCents, names, code);
+                    return new PartyPaymentRow(p, row.Text, DateFormatter.Format(p.Date, DateStyle.Medium));
+                }).ToList();
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -380,6 +402,66 @@ namespace MoneyRecord.ViewModels
                 return false;
 
             return true;
+        }
+
+        // ----- Settle up -----
+
+        [RelayCommand]
+        private async Task MarkPaidAsync(PartySettleRow? row)
+        {
+            if (row == null || Card == null)
+                return;
+
+            try
+            {
+                await _parties.SavePaymentAsync(new PartyPayment
+                {
+                    PartyId = Card.PartyId, FromId = row.FromId, ToId = row.ToId, AmountCents = row.AmountCents,
+                    Date = _clock.GetLocalNow().Date
+                });
+                await LoadCommand.ExecuteAsync(null);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToSavePartyPayment);
+            }
+        }
+
+        [RelayCommand]
+        private async Task OpenPaymentAsync(PartyPaymentRow? row)
+        {
+            if (row == null)
+                return;
+
+            if (await _dialogService.ConfirmAsync(AppResources.ConfirmDelete, AppResources.DeletePartyPaymentQuestion,
+                    AppResources.YesDelete, AppResources.Cancel))
+            {
+                try
+                {
+                    await _parties.DeletePaymentAsync(row.Id);
+                    await LoadCommand.ExecuteAsync(null);
+                }
+                catch (Exception ex)
+                {
+                    await _errorHandler.HandleAsync(ex, AppResources.FailedToSavePartyPayment);
+                }
+            }
+        }
+
+        [RelayCommand]
+        private async Task ShareAsync()
+        {
+            if (Card == null)
+                return;
+
+            try
+            {
+                await _sharer.ShareTextAsync(PartyShareText.Build(Card, Balances, SettleRows), Card.Name);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadParties);
+            }
         }
 
         // ----- The party itself -----
