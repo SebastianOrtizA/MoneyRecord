@@ -432,7 +432,7 @@
                     CornerRadius="24"
                     FontAttributes="Bold"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDark}}"/>
+                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"/>
         </Border>
     </Grid>
 
