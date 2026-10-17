@@ -13,7 +13,7 @@ namespace MoneyRecord.Models
         public CategoryType Type { get; set; }
 
         /// <summary>
-        /// Unicode code for Material Design Icon (e.g., "F09B5" for food icon)
+        /// Unicode code for Material Design Icon (e.g., "F025A" for the food icon)
         /// </summary>
         public string IconCode { get; set; } = "F0770"; // Default: tag icon
 

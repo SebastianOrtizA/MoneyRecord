@@ -37,7 +37,7 @@
             <ShellContent Title="{ext:Localize Spending}"
                           ContentTemplate="{DataTemplate views:ExpenseReportPage}"
                           Route="ExpenseReportPage" />
-            <ShellContent Title="{ext:Localize Income}"
+            <ShellContent Title="{ext:Localize IncomeReport}"
                           ContentTemplate="{DataTemplate views:IncomeReportPage}"
                           Route="IncomeReportPage" />
             <ShellContent Title="{ext:Localize Trends}"

@@ -7,19 +7,22 @@ and Windows are maintained too. All data stays on the device.
 ## Features
 
 ### Home
-- **Balance card**: the total balance, with **one subtotal per currency** when accounts use different currencies
-  (never added together). Tap it to see each account's balance and last activity.
-- **Incomes / Expenses / Net** for the selected period. Negative amounts show the sign before the symbol (`-$50.00`) in red.
-- **Periods**: Calendar Month (default), Calendar Year, Today, Last Week, Last Month, Last Year, Custom Period.
-- **Transaction list**: grouped by category (default), by account, or a flat list; newest or oldest first; transfers
-  appear alongside transactions. Groups are collapsible and show their total and transaction count.
-- **Search and filters**: text search (description, category, account, tags), type, category, account and amount range.
-- **Recent transactions** and a **budget summary**.
-- **Hide balances**: the eye on the balance card replaces the balance and the period totals with "••••••" (remembered).
-- **Pull to refresh**; quick income / transfer / expense buttons.
+- **Balance card**: the total balance, with **one line per currency** when accounts use different currencies (never
+  added together unconverted). Tap it, or a currency line, to see the accounts behind it.
+- **Income / Expenses / Net** for the selected period, plus other currencies' totals below (or one converted total, see
+  Currencies).
+- **Periods**: this month (default), this year, today, last week, last month, last year or a custom range. Home,
+  Transactions, Budgets and the Spending / Income reports share the one period.
+- Cards for **recent transactions**, **upcoming** recurring ones, **budgets** and **savings goals**, each with "See all".
+- **Hide balances**: the eye on the balance card replaces the amounts with "••••••" (remembered).
+- The **+** button opens a sheet: Expense, Income or Transfer.
 
 ### Transactions
-- Incomes and expenses with date, description, amount, account, category and optional **tags**.
+- **Transactions tab**: the full list grouped by category (default), by account, or flat; newest or oldest first;
+  transfers appear alongside transactions. Search (description, category, account, payee, tags) and filter chips for
+  type, category, account and amount range. Swipe to edit or delete; a tap opens the details.
+- **Fast entry**: the amount first, then a category from a grid that puts your recent ones first; the last account is
+  preselected. Description, date, tags, payee, receipt and recurrence are under More details.
 - Optional **payee** (shop, person or company): earlier payees are suggested as you type, and picking one selects the
   category it had last time. More → Payees renames, merges (a typo into the right name) and deletes them; search finds
   transactions by payee, and the CSV export has a Payee column.
@@ -31,29 +34,34 @@ and Windows are maintained too. All data stays on the device.
   recognition) and fills in its total and date.
 - Amount input formatted in the **account's currency** (symbol, separators, and no decimals for currencies like JPY).
 - Optional **"Make recurring"** to create a recurring rule from the transaction.
-- Edit and delete (with confirmation; deleting a transaction also deletes its receipt photo).
+- Deleting asks first (and also deletes the receipt photo).
 
 ### Accounts
-- Multiple accounts (cash, bank, savings, credit card, ...) with an icon, initial balance and **currency**.
+- Multiple accounts (cash, bank, savings, credit card, ...) with an icon, initial balance and **currency**, listed per
+  currency with a subtotal and each account's last activity. The **+** button and a tap on a card open the add / edit
+  sheet.
 - **Allow negative balance** per account (credit cards, debts). The seeded "Cash" account allows it.
 - **Safe delete**: transactions and recurring rules move to the default account in one database transaction. Deleting
   is refused when the account has transfers (delete those first) or when the default account uses another currency.
 
 ### Transfers
-- Move money between accounts, with date, amount and description; a warning is shown when the accounts' currencies differ.
-- Transfer history with edit and delete.
+- Move money between accounts, with date, amount and description. Between currencies the form also asks for the
+  **amount received** and shows the rate it implies.
+- Transfer history (More → Transfers) with edit and delete.
 
 ### Categories
-- Separate income and expense categories with Material Design icons.
-- Seeded on first run: Salary, Freelance, Investment, Other Income; Food, Transportation, Entertainment, Utilities,
-  Shopping, Home, Other Expense.
+- Separate income and expense categories with Material Design icons (More → Categories, Income / Expense switch). The
+  **+** button and a tap on a category open the add / edit sheet.
+- Seeded on first run (or picked in the setup): Salary, Freelance, Investment, Other Income; Food, Transportation,
+  Entertainment, Utilities, Shopping, Home, Other Expense.
 - **Safe delete**: transactions, recurring rules and the budget move to a replacement category (the budget is deleted
   if the replacement already has one), after a confirmation that says what will move.
 
 ### Budgets
 - Spending limits per **expense** category, per day, month or year, projected to the selected period
   (a daily budget of $10 shows as $310 for a 31-day month).
-- Progress bars with light/dark-aware colours: green under 60%, amber 60–80%, orange 80–100%, red when exceeded.
+- Each card says **On track**, **Near limit** or **Over budget**, with light/dark-aware colours; tap it to change the
+  limit.
 - Totals: budgeted, spent, remaining.
 
 ### Savings goals
@@ -80,12 +88,24 @@ and Windows are maintained too. All data stays on the device.
   **Settings → Reminders**; the app offers them once after you add your first recurring transaction or budget.
 
 ### Reports
-- **Expense / Income reports**: heatmaps by category, small categories grouped under "Others"; tap a category for its
-  transactions (with one subtotal per currency).
-- **Trends**: monthly spending, income vs. expenses and expense breakdown over the last 3, 6 or 12 months.
+- **Spending / Income**: a donut chart and a ranked list by category (the 8 largest keep their own colour, the rest are
+  grouped under "Other"), with the change against the previous period. Tap a slice or a row for its transactions.
+- **Trends** (monthly income and expenses, budget vs. actual), **Cash flow** and **Net worth** over the last 3, 6 or 12
+  months.
+- **Export**: a PDF report of the period (summary, categories, budgets, balances and entries) or the period's
+  transactions as CSV, shared from the Reports tabs.
+
+### Currencies
+- **Base currency** (default: the device region's), used for transactions without an account and for converted totals.
+- Amounts show a plain symbol in front ("$1,200.00"), plus the code where the symbol alone isn't clear ("$1,500.00 USD"
+  when the base is another dollar or peso, and in lists of several currencies).
+- **Show cents** per currency (Settings → Base currency): off rounds that currency's amounts to whole units on screen;
+  they are still saved, and typed, to the cent.
+- **Exchange rates** (opt-in): daily rates downloaded from [Frankfurter](https://frankfurter.dev) let Home, the
+  reports and the budgets show one converted total ("≈"). The **Show in** choice switches between converted and
+  per-currency totals; a transaction can keep its own converted amount.
 
 ### Settings, backup & restore
-- **Base currency** (default: the device region's), used for totals that span accounts.
 - **Full backup** as a `.zip` (`data.json` + receipt photos), saved locally or shared.
 - **Backup password** (opt-in): backups, manual and automatic, are AES-256 encrypted zips (7-Zip and other zip tools
   open them with the password). The password is kept in SecureStorage for the automatic backups and asked for on
@@ -95,26 +115,31 @@ and Windows are maintained too. All data stays on the device.
   changed.
 - **Restore** from a local or picked backup (also older `.json` backups). The restore is all-or-nothing; the current data
   is saved to an automatic snapshot first (the last 5 are kept) and the "Restore complete" dialog offers **Undo**.
-- **CSV export** of transactions.
+- **CSV export** of all transactions, and **CSV import** of a bank statement into one account: pick the columns, check a
+  preview that marks duplicates and suggests categories learned from your history, and undo the import if needed. The
+  columns are remembered per statement layout.
 - **App lock** (Android, opt-in): fingerprint, face or the phone's screen lock when the app opens and after 1, 5, 15
   or 60 minutes in the background. The app stores no PIN or biometric data; on Android 13+ the recent apps screen
   doesn't show its content while the lock is on.
 - **Encrypt database** (Android, opt-in): the database is encrypted (SQLite3 Multiple Ciphers) with a random key kept
   in the Android Keystore through SecureStorage. While it is on, Android backup leaves the database out (the key can't
   leave the phone), so move to a new phone with a backup from **Settings → Backup** (protect it with the backup password).
+- **Home-screen widget** (Android): a picked account's balance with Expense / Income / Transfer buttons; hidden while
+  Hide balances or the app lock is on.
+- **First-run setup**: language, base currency, starting accounts and categories (it can be run again from Settings).
 
 ### Localization
-- English and Spanish, picked from the device language; the device region is kept for currency and number formats
-  (e.g. `es-CO`).
+- English and Spanish, picked from the device language or chosen in Settings; the device region is kept for currency
+  and number formats (e.g. `es-CO`).
 - Dates use the culture's own patterns ("October 11, 2026" / "11 de octubre de 2026"), and counts use proper plurals.
 
 ### Navigation
-- Shell flyout menu with an icon per page; Android back button returns to Home, and closes the app from Home.
-- **Floating action menu**: a draggable button (position remembered, snaps to the nearest edge) with quick
-  income / transfer / expense actions.
+- Bottom tabs: Home · Transactions · Reports (Spending / Income / Trends / Cash flow / Net worth) · Budgets · More (the
+  other screens). A tab always opens at its own page, also when tapped again.
+- The Android back button closes an open sheet first, then goes back, then to Home, and closes the app from Home.
 
 ### Theming
-- Full light and dark mode.
+- Full light and dark mode, following the system or picked in Settings.
 
 ## Data & storage
 - SQLite (`moneyrecord.db3` in the app's data folder, or `moneyrecord-encrypted.db3` while encrypted) via `sqlite-net-pcl`

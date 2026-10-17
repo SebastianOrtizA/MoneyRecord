@@ -1,6 +1,6 @@
 # Stage 11: End Review
 
-**Status**: In progress (11.1, 11.2 done; 11.3 in review)
+**Status**: In progress (11.1, 11.2, 11.3 done; 11.4 + 11.6 in review)
 **Source**: Issues and small requests the user noted while reviewing Stages 8.7a–8.7b (2026-10-13)
 
 ## Decisions (owner, 2026-10-16)
@@ -54,6 +54,11 @@
 - Requested: after Edit, the page scrolls to the top so the form is visible. Alternative to weigh: open the edit
   (and add) form in the shared `Controls/BottomSheet`, like Accounts (8.5) and Budgets (8.6), so it never depends on
   the scroll position.
+- Done as: the page works like Accounts: the Income / Expense switch, one card per category (a tap opens the edit sheet),
+  a + button for the add sheet, and Delete inside the edit sheet (its questions open over the sheet, so cancelling
+  returns to it; Android back closes the sheet first). The inline add / edit cards and the per-row Edit / Delete buttons
+  are gone. Also fixed: the default expense icon was `F09B5` (a pound weight, not in the picker, so nothing was
+  highlighted); it is now Food (`F025A`).
 
 ### 11.5 `Frame` → `Border` sweep
 - `Frame` is obsolete since .NET 9. Settings (and other older pages) still use it for cards, while newer pages
@@ -66,6 +71,13 @@
 - Spanish report tabs read "GASTOS · INGRESO": make it "INGRESOS".
 - README "Features" still describes the pre-Stage-8 app (flyout menu, floating button, report heatmaps); rewrite it
   from the store description.
+- Done as: Utilities has its own icon, lightning-bolt `F140B` (also offered in the icon picker; only new seeds get it,
+  existing categories keep theirs). The category grid uses `AutoFitLabel` with `MaxLines="2"`: names wrap between
+  words, and only the longest word has to fit, shrinking from 12 to 9 (a longer word still breaks). The grid never
+  showed a second line: `FlexLayout` measures children at an unlimited width, so a wrapping `AutoFitLabel` now always
+  measures as two lines at its largest font (rows are even). Report tab and title use the new `IncomeReport` key
+  ("Income" / "Ingresos"; `Income` stays the singular entry type "Ingreso"), also in the PDF totals header. README
+  Features rewritten for the current app (tabs, Reports, Currencies, CSV import, widget, setup).
 
 ## Done when
 Each item is fixed or consciously dropped with the user.

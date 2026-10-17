@@ -131,11 +131,14 @@
                                                VerticalOptions="Center"
                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
                                     </Border>
-                                    <Label Text="{Binding Category.Name}"
-                                           FontSize="12"
-                                           MaxLines="2"
-                                           LineBreakMode="TailTruncation"
-                                           HorizontalTextAlignment="Center"/>
+                                    <!-- Two lines between words; a word too long for the cell shrinks instead of breaking -->
+                                    <controls:AutoFitLabel Text="{Binding Category.Name}"
+                                                           MaxFontSize="12"
+                                                           MinFontSize="9"
+                                                           MaxLines="2"
+                                                           LineBreakMode="TailTruncation"
+                                                           HorizontalOptions="Fill"
+                                                           HorizontalTextAlignment="Center"/>
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>

@@ -1018,6 +1018,15 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Income.
+        /// </summary>
+        public static string IncomeReport {
+            get {
+                return ResourceManager.GetString("IncomeReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Income Categories.
         /// </summary>
         public static string IncomeCategories {
