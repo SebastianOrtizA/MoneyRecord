@@ -10,6 +10,7 @@ namespace MoneyRecord.ViewModels
 {
     [QueryProperty(nameof(Transfer), "Transfer")]
     [QueryProperty(nameof(TransferIdString), "TransferId")]
+    [QueryProperty(nameof(SourceAccountIdString), "SourceAccountId")]
     public partial class AddTransferViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -41,6 +42,9 @@ namespace MoneyRecord.ViewModels
                 }
             }
         }
+
+        /// <summary>A new transfer from this account (the home-screen widget's button).</summary>
+        public string? SourceAccountIdString { get; set; }
 
         [ObservableProperty]
         private int? transferId;
@@ -133,6 +137,7 @@ namespace MoneyRecord.ViewModels
             // Reset state first to handle ViewModel reuse
             var savedTransferId = TransferId;
             var savedTransfer = Transfer;
+            var sourceAccountId = int.TryParse(SourceAccountIdString, out var parsedId) ? parsedId : (int?)null;
             ResetState();
             TransferId = savedTransferId;
             Transfer = savedTransfer;
@@ -173,6 +178,8 @@ namespace MoneyRecord.ViewModels
                 IsEditMode = false;
                 Title = AppResources.NewTransfer;
                 Description = AppResources.DefaultTransferDescription;
+                if (sourceAccountId != null)
+                    SelectedSourceAccount = Accounts.FirstOrDefault(a => a.Id == sourceAccountId);
             }
 
             await UpdateSourceAccountBalanceAsync();

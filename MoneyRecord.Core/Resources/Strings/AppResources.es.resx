@@ -2022,4 +2022,7 @@ Monto: {2}</value>
   <data name="DebtEditOnDebtsPage" xml:space="preserve">
     <value>Los pagos de deudas se cambian en la página Deudas</value>
   </data>
+  <data name="WidgetPickAccount" xml:space="preserve">
+    <value>¿Qué cuenta debe mostrar el widget?</value>
+  </data>
 </root>

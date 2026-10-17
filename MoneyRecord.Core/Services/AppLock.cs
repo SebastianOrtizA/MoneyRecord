@@ -10,9 +10,11 @@ namespace MoneyRecord.Services
     {
         private DateTimeOffset? _backgroundedAt;
 
-        // Never without a lock the phone can ask for: removing the screen lock while the app lock is on must not lock
-        // the user out (the lock works again once the phone has one)
-        private bool CanLock => settings.LockEnabled && deviceLock.IsAvailable;
+        /// <summary>
+        /// The app lock is on and works. Never without a lock the phone can ask for: removing the screen lock while the app
+        /// lock is on must not lock the user out (the lock works again once the phone has one).
+        /// </summary>
+        public bool CanLock => settings.LockEnabled && deviceLock.IsAvailable;
 
         public bool IsLocked { get; private set; }
 

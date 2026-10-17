@@ -48,6 +48,8 @@ namespace MoneyRecord.Platforms.Android
                 services.GetRequiredService<IExchangeRateService>().UpdateIfDueAsync().GetAwaiter().GetResult();
                 // Also best-effort: after the recurring transactions, so the backup has them
                 services.GetRequiredService<IAutoBackupService>().RunIfDueAsync().GetAwaiter().GetResult();
+                // The recurring transactions and debt payments it created change the widgets' balances
+                services.GetRequiredService<IHomeScreenWidgets>().Refresh();
                 return Result.InvokeSuccess();
             }
             catch (Exception ex)

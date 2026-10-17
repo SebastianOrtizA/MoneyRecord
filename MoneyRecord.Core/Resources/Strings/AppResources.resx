@@ -2024,4 +2024,7 @@ Amount: {2}</value>
   <data name="DebtEditOnDebtsPage" xml:space="preserve">
     <value>Debt payments are changed on the Debts page</value>
   </data>
+  <data name="WidgetPickAccount" xml:space="preserve">
+    <value>Which account should the widget show?</value>
+  </data>
 </root>

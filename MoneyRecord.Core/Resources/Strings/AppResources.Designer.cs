@@ -5585,5 +5585,14 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("DebtEditOnDebtsPage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which account should the widget show?.
+        /// </summary>
+        public static string WidgetPickAccount {
+            get {
+                return ResourceManager.GetString("WidgetPickAccount", resourceCulture);
+            }
+        }
     }
 }
