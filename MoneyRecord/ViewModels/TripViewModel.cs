@@ -87,9 +87,11 @@ namespace MoneyRecord.ViewModels
                 var expenses = await _trips.GetExpensesAsync(tripId);
                 _expenses = expenses;
                 var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
-                var tripCategories = (await _trips.GetCategoriesAsync()).ToDictionary(c => c.Id, c => c.Name);
+                var loadedCategories = await _trips.GetCategoriesAsync();
+                var tripCategories = loadedCategories.ToDictionary(c => c.Id, c => c.Name);
                 cancellationToken.ThrowIfCancellationRequested();
 
+                _tripCategories = loadedCategories;
                 Card = new TripCard(summary);
                 Categories = summary.Categories.Select(c => new TripCategoryRow(c, summary.CurrencyCode)).ToList();
                 Entries = expenses.Select(e => new TripEntryRow(
@@ -120,6 +122,7 @@ namespace MoneyRecord.ViewModels
 
         // The trip's expenses, for the End trip sheet (which trip categories were used)
         private List<Transaction> _expenses = [];
+        private List<TripCategory> _tripCategories = [];
 
         [ObservableProperty]
         private bool isEndSheetOpen;
@@ -140,6 +143,8 @@ namespace MoneyRecord.ViewModels
                 return;
             foreach (var row in EndRows)
                 row.Selected = value;
+            // Cleared so picking the same category again applies it again after a row was changed by hand
+            SameForAll = null;
         }
 
         [RelayCommand]
@@ -150,12 +155,10 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                EndCategories = (await _categoryRepository.GetByTypeAsync(CategoryType.Expense)).Where(c => !c.IsTravel).ToList();
-                var usedIds = _expenses.Select(e => e.TripCategoryId).OfType<int>().ToHashSet();
-                var tripCategories = (await _trips.GetCategoriesAsync()).Where(c => usedIds.Contains(c.Id));
+                EndCategories = TripEndPlan.Targets(await _categoryRepository.GetByTypeAsync(CategoryType.Expense));
                 EndRows.Clear();
-                foreach (var tripCategory in tripCategories)
-                    EndRows.Add(new TripEndRow(tripCategory, EndCategories, EndCategories.FirstOrDefault(c => c.Id == tripCategory.LastCategoryId)));
+                foreach (var row in TripEndPlan.Rows(_expenses, _tripCategories, EndCategories))
+                    EndRows.Add(new TripEndRow(row.Source, EndCategories, row.Target));
                 SameForAll = null;
                 IsEndSheetOpen = true;
             }
@@ -209,6 +212,12 @@ namespace MoneyRecord.ViewModels
             if (trip == null || trip.IsActive)
                 return;
 
+            if (await _trips.GetActiveAsync() != null)
+            {
+                await _dialogService.AlertAsync(AppResources.Error, AppResources.TripAlreadyActive);
+                return;
+            }
+
             if (!await _dialogService.ConfirmAsync(AppResources.ReopenTrip,
                     string.Format(AppResources.ReopenTripConfirmation, trip.Name), AppResources.ReopenTrip, AppResources.Cancel))
                 return;
@@ -217,10 +226,6 @@ namespace MoneyRecord.ViewModels
             {
                 await _trips.ReopenAsync(trip.Id);
                 await LoadCommand.ExecuteAsync(null);
-            }
-            catch (InvalidOperationException)
-            {
-                await _dialogService.AlertAsync(AppResources.Error, AppResources.TripAlreadyActive);
             }
             catch (Exception ex)
             {

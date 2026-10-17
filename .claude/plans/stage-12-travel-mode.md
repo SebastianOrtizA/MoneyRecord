@@ -1,6 +1,6 @@
 # Stage 12: Travel Mode
 
-**Status**: Done (12.1, 12.2; 12.2 in review)
+**Status**: In progress (12.1 merged; 12.2 in review)
 **Depends on**: Stages 6–11
 **Source**: User request, 2026-10-14; designed with the owner 2026-10-17
 

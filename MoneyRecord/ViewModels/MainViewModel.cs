@@ -233,7 +233,11 @@ namespace MoneyRecord.ViewModels
                 var upcomingTask = _recurringService.GetUpcomingAsync();
                 // Goals reuse the balances above instead of loading them again
                 var tripTask = ActiveTripAsync();
-                async Task<TripCard?> ActiveTripAsync() => await _trips.GetActiveAsync() is { } trip ? new TripCard(await _trips.GetSummaryAsync(trip.Id)) : null;
+                async Task<TripCard?> ActiveTripAsync()
+                {
+                    var trip = await _trips.GetActiveAsync();
+                    return trip == null ? null : new TripCard(await _trips.GetSummaryAsync(trip.Id));
+                }
                 var goalsTask = GoalsAsync();
                 async Task<List<GoalProgress>> GoalsAsync() => await _goals.GetProgressAsync(await balancesTask);
                 await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask);

@@ -485,7 +485,13 @@
                                  ProgressColor="{Binding ActiveTrip.Level, Converter={StaticResource BudgetLevelToColorConverter}}"
                                  BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
                                  HeightRequest="10"/>
-                    <Label Text="{Binding ActiveTrip.SpentText}" FontSize="14"/>
+                    <Label Text="{Binding ActiveTrip.SpentText}" FontSize="14">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
                 </VerticalStackLayout>
             </Border>
 
