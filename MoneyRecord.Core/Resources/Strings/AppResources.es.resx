@@ -2013,4 +2013,13 @@ Monto: {2}</value>
   <data name="DebtsPaidOff" xml:space="preserve">
     <value>Saldadas</value>
   </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>Pagado de más: {0}</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>Sin esto, se habría devuelto más de lo prestado. Elimina antes algún pago.</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>Los pagos de deudas se cambian en la página Deudas</value>
+  </data>
 </root>

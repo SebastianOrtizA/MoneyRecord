@@ -327,6 +327,13 @@ Close the gap with competing finance apps. Each section can ship on its own.
   borrowing raise net worth). Editing a debt changes person, note, due date and schedule; amounts change through
   payments, "more" and deleting history lines. A schedule stopped by paying off doesn't restart if a payment is deleted
   later (edit the debt to set it again).
+  Review (PR #50): recurring processing catches errors per recurrence (logged; one broken rule no longer stops the
+  others) and a debt schedule whose account is gone or in another currency stops itself (`DebtLedger.CanPayThrough`);
+  deleting a history line that would leave more paid back than lent / borrowed is refused (`DebtSummary.CanDelete`, same
+  rule in the service), a debt overpaid from elsewhere shows "Overpaid by …" instead of "Paid off", and debt transfers
+  are edited on the Debts page (the transfer form lists only the user's accounts); the Interest category is found by
+  `Category.IsDebtInterest`, never by its translated name; `DebtLedger.GetOutstandingAsync` is the one "what is left"
+  query (`IDebtService.GetOutstandingAsync` for the Recurring page).
 
 ### 10.9 Home-screen widget (Stage 5.5)
 - Balance widget + quick-add expense widget (Android `AppWidgetProvider` via platform code).

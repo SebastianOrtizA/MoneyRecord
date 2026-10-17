@@ -18,6 +18,12 @@ namespace MoneyRecord.Models
         public string IconCode { get; set; } = "F0770"; // Default: tag icon
 
         /// <summary>
+        /// The category debt payments' interest goes to (one per type, created by the app; see
+        /// <see cref="Services.DebtLedger.InterestCategoryId"/>). Found by this mark, not by its name.
+        /// </summary>
+        public bool IsDebtInterest { get; set; }
+
+        /// <summary>
         /// Gets the displayable icon character from the unicode code
         /// </summary>
         [Ignore]

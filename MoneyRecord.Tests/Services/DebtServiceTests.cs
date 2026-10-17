@@ -302,4 +302,109 @@ public sealed class DebtServiceTests : LanguageTestBase, IAsyncLifetime
         debts[1].IsDueSoon.Should().BeFalse();
         debts[3].StatusText.Should().Be("Paid off");
     }
+    private Task<RecurringTransaction> AddPlainRecurringAsync(DateTime start) =>
+        InsertAsync(new RecurringTransaction
+        {
+            Amount = 20m, Description = "Gym", CategoryId = 1, AccountId = _cash.Id, TransactionType = TransactionType.Expense,
+            Frequency = RecurrenceFrequency.Monthly, StartDate = start, NextOccurrence = start
+        });
+
+    private async Task<T> InsertAsync<T>(T row)
+    {
+        await Db.InsertAsync(row);
+        return row;
+    }
+
+    [Fact]
+    public async Task A_schedule_whose_account_changed_currency_stops_without_blocking_other_recurring_transactions()
+    {
+        var id = await LendAsync(100m, _cash.Id,
+            new DebtScheduleDraft(40m, 0, RecurrenceFrequency.Monthly, Today.AddDays(-1), _cash.Id));
+        await AddPlainRecurringAsync(Today.AddDays(-1));
+        _cash.CurrencyCode = Base == "EUR" ? "USD" : "EUR";
+        await _accounts.SaveAsync(_cash);
+
+        var run = await _recurring.ProcessDueTransactionsAsync();
+
+        run.Created.Should().Be(1);
+        (await Db.Table<Transaction>().ToListAsync()).Should().ContainSingle().Which.Description.Should().Be("Gym");
+        (await Db.Table<RecurringTransaction>().FirstAsync(r => r.DebtId == id)).IsActive.Should().BeFalse();
+        (await SummaryAsync(id)).PaidCents.Should().Be(0);
+    }
+
+    [Fact]
+    public async Task A_recurrence_that_fails_is_logged_and_the_others_are_still_processed()
+    {
+        var id = await LendAsync(100m, _cash.Id,
+            new DebtScheduleDraft(40m, 0, RecurrenceFrequency.Monthly, Today.AddDays(-1), _cash.Id));
+        await AddPlainRecurringAsync(Today.AddDays(-1));
+        // A debt whose hidden account is gone can't be read: its schedule throws
+        await Db.ExecuteAsync("DELETE FROM \"Account\" WHERE IsDebt = 1");
+
+        var run = await _recurring.ProcessDueTransactionsAsync();
+
+        run.Created.Should().Be(1);
+        run.PaidOffDebtIds.Should().BeEmpty();
+        (await Db.Table<RecurringTransaction>().FirstAsync(r => r.DebtId == id)).IsActive.Should().BeTrue("it is tried again next time");
+    }
+
+    [Fact]
+    public async Task Deleting_what_was_lent_below_what_was_paid_back_is_refused()
+    {
+        var id = await LendAsync(100m, _cash.Id);
+        await _sut.AddToDebtAsync(id, _cash.Id, Today, 50m);
+        await _sut.RecordPaymentAsync(id, _cash.Id, Today, 120m, 0);
+        var debt = await SummaryAsync(id);
+        var movements = await _sut.GetMovementsAsync(id);
+        var first = movements.Single(m => m.AmountCents == 10000);
+        var more = movements.Single(m => m.AmountCents == 5000);
+
+        debt.CanDelete(first).Should().BeFalse();
+        debt.CanDelete(more).Should().BeFalse();
+        await FluentActions.Awaiting(() => _sut.DeleteMovementAsync(first)).Should().ThrowAsync<InvalidOperationException>();
+        (await SummaryAsync(id)).TotalCents.Should().Be(15000);
+
+        // Once the payment is smaller, the 50 can go
+        await _sut.DeleteMovementAsync(movements.Single(m => m.Kind == DebtMovementKind.Payment));
+        await _sut.RecordPaymentAsync(id, _cash.Id, Today, 90m, 0);
+        (await SummaryAsync(id)).CanDelete(more).Should().BeTrue();
+        await _sut.DeleteMovementAsync(more);
+        (await SummaryAsync(id)).OutstandingCents.Should().Be(1000);
+    }
+
+    [Fact]
+    public async Task A_debt_overpaid_from_elsewhere_shows_as_overpaid_not_paid_off()
+    {
+        var id = await LendAsync(100m, _cash.Id);
+        await _sut.RecordPaymentAsync(id, _cash.Id, Today, 60m, 0);
+        // The Transactions list can delete the lent transfer on its own
+        var lent = (await _sut.GetMovementsAsync(id)).Single(m => m.Kind == DebtMovementKind.Added);
+        await Db.DeleteAsync<Transfer>(lent.TransferId!.Value);
+
+        var debt = await SummaryAsync(id);
+
+        debt.IsOverpaid.Should().BeTrue();
+        debt.IsPaidOff.Should().BeFalse();
+        debt.CanRecordPayment.Should().BeFalse();
+        debt.StatusText.Should().Be($"Overpaid by {MoneyFormatter.Format(60m, Base)}");
+        debt.Level.Should().Be(BudgetLevel.Exceeded);
+    }
+
+    [Fact]
+    public async Task The_interest_category_is_found_by_its_mark_not_by_its_translated_name()
+    {
+        // A category of the user's own with the same name is left alone
+        var own = await InsertAsync(new Category { Name = "Interest", Type = CategoryType.Expense });
+        var id = await BorrowAsync(500m, _cash.Id);
+        await _sut.RecordPaymentAsync(id, _cash.Id, Today, 100m, 5m);
+        LocalizationService.Instance.SetLanguage("es", new FakePreferences());
+        await _sut.RecordPaymentAsync(id, _cash.Id, Today, 100m, 5m);
+
+        var categoryIds = (await Db.Table<Transaction>().ToListAsync()).Select(t => t.CategoryId).Distinct().ToList();
+
+        categoryIds.Should().ContainSingle().Which.Should().NotBe(own.Id);
+        var category = await Db.FindAsync<Category>(categoryIds[0]);
+        category.IsDebtInterest.Should().BeTrue();
+        category.Name.Should().Be("Interest", "named once, in the language it was created in");
+    }
 }

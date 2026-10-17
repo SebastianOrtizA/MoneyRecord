@@ -19,6 +19,9 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>Every debt with its amounts: open ones first (earliest due date first), paid ones last.</summary>
         Task<List<DebtSummary>> GetAllAsync();
 
+        /// <summary>What is left of each debt, in cents (debt ID → cents), from one SQL query: caps scheduled payments.</summary>
+        Task<Dictionary<int, long>> GetOutstandingAsync();
+
         /// <summary>The debt's history, newest first.</summary>
         Task<List<DebtMovement>> GetMovementsAsync(int debtId);
 
@@ -36,6 +39,9 @@ namespace MoneyRecord.Services.Interfaces
         Task AddToDebtAsync(int debtId, int accountId, DateTime date, decimal amount);
 
         /// <summary>Deletes one history line (its transfer or interest transaction).</summary>
+        /// <exception cref="InvalidOperationException">
+        /// Without it more would be paid back than was lent or borrowed (<see cref="DebtSummary.CanDelete"/> says so first).
+        /// </exception>
         Task DeleteMovementAsync(DebtMovement movement);
 
         /// <summary>Deletes the debt with its transfers, interest, schedule and hidden account, in one database transaction.</summary>

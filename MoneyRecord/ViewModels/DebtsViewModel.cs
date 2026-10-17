@@ -189,6 +189,11 @@ namespace MoneyRecord.ViewModels
             var debt = SelectedDebt;
             if (movement is not { CanDelete: true } || debt == null)
                 return;
+            if (!debt.CanDelete(movement))
+            {
+                await _dialogService.AlertAsync(AppResources.ConfirmDelete, AppResources.DebtDeleteWouldOverpay);
+                return;
+            }
 
             if (!await _dialogService.ConfirmAsync(AppResources.ConfirmDelete,
                     string.Format(AppResources.DeleteDebtMovementConfirmation, movement.KindText, movement.AmountText, movement.DetailText),

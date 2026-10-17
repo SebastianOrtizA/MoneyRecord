@@ -51,13 +51,32 @@ namespace MoneyRecord.Models
 
         public long OutstandingCents => Math.Max(0, TotalCents - PaidCents);
 
+        /// <summary>A payment can be recorded: something is left.</summary>
+        public bool CanRecordPayment => OutstandingCents > 0;
+
         public decimal Outstanding => Money.FromCents(OutstandingCents);
 
-        public bool IsPaidOff => TotalCents > 0 && OutstandingCents == 0;
+        public bool IsPaidOff => TotalCents > 0 && PaidCents == TotalCents;
 
-        public bool IsOverdue => !IsPaidOff && Debt.DueDate is { } due && due.Date < Today;
+        /// <summary>
+        /// More paid back than lent or borrowed. The Debts page refuses to get there, but a transfer edited or deleted from
+        /// the Transactions list can: shown as such (not as paid off), so the money left in the hidden account is visible.
+        /// </summary>
+        public bool IsOverpaid => PaidCents > TotalCents;
 
-        public bool IsDueSoon => !IsPaidOff && !IsOverdue && Debt.DueDate is { } due && (due.Date - Today).Days <= DueSoonDays;
+        // Open = still something to settle either way
+        private bool IsSettledOrOver => IsPaidOff || IsOverpaid;
+
+        public bool IsOverdue => !IsSettledOrOver && Debt.DueDate is { } due && due.Date < Today;
+
+        public bool IsDueSoon => !IsSettledOrOver && !IsOverdue && Debt.DueDate is { } due && (due.Date - Today).Days <= DueSoonDays;
+
+        /// <summary>
+        /// The history line can go: deleting what was lent or borrowed must leave at least what was paid back (the service
+        /// refuses it otherwise, like a payment over what is left).
+        /// </summary>
+        public bool CanDelete(DebtMovement movement) =>
+            movement.CanDelete && (movement.Kind != DebtMovementKind.Added || PaidCents <= TotalCents - movement.AmountCents);
 
         public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(IconCode);
 
@@ -76,14 +95,14 @@ namespace MoneyRecord.Models
         public double ProgressPercentage => TotalCents > 0 ? Math.Min(100, 100.0 * PaidCents / TotalCents) : 0;
 
         /// <summary>"Due Oct 30, 2026"; empty without a due date or once paid.</summary>
-        public string DueText => !IsPaidOff && Debt.DueDate is { } due
+        public string DueText => !IsSettledOrOver && Debt.DueDate is { } due
             ? string.Format(AppResources.DebtDueOn, DateFormatter.Format(due, DateStyle.Medium))
             : string.Empty;
 
         public bool HasDue => DueText.Length > 0;
 
         /// <summary>"Next payment $20.00 on Nov 1 · Monthly": the next scheduled one, capped at what is left.</summary>
-        public string ScheduleText => Schedule is { } schedule && !IsPaidOff
+        public string ScheduleText => Schedule is { } schedule && !IsSettledOrOver
             ? string.Format(AppResources.DebtNextPayment,
                 MoneyFormatter.Format(Money.FromCents(Math.Min(schedule.AmountCents, OutstandingCents) + schedule.InterestCents), CurrencyCode),
                 DateFormatter.Format(schedule.NextOccurrence, DateStyle.MonthDay),
@@ -99,17 +118,23 @@ namespace MoneyRecord.Models
 
         public bool HasInterest => InterestText.Length > 0;
 
-        public bool HasStatus => IsPaidOff || IsOverdue || IsDueSoon;
+        public bool HasStatus => IsPaidOff || IsOverpaid || IsOverdue || IsDueSoon;
 
         public string StatusText => IsPaidOff ? AppResources.DebtPaidOff
+            : IsOverpaid ? string.Format(AppResources.DebtOverpaidBy,
+                MoneyFormatter.Format(Money.FromCents(PaidCents - TotalCents), CurrencyCode))
             : IsOverdue ? AppResources.DebtOverdue
             : IsDueSoon ? AppResources.DebtDueSoon
             : string.Empty;
 
-        public string StatusIcon => IconHelper.GetCategoryDisplayIcon(IsPaidOff ? "F05E0" /* check-circle */ : "F00F0" /* calendar-clock */);
+        public string StatusIcon => IconHelper.GetCategoryDisplayIcon(
+            IsPaidOff ? "F05E0" /* check-circle */ : IsOverpaid ? "F0028" /* alert-circle */ : "F00F0" /* calendar-clock */);
 
-        /// <summary>The status colour (light/dark via BudgetLevelToColorConverter): paid = on track, due soon = high, overdue = exceeded.</summary>
-        public BudgetLevel Level => IsOverdue ? BudgetLevel.Exceeded : IsDueSoon ? BudgetLevel.High : BudgetLevel.OnTrack;
+        /// <summary>
+        /// The status colour (light/dark via BudgetLevelToColorConverter): paid = on track, due soon = high, overdue or
+        /// overpaid = exceeded.
+        /// </summary>
+        public BudgetLevel Level => IsOverdue || IsOverpaid ? BudgetLevel.Exceeded : IsDueSoon ? BudgetLevel.High : BudgetLevel.OnTrack;
 
         public static string FrequencyName(RecurrenceFrequency frequency) => frequency switch
         {
@@ -133,6 +158,8 @@ namespace MoneyRecord.Models
     /// <summary>One line of a debt's history: a transfer (added / payment), the "already owed" start, or a payment's interest.</summary>
     public sealed class DebtMovement
     {
+        public int DebtId { get; init; }
+
         public DebtMovementKind Kind { get; init; }
 
         public DebtDirection Direction { get; init; }

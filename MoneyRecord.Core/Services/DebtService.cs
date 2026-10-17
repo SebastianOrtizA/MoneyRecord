@@ -72,7 +72,7 @@ namespace MoneyRecord.Services
             {
                 movements.Add(new DebtMovement
                 {
-                    Kind = DebtMovementKind.Added, Direction = debt.Direction, Date = ledger.CreatedDate,
+                    DebtId = debtId, Kind = DebtMovementKind.Added, Direction = debt.Direction, Date = ledger.CreatedDate,
                     AmountCents = Math.Abs(ledger.InitialBalanceCents), CurrencyCode = currency
                 });
             }
@@ -87,7 +87,7 @@ namespace MoneyRecord.Services
                 var added = intoDebt == (debt.Direction == DebtDirection.Lent);
                 movements.Add(new DebtMovement
                 {
-                    Kind = added ? DebtMovementKind.Added : DebtMovementKind.Payment, Direction = debt.Direction,
+                    DebtId = debtId, Kind = added ? DebtMovementKind.Added : DebtMovementKind.Payment, Direction = debt.Direction,
                     Date = transfer.Date, CurrencyCode = currency, TransferId = transfer.Id,
                     AmountCents = Math.Abs(intoDebt ? transfer.DestinationAmountCents : transfer.AmountCents),
                     AccountName = name(intoDebt ? transfer.SourceAccountId : transfer.DestinationAccountId)
@@ -98,7 +98,7 @@ namespace MoneyRecord.Services
             {
                 movements.Add(new DebtMovement
                 {
-                    Kind = DebtMovementKind.Interest, Direction = debt.Direction, Date = interest.Date,
+                    DebtId = debtId, Kind = DebtMovementKind.Interest, Direction = debt.Direction, Date = interest.Date,
                     AmountCents = Math.Abs(interest.AmountCents), CurrencyCode = currency, TransactionId = interest.Id,
                     AccountName = interest.AccountId is { } id ? name(id) : string.Empty
                 });
@@ -260,6 +260,9 @@ namespace MoneyRecord.Services
                 DebtLedger.RecordAddition(db, debt, accountId, date, Money.ToCents(amount));
             });
 
+        public async Task<Dictionary<int, long>> GetOutstandingAsync() =>
+            await DebtLedger.GetOutstandingAsync(await _dbInitializer.GetConnectionAsync());
+
         public Task DeleteMovementAsync(DebtMovement movement) =>
             _dbInitializer.RunInTransactionAsync(db =>
             {
@@ -267,6 +270,12 @@ namespace MoneyRecord.Services
                     db.Delete<Transfer>(transferId);
                 if (movement.TransactionId is { } transactionId)
                     db.Delete<Transaction>(transactionId);
+
+                // Same rule as a payment: never more paid back than lent or borrowed (the rollback undoes the delete)
+                var totals = DebtLedger.GetTotals(db, movement.DebtId);
+                if (totals.PaidCents > totals.TotalCents)
+                    throw new InvalidOperationException(
+                        $"Without it, debt {movement.DebtId} would have {totals.PaidCents} cents paid back of {totals.TotalCents}.");
             });
 
         public async Task DeleteAsync(int debtId)

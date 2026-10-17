@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
@@ -13,6 +15,7 @@ namespace MoneyRecord.Services
         private readonly IAccountRepository _accountRepo;
         private readonly DatabaseInitializer _database;
         private readonly TimeProvider _clock;
+        private readonly ILogger<RecurringTransactionService> _logger;
 
         // App start and the daily background job can run at the same time: one run at a time, each reading the
         // schedules the previous run advanced, so no occurrence is created twice
@@ -20,8 +23,9 @@ namespace MoneyRecord.Services
 
         public RecurringTransactionService(IRecurringTransactionRepository recurringRepo,
             ICategoryRepository categoryRepo, IAccountRepository accountRepo, DatabaseInitializer database,
-            TimeProvider clock)
+            TimeProvider clock, ILogger<RecurringTransactionService>? logger = null)
         {
+            _logger = logger ?? NullLogger<RecurringTransactionService>.Instance;
             _recurringRepo = recurringRepo;
             _categoryRepo = categoryRepo;
             _accountRepo = accountRepo;
@@ -37,13 +41,12 @@ namespace MoneyRecord.Services
 
             var categories = (await _categoryRepo.GetAllAsync()).ToDictionary(c => c.Id);
             var accounts = (await _accountRepo.GetAllAsync()).ToDictionary(a => a.Id);
-            var debtsLeft = recurrings.Any(r => r.DebtId != null) ? await GetDebtsLeftAsync(_database) : null;
+            // What is left of each debt caps its scheduled payments
+            var debtsLeft = recurrings.Any(r => r.DebtId != null)
+                ? await DebtLedger.GetOutstandingAsync(await _database.GetConnectionAsync())
+                : null;
             return UpcomingSchedule.Build(recurrings, categories, accounts, _clock.GetLocalNow().DateTime, days, debtsLeft);
         }
-
-        /// <summary>What is left of each debt, in cents (debt ID → cents): caps its scheduled payments in Upcoming.</summary>
-        private static async Task<Dictionary<int, long>> GetDebtsLeftAsync(DatabaseInitializer database) =>
-            (await DebtLedger.GetTotalsAsync(await database.GetConnectionAsync())).ToDictionary(t => t.DebtId, t => t.OutstandingCents);
 
         /// <summary>
         /// Creates every occurrence that is due (catching up the periods missed while the app was closed) and moves
@@ -71,44 +74,62 @@ namespace MoneyRecord.Services
 
             foreach (var recurring in await _recurringRepo.GetDueAsync(now))
             {
-                // One database transaction per recurrence: its new transactions and its advanced schedule are saved
-                // together, so an interrupted catch-up never creates the same occurrence twice (a rollback rethrows)
-                await _database.RunInTransactionAsync(db =>
+                // Counted only once its database transaction is saved
+                var createdHere = 0;
+                int? paidOffHere = null;
+                try
                 {
-                    while (recurring.NextOccurrence <= now && !HasEnded(recurring))
+                    // One database transaction per recurrence: its new transactions and its advanced schedule are saved
+                    // together, so an interrupted catch-up never creates the same occurrence twice (a rollback rethrows)
+                    await _database.RunInTransactionAsync(db =>
                     {
-                        if (recurring.DebtId is { } debtId)
+                        while (recurring.NextOccurrence <= now && !HasEnded(recurring))
                         {
-                            paysDebts = true;
-                            if (!PayDebt(db, recurring, debtId))
-                                break;
-                            created++;
-                            if (!recurring.IsActive)
-                                paidOff.Add(debtId);
+                            if (recurring.DebtId is { } debtId)
+                            {
+                                paysDebts = true;
+                                if (!PayDebt(db, recurring, debtId))
+                                    break;
+                                createdHere++;
+                                Advance(recurring);
+                                // That payment settled the debt
+                                if (!recurring.IsActive)
+                                {
+                                    paidOffHere = debtId;
+                                    break;
+                                }
+                                continue;
+                            }
+
+                            db.Insert(new Transaction
+                        {
+                                Date = recurring.NextOccurrence,
+                                Description = recurring.Description,
+                                Amount = recurring.Amount,
+                                CategoryId = recurring.CategoryId,
+                                Type = recurring.TransactionType,
+                                AccountId = recurring.AccountId,
+                                PayeeId = recurring.PayeeId
+                            });
+                            createdHere++;
                             Advance(recurring);
-                            if (!recurring.IsActive)
-                                break;
-                            continue;
                         }
 
-                        db.Insert(new Transaction
-                        {
-                            Date = recurring.NextOccurrence,
-                            Description = recurring.Description,
-                            Amount = recurring.Amount,
-                            CategoryId = recurring.CategoryId,
-                            Type = recurring.TransactionType,
-                            AccountId = recurring.AccountId,
-                            PayeeId = recurring.PayeeId
-                        });
-                        created++;
-                        Advance(recurring);
-                    }
+                        if (HasEnded(recurring))
+                            recurring.IsActive = false;
+                        db.Update(recurring);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // One recurrence that can't be processed must not stop the others; it is tried again next time
+                    _logger.LogError(ex, "Recurring transaction {RecurringId} could not be processed", recurring.Id);
+                    continue;
+                }
 
-                    if (HasEnded(recurring))
-                        recurring.IsActive = false;
-                    db.Update(recurring);
-                });
+                created += createdHere;
+                if (paidOffHere is { } paid)
+                    paidOff.Add(paid);
             }
 
             // A payment's interest may have created the "Interest" category
@@ -126,14 +147,22 @@ namespace MoneyRecord.Services
 
         /// <summary>
         /// One scheduled debt payment, capped at what is left. False when there is nothing to pay (the debt is paid or
-        /// gone): the schedule stops. A payment that settles the debt stops it as well (<see cref="RecurringTransaction.IsActive"/>).
+        /// gone) or its account can't pay it any more (moved to another currency): the schedule stops. A payment that
+        /// settles the debt stops it as well (<see cref="RecurringTransaction.IsActive"/>).
         /// </summary>
-        private static bool PayDebt(SQLiteConnection db, RecurringTransaction recurring, int debtId)
+        private bool PayDebt(SQLiteConnection db, RecurringTransaction recurring, int debtId)
         {
             var debt = db.Find<Debt>(debtId);
             var left = debt == null ? 0 : DebtLedger.GetTotals(db, debtId).OutstandingCents;
             if (debt == null || left == 0)
             {
+                recurring.IsActive = false;
+                return false;
+            }
+            if (!DebtLedger.CanPayThrough(db, debt, recurring.AccountId))
+            {
+                _logger.LogWarning("Debt {DebtId}'s schedule stopped: account {AccountId} is gone or in another currency",
+                    debtId, recurring.AccountId);
                 recurring.IsActive = false;
                 return false;
             }

@@ -5558,5 +5558,32 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("DebtsPaidOff", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overpaid by {0}.
+        /// </summary>
+        public static string DebtOverpaidBy {
+            get {
+                return ResourceManager.GetString("DebtOverpaidBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Without this, more would be paid back than was lent or borrowed. Delete payments first..
+        /// </summary>
+        public static string DebtDeleteWouldOverpay {
+            get {
+                return ResourceManager.GetString("DebtDeleteWouldOverpay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debt payments are changed on the Debts page.
+        /// </summary>
+        public static string DebtEditOnDebtsPage {
+            get {
+                return ResourceManager.GetString("DebtEditOnDebtsPage", resourceCulture);
+            }
+        }
     }
 }

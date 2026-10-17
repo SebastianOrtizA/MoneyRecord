@@ -178,12 +178,10 @@ namespace MoneyRecord.ViewModels
             await UpdateSourceAccountBalanceAsync();
         }
 
-        // The user's own accounts, plus the debt an edited transfer belongs to (a payment edited from the list keeps its side)
+        // The user's own accounts: a debt's transfers are edited on the Debts page
         private async Task LoadAccountsAsync()
         {
-            Accounts = (await _accountRepository.GetAllAsync())
-                .Where(a => !a.IsDebt || a.Id == Transfer?.SourceAccountId || a.Id == Transfer?.DestinationAccountId)
-                .ToList();
+            Accounts = await _accountRepository.GetOwnAsync();
         }
 
         partial void OnSelectedSourceAccountChanged(Account? value)

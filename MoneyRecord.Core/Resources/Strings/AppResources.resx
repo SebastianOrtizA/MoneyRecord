@@ -2015,4 +2015,13 @@ Amount: {2}</value>
   <data name="DebtsPaidOff" xml:space="preserve">
     <value>Paid off</value>
   </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>Overpaid by {0}</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>Without this, more would be paid back than was lent or borrowed. Delete payments first.</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>Debt payments are changed on the Debts page</value>
+  </data>
 </root>

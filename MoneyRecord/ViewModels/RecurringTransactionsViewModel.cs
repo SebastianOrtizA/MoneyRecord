@@ -149,7 +149,7 @@ namespace MoneyRecord.ViewModels
 
                 // From the same rows, after any change to the schedules (edit, delete, pause), so both lists agree
                 var debtsLeft = items.Any(r => r.DebtId != null)
-                    ? (await _debtService.GetAllAsync()).ToDictionary(d => d.DebtId, d => d.OutstandingCents)
+                    ? await _debtService.GetOutstandingAsync()
                     : null;
                 UpcomingEntries = UpcomingSchedule.Build(items, categories, accounts, DateTime.Now, debtsLeft: debtsLeft);
                 HasUpcoming = UpcomingEntries.Count > 0;

@@ -273,7 +273,7 @@
                 <Grid Grid.Row="2" x:Name="DetailFooter" ColumnDefinitions="*,*" ColumnSpacing="8">
                     <Button Text="{ext:Localize DebtRecordPayment}"
                             Command="{Binding RecordPaymentCommand}"
-                            IsVisible="{Binding SelectedDebt.IsPaidOff, Converter={StaticResource InvertedBoolConverter}}"
+                            IsVisible="{Binding SelectedDebt.CanRecordPayment}"
                             Style="{StaticResource PrimarySheetButton}" />
                     <Button Grid.Column="1"
                             Text="{Binding AddMoreText}"

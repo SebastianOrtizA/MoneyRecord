@@ -42,6 +42,10 @@ namespace MoneyRecord.Services
 
         public static Task<List<Totals>> GetTotalsAsync(SQLiteAsyncConnection db) => db.QueryAsync<Totals>(TotalsSql);
 
+        /// <summary>What is left of each debt, in cents (debt ID → cents): caps its scheduled payments in Upcoming.</summary>
+        public static async Task<Dictionary<int, long>> GetOutstandingAsync(SQLiteAsyncConnection db) =>
+            (await GetTotalsAsync(db)).ToDictionary(t => t.DebtId, t => t.OutstandingCents);
+
         public static Totals GetTotals(SQLiteConnection db, int debtId) =>
             db.Query<Totals>(TotalsSql + " WHERE d.Id = ?", debtId).FirstOrDefault()
             ?? throw new InvalidOperationException($"Debt {debtId} does not exist.");
@@ -53,8 +57,10 @@ namespace MoneyRecord.Services
         /// </summary>
         public static bool RecordPayment(SQLiteConnection db, Debt debt, int accountId, DateTime date, long cents, long interestCents)
         {
-            if (cents <= 0 || interestCents < 0)
+            if (cents <= 0)
                 throw new ArgumentOutOfRangeException(nameof(cents), "A payment needs a positive amount.");
+            if (interestCents < 0)
+                throw new ArgumentOutOfRangeException(nameof(interestCents), "Interest can't be negative.");
             var left = GetTotals(db, debt.Id).OutstandingCents;
             if (cents > left)
                 throw new InvalidOperationException($"Debt {debt.Id} has {left} cents left, less than the payment of {cents}.");
@@ -103,30 +109,36 @@ namespace MoneyRecord.Services
                 DestinationAccountId = paysIntoDebt ? debt.AccountId : account.Id
             });
 
-        /// <summary>One of the user's accounts, in the debt's currency (its money can't change currency on the way).</summary>
-        internal static Account RealAccount(SQLiteConnection db, Debt debt, int accountId)
-        {
-            var account = db.Find<Account>(accountId);
-            if (account == null || account.IsDebt)
-                throw new InvalidOperationException($"Account {accountId} is not one of the user's accounts.");
-            var ledger = db.Find<Account>(debt.AccountId)
-                ?? throw new InvalidOperationException($"Debt {debt.Id} has lost its account.");
-            if (!MoneyFormatter.SameCurrency(account.CurrencyCode, ledger.CurrencyCode))
-                throw new InvalidOperationException($"Account {accountId} is not in the debt's currency {ledger.CurrencyCode}.");
-            return account;
-        }
+        /// <summary>
+        /// The money can move through <paramref name="accountId"/>: one of the user's accounts, in the debt's currency (its
+        /// money can't change currency on the way). An account's currency can change later, so a schedule checks first.
+        /// </summary>
+        public static bool CanPayThrough(SQLiteConnection db, Debt debt, int accountId) =>
+            db.Find<Account>(accountId) is { IsDebt: false } account
+            && db.Find<Account>(debt.AccountId) is { } ledger
+            && MoneyFormatter.SameCurrency(account.CurrencyCode, ledger.CurrencyCode);
 
-        /// <summary>The "Interest" category of that type (by its name in the current language), created when there is none.</summary>
+        internal static Account RealAccount(SQLiteConnection db, Debt debt, int accountId) =>
+            CanPayThrough(db, debt, accountId)
+                ? db.Find<Account>(accountId)
+                : throw new InvalidOperationException($"Account {accountId} can't pay debt {debt.Id} (not the user's, or another currency).");
+
+        /// <summary>
+        /// The "Interest" category of that type: the one the app created (<see cref="Category.IsDebtInterest"/>, found by that
+        /// mark, never by its name, which follows the language and could be a category of the user's own), created when
+        /// there is none (or it was deleted).
+        /// </summary>
         public static int InterestCategoryId(SQLiteConnection db, TransactionType type)
         {
             var categoryType = type == TransactionType.Income ? CategoryType.Income : CategoryType.Expense;
-            var name = AppResources.InterestCategory;
-            var existing = db.Table<Category>().Where(c => c.Type == categoryType).ToList()
-                .FirstOrDefault(c => string.Equals(c.Name.Trim(), name, StringComparison.CurrentCultureIgnoreCase));
+            var existing = db.Table<Category>().FirstOrDefault(c => c.IsDebtInterest && c.Type == categoryType);
             if (existing != null)
                 return existing.Id;
 
-            var category = new Category { Name = name, Type = categoryType, IconCode = InterestIconCode };
+            var category = new Category
+            {
+                Name = AppResources.InterestCategory, Type = categoryType, IconCode = InterestIconCode, IsDebtInterest = true
+            };
             db.Insert(category);
             return category.Id;
         }
