@@ -38,7 +38,7 @@ namespace MoneyRecord.Services
             var db = await dbInitializer.GetConnectionAsync();
             var all = await db.Table<Participant>().ToListAsync();
             if (all.Any(p => p.Id != participantId && PayeeNames.Same(p.Name, name)))
-                throw new InvalidOperationException("Another friend has this name.");
+                throw new PartyProblemException(PartyProblem.NameTaken, "Another friend has this name.");
 
             var participant = all.FirstOrDefault(p => p.Id == participantId)
                 ?? throw new InvalidOperationException("The friend no longer exists.");
@@ -50,7 +50,7 @@ namespace MoneyRecord.Services
         {
             var db = await dbInitializer.GetConnectionAsync();
             if (await db.Table<PartyMember>().Where(m => m.ParticipantId == participantId).CountAsync() > 0)
-                throw new InvalidOperationException("The friend is in a party.");
+                throw new PartyProblemException(PartyProblem.FriendInParty, "The friend is in a party.");
             await db.DeleteAsync<Participant>(participantId);
         }
 
@@ -90,7 +90,7 @@ namespace MoneyRecord.Services
                         .Concat(db.Table<PartyContribution>().Where(c => c.PartyId == party.Id).ToList().Select(c => (int?)c.ParticipantId))
                         .OfType<int>().ToHashSet();
                     if (used.Any(id => !members.Contains(id)))
-                        throw new InvalidOperationException("A person with expenses or contributions can't be taken out.");
+                        throw new PartyProblemException(PartyProblem.MemberInUse, "A person with expenses or contributions can't be taken out.");
 
                     db.Update(party);
                     db.Execute("DELETE FROM \"PartyMember\" WHERE PartyId = ?", party.Id);
@@ -100,7 +100,7 @@ namespace MoneyRecord.Services
                     var kept = db.Table<PartyExpense>().Where(e => e.PartyId == party.Id).ToList().Select(e => e.Id).ToList();
                     // An expense nobody remaining shares can't be summed
                     if (kept.Any(id => left.TryGetValue(id, out var excluded) && members.All(excluded.Contains)))
-                        throw new InvalidOperationException("Taking this person out would leave an expense with nobody to share it.");
+                        throw new PartyProblemException(PartyProblem.NobodyShares, "Taking this person out would leave an expense with nobody to share it.");
 
                     foreach (var expenseId in kept)
                         db.Execute("DELETE FROM \"PartyExpenseExclusion\" WHERE ExpenseId = ? AND ParticipantId NOT IN (" +

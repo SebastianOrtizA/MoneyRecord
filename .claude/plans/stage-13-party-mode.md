@@ -1,6 +1,6 @@
 # Stage 13: Party Mode
 
-**Status**: Design agreed 2026-10-17 (decisions below); 13.1 in review
+**Status**: Design agreed 2026-10-17 (decisions below); 13.1 done, 13.2 in review
 **Depends on**: Stages 6–11 (modernization); related to 10.7 splits and 10.8 debts
 **Complexity**: TBD
 **Source**: User request, 2026-10-14
@@ -28,10 +28,12 @@ in, the total, and who owes whom so that everybody ends up paying the same share
 - Still open: relation to Stage 12 trips (leaning to keep them separate), backup format bump (v5 for the new tables).
 
 ## Proposed sub-stages
-- 13.1 Core (in review): `Participant`, `PartyEvent`, `PartyMember`, `PartyExpense` (+ `PartyExpenseExclusion`), `PartyContribution`; the
+- 13.1 Core (done): `Participant`, `PartyEvent`, `PartyMember`, `PartyExpense` (+ `PartyExpenseExclusion`), `PartyContribution`; the
   tables come from the models (no migration needed); `PartyLedger` (even split with rotating leftover cents, balances,
   settle-up; the common pot is line ID 0 so balances sum to zero), `IPartyService` / `PartyService`; tests.
-- 13.2 UI: More → Parties, event page (budget vs spent, expenses, contributions, balances), friends list.
+- 13.2 UI (in review): More → Parties (cards + new/edit sheet with friends ticked), Friends page, party page (spent of budget,
+  balances with the pot line, expenses and contributions with sheets; tap = edit / delete); `PartyProblemException` names
+  why a change was refused; display models `PartyCard` / `PartyBalanceRow` in Core (tested).
 - 13.3 Settle-up screen (mark paid), share as text, optional own-share expense, backup/restore v5.
 
 ## Verify

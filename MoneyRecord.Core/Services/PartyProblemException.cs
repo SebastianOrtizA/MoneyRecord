@@ -1,0 +1,20 @@
+namespace MoneyRecord.Services
+{
+    /// <summary>Why a change to a party or the friends list was refused, so a view model can say it in the user's language.</summary>
+    public enum PartyProblem
+    {
+        /// <summary>The friend's name is taken by another friend.</summary>
+        NameTaken,
+        /// <summary>The friend is in a party.</summary>
+        FriendInParty,
+        /// <summary>A member with expenses or contributions would be taken out of a party.</summary>
+        MemberInUse,
+        /// <summary>Taking a member out would leave an expense nobody shares.</summary>
+        NobodyShares
+    }
+
+    public sealed class PartyProblemException(PartyProblem problem, string message) : InvalidOperationException(message)
+    {
+        public PartyProblem Problem { get; } = problem;
+    }
+}

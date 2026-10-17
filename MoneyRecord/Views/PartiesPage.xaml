@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             x:Class="MoneyRecord.Views.PartiesPage"
+             x:DataType="viewmodels:PartiesViewModel"
+             Title="{ext:Localize PartiesTitle}">
+
+    <ContentPage.Resources>
+        <Style x:Key="FormCaption" TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
+            <!-- One card per party (a tap opens it); the 16px gutter is inside the rows so the scrollbar sits at the edge -->
+            <CollectionView ItemsSource="{Binding Cards}">
+                <CollectionView.Header>
+                    <Button Text="{ext:Localize PartyFriends}"
+                            Command="{Binding OpenFriendsCommand}"
+                            Margin="16,8,16,2"
+                            HeightRequest="40"
+                            CornerRadius="20"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:PartyCard">
+                        <Border Style="{StaticResource Card}" Margin="16,6" Padding="14">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:PartiesViewModel}}, Path=OpenPartyCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding DateText}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                <ProgressBar IsVisible="{Binding HasBudget}"
+                                             Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
+                                             ProgressColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}"
+                                             BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                             HeightRequest="10" />
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Label Text="{Binding SpentText}" FontSize="14" />
+                                    <Label Grid.Column="1" Text="{Binding StatusText}" IsVisible="{Binding HasBudget}" FontSize="13" FontAttributes="Bold"
+                                           TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.Footer>
+                    <VerticalStackLayout>
+                        <VerticalStackLayout Spacing="12" Padding="32,48"
+                                             IsVisible="{Binding HasParties, Converter={StaticResource InvertedBoolConverter}}">
+                            <Label Text="&#xF0849;" FontFamily="MaterialDesignIcons" FontSize="64" HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            <Label Text="{ext:Localize NoPartiesYet}" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                            <Label Text="{ext:Localize AddPartyToStart}" FontSize="14" HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        </VerticalStackLayout>
+                        <!-- Room so the last card scrolls above the add button -->
+                        <ContentView HeightRequest="88" />
+                    </VerticalStackLayout>
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize NewParty}"
+                IsVisible="{Binding IsFormOpen, Converter={StaticResource InvertedBoolConverter}}"
+                Command="{Binding AddPartyCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
+
+        <!-- New / edit sheet: name, date, currency, budget, who takes part -->
+        <controls:BottomSheet Scroll="{x:Reference FormScroll}" IsOpen="{Binding IsFormOpen}" CloseCommand="{Binding CloseFormCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
+
+                <ScrollView Grid.Row="1" x:Name="FormScroll">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{ext:Localize PartyName}" Style="{StaticResource FormCaption}" />
+                        <Entry Text="{Binding FormName}" Placeholder="{ext:Localize PartyNamePlaceholder}" MaxLength="60" FontSize="16" />
+
+                        <Label Text="{ext:Localize Date}" Style="{StaticResource FormCaption}" />
+                        <DatePicker Date="{Binding FormDate}" Format="D" FontSize="16" />
+
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                            <Label Text="{ext:Localize PartyBudgetOptional}" Style="{StaticResource FormCaption}" />
+                            <Label Grid.Column="1" Text="{ext:Localize Currency}" Style="{StaticResource FormCaption}" />
+                            <controls:DecimalEntry Grid.Row="1" Text="{Binding FormBudget}" Placeholder="0.00" FontSize="16">
+                                <controls:DecimalEntry.Behaviors>
+                                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency}" />
+                                </controls:DecimalEntry.Behaviors>
+                            </controls:DecimalEntry>
+                            <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Currencies}" SelectedItem="{Binding FormCurrency}"
+                                    Title="{ext:Localize SelectCurrency}" WidthRequest="96" FontSize="16" MinimumHeightRequest="44" />
+                        </Grid>
+
+                        <Label Text="{ext:Localize PartyMembers}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
+                        <Label Text="{ext:Localize PartyNoFriendsYet}" IsVisible="{Binding HasNoFriends}" FontSize="13"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <VerticalStackLayout Spacing="0" BindableLayout.ItemsSource="{Binding MemberChoices}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:PartyMemberChoice">
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" MinimumHeightRequest="44">
+                                        <CheckBox IsChecked="{Binding IsSelected}" VerticalOptions="Center"
+                                                  Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                        <Label Grid.Column="1" Text="{Binding Participant.Name}" FontSize="16" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Entry Text="{Binding NewFriendName}" Placeholder="{ext:Localize FriendNamePlaceholder}" MaxLength="40" FontSize="16"
+                                   ReturnCommand="{Binding AddFriendCommand}" />
+                            <Button Grid.Column="1" Text="{ext:Localize AddFriend}" Command="{Binding AddFriendCommand}"
+                                    HeightRequest="40" CornerRadius="20" Padding="16,0" VerticalOptions="Center"
+                                    BackgroundColor="Transparent" BorderWidth="1"
+                                    BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Button Grid.Row="2"
+                        Text="{ext:Localize Save}"
+                        Command="{Binding SavePartyCommand}"
+                        HeightRequest="44"
+                        CornerRadius="22"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+            </Grid>
+        </controls:BottomSheet>
+    </Grid>
+
+</ContentPage>
