@@ -22,6 +22,7 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IDebtService _debtService;
         private readonly INavigationService _navigationService;
+        private readonly TimeProvider _clock;
 
         [ObservableProperty]
         private ObservableCollection<RecurringTransaction> recurringTransactions = [];
@@ -75,7 +76,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private DateTime editFirstDate;
 
-        public DateTime EditMinimumDate => RecurringStart.EarliestScheduleDate(DateTime.Now);
+        public DateTime EditMinimumDate => RecurringStart.EarliestScheduleDate(_clock.GetLocalNow().DateTime);
 
         public List<RecurrenceFrequencyItem> Frequencies { get; } =
         [
@@ -93,8 +94,9 @@ namespace MoneyRecord.ViewModels
             ICategoryRepository categoryRepo,
             IAccountRepository accountRepo,
             IErrorHandler errorHandler, IDialogService dialogService, IDebtService debtService,
-            INavigationService navigationService)
+            INavigationService navigationService, TimeProvider clock)
         {
+            _clock = clock;
             _debtService = debtService;
             _navigationService = navigationService;
             _recurringRepo = recurringRepo;
@@ -200,7 +202,7 @@ namespace MoneyRecord.ViewModels
             EditAmount = item.Amount.ToString("N2");
             // A debt's schedule is edited on the Debts page
             EditCanMoveFirstDate = item.DebtId == null && item.LastProcessedDate == null
-                && RecurringStart.IsFuture(item.NextOccurrence, DateTime.Now);
+                && RecurringStart.IsFuture(item.NextOccurrence, _clock.GetLocalNow().DateTime);
             EditFirstDate = item.NextOccurrence;
             IsEditMode = true;
         }
@@ -241,7 +243,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            if (EditCanMoveFirstDate && !RecurringStart.IsFuture(EditFirstDate, DateTime.Now))
+            if (EditCanMoveFirstDate && !RecurringStart.IsFuture(EditFirstDate, _clock.GetLocalNow().DateTime))
             {
                 await _errorHandler.HandleAsync(AppResources.ScheduleDateMustBeFuture);
                 return;

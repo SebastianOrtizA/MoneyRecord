@@ -34,6 +34,7 @@ namespace MoneyRecord.ViewModels
         private readonly IPayeeService _payeeService;
         private readonly ISplitService _splitService;
         private readonly IReceiptScanner _receiptScanner;
+        private readonly TimeProvider _clock;
         private readonly ILogger<AddTransactionViewModel> _logger;
 
         // Every payee with its use: the suggestions under the payee field
@@ -75,14 +76,24 @@ namespace MoneyRecord.ViewModels
         /// schedule is saved. No split, receipt, tags or own conversion: those belong to a recorded entry.
         /// </summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanScanReceipt), nameof(ShowsEntryDetails), nameof(MinimumDate), nameof(DateLabel))]
+        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanScanReceipt), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails), nameof(MinimumDate), nameof(DateLabel))]
         private bool isScheduleMode;
 
-        /// <summary>Tags, the own conversion and the receipt: not for a schedule.</summary>
-        public bool ShowsEntryDetails => !IsScheduleMode;
+        /// <summary>
+        /// The save records nothing now, only the schedule: from the Recurring page, or recurring with a future date (its
+        /// first entry is recorded on that date).
+        /// </summary>
+        public bool SavesOnlySchedule => IsScheduleMode
+            || (IsRecurring && CanMakeRecurring && RecurringStart.IsFuture(SelectedDate, Now));
+
+        /// <summary>Tags, the own conversion and the receipt belong to a recorded entry: hidden when only a schedule is saved.</summary>
+        public bool ShowsEntryDetails => !SavesOnlySchedule;
+
+        // The clock the balances use (IBalanceService.CountedBefore): one definition of today
+        private DateTime Now => _clock.GetLocalNow().DateTime;
 
         /// <summary>A schedule starts tomorrow at the earliest; an entry can have any date.</summary>
-        public DateTime MinimumDate => IsScheduleMode ? RecurringStart.EarliestScheduleDate(DateTime.Now) : new DateTime(1900, 1, 1);
+        public DateTime MinimumDate => IsScheduleMode ? RecurringStart.EarliestScheduleDate(Now) : new DateTime(1900, 1, 1);
 
         public string DateLabel => IsScheduleMode ? AppResources.FirstDate : AppResources.Date;
 
@@ -90,13 +101,13 @@ namespace MoneyRecord.ViewModels
         /// Under a future date: only the schedule is saved (recurring), or the entry counts in balances from that date.
         /// Empty for today or earlier.
         /// </summary>
-        public string FutureDateNote => !RecurringStart.IsFuture(SelectedDate, DateTime.Now)
+        public string FutureDateNote => !RecurringStart.IsFuture(SelectedDate, Now)
             ? string.Empty
-            : string.Format(IsRecurring && CanMakeRecurring ? AppResources.ScheduleStartsNote : AppResources.FutureDateNote,
+            : string.Format(SavesOnlySchedule ? AppResources.ScheduleStartsNote : AppResources.FutureDateNote,
                 DateFormatter.Format(SelectedDate, DateStyle.Long));
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(FutureDateNote))]
+        [NotifyPropertyChangedFor(nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails))]
         private DateTime selectedDate = DateTime.Now;
 
         [ObservableProperty]
@@ -137,7 +148,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The payment is split across categories: the parts replace the category grid.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote))]
+        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails))]
         [NotifyPropertyChangedFor(nameof(DescriptionPlaceholder))]
         private bool isSplit;
 
@@ -173,7 +184,7 @@ namespace MoneyRecord.ViewModels
         private string title = string.Empty;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote))]
+        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails))]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -183,7 +194,7 @@ namespace MoneyRecord.ViewModels
         private string budgetWarningText = string.Empty;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(FutureDateNote))]
+        [NotifyPropertyChangedFor(nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails))]
         private bool isRecurring;
 
         [ObservableProperty]
@@ -264,7 +275,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, IReceiptScanner receiptScanner, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -283,6 +294,7 @@ namespace MoneyRecord.ViewModels
             _payeeService = payeeService;
             _splitService = splitService;
             _receiptScanner = receiptScanner;
+            _clock = clock;
             SplitParts.CollectionChanged += (_, _) =>
             {
                 OnPropertyChanged(nameof(CanRemoveSplitParts));
@@ -508,7 +520,7 @@ namespace MoneyRecord.ViewModels
                 if (IsScheduleMode)
                 {
                     Title = TransactionType == TransactionType.Income ? AppResources.NewRecurringIncome : AppResources.NewRecurringExpense;
-                    SelectedDate = RecurringStart.EarliestScheduleDate(DateTime.Now);
+                    SelectedDate = RecurringStart.EarliestScheduleDate(Now);
                     // The recurrence options sit under "More details"
                     IsRecurring = true;
                     IsMoreDetailsOpen = true;
@@ -705,9 +717,10 @@ namespace MoneyRecord.ViewModels
 
             // A recurring entry dated in the future saves only its schedule: nothing is recorded (or counted) before then
             var start = IsRecurring && CanMakeRecurring && SelectedFrequencyItem != null
-                ? RecurringStart.For(SelectedDate, DateTime.Now, SelectedFrequencyItem.Frequency, DayOfMonthChoice)
+                ? RecurringStart.For(SelectedDate, Now, SelectedFrequencyItem.Frequency, DayOfMonthChoice)
                 : null;
-            if (IsScheduleMode && start?.RecordsFirstNow != false)
+            var schedulesOnly = start is { RecordsFirstNow: false };
+            if (IsScheduleMode && !schedulesOnly)
             {
                 await _errorHandler.HandleAsync(AppResources.ScheduleDateMustBeFuture);
                 return;
@@ -715,7 +728,7 @@ namespace MoneyRecord.ViewModels
 
             // Validate balance for expense transactions if account doesn't allow negative balance (nothing leaves it yet
             // for a schedule)
-            if (TransactionType == TransactionType.Expense && !SelectedAccount.AllowNegativeBalance && start?.RecordsFirstNow != false)
+            if (TransactionType == TransactionType.Expense && !SelectedAccount.AllowNegativeBalance && !schedulesOnly)
             {
                 var currentBalance = await _balanceService.GetAccountBalanceAsync(accountId);
 
@@ -736,9 +749,9 @@ namespace MoneyRecord.ViewModels
             // After every check, so a refused save never leaves a new payee behind
             var payeeId = await _payeeService.ResolveAsync(PayeeText);
 
-            if (start is { RecordsFirstNow: false })
+            if (schedulesOnly)
             {
-                await SaveRecurringAsync(start, amountValue, EntryDescription.Resolve(Description, SelectedCategory!.Name), accountId, payeeId);
+                await SaveRecurringAsync(start!, amountValue, EntryDescription.Resolve(Description, SelectedCategory!.Name), accountId, payeeId);
                 // A receipt photo belongs to a recorded entry
                 DiscardUnsavedPhoto();
                 _entryDefaults.Remember(TransactionType, accountId, SelectedCategory.Id);

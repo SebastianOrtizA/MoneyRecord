@@ -108,7 +108,12 @@
   future: it counts in balances from …"). The Recurring edit card shows "First date" while a (non-debt) schedule has
   created nothing. Also fixed: the add form's Monthly default never showed "Specific day of month" until the
   frequency was changed. Not changed: future-dated debt movements still count in a debt's outstanding amount (Debts
-  page), and the Recurring edit form is still the inline card (a bottom sheet could follow, like 11.4).
+  page), and the Recurring edit form is still the inline card (a bottom sheet could follow, like 11.4). The
+  home-screen widget redraws when the app goes to the background and after the ~09:00 daily job, so an entry that
+  becomes due at midnight shows there from ~09:00.
+- Review (PR #58): `SavesOnlySchedule` (schedule mode, or recurring with a future date) hides tags, the receipt and the
+  own conversion in the add form too, so nothing typed there is dropped on save; the add and Recurring view models
+  take "today" from the injected `TimeProvider`, like `BalanceService`.
 
 ## Done when
 Each item is fixed or consciously dropped with the user.
