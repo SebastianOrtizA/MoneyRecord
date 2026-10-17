@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
@@ -21,6 +22,9 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly TimeProvider _clock;
         private readonly IFileSharer _sharer;
+        private readonly IAccountRepository _accounts;
+        private readonly ICategoryRepository _categories;
+        private readonly IEntryDefaultsService _entryDefaults;
 
         private List<Participant> _members = [];
 
@@ -30,10 +34,12 @@ namespace MoneyRecord.ViewModels
         private bool isLoading;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasParty), nameof(Title), nameof(CurrencyCode))]
+        [NotifyPropertyChangedFor(nameof(HasParty), nameof(Title), nameof(CurrencyCode), nameof(RecordShareText))]
         private PartyCard? card;
 
         public bool HasParty => Card != null;
+
+        public string RecordShareText => Card?.Party.OwnTransactionId != null ? AppResources.PartyUpdateMyShare : AppResources.PartyRecordMyShare;
 
         public string Title => Card?.Name ?? AppResources.PartiesTitle;
 
@@ -68,7 +74,8 @@ namespace MoneyRecord.ViewModels
         public bool HasPayments => Payments.Count > 0;
 
         public PartyViewModel(IPartyService parties, INavigationService navigation, IErrorHandler errorHandler,
-            IDialogService dialogService, TimeProvider clock, IFileSharer sharer)
+            IDialogService dialogService, TimeProvider clock, IFileSharer sharer,
+            IAccountRepository accounts, ICategoryRepository categories, IEntryDefaultsService entryDefaults)
         {
             _parties = parties;
             _navigation = navigation;
@@ -76,6 +83,9 @@ namespace MoneyRecord.ViewModels
             _dialogService = dialogService;
             _clock = clock;
             _sharer = sharer;
+            _accounts = accounts;
+            _categories = categories;
+            _entryDefaults = entryDefaults;
         }
 
         public Task InitializeAsync() => LoadCommand.ExecuteAsync(null);
@@ -462,6 +472,77 @@ namespace MoneyRecord.ViewModels
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToSharePartySummary);
             }
+        }
+
+        // ----- My share -----
+
+        [RelayCommand]
+        private async Task RecordMyShareAsync()
+        {
+            if (Card == null)
+                return;
+
+            try
+            {
+                var party = Card.Party;
+                var me = _members.FirstOrDefault(m => m.Id == party.MeParticipantId);
+                if (me == null)
+                {
+                    var names = PickList.UniqueLabels(_members.Select(m => m.Name));
+                    var pick = await _dialogService.ActionSheetAsync(AppResources.PartyWhichIsYou, AppResources.Cancel, names);
+                    if (pick == null || !names.Contains(pick))
+                        return;
+                    me = _members[names.IndexOf(pick)];
+                }
+
+                int? accountId = null;
+                int? categoryId = null;
+                // Recording again keeps the account and category of the expense already made
+                if (party.OwnTransactionId == null)
+                {
+                    var accounts = (await _accounts.GetOwnAsync()).Where(a => MoneyFormatter.SameCurrency(a.CurrencyCode, party.CurrencyCode)).ToList();
+                    if (accounts.Count == 0)
+                    {
+                        await _errorHandler.HandleAsync(string.Format(AppResources.PartyNoAccountInCurrency,
+                            string.IsNullOrEmpty(party.CurrencyCode) ? MoneyFormatter.BaseCurrency : party.CurrencyCode));
+                        return;
+                    }
+
+                    var first = _entryDefaults.DefaultAccount(TransactionType.Expense, accounts);
+                    accounts = [.. accounts.OrderBy(a => a.Id == first?.Id ? 0 : 1)];
+                    var account = await PickAsync(AppResources.PartyShareAccount, accounts, a => a.Name);
+                    if (account == null)
+                        return;
+
+                    var categories = _entryDefaults.OrderByRecent(TransactionType.Expense, await _categories.GetByTypeAsync(CategoryType.Expense));
+                    var category = await PickAsync(AppResources.PartyShareCategory, categories, c => c.Name);
+                    if (category == null)
+                        return;
+
+                    accountId = account.Id;
+                    categoryId = category.Id;
+                    _entryDefaults.Remember(TransactionType.Expense, account.Id, category.Id);
+                }
+
+                var transaction = await _parties.RecordOwnShareAsync(party.Id, me.Id, accountId, categoryId);
+                await LoadCommand.ExecuteAsync(null);
+                await _dialogService.ToastAsync(string.Format(AppResources.PartyShareRecorded, MoneyFormatter.Format(transaction.Amount, party.CurrencyCode)));
+            }
+            catch (PartyProblemException ex) when (ex.Problem == PartyProblem.NoShare)
+            {
+                await _errorHandler.HandleAsync(AppResources.PartyNoShareYet);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToRecordPartyShare);
+            }
+        }
+
+        private async Task<T?> PickAsync<T>(string title, IReadOnlyList<T> items, Func<T, string> name) where T : class
+        {
+            var labels = PickList.UniqueLabels(items.Select(name));
+            var pick = await _dialogService.ActionSheetAsync(title, AppResources.Cancel, labels);
+            return pick != null && labels.Contains(pick) ? items[labels.IndexOf(pick)] : null;
         }
 
         // ----- The party itself -----

@@ -174,6 +174,11 @@
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
 
+                    <Button Text="{Binding RecordShareText}" Command="{Binding RecordMyShareCommand}" Margin="0,8,0,0"
+                            HeightRequest="44" CornerRadius="22" BorderWidth="1" BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
                         <Button Text="{ext:Localize Edit}" Command="{Binding EditCommand}"
                                 HeightRequest="44" CornerRadius="22"

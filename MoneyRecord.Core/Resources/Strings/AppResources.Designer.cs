@@ -7082,5 +7082,86 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("FailedToSharePartySummary", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record my share.
+        /// </summary>
+        public static string PartyRecordMyShare {
+            get {
+                return ResourceManager.GetString("PartyRecordMyShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update my share.
+        /// </summary>
+        public static string PartyUpdateMyShare {
+            get {
+                return ResourceManager.GetString("PartyUpdateMyShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which friend is you?.
+        /// </summary>
+        public static string PartyWhichIsYou {
+            get {
+                return ResourceManager.GetString("PartyWhichIsYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account for your share.
+        /// </summary>
+        public static string PartyShareAccount {
+            get {
+                return ResourceManager.GetString("PartyShareAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category for your share.
+        /// </summary>
+        public static string PartyShareCategory {
+            get {
+                return ResourceManager.GetString("PartyShareCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your share ({0}) is in your expenses.
+        /// </summary>
+        public static string PartyShareRecorded {
+            get {
+                return ResourceManager.GetString("PartyShareRecorded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no share to record yet.
+        /// </summary>
+        public static string PartyNoShareYet {
+            get {
+                return ResourceManager.GetString("PartyNoShareYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have no account in {0}.
+        /// </summary>
+        public static string PartyNoAccountInCurrency {
+            get {
+                return ResourceManager.GetString("PartyNoAccountInCurrency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not record your share.
+        /// </summary>
+        public static string FailedToRecordPartyShare {
+            get {
+                return ResourceManager.GetString("FailedToRecordPartyShare", resourceCulture);
+            }
+        }
     }
 }

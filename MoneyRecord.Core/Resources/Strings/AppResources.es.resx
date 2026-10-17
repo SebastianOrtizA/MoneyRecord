@@ -2523,4 +2523,31 @@ Monto: {2}</value>
   <data name="FailedToSharePartySummary" xml:space="preserve">
     <value>No se pudo compartir el resumen</value>
   </data>
+  <data name="PartyRecordMyShare" xml:space="preserve">
+    <value>Registrar mi parte</value>
+  </data>
+  <data name="PartyUpdateMyShare" xml:space="preserve">
+    <value>Actualizar mi parte</value>
+  </data>
+  <data name="PartyWhichIsYou" xml:space="preserve">
+    <value>¿Cuál de tus amigos eres tú?</value>
+  </data>
+  <data name="PartyShareAccount" xml:space="preserve">
+    <value>Cuenta para tu parte</value>
+  </data>
+  <data name="PartyShareCategory" xml:space="preserve">
+    <value>Categoría para tu parte</value>
+  </data>
+  <data name="PartyShareRecorded" xml:space="preserve">
+    <value>Tu parte ({0}) está en tus gastos</value>
+  </data>
+  <data name="PartyNoShareYet" xml:space="preserve">
+    <value>Todavía no tienes una parte que registrar</value>
+  </data>
+  <data name="PartyNoAccountInCurrency" xml:space="preserve">
+    <value>No tienes ninguna cuenta en {0}</value>
+  </data>
+  <data name="FailedToRecordPartyShare" xml:space="preserve">
+    <value>No se pudo registrar tu parte</value>
+  </data>
 </root>

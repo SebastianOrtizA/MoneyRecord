@@ -38,6 +38,12 @@ namespace MoneyRecord.Models
 
         public long? BudgetCents { get; set; }
 
+        /// <summary>The friend who is the app's owner, once picked for "record my share"; null until then.</summary>
+        public int? MeParticipantId { get; set; }
+
+        /// <summary>The ledger expense holding the owner's share (<see cref="Transaction"/>), so recording again updates it.</summary>
+        public int? OwnTransactionId { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 

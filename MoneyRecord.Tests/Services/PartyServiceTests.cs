@@ -228,4 +228,73 @@ public sealed class PartyServiceTests : IAsyncLifetime
 
         (await _sut.GetPaymentsAsync(_partyId)).Should().BeEmpty();
     }
+
+    private async Task<(int AccountId, int CategoryId)> AccountAndCategoryAsync() =>
+        ((await _db.Table<Account>().FirstAsync()).Id, (await _db.Table<Category>().FirstAsync()).Id);
+
+    [Fact]
+    public async Task RecordOwnShare_MakesANormalExpenseOfTheShare_AndRemembersTheOwner()
+    {
+        await _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, Amount = 30m, PaidByParticipantId = _ana.Id }, []);
+        var (accountId, categoryId) = await AccountAndCategoryAsync();
+
+        var transaction = await _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId);
+
+        transaction.Id.Should().BeGreaterThan(0);
+        var saved = await _db.FindAsync<Transaction>(transaction.Id);
+        (saved.Type, saved.AmountCents, saved.Description, saved.AccountId, saved.CategoryId)
+            .Should().Be((TransactionType.Expense, 1000L, "Birthday", accountId, categoryId));
+        var party = (await _sut.GetAsync(_partyId))!;
+        (party.MeParticipantId, party.OwnTransactionId).Should().Be((_ben.Id, transaction.Id));
+    }
+
+    [Fact]
+    public async Task RecordOwnShare_Again_UpdatesTheSameExpense_OrMakesANewOneIfDeleted()
+    {
+        var expenseId = await _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, Amount = 30m, PaidByParticipantId = _ana.Id }, []);
+        var (accountId, categoryId) = await AccountAndCategoryAsync();
+        var first = await _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId);
+
+        await _sut.SaveExpenseAsync(new PartyExpense { Id = expenseId, PartyId = _partyId, Amount = 60m, PaidByParticipantId = _ana.Id }, []);
+        var second = await _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId);
+
+        second.Id.Should().Be(first.Id);
+        (await _db.FindAsync<Transaction>(first.Id)).AmountCents.Should().Be(2000);
+        (await _db.Table<Transaction>().CountAsync(t => t.Description == "Birthday")).Should().Be(1);
+
+        await _db.DeleteAsync<Transaction>(first.Id);
+        var third = await _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId);
+        third.Id.Should().NotBe(first.Id);
+        (await _sut.GetAsync(_partyId))!.OwnTransactionId.Should().Be(third.Id);
+    }
+
+    [Fact]
+    public async Task RecordOwnShare_ZeroShare_AccountInAnotherCurrency_Refused()
+    {
+        var (accountId, categoryId) = await AccountAndCategoryAsync();
+        var none = () => _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId);
+        (await none.Should().ThrowAsync<PartyProblemException>()).Which.Problem.Should().Be(PartyProblem.NoShare);
+
+        await _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, Amount = 30m, PaidByParticipantId = _ana.Id }, []);
+        var foreign = new Account { Name = "Yen", CurrencyCode = "JPY" };
+        await _db.InsertAsync(foreign);
+        var wrong = () => _sut.RecordOwnShareAsync(_partyId, _ben.Id, foreign.Id, categoryId);
+        (await wrong.Should().ThrowAsync<PartyProblemException>()).Which.Problem.Should().Be(PartyProblem.AccountCurrency);
+    }
+
+    [Fact]
+    public async Task EditingTheParty_KeepsTheOwnShareLink_UntilTheOwnerLeaves()
+    {
+        await _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, Amount = 30m, PaidByParticipantId = _ana.Id }, []);
+        var (accountId, categoryId) = await AccountAndCategoryAsync();
+        var transaction = await _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId);
+
+        // The edit form saves a fresh copy that knows nothing of the link
+        await _sut.SaveAsync(new PartyEvent { Id = _partyId, Name = "Birthday 2", Budget = 100m }, [_ana.Id, _ben.Id, _cam.Id]);
+        var kept = (await _sut.GetAsync(_partyId))!;
+        (kept.MeParticipantId, kept.OwnTransactionId).Should().Be((_ben.Id, transaction.Id));
+
+        await _sut.SaveAsync(new PartyEvent { Id = _partyId, Name = "Birthday 2", Budget = 100m }, [_ana.Id, _cam.Id]);
+        (await _sut.GetAsync(_partyId))!.MeParticipantId.Should().BeNull();
+    }
 }

@@ -63,5 +63,14 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>Totals and balances (payments made included); <see cref="PartySummary.Payments"/> are the ones still to make.</summary>
         Task<PartySummary> GetSummaryAsync(int partyId);
+
+        /// <summary>
+        /// Records the share of <paramref name="meParticipantId"/> as a normal expense (dated like the party, described by its name)
+        /// in the account and category; calling again updates that expense (a null account or category keeps its own), or makes a
+        /// new one if it was deleted (then both are needed).
+        /// The pick is remembered on the party.
+        /// </summary>
+        /// <exception cref="PartyProblemException">The share is zero, or the account is in another currency.</exception>
+        Task<Transaction> RecordOwnShareAsync(int partyId, int meParticipantId, int? accountId, int? categoryId);
     }
 }
