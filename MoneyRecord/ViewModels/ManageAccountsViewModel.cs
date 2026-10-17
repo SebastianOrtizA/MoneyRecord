@@ -99,7 +99,7 @@ namespace MoneyRecord.ViewModels
         {
             try
             {
-                var accountsTask = _accountRepository.GetAllAsync();
+                var accountsTask = _accountRepository.GetOwnAsync();
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
                 await Task.WhenAll(accountsTask, balancesTask);
                 cancellationToken.ThrowIfCancellationRequested();

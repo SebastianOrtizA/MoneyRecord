@@ -7,7 +7,7 @@ namespace MoneyRecord
 {
     public partial class App : Application
     {
-        private readonly IRecurringTransactionService _recurringTransactionService;
+        private readonly IReminderService _reminders;
         private readonly IExchangeRateService _exchangeRates;
         private readonly IAutoBackupService _autoBackup;
         private readonly ISetupService _setupService;
@@ -18,7 +18,7 @@ namespace MoneyRecord
         private readonly Func<LockPage> _createLockPage;
         private readonly ILogger<App> _logger;
 
-        public App(IRecurringTransactionService recurringTransactionService, ISetupService setupService,
+        public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
             IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
             ILogger<App> logger)
@@ -26,7 +26,7 @@ namespace MoneyRecord
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
             themeService.ApplySaved();
-            _recurringTransactionService = recurringTransactionService;
+            _reminders = reminders;
             _exchangeRates = exchangeRates;
             _autoBackup = autoBackup;
             _setupService = setupService;
@@ -117,7 +117,8 @@ namespace MoneyRecord
         {
             try
             {
-                await _recurringTransactionService.ProcessDueTransactionsAsync();
+                // Also notifies of the debts its scheduled payments paid off
+                await _reminders.ProcessRecurringAsync();
             }
             catch (Exception ex)
             {

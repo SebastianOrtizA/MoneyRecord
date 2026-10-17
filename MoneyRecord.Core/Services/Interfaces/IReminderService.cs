@@ -1,6 +1,6 @@
 namespace MoneyRecord.Services.Interfaces
 {
-    /// <summary>Reminders as system notifications: bills before they are due, budgets near or over their limit.</summary>
+    /// <summary>Reminders as system notifications: bills and debts before they are due, budgets near or over their limit, debts paid off.</summary>
     public interface IReminderService
     {
         /// <summary>
@@ -8,6 +8,12 @@ namespace MoneyRecord.Services.Interfaces
         /// (also when reminders are off) and checks the budgets.
         /// </summary>
         Task RunDailyAsync();
+
+        /// <summary>
+        /// Creates the recurring transactions that are due (app start and the daily job) and notifies of the debts their
+        /// scheduled payments paid off.
+        /// </summary>
+        Task<RecurringRun> ProcessRecurringAsync();
 
         /// <summary>
         /// Notifies once per budget period when a budget reaches 80% of its limit, and once when it goes over. Best-effort

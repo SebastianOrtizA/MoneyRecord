@@ -51,6 +51,12 @@ namespace MoneyRecord.Models
 
         public string CurrencyCode { get; set; } = string.Empty;
 
+        /// <summary>
+        /// The hidden account of a <see cref="Debt"/>: its balance is what the person owes (lent, positive) or is owed
+        /// (borrowed, negative), moved by transfers from and to real accounts. Never listed among the user's accounts or pickers.
+        /// </summary>
+        public bool IsDebt { get; set; }
+
         [Ignore]
         public string DisplayIcon => IconHelper.GetAccountDisplayIcon(IconCode);
     }

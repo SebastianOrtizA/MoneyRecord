@@ -85,7 +85,8 @@ namespace MoneyRecord.Services
                 RecurringTransactions = conn.Table<RecurringTransaction>().ToList(),
                 SavingsGoals = conn.Table<SavingsGoal>().ToList(),
                 SavingsGoalAccounts = conn.Table<SavingsGoalAccount>().ToList(),
-                Payees = conn.Table<Payee>().ToList()
+                Payees = conn.Table<Payee>().ToList(),
+                Debts = conn.Table<Debt>().ToList()
             });
             return backup;
         }
@@ -274,6 +275,7 @@ namespace MoneyRecord.Services
             EnsureUniqueIds(backup.SavingsGoals, g => g.Id);
             EnsureUniqueIds(backup.SavingsGoalAccounts, l => l.Id);
             EnsureUniqueIds(backup.Payees, p => p.Id);
+            EnsureUniqueIds(backup.Debts, d => d.Id);
             return backup;
         }
 
@@ -305,6 +307,7 @@ namespace MoneyRecord.Services
         /// </summary>
         private static int ReplaceAll(SQLiteConnection conn, BackupData backup)
         {
+            conn.DeleteAll<Debt>();
             conn.DeleteAll<Payee>();
             conn.DeleteAll<SavingsGoalAccount>();
             conn.DeleteAll<SavingsGoal>();
@@ -322,7 +325,8 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.Budgets, b => b.Id)
                 + InsertKeepingIds(conn, backup.RecurringTransactions, r => r.Id)
                 + InsertKeepingIds(conn, backup.SavingsGoals, g => g.Id)
-                + InsertKeepingIds(conn, backup.Payees, p => p.Id);
+                + InsertKeepingIds(conn, backup.Payees, p => p.Id)
+                + InsertKeepingIds(conn, backup.Debts, d => d.Id);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
 
@@ -448,5 +452,6 @@ namespace MoneyRecord.Services
         public List<SavingsGoal> SavingsGoals { get; set; } = [];
         public List<SavingsGoalAccount> SavingsGoalAccounts { get; set; } = [];
         public List<Payee> Payees { get; set; } = [];
+        public List<Debt> Debts { get; set; } = [];
     }
 }

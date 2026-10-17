@@ -33,6 +33,24 @@ namespace MoneyRecord.Models
         /// <summary>The payee each occurrence gets (see <see cref="Payee"/>); none = no payee.</summary>
         public int? PayeeId { get; set; }
 
+        /// <summary>
+        /// A <see cref="Debt"/>'s payment schedule: each occurrence is a payment (a transfer between <see cref="AccountId"/> and
+        /// the debt), capped at what is left; the schedule stops once the debt is paid. <see cref="TransactionType"/> is the
+        /// direction the money moves (Expense = paying back, Income = being paid back); <see cref="CategoryId"/> is the
+        /// interest category when <see cref="InterestCents"/> is set. Null = a plain recurring transaction.
+        /// </summary>
+        public int? DebtId { get; set; }
+
+        /// <summary>A debt payment's interest part, in cents, saved as its own expense or income (0 = none).</summary>
+        public long InterestCents { get; set; }
+
+        [Ignore]
+        public decimal InterestAmount
+        {
+            get => Money.FromCents(InterestCents);
+            set => InterestCents = Money.ToCents(value);
+        }
+
         public TransactionType TransactionType { get; set; }
 
         public RecurrenceFrequency Frequency { get; set; }

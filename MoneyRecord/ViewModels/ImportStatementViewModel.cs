@@ -135,7 +135,7 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                var accounts = await _accountRepository.GetAllAsync();
+                var accounts = await _accountRepository.GetOwnAsync();
                 var categories = await _categoryRepository.GetAllAsync();
                 ExpenseCategories = _entryDefaults.OrderByRecent(TransactionType.Expense,
                     categories.Where(c => c.Type == CategoryType.Expense));

@@ -21,6 +21,7 @@ public sealed class ReminderServiceTests : LanguageTestBase
 
     private readonly FakeTimeProvider _clock = new(new DateTimeOffset(2026, 3, 15, 9, 0, 0, TimeSpan.Zero));
     private readonly IRecurringTransactionService _recurring = Substitute.For<IRecurringTransactionService>();
+    private readonly IDebtService _debts = Substitute.For<IDebtService>();
     private readonly IBudgetRepository _budgets = Substitute.For<IBudgetRepository>();
     private readonly ICategoryRepository _categories = Substitute.For<ICategoryRepository>();
     private readonly IConversionService _conversion = Substitute.For<IConversionService>();
@@ -38,10 +39,12 @@ public sealed class ReminderServiceTests : LanguageTestBase
         _notifications.AreAllowed.Returns(true);
         _notifications.When(n => n.Show(Arg.Any<AppNotification>())).Do(c => _shown.Add(c.Arg<AppNotification>()));
         _recurring.GetUpcomingAsync(Arg.Any<int>()).Returns([]);
+        _recurring.ProcessDueTransactionsAsync().Returns(RecurringRun.None);
+        _debts.GetAllAsync().Returns([]);
         _budgets.GetActiveBudgetsAsync().Returns([]);
         _categories.GetAllAsync().Returns([new Category { Id = 7, Name = "Food" }]);
 
-        _sut = new ReminderService(_recurring, _budgets, _categories, _conversion, _settings, _notifications, _dialogs,
+        _sut = new ReminderService(_recurring, _debts, _budgets, _categories, _conversion, _settings, _notifications, _dialogs,
             _preferences, _clock, Substitute.For<ILogger<ReminderService>>());
     }
 
@@ -125,7 +128,7 @@ public sealed class ReminderServiceTests : LanguageTestBase
     [Fact]
     public async Task Added_recurring_transactions_are_counted_in_one_notification()
     {
-        _recurring.ProcessDueTransactionsAsync().Returns(3);
+        _recurring.ProcessDueTransactionsAsync().Returns(new RecurringRun(3, []));
 
         await _sut.RunDailyAsync();
 
@@ -281,6 +284,55 @@ public sealed class ReminderServiceTests : LanguageTestBase
 
         _settings.Enabled.Should().BeFalse();
         _notifications.Received(1).OpenSystemSettings();
+    }
+
+    private static DebtSummary Debt(int id, DebtDirection direction, long total, long paid, DateTime? due = null) =>
+        new(new Debt { Id = id, Direction = direction, DueDate = due }, "Ana", "USD", total, paid, 0, null, Today);
+
+    [Fact]
+    public async Task A_debt_its_schedule_paid_off_is_notified_also_at_app_start()
+    {
+        _settings.RecurringAdded = false;
+        _recurring.ProcessDueTransactionsAsync().Returns(new RecurringRun(1, [3]));
+        _debts.GetAllAsync().Returns([Debt(3, DebtDirection.Lent, 10000, 10000), Debt(4, DebtDirection.Borrowed, 10000, 10000)]);
+
+        await _sut.ProcessRecurringAsync();
+
+        var paid = _shown.Should().ContainSingle().Subject;
+        paid.Id.Should().Be(ReminderService.DebtPaidIdBase + 3);
+        paid.Title.Should().Be("Ana paid you back in full");
+        paid.Message.Should().Be($"Paid back {MoneyFormatter.Format(100m, "USD")} of {MoneyFormatter.Format(100m, "USD")}");
+        paid.Route.Should().Be(ReminderService.DebtsRoute);
+    }
+
+    [Fact]
+    public async Task An_open_debt_is_reminded_once_within_the_bill_days_before_its_due_date()
+    {
+        _settings.BillDaysBefore = 3;
+        _debts.GetAllAsync().Returns([
+            Debt(1, DebtDirection.Borrowed, 10000, 2500, due: Today.AddDays(2)),
+            Debt(2, DebtDirection.Borrowed, 10000, 2500, due: Today.AddDays(5)),
+            Debt(3, DebtDirection.Lent, 10000, 10000, due: Today.AddDays(1)),
+            Debt(4, DebtDirection.Lent, 10000, 0, due: Today.AddDays(-1))]);
+
+        await _sut.RunDailyAsync();
+        await _sut.RunDailyAsync();
+
+        var due = _shown.Should().ContainSingle().Subject;
+        due.Id.Should().Be(ReminderService.DebtDueIdBase + 1);
+        due.Title.Should().Be("Pay back Ana");
+        due.Message.Should().Be($"In 2 days · {MoneyFormatter.Format(75m, "USD")}");
+    }
+
+    [Fact]
+    public async Task Debts_are_not_reminded_with_bill_reminders_off()
+    {
+        _settings.BillDaysBefore = ReminderSettings.BillsOff;
+        _debts.GetAllAsync().Returns([Debt(1, DebtDirection.Borrowed, 10000, 0, due: Today)]);
+
+        await _sut.RunDailyAsync();
+
+        _shown.Should().BeEmpty();
     }
 }
 

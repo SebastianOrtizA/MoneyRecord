@@ -147,6 +147,13 @@ namespace MoneyRecord.ViewModels
 
         private async Task DeleteAsync(PayeeSummary payee)
         {
+            // A debt needs its person: delete the debts first, or merge the payee into another
+            if (payee.DebtCount > 0)
+            {
+                await _dialogService.AlertAsync(AppResources.DeletePayee, string.Format(AppResources.PayeeHasDebts, payee.Name));
+                return;
+            }
+
             if (!await _dialogService.ConfirmAsync(AppResources.DeletePayee,
                     string.Format(AppResources.DeletePayeeConfirmation, payee.Name, payee.UsesText),
                     AppResources.DeleteButton, AppResources.Cancel))

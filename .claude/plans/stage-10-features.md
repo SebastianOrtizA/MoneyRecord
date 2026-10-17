@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7a done; 10.7b in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7 done; 10.8 in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -293,6 +293,40 @@ Close the gap with competing finance apps. Each section can ship on its own.
 
 ### 10.8 Debts and loans
 - Track money lent/borrowed with a person; partial repayments; reminders.
+
+  Owner choices (2026-10-16): a `Debt` row per debt (person = a payee, lent or borrowed, optional due date, note) whose
+  money moves as **transfers** between a real account and the debt's own hidden ledger account (`Account.IsDebt`), so
+  balances, reports and budgets stay right with the existing transfer code; the start can also be "already owed" (no
+  account: the ledger's initial balance). Partial payments on a **schedule** (amount + frequency + account, a
+  recurring rule linked to the debt: Upcoming, bill reminders); the last one is capped at what is left, the schedule
+  stops when the debt is paid and a notification says so. An optional **interest part** per payment, saved as an
+  expense (borrowed) or income (lent) in an "Interest" category. More → Debts page + due-date reminders; no Home card.
+  One PR.
+
+  10.8 done as: table `Debt` (payee, direction, its hidden account, note, due date; created from the models, no
+  migration) + `Account.IsDebt`, `Transaction.DebtId` (a payment's interest), `RecurringTransaction.DebtId` and
+  `InterestCents` (new columns; backups carry them, format stays v4 with a `Debts` list). The hidden account's balance
+  is what is owed: lending / borrowing / payments are transfers between it and a real account in the debt's currency;
+  "already owed" is its initial balance. Core `DebtLedger` (totals in SQL; `RecordPayment` refuses more than is left,
+  saves the interest in the "Interest" category of the right type (found or created by name) and stops the schedule
+  when the debt is paid), `DebtService` (summaries, history, add / edit / payment / more / delete in one DB transaction
+  each), `DebtSummary` / `DebtMovement`. `IAccountRepository.GetOwnAsync` = the user's accounts: pickers, Accounts page,
+  Goals, CSV import and the Home balance card leave the hidden ones out (lookups, reports' currencies and Net worth keep
+  them). Recurring processing pays a scheduled debt payment capped at what is left and returns `RecurringRun` (created +
+  debts paid off); Upcoming caps the same way and shows the interest in the amount. `ReminderService.ProcessRecurringAsync`
+  (app start and the daily job) notifies "Ana paid you back in full" / "Your debt to Ana is paid off"; open debts are
+  reminded once within the bill-reminder days before their due date; a borrowed schedule is an expense, so the bill
+  reminders cover it. Payees: debts count as a use ("1 debt"), rename / merge rename the debt's hidden account and
+  schedule, delete is refused while a debt uses the payee. App: More → Debts (`DebtsPage`: owed-to-you / you-owe totals per
+  currency, Open / Paid off switch, cards with progress, due status and next payment; detail sheet with history (delete a
+  line), Record payment, Lend / Borrow more, edit; add / edit sheet with I lent / I borrowed, person suggestions, amount,
+  account or "Already owed", note, due date, schedule + interest; payment sheet prefilled with the scheduled amount).
+  Sheets scroll inside a cap computed from their title and buttons (from the scroll area itself it fed back into a
+  layout loop).
+  **Deviation / notes:** Net worth keeps the hidden accounts (lending moves money, not wealth; leaving them out would make
+  borrowing raise net worth). Editing a debt changes person, note, due date and schedule; amounts change through
+  payments, "more" and deleting history lines. A schedule stopped by paying off doesn't restart if a payment is deleted
+  later (edit the debt to set it again).
 
 ### 10.9 Home-screen widget (Stage 5.5)
 - Balance widget + quick-add expense widget (Android `AppWidgetProvider` via platform code).

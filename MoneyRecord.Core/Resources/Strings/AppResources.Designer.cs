@@ -4946,5 +4946,617 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ConfirmDeleteSplitMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debts.
+        /// </summary>
+        public static string Debts {
+            get {
+                return ResourceManager.GetString("Debts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add debt.
+        /// </summary>
+        public static string AddDebt {
+            get {
+                return ResourceManager.GetString("AddDebt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit debt.
+        /// </summary>
+        public static string EditDebt {
+            get {
+                return ResourceManager.GetString("EditDebt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record money you lent or borrowed, then its payments as they come..
+        /// </summary>
+        public static string AddDebtToStart {
+            get {
+                return ResourceManager.GetString("AddDebtToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No open debts.
+        /// </summary>
+        public static string NoDebtsYet {
+            get {
+                return ResourceManager.GetString("NoDebtsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No paid-off debts yet.
+        /// </summary>
+        public static string NoPaidOffDebts {
+            get {
+                return ResourceManager.GetString("NoPaidOffDebts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debt added.
+        /// </summary>
+        public static string DebtAdded {
+            get {
+                return ResourceManager.GetString("DebtAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string DebtsOpen {
+            get {
+                return ResourceManager.GetString("DebtsOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owed to you.
+        /// </summary>
+        public static string DebtsOwedToYou {
+            get {
+                return ResourceManager.GetString("DebtsOwedToYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You owe.
+        /// </summary>
+        public static string DebtsYouOwe {
+            get {
+                return ResourceManager.GetString("DebtsYouOwe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owes you.
+        /// </summary>
+        public static string DebtOwesYou {
+            get {
+                return ResourceManager.GetString("DebtOwesYou", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You owe.
+        /// </summary>
+        public static string DebtYouOwe {
+            get {
+                return ResourceManager.GetString("DebtYouOwe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I lent.
+        /// </summary>
+        public static string DebtILent {
+            get {
+                return ResourceManager.GetString("DebtILent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I borrowed.
+        /// </summary>
+        public static string DebtIBorrowed {
+            get {
+                return ResourceManager.GetString("DebtIBorrowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Person.
+        /// </summary>
+        public static string DebtPerson {
+            get {
+                return ResourceManager.GetString("DebtPerson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who it is with.
+        /// </summary>
+        public static string DebtPersonPlaceholder {
+            get {
+                return ResourceManager.GetString("DebtPersonPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount lent.
+        /// </summary>
+        public static string DebtAmountLent {
+            get {
+                return ResourceManager.GetString("DebtAmountLent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount borrowed.
+        /// </summary>
+        public static string DebtAmountBorrowed {
+            get {
+                return ResourceManager.GetString("DebtAmountBorrowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid from.
+        /// </summary>
+        public static string DebtFromAccount {
+            get {
+                return ResourceManager.GetString("DebtFromAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received in.
+        /// </summary>
+        public static string DebtIntoAccount {
+            get {
+                return ResourceManager.GetString("DebtIntoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid from.
+        /// </summary>
+        public static string DebtPaidFromAccount {
+            get {
+                return ResourceManager.GetString("DebtPaidFromAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received in.
+        /// </summary>
+        public static string DebtPaidIntoAccount {
+            get {
+                return ResourceManager.GetString("DebtPaidIntoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Already owed (no money moves).
+        /// </summary>
+        public static string DebtAlreadyOwedOption {
+            get {
+                return ResourceManager.GetString("DebtAlreadyOwedOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Already owed.
+        /// </summary>
+        public static string DebtAlreadyOwed {
+            get {
+                return ResourceManager.GetString("DebtAlreadyOwed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note.
+        /// </summary>
+        public static string DebtNote {
+            get {
+                return ResourceManager.GetString("DebtNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What it was for (optional).
+        /// </summary>
+        public static string DebtNotePlaceholder {
+            get {
+                return ResourceManager.GetString("DebtNotePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Due date.
+        /// </summary>
+        public static string DebtHasDueDate {
+            get {
+                return ResourceManager.GetString("DebtHasDueDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payments on a schedule.
+        /// </summary>
+        public static string DebtHasSchedule {
+            get {
+                return ResourceManager.GetString("DebtHasSchedule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each payment.
+        /// </summary>
+        public static string DebtScheduleAmount {
+            get {
+                return ResourceManager.GetString("DebtScheduleAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First payment.
+        /// </summary>
+        public static string DebtFirstPayment {
+            get {
+                return ResourceManager.GetString("DebtFirstPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interest part.
+        /// </summary>
+        public static string DebtHasInterest {
+            get {
+                return ResourceManager.GetString("DebtHasInterest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saved as an expense (or income) in the Interest category, on top of the payment..
+        /// </summary>
+        public static string DebtInterestHint {
+            get {
+                return ResourceManager.GetString("DebtInterestHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to History.
+        /// </summary>
+        public static string DebtHistory {
+            get {
+                return ResourceManager.GetString("DebtHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record payment.
+        /// </summary>
+        public static string DebtRecordPayment {
+            get {
+                return ResourceManager.GetString("DebtRecordPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lend more.
+        /// </summary>
+        public static string DebtLendMore {
+            get {
+                return ResourceManager.GetString("DebtLendMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Borrow more.
+        /// </summary>
+        public static string DebtBorrowMore {
+            get {
+                return ResourceManager.GetString("DebtBorrowMore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Left: {0}.
+        /// </summary>
+        public static string DebtLeft {
+            get {
+                return ResourceManager.GetString("DebtLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That's more than what is left ({0})..
+        /// </summary>
+        public static string DebtPaymentTooLarge {
+            get {
+                return ResourceManager.GetString("DebtPaymentTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no account in {0}. Add one in Accounts first..
+        /// </summary>
+        public static string DebtNoAccountInCurrency {
+            get {
+                return ResourceManager.GetString("DebtNoAccountInCurrency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debt with {0} paid off.
+        /// </summary>
+        public static string DebtPaidOffToast {
+            get {
+                return ResourceManager.GetString("DebtPaidOffToast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid back {0} of {1}.
+        /// </summary>
+        public static string DebtPaidOfTotal {
+            get {
+                return ResourceManager.GetString("DebtPaidOfTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Due {0}.
+        /// </summary>
+        public static string DebtDueOn {
+            get {
+                return ResourceManager.GetString("DebtDueOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next payment {0} on {1} · {2}.
+        /// </summary>
+        public static string DebtNextPayment {
+            get {
+                return ResourceManager.GetString("DebtNextPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interest {0}.
+        /// </summary>
+        public static string DebtInterestTotal {
+            get {
+                return ResourceManager.GetString("DebtInterestTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid off.
+        /// </summary>
+        public static string DebtPaidOff {
+            get {
+                return ResourceManager.GetString("DebtPaidOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overdue.
+        /// </summary>
+        public static string DebtOverdue {
+            get {
+                return ResourceManager.GetString("DebtOverdue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Due soon.
+        /// </summary>
+        public static string DebtDueSoon {
+            get {
+                return ResourceManager.GetString("DebtDueSoon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lent.
+        /// </summary>
+        public static string DebtLent {
+            get {
+                return ResourceManager.GetString("DebtLent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Borrowed.
+        /// </summary>
+        public static string DebtBorrowed {
+            get {
+                return ResourceManager.GetString("DebtBorrowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid back.
+        /// </summary>
+        public static string DebtPaidBack {
+            get {
+                return ResourceManager.GetString("DebtPaidBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interest.
+        /// </summary>
+        public static string DebtInterest {
+            get {
+                return ResourceManager.GetString("DebtInterest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interest.
+        /// </summary>
+        public static string InterestCategory {
+            get {
+                return ResourceManager.GetString("InterestCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment to {0}.
+        /// </summary>
+        public static string DebtPaymentTo {
+            get {
+                return ResourceManager.GetString("DebtPaymentTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payment from {0}.
+        /// </summary>
+        public static string DebtPaymentFrom {
+            get {
+                return ResourceManager.GetString("DebtPaymentFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} debt.
+        /// </summary>
+        public static string DebtCountOne {
+            get {
+                return ResourceManager.GetString("DebtCountOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} debts.
+        /// </summary>
+        public static string DebtCountOther {
+            get {
+                return ResourceManager.GetString("DebtCountOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} paid you back in full.
+        /// </summary>
+        public static string DebtPaidOffLentTitle {
+            get {
+                return ResourceManager.GetString("DebtPaidOffLentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your debt to {0} is paid off.
+        /// </summary>
+        public static string DebtPaidOffBorrowedTitle {
+            get {
+                return ResourceManager.GetString("DebtPaidOffBorrowedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is due to pay you back.
+        /// </summary>
+        public static string DebtDueLentTitle {
+            get {
+                return ResourceManager.GetString("DebtDueLentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pay back {0}.
+        /// </summary>
+        public static string DebtDueBorrowedTitle {
+            get {
+                return ResourceManager.GetString("DebtDueBorrowedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the debt with {0}? Its history is deleted too, so the accounts' balances go back to what they were without it..
+        /// </summary>
+        public static string DeleteDebtConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteDebtConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete "{0}" of {1} ({2})?.
+        /// </summary>
+        public static string DeleteDebtMovementConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteDebtMovementConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load the debts.
+        /// </summary>
+        public static string FailedToLoadDebts {
+            get {
+                return ResourceManager.GetString("FailedToLoadDebts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the debt.
+        /// </summary>
+        public static string FailedToSaveDebt {
+            get {
+                return ResourceManager.GetString("FailedToSaveDebt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete the debt.
+        /// </summary>
+        public static string FailedToDeleteDebt {
+            get {
+                return ResourceManager.GetString("FailedToDeleteDebt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} has debts. Delete them on the Debts page first, or merge {0} into another payee..
+        /// </summary>
+        public static string PayeeHasDebts {
+            get {
+                return ResourceManager.GetString("PayeeHasDebts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter who the debt is with.
+        /// </summary>
+        public static string PleaseEnterDebtPerson {
+            get {
+                return ResourceManager.GetString("PleaseEnterDebtPerson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid off.
+        /// </summary>
+        public static string DebtsPaidOff {
+            get {
+                return ResourceManager.GetString("DebtsPaidOff", resourceCulture);
+            }
+        }
     }
 }

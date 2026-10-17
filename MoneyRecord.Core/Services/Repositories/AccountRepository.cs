@@ -19,5 +19,7 @@ namespace MoneyRecord.Services.Repositories
 
         public async Task<Account?> GetDefaultAsync() =>
             (await GetAllAsync()).FirstOrDefault(a => a.IsDefault);
+
+        public async Task<List<Account>> GetOwnAsync() => (await GetAllAsync()).Where(a => !a.IsDebt).ToList();
     }
 }

@@ -8,6 +8,7 @@ namespace MoneyRecord.Services
 {
     public sealed class ReminderService(
         IRecurringTransactionService recurring,
+        IDebtService debts,
         IBudgetRepository budgets,
         ICategoryRepository categories,
         IConversionService conversion,
@@ -23,15 +24,20 @@ namespace MoneyRecord.Services
         public const int RecurringAddedId = 1;
         public const int BillIdBase = 100_000;
         public const int BudgetIdBase = 200_000;
+        public const int DebtDueIdBase = 300_000;
+        public const int DebtPaidIdBase = 400_000;
 
         // The app's routes (see AppShell); Core can't name the page types
         public const string UpcomingRoute = "RecurringTransactionsPage?Show=Upcoming";
         public const string TransactionsRoute = "//TransactionsPage";
         public const string BudgetsRoute = "//BudgetPage";
+        public const string DebtsRoute = "DebtsPage";
 
-        // What was already notified: the last bill occurrence per recurrence, and per budget its period + alert level
+        // What was already notified: the last bill occurrence per recurrence, per budget its period + alert level, and per
+        // debt its due date
         private const string BillNotifiedKey = "Reminders.Bill.";
         private const string BudgetNotifiedKey = "Reminders.Budget.";
+        private const string DebtDueNotifiedKey = "Reminders.DebtDue.";
 
         private bool CanNotify => settings.Enabled && notifications.IsSupported && notifications.AreAllowed;
 
@@ -41,14 +47,62 @@ namespace MoneyRecord.Services
             if (CanNotify && settings.BillDaysBefore != ReminderSettings.BillsOff)
                 await NotifyBillsAsync();
 
-            var created = await recurring.ProcessDueTransactionsAsync();
-            if (created > 0 && CanNotify && settings.RecurringAdded)
+            var run = await ProcessRecurringAsync();
+            if (run.Created > 0 && CanNotify && settings.RecurringAdded)
             {
                 notifications.Show(new AppNotification(RecurringAddedId, ReminderChannel.Bills,
-                    AppResources.RecurringTransactions, Plurals.RecurringAdded(created), TransactionsRoute));
+                    AppResources.RecurringTransactions, Plurals.RecurringAdded(run.Created), TransactionsRoute));
             }
 
+            if (CanNotify && settings.BillDaysBefore != ReminderSettings.BillsOff)
+                await NotifyDebtsDueAsync();
             await CheckBudgetsCoreAsync();
+        }
+
+        public async Task<RecurringRun> ProcessRecurringAsync()
+        {
+            var run = await recurring.ProcessDueTransactionsAsync();
+            if (run.PaidOffDebtIds.Count > 0 && CanNotify)
+            {
+                // Best-effort: the payments are saved already
+                try
+                {
+                    var paidOff = (await debts.GetAllAsync()).Where(d => run.PaidOffDebtIds.Contains(d.DebtId));
+                    foreach (var debt in paidOff)
+                    {
+                        notifications.Show(new AppNotification(DebtPaidIdBase + debt.DebtId, ReminderChannel.Bills,
+                            string.Format(debt.Direction == DebtDirection.Lent ? AppResources.DebtPaidOffLentTitle : AppResources.DebtPaidOffBorrowedTitle,
+                                debt.PersonName),
+                            debt.PaidOfTotalText, DebtsRoute));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning(ex, "Debt paid-off notification failed");
+                }
+            }
+            return run;
+        }
+
+        private async Task NotifyDebtsDueAsync()
+        {
+            var today = clock.GetLocalNow().DateTime.Date;
+            foreach (var debt in await debts.GetAllAsync())
+            {
+                // An open debt whose due date is within the chosen days, once per due date
+                if (debt.IsPaidOff || debt.Debt.DueDate is not { } due || due.Date < today
+                    || (due.Date - today).Days > settings.BillDaysBefore
+                    || preferences.Get(DebtDueNotifiedKey + debt.DebtId, DateTime.MinValue) == due.Date)
+                    continue;
+
+                var days = (due.Date - today).Days;
+                var when = days switch { 0 => AppResources.Today, 1 => AppResources.Tomorrow, _ => Plurals.InDays(days) };
+                notifications.Show(new AppNotification(DebtDueIdBase + debt.DebtId, ReminderChannel.Bills,
+                    string.Format(debt.Direction == DebtDirection.Lent ? AppResources.DebtDueLentTitle : AppResources.DebtDueBorrowedTitle,
+                        debt.PersonName),
+                    $"{when} · {debt.OutstandingText}", DebtsRoute));
+                preferences.Set(DebtDueNotifiedKey + debt.DebtId, due.Date);
+            }
         }
 
         private async Task NotifyBillsAsync()

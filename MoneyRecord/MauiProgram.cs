@@ -90,6 +90,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IAccountService, AccountService>();
             builder.Services.AddSingleton<ISavingsGoalService, SavingsGoalService>();
             builder.Services.AddSingleton<IPayeeService, PayeeService>();
+            builder.Services.AddSingleton<IDebtService, DebtService>();
+            builder.Services.AddSingleton<IDebtService, DebtService>();
             builder.Services.AddSingleton<ISplitService, SplitService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
@@ -154,6 +156,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<AddEntryViewModel>();
             builder.Services.AddTransient<BudgetViewModel>();
             builder.Services.AddTransient<GoalsViewModel>();
+            builder.Services.AddTransient<DebtsViewModel>();
             builder.Services.AddTransient<PayeesViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
@@ -178,6 +181,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<IncomeReportPage>();
             builder.Services.AddTransient<BudgetPage>();
             builder.Services.AddTransient<GoalsPage>();
+            builder.Services.AddTransient<DebtsPage>();
             builder.Services.AddTransient<PayeesPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();

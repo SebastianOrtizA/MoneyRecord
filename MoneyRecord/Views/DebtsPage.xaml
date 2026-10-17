@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             x:Class="MoneyRecord.Views.DebtsPage"
+             x:DataType="viewmodels:DebtsViewModel"
+             Title="{ext:Localize Debts}">
+
+    <ContentPage.Resources>
+        <Style x:Key="DebtNote" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        </Style>
+        <Style x:Key="FormCaption" TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        </Style>
+        <Style x:Key="SwitchRow" TargetType="Label">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+        <Style x:Key="PrimarySheetButton" TargetType="Button">
+            <Setter Property="HeightRequest" Value="44" />
+            <Setter Property="CornerRadius" Value="22" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+        </Style>
+        <Style x:Key="OutlineSheetButton" TargetType="Button">
+            <Setter Property="HeightRequest" Value="44" />
+            <Setter Property="CornerRadius" Value="22" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="BorderWidth" Value="1" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}"
+                     Command="{Binding LoadDebtsCommand}">
+            <!-- One card per debt (a tap opens its sheet); the 16px gutter is inside the rows, so the scrollbar is at the edge -->
+            <CollectionView ItemsSource="{Binding Debts}">
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="16,12,16,6" Spacing="12">
+                        <!-- What is owed, open debts only, per currency -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <Border Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{ext:Localize DebtsOwedToYou}" Style="{StaticResource DebtNote}" />
+                                    <controls:AutoFitLabel Text="{Binding OwedToYouText}" MaxFontSize="16" FontAttributes="Bold"
+                                                           IsVisible="{Binding HasOwedToYou}"
+                                                           TextColor="{AppThemeBinding Light={StaticResource IncomeColor}, Dark={StaticResource IncomeColorDark}}" />
+                                    <Label Text="—" FontSize="16" IsVisible="{Binding HasOwedToYou, Converter={StaticResource InvertedBoolConverter}}" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="1" Padding="12,10" StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="{ext:Localize DebtsYouOwe}" Style="{StaticResource DebtNote}" />
+                                    <controls:AutoFitLabel Text="{Binding YouOweText}" MaxFontSize="16" FontAttributes="Bold"
+                                                           IsVisible="{Binding HasYouOwe}"
+                                                           TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                                    <Label Text="—" FontSize="16" IsVisible="{Binding HasYouOwe, Converter={StaticResource InvertedBoolConverter}}" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <!-- Open / Paid off switch -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                            <Button Text="{ext:Localize DebtsOpen}"
+                                    Command="{Binding SelectOpenCommand}"
+                                    Style="{StaticResource SegmentButton}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding ShowPaidOff}" Value="False">
+                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"/>
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                            <Button Grid.Column="1"
+                                    Text="{ext:Localize DebtsPaidOff}"
+                                    Command="{Binding SelectPaidOffCommand}"
+                                    Style="{StaticResource SegmentButton}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button" Binding="{Binding ShowPaidOff}" Value="True">
+                                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"/>
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </Grid>
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:DebtSummary">
+                        <Border Margin="16,6"
+                                Padding="14"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DebtsViewModel}}, Path=OpenDebtCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="10">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" StrokeShape="Ellipse"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                        <Label Text="{Binding DisplayIcon}"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="20"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="{Binding Title}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding DirectionText}" Style="{StaticResource DebtNote}" />
+                                    </VerticalStackLayout>
+
+                                    <VerticalStackLayout Grid.Column="2" Spacing="2" VerticalOptions="Center" HorizontalOptions="End">
+                                        <Label Text="{Binding OutstandingText}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               HorizontalOptions="End" />
+                                        <!-- Status: icon + words + colour, so colour isn't the only signal -->
+                                        <HorizontalStackLayout Spacing="4" HorizontalOptions="End" IsVisible="{Binding HasStatus}">
+                                            <Label Text="{Binding StatusIcon}"
+                                                   FontFamily="MaterialDesignIcons"
+                                                   FontSize="14"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
+                                            <Label Text="{Binding StatusText}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </Grid>
+
+                                <ProgressBar Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
+                                             ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                             BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                             HeightRequest="8" />
+
+                                <Label Text="{Binding PaidOfTotalText}" FontSize="14" />
+                                <Label Text="{Binding DueText}" IsVisible="{Binding HasDue}" Style="{StaticResource DebtNote}" />
+                                <Label Text="{Binding ScheduleText}" IsVisible="{Binding HasSchedule}" Style="{StaticResource DebtNote}" />
+                                <Label Text="{Binding InterestText}" IsVisible="{Binding HasInterest}" Style="{StaticResource DebtNote}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.Footer>
+                    <VerticalStackLayout>
+                        <!-- Empty state -->
+                        <VerticalStackLayout Spacing="12"
+                                             Padding="32,48"
+                                             IsVisible="{Binding HasDebts, Converter={StaticResource InvertedBoolConverter}}">
+                            <Label Text="&#xF1218;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="64"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            <Label Text="{Binding EmptyTitle}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="{ext:Localize AddDebtToStart}"
+                                   FontSize="14"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        </VerticalStackLayout>
+                        <!-- Room so the last card scrolls above the add button -->
+                        <ContentView HeightRequest="88" />
+                    </VerticalStackLayout>
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize AddDebt}"
+                Command="{Binding AddDebtCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
+
+        <!-- Detail sheet: amounts, history, payment / more / edit -->
+        <controls:BottomSheet x:Name="DetailSheet" IsOpen="{Binding IsDetailOpen}" CloseCommand="{Binding CloseDetailCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Grid x:Name="DetailHeader" ColumnDefinitions="*,Auto">
+                    <Label Text="{Binding SelectedDebt.Title}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"
+                           LineBreakMode="TailTruncation" />
+                    <Button Grid.Column="1"
+                            Text="&#xF03EB;"
+                            FontFamily="MaterialDesignIcons"
+                            FontSize="22"
+                            WidthRequest="44"
+                            HeightRequest="44"
+                            Padding="0"
+                            BackgroundColor="Transparent"
+                            SemanticProperties.Description="{ext:Localize Edit}"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            Command="{Binding EditDebtCommand}" />
+                </Grid>
+
+                <ScrollView Grid.Row="1" x:Name="DetailScroll">
+                <VerticalStackLayout Spacing="8">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="{Binding SelectedDebt.DirectionText}" Style="{StaticResource DebtNote}" VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="{Binding SelectedDebt.OutstandingText}" FontSize="20" FontAttributes="Bold" />
+                </Grid>
+                <Label Text="{Binding SelectedDebt.PaidOfTotalText}" FontSize="14" />
+                <Label Text="{Binding SelectedDebt.DueText}" IsVisible="{Binding SelectedDebt.HasDue}" Style="{StaticResource DebtNote}" />
+                <Label Text="{Binding SelectedDebt.ScheduleText}" IsVisible="{Binding SelectedDebt.HasSchedule}" Style="{StaticResource DebtNote}" />
+                <Label Text="{Binding SelectedDebt.InterestText}" IsVisible="{Binding SelectedDebt.HasInterest}" Style="{StaticResource DebtNote}" />
+
+                <Label Text="{ext:Localize DebtHistory}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Movements}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:DebtMovement">
+                            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" MinimumHeightRequest="48">
+                                <VerticalStackLayout Spacing="0" VerticalOptions="Center">
+                                    <Label Text="{Binding KindText}" FontSize="15" />
+                                    <Label Text="{Binding DetailText}" Style="{StaticResource DebtNote}" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1" Text="{Binding AmountText}" FontSize="15" VerticalOptions="Center" />
+                                <Button Grid.Column="2"
+                                        Text="&#xF09E7;"
+                                        FontFamily="MaterialDesignIcons"
+                                        FontSize="20"
+                                        WidthRequest="44"
+                                        HeightRequest="44"
+                                        Padding="0"
+                                        BackgroundColor="Transparent"
+                                        IsVisible="{Binding CanDelete}"
+                                        SemanticProperties.Description="{ext:Localize DeleteButton}"
+                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DebtsViewModel}}, Path=DeleteMovementCommand}"
+                                        CommandParameter="{Binding .}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+                </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- A paid-off debt only offers more lent / borrowed -->
+                <Grid Grid.Row="2" x:Name="DetailFooter" ColumnDefinitions="*,*" ColumnSpacing="8">
+                    <Button Text="{ext:Localize DebtRecordPayment}"
+                            Command="{Binding RecordPaymentCommand}"
+                            IsVisible="{Binding SelectedDebt.IsPaidOff, Converter={StaticResource InvertedBoolConverter}}"
+                            Style="{StaticResource PrimarySheetButton}" />
+                    <Button Grid.Column="1"
+                            Text="{Binding AddMoreText}"
+                            Command="{Binding AddMoreCommand}"
+                            Style="{StaticResource OutlineSheetButton}" />
+                </Grid>
+            </Grid>
+        </controls:BottomSheet>
+
+        <!-- Add / edit sheet: who, which way, how much, from which account, due date, payment schedule -->
+        <controls:BottomSheet x:Name="FormSheet" IsOpen="{Binding IsFormOpen}" CloseCommand="{Binding CloseFormCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label x:Name="FormHeader" Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
+
+                <ScrollView Grid.Row="1" x:Name="FormScroll">
+                <VerticalStackLayout Spacing="8">
+
+                <!-- I lent / I borrowed: only when adding -->
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8"
+                      IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
+                    <Button Text="{ext:Localize DebtILent}"
+                            Clicked="OnLentClicked"
+                            Style="{StaticResource SegmentButton}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding FormIsLent}" Value="True">
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Grid.Column="1"
+                            Text="{ext:Localize DebtIBorrowed}"
+                            Clicked="OnBorrowedClicked"
+                            Style="{StaticResource SegmentButton}">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding FormIsLent}" Value="False">
+                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"/>
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+
+                <Label Text="{ext:Localize DebtPerson}" Style="{StaticResource FormCaption}" />
+                <Entry Text="{Binding FormPerson}"
+                       Placeholder="{ext:Localize DebtPersonPlaceholder}"
+                       MaxLength="60"
+                       FontSize="16">
+                    <Entry.Keyboard>
+                        <Keyboard x:FactoryMethod="Create">
+                            <x:Arguments>
+                                <KeyboardFlags>CapitalizeWord</KeyboardFlags>
+                            </x:Arguments>
+                        </Keyboard>
+                    </Entry.Keyboard>
+                </Entry>
+                <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding PersonSuggestions}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:PayeeSummary">
+                            <Border Margin="0,0,8,8"
+                                    Padding="12,6"
+                                    StrokeThickness="0"
+                                    StrokeShape="RoundRectangle 16"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:DebtsViewModel}}, Path=SelectPersonCommand}"
+                                                          CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                                <Label Text="{Binding Name}"
+                                       FontSize="14"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <!-- The amount, its currency and where the money moved: only when adding (later ones are payments) -->
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                        <Label Text="{Binding AmountCaption}" Style="{StaticResource FormCaption}" />
+                        <Label Grid.Column="1"
+                               Text="{ext:Localize Currency}"
+                               IsVisible="{Binding ShowCurrencyPicker}"
+                               Style="{StaticResource FormCaption}" />
+                        <controls:DecimalEntry Grid.Row="1"
+                                               Text="{Binding FormAmount}"
+                                               Placeholder="0.00"
+                                               FontSize="16">
+                            <controls:DecimalEntry.Behaviors>
+                                <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency}" />
+                            </controls:DecimalEntry.Behaviors>
+                        </controls:DecimalEntry>
+                        <Picker Grid.Row="1" Grid.Column="1"
+                                ItemsSource="{Binding Currencies}"
+                                SelectedItem="{Binding FormCurrency}"
+                                IsVisible="{Binding ShowCurrencyPicker}"
+                                Title="{ext:Localize SelectCurrency}"
+                                WidthRequest="96"
+                                FontSize="16"
+                                MinimumHeightRequest="44" />
+                    </Grid>
+
+                    <Label Text="{Binding AccountCaption}" Style="{StaticResource FormCaption}" />
+                    <Picker ItemsSource="{Binding FormAccounts}"
+                            SelectedItem="{Binding FormAccount}"
+                            ItemDisplayBinding="{Binding Name}"
+                            Title="{ext:Localize SelectAccount}"
+                            FontSize="16" />
+
+                    <Label Text="{ext:Localize Date}" Style="{StaticResource FormCaption}" />
+                    <DatePicker Date="{Binding FormDate}" Format="D" FontSize="16" />
+                </VerticalStackLayout>
+
+                <Label Text="{ext:Localize DebtNote}" Style="{StaticResource FormCaption}" />
+                <Entry Text="{Binding FormNote}"
+                       Placeholder="{ext:Localize DebtNotePlaceholder}"
+                       MaxLength="80"
+                       FontSize="16" />
+
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <Label Text="{ext:Localize DebtHasDueDate}" Style="{StaticResource SwitchRow}" />
+                    <Switch Grid.Column="1"
+                            IsToggled="{Binding HasDueDate}"
+                            OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                </Grid>
+                <DatePicker Date="{Binding DueDate}" Format="D" FontSize="16" IsVisible="{Binding HasDueDate}" />
+
+                <!-- Payments on a schedule: capped at what is left, they stop once the debt is paid -->
+                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                    <Label Text="{ext:Localize DebtHasSchedule}" Style="{StaticResource SwitchRow}" />
+                    <Switch Grid.Column="1"
+                            IsToggled="{Binding HasSchedule}"
+                            OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                </Grid>
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding HasSchedule}">
+                    <Label Text="{ext:Localize DebtScheduleAmount}" Style="{StaticResource FormCaption}" />
+                    <controls:DecimalEntry Text="{Binding ScheduleAmount}" Placeholder="0.00" FontSize="16">
+                        <controls:DecimalEntry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency}" />
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
+
+                    <Label Text="{ext:Localize Frequency}" Style="{StaticResource FormCaption}" />
+                    <Picker ItemsSource="{Binding Frequencies}"
+                            SelectedItem="{Binding ScheduleFrequency}"
+                            Title="{ext:Localize SelectFrequency}"
+                            FontSize="16" />
+
+                    <Label Text="{ext:Localize DebtFirstPayment}" Style="{StaticResource FormCaption}" />
+                    <DatePicker Date="{Binding ScheduleFirstDate}" Format="D" FontSize="16" />
+
+                    <Label Text="{Binding ScheduleAccountCaption}" Style="{StaticResource FormCaption}" />
+                    <Picker ItemsSource="{Binding ScheduleAccounts}"
+                            SelectedItem="{Binding ScheduleAccount}"
+                            ItemDisplayBinding="{Binding Name}"
+                            Title="{ext:Localize SelectAccount}"
+                            FontSize="16" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ext:Localize DebtHasInterest}" Style="{StaticResource SwitchRow}" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding HasScheduleInterest}"
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                    </Grid>
+                    <controls:DecimalEntry Text="{Binding ScheduleInterest}" Placeholder="0.00" FontSize="16"
+                                           IsVisible="{Binding HasScheduleInterest}">
+                        <controls:DecimalEntry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency}" />
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
+                    <Label Text="{ext:Localize DebtInterestHint}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           IsVisible="{Binding HasScheduleInterest}" />
+                </VerticalStackLayout>
+                </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Delete only when editing -->
+                <Grid Grid.Row="2" x:Name="FormFooter" ColumnDefinitions="Auto,*">
+                    <Button Text="{ext:Localize DeleteButton}"
+                            IsVisible="{Binding IsEditMode}"
+                            Command="{Binding DeleteDebtCommand}"
+                            Margin="0,0,12,0"
+                            HeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                    <Button Grid.Column="1"
+                            Text="{Binding SaveText}"
+                            Command="{Binding SaveDebtCommand}"
+                            Style="{StaticResource PrimarySheetButton}" />
+                </Grid>
+            </Grid>
+        </controls:BottomSheet>
+
+        <!-- Payment sheet: a payment (with its interest part) or more lent / borrowed -->
+        <controls:BottomSheet x:Name="PaymentSheet" IsOpen="{Binding IsPaymentOpen}" CloseCommand="{Binding ClosePaymentCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label x:Name="PaymentHeader" Text="{Binding PaymentTitle}" FontSize="18" FontAttributes="Bold" />
+
+                <ScrollView Grid.Row="1" x:Name="PaymentScroll">
+                <VerticalStackLayout Spacing="8">
+
+                <Label Text="{ext:Localize Amount}" Style="{StaticResource FormCaption}" />
+                <controls:DecimalEntry Text="{Binding PaymentAmount}" Placeholder="0.00" FontSize="16">
+                    <controls:DecimalEntry.Behaviors>
+                        <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding SelectedDebt.CurrencyCode}" />
+                    </controls:DecimalEntry.Behaviors>
+                </controls:DecimalEntry>
+                <Label Text="{Binding PaymentHint}" Style="{StaticResource DebtNote}"
+                       IsVisible="{Binding PaymentIsAddition, Converter={StaticResource InvertedBoolConverter}}" />
+
+                <Label Text="{Binding PaymentAccountCaption}" Style="{StaticResource FormCaption}" />
+                <Picker ItemsSource="{Binding PaymentAccounts}"
+                        SelectedItem="{Binding PaymentAccount}"
+                        ItemDisplayBinding="{Binding Name}"
+                        Title="{ext:Localize SelectAccount}"
+                        FontSize="16" />
+
+                <Label Text="{ext:Localize Date}" Style="{StaticResource FormCaption}" />
+                <DatePicker Date="{Binding PaymentDate}" Format="D" FontSize="16" />
+
+                <VerticalStackLayout Spacing="8" IsVisible="{Binding PaymentIsAddition, Converter={StaticResource InvertedBoolConverter}}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ext:Localize DebtHasInterest}" Style="{StaticResource SwitchRow}" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding HasPaymentInterest}"
+                                OnColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                    </Grid>
+                    <controls:DecimalEntry Text="{Binding PaymentInterest}" Placeholder="0.00" FontSize="16"
+                                           IsVisible="{Binding HasPaymentInterest}">
+                        <controls:DecimalEntry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding SelectedDebt.CurrencyCode}" />
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
+                    <Label Text="{ext:Localize DebtInterestHint}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           IsVisible="{Binding HasPaymentInterest}" />
+                </VerticalStackLayout>
+                </VerticalStackLayout>
+                </ScrollView>
+
+                <Button Grid.Row="2"
+                        x:Name="PaymentFooter"
+                        Text="{ext:Localize Save}"
+                        Command="{Binding SavePaymentCommand}"
+                        Style="{StaticResource PrimarySheetButton}" />
+            </Grid>
+        </controls:BottomSheet>
+    </Grid>
+
+</ContentPage>

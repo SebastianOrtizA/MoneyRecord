@@ -109,7 +109,7 @@ namespace MoneyRecord.ViewModels
                 IsLoading = true;
 
                 var goalsTask = _goalService.GetProgressAsync();
-                var accountsTask = _accountRepository.GetAllAsync();
+                var accountsTask = _accountRepository.GetOwnAsync();
                 var linkedTask = _goalService.GetLinkedAccountsAsync();
                 await Task.WhenAll(goalsTask, accountsTask, linkedTask);
                 cancellationToken.ThrowIfCancellationRequested();

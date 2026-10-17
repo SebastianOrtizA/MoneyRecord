@@ -48,6 +48,10 @@ namespace MoneyRecord.Models
         [Indexed(Name = "IX_Transaction_SplitId")]
         public string? SplitId { get; set; }
 
+        /// <summary>The <see cref="Debt"/> whose interest this is (a payment's interest part); null = not interest on a debt.</summary>
+        [Indexed(Name = "IX_Transaction_DebtId")]
+        public int? DebtId { get; set; }
+
         public string? Tags { get; set; }
 
         public string? ReceiptPhotoPath { get; set; }

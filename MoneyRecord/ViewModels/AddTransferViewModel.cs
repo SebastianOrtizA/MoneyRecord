@@ -137,13 +137,13 @@ namespace MoneyRecord.ViewModels
             TransferId = savedTransferId;
             Transfer = savedTransfer;
 
-            await LoadAccountsAsync();
-
             // If TransferId was passed, load the transfer
             if (TransferId.HasValue && Transfer == null)
             {
                 Transfer = await _transferRepository.GetByIdAsync(TransferId.Value);
             }
+
+            await LoadAccountsAsync();
 
             if (Transfer != null)
             {
@@ -178,9 +178,12 @@ namespace MoneyRecord.ViewModels
             await UpdateSourceAccountBalanceAsync();
         }
 
+        // The user's own accounts, plus the debt an edited transfer belongs to (a payment edited from the list keeps its side)
         private async Task LoadAccountsAsync()
         {
-            Accounts = await _accountRepository.GetAllAsync();
+            Accounts = (await _accountRepository.GetAllAsync())
+                .Where(a => !a.IsDebt || a.Id == Transfer?.SourceAccountId || a.Id == Transfer?.DestinationAccountId)
+                .ToList();
         }
 
         partial void OnSelectedSourceAccountChanged(Account? value)
