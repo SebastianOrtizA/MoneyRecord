@@ -45,6 +45,12 @@ namespace MoneyRecord.Services
 
         public const string BaseCurrencyPreferenceKey = "BaseCurrencyCode";
 
+        /// <summary>The currencies shown without cents (Settings): comma-separated codes.</summary>
+        public const string HiddenCentsPreferenceKey = "Currencies.HideCents";
+
+        /// <summary>Currencies whose amounts are shown in whole units (loaded at startup, changed in Settings).</summary>
+        private static HashSet<string> _hiddenCents = new(StringComparer.OrdinalIgnoreCase);
+
         private readonly IPreferencesService _preferences;
 
         public CurrencyService(IPreferencesService preferences)
@@ -53,12 +59,15 @@ namespace MoneyRecord.Services
         }
 
         /// <summary>
-        /// Loads the saved base currency into <see cref="MoneyFormatter"/>. Called once at startup, before the database
-        /// is opened or any page formats money.
+        /// Loads the saved base currency into <see cref="MoneyFormatter"/>, and the currencies shown without cents.
+        /// Called once at startup, before the database is opened or any page formats money.
         /// </summary>
-        public static void LoadBaseCurrency(IPreferencesService preferences)
+        public static void LoadSettings(IPreferencesService preferences)
         {
             MoneyFormatter.BaseCurrencyCode = preferences.Get(BaseCurrencyPreferenceKey, string.Empty);
+            _hiddenCents = new HashSet<string>(
+                preferences.Get(HiddenCentsPreferenceKey, string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries),
+                StringComparer.OrdinalIgnoreCase);
         }
 
         public string GetBaseCurrencyCode() => MoneyFormatter.BaseCurrency;
@@ -100,6 +109,29 @@ namespace MoneyRecord.Services
             "JPY" or "CLP" or "KRW" => 0,
             _ => 2
         };
+
+        /// <summary>
+        /// Decimal places an amount in the currency is shown with: none when the user turned its cents off (Settings),
+        /// else <see cref="GetMinorUnits"/>. Input still takes cents, so a typed or stored amount never loses them.
+        /// </summary>
+        public static int GetShownDecimals(string? code) =>
+            code != null && _hiddenCents.Contains(code) ? 0 : GetMinorUnits(code);
+
+        /// <summary>The currency has cents to show or hide (not JPY, CLP or KRW).</summary>
+        public static bool HasCents(string code) => GetMinorUnits(code) > 0;
+
+        public bool ShowsCents(string code) => GetShownDecimals(code) > 0;
+
+        public void SetShowsCents(string code, bool show)
+        {
+            var hidden = new HashSet<string>(_hiddenCents, StringComparer.OrdinalIgnoreCase);
+            if (show)
+                hidden.Remove(code);
+            else
+                hidden.Add(code.ToUpperInvariant());
+            _preferences.Set(HiddenCentsPreferenceKey, string.Join(",", hidden.Order(StringComparer.Ordinal)));
+            _hiddenCents = hidden;
+        }
 
         string ICurrencyService.GetSymbol(string code) => GetSymbol(code);
 

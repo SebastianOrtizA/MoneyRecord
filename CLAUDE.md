@@ -189,7 +189,8 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Seed data: 4 income categories, 7 expense categories, 1 "Cash" account (allows negative balance, device currency)
 - **Money is stored as integer cents** (`AmountCents`, `InitialBalanceCents`, `LimitAmountCents`); the `decimal` properties
   are `[Ignore]` wrappers (`Helpers/Money`). Fixed scale of 100 for every currency; zero-decimal currencies (JPY, ...)
-  only change display/input (`CurrencyService.GetMinorUnits`)
+  only change display/input (`CurrencyService.GetMinorUnits`); Settings → Show cents hides a currency's cents in display
+  only (`GetShownDecimals`; entries still take and show typed cents, `MoneyFormatter.FormatForEntry`)
 - **Migrations** (`PRAGMA user_version`): the models describe the latest schema. A new database is created from the models
   and stamped with the latest version; a migration only transforms a database from an older app version (after
   `CreateTableAsync` has added new columns/indexes). Add new migrations at the end of `MigrationRunner.All`; set

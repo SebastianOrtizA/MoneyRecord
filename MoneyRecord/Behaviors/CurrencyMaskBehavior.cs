@@ -7,7 +7,8 @@ namespace MoneyRecord.Behaviors
     /// <summary>
     /// A behavior that applies currency mask formatting to an Entry control.
     /// Formats input in <see cref="CurrencyCode"/> (empty = the base currency) with thousand separators, and limits
-    /// the decimals to the currency's (0 for JPY/CLP/KRW, otherwise 2).
+    /// the decimals to the currency's (0 for JPY/CLP/KRW, otherwise 2). A currency whose cents are hidden (Settings)
+    /// shows whole amounts, but still takes and keeps typed cents.
     /// Formatting is applied when the Entry loses focus to avoid Android EmojiCompat conflicts.
     /// Also formats when text is set programmatically (while Entry is not focused).
     /// </summary>
@@ -162,7 +163,7 @@ namespace MoneyRecord.Behaviors
 
             // When focused, show raw numeric value for easier editing
             var value = AmountParser.ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
-            SetText(entry, value != 0 ? value.ToString($"F{DecimalPlaces}", Culture) : string.Empty);
+            SetText(entry, value != 0 ? value.ToString($"F{MoneyFormatter.EntryDecimals(value, CurrencyCode)}", Culture) : string.Empty);
         }
 
         private void OnEntryUnfocused(object? sender, FocusEventArgs e)
@@ -188,8 +189,8 @@ namespace MoneyRecord.Behaviors
         private string FormatValue(decimal value)
         {
             return ShowCurrencySymbol
-                ? MoneyFormatter.FormatBesideCode(value, CurrencyCode, Culture)
-                : value.ToString($"N{DecimalPlaces}", Culture);
+                ? MoneyFormatter.FormatForEntry(value, CurrencyCode, Culture)
+                : value.ToString($"N{MoneyFormatter.EntryDecimals(value, CurrencyCode)}", Culture);
         }
     }
 }

@@ -2100,4 +2100,10 @@ Monto: {2}</value>
   <data name="ReportTransfer" xml:space="preserve">
     <value>Transferencia</value>
   </data>
+  <data name="ShowCents" xml:space="preserve">
+    <value>Mostrar centavos</value>
+  </data>
+  <data name="ShowCentsDescription" xml:space="preserve">
+    <value>Desactivado, los importes en esa moneda se muestran sin decimales. Se siguen guardando con sus centavos.</value>
+  </data>
 </root>

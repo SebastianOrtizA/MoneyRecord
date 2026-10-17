@@ -22,7 +22,7 @@ namespace MoneyRecord
             // database (migration 3 stamps old accounts with the currency)
             var preferences = new PreferencesService();
             LocalizationService.Instance.LoadLanguage(preferences);
-            CurrencyService.LoadBaseCurrency(preferences);
+            CurrencyService.LoadSettings(preferences);
             var paths = new AppPaths(FileSystem.AppDataDirectory);
             var sentryDsn = SentryDsn();
             var crashReports = new CrashReportConsent(preferences, TimeProvider.System, isAvailable: sentryDsn != null);
@@ -134,6 +134,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IBackupPasswordStore, NoBackupPasswordStore>();
 #endif
             builder.Services.AddTransient<BackupPasswordViewModel>();
+            builder.Services.AddTransient<CurrencyCentsViewModel>();
 
             // App lock (the phone's own lock) and hidden balances
             builder.Services.AddSingleton<IPrivacySettings, PrivacySettings>();
