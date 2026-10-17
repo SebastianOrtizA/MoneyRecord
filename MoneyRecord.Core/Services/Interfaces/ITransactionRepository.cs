@@ -38,8 +38,9 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>
         /// Totals of one type per account, with each account's latest date of that type: all-time (no <paramref name="since"/>),
-        /// or only the entries dated on or after <paramref name="since"/>.
+        /// or only the entries dated on or after <paramref name="since"/>; with <paramref name="before"/>, only those dated
+        /// before it (balances leave future-dated entries out).
         /// </summary>
-        Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime? since = null);
+        Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime? since = null, DateTime? before = null);
     }
 }

@@ -685,7 +685,7 @@ Monto: {2}</value>
     <value>No hay transacciones recurrentes</value>
   </data>
   <data name="AddRecurringToStart" xml:space="preserve">
-    <value>Al agregar una transacción, activa "Hacer Recurrente" para crear transacciones automáticas repetitivas</value>
+    <value>Toca + para programar una, o activa "Hacer Recurrente" al agregar una transacción</value>
   </data>
   <data name="DeleteRecurringConfirmation" xml:space="preserve">
     <value>¿Está seguro de que desea eliminar la transacción recurrente '{0}'?</value>
@@ -2108,5 +2108,29 @@ Monto: {2}</value>
   </data>
   <data name="IncomeReport" xml:space="preserve">
     <value>Ingresos</value>
+  </data>
+  <data name="AddRecurring" xml:space="preserve">
+    <value>Añadir transacción recurrente</value>
+  </data>
+  <data name="NewRecurringExpense" xml:space="preserve">
+    <value>Nuevo gasto recurrente</value>
+  </data>
+  <data name="NewRecurringIncome" xml:space="preserve">
+    <value>Nuevo ingreso recurrente</value>
+  </data>
+  <data name="FirstDate" xml:space="preserve">
+    <value>Primera fecha</value>
+  </data>
+  <data name="ScheduleStartsNote" xml:space="preserve">
+    <value>Solo se guarda la programación: la primera entrada se registra el {0}.</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>Con fecha futura: cuenta en los saldos desde el {0}.</value>
+  </data>
+  <data name="ScheduleDateMustBeFuture" xml:space="preserve">
+    <value>Elige una primera fecha a partir de mañana.</value>
+  </data>
+  <data name="RecurringScheduled" xml:space="preserve">
+    <value>Transacción recurrente programada</value>
   </data>
 </root>

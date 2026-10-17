@@ -15,10 +15,10 @@ namespace MoneyRecord.Helpers
     /// </summary>
     public static class NetWorthBuilder
     {
-        /// <param name="currentTotal">Today's balance of the counted accounts (all their entries, future-dated included).</param>
+        /// <param name="currentTotal">Today's balance of the counted accounts (their entries dated up to today).</param>
         /// <param name="accountIds">The counted accounts.</param>
-        /// <param name="transactions">Every transaction dated after the end of the month before <paramref name="firstMonth"/>.</param>
-        /// <param name="transfers">Every transfer dated after the end of the month before <paramref name="firstMonth"/>.</param>
+        /// <param name="transactions">Every transaction dated after the end of the month before <paramref name="firstMonth"/>, up to today.</param>
+        /// <param name="transfers">Every transfer dated after the end of the month before <paramref name="firstMonth"/>, up to today.</param>
         /// <returns>One point per month from <paramref name="firstMonth"/>, oldest first.</returns>
         public static List<NetWorthPoint> Build(decimal currentTotal, IEnumerable<int> accountIds,
             IEnumerable<Transaction> transactions, IEnumerable<Transfer> transfers, DateTime firstMonth, int months)

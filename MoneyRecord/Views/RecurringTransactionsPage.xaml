@@ -101,6 +101,17 @@
                                     </controls:DecimalEntry.Behaviors>
                                 </controls:DecimalEntry>
 
+                                <!-- Nothing created yet: the first date can still move (tomorrow at the earliest) -->
+                                <VerticalStackLayout Spacing="8" IsVisible="{Binding EditCanMoveFirstDate}">
+                                    <Label Text="{ext:Localize FirstDate}" FontSize="14"
+                                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    <DatePicker Date="{Binding EditFirstDate}"
+                                                MinimumDate="{Binding EditMinimumDate}"
+                                                Format="D"
+                                                FontSize="16"
+                                                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2D2D2D}"/>
+                                </VerticalStackLayout>
+
                                 <Label Text="{ext:Localize Frequency}" FontSize="14"
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                                 <Picker ItemsSource="{Binding Frequencies}"
@@ -295,9 +306,30 @@
                         </VerticalStackLayout>
                     </VerticalStackLayout>
 
+                    <!-- Room so the last card scrolls above the add button -->
+                    <ContentView HeightRequest="72"/>
+
                 </VerticalStackLayout>
             </ScrollView>
         </RefreshView>
+
+        <!-- A new recurring expense or income, from tomorrow on -->
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize AddRecurring}"
+                IsVisible="{Binding IsEditMode, Converter={StaticResource InvertedBoolConverter}}"
+                Command="{Binding AddRecurringCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}"/>
 
     </Grid>
 

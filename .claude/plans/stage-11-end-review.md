@@ -1,6 +1,6 @@
 # Stage 11: End Review
 
-**Status**: In progress (11.1, 11.2, 11.3, 11.4, 11.6 done; 11.5 in review)
+**Status**: In progress (11.1–11.6 done; 11.7 in review)
 **Source**: Issues and small requests the user noted while reviewing Stages 8.7a–8.7b (2026-10-13)
 
 ## Decisions (owner, 2026-10-16)
@@ -85,6 +85,35 @@
   measures as two lines at its largest font (rows are even). Report tab and title use the new `IncomeReport` key
   ("Income" / "Ingresos"; `Income` stays the singular entry type "Ingreso"), also in the PDF totals header. README
   Features rewritten for the current app (tabs, Reports, Currencies, CSV import, widget, setup).
+
+### 11.7 Scheduled recurring transactions, future-dated entries (owner request, 2026-10-17)
+- Recurring page: a + button (Expense / Income; no transfers) opens the add form in a "schedule" mode: the date is
+  the first occurrence, tomorrow at the earliest, and saving stores only the schedule (`NextOccurrence` = that date,
+  nothing processed yet). The daily processing creates each entry on its date, like any recurring transaction.
+- Add form: "Make recurring" with a future date saves only the schedule too (option a); nothing counts before its date.
+- Balances count only entries dated up to today: a future-dated transaction or transfer is listed, but no balance,
+  total balance, widget, goal or net worth includes it before its date. What works back from today's balances (net
+  worth, the PDF's closing balances, a goal's pace) stops at today too. Period totals (Home cards, reports, budgets)
+  still count a period's entries by their dates.
+- Recurring edit: while a schedule has created nothing yet, its first date can be moved (tomorrow at the earliest).
+- Decisions (owner): reuse the add form over a new sheet; earliest date tomorrow; Expense / Income only.
+- Done as: `BalanceService.CountedBefore` (the start of tomorrow, from `TimeProvider`) bounds every balance sum
+  (`SumCentsByAccountAsync` / `SumCentsBySource|DestinationAsync` take `before`); `GetChangesSinceAsync` stops there too,
+  so the PDF's closing balances and a goal's pace still add up, and Net worth loads movements only up to today.
+  `RecurringStart` (Core) decides how a new schedule starts: today or earlier records the first entry now (as before);
+  a future date saves only the schedule (`NextOccurrence` = that date, `LastProcessedDate` null) and the daily
+  processing creates it on the day. The Recurring page's + asks Expense / Income and opens `AddTransactionPage` with
+  `Schedule=true`: "First date" from tomorrow, recurrence options open, no split, receipt scan, tags, receipt or own
+  conversion. A note under the date says what a future date does ("Only the schedule is saved: …" / "Dated in the
+  future: it counts in balances from …"). The Recurring edit card shows "First date" while a (non-debt) schedule has
+  created nothing. Also fixed: the add form's Monthly default never showed "Specific day of month" until the
+  frequency was changed. Not changed: future-dated debt movements still count in a debt's outstanding amount (Debts
+  page), and the Recurring edit form is still the inline card (a bottom sheet could follow, like 11.4). The
+  home-screen widget redraws when the app goes to the background and after the ~09:00 daily job, so an entry that
+  becomes due at midnight shows there from ~09:00.
+- Review (PR #58): `SavesOnlySchedule` (schedule mode, or recurring with a future date) hides tags, the receipt and the
+  own conversion in the add form too, so nothing typed there is dropped on save; the add and Recurring view models
+  take "today" from the injected `TimeProvider`, like `BalanceService`.
 
 ## Done when
 Each item is fixed or consciously dropped with the user.

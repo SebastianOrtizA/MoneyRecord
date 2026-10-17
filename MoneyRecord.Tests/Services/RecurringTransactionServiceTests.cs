@@ -215,4 +215,22 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         counts.Sum(c => c.Created).Should().Be(15);
         (await TransactionsAsync()).Should().HaveCount(15);
     }
+
+    [Fact]
+    public async Task A_schedule_starting_tomorrow_records_nothing_until_its_date()
+    {
+        // Saved from the Recurring page: the first occurrence is the chosen date, nothing processed yet
+        var rent = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 3, 16));
+
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(0);
+        (await TransactionsAsync()).Should().BeEmpty();
+
+        _clock.Advance(TimeSpan.FromDays(1));
+
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(1);
+        (await TransactionsAsync()).Select(t => t.Date).Should().Equal(new DateTime(2026, 3, 16));
+        var saved = await ReloadAsync(rent);
+        saved.LastProcessedDate.Should().Be(new DateTime(2026, 3, 16));
+        saved.NextOccurrence.Should().Be(new DateTime(2026, 4, 16));
+    }
 }

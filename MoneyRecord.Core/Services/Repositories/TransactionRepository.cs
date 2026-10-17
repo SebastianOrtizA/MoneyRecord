@@ -68,11 +68,14 @@ namespace MoneyRecord.Services.Repositories
                 .ToDictionary(g => g.Key, g => new DateTime(g.Min(r => r.FirstTicks)));
         }
 
-        public async Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime? since = null) =>
-            await (await ConnectionAsync()).QueryAsync<AccountTotal>(
+        public async Task<List<AccountTotal>> SumCentsByAccountAsync(TransactionType type, DateTime? since = null,
+            DateTime? before = null)
+        {
+            var (where, args) = DateFilter.Sql(since, before);
+            return await (await ConnectionAsync()).QueryAsync<AccountTotal>(
                 "SELECT AccountId, SUM(ABS(AmountCents)) AS Cents, MAX(Date) AS LastDateTicks FROM \"Transaction\" " +
-                "WHERE Type = ? AND AccountId IS NOT NULL " + (since == null ? "" : "AND Date >= ? ") + "GROUP BY AccountId",
-                since == null ? [type] : [type, since.Value]);
+                $"WHERE Type = ? AND AccountId IS NOT NULL{where} GROUP BY AccountId", [type, .. args]);
+        }
 
         private async Task<List<CategoryCurrencyTotal>> SumByCategoryRowsAsync(TransactionType type, DateTime startDate,
             DateTime endDate, string baseCurrencyCode)

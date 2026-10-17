@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using Microsoft.Extensions.Time.Testing;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
@@ -18,6 +19,8 @@ public sealed class BalanceServiceTests : IAsyncLifetime
     private static readonly DateTime March31End = new DateTime(2026, 4, 1).AddTicks(-1);
 
     private readonly string _appData = Path.Combine(Path.GetTempPath(), $"moneyrecord-balance-{Guid.NewGuid():N}");
+    // After every date the tests use, except the future-dated ones
+    private readonly FakeTimeProvider _clock = new(new DateTimeOffset(2026, 4, 15, 12, 0, 0, TimeSpan.Zero));
     private DatabaseInitializer _dbInitializer = null!;
     private BalanceService _sut = null!;
 
@@ -33,7 +36,8 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         _sut = new BalanceService(
             new AccountRepository(_dbInitializer),
             new TransactionRepository(_dbInitializer),
-            new TransferRepository(_dbInitializer));
+            new TransferRepository(_dbInitializer),
+            _clock);
     }
 
     public async Task DisposeAsync()
@@ -214,5 +218,29 @@ public sealed class BalanceServiceTests : IAsyncLifetime
         {
             MoneyFormatter.BaseCurrencyCode = previousBase;
         }
+    }
+
+    [Fact]
+    public async Task Future_dated_entries_count_in_balances_from_their_date_on()
+    {
+        var bank = await AddAccountAsync("Bank", initial: 100m);
+        var savings = await AddAccountAsync("Savings");
+        var tomorrow = new DateTime(2026, 4, 16);
+        await AddAsync(TransactionType.Expense, 10m, new DateTime(2026, 4, 15, 23, 59, 0), bank.Id);
+        await AddAsync(TransactionType.Expense, 30m, tomorrow, bank.Id);
+        await AddAsync(TransactionType.Income, 50m, tomorrow.AddDays(7), bank.Id);
+        await TransferAsync(bank.Id, savings.Id, 20m, tomorrow);
+
+        var today = (await _sut.GetAllAccountBalancesAsync()).ToDictionary(b => b.AccountId);
+        today[bank.Id].CurrentBalance.Should().Be(90m);
+        today[bank.Id].LastActivityDate.Should().Be(new DateTime(2026, 4, 15, 23, 59, 0));
+        today[savings.Id].CurrentBalance.Should().Be(0m);
+        (await _sut.GetChangesSinceAsync(new DateTime(2026, 4, 1))).Should().Equal(new Dictionary<int, decimal> { [bank.Id] = -10m });
+
+        _clock.Advance(TimeSpan.FromDays(1));
+
+        (await _sut.GetAccountBalanceAsync(bank.Id)).Should().Be(40m);
+        (await _sut.GetAccountBalanceAsync(savings.Id)).Should().Be(20m);
+        _sut.CountedBefore.Should().Be(new DateTime(2026, 4, 17));
     }
 }

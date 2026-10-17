@@ -41,7 +41,7 @@ public sealed class DebtServiceTests : LanguageTestBase, IAsyncLifetime
         Db = await _dbInitializer.GetConnectionAsync();
         _accounts = new AccountRepository(_dbInitializer);
         var categories = new CategoryRepository(_dbInitializer);
-        _balances = new BalanceService(_accounts, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer));
+        _balances = new BalanceService(_accounts, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), _clock);
         _payees = new PayeeService(_dbInitializer, _accounts);
         _recurring = new RecurringTransactionService(new RecurringTransactionRepository(_dbInitializer), categories, _accounts,
             _dbInitializer, _clock);

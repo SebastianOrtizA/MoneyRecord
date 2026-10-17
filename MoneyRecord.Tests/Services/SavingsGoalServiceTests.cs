@@ -29,8 +29,8 @@ public sealed class SavingsGoalServiceTests : IAsyncLifetime
         _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
         Db = await _dbInitializer.GetConnectionAsync();
         _accounts = new AccountRepository(_dbInitializer);
-        var balances = new BalanceService(_accounts, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer));
         var clock = new FakeTimeProvider(new DateTimeOffset(Today.AddHours(12), TimeSpan.Zero));
+        var balances = new BalanceService(_accounts, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), clock);
         clock.SetLocalTimeZone(TimeZoneInfo.Utc);
         _sut = new SavingsGoalService(_dbInitializer, _accounts, balances, clock);
     }

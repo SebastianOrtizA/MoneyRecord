@@ -687,7 +687,7 @@ Amount: {2}</value>
     <value>No recurring transactions</value>
   </data>
   <data name="AddRecurringToStart" xml:space="preserve">
-    <value>When adding a transaction, toggle "Make Recurring" to create automatic repeating transactions</value>
+    <value>Tap + to schedule one, or turn on "Make Recurring" when adding a transaction</value>
   </data>
   <data name="DeleteRecurringConfirmation" xml:space="preserve">
     <value>Are you sure you want to delete the recurring transaction '{0}'?</value>
@@ -2111,5 +2111,29 @@ Amount: {2}</value>
   <data name="IncomeReport" xml:space="preserve">
     <value>Income</value>
     <comment>Income report tab and title (the plural "Ingresos" in Spanish; Income alone is the entry type)</comment>
+  </data>
+  <data name="AddRecurring" xml:space="preserve">
+    <value>Add recurring transaction</value>
+  </data>
+  <data name="NewRecurringExpense" xml:space="preserve">
+    <value>New recurring expense</value>
+  </data>
+  <data name="NewRecurringIncome" xml:space="preserve">
+    <value>New recurring income</value>
+  </data>
+  <data name="FirstDate" xml:space="preserve">
+    <value>First date</value>
+  </data>
+  <data name="ScheduleStartsNote" xml:space="preserve">
+    <value>Only the schedule is saved: the first entry is recorded on {0}.</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>Dated in the future: it counts in balances from {0}.</value>
+  </data>
+  <data name="ScheduleDateMustBeFuture" xml:space="preserve">
+    <value>Choose a first date from tomorrow on.</value>
+  </data>
+  <data name="RecurringScheduled" xml:space="preserve">
+    <value>Recurring transaction scheduled</value>
   </data>
 </root>
