@@ -49,7 +49,8 @@ namespace MoneyRecord.Services
                         && db.Table<Transaction>().Count() == 0
                         && db.Table<Transfer>().Count() == 0
                         && db.Table<Budget>().Count() == 0
-                        && db.Table<RecurringTransaction>().Count() == 0;
+                        && db.Table<RecurringTransaction>().Count() == 0
+                        && db.Table<Debt>().Count() == 0;
 
                     if (replace)
                     {

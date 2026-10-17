@@ -60,6 +60,15 @@ and Windows are maintained too. All data stays on the device.
 - Each goal shows what to save per month to reach it by its date, and when the last 3 months' pace would reach it
   (On track / Behind / Reached). Home lists the first three.
 
+### Debts and loans
+- Money lent to or borrowed from a person (More → Debts): what is owed in each direction, paid back so far, and an
+  optional due date (reminded before it, with the bill reminders). A debt that was owed before you started counts too.
+- Payments are recorded as they come, optionally with an **interest** part (saved as an expense or income in an
+  Interest category). Lending, borrowing and payments move money between your accounts and the debt, so balances and
+  reports stay right.
+- **Payments on a schedule** (amount + frequency + account): each one is created like a recurring transaction, the last
+  is capped at what is left, and the schedule stops when the debt is paid, with a notification.
+
 ### Recurring transactions
 - Daily, weekly, biweekly, monthly (optionally on a specific day) or yearly rules, with an optional end date.
 - Due transactions are created when the app starts and, on Android, by a daily background job.
@@ -216,7 +225,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 ├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
 │                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping,
 │                       LedgerTransfers, CategoryReportBuilder, RecurrenceCalculator, Debouncer
-├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal, Payee (tables)
+├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal, Payee, Debt (tables)
 │                       + display models (LedgerEntry, TransactionGroup, CategoryAmount, AccountBalanceInfo, BudgetProgress, ...)
 ├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
 ├── Services/
@@ -231,6 +240,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 │   ├── SavingsGoalService                       Goal progress (linked accounts' balances) + projection
 │   ├── PayeeService                             Payees: found or created on save, use counts, rename / merge / delete
 │   ├── SplitService                             Saves a split expense as one transaction per category
+│   ├── DebtService, DebtLedger                  Debts: amounts, payments (+ interest), schedule, delete
 │   ├── CurrencyService                          Currencies, base currency, decimals
 │   ├── RecurringTransactionService              Creates due recurring transactions
 │   ├── DataExportService                        Zip backup, restore + snapshot, CSV export

@@ -90,6 +90,11 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var goal = new SavingsGoal { Name = "Trip", TargetAmount = 2000m, CurrencyCode = "USD", TargetDate = new DateTime(2027, 6, 1) };
         await Db.InsertAsync(goal);
         await Db.InsertAsync(new SavingsGoalAccount { GoalId = goal.Id, AccountId = bank.Id });
+        var ledger = new Account { Name = "Bakery", IsDebt = true, InitialBalance = 40m, CurrencyCode = "USD" };
+        await Db.InsertAsync(ledger);
+        var debt = new Debt { PayeeId = bakery.Id, AccountId = ledger.Id, Direction = DebtDirection.Lent, DueDate = new DateTime(2026, 12, 1) };
+        await Db.InsertAsync(debt);
+        await Db.InsertAsync(new Transaction { Description = "Interest", Amount = 2m, DebtId = debt.Id, CategoryId = food.Id, AccountId = bank.Id });
         var before = await DumpAsync();
         var backupPath = BackupPath("backup.zip");
         await _service.ExportBackupAsync(backupPath);
@@ -97,6 +102,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         // Change everything after the backup
         await Db.DeleteAllAsync<SavingsGoalAccount>();
         await Db.DeleteAllAsync<Payee>();
+        await Db.DeleteAllAsync<Debt>();
         await Db.DeleteAllAsync<Transaction>();
         await Db.InsertAsync(new Transaction { Description = "Later", Amount = 1m, ReceiptPhotoPath = WriteReceipt("receipt_2.jpg", "photo-2") });
         File.Delete(Path.Combine(Receipts, "receipt_1.jpg"));
@@ -106,7 +112,9 @@ public sealed class BackupRestoreTests : IAsyncLifetime
 
         (await DumpAsync()).Should().BeEquivalentTo(before);
         result.RecordCount.Should().Be(before.Count);
-        var lunch = await Db.Table<Transaction>().FirstAsync();
+        var lunch = await Db.Table<Transaction>().FirstAsync(t => t.Description == "Lunch");
+        (await Db.Table<Debt>().ToListAsync()).Should().ContainSingle().Which.AccountId.Should().Be(ledger.Id);
+        (await Db.Table<Transaction>().FirstAsync(t => t.DebtId != null)).DebtId.Should().Be(debt.Id);
         lunch.ReceiptPhotoPath.Should().Be(Path.Combine(Receipts, "receipt_1.jpg"));
         (lunch.ConvertedAmount, lunch.ConvertedCurrencyCode).Should().Be((3.1m, "EUR"));
         lunch.PayeeId.Should().Be(bakery.Id);
@@ -400,6 +408,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         rows.AddRange(await Db.Table<RecurringTransaction>().ToListAsync());
         rows.AddRange(await Db.Table<SavingsGoal>().ToListAsync());
         rows.AddRange(await Db.Table<Payee>().ToListAsync());
+        rows.AddRange(await Db.Table<Debt>().ToListAsync());
         return rows;
     }
 }

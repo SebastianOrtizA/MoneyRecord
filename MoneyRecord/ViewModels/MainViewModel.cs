@@ -229,7 +229,7 @@ namespace MoneyRecord.ViewModels
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var balanceLines = CurrencyBalance.DisplayLines(
-                    CurrencyBalance.FromAccounts(await balancesTask, MoneyFormatter.BaseCurrency));
+                    CurrencyBalance.FromAccounts((await balancesTask).Where(b => !b.IsDebt), MoneyFormatter.BaseCurrency));
                 PrimaryBalance = balanceLines[0];
                 OtherBalances = balanceLines.Skip(1).ToList();
 

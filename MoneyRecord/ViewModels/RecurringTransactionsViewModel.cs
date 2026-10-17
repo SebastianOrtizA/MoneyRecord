@@ -19,6 +19,7 @@ namespace MoneyRecord.ViewModels
         private readonly IAccountRepository _accountRepo;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
+        private readonly IDebtService _debtService;
 
         [ObservableProperty]
         private ObservableCollection<RecurringTransaction> recurringTransactions = [];
@@ -80,8 +81,9 @@ namespace MoneyRecord.ViewModels
             IRecurringTransactionRepository recurringRepo,
             ICategoryRepository categoryRepo,
             IAccountRepository accountRepo,
-            IErrorHandler errorHandler, IDialogService dialogService)
+            IErrorHandler errorHandler, IDialogService dialogService, IDebtService debtService)
         {
+            _debtService = debtService;
             _recurringRepo = recurringRepo;
             _categoryRepo = categoryRepo;
             _accountRepo = accountRepo;
@@ -114,7 +116,13 @@ namespace MoneyRecord.ViewModels
 
                 foreach (var item in items)
                 {
-                    if (categories.TryGetValue(item.CategoryId, out var category))
+                    // A debt's payment schedule: its category is only the interest's
+                    if (item.DebtId != null)
+                    {
+                        item.CategoryName = AppResources.Debts;
+                        item.CategoryIconCode = DebtSummary.IconCode;
+                    }
+                    else if (categories.TryGetValue(item.CategoryId, out var category))
                     {
                         item.CategoryName = category.Name;
                         item.CategoryIconCode = category.IconCode;
@@ -140,7 +148,10 @@ namespace MoneyRecord.ViewModels
                 });
 
                 // From the same rows, after any change to the schedules (edit, delete, pause), so both lists agree
-                UpcomingEntries = UpcomingSchedule.Build(items, categories, accounts, DateTime.Now);
+                var debtsLeft = items.Any(r => r.DebtId != null)
+                    ? await _debtService.GetOutstandingAsync()
+                    : null;
+                UpcomingEntries = UpcomingSchedule.Build(items, categories, accounts, DateTime.Now, debtsLeft: debtsLeft);
                 HasUpcoming = UpcomingEntries.Count > 0;
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 
 namespace MoneyRecord.Helpers
 {
@@ -32,11 +33,13 @@ namespace MoneyRecord.Helpers
 
         /// <summary>
         /// Every pending occurrence through <paramref name="days"/> days after <paramref name="today"/>, soonest first,
-        /// with the category and account filled in. Overdue ones count as today.
+        /// with the category and account filled in. Overdue ones count as today. A debt's scheduled payments
+        /// (<see cref="RecurringTransaction.DebtId"/>) are capped at what <paramref name="debtsLeft"/> says is left (debt ID →
+        /// cents; none = nothing left), so they end with the debt; their amount includes the interest part.
         /// </summary>
         public static List<UpcomingEntry> Build(IEnumerable<RecurringTransaction> recurrings,
             IReadOnlyDictionary<int, Category> categories, IReadOnlyDictionary<int, Account> accounts,
-            DateTime today, int days = DefaultDays)
+            DateTime today, int days = DefaultDays, IReadOnlyDictionary<int, long>? debtsLeft = null)
         {
             today = today.Date;
             var entries = new List<UpcomingEntry>();
@@ -45,19 +48,30 @@ namespace MoneyRecord.Helpers
             {
                 var category = categories.GetValueOrDefault(recurring.CategoryId);
                 var account = accounts.GetValueOrDefault(recurring.AccountId);
+                long? left = recurring.DebtId is { } debtId ? debtsLeft?.GetValueOrDefault(debtId) ?? 0 : null;
 
                 foreach (var date in Occurrences(recurring, today.AddDays(days)))
                 {
+                    var cents = recurring.AmountCents;
+                    if (left != null)
+                    {
+                        if (left <= 0)
+                            break;
+                        cents = Math.Min(cents, left.Value);
+                        left -= cents;
+                        cents += recurring.InterestCents;
+                    }
+
                     entries.Add(new UpcomingEntry
                     {
                         RecurringId = recurring.Id,
                         Date = date,
                         DaysAway = Math.Max(0, (date - today).Days),
                         Description = recurring.Description,
-                        Amount = recurring.Amount,
+                        Amount = Money.FromCents(cents),
                         Type = recurring.TransactionType,
-                        CategoryName = category?.Name ?? string.Empty,
-                        CategoryIconCode = category?.IconCode ?? IconHelper.DefaultCategoryIconCode,
+                        CategoryName = left != null ? AppResources.Debts : category?.Name ?? string.Empty,
+                        CategoryIconCode = left != null ? DebtSummary.IconCode : category?.IconCode ?? IconHelper.DefaultCategoryIconCode,
                         AccountName = account?.Name ?? string.Empty,
                         CurrencyCode = account?.CurrencyCode ?? string.Empty
                     });

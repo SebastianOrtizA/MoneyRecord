@@ -67,7 +67,7 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
     {
         var gym = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 1, 31));
 
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(2);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(2);
 
         var created = await TransactionsAsync();
         created.Select(t => t.Date).Should().Equal(new DateTime(2026, 1, 31), new DateTime(2026, 2, 28));
@@ -92,7 +92,7 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         await AddAsync(RecurrenceFrequency.Weekly, new DateTime(2026, 3, 15));
         await AddAsync(RecurrenceFrequency.Weekly, new DateTime(2026, 3, 16));
 
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(1);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(1);
 
         (await TransactionsAsync()).Single().Date.Should().Be(new DateTime(2026, 3, 15));
     }
@@ -114,11 +114,11 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
     {
         await AddAsync(RecurrenceFrequency.Daily, new DateTime(2026, 3, 10));
 
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(6);
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(0);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(6);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(0);
 
         _clock.Advance(TimeSpan.FromDays(1));
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(1);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(1);
         (await TransactionsAsync()).Should().HaveCount(7);
     }
 
@@ -128,7 +128,7 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         // Regression: the deactivation used to be overwritten by the schedule save right after it
         var weekly = await AddAsync(RecurrenceFrequency.Weekly, new DateTime(2026, 3, 1), end: new DateTime(2026, 3, 10));
 
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(2);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(2);
 
         (await TransactionsAsync()).Select(t => t.Date)
             .Should().Equal(new DateTime(2026, 3, 1), new DateTime(2026, 3, 8));
@@ -142,7 +142,7 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
     {
         await AddAsync(RecurrenceFrequency.Weekly, new DateTime(2026, 3, 1), end: new DateTime(2026, 3, 8));
 
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(2);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(2);
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
     {
         var ended = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 3, 1), end: new DateTime(2026, 2, 28));
 
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(0);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(0);
 
         (await TransactionsAsync()).Should().BeEmpty();
         (await ReloadAsync(ended)).IsActive.Should().BeFalse();
@@ -161,7 +161,7 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
     {
         await AddAsync(RecurrenceFrequency.Daily, new DateTime(2026, 3, 1), active: false);
 
-        (await _sut.ProcessDueTransactionsAsync()).Should().Be(0);
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(0);
 
         (await TransactionsAsync()).Should().BeEmpty();
     }
@@ -212,7 +212,7 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
 
         var counts = await Task.WhenAll(Enumerable.Range(0, 4).Select(_ => Task.Run(_sut.ProcessDueTransactionsAsync)));
 
-        counts.Sum().Should().Be(15);
+        counts.Sum(c => c.Created).Should().Be(15);
         (await TransactionsAsync()).Should().HaveCount(15);
     }
 }

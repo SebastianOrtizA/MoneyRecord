@@ -447,7 +447,7 @@ namespace MoneyRecord.ViewModels
 
         private async Task LoadAccountsAsync()
         {
-            Accounts = await _accountRepository.GetAllAsync();
+            Accounts = await _accountRepository.GetOwnAsync();
         }
 
         private async Task LoadCategoriesAsync()

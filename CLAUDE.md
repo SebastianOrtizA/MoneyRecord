@@ -44,9 +44,10 @@ in both (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...). XAML that uses a Cor
 crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
-- `Models/` — 10 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
+- `Models/` — 11 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
   SavingsGoalAccount (a goal's accounts; one goal per account), Payee (optional on a transaction and a recurring one;
-  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups).
+  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups), Debt (money lent / borrowed: a payee + a hidden account, `Account.IsDebt`,
+  whose transfers are the debt's money; `DebtSummary` / `DebtMovement` display it).
   `Transaction.SplitId`: the parts of a split expense are plain transactions sharing the ID (`SplitPart` = one part to save). Plus display models
   (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
   CurrencyAmount (a total in one currency; per-currency totals, never added), PeriodTotals (Home: income / expense / net
@@ -65,7 +66,9 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M004`
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
   as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page), PayeeService (found or created by name on save,
-  last category per type, rename / merge / delete), SplitService (saves a split expense: one transaction per part in one DB
+  last category per type, rename / merge / delete), DebtService + DebtLedger (debts: totals in SQL, payments with an interest part,
+  the schedule = a `RecurringTransaction.DebtId` rule capped at what is left; `IAccountRepository.GetOwnAsync` leaves the
+  hidden accounts out of pickers and lists), SplitService (saves a split expense: one transaction per part in one DB
   transaction, replacing the edited ones; the own conversion shared out), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent

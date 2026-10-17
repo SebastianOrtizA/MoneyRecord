@@ -83,6 +83,7 @@ namespace MoneyRecord.Services
                     AccountId = account.Id,
                     AccountName = account.Name ?? string.Empty,
                     CurrencyCode = account.CurrencyCode,
+                    IsDebt = account.IsDebt,
                     CurrentBalance = account.InitialBalance
                         + Amount(income) - Amount(expense) - Amount(transferOut) + Amount(transferIn),
                     // The latest transaction or transfer; the creation date for an account without any

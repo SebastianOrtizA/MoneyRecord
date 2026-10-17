@@ -21,7 +21,7 @@ public sealed class PayeeServiceTests : IAsyncLifetime
         Directory.CreateDirectory(_appData);
         _dbInitializer = new DatabaseInitializer(new AppPaths(_appData));
         Db = await _dbInitializer.GetConnectionAsync();
-        _sut = new PayeeService(_dbInitializer);
+        _sut = new PayeeService(_dbInitializer, new AccountRepository(_dbInitializer));
     }
 
     public async Task DisposeAsync()

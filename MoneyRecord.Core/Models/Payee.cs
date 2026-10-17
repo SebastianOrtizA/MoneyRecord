@@ -18,12 +18,18 @@ namespace MoneyRecord.Models
 
     /// <summary>A payee with how often and how recently it was used: the form's suggestions and the Payees page.</summary>
     /// <remarks><paramref name="RecurringCount"/> = the recurring transactions that give it to each occurrence.</remarks>
-    public sealed record PayeeSummary(int Id, string Name, int TransactionCount, DateTime? LastUsed, int RecurringCount = 0)
+    public sealed record PayeeSummary(int Id, string Name, int TransactionCount, DateTime? LastUsed, int RecurringCount = 0,
+        int DebtCount = 0)
     {
-        /// <summary>What uses it: "2 transactions", or "0 transactions, 1 recurring" with recurring transactions.</summary>
-        public string UsesText => RecurringCount > 0
-            ? $"{Plurals.Transactions(TransactionCount)}, {Plurals.Recurring(RecurringCount)}"
-            : Plurals.Transactions(TransactionCount);
+        /// <summary>
+        /// What uses it: "2 transactions", or "0 transactions, 1 recurring, 1 debt" with recurring transactions or debts.
+        /// </summary>
+        public string UsesText => string.Join(", ", new[]
+        {
+            Plurals.Transactions(TransactionCount),
+            RecurringCount > 0 ? Plurals.Recurring(RecurringCount) : null,
+            DebtCount > 0 ? Plurals.Debts(DebtCount) : null
+        }.OfType<string>());
 
         /// <summary>The Payees page line: "12 transactions · last Oct 3, 2026"; <see cref="UsesText"/> alone when never used.</summary>
         public string UsageText => LastUsed is { } date

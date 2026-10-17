@@ -36,6 +36,8 @@ namespace MoneyRecord.Services
                         ?? throw new InvalidOperationException($"Account {accountId} does not exist.");
                     if (account.IsDefault)
                         throw new InvalidOperationException("The default account can't be deleted.");
+                    if (account.IsDebt)
+                        throw new InvalidOperationException("A debt's account goes with its debt (IDebtService.DeleteAsync).");
 
                     var transfers = db.Table<Transfer>()
                         .Count(t => t.SourceAccountId == accountId || t.DestinationAccountId == accountId);

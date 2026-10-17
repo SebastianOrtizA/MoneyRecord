@@ -271,6 +271,14 @@ namespace MoneyRecord.ViewModels
             if (entry == null)
                 return;
 
+            // A debt's money is edited on the Debts page, where a payment can't exceed what is left
+            if (entry.IsTransfer && _accounts.Any(a => a.IsDebt && (a.Id == entry.AccountId || a.Id == entry.CounterpartAccountId)))
+            {
+                await _navigationService.NavigateToAsync(nameof(DebtsPage));
+                await _dialogService.ToastAsync(AppResources.DebtEditOnDebtsPage);
+                return;
+            }
+
             if (entry.IsTransfer)
             {
                 await _navigationService.NavigateToAsync($"{nameof(AddTransferPage)}?TransferId={entry.SourceId}");

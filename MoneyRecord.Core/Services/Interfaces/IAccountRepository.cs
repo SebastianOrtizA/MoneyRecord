@@ -11,6 +11,12 @@ namespace MoneyRecord.Services.Interfaces
         Task<Account?> GetDefaultAsync();
 
         /// <summary>
+        /// The user's own accounts: every account but the debts' hidden ones (<see cref="Account.IsDebt"/>). What account lists,
+        /// pickers and the balance card show; <see cref="IRepository{T}.GetAllAsync"/> (names, currencies) has both.
+        /// </summary>
+        Task<List<Account>> GetOwnAsync();
+
+        /// <summary>
         /// Drops cached rows after another service changed the table directly (inside a multi-table transaction).
         /// </summary>
         void InvalidateCache();

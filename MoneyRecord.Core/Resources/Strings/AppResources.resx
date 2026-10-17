@@ -1811,4 +1811,217 @@ Amount: {2}</value>
   <data name="ConfirmDeleteSplitMessage" xml:space="preserve">
     <value>Delete this split payment of {0}? All {1} parts are deleted.</value>
   </data>
+  <data name="Debts" xml:space="preserve">
+    <value>Debts</value>
+  </data>
+  <data name="AddDebt" xml:space="preserve">
+    <value>Add debt</value>
+  </data>
+  <data name="EditDebt" xml:space="preserve">
+    <value>Edit debt</value>
+  </data>
+  <data name="AddDebtToStart" xml:space="preserve">
+    <value>Record money you lent or borrowed, then its payments as they come.</value>
+  </data>
+  <data name="NoDebtsYet" xml:space="preserve">
+    <value>No open debts</value>
+  </data>
+  <data name="NoPaidOffDebts" xml:space="preserve">
+    <value>No paid-off debts yet</value>
+  </data>
+  <data name="DebtAdded" xml:space="preserve">
+    <value>Debt added</value>
+  </data>
+  <data name="DebtsOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="DebtsOwedToYou" xml:space="preserve">
+    <value>Owed to you</value>
+  </data>
+  <data name="DebtsYouOwe" xml:space="preserve">
+    <value>You owe</value>
+  </data>
+  <data name="DebtOwesYou" xml:space="preserve">
+    <value>Owes you</value>
+  </data>
+  <data name="DebtYouOwe" xml:space="preserve">
+    <value>You owe</value>
+  </data>
+  <data name="DebtILent" xml:space="preserve">
+    <value>I lent</value>
+  </data>
+  <data name="DebtIBorrowed" xml:space="preserve">
+    <value>I borrowed</value>
+  </data>
+  <data name="DebtPerson" xml:space="preserve">
+    <value>Person</value>
+  </data>
+  <data name="DebtPersonPlaceholder" xml:space="preserve">
+    <value>Who it is with</value>
+  </data>
+  <data name="DebtAmountLent" xml:space="preserve">
+    <value>Amount lent</value>
+  </data>
+  <data name="DebtAmountBorrowed" xml:space="preserve">
+    <value>Amount borrowed</value>
+  </data>
+  <data name="DebtFromAccount" xml:space="preserve">
+    <value>Paid from</value>
+  </data>
+  <data name="DebtIntoAccount" xml:space="preserve">
+    <value>Received in</value>
+  </data>
+  <data name="DebtPaidFromAccount" xml:space="preserve">
+    <value>Paid from</value>
+  </data>
+  <data name="DebtPaidIntoAccount" xml:space="preserve">
+    <value>Received in</value>
+  </data>
+  <data name="DebtAlreadyOwedOption" xml:space="preserve">
+    <value>Already owed (no money moves)</value>
+  </data>
+  <data name="DebtAlreadyOwed" xml:space="preserve">
+    <value>Already owed</value>
+  </data>
+  <data name="DebtNote" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="DebtNotePlaceholder" xml:space="preserve">
+    <value>What it was for (optional)</value>
+  </data>
+  <data name="DebtHasDueDate" xml:space="preserve">
+    <value>Due date</value>
+  </data>
+  <data name="DebtHasSchedule" xml:space="preserve">
+    <value>Payments on a schedule</value>
+  </data>
+  <data name="DebtScheduleAmount" xml:space="preserve">
+    <value>Each payment</value>
+  </data>
+  <data name="DebtFirstPayment" xml:space="preserve">
+    <value>First payment</value>
+  </data>
+  <data name="DebtHasInterest" xml:space="preserve">
+    <value>Interest part</value>
+  </data>
+  <data name="DebtInterestHint" xml:space="preserve">
+    <value>Saved as an expense (or income) in the Interest category, on top of the payment.</value>
+  </data>
+  <data name="DebtHistory" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="DebtRecordPayment" xml:space="preserve">
+    <value>Record payment</value>
+  </data>
+  <data name="DebtLendMore" xml:space="preserve">
+    <value>Lend more</value>
+  </data>
+  <data name="DebtBorrowMore" xml:space="preserve">
+    <value>Borrow more</value>
+  </data>
+  <data name="DebtLeft" xml:space="preserve">
+    <value>Left: {0}</value>
+  </data>
+  <data name="DebtPaymentTooLarge" xml:space="preserve">
+    <value>That's more than what is left ({0}).</value>
+  </data>
+  <data name="DebtNoAccountInCurrency" xml:space="preserve">
+    <value>There is no account in {0}. Add one in Accounts first.</value>
+  </data>
+  <data name="DebtPaidOffToast" xml:space="preserve">
+    <value>Debt with {0} paid off</value>
+  </data>
+  <data name="DebtPaidOfTotal" xml:space="preserve">
+    <value>Paid back {0} of {1}</value>
+  </data>
+  <data name="DebtDueOn" xml:space="preserve">
+    <value>Due {0}</value>
+  </data>
+  <data name="DebtNextPayment" xml:space="preserve">
+    <value>Next payment {0} on {1} · {2}</value>
+  </data>
+  <data name="DebtInterestTotal" xml:space="preserve">
+    <value>Interest {0}</value>
+  </data>
+  <data name="DebtPaidOff" xml:space="preserve">
+    <value>Paid off</value>
+  </data>
+  <data name="DebtOverdue" xml:space="preserve">
+    <value>Overdue</value>
+  </data>
+  <data name="DebtDueSoon" xml:space="preserve">
+    <value>Due soon</value>
+  </data>
+  <data name="DebtLent" xml:space="preserve">
+    <value>Lent</value>
+  </data>
+  <data name="DebtBorrowed" xml:space="preserve">
+    <value>Borrowed</value>
+  </data>
+  <data name="DebtPaidBack" xml:space="preserve">
+    <value>Paid back</value>
+  </data>
+  <data name="DebtInterest" xml:space="preserve">
+    <value>Interest</value>
+  </data>
+  <data name="InterestCategory" xml:space="preserve">
+    <value>Interest</value>
+  </data>
+  <data name="DebtPaymentTo" xml:space="preserve">
+    <value>Payment to {0}</value>
+  </data>
+  <data name="DebtPaymentFrom" xml:space="preserve">
+    <value>Payment from {0}</value>
+  </data>
+  <data name="DebtCountOne" xml:space="preserve">
+    <value>{0} debt</value>
+  </data>
+  <data name="DebtCountOther" xml:space="preserve">
+    <value>{0} debts</value>
+  </data>
+  <data name="DebtPaidOffLentTitle" xml:space="preserve">
+    <value>{0} paid you back in full</value>
+  </data>
+  <data name="DebtPaidOffBorrowedTitle" xml:space="preserve">
+    <value>Your debt to {0} is paid off</value>
+  </data>
+  <data name="DebtDueLentTitle" xml:space="preserve">
+    <value>{0} is due to pay you back</value>
+  </data>
+  <data name="DebtDueBorrowedTitle" xml:space="preserve">
+    <value>Pay back {0}</value>
+  </data>
+  <data name="DeleteDebtConfirmation" xml:space="preserve">
+    <value>Delete the debt with {0}? Its history is deleted too, so the accounts' balances go back to what they were without it.</value>
+  </data>
+  <data name="DeleteDebtMovementConfirmation" xml:space="preserve">
+    <value>Delete "{0}" of {1} ({2})?</value>
+  </data>
+  <data name="FailedToLoadDebts" xml:space="preserve">
+    <value>Failed to load the debts</value>
+  </data>
+  <data name="FailedToSaveDebt" xml:space="preserve">
+    <value>Failed to save the debt</value>
+  </data>
+  <data name="FailedToDeleteDebt" xml:space="preserve">
+    <value>Failed to delete the debt</value>
+  </data>
+  <data name="PayeeHasDebts" xml:space="preserve">
+    <value>{0} has debts. Delete them on the Debts page first, or merge {0} into another payee.</value>
+  </data>
+  <data name="PleaseEnterDebtPerson" xml:space="preserve">
+    <value>Please enter who the debt is with</value>
+  </data>
+  <data name="DebtsPaidOff" xml:space="preserve">
+    <value>Paid off</value>
+  </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>Overpaid by {0}</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>Without this, more would be paid back than was lent or borrowed. Delete payments first.</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>Debt payments are changed on the Debts page</value>
+  </data>
 </root>
