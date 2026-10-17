@@ -200,7 +200,7 @@ namespace MoneyRecord.ViewModels
         string NoDataHint)
     {
         public static CategoryReportTexts For(CategoryType type) => type == CategoryType.Income
-            ? new(AppResources.Income, AppResources.TotalIncome, "\U000F0114", AppResources.NoIncomeDataFound,
+            ? new(AppResources.IncomeReport, AppResources.TotalIncome, "\U000F0114", AppResources.NoIncomeDataFound,
                 AppResources.AddIncomeTransactionsToSee)
             : new(AppResources.Spending, AppResources.TotalExpenses, "\U000F0127", AppResources.NoExpenseDataFound,
                 AppResources.AddExpenseTransactionsToSee);

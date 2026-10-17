@@ -24,23 +24,27 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private ObservableCollection<Category> categories = new();
 
+        /// <summary>The add/edit sheet is open.</summary>
         [ObservableProperty]
-        private string newCategoryName = string.Empty;
+        private bool isFormOpen;
 
+        /// <summary>The category the sheet edits; null when it adds a new one.</summary>
         [ObservableProperty]
-        private string newCategoryIconCode = string.Empty;
-
-        [ObservableProperty]
-        private bool isEditMode = false;
-
-        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEditMode), nameof(FormTitle), nameof(SaveText))]
         private Category? editingCategory;
 
-        [ObservableProperty]
-        private string editCategoryName = string.Empty;
+        /// <summary>Editing an existing category: the sheet shows Delete.</summary>
+        public bool IsEditMode => EditingCategory != null;
+
+        public string FormTitle => IsEditMode ? AppResources.EditCategory : AppResources.AddNewCategory;
+
+        public string SaveText => IsEditMode ? AppResources.Save : AppResources.AddCategoryButton;
 
         [ObservableProperty]
-        private string editCategoryIconCode = string.Empty;
+        private string formName = string.Empty;
+
+        [ObservableProperty]
+        private string formIconCode = string.Empty;
 
         [ObservableProperty]
         private ObservableCollection<CategoryIcon> availableIcons = new();
@@ -57,8 +61,6 @@ namespace MoneyRecord.ViewModels
         public async Task InitializeAsync()
         {
             LoadAvailableIcons();
-            NewCategoryIconCode = _categoryIconService.GetDefaultIconCode(CategoryType);
-            UpdateIconSelection(NewCategoryIconCode);
             await LoadCategoriesAsync();
         }
 
@@ -69,7 +71,7 @@ namespace MoneyRecord.ViewModels
             if (type == CategoryType)
                 return;
 
-            CancelEdit();
+            CloseForm();
             CategoryType = type;
             await InitializeAsync();
         }
@@ -94,56 +96,83 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private void UpdateIconSelection(string selectedCode)
+        [RelayCommand]
+        private void SelectIcon(string iconCode)
         {
+            FormIconCode = iconCode;
             foreach (var icon in AvailableIcons)
             {
-                icon.IsSelected = icon.Code == selectedCode;
+                icon.IsSelected = icon.Code == iconCode;
             }
         }
 
+        /// <summary>Opens the sheet for a new category of the shown type.</summary>
         [RelayCommand]
-        private void SelectNewIcon(string iconCode)
+        private void AddCategory()
         {
-            NewCategoryIconCode = iconCode;
-            UpdateIconSelection(iconCode);
+            EditingCategory = null;
+            FormName = string.Empty;
+            SelectIcon(_categoryIconService.GetDefaultIconCode(CategoryType));
+            IsFormOpen = true;
         }
 
         [RelayCommand]
-        private void SelectEditIcon(string iconCode)
+        private void EditCategory(Category? category)
         {
-            EditCategoryIconCode = iconCode;
-            UpdateIconSelection(iconCode);
+            if (category == null)
+                return;
+
+            EditingCategory = category;
+            FormName = category.Name;
+            SelectIcon(category.IconCode);
+            IsFormOpen = true;
         }
 
         [RelayCommand]
-        private async Task AddCategoryAsync()
+        private void CloseForm()
         {
-            if (string.IsNullOrWhiteSpace(NewCategoryName))
+            IsFormOpen = false;
+            EditingCategory = null;
+        }
+
+        /// <summary>Closes the add/edit sheet; false when it wasn't open.</summary>
+        public bool CloseTopOverlay()
+        {
+            if (!IsFormOpen)
+                return false;
+
+            CloseForm();
+            return true;
+        }
+
+        [RelayCommand]
+        private async Task SaveCategoryAsync()
+        {
+            if (string.IsNullOrWhiteSpace(FormName))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterCategoryName);
                 return;
             }
 
-            var category = new Category
-            {
-                Name = NewCategoryName,
-                Type = CategoryType,
-                IconCode = string.IsNullOrEmpty(NewCategoryIconCode) 
-                    ? _categoryIconService.GetDefaultIconCode(CategoryType) 
-                    : NewCategoryIconCode
-            };
+            var category = EditingCategory ?? new Category { Type = CategoryType };
+            category.Name = FormName.Trim();
+            category.IconCode = string.IsNullOrEmpty(FormIconCode)
+                ? _categoryIconService.GetDefaultIconCode(CategoryType)
+                : FormIconCode;
 
             await _categoryRepository.SaveAsync(category);
-            NewCategoryName = string.Empty;
-            NewCategoryIconCode = _categoryIconService.GetDefaultIconCode(CategoryType);
-            UpdateIconSelection(NewCategoryIconCode);
+            CloseForm();
             await LoadCategoriesAsync();
         }
 
+        /// <summary>Deletes the category in the sheet; the sheet stays open behind the questions, so cancelling returns to it.</summary>
         [RelayCommand]
-        private async Task DeleteCategoryAsync(Category category)
+        private async Task DeleteCategoryAsync()
         {
+            var category = EditingCategory;
+            if (category == null)
+                return;
+
             try
             {
                 var usage = await _categoryService.GetUsageAsync(category.Id);
@@ -171,7 +200,7 @@ namespace MoneyRecord.ViewModels
 
                     // Find the selected category
                     var replacementCategory = availableCategories.FirstOrDefault(c => c.Name == selectedCategory);
-                    
+
                     if (replacementCategory == null)
                     {
                         await _errorHandler.HandleAsync(AppResources.Error);
@@ -214,66 +243,20 @@ namespace MoneyRecord.ViewModels
                     await _categoryService.DeleteAsync(category.Id, replacementId: null);
                 }
 
+                CloseForm();
                 await LoadCategoriesAsync();
             }
             catch (InvalidOperationException ex)
             {
                 // A service guard fired because the data changed after the usage check
                 await _errorHandler.HandleAsync(ex, string.Format(AppResources.DeleteFailedDataChanged, category.Name));
+                CloseForm();
                 await LoadCategoriesAsync();
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteCategory);
             }
-        }
-
-        [RelayCommand]
-        private void EditCategory(Category category)
-        {
-            EditingCategory = category;
-            EditCategoryName = category.Name;
-            EditCategoryIconCode = category.IconCode;
-            UpdateIconSelection(category.IconCode);
-            IsEditMode = true;
-        }
-
-        [RelayCommand]
-        private async Task SaveEditAsync()
-        {
-            if (EditingCategory == null)
-                return;
-
-            if (string.IsNullOrWhiteSpace(EditCategoryName))
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseEnterCategoryName);
-                return;
-            }
-
-            EditingCategory.Name = EditCategoryName;
-            EditingCategory.IconCode = string.IsNullOrEmpty(EditCategoryIconCode)
-                ? _categoryIconService.GetDefaultIconCode(CategoryType)
-                : EditCategoryIconCode;
-            
-            await _categoryRepository.SaveAsync(EditingCategory);
-
-            IsEditMode = false;
-            EditingCategory = null;
-            EditCategoryName = string.Empty;
-            EditCategoryIconCode = string.Empty;
-            UpdateIconSelection(NewCategoryIconCode);
-
-            await LoadCategoriesAsync();
-        }
-
-        [RelayCommand]
-        private void CancelEdit()
-        {
-            IsEditMode = false;
-            EditingCategory = null;
-            EditCategoryName = string.Empty;
-            EditCategoryIconCode = string.Empty;
-            UpdateIconSelection(NewCategoryIconCode);
         }
     }
 }

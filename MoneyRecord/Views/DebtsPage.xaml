@@ -210,9 +210,9 @@
                 Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
 
         <!-- Detail sheet: amounts, history, payment / more / edit -->
-        <controls:BottomSheet x:Name="DetailSheet" IsOpen="{Binding IsDetailOpen}" CloseCommand="{Binding CloseDetailCommand}">
+        <controls:BottomSheet Scroll="{x:Reference DetailScroll}" IsOpen="{Binding IsDetailOpen}" CloseCommand="{Binding CloseDetailCommand}">
             <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-                <Grid x:Name="DetailHeader" ColumnDefinitions="*,Auto">
+                <Grid ColumnDefinitions="*,Auto">
                     <Label Text="{Binding SelectedDebt.Title}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"
                            LineBreakMode="TailTruncation" />
                     <Button Grid.Column="1"
@@ -270,7 +270,7 @@
                 </ScrollView>
 
                 <!-- A paid-off debt only offers more lent / borrowed -->
-                <Grid Grid.Row="2" x:Name="DetailFooter" ColumnDefinitions="*,*" ColumnSpacing="8">
+                <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8">
                     <Button Text="{ext:Localize DebtRecordPayment}"
                             Command="{Binding RecordPaymentCommand}"
                             IsVisible="{Binding SelectedDebt.CanRecordPayment}"
@@ -284,9 +284,9 @@
         </controls:BottomSheet>
 
         <!-- Add / edit sheet: who, which way, how much, from which account, due date, payment schedule -->
-        <controls:BottomSheet x:Name="FormSheet" IsOpen="{Binding IsFormOpen}" CloseCommand="{Binding CloseFormCommand}">
+        <controls:BottomSheet Scroll="{x:Reference FormScroll}" IsOpen="{Binding IsFormOpen}" CloseCommand="{Binding CloseFormCommand}">
             <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-                <Label x:Name="FormHeader" Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
+                <Label Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
 
                 <ScrollView Grid.Row="1" x:Name="FormScroll">
                 <VerticalStackLayout Spacing="8">
@@ -451,7 +451,7 @@
                 </ScrollView>
 
                 <!-- Delete only when editing -->
-                <Grid Grid.Row="2" x:Name="FormFooter" ColumnDefinitions="Auto,*">
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
                     <Button Text="{ext:Localize DeleteButton}"
                             IsVisible="{Binding IsEditMode}"
                             Command="{Binding DeleteDebtCommand}"
@@ -472,9 +472,9 @@
         </controls:BottomSheet>
 
         <!-- Payment sheet: a payment (with its interest part) or more lent / borrowed -->
-        <controls:BottomSheet x:Name="PaymentSheet" IsOpen="{Binding IsPaymentOpen}" CloseCommand="{Binding ClosePaymentCommand}">
+        <controls:BottomSheet Scroll="{x:Reference PaymentScroll}" IsOpen="{Binding IsPaymentOpen}" CloseCommand="{Binding ClosePaymentCommand}">
             <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
-                <Label x:Name="PaymentHeader" Text="{Binding PaymentTitle}" FontSize="18" FontAttributes="Bold" />
+                <Label Text="{Binding PaymentTitle}" FontSize="18" FontAttributes="Bold" />
 
                 <ScrollView Grid.Row="1" x:Name="PaymentScroll">
                 <VerticalStackLayout Spacing="8">
@@ -518,7 +518,7 @@
                 </ScrollView>
 
                 <Button Grid.Row="2"
-                        x:Name="PaymentFooter"
+                       
                         Text="{ext:Localize Save}"
                         Command="{Binding SavePaymentCommand}"
                         Style="{StaticResource PrimarySheetButton}" />

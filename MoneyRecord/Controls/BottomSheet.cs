@@ -6,6 +6,7 @@ namespace MoneyRecord.Controls
     /// An in-page bottom sheet: a dimmed page behind a rounded panel with a handle that slides up while
     /// <see cref="IsOpen"/>. Tapping the dim runs <see cref="CloseCommand"/>; the view model owns the open state.
     /// Place it last in the page's root grid (spanning its rows) so it covers the page.
+    /// A long form names its middle part as <see cref="Scroll"/>: that part scrolls while its title and buttons stay put.
     /// </summary>
     [ContentProperty(nameof(SheetContent))]
     public class BottomSheet : Grid
@@ -21,7 +22,17 @@ namespace MoneyRecord.Controls
             BindableProperty.Create(nameof(SheetContent), typeof(View), typeof(BottomSheet),
                 propertyChanged: (bindable, _, newValue) => ((BottomSheet)bindable)._contentHost.Content = (View?)newValue);
 
+        public static readonly BindableProperty ScrollProperty =
+            BindableProperty.Create(nameof(Scroll), typeof(ScrollView), typeof(BottomSheet),
+                propertyChanged: (bindable, _, newValue) => ((BottomSheet)bindable).OnScrollChanged((ScrollView?)newValue));
+
+        public static readonly BindableProperty MaxShareProperty =
+            BindableProperty.Create(nameof(MaxShare), typeof(double), typeof(BottomSheet), 0.85,
+                propertyChanged: (bindable, _, _) => ((BottomSheet)bindable).UpdateScrollCap());
+
         private readonly ContentView _contentHost = new();
+        private readonly Border _handle;
+        private readonly Border _panel;
 
         public BottomSheet()
         {
@@ -36,7 +47,7 @@ namespace MoneyRecord.Controls
             };
             scrim.GestureRecognizers.Add(tap);
 
-            var handle = new Border
+            _handle = new Border
             {
                 WidthRequest = 36,
                 HeightRequest = 4,
@@ -45,24 +56,23 @@ namespace MoneyRecord.Controls
                 HorizontalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0, 0, 0, 12)
             };
-            handle.SetAppThemeColor(BackgroundColorProperty, Color.FromArgb("#BDBDBD"), Color.FromArgb("#616161"));
+            _handle.SetAppThemeColor(BackgroundColorProperty, Color.FromArgb("#BDBDBD"), Color.FromArgb("#616161"));
 
-            Panel = new Border
+            _panel = new Border
             {
                 VerticalOptions = LayoutOptions.End,
                 Padding = new Thickness(20, 12, 20, 20),
                 StrokeThickness = 0,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(20, 20, 0, 0) },
-                Content = new VerticalStackLayout { Children = { handle, _contentHost } }
+                Content = new VerticalStackLayout { Children = { _handle, _contentHost } }
             };
-            Panel.SetAppThemeColor(BackgroundColorProperty, Colors.White, Color.FromArgb("#1E1E1E"));
+            _panel.SetAppThemeColor(BackgroundColorProperty, Colors.White, Color.FromArgb("#1E1E1E"));
 
             Children.Add(scrim);
-            Children.Add(Panel);
-        }
+            Children.Add(_panel);
 
-        /// <summary>The rounded panel (for measuring it, e.g. to cap a scrolling form inside).</summary>
-        public Border Panel { get; }
+            SizeChanged += (_, _) => UpdateScrollCap();
+        }
 
         public bool IsOpen
         {
@@ -84,8 +94,75 @@ namespace MoneyRecord.Controls
             set => SetValue(SheetContentProperty, value);
         }
 
-        /// <summary>Raised when the sheet opens, before it slides up (e.g. to scroll its form back to the top).</summary>
-        public event EventHandler? Opened;
+        /// <summary>
+        /// The part of the content that scrolls (<c>Scroll="{x:Reference FormScroll}"</c>): capped so the whole sheet takes
+        /// at most <see cref="MaxShare"/> of the page height, and back at its top whenever the sheet opens.
+        /// </summary>
+        public ScrollView? Scroll
+        {
+            get => (ScrollView?)GetValue(ScrollProperty);
+            set => SetValue(ScrollProperty, value);
+        }
+
+        /// <summary>The sheet's largest share of the page height; the top of the page stays visible above it.</summary>
+        public double MaxShare
+        {
+            get => (double)GetValue(MaxShareProperty);
+            set => SetValue(MaxShareProperty, value);
+        }
+
+        private void OnScrollChanged(ScrollView? scroll)
+        {
+            if (scroll == null)
+                return;
+
+            // Its siblings (title, buttons) are known once it is in the content
+            if (scroll.Parent is Layout)
+                WatchSiblings(scroll);
+            else
+                scroll.ParentChanged += (_, _) => WatchSiblings(scroll);
+        }
+
+        private void WatchSiblings(ScrollView scroll)
+        {
+            if (scroll.Parent is not Layout content)
+                return;
+
+            foreach (var sibling in content.Children.OfType<View>().Where(v => v != scroll))
+                sibling.SizeChanged += (_, _) => UpdateScrollCap();
+            UpdateScrollCap();
+        }
+
+        /// <summary>
+        /// The scroll gets what is left of <see cref="MaxShare"/> after the parts that stay put: the panel's padding, the
+        /// handle, the scroll's siblings and the gaps between them (all grow with the system font size). Never computed
+        /// from the scroll's own height, which would feed back into it.
+        /// </summary>
+        private void UpdateScrollCap()
+        {
+            if (Height <= 0 || Scroll is not { Parent: Layout content } scroll)
+                return;
+
+            var fixedHeight = _panel.Padding.VerticalThickness + _handle.HeightRequest + _handle.Margin.VerticalThickness;
+            var parts = 0;
+            foreach (var view in content.Children.OfType<View>().Where(v => v.IsVisible))
+            {
+                parts++;
+                if (view != scroll)
+                    fixedHeight += Math.Max(0, view.Height);
+            }
+            var gap = content switch
+            {
+                Grid grid => grid.RowSpacing,
+                StackBase stack => stack.Spacing,
+                _ => 0
+            };
+            fixedHeight += gap * Math.Max(0, parts - 1);
+
+            var max = Math.Max(0, Height * MaxShare - fixedHeight);
+            if (Math.Abs(scroll.MaximumHeightRequest - max) >= 1)
+                scroll.MaximumHeightRequest = max;
+        }
 
         private async void OnIsOpenChanged(bool isOpen)
         {
@@ -97,10 +174,12 @@ namespace MoneyRecord.Controls
 
             // Below the screen before it becomes visible, so it is never drawn in place first. On the first open it
             // isn't measured yet (Height 0), so it starts a typical sheet height below
-            Panel.TranslationY = Panel.Height > 0 ? Panel.Height : 600;
+            _panel.TranslationY = _panel.Height > 0 ? _panel.Height : 600;
             IsVisible = true;
-            Opened?.Invoke(this, EventArgs.Empty);
-            await Panel.TranslateToAsync(0, 0, 200, Easing.CubicOut);
+            // A form opens at its top
+            if (Scroll != null)
+                await Scroll.ScrollToAsync(0, 0, false);
+            await _panel.TranslateToAsync(0, 0, 200, Easing.CubicOut);
         }
     }
 }

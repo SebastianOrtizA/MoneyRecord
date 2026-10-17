@@ -22,6 +22,7 @@ namespace MoneyRecord.Services
                 new CategoryIcon { Code = "F0076", Name = "Basket" },           // basket
                 new CategoryIcon { Code = "F0110", Name = "Cart" },             // cart
                 new CategoryIcon { Code = "F0D15", Name = "Home" },             // home-city
+                new CategoryIcon { Code = "F140B", Name = "Utilities" },        // lightning-bolt
                 new CategoryIcon { Code = "F03E9", Name = "Pet" },              // paw
                 new CategoryIcon { Code = "F02E1", Name = "Medical" },          // hospital-building
             ];
@@ -54,7 +55,7 @@ namespace MoneyRecord.Services
         /// </summary>
         public string GetDefaultIconCode(CategoryType type)
         {
-            return type == CategoryType.Income ? "F0116" : "F09B5"; // cash-multiple or food
+            return type == CategoryType.Income ? "F0116" : "F025A"; // cash-multiple or food
         }
 
         /// <summary>

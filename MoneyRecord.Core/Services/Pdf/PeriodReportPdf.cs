@@ -153,7 +153,7 @@ namespace MoneyRecord.Services.Pdf
         {
             section.AddParagraph(AppResources.Summary, StyleNames.Heading1);
             var table = NewTable(section, width, (0.16, false), (0.28, true), (0.28, true), (0.28, true));
-            Header(table, AppResources.Currency, AppResources.Income, AppResources.Expenses, AppResources.NetIncome);
+            Header(table, AppResources.Currency, AppResources.IncomeReport, AppResources.Expenses, AppResources.NetIncome);
 
             foreach (var totals in report.TotalsRows)
             {

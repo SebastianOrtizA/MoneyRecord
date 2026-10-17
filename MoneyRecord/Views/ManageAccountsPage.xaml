@@ -151,7 +151,7 @@
                 Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
 
         <!-- Add / edit sheet -->
-        <controls:BottomSheet x:Name="FormSheet"
+        <controls:BottomSheet Scroll="{x:Reference FormScroll}"
                               Grid.RowSpan="2"
                               IsOpen="{Binding IsFormOpen}"
                               CloseCommand="{Binding CloseFormCommand}">

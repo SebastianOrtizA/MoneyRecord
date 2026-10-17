@@ -17,7 +17,7 @@ namespace MoneyRecord.Models
             new(nameof(AppResources.DefaultCategoryFood), CategoryType.Expense, "F025A"),
             new(nameof(AppResources.DefaultCategoryTransportation), CategoryType.Expense, "F0BD8"),
             new(nameof(AppResources.DefaultCategoryEntertainment), CategoryType.Expense, "F0356"),
-            new(nameof(AppResources.DefaultCategoryUtilities), CategoryType.Expense, "F0D15"),
+            new(nameof(AppResources.DefaultCategoryUtilities), CategoryType.Expense, "F140B"),
             new(nameof(AppResources.DefaultCategoryShopping), CategoryType.Expense, "F0110"),
             new(nameof(AppResources.DefaultCategoryHome), CategoryType.Expense, "F0D15"),
             new(nameof(AppResources.DefaultCategoryOtherExpense), CategoryType.Expense, "F0076"),

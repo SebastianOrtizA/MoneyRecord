@@ -2106,4 +2106,7 @@ Monto: {2}</value>
   <data name="ShowCentsDescription" xml:space="preserve">
     <value>Desactivado, los importes en esa moneda se muestran sin decimales. Se siguen guardando con sus centavos.</value>
   </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>Ingresos</value>
+  </data>
 </root>

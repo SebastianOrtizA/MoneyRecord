@@ -2108,4 +2108,8 @@ Amount: {2}</value>
   <data name="ShowCentsDescription" xml:space="preserve">
     <value>Off shows whole amounts in that currency. Amounts are still saved to the cent.</value>
   </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>Income</value>
+    <comment>Income report tab and title (the plural "Ingresos" in Spanish; Income alone is the entry type)</comment>
+  </data>
 </root>
