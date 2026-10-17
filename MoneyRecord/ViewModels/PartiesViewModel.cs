@@ -236,11 +236,16 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var party = EditingParty ?? new PartyEvent();
-            party.Name = name;
-            party.Date = FormDate.Date;
-            party.CurrencyCode = FormCurrency;
-            party.Budget = budget;
+            // A copy: a refused save must not change the party the list behind the sheet shows
+            var party = new PartyEvent
+            {
+                Id = EditingParty?.Id ?? 0,
+                Name = name,
+                Date = FormDate.Date,
+                CurrencyCode = FormCurrency,
+                Budget = budget,
+                CreatedDate = EditingParty?.CreatedDate ?? DateTime.Now
+            };
             try
             {
                 await _parties.SaveAsync(party, memberIds);

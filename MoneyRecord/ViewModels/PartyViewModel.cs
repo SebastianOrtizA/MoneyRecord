@@ -279,11 +279,7 @@ namespace MoneyRecord.ViewModels
         private Participant? selectedContributor;
 
         [RelayCommand]
-        private Task AddContributionAsync()
-        {
-            OpenContributionSheet(null);
-            return Task.CompletedTask;
-        }
+        private void AddContribution() => OpenContributionSheet(null);
 
         [RelayCommand]
         private async Task OpenContributionAsync(PartyContributionRow? row)
