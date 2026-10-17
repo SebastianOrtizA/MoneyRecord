@@ -474,13 +474,18 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
     </Style>
 
-    <!-- A Reports chart card; ChartPalette.Surface reads the same CardBackground colours for the gaps in the chart -->
-    <Style x:Key="ChartCard" TargetType="Border">
-        <Setter Property="Padding" Value="12" />
+    <!-- A card: every white panel and list row (Frame is obsolete; pages override Padding / Margin) -->
+    <Style x:Key="Card" TargetType="Border">
+        <Setter Property="Padding" Value="16" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="StrokeShape" Value="RoundRectangle 12" />
         <Setter Property="Stroke" Value="{AppThemeBinding Light=#E0E0E0, Dark=#404040}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource CardBackground}, Dark={StaticResource CardBackgroundDark}}" />
+    </Style>
+
+    <!-- A Reports chart card; ChartPalette.Surface reads the same CardBackground colours for the gaps in the chart -->
+    <Style x:Key="ChartCard" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="Padding" Value="12" />
     </Style>
 
     <!-- A report's headline: label, amount, then its change against the previous period in words -->

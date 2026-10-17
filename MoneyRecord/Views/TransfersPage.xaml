@@ -45,12 +45,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Transfer">
-                        <Frame Margin="0,6" 
-                               Padding="16"
-                               BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                               BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
-                               CornerRadius="12"
-                               HasShadow="False">
+                        <Border Style="{StaticResource Card}" Margin="0,6">
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
                                 <!-- Row 0: Date and Amount -->
                                 <Label Grid.Row="0" Grid.Column="0"
@@ -130,7 +125,7 @@
                                             CommandParameter="{Binding .}"/>
                                 </HorizontalStackLayout>
                             </Grid>
-                        </Frame>
+                        </Border>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

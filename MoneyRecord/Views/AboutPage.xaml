@@ -12,10 +12,7 @@
         <VerticalStackLayout Padding="16" Spacing="16">
 
             <!-- The app: version, AGPL licence, source -->
-            <Border Padding="16"
-                    StrokeShape="RoundRectangle 12"
-                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
-                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+            <Border Style="{StaticResource Card}">
                 <VerticalStackLayout Spacing="8">
                     <Label Text="MoneyRecord" FontSize="22" FontAttributes="Bold" />
                     <Label Text="{Binding VersionText}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
@@ -40,9 +37,7 @@
                 <Label Text="{ext:Localize OpenSourceComponentsDescription}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
             </VerticalStackLayout>
 
-            <Border StrokeShape="RoundRectangle 12"
-                    Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#3A3A3A}"
-                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+            <Border Style="{StaticResource Card}" Padding="0">
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding Components}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:ThirdPartyComponent">

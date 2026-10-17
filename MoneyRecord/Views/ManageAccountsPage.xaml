@@ -50,12 +50,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AccountListItem">
-                    <Border Margin="16,4"
-                            Padding="12"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 12"
-                            Stroke="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}">
+                    <Border Style="{StaticResource Card}" Margin="16,4" Padding="12">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditAccountCommand}"
                                                   CommandParameter="{Binding .}" />

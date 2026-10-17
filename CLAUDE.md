@@ -223,6 +223,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Full light/dark support via `AppThemeBinding` throughout XAML
 - Colors defined in `Resources/Styles/Colors.xaml`
 - Primary: `#512BD4` (purple)
+- Cards: `<Border Style="{StaticResource Card}">` (pages override Padding / Margin); never `Frame` (obsolete)
 
 ## Key Decisions
 
