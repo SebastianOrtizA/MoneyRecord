@@ -460,7 +460,7 @@ namespace MoneyRecord.ViewModels
             }
             catch (Exception ex)
             {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadParties);
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToSharePartySummary);
             }
         }
 

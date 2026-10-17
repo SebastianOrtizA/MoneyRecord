@@ -2520,4 +2520,7 @@ Monto: {2}</value>
   <data name="FailedToSavePartyPayment" xml:space="preserve">
     <value>No se pudo guardar el pago</value>
   </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>No se pudo compartir el resumen</value>
+  </data>
 </root>

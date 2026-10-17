@@ -2523,4 +2523,7 @@ Amount: {2}</value>
   <data name="FailedToSavePartyPayment" xml:space="preserve">
     <value>Could not save the payment</value>
   </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>Could not share the summary</value>
+  </data>
 </root>

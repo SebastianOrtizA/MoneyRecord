@@ -7073,5 +7073,14 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("FailedToSavePartyPayment", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not share the summary.
+        /// </summary>
+        public static string FailedToSharePartySummary {
+            get {
+                return ResourceManager.GetString("FailedToSharePartySummary", resourceCulture);
+            }
+        }
     }
 }
