@@ -8,10 +8,16 @@ using static MoneyRecord.Tests.TestCulture;
 namespace MoneyRecord.Tests.Helpers;
 
 /// <summary>
-/// Formatting in an explicit currency (no test here depends on the app-wide base currency).
+/// Formatting in an explicit currency, with USD as the base currency (restored afterwards).
 /// </summary>
-public class CurrencyFormattingTests
+public class CurrencyFormattingTests : IDisposable
 {
+    private readonly string _previousBase = MoneyFormatter.BaseCurrencyCode;
+
+    public CurrencyFormattingTests() => MoneyFormatter.BaseCurrencyCode = "USD";
+
+    public void Dispose() => MoneyFormatter.BaseCurrencyCode = _previousBase;
+
     [Theory]
     [InlineData("JPY", 0)]
     [InlineData("clp", 0)]
@@ -26,13 +32,13 @@ public class CurrencyFormattingTests
     [Fact]
     public void Jpy_InEnUs_HasNoDecimalsAndYenSign()
     {
-        MoneyFormatter.Format(1500m, "JPY", new CultureInfo("en-US")).Should().Be("¥1,500");
+        MoneyFormatter.Format(1500m, "JPY", new CultureInfo("en-US")).Should().Be("¥1,500 JPY");
     }
 
     [Fact]
-    public void Cop_InEnUs_UsesAnUnambiguousSymbol()
+    public void Cop_InEnUs_UsesThePlainSignAndTheCode()
     {
-        MoneyFormatter.Format(-50m, "COP", new CultureInfo("en-US")).Should().Be("-COL$50.00");
+        MoneyFormatter.Format(-50m, "COP", new CultureInfo("en-US")).Should().Be("-$50.00 COP");
     }
 
     [Fact]
@@ -82,6 +88,16 @@ public class CurrencyFormattingTests
     public void FormatWithCode_PutsTheSignFirstWhereverTheCultureWritesIt(string code, double amount, string culture, string expected)
     {
         MoneyFormatter.FormatWithCode((decimal)amount, code, new CultureInfo(culture)).Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("COP", 6000300, "es-ES", "$6.000.300,00")]
+    [InlineData("USD", -12.5, "es-ES", "-$12,50")]
+    [InlineData("COP", 300, "en-US", "$300.00")]
+    [InlineData("CHF", 5, "en-US", "CHF5.00")]
+    public void FormatBesideCode_IsTheSameFormWithoutTheCode(string code, double amount, string culture, string expected)
+    {
+        MoneyFormatter.FormatBesideCode((decimal)amount, code, new CultureInfo(culture)).Should().Be(expected);
     }
 
     [Fact]

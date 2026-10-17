@@ -5,8 +5,15 @@ using Xunit;
 
 namespace MoneyRecord.Tests.Helpers;
 
-public class MoneyFormatterTests
+/// <summary>Formatting with USD as the base currency (restored afterwards).</summary>
+public class MoneyFormatterTests : IDisposable
 {
+    private readonly string _previousBase = MoneyFormatter.BaseCurrencyCode;
+
+    public MoneyFormatterTests() => MoneyFormatter.BaseCurrencyCode = "USD";
+
+    public void Dispose() => MoneyFormatter.BaseCurrencyCode = _previousBase;
+
     [Fact]
     public void EnUs_Negative_PutsSignBeforeSymbol()
     {
@@ -31,29 +38,34 @@ public class MoneyFormatterTests
     [Fact]
     public void EsCo_UsesPesoSymbolAndLocalSeparators()
     {
-        var text = MoneyFormatter.Format(-50000m, "COP", new CultureInfo("es-CO"));
-
-        text.Should().StartWith("-$");
-        text.Should().Contain("50.000");
-        text.Should().NotContain("¤");
+        MoneyFormatter.Format(-50000m, "COP", new CultureInfo("es-CO")).Should().Be("-$50.000,00 COP");
     }
 
     [Fact]
-    public void EsEs_Negative_KeepsSymbolAfterAmount()
+    public void EsEs_PutsTheSymbolInFrontToo()
     {
-        var text = MoneyFormatter.Format(-50m, "EUR", new CultureInfo("es-ES"));
+        MoneyFormatter.Format(-50m, "EUR", new CultureInfo("es-ES")).Should().Be("-€50,00");
+        MoneyFormatter.Format(1401.75m, "USD", new CultureInfo("es-ES")).Should().Be("$1.401,75");
+        MoneyFormatter.Format(300m, "COP", new CultureInfo("es-ES")).Should().Be("$300,00 COP");
+    }
 
-        text.Should().StartWith("-50,00");
-        text.Should().EndWith("€");
+    [Fact]
+    public void A_shared_symbol_gets_the_code_only_outside_the_base_currency()
+    {
+        var english = new CultureInfo("en-US");
+        MoneyFormatter.Format(5m, "USD", english).Should().Be("$5.00");
+        MoneyFormatter.Format(5m, "CAD", english).Should().Be("$5.00 CAD");
+        MoneyFormatter.Format(5m, "GBP", english).Should().Be("£5.00");
+
+        MoneyFormatter.BaseCurrencyCode = "COP";
+        MoneyFormatter.Format(5m, "COP", english).Should().Be("$5.00");
+        MoneyFormatter.Format(5m, "USD", english).Should().Be("$5.00 USD");
     }
 
     [Fact]
     public void JaJp_HasNoDecimals()
     {
-        var text = MoneyFormatter.Format(-500m, "JPY", new CultureInfo("ja-JP"));
-
-        text.Should().StartWith("-");
-        text.Should().EndWith("500");
+        MoneyFormatter.Format(-500m, "JPY", new CultureInfo("ja-JP")).Should().Be("-¥500 JPY");
     }
 
     [Fact]

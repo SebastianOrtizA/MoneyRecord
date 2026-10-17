@@ -101,7 +101,7 @@
                                    VerticalOptions="Center"
                                    TextColor="{Binding CurrentBalance, Converter={StaticResource BalanceToColorConverter}}">
                                 <Label.Text>
-                                    <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
+                                    <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}" ConverterParameter="BesideCode">
                                         <Binding Path="CurrentBalance" />
                                         <Binding Path="CurrencyCode" />
                                     </MultiBinding>

@@ -13,16 +13,16 @@ namespace MoneyRecord.Services
             new() { Code = "EUR", Symbol = "€", Name = "Euro" },
             new() { Code = "GBP", Symbol = "£", Name = "British Pound" },
             new() { Code = "JPY", Symbol = "¥", Name = "Japanese Yen" },
-            new() { Code = "CAD", Symbol = "CA$", PlainSymbol = "$", Name = "Canadian Dollar" },
-            new() { Code = "AUD", Symbol = "A$", PlainSymbol = "$", Name = "Australian Dollar" },
+            new() { Code = "CAD", Symbol = "$", Name = "Canadian Dollar" },
+            new() { Code = "AUD", Symbol = "$", Name = "Australian Dollar" },
             new() { Code = "CHF", Symbol = "CHF", Name = "Swiss Franc" },
             new() { Code = "CNY", Symbol = "¥", Name = "Chinese Yuan" },
             new() { Code = "INR", Symbol = "₹", Name = "Indian Rupee" },
-            new() { Code = "MXN", Symbol = "MX$", PlainSymbol = "$", Name = "Mexican Peso" },
+            new() { Code = "MXN", Symbol = "$", Name = "Mexican Peso" },
             new() { Code = "BRL", Symbol = "R$", Name = "Brazilian Real" },
-            new() { Code = "ARS", Symbol = "AR$", PlainSymbol = "$", Name = "Argentine Peso" },
-            new() { Code = "COP", Symbol = "COL$", PlainSymbol = "$", Name = "Colombian Peso" },
-            new() { Code = "CLP", Symbol = "CL$", PlainSymbol = "$", Name = "Chilean Peso" },
+            new() { Code = "ARS", Symbol = "$", Name = "Argentine Peso" },
+            new() { Code = "COP", Symbol = "$", Name = "Colombian Peso" },
+            new() { Code = "CLP", Symbol = "$", Name = "Chilean Peso" },
             new() { Code = "PEN", Symbol = "S/.", Name = "Peruvian Sol" },
             new() { Code = "KRW", Symbol = "₩", Name = "South Korean Won" },
             new() { Code = "SEK", Symbol = "kr", Name = "Swedish Krona" },
@@ -31,9 +31,9 @@ namespace MoneyRecord.Services
             new() { Code = "PLN", Symbol = "zł", Name = "Polish Zloty" },
             new() { Code = "TRY", Symbol = "₺", Name = "Turkish Lira" },
             new() { Code = "ZAR", Symbol = "R", Name = "South African Rand" },
-            new() { Code = "NZD", Symbol = "NZ$", PlainSymbol = "$", Name = "New Zealand Dollar" },
-            new() { Code = "SGD", Symbol = "S$", PlainSymbol = "$", Name = "Singapore Dollar" },
-            new() { Code = "HKD", Symbol = "HK$", PlainSymbol = "$", Name = "Hong Kong Dollar" },
+            new() { Code = "NZD", Symbol = "$", Name = "New Zealand Dollar" },
+            new() { Code = "SGD", Symbol = "$", Name = "Singapore Dollar" },
+            new() { Code = "HKD", Symbol = "$", Name = "Hong Kong Dollar" },
         };
 
         private static readonly Dictionary<string, Currency> _currencyMap =
@@ -84,14 +84,12 @@ namespace MoneyRecord.Services
             return _currencyMap.TryGetValue(code, out var currency) ? currency.Symbol : code;
         }
 
-        /// <summary>
-        /// The bare sign of a currency ("$" for COP), for text that also shows the code; the code itself for an unknown
-        /// currency.
-        /// </summary>
-        public static string GetPlainSymbol(string code) =>
-            _currencyMap.TryGetValue(code, out var currency)
-                ? (string.IsNullOrEmpty(currency.PlainSymbol) ? currency.Symbol : currency.PlainSymbol)
-                : code;
+        /// <summary>Symbols that several currencies use ("$", "¥", "kr"): alone they don't say which currency.</summary>
+        private static readonly HashSet<string> _sharedSymbols = _currencies
+            .GroupBy(c => c.Symbol).Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet();
+
+        /// <summary>True when the currency's symbol also belongs to another currency ("$" for COP and USD).</summary>
+        public static bool HasSharedSymbol(string code) => _sharedSymbols.Contains(GetSymbol(code));
 
         /// <summary>
         /// Decimal places shown and accepted for a currency: 0 for JPY, CLP and KRW, otherwise 2.

@@ -4,8 +4,10 @@
 **Source**: Issues and small requests the user noted while reviewing Stages 8.7a–8.7b (2026-10-13)
 
 ## Decisions (owner, 2026-10-16)
-- 11.1: a bare sign + the code ("$6,000,300.00 COP"), the sign in front in every language: "$1.200,00 COP" in
-  Spanish too ("1.401,75 $ USD" looked wrong on the device).
+- 11.1 (refined on the device, 2026-10-17): plain symbols only (never COL$), always in front of the number in every
+  language ("$1.200,00", "€0,00"; "1.401,75 $" looked wrong in Spanish), and the code at the end only when needed:
+  lines that list several currencies, or a non-base currency whose symbol is shared ("$1.500,00 USD" while the base
+  is EUR). Applies to every amount in the app, not only the balance card.
 - 11.3: the cents choice is per currency, not per account (totals are per currency, so they never mix forms).
 - 11.4: add and edit move to the shared `BottomSheet`.
 - PRs: 11.1 + 11.2, then 11.3, then 11.4 + 11.6, then 11.5.
@@ -18,16 +20,18 @@
   the code after `MoneyFormatter.Format` when there are several currencies.
 - Pick one form per line (code only, or a plain symbol + code) and check the other places that put a code next to a
   formatted amount.
-- Done as: `MoneyFormatter.FormatWithCode` (bare sign from `Currency.PlainSymbol`, "$" for COL$, CA$, MX$...) on the
-  Home balance lines and the Accounts group header ("$1,401.75 USD · 1 account"; the code no longer leads it). The
-  account cards keep the full symbol: their code is a separate chip, not next to the amount.
+- Done as: `Currency.Symbol` is the plain sign ("$" for COP, CAD, MXN...). `MoneyFormatter.Format` puts it in front
+  in every culture and adds the code when `CurrencyService.HasSharedSymbol` and the currency isn't the base;
+  `FormatWithCode` always adds it (Home balance lines, Accounts group header "$1.401,75 USD · 1 cuenta");
+  `FormatBesideCode` never does (account cards next to their chip, amount fields). The per-culture symbol lookup is gone.
 
 ### 11.2 More tab reopens the last pushed page
 - More → open e.g. Accounts → switch to Home or Transactions → tap More again: it shows Accounts, not the More menu.
   Shell keeps each tab's stack; re-selecting More should pop to `//MorePage` (tab re-selection / `Shell.Navigating`),
   keeping `NavigationHistory` consistent.
 - Done as: `AppShell` pops the stack of the tab just left (`PopToRootAsync`) on every tab change, so every tab (not only
-  More) opens at its own page; Home → Accounts → Transactions → Home shows Home.
+  More) opens at its own page; Home → Accounts → Transactions → Home shows Home. Re-tapping the tab already shown
+  also returns to its page (Android: `TabReselectShellRenderer` adds the bottom bar's reselect listener).
 
 ### 11.3 Optional cents per account
 - Let the user choose per account whether amounts show cents ("COL$6,000,300" instead of "COL$6,000,300.00").
