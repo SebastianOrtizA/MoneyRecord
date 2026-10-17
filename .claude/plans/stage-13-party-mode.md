@@ -1,6 +1,6 @@
 # Stage 13: Party Mode
 
-**Status**: Idea (to be developed with the user before any work starts)
+**Status**: Design agreed 2026-10-17 (decisions below); no code yet
 **Depends on**: Stages 6–11 (modernization); related to 10.7 splits and 10.8 debts
 **Complexity**: TBD
 **Source**: User request, 2026-10-14
@@ -19,13 +19,19 @@ in, the total, and who owes whom so that everybody ends up paying the same share
 - Remainder cents after an even split go to named people deterministically, so totals always match exactly.
 - Share the summary / settlement as text or an image (no network needed).
 
-## Open questions (develop later)
-- Equal shares only, or weights / "not in this expense" per participant?
-- Does the owner's own part become a normal expense in the ledger (and settle-up payments transfers / debts, 10.8)?
-- One currency per event, or several?
-- Is a participant list reusable (friends list) across events?
-- Relation to Stage 12 (Travel Mode): a shared trip could be a trip + a party; decide on one "group" model or two.
-- Backup format (new table(s) → format bump).
+## Decisions (2026-10-17)
+- **Shares**: equal split per expense, with exclusions (untick who wasn't part of it). No weights.
+- **Ledger link**: standalone. Settle-up is a list whose payments are marked done by hand; no accounts, transfers or
+  debts (10.8) involved. Optionally record the owner's own share as a normal expense (later, 13.3).
+- **Currency**: one per event. **Participants**: a reusable friends list (a `Participant` table; an event links
+  participants by ID), so names are typed once.
+- Still open: relation to Stage 12 trips (leaning to keep them separate), backup format bump (v5 for the new tables).
+
+## Proposed sub-stages
+- 13.1 Core: `Participant`, `PartyEvent`, `PartyExpense` (+ excluded participants), contributions; repositories,
+  migration M005, `PartyShares` (even split, remainder cents deterministic), `SettleUp` (fewest payments); tests.
+- 13.2 UI: More → Parties, event page (budget vs spent, expenses, contributions, balances), friends list.
+- 13.3 Settle-up screen (mark paid), share as text, optional own-share expense, backup/restore v5.
 
 ## Verify
 Defined once the design is agreed: Core tests for shares, rounding and settle-up + a `/run-moneyrecord` flow (en + es).
