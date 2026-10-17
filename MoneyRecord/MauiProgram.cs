@@ -141,6 +141,15 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IDeviceLock, NoDeviceLock>();
 #endif
 
+            // The home-screen widget (Android: Platforms/Android/BalanceWidgetProvider), redrawn when the app goes to the
+            // background and after the daily job
+            builder.Services.AddSingleton<IBalanceWidget, BalanceWidget>();
+#if ANDROID
+            builder.Services.AddSingleton<IHomeScreenWidgets, Platforms.Android.AndroidHomeScreenWidgets>();
+#else
+            builder.Services.AddSingleton<IHomeScreenWidgets, NoHomeScreenWidgets>();
+#endif
+
             // Register ViewModels
             // The one period every tab shows
             builder.Services.AddSingleton<PeriodViewModel>();

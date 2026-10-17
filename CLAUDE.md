@@ -89,7 +89,8 @@ crashes at runtime (XAML is inflated at runtime there).
   `StatementMapping` = the columns, `ImportRow` = a preview row), StatementMappingStore (the last import's
   columns + account per header layout, in preferences), AutoBackupService (scheduled backups into the picked folder:
   due by whole days, skipped while the data fingerprint is unchanged, keeps the newest N) + AutoBackupSettings +
-  `IBackupFolder`, `IBackupPasswordStore` (the backup password; `BackupPasswordException` when a backup needs it)
+  `IBackupFolder`, `IBackupPasswordStore` (the backup password; `BackupPasswordException` when a backup needs it), BalanceWidget
+  (the home-screen widget: account per widget ID, hidden like Home, add-form routes) + `IHomeScreenWidgets` (redraw)
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
@@ -133,7 +134,9 @@ crashes at runtime (XAML is inflated at runtime there).
   (SecureStorage). ViewModels use `IDialogService` /
   `INavigationService`, never `Shell.Current` or `Toast`
 - `Platforms/Android/` — AndroidNotificationService (channels, `POST_NOTIFICATIONS`), DailyReminderWorker (WorkManager
-  job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), AndroidBackupFolder (SAF folder picker, persisted tree permission), MainActivity
+  job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), AndroidBackupFolder (SAF folder picker, persisted tree permission), BalanceWidgetProvider +
+  BalanceWidgetConfigureActivity + AndroidHomeScreenWidgets (home-screen widget; redrawn when the app goes to the
+  background and after the daily job), MainActivity
   (notification route extra)
 - `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
 

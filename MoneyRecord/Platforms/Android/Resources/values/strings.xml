@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Texts Android shows before the app runs (the widget picker, the widget's preview). The app's own texts are in
+     MoneyRecord.Core/Resources/Strings; the widget's labels are set from there in the app's language. -->
+<resources>
+    <string name="widget_name">Balance</string>
+    <string name="widget_description">An account\'s balance with Expense, Income and Transfer buttons</string>
+    <string name="widget_preview_account">Cash</string>
+    <string name="widget_preview_balance">$1,250.00</string>
+    <string name="widget_expense">Expense</string>
+    <string name="widget_income">Income</string>
+    <string name="widget_transfer">Transfer</string>
+</resources>

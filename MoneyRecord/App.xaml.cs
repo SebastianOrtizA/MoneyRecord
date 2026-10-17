@@ -16,12 +16,13 @@ namespace MoneyRecord
         private readonly IDeviceLock _deviceLock;
         private readonly IPrivacySettings _privacy;
         private readonly Func<LockPage> _createLockPage;
+        private readonly IHomeScreenWidgets _widgets;
         private readonly ILogger<App> _logger;
 
         public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
             IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
-            ILogger<App> logger)
+            IHomeScreenWidgets widgets, ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
@@ -35,6 +36,7 @@ namespace MoneyRecord
             _deviceLock = deviceLock;
             _privacy = privacy;
             _createLockPage = createLockPage;
+            _widgets = widgets;
             _logger = logger;
         }
 
@@ -70,6 +72,9 @@ namespace MoneyRecord
                 _appLock.Backgrounded();
                 if (_privacy.LockEnabled)
                     SetContentHidden(window, true);
+                // Whatever changed while the app was open (entries, accounts, Hide balances, the language) shows on the
+                // home screen it is going back to
+                _ = _widgets.RefreshAsync();
             };
             // Activated, not Resumed: on Android Resumed comes before the activity is in front, where the phone's lock
             // prompt would be cancelled. Every activation asks; only a return from the background can lock

@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7 done; 10.8 in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7 done; 10.8 done; 10.9 in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -337,6 +337,25 @@ Close the gap with competing finance apps. Each section can ship on its own.
 
 ### 10.9 Home-screen widget (Stage 5.5)
 - Balance widget + quick-add expense widget (Android `AppWidgetProvider` via platform code).
+
+  Owner choices (2026-10-16): **one** resizable widget (not two): the balance of an account picked when the widget is
+  added, with Expense / Income / Transfer buttons that open the add forms on that account (through the app lock); the
+  balance is hidden while Hide balances or the app lock is on. One PR.
+
+  10.9 done as: Core `IBalanceWidget` / `BalanceWidget` (account per widget ID in preferences; a gone or never-picked
+  account falls back to the default, then the first own account; `BalancesHidden` = Hide balances or `AppLock.CanLock`,
+  now public; routes `AddTransactionPage?Type=Expense&AccountId=…`, `AddTransferPage?SourceAccountId=…`) +
+  `WidgetContent`, tested. The add forms take those string query parameters (the widget's account preselected, else
+  the last used one). Android: `BalanceWidgetProvider` (fixed receiver name, RemoteViews layout `widget_balance`: 4 x 2
+  cells, resizable, Home card colours light / dark, MDI minus / plus / swap icons, labels set in the app's language;
+  the balance opens the app, buttons go through `MainActivity.RouteExtra` like a tapped notification),
+  `BalanceWidgetConfigureActivity` (account list over the home screen; Android 12+ can reconfigure a placed widget),
+  `IHomeScreenWidgets` = `AndroidHomeScreenWidgets` (`NoHomeScreenWidgets` elsewhere) redraws every widget when the app
+  goes to the background (whatever changed while it was open) and after the daily job; no periodic updates.
+  **Deviation / notes:** one widget instead of two (owner's choice); back / save on a form opened from the widget goes
+  to the app's Home, not the launcher. A force-stop cancels the app's pending intents, so the buttons do nothing until
+  the app is opened once (a normal process death is fine; tested). Widget picker name and description are Android string
+  resources (en / es, device language).
 
 ### 10.10 Receipt OCR
 - Plugin.Maui.OCR (confirm licence on the repo first) to pre-fill amount/date from a receipt photo.

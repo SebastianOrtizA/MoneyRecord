@@ -12,6 +12,8 @@ namespace MoneyRecord.ViewModels
 {
     [QueryProperty(nameof(TransactionType), "TransactionType")]
     [QueryProperty(nameof(Transaction), "Transaction")]
+    [QueryProperty(nameof(TypeName), "Type")]
+    [QueryProperty(nameof(AccountIdString), "AccountId")]
     public partial class AddTransactionViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -44,6 +46,20 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private Transaction? transaction;
+
+        /// <summary>The type from a route string (the home-screen widget's buttons): "Expense" or "Income".</summary>
+        public string? TypeName
+        {
+            get => TransactionType.ToString();
+            set
+            {
+                if (Enum.TryParse<TransactionType>(value, out var type))
+                    TransactionType = type;
+            }
+        }
+
+        /// <summary>A new entry in this account (the widget's buttons) instead of the last one used.</summary>
+        public string? AccountIdString { get; set; }
 
         [ObservableProperty]
         private DateTime selectedDate = DateTime.Now;
@@ -439,8 +455,9 @@ namespace MoneyRecord.ViewModels
                 await LoadCategoriesAsync();
                 await LoadPayeesAsync();
 
-                // The account and category last used for this type
-                SelectedAccount = _entryDefaults.DefaultAccount(TransactionType, Accounts);
+                // The account the widget asked for, else the account and category last used for this type
+                SelectedAccount = (int.TryParse(AccountIdString, out var accountId) ? Accounts.FirstOrDefault(a => a.Id == accountId) : null)
+                    ?? _entryDefaults.DefaultAccount(TransactionType, Accounts);
                 SelectedCategory = _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
             }
         }
