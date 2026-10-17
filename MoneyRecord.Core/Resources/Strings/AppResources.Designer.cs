@@ -5657,5 +5657,167 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ReceiptNotRead", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string ExportReport {
+            get {
+                return ResourceManager.GetString("ExportReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export {0}.
+        /// </summary>
+        public static string ExportReportFor {
+            get {
+                return ResourceManager.GetString("ExportReportFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PDF report.
+        /// </summary>
+        public static string ExportPdfReport {
+            get {
+                return ResourceManager.GetString("ExportPdfReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transactions (CSV).
+        /// </summary>
+        public static string ExportPeriodCsv {
+            get {
+                return ResourceManager.GetString("ExportPeriodCsv", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share report.
+        /// </summary>
+        public static string ShareReport {
+            get {
+                return ResourceManager.GetString("ShareReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn't create the report.
+        /// </summary>
+        public static string FailedToExportReport {
+            get {
+                return ResourceManager.GetString("FailedToExportReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Financial report.
+        /// </summary>
+        public static string ReportTitle {
+            get {
+                return ResourceManager.GetString("ReportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created on {0} with MoneyRecord.
+        /// </summary>
+        public static string ReportCreatedOn {
+            get {
+                return ResourceManager.GetString("ReportCreatedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Page {0} of {1}.
+        /// </summary>
+        public static string ReportPageOf {
+            get {
+                return ResourceManager.GetString("ReportPageOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spending by category.
+        /// </summary>
+        public static string ReportSpendingByCategory {
+            get {
+                return ResourceManager.GetString("ReportSpendingByCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income by category.
+        /// </summary>
+        public static string ReportIncomeByCategory {
+            get {
+                return ResourceManager.GetString("ReportIncomeByCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share.
+        /// </summary>
+        public static string ReportShare {
+            get {
+                return ResourceManager.GetString("ReportShare", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit.
+        /// </summary>
+        public static string ReportLimit {
+            get {
+                return ResourceManager.GetString("ReportLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string ReportStatus {
+            get {
+                return ResourceManager.GetString("ReportStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Balance on {0}.
+        /// </summary>
+        public static string ReportBalanceOn {
+            get {
+                return ResourceManager.GetString("ReportBalanceOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Converted to {0} at each day's exchange rate (≈).
+        /// </summary>
+        public static string ReportConvertedTo {
+            get {
+                return ResourceManager.GetString("ReportConvertedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only amounts in {0}; other currencies are listed in the summary.
+        /// </summary>
+        public static string ReportInCurrencyOnly {
+            get {
+                return ResourceManager.GetString("ReportInCurrencyOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer.
+        /// </summary>
+        public static string ReportTransfer {
+            get {
+                return ResourceManager.GetString("ReportTransfer", resourceCulture);
+            }
+        }
     }
 }

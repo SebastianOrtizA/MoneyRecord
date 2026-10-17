@@ -2046,4 +2046,58 @@ Monto: {2}</value>
   <data name="ReceiptNotRead" xml:space="preserve">
     <value>No se encontró un total ni una fecha en el recibo</value>
   </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="ExportReportFor" xml:space="preserve">
+    <value>Exportar {0}</value>
+  </data>
+  <data name="ExportPdfReport" xml:space="preserve">
+    <value>Informe PDF</value>
+  </data>
+  <data name="ExportPeriodCsv" xml:space="preserve">
+    <value>Transacciones (CSV)</value>
+  </data>
+  <data name="ShareReport" xml:space="preserve">
+    <value>Compartir informe</value>
+  </data>
+  <data name="FailedToExportReport" xml:space="preserve">
+    <value>No se pudo crear el informe</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>Informe financiero</value>
+  </data>
+  <data name="ReportCreatedOn" xml:space="preserve">
+    <value>Creado el {0} con MoneyRecord</value>
+  </data>
+  <data name="ReportPageOf" xml:space="preserve">
+    <value>Página {0} de {1}</value>
+  </data>
+  <data name="ReportSpendingByCategory" xml:space="preserve">
+    <value>Gastos por categoría</value>
+  </data>
+  <data name="ReportIncomeByCategory" xml:space="preserve">
+    <value>Ingresos por categoría</value>
+  </data>
+  <data name="ReportShare" xml:space="preserve">
+    <value>Porcentaje</value>
+  </data>
+  <data name="ReportLimit" xml:space="preserve">
+    <value>Límite</value>
+  </data>
+  <data name="ReportStatus" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="ReportBalanceOn" xml:space="preserve">
+    <value>Saldo al {0}</value>
+  </data>
+  <data name="ReportConvertedTo" xml:space="preserve">
+    <value>Convertido a {0} al tipo de cambio de cada día (≈)</value>
+  </data>
+  <data name="ReportInCurrencyOnly" xml:space="preserve">
+    <value>Solo importes en {0}; las demás monedas están en el resumen</value>
+  </data>
+  <data name="ReportTransfer" xml:space="preserve">
+    <value>Transferencia</value>
+  </data>
 </root>

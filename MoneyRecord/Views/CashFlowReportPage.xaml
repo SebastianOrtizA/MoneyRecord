@@ -12,6 +12,19 @@
              x:DataType="viewmodels:CashFlowReportViewModel"
              Title="{ext:Localize CashFlow}">
 
+    <!-- Export: a PDF report or the transactions (CSV) of the last N months ("Months" = ReportExportViewModel.Months) -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{ext:Localize ExportReport}"
+                     Command="{Binding Export.ExportCommand}"
+                     CommandParameter="Months">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialDesignIcons"
+                                 Glyph="&#xF0B93;"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadCommand}">
         <ScrollView>

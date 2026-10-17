@@ -70,7 +70,7 @@ namespace MoneyRecord.ViewModels
         public CategoryReportViewModel(PeriodViewModel period, ITransactionEnrichmentService enrichmentService,
             ITransactionRepository transactionRepository, ICategoryRepository categoryRepository, IAccountRepository accountRepository,
             IConversionService conversion, IErrorHandler errorHandler, INavigationService navigationService,
-            TransactionsDrillDown drillDown)
+            TransactionsDrillDown drillDown, ReportExportViewModel export)
         {
             _enrichmentService = enrichmentService;
             _transactionRepository = transactionRepository;
@@ -81,7 +81,11 @@ namespace MoneyRecord.ViewModels
             _navigationService = navigationService;
             _drillDown = drillDown;
             Period = period;
+            Export = export;
         }
+
+        /// <summary>The Export button (the shared period).</summary>
+        public ReportExportViewModel Export { get; }
 
         private TransactionType TransactionType => IsIncome ? TransactionType.Income : TransactionType.Expense;
 

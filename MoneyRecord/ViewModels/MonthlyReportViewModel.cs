@@ -52,7 +52,7 @@ namespace MoneyRecord.ViewModels
         private Axis[] moneyAxis = [];
 
         protected MonthlyReportViewModel(PeriodViewModel period, IAccountRepository accountRepository, IConversionService conversion,
-            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown)
+            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown, ReportExportViewModel export)
         {
             _accountRepository = accountRepository;
             _conversion = conversion;
@@ -60,10 +60,14 @@ namespace MoneyRecord.ViewModels
             _navigationService = navigationService;
             _drillDown = drillDown;
             Period = period;
+            Export = export;
         }
 
         /// <summary>The shared period; these reports use its <see cref="PeriodViewModel.MonthCount"/>.</summary>
         public PeriodViewModel Period { get; }
+
+        /// <summary>The Export button (these months: <see cref="ReportExportViewModel.Months"/>).</summary>
+        public ReportExportViewModel Export { get; }
 
         /// <summary>The first month shown, in the order the report's rows come in.</summary>
         protected DateTime FirstMonth { get; private set; }

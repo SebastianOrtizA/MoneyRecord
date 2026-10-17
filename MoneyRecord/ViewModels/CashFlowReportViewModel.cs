@@ -22,8 +22,8 @@ namespace MoneyRecord.ViewModels
 
         public CashFlowReportViewModel(PeriodViewModel period, ITransactionRepository transactionRepository,
             IAccountRepository accountRepository, IConversionService conversion, IErrorHandler errorHandler,
-            INavigationService navigationService, TransactionsDrillDown drillDown)
-            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown)
+            INavigationService navigationService, TransactionsDrillDown drillDown, ReportExportViewModel export)
+            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown, export)
         {
             _transactionRepository = transactionRepository;
         }

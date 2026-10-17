@@ -5,7 +5,12 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>AppDataDirectory/Backups: local backups and the automatic pre-restore snapshots.</summary>
         string BackupsFolder { get; }
 
-        Task<string> ExportCsvAsync();
+        /// <summary>
+        /// Every transaction and transfer as CSV, newest first, or only those dated in [<paramref name="startDate"/>,
+        /// <paramref name="endDate"/>]. Amounts are unsigned in the account's currency (invariant culture); a transfer has
+        /// its destination in the To columns, the parts of a split expense share a split ID.
+        /// </summary>
+        Task<string> ExportCsvAsync(DateTime? startDate = null, DateTime? endDate = null);
 
         /// <summary>
         /// Writes a full backup to <paramref name="destinationPath"/>: a .zip with data.json and the receipt photos.

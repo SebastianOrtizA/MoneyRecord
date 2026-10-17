@@ -15,6 +15,18 @@
              x:DataType="viewmodels:CategoryReportViewModel"
              Title="{Binding Texts.Title}">
 
+    <!-- Export: a PDF report or the transactions (CSV) of the shared period -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{ext:Localize ExportReport}"
+                     Command="{Binding Export.ExportCommand}">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialDesignIcons"
+                                 Glyph="&#xF0B93;"
+                                 Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadReportDataCommand}">
         <!-- The 16px gutter is inside the header, rows and footer, so the scrollbar sits at the screen edge -->

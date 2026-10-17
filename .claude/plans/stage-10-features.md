@@ -1,6 +1,6 @@
 # Stage 10: New Features
 
-**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7 done; 10.8 done; 10.9 done; 10.10 in review)
+**Status**: In progress (10.1 done; 10.2 done; 10.3 done; 10.4 done; 10.5 done; 10.6 done; 10.7 done; 10.8 done; 10.9 done; 10.10 done; 10.11 in review)
 **Depends on**: Stages 6–8 (9 for anything needing network permission)
 **Complexity**: Variable (each item is independent; order = value)
 **Source**: Product & engineering review, 2026-10-11 (P10, P11, "What to add") + Stage 5.2, 5.5
@@ -380,6 +380,24 @@ Close the gap with competing finance apps. Each section can ship on its own.
 
 ### 10.11 PDF / CSV report export
 - Monthly report PDF with PDFsharp/MigraDoc (MIT); not QuestPDF (licence).
+
+  Owner choices (2026-10-16): the period the tab shows (the shared one), a PDF with summary + categories, budgets,
+  account balances and the transaction list; an Export button on the Reports tabs; a period CSV, and the full CSV fixed.
+
+  10.11 done as: an Export button (nav bar) on every Reports tab → "PDF report" / "Transactions (CSV)" → share sheet.
+  Spending / Income export the shared period, Trends / Cash flow / Net worth their last N months (a custom period).
+  Core `ReportExportViewModel` (MAUI-free, tested), `IReportExportService` = `ReportExportService` (builds a
+  `PeriodReport`: totals per currency like Home with the period before, category shares of both types in the reports'
+  currency choice, budgets projected onto the period, own accounts' balances at the end (today's less what changed
+  after), every transaction and transfer oldest first; tested) and `Services/Pdf/PeriodReportPdf` (MigraDoc layout: A4,
+  or Letter where the region isn't metric; header row repeated per page; page X of Y). `PdfFonts` embeds the app's
+  Open Sans (Regular + Semibold) and reads its cmap: what it lacks (▲ ▼ → arrows, ₹ ₩ ₽ … signs → ISO code, narrow
+  spaces, emoji) is replaced or left out (`Printable`, tested). `IFileSharer` (MAUI `FileSharer`) also serves Settings.
+  CSV (`IDataExportService.ExportCsvAsync(start?, end?)`): new columns Currency, ToAccount / ToAmount / ToCurrency
+  (transfers are rows now) and SplitId; amounts stay unsigned next to the Type column.
+  **Deviation / notes:** PDFsharp-MigraDoc pinned to 6.2.4, the last MIT release (6.5.0 and 7.0.0-preview-2, both
+  2026-10-14, are AGPL-3.0-only). Its System.Security.Cryptography.Pkcs 8.0.1 dependency has advisories
+  (NU1902 / NU1903), so 10.0.13 is referenced directly. No chart image in the PDF: a bar per category share.
 
 ## Licence rule for every new dependency
 MIT, BSD, Apache-2.0 or LGPL only. No GPL-2.0-only, MS-PL-only, or "community"/non-commercial licences.

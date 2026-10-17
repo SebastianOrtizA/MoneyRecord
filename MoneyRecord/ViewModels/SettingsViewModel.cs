@@ -20,6 +20,7 @@ namespace MoneyRecord.ViewModels
         private readonly IPreferencesService _preferences;
         private readonly LocalizationService _localization;
         private readonly IAppPaths _paths;
+        private readonly IFileSharer _sharer;
         private readonly ICrashReportConsent _crashReports;
         private readonly IReminderService _reminders;
         private readonly IReminderSettings _reminderSettings;
@@ -44,7 +45,7 @@ namespace MoneyRecord.ViewModels
 
         public SettingsViewModel(IDataExportService dataExportService, IErrorHandler errorHandler, IDialogService dialogService,
             ICurrencyService currencyService, INavigationService navigationService, IThemeService themeService,
-            IPreferencesService preferences, LocalizationService localization, IAppPaths paths,
+            IPreferencesService preferences, LocalizationService localization, IAppPaths paths, IFileSharer sharer,
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
             IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
@@ -59,6 +60,7 @@ namespace MoneyRecord.ViewModels
             _preferences = preferences;
             _localization = localization;
             _paths = paths;
+            _sharer = sharer;
             _crashReports = crashReports;
             _reminders = reminders;
             _reminderSettings = reminderSettings;
@@ -404,14 +406,10 @@ namespace MoneyRecord.ViewModels
             {
                 IsExporting = true;
 
-                var filePath = NewCacheFile("MoneyRecord_Backup", ".zip");
+                var filePath = _sharer.NewCacheFile("MoneyRecord_Backup", ".zip");
                 await _dataExportService.ExportBackupAsync(filePath, await BackupPassword.GetPasswordAsync());
 
-                await Share.Default.RequestAsync(new ShareFileRequest
-                {
-                    Title = AppResources.ShareBackup,
-                    File = new ShareFile(filePath)
-                });
+                await _sharer.ShareAsync(filePath, AppResources.ShareBackup);
             }
             catch (Exception ex)
             {
@@ -425,17 +423,6 @@ namespace MoneyRecord.ViewModels
 
         private static string BackupFileName() => $"MoneyRecord_Backup_{DateTime.Now:yyyyMMdd_HHmmss}.zip";
 
-        /// <summary>
-        /// A new timestamped file in the cache folder, to share. Earlier ones with the same prefix are deleted first, so
-        /// shared copies (backups include photos) don't pile up.
-        /// </summary>
-        private static string NewCacheFile(string prefix, string extension)
-        {
-            foreach (var old in Directory.GetFiles(FileSystem.CacheDirectory, $"{prefix}_*{extension}"))
-                File.Delete(old);
-            return Path.Combine(FileSystem.CacheDirectory, $"{prefix}_{DateTime.Now:yyyyMMdd_HHmmss}{extension}");
-        }
-
         [RelayCommand]
         private async Task ShareLogsAsync()
         {
@@ -443,7 +430,7 @@ namespace MoneyRecord.ViewModels
             {
                 IsExporting = true;
 
-                var filePath = NewCacheFile("MoneyRecord_Logs", ".zip");
+                var filePath = _sharer.NewCacheFile("MoneyRecord_Logs", ".zip");
                 // Up to several MB of text to compress: off the UI thread
                 if (!await Task.Run(() => LogFiles.CreateArchive(_paths.LogsFolder, filePath)))
                 {
@@ -451,11 +438,7 @@ namespace MoneyRecord.ViewModels
                     return;
                 }
 
-                await Share.Default.RequestAsync(new ShareFileRequest
-                {
-                    Title = AppResources.ShareLogs,
-                    File = new ShareFile(filePath)
-                });
+                await _sharer.ShareAsync(filePath, AppResources.ShareLogs);
             }
             catch (Exception ex)
             {
@@ -475,14 +458,10 @@ namespace MoneyRecord.ViewModels
                 IsExporting = true;
 
                 var csv = await _dataExportService.ExportCsvAsync();
-                var filePath = NewCacheFile("MoneyRecord_Transactions", ".csv");
+                var filePath = _sharer.NewCacheFile("MoneyRecord_Transactions", ".csv");
                 await File.WriteAllTextAsync(filePath, csv);
 
-                await Share.Default.RequestAsync(new ShareFileRequest
-                {
-                    Title = AppResources.ShareTransactions,
-                    File = new ShareFile(filePath)
-                });
+                await _sharer.ShareAsync(filePath, AppResources.ShareTransactions);
 
                 await _dialogService.ToastAsync(AppResources.CsvExportedSuccessfully);
             }

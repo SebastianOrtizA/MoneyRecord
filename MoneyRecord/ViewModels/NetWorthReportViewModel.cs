@@ -31,8 +31,8 @@ namespace MoneyRecord.ViewModels
         public NetWorthReportViewModel(PeriodViewModel period, IAccountRepository accountRepository, IBalanceService balanceService,
             ITransactionRepository transactionRepository, ITransferRepository transferRepository, IConversionService conversion,
             IExchangeRateService exchangeRates, IErrorHandler errorHandler, INavigationService navigationService,
-            TransactionsDrillDown drillDown)
-            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown)
+            TransactionsDrillDown drillDown, ReportExportViewModel export)
+            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown, export)
         {
             _exchangeRates = exchangeRates;
             _balanceService = balanceService;
