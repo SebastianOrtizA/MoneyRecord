@@ -2027,4 +2027,25 @@ Amount: {2}</value>
   <data name="WidgetPickAccount" xml:space="preserve">
     <value>Which account should the widget show?</value>
   </data>
+  <data name="ScanReceipt" xml:space="preserve">
+    <value>Scan receipt</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Take photo</value>
+  </data>
+  <data name="ChoosePhoto" xml:space="preserve">
+    <value>Choose from gallery</value>
+  </data>
+  <data name="ReadingReceipt" xml:space="preserve">
+    <value>Reading the receipt…</value>
+  </data>
+  <data name="ReceiptFilledIn" xml:space="preserve">
+    <value>Filled in from the receipt: {0}</value>
+  </data>
+  <data name="ReceiptSays" xml:space="preserve">
+    <value>The receipt says {0}</value>
+  </data>
+  <data name="ReceiptNotRead" xml:space="preserve">
+    <value>No total or date found on the receipt</value>
+  </data>
 </root>

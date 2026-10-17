@@ -5594,5 +5594,68 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("WidgetPickAccount", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan receipt
+        /// </summary>
+        public static string ScanReceipt {
+            get {
+                return ResourceManager.GetString("ScanReceipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take photo
+        /// </summary>
+        public static string TakePhoto {
+            get {
+                return ResourceManager.GetString("TakePhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose from gallery
+        /// </summary>
+        public static string ChoosePhoto {
+            get {
+                return ResourceManager.GetString("ChoosePhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reading the receipt….
+        /// </summary>
+        public static string ReadingReceipt {
+            get {
+                return ResourceManager.GetString("ReadingReceipt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filled in from the receipt: {0}.
+        /// </summary>
+        public static string ReceiptFilledIn {
+            get {
+                return ResourceManager.GetString("ReceiptFilledIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The receipt says {0}.
+        /// </summary>
+        public static string ReceiptSays {
+            get {
+                return ResourceManager.GetString("ReceiptSays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No total or date found on the receipt.
+        /// </summary>
+        public static string ReceiptNotRead {
+            get {
+                return ResourceManager.GetString("ReceiptNotRead", resourceCulture);
+            }
+        }
     }
 }

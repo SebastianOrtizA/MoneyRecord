@@ -150,6 +150,13 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IHomeScreenWidgets, NoHomeScreenWidgets>();
 #endif
 
+            // Receipt photos: the total and date read on the phone (Android: ML Kit)
+#if ANDROID
+            builder.Services.AddSingleton<IReceiptScanner, Platforms.Android.AndroidReceiptScanner>();
+#else
+            builder.Services.AddSingleton<IReceiptScanner, NoReceiptScanner>();
+#endif
+
             // Register ViewModels
             // The one period every tab shows
             builder.Services.AddSingleton<PeriodViewModel>();

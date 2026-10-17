@@ -59,6 +59,9 @@ namespace MoneyRecord.Models
                 "https://github.com/getsentry/sentry-dotnet", "Sentry.txt", ["Sentry.Maui"]),
             new("SQLite", "Public domain", string.Empty,
                 "https://sqlite.org/copyright.html", null, []),
+            // Not open source: free to use under Google's terms; the .NET binding itself is MIT (.NET Foundation)
+            new("Google ML Kit Text Recognition (with Google Play services client libraries)", "ML Kit and Google APIs terms (proprietary)", "Google LLC",
+                "https://developers.google.com/ml-kit/terms", null, ["Xamarin.Google.MLKit.TextRecognition"]),
             new("LiveCharts2", "MIT", "Alberto Rodriguez Orozco",
                 "https://github.com/beto-rodriguez/LiveCharts2", "LiveCharts2.txt", ["LiveChartsCore.SkiaSharpView.Maui"]),
             new("SkiaSharp / HarfBuzzSharp (with Skia, HarfBuzz, FreeType, ICU, …)", "MIT + bundled notices",

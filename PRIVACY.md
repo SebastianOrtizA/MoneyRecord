@@ -1,9 +1,9 @@
 # MoneyRecord privacy policy
 
-*Effective 15 October 2026. [Español abajo](#política-de-privacidad-de-moneyrecord).*
+*Effective 16 October 2026. [Español abajo](#política-de-privacidad-de-moneyrecord).*
 
 MoneyRecord is a personal finance app that keeps your data on your device. It has no accounts, ads, analytics or
-tracking.
+tracking of its own (see **Receipt reading** for the diagnostics Google's text recognition sends).
 
 ## Data stored on your device
 Your accounts, transactions, transfers, budgets, categories, receipt photos and settings are stored only in the app's
@@ -32,6 +32,15 @@ A report doesn't include your amounts, descriptions or other records, screenshot
 ID, and the Sentry project doesn't store IP addresses. Reports are sent over an encrypted connection (HTTPS), used only
 to find and fix bugs, never sold or shared, and deleted by Sentry when its retention period ends.
 
+## Receipt reading (Android)
+When you scan a receipt (or add a receipt photo to an entry), the app reads the photo's text on your device with
+Google's [ML Kit](https://developers.google.com/ml-kit) text recognition to fill in the total and the date. The photo
+and its text stay on the device. ML Kit itself sends Google diagnostics about its use: device and app information, a
+per-installation identifier, performance metrics, the size of the input and output, and error codes, encrypted in
+transit, under [Google's terms](https://developers.google.com/ml-kit/terms) (see
+[ML Kit's data disclosure](https://developers.google.com/ml-kit/android-data-disclosure)). Google says this data
+is not transferred to third parties.
+
 ## Exchange rates (optional, off by default)
 When you turn on **Settings → Exchange rates**, the app downloads daily exchange rates from
 [Frankfurter](https://frankfurter.dev) (once a day, and when you tap **Update now**). A request contains only
@@ -45,7 +54,8 @@ most, and doesn't log your amounts or descriptions. They leave the device only w
 ## Permissions
 - **Camera:** only when you take a photo of a receipt.
 - **Storage (Android 12 and older):** needed by the camera capture on those versions.
-- **Internet:** used only for crash reports and exchange rates, when you have turned them on.
+- **Internet:** used for crash reports and exchange rates, when you have turned them on, and by ML Kit's
+  diagnostics when you scan a receipt.
 - **Notifications (Android 13 and newer):** asked when you turn reminders on, to remind you of bills and budgets.
   Reminders are created on the device; nothing is sent anywhere.
 - **Biometrics / screen lock:** used only when you turn the app lock on. Android checks your fingerprint, face or
@@ -62,10 +72,10 @@ https://github.com/SebastianOrtizA/MoneyRecord/issues.
 
 # Política de privacidad de MoneyRecord
 
-*Vigente desde el 15 de octubre de 2026.*
+*Vigente desde el 16 de octubre de 2026.*
 
 MoneyRecord es una app de finanzas personales que guarda tus datos en tu dispositivo. No tiene cuentas, publicidad,
-analítica ni rastreo.
+analítica ni rastreo propios (consulta **Lectura de recibos** para los diagnósticos que envía el reconocimiento de texto de Google).
 
 ## Datos guardados en tu dispositivo
 Tus cuentas, transacciones, transferencias, presupuestos, categorías, fotos de recibos y ajustes se guardan solo en el
@@ -94,6 +104,16 @@ usuario ni ID del dispositivo, y el proyecto de Sentry no guarda direcciones IP.
 cifrada (HTTPS), se usan solo para encontrar y corregir errores, nunca se venden ni se comparten, y Sentry los borra al
 terminar su periodo de conservación.
 
+## Lectura de recibos (Android)
+Cuando escaneas un recibo (o añades la foto de un recibo a un movimiento), la app lee el texto de la foto en tu
+dispositivo con el reconocimiento de texto de [ML Kit](https://developers.google.com/ml-kit) de Google para completar
+el total y la fecha. La foto y su texto se quedan en el dispositivo. ML Kit envía a Google diagnósticos sobre su uso:
+información del dispositivo y de la app, un identificador por instalación, métricas de rendimiento, el tamaño de la
+entrada y la salida y códigos de error, cifrados en tránsito, según las
+[condiciones de Google](https://developers.google.com/ml-kit/terms) (consulta
+[la divulgación de datos de ML Kit](https://developers.google.com/ml-kit/android-data-disclosure)). Google indica que
+estos datos no se transfieren a terceros.
+
 ## Tipos de cambio (opcionales, desactivados por defecto)
 Cuando activas **Configuración → Tipos de cambio**, la app descarga tipos de cambio diarios de
 [Frankfurter](https://frankfurter.dev) (una vez al día, y cuando tocas **Actualizar ahora**). Una solicitud contiene
@@ -108,7 +128,8 @@ guarda 7 días como máximo y no registra tus importes ni descripciones. Solo sa
 ## Permisos
 - **Cámara:** solo cuando tomas la foto de un recibo.
 - **Almacenamiento (Android 12 y anteriores):** lo necesita la captura con la cámara en esas versiones.
-- **Internet:** se usa solo para los informes de errores y los tipos de cambio, cuando los has activado.
+- **Internet:** se usa para los informes de errores y los tipos de cambio, cuando los has activado, y para los
+  diagnósticos de ML Kit cuando escaneas un recibo.
 - **Notificaciones (Android 13 y posteriores):** se piden cuando activas los recordatorios, para avisarte de pagos y
   presupuestos. Los recordatorios se crean en el dispositivo; no se envía nada.
 - **Biometría / bloqueo de pantalla:** solo cuando activas el bloqueo de la app. Android comprueba tu huella, rostro o

@@ -99,7 +99,8 @@ crashes at runtime (XAML is inflated at runtime there).
   days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
   (currencies in use; transactions in one currency), CurrencyConverter (downloaded rates: nearest earlier day,
   inverse, across an earlier base; a transaction's own "Amount in USD" first), CsvTable / StatementDate /
-  StatementAmount (bank statement CSV: table, date layouts, signed amounts)
+  StatementAmount (bank statement CSV: table, date layouts, signed amounts), ReceiptReader (a receipt's
+  OCR lines → rows → total + date)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
@@ -130,13 +131,13 @@ crashes at runtime (XAML is inflated at runtime there).
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
 - `Services/` — NavigationService, DialogService (alerts/prompts/action sheets on the window's page + toast),
   ThemeService (saved System / Light / Dark → `UserAppTheme`), PreferencesService
-  (MAUI Preferences), NoNotificationService / NoDeviceLock (platforms without reminders / app lock). SecureBackupPasswordStore
+  (MAUI Preferences), NoNotificationService / NoDeviceLock / NoReceiptScanner (platforms without reminders / app lock / receipt reading). SecureBackupPasswordStore
   (SecureStorage). ViewModels use `IDialogService` /
   `INavigationService`, never `Shell.Current` or `Toast`
 - `Platforms/Android/` — AndroidNotificationService (channels, `POST_NOTIFICATIONS`), DailyReminderWorker (WorkManager
   job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), AndroidBackupFolder (SAF folder picker, persisted tree permission), BalanceWidgetProvider +
   BalanceWidgetConfigureActivity + AndroidHomeScreenWidgets (home-screen widget; redrawn when the app goes to the
-  background and after the daily job), MainActivity
+  background and after the daily job), AndroidReceiptScanner (ML Kit text recognition, bundled model), MainActivity
   (notification route extra)
 - `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
 
