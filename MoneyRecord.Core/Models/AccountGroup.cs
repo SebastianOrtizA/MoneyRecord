@@ -37,9 +37,9 @@ namespace MoneyRecord.Models
 
         public decimal Subtotal { get; }
 
-        /// <summary>"EUR · €300.00 · 2 accounts".</summary>
+        /// <summary>"€300.00 EUR · 2 accounts" (bare sign + code, like the Home balance lines).</summary>
         public string HeaderText =>
-            $"{CurrencyCode} · {MoneyFormatter.Format(Subtotal, CurrencyCode)} · {Plurals.Accounts(Count)}";
+            $"{MoneyFormatter.FormatWithCode(Subtotal, CurrencyCode)} · {Plurals.Accounts(Count)}";
 
         /// <summary>
         /// One group per currency, base currency first, then by code; accounts keep their given order. With

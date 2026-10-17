@@ -35,7 +35,7 @@ public class AccountGroupTests
         var group = AccountGroup.Build([Account(1, "EUR"), Account(2, "EUR")], [Balance(1, 100m), Balance(2, 200m)], "USD")
             .Single();
 
-        group.HeaderText.Should().Be($"EUR · {MoneyFormatter.Format(300m, "EUR")} · {Plurals.Accounts(2)}");
+        group.HeaderText.Should().Be($"{MoneyFormatter.FormatWithCode(300m, "EUR")} · {Plurals.Accounts(2)}");
     }
 
     [Fact]

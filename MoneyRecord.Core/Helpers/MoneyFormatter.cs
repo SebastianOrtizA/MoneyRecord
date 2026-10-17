@@ -42,12 +42,37 @@ namespace MoneyRecord.Helpers
             return Format(amount, ResolveCurrencyCode(currencyCode), 0, culture);
         }
 
+        /// <summary>
+        /// The amount with the currency's bare sign and then its code ("$6,000,300.00 COP", never "COL$… COP"), for a
+        /// line that tells currencies apart by their code. The sign always leads, whatever the culture's placement
+        /// ("$1.401,75 USD" in es-ES, not "1.401,75 $ USD"). A currency whose sign is its code shows it once, where the
+        /// culture puts it ("CHF 5.00").
+        /// </summary>
+        public static string FormatWithCode(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
+        {
+            var code = ResolveCurrencyCode(currencyCode);
+            culture ??= CultureInfo.CurrentCulture;
+            var symbol = GetSymbol(code, culture, plain: true);
+            if (symbol == code)
+                return Format(amount, code, culture);
+            var text = FormatWithSymbol(amount, symbol, CurrencyService.GetMinorUnits(code), culture, signFirst: true);
+            return $"{text} {code}";
+        }
+
         private static string Format(decimal amount, string code, int decimals, CultureInfo? culture)
         {
             culture ??= CultureInfo.CurrentCulture;
-            var format = (NumberFormatInfo)culture.NumberFormat.Clone();
+            return FormatWithSymbol(amount, GetSymbol(code, culture, plain: false), decimals, culture);
+        }
 
-            format.CurrencySymbol = GetSymbol(code, culture);
+        private static string FormatWithSymbol(decimal amount, string symbol, int decimals, CultureInfo culture,
+            bool signFirst = false)
+        {
+            var format = (NumberFormatInfo)culture.NumberFormat.Clone();
+            if (signFirst)
+                format.CurrencyPositivePattern = 0; // $n
+
+            format.CurrencySymbol = symbol;
             format.CurrencyDecimalDigits = decimals;
             format.CurrencyNegativePattern = GetLeadingSignPattern(format.CurrencyPositivePattern);
             return amount.ToString("C", format);
@@ -78,9 +103,10 @@ namespace MoneyRecord.Helpers
 
         /// <summary>
         /// The culture's own symbol when the currency is the culture region's currency ("$" for COP in es-CO);
-        /// otherwise an unambiguous symbol for the currency ("COL$" for COP in en-US).
+        /// otherwise an unambiguous symbol for the currency ("COL$" for COP in en-US), or with <paramref name="plain"/>
+        /// its bare sign ("$"), when the code is shown too.
         /// </summary>
-        private static string GetSymbol(string code, CultureInfo culture)
+        private static string GetSymbol(string code, CultureInfo culture, bool plain)
         {
             var cultureSymbol = culture.NumberFormat.CurrencySymbol;
             if (cultureSymbol != "¤" && !culture.IsNeutralCulture && !string.IsNullOrEmpty(culture.Name))
@@ -89,7 +115,7 @@ namespace MoneyRecord.Helpers
                 if (string.Equals(regionCurrency, code, StringComparison.OrdinalIgnoreCase))
                     return cultureSymbol;
             }
-            return CurrencyService.GetSymbol(code);
+            return plain ? CurrencyService.GetPlainSymbol(code) : CurrencyService.GetSymbol(code);
         }
 
         private static string? GetRegionCurrency(string cultureName)

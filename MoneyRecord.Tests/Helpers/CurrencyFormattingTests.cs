@@ -60,6 +60,30 @@ public class CurrencyFormattingTests
         MoneyFormatter.FormatWhole(1234m, "USD", new CultureInfo("en-US")).Should().Be("$1,234");
     }
 
+    [Theory]
+    [InlineData("COP", 6000300.5, "en-US", "$6,000,300.50 COP")]
+    [InlineData("CAD", -12, "en-US", "-$12.00 CAD")]
+    [InlineData("USD", 1200, "en-US", "$1,200.00 USD")]
+    [InlineData("EUR", 300, "en-US", "€300.00 EUR")]
+    [InlineData("JPY", 1500, "en-US", "¥1,500 JPY")]
+    [InlineData("CHF", 5, "en-US", "CHF5.00")]
+    [InlineData("XYZ", 5, "en-US", "XYZ5.00")]
+    public void FormatWithCode_UsesTheBareSignThenTheCode(string code, double amount, string culture, string expected)
+    {
+        MoneyFormatter.FormatWithCode((decimal)amount, code, new CultureInfo(culture))
+            .Should().Be(expected);
+    }
+
+    [Theory]
+    [InlineData("USD", 1401.75, "es-ES", "$1.401,75 USD")]
+    [InlineData("EUR", 300, "es-ES", "€300,00 EUR")]
+    [InlineData("COP", -1200, "es-ES", "-$1.200,00 COP")]
+    [InlineData("COP", 1200, "es-CO", "$1.200,00 COP")]
+    public void FormatWithCode_PutsTheSignFirstWhereverTheCultureWritesIt(string code, double amount, string culture, string expected)
+    {
+        MoneyFormatter.FormatWithCode((decimal)amount, code, new CultureInfo(culture)).Should().Be(expected);
+    }
+
     [Fact]
     public void SameCurrency_TreatsEmptyAsTheBaseAndIgnoresCase()
     {

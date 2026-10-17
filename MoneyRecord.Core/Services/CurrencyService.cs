@@ -13,16 +13,16 @@ namespace MoneyRecord.Services
             new() { Code = "EUR", Symbol = "€", Name = "Euro" },
             new() { Code = "GBP", Symbol = "£", Name = "British Pound" },
             new() { Code = "JPY", Symbol = "¥", Name = "Japanese Yen" },
-            new() { Code = "CAD", Symbol = "CA$", Name = "Canadian Dollar" },
-            new() { Code = "AUD", Symbol = "A$", Name = "Australian Dollar" },
+            new() { Code = "CAD", Symbol = "CA$", PlainSymbol = "$", Name = "Canadian Dollar" },
+            new() { Code = "AUD", Symbol = "A$", PlainSymbol = "$", Name = "Australian Dollar" },
             new() { Code = "CHF", Symbol = "CHF", Name = "Swiss Franc" },
             new() { Code = "CNY", Symbol = "¥", Name = "Chinese Yuan" },
             new() { Code = "INR", Symbol = "₹", Name = "Indian Rupee" },
-            new() { Code = "MXN", Symbol = "MX$", Name = "Mexican Peso" },
+            new() { Code = "MXN", Symbol = "MX$", PlainSymbol = "$", Name = "Mexican Peso" },
             new() { Code = "BRL", Symbol = "R$", Name = "Brazilian Real" },
-            new() { Code = "ARS", Symbol = "AR$", Name = "Argentine Peso" },
-            new() { Code = "COP", Symbol = "COL$", Name = "Colombian Peso" },
-            new() { Code = "CLP", Symbol = "CL$", Name = "Chilean Peso" },
+            new() { Code = "ARS", Symbol = "AR$", PlainSymbol = "$", Name = "Argentine Peso" },
+            new() { Code = "COP", Symbol = "COL$", PlainSymbol = "$", Name = "Colombian Peso" },
+            new() { Code = "CLP", Symbol = "CL$", PlainSymbol = "$", Name = "Chilean Peso" },
             new() { Code = "PEN", Symbol = "S/.", Name = "Peruvian Sol" },
             new() { Code = "KRW", Symbol = "₩", Name = "South Korean Won" },
             new() { Code = "SEK", Symbol = "kr", Name = "Swedish Krona" },
@@ -31,9 +31,9 @@ namespace MoneyRecord.Services
             new() { Code = "PLN", Symbol = "zł", Name = "Polish Zloty" },
             new() { Code = "TRY", Symbol = "₺", Name = "Turkish Lira" },
             new() { Code = "ZAR", Symbol = "R", Name = "South African Rand" },
-            new() { Code = "NZD", Symbol = "NZ$", Name = "New Zealand Dollar" },
-            new() { Code = "SGD", Symbol = "S$", Name = "Singapore Dollar" },
-            new() { Code = "HKD", Symbol = "HK$", Name = "Hong Kong Dollar" },
+            new() { Code = "NZD", Symbol = "NZ$", PlainSymbol = "$", Name = "New Zealand Dollar" },
+            new() { Code = "SGD", Symbol = "S$", PlainSymbol = "$", Name = "Singapore Dollar" },
+            new() { Code = "HKD", Symbol = "HK$", PlainSymbol = "$", Name = "Hong Kong Dollar" },
         };
 
         private static readonly Dictionary<string, Currency> _currencyMap =
@@ -83,6 +83,15 @@ namespace MoneyRecord.Services
                 code = MoneyFormatter.BaseCurrency;
             return _currencyMap.TryGetValue(code, out var currency) ? currency.Symbol : code;
         }
+
+        /// <summary>
+        /// The bare sign of a currency ("$" for COP), for text that also shows the code; the code itself for an unknown
+        /// currency.
+        /// </summary>
+        public static string GetPlainSymbol(string code) =>
+            _currencyMap.TryGetValue(code, out var currency)
+                ? (string.IsNullOrEmpty(currency.PlainSymbol) ? currency.Symbol : currency.PlainSymbol)
+                : code;
 
         /// <summary>
         /// Decimal places shown and accepted for a currency: 0 for JPY, CLP and KRW, otherwise 2.
