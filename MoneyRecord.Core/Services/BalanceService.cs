@@ -4,22 +4,31 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services
 {
-    /// <summary>Balances and totals, summed by SQLite (no transaction rows are loaded).</summary>
+    /// <summary>
+    /// Balances and totals, summed by SQLite (no transaction rows are loaded). A balance counts the entries dated up to
+    /// today: a future-dated one counts from its date on.
+    /// </summary>
     public sealed class BalanceService : IBalanceService
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly ITransferRepository _transferRepository;
+        private readonly TimeProvider _clock;
 
         public BalanceService(
             IAccountRepository accountRepository,
             ITransactionRepository transactionRepository,
-            ITransferRepository transferRepository)
+            ITransferRepository transferRepository,
+            TimeProvider? clock = null)
         {
             _accountRepository = accountRepository;
             _transactionRepository = transactionRepository;
             _transferRepository = transferRepository;
+            _clock = clock ?? TimeProvider.System;
         }
+
+        /// <summary>The start of tomorrow: balances count what is dated before it.</summary>
+        public DateTime CountedBefore => _clock.GetLocalNow().Date.AddDays(1);
 
         // Deliberately reuses the all-accounts calculation: four indexed GROUP BY queries over a handful of accounts
         // cost about the same as per-account ones, and the balance rule then lives in one place.
@@ -37,10 +46,11 @@ namespace MoneyRecord.Services
 
         public async Task<Dictionary<int, decimal>> GetChangesSinceAsync(DateTime since)
         {
-            var incomesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Income, since);
-            var expensesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Expense, since);
-            var outgoingTask = _transferRepository.SumCentsBySourceAsync(since);
-            var incomingTask = _transferRepository.SumCentsByDestinationAsync(since);
+            var before = CountedBefore;
+            var incomesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Income, since, before);
+            var expensesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Expense, since, before);
+            var outgoingTask = _transferRepository.SumCentsBySourceAsync(since, before);
+            var incomingTask = _transferRepository.SumCentsByDestinationAsync(since, before);
             await Task.WhenAll(incomesTask, expensesTask, outgoingTask, incomingTask);
 
             var changes = new Dictionary<int, decimal>();
@@ -59,11 +69,12 @@ namespace MoneyRecord.Services
 
         public async Task<List<AccountBalanceInfo>> GetAllAccountBalancesAsync()
         {
+            var before = CountedBefore;
             var accountsTask = _accountRepository.GetAllAsync();
-            var incomesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Income);
-            var expensesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Expense);
-            var outgoingTask = _transferRepository.SumCentsBySourceAsync();
-            var incomingTask = _transferRepository.SumCentsByDestinationAsync();
+            var incomesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Income, before: before);
+            var expensesTask = _transactionRepository.SumCentsByAccountAsync(TransactionType.Expense, before: before);
+            var outgoingTask = _transferRepository.SumCentsBySourceAsync(before: before);
+            var incomingTask = _transferRepository.SumCentsByDestinationAsync(before: before);
             await Task.WhenAll(accountsTask, incomesTask, expensesTask, outgoingTask, incomingTask);
 
             var incomes = (await incomesTask).ToDictionary(t => t.AccountId);
@@ -86,7 +97,7 @@ namespace MoneyRecord.Services
                     IsDebt = account.IsDebt,
                     CurrentBalance = account.InitialBalance
                         + Amount(income) - Amount(expense) - Amount(transferOut) + Amount(transferIn),
-                    // The latest transaction or transfer; the creation date for an account without any
+                    // The latest counted transaction or transfer; the creation date for an account without any
                     LastActivityDate = new[] { income, expense, transferOut, transferIn }
                         .OfType<AccountTotal>()
                         .Select(t => t.LastDate)

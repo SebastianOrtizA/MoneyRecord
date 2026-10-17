@@ -97,7 +97,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
   IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
   ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
-  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), PayeeNames (normalize, same name ignoring case, suggestions), SplitAllocation (left to assign; a total shared in proportion), RecurrenceCalculator
+  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), PayeeNames (normalize, same name ignoring case, suggestions), SplitAllocation (left to assign; a total shared in proportion), RecurringStart (a new schedule: first entry now, or only the schedule for a future date), RecurrenceCalculator
   (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
   days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
   (currencies in use; transactions in one currency), CurrencyConverter (downloaded rates: nearest earlier day,
@@ -200,6 +200,8 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row; converted
   totals too (`SumByDayAsync`: per type, category, currency and day, each day converted at its rate). Only the reports
   load their period's rows (they chart them anyway)
+- Balances count the entries dated up to today (`IBalanceService.CountedBefore`): a future-dated transaction or transfer is
+  listed (and in its period's totals) but in no balance before its date; what works back from today's balances stops there too
 - Backups: `.zip` with `data.json` (format v4, rows keep their IDs; savings goals included) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization

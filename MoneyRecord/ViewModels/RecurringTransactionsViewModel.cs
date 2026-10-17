@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Views;
 using System.Collections.ObjectModel;
 
 namespace MoneyRecord.ViewModels
@@ -20,6 +21,7 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly IDebtService _debtService;
+        private readonly INavigationService _navigationService;
 
         [ObservableProperty]
         private ObservableCollection<RecurringTransaction> recurringTransactions = [];
@@ -66,6 +68,15 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string editAmount = string.Empty;
 
+        /// <summary>The schedule has created nothing yet: its first date can still move (tomorrow at the earliest).</summary>
+        [ObservableProperty]
+        private bool editCanMoveFirstDate;
+
+        [ObservableProperty]
+        private DateTime editFirstDate;
+
+        public DateTime EditMinimumDate => RecurringStart.EarliestScheduleDate(DateTime.Now);
+
         public List<RecurrenceFrequencyItem> Frequencies { get; } =
         [
             new() { Frequency = RecurrenceFrequency.Daily, Display = AppResources.FrequencyDaily },
@@ -81,9 +92,11 @@ namespace MoneyRecord.ViewModels
             IRecurringTransactionRepository recurringRepo,
             ICategoryRepository categoryRepo,
             IAccountRepository accountRepo,
-            IErrorHandler errorHandler, IDialogService dialogService, IDebtService debtService)
+            IErrorHandler errorHandler, IDialogService dialogService, IDebtService debtService,
+            INavigationService navigationService)
         {
             _debtService = debtService;
+            _navigationService = navigationService;
             _recurringRepo = recurringRepo;
             _categoryRepo = categoryRepo;
             _accountRepo = accountRepo;
@@ -185,7 +198,28 @@ namespace MoneyRecord.ViewModels
             EditUseSpecificDay = item.DayOfMonth.HasValue;
             EditSelectedDayOfMonth = item.DayOfMonth ?? 1;
             EditAmount = item.Amount.ToString("N2");
+            // A debt's schedule is edited on the Debts page
+            EditCanMoveFirstDate = item.DebtId == null && item.LastProcessedDate == null
+                && RecurringStart.IsFuture(item.NextOccurrence, DateTime.Now);
+            EditFirstDate = item.NextOccurrence;
             IsEditMode = true;
+        }
+
+        /// <summary>The + button: a new recurring expense or income, from tomorrow on (the add form in its schedule mode).</summary>
+        [RelayCommand]
+        private async Task AddRecurringAsync()
+        {
+            CancelEdit();
+            var choice = await _dialogService.ActionSheetAsync(AppResources.AddRecurring, AppResources.Cancel,
+                [AppResources.Expense, AppResources.Income]);
+            var type = choice == AppResources.Expense ? TransactionType.Expense
+                : choice == AppResources.Income ? TransactionType.Income
+                : (TransactionType?)null;
+            if (type == null)
+                return;
+
+            await _navigationService.NavigateToAsync(nameof(AddTransactionPage),
+                new Dictionary<string, object> { { "TransactionType", type.Value }, { "Schedule", bool.TrueString } });
         }
 
         [RelayCommand]
@@ -207,6 +241,12 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+            if (EditCanMoveFirstDate && !RecurringStart.IsFuture(EditFirstDate, DateTime.Now))
+            {
+                await _errorHandler.HandleAsync(AppResources.ScheduleDateMustBeFuture);
+                return;
+            }
+
             try
             {
                 var frequency = EditSelectedFrequency.Frequency;
@@ -217,6 +257,12 @@ namespace MoneyRecord.ViewModels
                 EditingItem.Frequency = frequency;
                 EditingItem.DayOfMonth = dayOfMonth;
                 EditingItem.Amount = newAmount;
+                if (EditCanMoveFirstDate)
+                {
+                    // Nothing created yet: the schedule starts on the new date (a monthly one keeps that day)
+                    EditingItem.StartDate = EditFirstDate.Date;
+                    EditingItem.NextOccurrence = EditFirstDate.Date;
+                }
 
                 // Recalculate next occurrence from now
                 var now = DateTime.Now;

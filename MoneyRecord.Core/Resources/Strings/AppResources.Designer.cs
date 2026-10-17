@@ -5840,5 +5840,77 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ShowCentsDescription", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add recurring transaction
+        /// </summary>
+        public static string AddRecurring {
+            get {
+                return ResourceManager.GetString("AddRecurring", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New recurring expense
+        /// </summary>
+        public static string NewRecurringExpense {
+            get {
+                return ResourceManager.GetString("NewRecurringExpense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New recurring income
+        /// </summary>
+        public static string NewRecurringIncome {
+            get {
+                return ResourceManager.GetString("NewRecurringIncome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First date
+        /// </summary>
+        public static string FirstDate {
+            get {
+                return ResourceManager.GetString("FirstDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only the schedule is saved: the first entry is recorded on {0}.
+        /// </summary>
+        public static string ScheduleStartsNote {
+            get {
+                return ResourceManager.GetString("ScheduleStartsNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dated in the future: it counts in balances from {0}.
+        /// </summary>
+        public static string FutureDateNote {
+            get {
+                return ResourceManager.GetString("FutureDateNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a first date from tomorrow on.
+        /// </summary>
+        public static string ScheduleDateMustBeFuture {
+            get {
+                return ResourceManager.GetString("ScheduleDateMustBeFuture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recurring transaction scheduled
+        /// </summary>
+        public static string RecurringScheduled {
+            get {
+                return ResourceManager.GetString("RecurringScheduled", resourceCulture);
+            }
+        }
     }
 }

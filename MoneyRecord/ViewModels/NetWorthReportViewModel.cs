@@ -44,10 +44,12 @@ namespace MoneyRecord.ViewModels
         {
             // One month more at the start: the end of the month before the window is the headline's baseline
             var baselineMonth = firstMonth.AddMonths(-1);
+            // Up to today, like the balances: a future-dated entry is in no month yet
+            var lastCounted = _balanceService.CountedBefore.AddTicks(-1);
             var accountsTask = LoadAccountsAsync();
             var balancesTask = _balanceService.GetAllAccountBalancesAsync();
-            var transactionsTask = _transactionRepository.GetByDateRangeAsync(baselineMonth, DateTime.MaxValue);
-            var transfersTask = _transferRepository.GetByDateRangeAsync(baselineMonth, DateTime.MaxValue);
+            var transactionsTask = _transactionRepository.GetByDateRangeAsync(baselineMonth, lastCounted);
+            var transfersTask = _transferRepository.GetByDateRangeAsync(baselineMonth, lastCounted);
             await Task.WhenAll(accountsTask, balancesTask, transactionsTask, transfersTask);
             cancellationToken.ThrowIfCancellationRequested();
 

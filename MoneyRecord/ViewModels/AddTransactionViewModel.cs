@@ -14,6 +14,7 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(Transaction), "Transaction")]
     [QueryProperty(nameof(TypeName), "Type")]
     [QueryProperty(nameof(AccountIdString), "AccountId")]
+    [QueryProperty(nameof(ScheduleName), "Schedule")]
     public partial class AddTransactionViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -62,7 +63,40 @@ namespace MoneyRecord.ViewModels
         /// <summary>A new entry in this account (the widget's buttons) instead of the last one used.</summary>
         public string? AccountIdString { get; set; }
 
+        /// <summary>"true" from the Recurring page's + button: the form makes a schedule (<see cref="IsScheduleMode"/>).</summary>
+        public string? ScheduleName
+        {
+            get => IsScheduleMode.ToString();
+            set => IsScheduleMode = bool.TryParse(value, out var schedule) && schedule;
+        }
+
+        /// <summary>
+        /// A new schedule from the Recurring page: the date is its first occurrence (tomorrow at the earliest) and only the
+        /// schedule is saved. No split, receipt, tags or own conversion: those belong to a recorded entry.
+        /// </summary>
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanScanReceipt), nameof(ShowsEntryDetails), nameof(MinimumDate), nameof(DateLabel))]
+        private bool isScheduleMode;
+
+        /// <summary>Tags, the own conversion and the receipt: not for a schedule.</summary>
+        public bool ShowsEntryDetails => !IsScheduleMode;
+
+        /// <summary>A schedule starts tomorrow at the earliest; an entry can have any date.</summary>
+        public DateTime MinimumDate => IsScheduleMode ? RecurringStart.EarliestScheduleDate(DateTime.Now) : new DateTime(1900, 1, 1);
+
+        public string DateLabel => IsScheduleMode ? AppResources.FirstDate : AppResources.Date;
+
+        /// <summary>
+        /// Under a future date: only the schedule is saved (recurring), or the entry counts in balances from that date.
+        /// Empty for today or earlier.
+        /// </summary>
+        public string FutureDateNote => !RecurringStart.IsFuture(SelectedDate, DateTime.Now)
+            ? string.Empty
+            : string.Format(IsRecurring && CanMakeRecurring ? AppResources.ScheduleStartsNote : AppResources.FutureDateNote,
+                DateFormatter.Format(SelectedDate, DateStyle.Long));
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FutureDateNote))]
         private DateTime selectedDate = DateTime.Now;
 
         [ObservableProperty]
@@ -98,12 +132,12 @@ namespace MoneyRecord.ViewModels
         /// <summary>The categories a split part can take (the grid's, in its order).</summary>
         private List<Category> SplitCategories => CategoryChoices.Select(c => c.Category).ToList();
 
-        /// <summary>Only an expense can be split across categories.</summary>
-        public bool CanSplit => TransactionType == TransactionType.Expense;
+        /// <summary>Only an expense can be split across categories (recurring transactions aren't split).</summary>
+        public bool CanSplit => TransactionType == TransactionType.Expense && !IsScheduleMode;
 
         /// <summary>The payment is split across categories: the parts replace the category grid.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanMakeRecurring))]
+        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote))]
         [NotifyPropertyChangedFor(nameof(DescriptionPlaceholder))]
         private bool isSplit;
 
@@ -139,7 +173,7 @@ namespace MoneyRecord.ViewModels
         private string title = string.Empty;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanMakeRecurring))]
+        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote))]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -149,6 +183,7 @@ namespace MoneyRecord.ViewModels
         private string budgetWarningText = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(FutureDateNote))]
         private bool isRecurring;
 
         [ObservableProperty]
@@ -212,14 +247,15 @@ namespace MoneyRecord.ViewModels
         private readonly ReceiptDraft _receipt;
 
         /// <summary>A receipt photo can be read on this platform: the scan button beside the amount.</summary>
-        public bool CanScanReceipt => _receiptScanner.IsSupported;
+        public bool CanScanReceipt => _receiptScanner.IsSupported && !IsScheduleMode;
 
         /// <summary>A new photo's text is being read (its total and date fill in the form).</summary>
         [ObservableProperty]
         private bool isReadingReceipt;
 
+        // Monthly is the default frequency (set as a field, which raises no change)
         [ObservableProperty]
-        private bool isMonthlyFrequency;
+        private bool isMonthlyFrequency = true;
 
         partial void OnSelectedFrequencyItemChanged(RecurrenceFrequencyItem? value)
         {
@@ -468,6 +504,15 @@ namespace MoneyRecord.ViewModels
                 SelectedAccount = (int.TryParse(AccountIdString, out var accountId) ? Accounts.FirstOrDefault(a => a.Id == accountId) : null)
                     ?? _entryDefaults.DefaultAccount(TransactionType, Accounts);
                 SelectedCategory = _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+
+                if (IsScheduleMode)
+                {
+                    Title = TransactionType == TransactionType.Income ? AppResources.NewRecurringIncome : AppResources.NewRecurringExpense;
+                    SelectedDate = RecurringStart.EarliestScheduleDate(DateTime.Now);
+                    // The recurrence options sit under "More details"
+                    IsRecurring = true;
+                    IsMoreDetailsOpen = true;
+                }
             }
         }
 
@@ -658,8 +703,19 @@ namespace MoneyRecord.ViewModels
 
             int accountId = SelectedAccount.Id;
 
-            // Validate balance for expense transactions if account doesn't allow negative balance
-            if (TransactionType == TransactionType.Expense && !SelectedAccount.AllowNegativeBalance)
+            // A recurring entry dated in the future saves only its schedule: nothing is recorded (or counted) before then
+            var start = IsRecurring && CanMakeRecurring && SelectedFrequencyItem != null
+                ? RecurringStart.For(SelectedDate, DateTime.Now, SelectedFrequencyItem.Frequency, DayOfMonthChoice)
+                : null;
+            if (IsScheduleMode && start?.RecordsFirstNow != false)
+            {
+                await _errorHandler.HandleAsync(AppResources.ScheduleDateMustBeFuture);
+                return;
+            }
+
+            // Validate balance for expense transactions if account doesn't allow negative balance (nothing leaves it yet
+            // for a schedule)
+            if (TransactionType == TransactionType.Expense && !SelectedAccount.AllowNegativeBalance && start?.RecordsFirstNow != false)
             {
                 var currentBalance = await _balanceService.GetAccountBalanceAsync(accountId);
 
@@ -679,6 +735,17 @@ namespace MoneyRecord.ViewModels
 
             // After every check, so a refused save never leaves a new payee behind
             var payeeId = await _payeeService.ResolveAsync(PayeeText);
+
+            if (start is { RecordsFirstNow: false })
+            {
+                await SaveRecurringAsync(start, amountValue, EntryDescription.Resolve(Description, SelectedCategory!.Name), accountId, payeeId);
+                // A receipt photo belongs to a recorded entry
+                DiscardUnsavedPhoto();
+                _entryDefaults.Remember(TransactionType, accountId, SelectedCategory.Id);
+                await _dialogService.ToastAsync(AppResources.RecurringScheduled);
+                await _navigationService.GoBackAsync();
+                return;
+            }
 
             // A split payment, or an edited one put back into one category, is replaced as a whole
             if (parts != null || _editedParts.Count > 0)
@@ -729,36 +796,8 @@ namespace MoneyRecord.ViewModels
                 _receipt.Commit();
                 _entryDefaults.Remember(TransactionType, accountId, SelectedCategory.Id);
 
-                if (IsRecurring && SelectedFrequencyItem != null)
-                {
-                    var frequency = SelectedFrequencyItem.Frequency;
-                    int? dayOfMonth = (frequency == RecurrenceFrequency.Monthly && UseSpecificDay)
-                        ? SelectedDayOfMonth
-                        : null;
-
-                    var nextOccurrence = RecurrenceCalculator.Next(SelectedDate, frequency, dayOfMonth);
-
-                    var recurring = new RecurringTransaction
-                    {
-                        Amount = amountValue,
-                        Description = savedDescription,
-                        CategoryId = SelectedCategory.Id,
-                        AccountId = accountId,
-                        PayeeId = payeeId,
-                        TransactionType = TransactionType,
-                        Frequency = frequency,
-                        DayOfMonth = dayOfMonth,
-                        StartDate = SelectedDate,
-                        EndDate = HasEndDate ? EndDate : null,
-                        NextOccurrence = nextOccurrence,
-                        LastProcessedDate = SelectedDate,
-                        IsActive = true
-                    };
-
-                    await _recurringTransactionRepository.SaveAsync(recurring);
-                    // A first schedule: offer reminders before its bills come due (once)
-                    await _reminders.OfferAsync();
-                }
+                if (start != null)
+                    await SaveRecurringAsync(start, amountValue, savedDescription, accountId, payeeId);
             }
 
             // An expense may take a budget to 80% or over it
@@ -770,6 +809,33 @@ namespace MoneyRecord.ViewModels
                 _ = _exchangeRates.UpdateIfEnabledAsync();
 
             await _navigationService.GoBackAsync();
+        }
+
+        /// <summary>The chosen day of the month: only for a monthly recurrence with "Specific day" on.</summary>
+        private int? DayOfMonthChoice =>
+            SelectedFrequencyItem?.Frequency == RecurrenceFrequency.Monthly && UseSpecificDay ? SelectedDayOfMonth : null;
+
+        /// <summary>Saves the new recurring transaction's schedule, from <paramref name="start"/>.</summary>
+        private async Task SaveRecurringAsync(RecurringStart start, decimal amount, string description, int accountId, int? payeeId)
+        {
+            await _recurringTransactionRepository.SaveAsync(new RecurringTransaction
+            {
+                Amount = amount,
+                Description = description,
+                CategoryId = SelectedCategory!.Id,
+                AccountId = accountId,
+                PayeeId = payeeId,
+                TransactionType = TransactionType,
+                Frequency = SelectedFrequencyItem!.Frequency,
+                DayOfMonth = DayOfMonthChoice,
+                StartDate = SelectedDate,
+                EndDate = HasEndDate ? EndDate : null,
+                NextOccurrence = start.NextOccurrence,
+                LastProcessedDate = start.LastProcessedDate,
+                IsActive = true
+            });
+            // A first schedule: offer reminders before its bills come due (once)
+            await _reminders.OfferAsync();
         }
 
         /// <summary>
