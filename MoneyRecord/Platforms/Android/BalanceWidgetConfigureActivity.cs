@@ -79,7 +79,8 @@ namespace MoneyRecord.Platforms.Android
         {
             SetResult(Result.Ok, new Intent().PutExtra(AppWidgetManager.ExtraAppwidgetId, widgetId));
             var context = ApplicationContext ?? this;
-            _ = BalanceWidgetProvider.UpdateAsync(context, AppWidgetManager.GetInstance(context)!, [widgetId]);
+            // Off the main thread, like a refresh
+            _ = Task.Run(() => BalanceWidgetProvider.UpdateAsync(context, AppWidgetManager.GetInstance(context)!, [widgetId]));
         }
     }
 }

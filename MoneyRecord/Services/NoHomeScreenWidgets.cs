@@ -5,8 +5,6 @@ namespace MoneyRecord.Services
     /// <summary>Platforms without the home-screen widget (iOS, Mac Catalyst, Windows).</summary>
     public sealed class NoHomeScreenWidgets : IHomeScreenWidgets
     {
-        public void Refresh()
-        {
-        }
+        public Task RefreshAsync() => Task.CompletedTask;
     }
 }

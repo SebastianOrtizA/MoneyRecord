@@ -7,7 +7,7 @@ namespace MoneyRecord.Services
     public sealed class BalanceWidget(IAccountRepository accounts, IBalanceService balances, IPrivacySettings privacy,
         AppLock appLock, IPreferencesService preferences) : IBalanceWidget
     {
-        /// <summary>What a hidden balance shows (as on Home).</summary>
+        /// <summary>What a hidden balance shows: the same text as Home's (`HiddenAmount` in Styles.xaml).</summary>
         public const string HiddenAmount = "••••••";
 
         // The app's routes (see AppShell); Core can't name the page types
@@ -17,7 +17,7 @@ namespace MoneyRecord.Services
         // The account per widget ID
         private const string AccountKey = "Widget.Account.";
 
-        public bool BalancesHidden => privacy.HideBalances || appLock.CanLock;
+        private bool BalancesHidden => privacy.HideBalances || appLock.CanLock;
 
         public Task<List<Account>> GetAccountsAsync() => accounts.GetOwnAsync();
 
@@ -33,11 +33,10 @@ namespace MoneyRecord.Services
                 ?? own.FirstOrDefault(a => a.IsDefault)
                 ?? own.FirstOrDefault();
 
-            var hidden = BalancesHidden;
             var balanceText = string.Empty;
             if (account != null)
             {
-                balanceText = hidden
+                balanceText = BalancesHidden
                     ? HiddenAmount
                     : MoneyFormatter.Format(await balances.GetAccountBalanceAsync(account.Id), account.CurrencyCode);
             }
@@ -45,10 +44,8 @@ namespace MoneyRecord.Services
             var accountQuery = account == null ? string.Empty : $"&AccountId={account.Id}";
             return new WidgetContent
             {
-                AccountId = account?.Id,
                 AccountName = account?.Name ?? string.Empty,
                 BalanceText = balanceText,
-                IsHidden = hidden,
                 ExpenseRoute = $"{AddTransactionRoute}?Type={TransactionType.Expense}{accountQuery}",
                 IncomeRoute = $"{AddTransactionRoute}?Type={TransactionType.Income}{accountQuery}",
                 TransferRoute = account == null ? AddTransferRoute : $"{AddTransferRoute}?SourceAccountId={account.Id}",

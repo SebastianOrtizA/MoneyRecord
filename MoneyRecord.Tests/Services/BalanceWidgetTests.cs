@@ -38,10 +38,8 @@ public sealed class BalanceWidgetTests
 
         var content = await _sut.GetContentAsync(WidgetId);
 
-        content.AccountId.Should().Be(_euros.Id);
         content.AccountName.Should().Be("Euros");
         content.BalanceText.Should().Be(MoneyFormatter.Format(80.5m, "EUR"));
-        content.IsHidden.Should().BeFalse();
         content.ExpenseRoute.Should().Be("AddTransactionPage?Type=Expense&AccountId=2");
         content.IncomeRoute.Should().Be("AddTransactionPage?Type=Income&AccountId=2");
         content.TransferRoute.Should().Be("AddTransferPage?SourceAccountId=2");
@@ -53,8 +51,8 @@ public sealed class BalanceWidgetTests
         _sut.SetAccount(WidgetId, _euros.Id);
         _sut.SetAccount(WidgetId + 1, _cash.Id);
 
-        (await _sut.GetContentAsync(WidgetId)).AccountId.Should().Be(_euros.Id);
-        (await _sut.GetContentAsync(WidgetId + 1)).AccountId.Should().Be(_cash.Id);
+        (await _sut.GetContentAsync(WidgetId)).AccountName.Should().Be("Euros");
+        (await _sut.GetContentAsync(WidgetId + 1)).AccountName.Should().Be("Cash");
     }
 
     [Fact]
@@ -62,8 +60,8 @@ public sealed class BalanceWidgetTests
     {
         _sut.SetAccount(WidgetId, 99);
 
-        (await _sut.GetContentAsync(WidgetId)).AccountId.Should().Be(_cash.Id);
-        (await _sut.GetContentAsync(WidgetId + 1)).AccountId.Should().Be(_cash.Id);
+        (await _sut.GetContentAsync(WidgetId)).AccountName.Should().Be("Cash");
+        (await _sut.GetContentAsync(WidgetId + 1)).AccountName.Should().Be("Cash");
     }
 
     [Fact]
@@ -72,7 +70,7 @@ public sealed class BalanceWidgetTests
         _cash.IsDefault = false;
         _accounts.GetOwnAsync().Returns(_ => new List<Account> { _euros, _cash });
 
-        (await _sut.GetContentAsync(WidgetId)).AccountId.Should().Be(_euros.Id);
+        (await _sut.GetContentAsync(WidgetId)).AccountName.Should().Be("Euros");
     }
 
     [Fact]
@@ -82,7 +80,7 @@ public sealed class BalanceWidgetTests
 
         _sut.Forget(WidgetId);
 
-        (await _sut.GetContentAsync(WidgetId)).AccountId.Should().Be(_cash.Id);
+        (await _sut.GetContentAsync(WidgetId)).AccountName.Should().Be("Cash");
     }
 
     [Fact]
@@ -92,7 +90,6 @@ public sealed class BalanceWidgetTests
 
         var content = await _sut.GetContentAsync(WidgetId);
 
-        content.IsHidden.Should().BeTrue();
         content.BalanceText.Should().Be(BalanceWidget.HiddenAmount);
         await _balances.DidNotReceive().GetAccountBalanceAsync(Arg.Any<int>());
     }
@@ -113,7 +110,7 @@ public sealed class BalanceWidgetTests
         _privacy.LockEnabled = true;
         _deviceLock.IsAvailable.Returns(false);
 
-        (await _sut.GetContentAsync(WidgetId)).IsHidden.Should().BeFalse();
+        (await _sut.GetContentAsync(WidgetId)).BalanceText.Should().Be(MoneyFormatter.Format(1250m, "USD"));
     }
 
     [Fact]
@@ -123,7 +120,6 @@ public sealed class BalanceWidgetTests
 
         var content = await _sut.GetContentAsync(WidgetId);
 
-        content.AccountId.Should().BeNull();
         content.AccountName.Should().BeEmpty();
         content.BalanceText.Should().BeEmpty();
         content.ExpenseRoute.Should().Be("AddTransactionPage?Type=Expense");

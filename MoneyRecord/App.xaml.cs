@@ -74,7 +74,7 @@ namespace MoneyRecord
                     SetContentHidden(window, true);
                 // Whatever changed while the app was open (entries, accounts, Hide balances, the language) shows on the
                 // home screen it is going back to
-                _widgets.Refresh();
+                _ = _widgets.RefreshAsync();
             };
             // Activated, not Resumed: on Android Resumed comes before the activity is in front, where the phone's lock
             // prompt would be cancelled. Every activation asks; only a return from the background can lock
