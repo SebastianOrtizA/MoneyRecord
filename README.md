@@ -149,7 +149,8 @@ and Windows are maintained too. All data stays on the device.
   migrations that rewrite data back up the database first (`moneyrecord.db3.bak-v{n}`).
 
 ### Privacy
-The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md).
+The full privacy policy (English and Spanish) is in [PRIVACY.md](PRIVACY.md), also published at
+https://sebastianortiza.github.io/MoneyRecord/privacy.
 
 - **Offline:** your data never leaves the device unless you export or share a backup yourself. The internet permission
   is there for opt-in crash reports and exchange rates, and ML Kit's diagnostics when you scan a receipt (below).
