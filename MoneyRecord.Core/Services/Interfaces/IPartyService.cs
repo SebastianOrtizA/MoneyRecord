@@ -53,6 +53,15 @@ namespace MoneyRecord.Services.Interfaces
 
         Task DeleteContributionAsync(int contributionId);
 
+        /// <summary>The settle-up payments made so far, newest first.</summary>
+        Task<List<PartyPayment>> GetPaymentsAsync(int partyId);
+
+        /// <summary>Records a payment made between two members (or the pot); it counts in the balances at once.</summary>
+        Task<int> SavePaymentAsync(PartyPayment payment);
+
+        Task DeletePaymentAsync(int paymentId);
+
+        /// <summary>Totals and balances (payments made included); <see cref="PartySummary.Payments"/> are the ones still to make.</summary>
         Task<PartySummary> GetSummaryAsync(int partyId);
     }
 }

@@ -76,6 +76,27 @@ namespace MoneyRecord.Models
         public int Id => Expense.Id;
     }
 
+    /// <summary>A payment still to make (or made): "Ana pays Ben $20.00".</summary>
+    public sealed class PartySettleRow(int fromId, int toId, long amountCents, IReadOnlyDictionary<int, string> names, string currencyCode)
+    {
+        public int FromId => fromId;
+
+        public int ToId => toId;
+
+        public long AmountCents => amountCents;
+
+        public string Text => string.Format(AppResources.PartyPaysLine, Name(fromId), Name(toId),
+            MoneyFormatter.Format(Money.FromCents(amountCents), currencyCode));
+
+        private string Name(int id) => id == PartyLedger.PotId ? AppResources.PartyPot : names.GetValueOrDefault(id, string.Empty);
+    }
+
+    /// <summary>A settle-up payment that was made, in the party page; tapping offers to delete it.</summary>
+    public sealed record PartyPaymentRow(PartyPayment Payment, string Title, string Details)
+    {
+        public int Id => Payment.Id;
+    }
+
     /// <summary>One contribution to a party's pot in the party page.</summary>
     public sealed record PartyContributionRow(PartyContribution Contribution, string Title, string Details, string AmountText)
     {

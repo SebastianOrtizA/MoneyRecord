@@ -1,6 +1,6 @@
 namespace MoneyRecord.Services.Interfaces
 {
-    /// <summary>Hands a file the app wrote to another app (the system share sheet).</summary>
+    /// <summary>Hands a file or text the app wrote to another app (the system share sheet).</summary>
     public interface IFileSharer
     {
         /// <summary>
@@ -10,5 +10,8 @@ namespace MoneyRecord.Services.Interfaces
         string NewCacheFile(string prefix, string extension);
 
         Task ShareAsync(string path, string title);
+
+        /// <summary>Hands plain text to another app (the system share sheet).</summary>
+        Task ShareTextAsync(string text, string title);
     }
 }

@@ -131,4 +131,47 @@ public sealed class PartyLedgerTests
 
         act.Should().Throw<ArgumentException>();
     }
+
+    [Fact]
+    public void Balances_APaymentMade_MovesBothSidesAndStillSumsToZero()
+    {
+        var expenses = new[] { Expense(1, 3000, 1) };
+        var before = PartyLedger.Balances([Ana, Ben], expenses, NoExclusions, []);
+
+        var after = PartyLedger.Balances([Ana, Ben], expenses, NoExclusions, [],
+            [new PartyPayment { FromId = 2, ToId = 1, AmountCents = 1000 }]);
+
+        before.Single(b => b.ParticipantId == 2).BalanceCents.Should().Be(-1500);
+        after.Single(b => b.ParticipantId == 2).BalanceCents.Should().Be(-500);
+        after.Single(b => b.ParticipantId == 1).BalanceCents.Should().Be(500);
+        after.Sum(b => b.BalanceCents).Should().Be(0);
+        PartyLedger.SettleUp(after).Should().Equal(new SettlePayment(2, 1, 500));
+    }
+
+    [Fact]
+    public void Balances_PaymentsThroughThePot_StillSumToZero()
+    {
+        var contributions = new[] { new PartyContribution { ParticipantId = 2, AmountCents = 2000 } };
+        var expenses = new[] { Expense(1, 3000, 1) };
+
+        // The pot (owing Ben his unspent money) pays Ben 500 of it back
+        var after = PartyLedger.Balances([Ana, Ben], expenses, NoExclusions, contributions,
+            [new PartyPayment { FromId = PartyLedger.PotId, ToId = 2, AmountCents = 500 }]);
+
+        after.Sum(b => b.BalanceCents).Should().Be(0);
+        after.Single(b => b.ParticipantId == 2).BalanceCents.Should().Be(2000 - 1500 - 500);
+    }
+
+    [Fact]
+    public void Balances_EveryPaymentOfTheSettleUpMade_LeavesNothingToPay()
+    {
+        var expenses = new[] { Expense(1, 3000, 1), Expense(2, 1000, 2) };
+        var open = PartyLedger.Balances([Ana, Ben, Cam], expenses, NoExclusions, []);
+        var made = PartyLedger.SettleUp(open).Select(p => new PartyPayment { FromId = p.FromId, ToId = p.ToId, AmountCents = p.AmountCents }).ToList();
+
+        var settled = PartyLedger.Balances([Ana, Ben, Cam], expenses, NoExclusions, [], made);
+
+        settled.Should().OnlyContain(b => b.BalanceCents == 0);
+        PartyLedger.SettleUp(settled).Should().BeEmpty();
+    }
 }

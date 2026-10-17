@@ -19,8 +19,9 @@ namespace MoneyRecord.Services
         /// v1: decimals only (.json). v2: also exact cents (.json). v3: a .zip with data.json + receipts/,
         /// receipt paths relative to the zip ("receipts/receipt_x.jpg"). v4: transfers also store the destination amount;
         /// savings goals and their accounts, payees, debts, trips (added before v4 shipped, so an app that can read v4 knows them).
+        /// v5: parties (friends, parties with members, expenses, exclusions, contributions, settle-up payments).
         /// </summary>
-        public const int BackupVersion = 4;
+        public const int BackupVersion = 5;
 
         private const string DataEntryName = "data.json";
         private const string SnapshotPrefix = "pre-restore-";
@@ -91,7 +92,14 @@ namespace MoneyRecord.Services
                 Debts = conn.Table<Debt>().ToList(),
                 Trips = conn.Table<Trip>().ToList(),
                 TripCategories = conn.Table<TripCategory>().ToList(),
-                TripBudgets = conn.Table<TripBudget>().ToList()
+                TripBudgets = conn.Table<TripBudget>().ToList(),
+                Participants = conn.Table<Participant>().ToList(),
+                Parties = conn.Table<PartyEvent>().ToList(),
+                PartyMembers = conn.Table<PartyMember>().ToList(),
+                PartyExpenses = conn.Table<PartyExpense>().ToList(),
+                PartyExpenseExclusions = conn.Table<PartyExpenseExclusion>().ToList(),
+                PartyContributions = conn.Table<PartyContribution>().ToList(),
+                PartyPayments = conn.Table<PartyPayment>().ToList()
             });
             return backup;
         }
@@ -284,6 +292,13 @@ namespace MoneyRecord.Services
             EnsureUniqueIds(backup.Trips, t => t.Id);
             EnsureUniqueIds(backup.TripCategories, c => c.Id);
             EnsureUniqueIds(backup.TripBudgets, b => b.Id);
+            EnsureUniqueIds(backup.Participants, p => p.Id);
+            EnsureUniqueIds(backup.Parties, p => p.Id);
+            EnsureUniqueIds(backup.PartyMembers, m => m.Id);
+            EnsureUniqueIds(backup.PartyExpenses, e => e.Id);
+            EnsureUniqueIds(backup.PartyExpenseExclusions, x => x.Id);
+            EnsureUniqueIds(backup.PartyContributions, c => c.Id);
+            EnsureUniqueIds(backup.PartyPayments, p => p.Id);
             return backup;
         }
 
@@ -315,6 +330,13 @@ namespace MoneyRecord.Services
         /// </summary>
         private static int ReplaceAll(SQLiteConnection conn, BackupData backup)
         {
+            conn.DeleteAll<PartyPayment>();
+            conn.DeleteAll<PartyContribution>();
+            conn.DeleteAll<PartyExpenseExclusion>();
+            conn.DeleteAll<PartyExpense>();
+            conn.DeleteAll<PartyMember>();
+            conn.DeleteAll<PartyEvent>();
+            conn.DeleteAll<Participant>();
             conn.DeleteAll<TripBudget>();
             conn.DeleteAll<TripCategory>();
             conn.DeleteAll<Trip>();
@@ -340,7 +362,14 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.Debts, d => d.Id)
                 + InsertKeepingIds(conn, backup.Trips, t => t.Id)
                 + InsertKeepingIds(conn, backup.TripCategories, c => c.Id)
-                + InsertKeepingIds(conn, backup.TripBudgets, b => b.Id);
+                + InsertKeepingIds(conn, backup.TripBudgets, b => b.Id)
+                + InsertKeepingIds(conn, backup.Participants, p => p.Id)
+                + InsertKeepingIds(conn, backup.Parties, p => p.Id)
+                + InsertKeepingIds(conn, backup.PartyMembers, m => m.Id)
+                + InsertKeepingIds(conn, backup.PartyExpenses, e => e.Id)
+                + InsertKeepingIds(conn, backup.PartyExpenseExclusions, x => x.Id)
+                + InsertKeepingIds(conn, backup.PartyContributions, c => c.Id)
+                + InsertKeepingIds(conn, backup.PartyPayments, p => p.Id);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
 
@@ -489,5 +518,12 @@ namespace MoneyRecord.Services
         public List<Trip> Trips { get; set; } = [];
         public List<TripCategory> TripCategories { get; set; } = [];
         public List<TripBudget> TripBudgets { get; set; } = [];
+        public List<Participant> Participants { get; set; } = [];
+        public List<PartyEvent> Parties { get; set; } = [];
+        public List<PartyMember> PartyMembers { get; set; } = [];
+        public List<PartyExpense> PartyExpenses { get; set; } = [];
+        public List<PartyExpenseExclusion> PartyExpenseExclusions { get; set; } = [];
+        public List<PartyContribution> PartyContributions { get; set; } = [];
+        public List<PartyPayment> PartyPayments { get; set; } = [];
     }
 }

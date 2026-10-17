@@ -88,7 +88,8 @@ namespace MoneyRecord.Services
                 {
                     var used = db.Table<PartyExpense>().Where(e => e.PartyId == party.Id).ToList().Select(e => e.PaidByParticipantId)
                         .Concat(db.Table<PartyContribution>().Where(c => c.PartyId == party.Id).ToList().Select(c => (int?)c.ParticipantId))
-                        .OfType<int>().ToHashSet();
+                        .Concat(db.Table<PartyPayment>().Where(p => p.PartyId == party.Id).ToList().SelectMany(p => new int?[] { p.FromId, p.ToId }))
+                        .OfType<int>().Where(id => id != PartyLedger.PotId).ToHashSet();
                     if (used.Any(id => !members.Contains(id)))
                         throw new PartyProblemException(PartyProblem.MemberInUse, "A person with expenses or contributions can't be taken out.");
 
@@ -120,6 +121,7 @@ namespace MoneyRecord.Services
                 db.Execute("DELETE FROM \"PartyExpenseExclusion\" WHERE ExpenseId IN (SELECT Id FROM \"PartyExpense\" WHERE PartyId = ?)", partyId);
                 db.Execute("DELETE FROM \"PartyExpense\" WHERE PartyId = ?", partyId);
                 db.Execute("DELETE FROM \"PartyContribution\" WHERE PartyId = ?", partyId);
+                db.Execute("DELETE FROM \"PartyPayment\" WHERE PartyId = ?", partyId);
                 db.Execute("DELETE FROM \"PartyMember\" WHERE PartyId = ?", partyId);
                 db.Delete<PartyEvent>(partyId);
             });
@@ -213,12 +215,44 @@ namespace MoneyRecord.Services
             await db.DeleteAsync<PartyContribution>(contributionId);
         }
 
+        public async Task<List<PartyPayment>> GetPaymentsAsync(int partyId)
+        {
+            var db = await dbInitializer.GetConnectionAsync();
+            return (await db.Table<PartyPayment>().Where(p => p.PartyId == partyId).ToListAsync())
+                .OrderByDescending(p => p.Date).ThenByDescending(p => p.Id).ToList();
+        }
+
+        public async Task<int> SavePaymentAsync(PartyPayment payment)
+        {
+            if (payment.AmountCents <= 0)
+                throw new ArgumentException("A payment needs a positive amount.", nameof(payment));
+            if (payment.FromId == payment.ToId)
+                throw new ArgumentException("A payment goes between two different people.", nameof(payment));
+            var ids = (await GetMembersAsync(payment.PartyId)).Select(m => m.Id).Append(PartyLedger.PotId).ToHashSet();
+            if (!ids.Contains(payment.FromId) || !ids.Contains(payment.ToId))
+                throw new ArgumentException("A payment is between members of the party (or its pot).", nameof(payment));
+
+            var db = await dbInitializer.GetConnectionAsync();
+            if (payment.Id == 0)
+                await db.InsertAsync(payment);
+            else
+                await db.UpdateAsync(payment);
+            return payment.Id;
+        }
+
+        public async Task DeletePaymentAsync(int paymentId)
+        {
+            var db = await dbInitializer.GetConnectionAsync();
+            await db.DeleteAsync<PartyPayment>(paymentId);
+        }
+
         public async Task<PartySummary> GetSummaryAsync(int partyId)
         {
             var party = await GetAsync(partyId) ?? throw new InvalidOperationException("The party no longer exists.");
             var members = await GetMembersAsync(partyId);
             var expenses = await GetExpensesAsync(partyId);
-            var balances = PartyLedger.Balances(members, expenses, await GetExclusionsAsync(partyId), await GetContributionsAsync(partyId));
+            var balances = PartyLedger.Balances(members, expenses, await GetExclusionsAsync(partyId),
+                await GetContributionsAsync(partyId), await GetPaymentsAsync(partyId));
             return new PartySummary(party, expenses.Sum(e => e.AmountCents), balances, PartyLedger.SettleUp(balances));
         }
     }

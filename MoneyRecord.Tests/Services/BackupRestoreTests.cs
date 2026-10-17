@@ -53,7 +53,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         zip.Entries.Select(e => e.FullName).Should().BeEquivalentTo("data.json", "receipts/receipt_1.jpg");
         using var reader = new StreamReader(zip.GetEntry("data.json")!.Open());
         var json = await reader.ReadToEndAsync();
-        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 4");
+        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 5");
         json.Should().NotContain(_appData.Replace("\\", "\\\\"), "no device paths in a backup");
     }
 
@@ -100,6 +100,19 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var tripCategory = (await Db.Table<TripCategory>().FirstAsync());
         await Db.InsertAsync(new TripBudget { TripId = trip.Id, TripCategoryId = tripCategory.Id, LimitCents = 10000 });
         await Db.InsertAsync(new Transaction { Description = "Hotel", Amount = 90m, TripId = trip.Id, TripCategoryId = tripCategory.Id, CategoryId = food.Id, AccountId = bank.Id });
+        var ana = new Participant { Name = "Ana" };
+        var ben = new Participant { Name = "Ben" };
+        await Db.InsertAsync(ana);
+        await Db.InsertAsync(ben);
+        var party = new PartyEvent { Name = "Birthday", Budget = 100m, CurrencyCode = "USD" };
+        await Db.InsertAsync(party);
+        await Db.InsertAsync(new PartyMember { PartyId = party.Id, ParticipantId = ana.Id });
+        await Db.InsertAsync(new PartyMember { PartyId = party.Id, ParticipantId = ben.Id });
+        var cake = new PartyExpense { PartyId = party.Id, Description = "Cake", Amount = 30m, PaidByParticipantId = ana.Id };
+        await Db.InsertAsync(cake);
+        await Db.InsertAsync(new PartyExpenseExclusion { ExpenseId = cake.Id, ParticipantId = ben.Id });
+        await Db.InsertAsync(new PartyContribution { PartyId = party.Id, ParticipantId = ben.Id, Amount = 5m });
+        await Db.InsertAsync(new PartyPayment { PartyId = party.Id, FromId = ben.Id, ToId = ana.Id, Amount = 2m });
         var before = await DumpAsync();
         var backupPath = BackupPath("backup.zip");
         await _service.ExportBackupAsync(backupPath);
@@ -108,6 +121,8 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         await Db.DeleteAllAsync<SavingsGoalAccount>();
         await Db.DeleteAllAsync<Payee>();
         await Db.DeleteAllAsync<Debt>();
+        await Db.DeleteAllAsync<PartyPayment>();
+        await Db.DeleteAllAsync<Participant>();
         await Db.DeleteAllAsync<Transaction>();
         await Db.InsertAsync(new Transaction { Description = "Later", Amount = 1m, ReceiptPhotoPath = WriteReceipt("receipt_2.jpg", "photo-2") });
         File.Delete(Path.Combine(Receipts, "receipt_1.jpg"));
@@ -463,6 +478,13 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         rows.AddRange(await Db.Table<Trip>().ToListAsync());
         rows.AddRange(await Db.Table<TripCategory>().ToListAsync());
         rows.AddRange(await Db.Table<TripBudget>().ToListAsync());
+        rows.AddRange(await Db.Table<Participant>().ToListAsync());
+        rows.AddRange(await Db.Table<PartyEvent>().ToListAsync());
+        rows.AddRange(await Db.Table<PartyMember>().ToListAsync());
+        rows.AddRange(await Db.Table<PartyExpense>().ToListAsync());
+        rows.AddRange(await Db.Table<PartyExpenseExclusion>().ToListAsync());
+        rows.AddRange(await Db.Table<PartyContribution>().ToListAsync());
+        rows.AddRange(await Db.Table<PartyPayment>().ToListAsync());
         return rows;
     }
 }

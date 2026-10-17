@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using Xunit;
 
 namespace MoneyRecord.Tests.Models;
@@ -59,5 +60,28 @@ public sealed class PartyCardTests : LanguageTestBase
         pot.IsPot.Should().BeTrue();
         pot.Name.Should().NotBeEmpty();
         pot.Owes.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SettleRow_SaysWhoPaysWhom_ThePotByItsName()
+    {
+        var names = new Dictionary<int, string> { [1] = "Ana", [2] = "Ben" };
+
+        new PartySettleRow(2, 1, 1550, names, "USD").Text.Should().Contain("Ben").And.Contain("Ana").And.Contain("15");
+        new PartySettleRow(PartyLedger.PotId, 1, 100, names, "USD").Text.Should().Contain(AppResources.PartyPot);
+    }
+
+    [Fact]
+    public void ShareText_HasTheSummaryBalancesAndWhoPays()
+    {
+        var names = new Dictionary<int, string> { [1] = "Ana", [2] = "Ben" };
+        var balances = new[] { new PartyBalance(1, "Ana", 3000, 0, 1500), new PartyBalance(2, "Ben", 0, 0, 1500) }
+            .Select(b => new PartyBalanceRow(b, "USD")).ToList();
+
+        var text = PartyShareText.Build(Card(3000, 10000), balances, [new PartySettleRow(2, 1, 1500, names, "USD")]);
+
+        text.Should().Contain("Birthday").And.Contain("Ana").And.Contain("Ben");
+        text.Should().Contain(AppResources.PartySettleUp).And.Contain(new PartySettleRow(2, 1, 1500, names, "USD").Text);
+        PartyShareText.Build(Card(3000, null), balances, []).Should().Contain(AppResources.PartyAllSettled);
     }
 }

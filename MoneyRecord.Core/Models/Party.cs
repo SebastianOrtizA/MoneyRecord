@@ -115,10 +115,39 @@ namespace MoneyRecord.Models
     }
 
     /// <summary>One line of a party's balances: a participant (or the pot, ID 0) with what they paid, handed in, owe and net.</summary>
-    /// <remarks><see cref="BalanceCents"/> = paid + contributed − share; positive = is owed, negative = owes.</remarks>
-    public sealed record PartyBalance(int ParticipantId, string Name, long PaidCents, long ContributedCents, long ShareCents)
+    /// <remarks>
+    /// <see cref="BalanceCents"/> = paid + contributed − share + settled; positive = is owed, negative = owes.
+    /// <see cref="SettledCents"/> = what they paid in settle-up payments less what they received.
+    /// </remarks>
+    public sealed record PartyBalance(int ParticipantId, string Name, long PaidCents, long ContributedCents, long ShareCents,
+        long SettledCents = 0)
     {
-        public long BalanceCents => PaidCents + ContributedCents - ShareCents;
+        public long BalanceCents => PaidCents + ContributedCents - ShareCents + SettledCents;
+    }
+
+    /// <summary>A settle-up payment that was made: <see cref="FromId"/> paid <see cref="ToId"/> (0 = the pot).</summary>
+    public class PartyPayment : IEntity
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [Indexed(Name = "IX_PartyPayment_PartyId")]
+        public int PartyId { get; set; }
+
+        public int FromId { get; set; }
+
+        public int ToId { get; set; }
+
+        [Ignore]
+        public decimal Amount
+        {
+            get => Money.FromCents(AmountCents);
+            set => AmountCents = Money.ToCents(value);
+        }
+
+        public long AmountCents { get; set; }
+
+        public DateTime Date { get; set; } = DateTime.Today;
     }
 
     /// <summary>A payment that settles part of a party: <paramref name="FromId"/> pays <paramref name="ToId"/> (0 = the pot).</summary>

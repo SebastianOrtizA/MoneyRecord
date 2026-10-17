@@ -175,4 +175,57 @@ public sealed class PartyServiceTests : IAsyncLifetime
         (await _sut.GetParticipantsAsync()).Should().HaveCount(3);
         await _sut.DeleteParticipantAsync(_ana.Id);
     }
+
+    [Fact]
+    public async Task Payments_CountInTheBalances_AndShrinkTheSettleUp()
+    {
+        await _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, Amount = 30m, PaidByParticipantId = _ana.Id }, []);
+
+        var paymentId = await _sut.SavePaymentAsync(new PartyPayment { PartyId = _partyId, FromId = _ben.Id, ToId = _ana.Id, Amount = 10m });
+
+        var summary = await _sut.GetSummaryAsync(_partyId);
+        summary.Payments.Should().BeEquivalentTo([new SettlePayment(_cam.Id, _ana.Id, 1000)]);
+        summary.Balances.Sum(b => b.BalanceCents).Should().Be(0);
+
+        await _sut.DeletePaymentAsync(paymentId);
+        (await _sut.GetSummaryAsync(_partyId)).Payments.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public async Task Payments_MustBeBetweenDifferentMembers_WithAPositiveAmount()
+    {
+        var stranger = await _sut.AddParticipantAsync("Zed");
+
+        foreach (var payment in new[]
+        {
+            new PartyPayment { PartyId = _partyId, FromId = _ben.Id, ToId = _ben.Id, Amount = 5m },
+            new PartyPayment { PartyId = _partyId, FromId = _ben.Id, ToId = _ana.Id, AmountCents = 0 },
+            new PartyPayment { PartyId = _partyId, FromId = _ben.Id, ToId = stranger.Id, Amount = 5m }
+        })
+        {
+            var act = () => _sut.SavePaymentAsync(payment);
+            await act.Should().ThrowAsync<ArgumentException>();
+        }
+    }
+
+    [Fact]
+    public async Task AMemberWithPayments_CannotBeTakenOut()
+    {
+        await _sut.SavePaymentAsync(new PartyPayment { PartyId = _partyId, FromId = _cam.Id, ToId = _ana.Id, Amount = 5m });
+
+        var party = (await _sut.GetAsync(_partyId))!;
+        var act = () => _sut.SaveAsync(party, [_ana.Id, _ben.Id]);
+
+        (await act.Should().ThrowAsync<PartyProblemException>()).Which.Problem.Should().Be(PartyProblem.MemberInUse);
+    }
+
+    [Fact]
+    public async Task DeletingTheParty_RemovesItsPayments()
+    {
+        await _sut.SavePaymentAsync(new PartyPayment { PartyId = _partyId, FromId = _cam.Id, ToId = _ana.Id, Amount = 5m });
+
+        await _sut.DeleteAsync(_partyId);
+
+        (await _sut.GetPaymentsAsync(_partyId)).Should().BeEmpty();
+    }
 }

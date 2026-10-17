@@ -2496,4 +2496,31 @@ Monto: {2}</value>
   <data name="PartyShareLine" xml:space="preserve">
     <value>Su parte {0}</value>
   </data>
+  <data name="PartySettleUp" xml:space="preserve">
+    <value>Ajustar cuentas</value>
+  </data>
+  <data name="PartyPaysLine" xml:space="preserve">
+    <value>{0} paga {2} a {1}</value>
+  </data>
+  <data name="PartyAllSettled" xml:space="preserve">
+    <value>Todos están en paz</value>
+  </data>
+  <data name="PartyMarkPaid" xml:space="preserve">
+    <value>Marcar pagado</value>
+  </data>
+  <data name="PartyPaymentsMade" xml:space="preserve">
+    <value>Pagos hechos</value>
+  </data>
+  <data name="SharePartySummary" xml:space="preserve">
+    <value>Compartir resumen</value>
+  </data>
+  <data name="DeletePartyPaymentQuestion" xml:space="preserve">
+    <value>¿Eliminar este pago? Volverá a contar como pendiente.</value>
+  </data>
+  <data name="FailedToSavePartyPayment" xml:space="preserve">
+    <value>No se pudo guardar el pago</value>
+  </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>No se pudo compartir el resumen</value>
+  </data>
 </root>
