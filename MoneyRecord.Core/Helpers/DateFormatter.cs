@@ -32,6 +32,13 @@ namespace MoneyRecord.Helpers
             return date.ToString(GetPattern(style, culture), culture);
         }
 
+        /// <summary>"Oct 1, 2026 – Oct 31, 2026" (<see cref="DateStyle.Medium"/>), or one date when both are the same day.</summary>
+        public static string FormatRange(DateTime start, DateTime end, CultureInfo? culture = null)
+        {
+            var first = Format(start, DateStyle.Medium, culture);
+            return start.Date == end.Date ? first : $"{first} – {Format(end, DateStyle.Medium, culture)}";
+        }
+
         public static string GetPattern(DateStyle style, CultureInfo? culture = null)
         {
             var format = (culture ?? CultureInfo.CurrentCulture).DateTimeFormat;

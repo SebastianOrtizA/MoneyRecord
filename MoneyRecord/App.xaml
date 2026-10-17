@@ -37,6 +37,12 @@
             <converters:BudgetLevelToColorConverter x:Key="BudgetLevelToColorConverter" />
             <converters:DateTextConverter x:Key="DateTextConverter" />
             <converters:TransactionCountConverter x:Key="TransactionCountConverter" />
+
+            <!-- The Reports tabs' Export button (export-variant), in the nav bar's colour -->
+            <FontImageSource x:Key="ExportIcon"
+                             FontFamily="MaterialDesignIcons"
+                             Glyph="&#xF0B93;"
+                             Color="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource SecondaryDarkText}}" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -85,6 +85,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IRecurringTransactionService, RecurringTransactionService>();
             builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
             builder.Services.AddSingleton<IDataExportService, DataExportService>();
+            builder.Services.AddSingleton<IReportExportService, ReportExportService>();
+            builder.Services.AddSingleton<IFileSharer, FileSharer>();
             builder.Services.AddSingleton<IStatementImportService, StatementImportService>();
             builder.Services.AddSingleton<IStatementMappingStore, StatementMappingStore>();
             builder.Services.AddSingleton<IAccountService, AccountService>();
@@ -169,6 +171,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<TransfersViewModel>();
             builder.Services.AddTransient<AddTransferViewModel>();
             builder.Services.AddTransient<CategoryReportViewModel>();
+            builder.Services.AddTransient<ReportExportViewModel>();
             builder.Services.AddTransient<AddEntryViewModel>();
             builder.Services.AddTransient<BudgetViewModel>();
             builder.Services.AddTransient<GoalsViewModel>();

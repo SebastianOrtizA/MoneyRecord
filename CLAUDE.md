@@ -85,6 +85,9 @@ crashes at runtime (XAML is inflated at runtime there).
   `IDeviceLock`, ExchangeRateService (opt-in Frankfurter download of the missing days, at start and in the daily
   job) + ExchangeRateSettings + `IExchangeRateSource` = FrankfurterRateSource, ConversionService (the "Show in" switch
   applied: converted or by-currency totals for Home, reports and budgets) + CurrencyDisplaySettings,
+  ReportExportService (Reports → Export: a `PeriodReport` for a `ReportRequest`, written as a PDF by
+  `Pdf/PeriodReportPdf` (MigraDoc 6.2.4, the last MIT version); `Pdf/PdfFonts` = the embedded Open Sans and `Printable`
+  for what it lacks), `IFileSharer` (cache file + share sheet; MAUI `FileSharer`),
   StatementImportService (CSV import into one account: preview with duplicates + learned categories, import, undo;
   `StatementMapping` = the columns, `ImportRow` = a preview row), StatementMappingStore (the last import's
   columns + account per header layout, in preferences), AutoBackupService (scheduled backups into the picked folder:
@@ -105,7 +108,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
   Spending / Income show, plus the shared month count of the time-series reports and the reports' currency, `ReportCurrency`), SetupViewModel (setup assistant:
-  language + base currency → starting accounts → default categories), AutoBackupViewModel (Settings → Automatic backups), BackupPasswordViewModel (backup
+  language + base currency → starting accounts → default categories), ReportExportViewModel (the Reports tabs' Export button: PDF or period CSV), AutoBackupViewModel (Settings → Automatic backups), BackupPasswordViewModel (backup
   password switch; restore asks for a protected backup's password)
 
 `MoneyRecord/` (app)

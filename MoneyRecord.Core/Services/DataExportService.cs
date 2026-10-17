@@ -30,6 +30,7 @@ namespace MoneyRecord.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly ITransferRepository _transferRepository;
         private readonly IPayeeRepository _payeeRepository;
         private readonly IAppPaths _paths;
 
@@ -38,12 +39,13 @@ namespace MoneyRecord.Services
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, IPayeeRepository payeeRepository, IAppPaths paths)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
             _transactionRepository = transactionRepository;
+            _transferRepository = transferRepository;
             _payeeRepository = payeeRepository;
             _paths = paths;
         }
@@ -397,34 +399,44 @@ namespace MoneyRecord.Services
 
         // ---- CSV ----
 
-        public async Task<string> ExportCsvAsync()
+        public async Task<string> ExportCsvAsync(DateTime? startDate = null, DateTime? endDate = null)
         {
-            var transactions = await _transactionRepository.GetAllAsync();
-            var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id);
+            var (start, end) = (startDate ?? DateTime.MinValue, endDate ?? DateTime.MaxValue);
+            var allTime = startDate == null && endDate == null;
+            var transactions = allTime ? await _transactionRepository.GetAllAsync() : await _transactionRepository.GetByDateRangeAsync(start, end);
+            var transfers = allTime ? await _transferRepository.GetAllAsync() : await _transferRepository.GetByDateRangeAsync(start, end);
+            var categories = (await _categoryRepository.GetAllAsync()).ToDictionary(c => c.Id, c => c.Name);
             var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
             var payees = (await _payeeRepository.GetAllAsync()).ToDictionary(p => p.Id, p => p.Name);
 
+            string AccountName(int? id) => id is int accountId && accounts.TryGetValue(accountId, out var account) ? account.Name : string.Empty;
+            // No account (or an unknown one) = the base currency, like everywhere else
+            string Currency(int? id) => MoneyFormatter.ResolveCurrencyCode(
+                id is int accountId && accounts.TryGetValue(accountId, out var account) ? account.CurrencyCode : null);
+            static string Amount(decimal amount) => Math.Abs(amount).ToString("F2", CultureInfo.InvariantCulture);
+
+            var rows = transactions.Select(t => (t.Date, Fields: new[]
+                {
+                    t.Description, Amount(t.Amount), Currency(t.AccountId), t.Type.ToString(),
+                    categories.GetValueOrDefault(t.CategoryId, string.Empty), AccountName(t.AccountId),
+                    t.PayeeId is int payeeId ? payees.GetValueOrDefault(payeeId, string.Empty) : string.Empty,
+                    string.Empty, string.Empty, string.Empty, t.SplitId ?? string.Empty
+                }))
+                .Concat(transfers.Select(t => (t.Date, Fields: new[]
+                {
+                    t.Description, Amount(t.Amount), Currency(t.SourceAccountId), "Transfer", string.Empty,
+                    AccountName(t.SourceAccountId), string.Empty, AccountName(t.DestinationAccountId),
+                    Amount(t.DestinationAmount), Currency(t.DestinationAccountId), string.Empty
+                })));
+
             var sb = new StringBuilder();
-            sb.AppendLine("Date,Description,Amount,Type,Category,Account,Payee");
-
-            foreach (var t in transactions.OrderByDescending(t => t.Date))
+            sb.AppendLine("Date,Description,Amount,Currency,Type,Category,Account,Payee,ToAccount,ToAmount,ToCurrency,SplitId");
+            foreach (var (date, fields) in rows.OrderByDescending(r => r.Date))
             {
-                var categoryName = categories.TryGetValue(t.CategoryId, out var cat) ? cat.Name : "";
-                var accountName = t.AccountId.HasValue && accounts.TryGetValue(t.AccountId.Value, out var acc) ? acc.Name : "";
-
-                sb.Append(t.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
-                sb.Append(',');
-                sb.Append(CsvEscape(t.Description));
-                sb.Append(',');
-                sb.Append(t.Amount.ToString("F2", CultureInfo.InvariantCulture));
-                sb.Append(',');
-                sb.Append(t.Type);
-                sb.Append(',');
-                sb.Append(CsvEscape(categoryName));
-                sb.Append(',');
-                sb.Append(CsvEscape(accountName));
-                sb.Append(',');
-                sb.AppendLine(CsvEscape(t.PayeeId is int payeeId ? payees.GetValueOrDefault(payeeId, string.Empty) : string.Empty));
+                sb.Append(date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
+                foreach (var field in fields)
+                    sb.Append(',').Append(CsvEscape(field));
+                sb.AppendLine();
             }
 
             return sb.ToString();
@@ -433,7 +445,7 @@ namespace MoneyRecord.Services
         private static string CsvEscape(string value)
         {
             if (string.IsNullOrEmpty(value)) return "";
-            if (value.Contains(',') || value.Contains('"') || value.Contains('\n'))
+            if (value.AsSpan().IndexOfAny(",\"\r\n") >= 0)
                 return $"\"{value.Replace("\"", "\"\"")}\"";
             return value;
         }

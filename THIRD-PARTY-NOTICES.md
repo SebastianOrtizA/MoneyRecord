@@ -20,6 +20,7 @@ package reference is listed and that this file matches the app's list (`ThirdPar
 | Serilog | Apache-2.0 | Serilog Contributors | https://github.com/serilog/serilog | [Apache-2.0.txt](MoneyRecord/Resources/Raw/Licenses/Apache-2.0.txt) |
 | CsvHelper | Apache-2.0 (dual MS-PL / Apache-2.0) | Josh Close | https://github.com/JoshClose/CsvHelper | [Apache-2.0.txt](MoneyRecord/Resources/Raw/Licenses/Apache-2.0.txt) |
 | SharpZipLib | MIT | SharpZipLib Contributors | https://github.com/icsharpcode/SharpZipLib | [SharpZipLib.txt](MoneyRecord/Resources/Raw/Licenses/SharpZipLib.txt) |
+| PDFsharp and MigraDoc | MIT | empira Software GmbH | https://github.com/empira/PDFsharp | [PDFsharp.txt](MoneyRecord/Resources/Raw/Licenses/PDFsharp.txt) |
 | Sentry SDKs (.NET, Android, Native) | MIT | Sentry and individual contributors | https://github.com/getsentry/sentry-dotnet | [Sentry.txt](MoneyRecord/Resources/Raw/Licenses/Sentry.txt) |
 | SQLite | Public domain |  | https://sqlite.org/copyright.html |  |
 | Google ML Kit Text Recognition (with Google Play services client libraries) | ML Kit and Google APIs terms (proprietary) | Google LLC | https://developers.google.com/ml-kit/terms |  |

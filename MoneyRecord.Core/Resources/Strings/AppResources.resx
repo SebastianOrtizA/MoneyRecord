@@ -2048,4 +2048,58 @@ Amount: {2}</value>
   <data name="ReceiptNotRead" xml:space="preserve">
     <value>No total or date found on the receipt</value>
   </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="ExportReportFor" xml:space="preserve">
+    <value>Export {0}</value>
+  </data>
+  <data name="ExportPdfReport" xml:space="preserve">
+    <value>PDF report</value>
+  </data>
+  <data name="ExportPeriodCsv" xml:space="preserve">
+    <value>Transactions (CSV)</value>
+  </data>
+  <data name="ShareReport" xml:space="preserve">
+    <value>Share report</value>
+  </data>
+  <data name="FailedToExportReport" xml:space="preserve">
+    <value>Couldn't create the report</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>Financial report</value>
+  </data>
+  <data name="ReportCreatedOn" xml:space="preserve">
+    <value>Created on {0} with MoneyRecord</value>
+  </data>
+  <data name="ReportPageOf" xml:space="preserve">
+    <value>Page {0} of {1}</value>
+  </data>
+  <data name="ReportSpendingByCategory" xml:space="preserve">
+    <value>Spending by category</value>
+  </data>
+  <data name="ReportIncomeByCategory" xml:space="preserve">
+    <value>Income by category</value>
+  </data>
+  <data name="ReportShare" xml:space="preserve">
+    <value>Share</value>
+  </data>
+  <data name="ReportLimit" xml:space="preserve">
+    <value>Limit</value>
+  </data>
+  <data name="ReportStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ReportBalanceOn" xml:space="preserve">
+    <value>Balance on {0}</value>
+  </data>
+  <data name="ReportConvertedTo" xml:space="preserve">
+    <value>Converted to {0} at each day's exchange rate (≈)</value>
+  </data>
+  <data name="ReportInCurrencyOnly" xml:space="preserve">
+    <value>Only amounts in {0}; other currencies are listed in the summary</value>
+  </data>
+  <data name="ReportTransfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
 </root>

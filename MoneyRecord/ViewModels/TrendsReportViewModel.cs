@@ -29,8 +29,8 @@ namespace MoneyRecord.ViewModels
 
         public TrendsReportViewModel(PeriodViewModel period, ITransactionRepository transactionRepository,
             IBudgetRepository budgetRepository, IAccountRepository accountRepository, IConversionService conversion,
-            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown)
-            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown)
+            IErrorHandler errorHandler, INavigationService navigationService, TransactionsDrillDown drillDown, ReportExportViewModel export)
+            : base(period, accountRepository, conversion, errorHandler, navigationService, drillDown, export)
         {
             _transactionRepository = transactionRepository;
             _budgetRepository = budgetRepository;

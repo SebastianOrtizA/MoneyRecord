@@ -11,6 +11,14 @@
              x:DataType="viewmodels:TrendsReportViewModel"
              Title="{ext:Localize Trends}">
 
+    <!-- Export: a PDF report or the transactions (CSV) of the last N months ("Months" = ReportExportViewModel.Months) -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{ext:Localize ExportReport}"
+                     IconImageSource="{StaticResource ExportIcon}"
+                     Command="{Binding Export.ExportCommand}"
+                     CommandParameter="Months" />
+    </ContentPage.ToolbarItems>
+
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadCommand}">
         <ScrollView>

@@ -31,7 +31,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Db = await _dbInitializer.GetConnectionAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
-        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData));
+        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData));
     }
 
     public async Task DisposeAsync()
@@ -135,9 +135,40 @@ public sealed class BackupRestoreTests : IAsyncLifetime
 
         var lines = (await _service.ExportCsvAsync()).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
-        lines[0].Should().EndWith(",Account,Payee");
-        lines[1].Should().StartWith("2026-10-02,Bread,").And.EndWith(",\"Bakery, Main St\"");
-        lines[2].Should().StartWith("2026-10-01,Tip,").And.EndWith(",");
+        lines[0].Should().Contain(",Account,Payee,");
+        lines[1].Should().StartWith("2026-10-02,Bread,").And.Contain(",\"Bakery, Main St\",");
+        lines[2].Should().StartWith("2026-10-01,Tip,").And.Contain(",Income,,,,");
+    }
+
+    [Fact]
+    public async Task Csv_HasTheCurrency_TransfersWithTheirDestination_AndSplitIds()
+    {
+        var euros = new Account { Name = "Euros", CurrencyCode = "EUR" };
+        var wallet = new Account { Name = "Wallet", CurrencyCode = "USD" };
+        await Db.InsertAsync(euros);
+        await Db.InsertAsync(wallet);
+        var food = (await _categoryRepository.GetAllAsync()).First(c => c.Type == CategoryType.Expense);
+        await Db.InsertAsync(new Transaction { Description = "Dinner", Amount = 20m, Type = TransactionType.Expense, CategoryId = food.Id, AccountId = euros.Id, Date = new DateTime(2026, 10, 3), SplitId = "s1" });
+        await Db.InsertAsync(new Transfer { Description = "", Amount = 100m, DestinationAmount = 92.5m, SourceAccountId = wallet.Id, DestinationAccountId = euros.Id, Date = new DateTime(2026, 10, 4) });
+
+        var lines = (await _service.ExportCsvAsync()).Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        lines[0].Should().Be("Date,Description,Amount,Currency,Type,Category,Account,Payee,ToAccount,ToAmount,ToCurrency,SplitId");
+        lines[1].Should().Be("2026-10-04,,100.00,USD,Transfer,,Wallet,,Euros,92.50,EUR,");
+        lines[2].Should().Be($"2026-10-03,Dinner,20.00,EUR,Expense,{food.Name},Euros,,,,,s1");
+    }
+
+    [Fact]
+    public async Task Csv_ForAPeriod_HasOnlyItsEntries()
+    {
+        await Db.InsertAsync(new Transaction { Description = "September", Amount = 1m, Date = new DateTime(2026, 9, 30, 18, 0, 0) });
+        await Db.InsertAsync(new Transaction { Description = "October", Amount = 1m, Date = new DateTime(2026, 10, 1) });
+        await Db.InsertAsync(new Transfer { Amount = 5m, DestinationAmount = 5m, Date = new DateTime(2026, 10, 2) });
+
+        var lines = (await _service.ExportCsvAsync(new DateTime(2026, 9, 1), new DateTime(2026, 10, 1).AddTicks(-1)))
+            .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+        lines.Skip(1).Should().ContainSingle().Which.Should().StartWith("2026-09-30,September,");
     }
 
     [Fact]

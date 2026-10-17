@@ -120,4 +120,13 @@ public class DateRangeHelperTests
         startDate.Should().Be(DateTime.Parse(start, System.Globalization.CultureInfo.InvariantCulture));
         endDate.Should().Be(DateTime.Parse(nextStart, System.Globalization.CultureInfo.InvariantCulture).AddTicks(-1));
     }
+
+    [Fact]
+    public void GetLastMonths_is_whole_months_ending_with_this_one()
+    {
+        var (start, end) = DateRangeHelper.GetLastMonths(3, new DateTime(2026, 1, 16, 9, 0, 0));
+
+        start.Should().Be(new DateTime(2025, 11, 1));
+        end.Should().Be(new DateTime(2026, 2, 1).AddTicks(-1));
+    }
 }
