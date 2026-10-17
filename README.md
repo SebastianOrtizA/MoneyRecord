@@ -1,5 +1,7 @@
 # MoneyRecord - Personal Finance Tracker
 
+[![Latest release](https://img.shields.io/github/v/release/SebastianOrtizA/MoneyRecord?include_prereleases&label=release&color=512BD4)](https://github.com/SebastianOrtizA/MoneyRecord/releases)
+
 A .NET 10 MAUI app for tracking incomes, expenses and transfers across multiple accounts and currencies, with
 budgets, recurring transactions, reports and full backups. Android is the primary target; iOS, macOS (Mac Catalyst)
 and Windows are maintained too. All data stays on the device.

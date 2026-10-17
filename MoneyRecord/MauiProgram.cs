@@ -96,6 +96,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IDebtService, DebtService>();
             builder.Services.AddSingleton<ISplitService, SplitService>();
             builder.Services.AddSingleton<ITripService, TripService>();
+            builder.Services.AddSingleton<IPartyService, PartyService>();
             builder.Services.AddSingleton<ICategoryService, CategoryService>();
             builder.Services.AddSingleton<IEntryDefaultsService, EntryDefaultsService>();
             builder.Services.AddSingleton<ISetupService, SetupService>();

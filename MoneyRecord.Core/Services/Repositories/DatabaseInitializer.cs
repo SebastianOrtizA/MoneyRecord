@@ -269,6 +269,12 @@ namespace MoneyRecord.Services.Repositories
             await db.CreateTableAsync<Trip>();
             await db.CreateTableAsync<TripCategory>();
             await db.CreateTableAsync<TripBudget>();
+            await db.CreateTableAsync<Participant>();
+            await db.CreateTableAsync<PartyEvent>();
+            await db.CreateTableAsync<PartyMember>();
+            await db.CreateTableAsync<PartyExpense>();
+            await db.CreateTableAsync<PartyExpenseExclusion>();
+            await db.CreateTableAsync<PartyContribution>();
 
             if (isNewDatabase)
                 await migrations.StampLatestAsync(db);
