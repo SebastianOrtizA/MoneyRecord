@@ -210,6 +210,14 @@ CI (`.github/workflows/build-android.yml`) builds a Release `.apk` (GitHub Relea
 Store) on every push. A `v*` tag publishes them as a GitHub Release, and that build fails unless the release keystore
 is configured, so a published APK is never signed with the debug key.
 
+The tag build also uploads the `.aab` to Google Play's **internal testing** track, with the release notes in
+`fastlane/metadata/android/<locale>/changelogs/default.txt` (update them before tagging; 500 characters at most).
+Promoting it to closed testing or production is done in Play Console. The upload uses the
+`PLAY_SERVICE_ACCOUNT_JSON` secret: the JSON key of a Google Cloud service account (Google Play Android Developer API
+enabled) invited in Play Console → Users and permissions with the release-to-testing permissions. Without the secret
+the upload is skipped. While the app has never been published, Play only accepts draft releases: set the repository
+variable `PLAY_RELEASE_STATUS` to `draft` until then.
+
 Versions: the version name comes from the tag (`v1.2.0` → `1.2.0`; a suffix such as `v0.9.0-rc1` is kept and marks
 the GitHub Release as a pre-release) and the version code is the workflow run number, so every CI build can update
 the previous one. Untagged builds show the csproj's `ApplicationDisplayVersion` (for example `1.0.0`) in About, however
