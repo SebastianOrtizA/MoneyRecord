@@ -29,6 +29,9 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(TripsPage), typeof(TripsPage));
             Routing.RegisterRoute(nameof(TripPage), typeof(TripPage));
             Routing.RegisterRoute(nameof(TripCategoriesPage), typeof(TripCategoriesPage));
+            Routing.RegisterRoute(nameof(PartiesPage), typeof(PartiesPage));
+            Routing.RegisterRoute(nameof(PartyPage), typeof(PartyPage));
+            Routing.RegisterRoute(nameof(FriendsPage), typeof(FriendsPage));
             Routing.RegisterRoute(nameof(PayeesPage), typeof(PayeesPage));
             Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
             Routing.RegisterRoute(nameof(SetupPage), typeof(SetupPage));

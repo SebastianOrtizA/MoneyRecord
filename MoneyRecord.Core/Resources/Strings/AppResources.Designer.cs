@@ -6452,5 +6452,554 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("PleaseChooseCategoryForEach", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parties.
+        /// </summary>
+        public static string PartiesTitle {
+            get {
+                return ResourceManager.GetString("PartiesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends.
+        /// </summary>
+        public static string PartyFriends {
+            get {
+                return ResourceManager.GetString("PartyFriends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No parties yet.
+        /// </summary>
+        public static string NoPartiesYet {
+            get {
+                return ResourceManager.GetString("NoPartiesYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a party to split the costs of a shared event.
+        /// </summary>
+        public static string AddPartyToStart {
+            get {
+                return ResourceManager.GetString("AddPartyToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New party.
+        /// </summary>
+        public static string NewParty {
+            get {
+                return ResourceManager.GetString("NewParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit party.
+        /// </summary>
+        public static string EditParty {
+            get {
+                return ResourceManager.GetString("EditParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PartyName {
+            get {
+                return ResourceManager.GetString("PartyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Ana&apos;s birthday.
+        /// </summary>
+        public static string PartyNamePlaceholder {
+            get {
+                return ResourceManager.GetString("PartyNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Budget (optional).
+        /// </summary>
+        public static string PartyBudgetOptional {
+            get {
+                return ResourceManager.GetString("PartyBudgetOptional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who takes part.
+        /// </summary>
+        public static string PartyMembers {
+            get {
+                return ResourceManager.GetString("PartyMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add friends first, then pick who takes part.
+        /// </summary>
+        public static string PartyNoFriendsYet {
+            get {
+                return ResourceManager.GetString("PartyNoFriendsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a name for the party.
+        /// </summary>
+        public static string PleaseEnterPartyName {
+            get {
+                return ResourceManager.GetString("PleaseEnterPartyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick at least one person.
+        /// </summary>
+        public static string PartyNeedsMembers {
+            get {
+                return ResourceManager.GetString("PartyNeedsMembers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A person with expenses or contributions can&apos;t be taken out.
+        /// </summary>
+        public static string PartyMemberInUse {
+            get {
+                return ResourceManager.GetString("PartyMemberInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taking this person out would leave an expense with nobody to share it.
+        /// </summary>
+        public static string PartyNobodyShares {
+            get {
+                return ResourceManager.GetString("PartyNobodyShares", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load the parties.
+        /// </summary>
+        public static string FailedToLoadParties {
+            get {
+                return ResourceManager.GetString("FailedToLoadParties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the party.
+        /// </summary>
+        public static string FailedToSaveParty {
+            get {
+                return ResourceManager.GetString("FailedToSaveParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete the party.
+        /// </summary>
+        public static string FailedToDeleteParty {
+            get {
+                return ResourceManager.GetString("FailedToDeleteParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Friends.
+        /// </summary>
+        public static string FriendsTitle {
+            get {
+                return ResourceManager.GetString("FriendsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No friends yet.
+        /// </summary>
+        public static string NoFriendsYet {
+            get {
+                return ResourceManager.GetString("NoFriendsYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add the people you share expenses with.
+        /// </summary>
+        public static string AddFriendToStart {
+            get {
+                return ResourceManager.GetString("AddFriendToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string FriendNamePlaceholder {
+            get {
+                return ResourceManager.GetString("FriendNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string AddFriend {
+            get {
+                return ResourceManager.GetString("AddFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string RenameFriend {
+            get {
+                return ResourceManager.GetString("RenameFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename friend.
+        /// </summary>
+        public static string RenameFriendTitle {
+            get {
+                return ResourceManager.GetString("RenameFriendTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete {0}?.
+        /// </summary>
+        public static string DeleteFriendQuestion {
+            get {
+                return ResourceManager.GetString("DeleteFriendQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This friend is in a party and can&apos;t be deleted.
+        /// </summary>
+        public static string FriendInParty {
+            get {
+                return ResourceManager.GetString("FriendInParty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A friend with this name already exists.
+        /// </summary>
+        public static string FriendNameTaken {
+            get {
+                return ResourceManager.GetString("FriendNameTaken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load the friends.
+        /// </summary>
+        public static string FailedToLoadFriends {
+            get {
+                return ResourceManager.GetString("FailedToLoadFriends", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the friend.
+        /// </summary>
+        public static string FailedToSaveFriend {
+            get {
+                return ResourceManager.GetString("FailedToSaveFriend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} left.
+        /// </summary>
+        public static string PartyLeft {
+            get {
+                return ResourceManager.GetString("PartyLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} over.
+        /// </summary>
+        public static string PartyOver {
+            get {
+                return ResourceManager.GetString("PartyOver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Balances.
+        /// </summary>
+        public static string PartyBalances {
+            get {
+                return ResourceManager.GetString("PartyBalances", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expenses.
+        /// </summary>
+        public static string PartyExpenses {
+            get {
+                return ResourceManager.GetString("PartyExpenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Contributions.
+        /// </summary>
+        public static string PartyContributions {
+            get {
+                return ResourceManager.GetString("PartyContributions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pot.
+        /// </summary>
+        public static string PartyPot {
+            get {
+                return ResourceManager.GetString("PartyPot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Money handed in up front, shared by everybody.
+        /// </summary>
+        public static string PartyPotHint {
+            get {
+                return ResourceManager.GetString("PartyPotHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add expense.
+        /// </summary>
+        public static string AddPartyExpense {
+            get {
+                return ResourceManager.GetString("AddPartyExpense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit expense.
+        /// </summary>
+        public static string EditPartyExpense {
+            get {
+                return ResourceManager.GetString("EditPartyExpense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add contribution.
+        /// </summary>
+        public static string AddPartyContribution {
+            get {
+                return ResourceManager.GetString("AddPartyContribution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit contribution.
+        /// </summary>
+        public static string EditPartyContribution {
+            get {
+                return ResourceManager.GetString("EditPartyContribution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid by.
+        /// </summary>
+        public static string PartyPaidBy {
+            get {
+                return ResourceManager.GetString("PartyPaidBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pot.
+        /// </summary>
+        public static string PartyPaidByPot {
+            get {
+                return ResourceManager.GetString("PartyPaidByPot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid by {0}.
+        /// </summary>
+        public static string PartyPaidByLine {
+            get {
+                return ResourceManager.GetString("PartyPaidByLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who.
+        /// </summary>
+        public static string PartyWho {
+            get {
+                return ResourceManager.GetString("PartyWho", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared between.
+        /// </summary>
+        public static string PartySharedBetween {
+            get {
+                return ResourceManager.GetString("PartySharedBetween", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared by {0} of {1}.
+        /// </summary>
+        public static string PartySharedLine {
+            get {
+                return ResourceManager.GetString("PartySharedLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to is owed {0}.
+        /// </summary>
+        public static string PartyOwed {
+            get {
+                return ResourceManager.GetString("PartyOwed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to owes {0}.
+        /// </summary>
+        public static string PartyOwes {
+            get {
+                return ResourceManager.GetString("PartyOwes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to even.
+        /// </summary>
+        public static string PartyEven {
+            get {
+                return ResourceManager.GetString("PartyEven", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No expenses yet.
+        /// </summary>
+        public static string NoPartyExpenses {
+            get {
+                return ResourceManager.GetString("NoPartyExpenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No contributions yet.
+        /// </summary>
+        public static string NoPartyContributions {
+            get {
+                return ResourceManager.GetString("NoPartyContributions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this party and everything in it?.
+        /// </summary>
+        public static string DeletePartyQuestion {
+            get {
+                return ResourceManager.GetString("DeletePartyQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this expense?.
+        /// </summary>
+        public static string DeletePartyExpenseQuestion {
+            get {
+                return ResourceManager.GetString("DeletePartyExpenseQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete this contribution?.
+        /// </summary>
+        public static string DeletePartyContributionQuestion {
+            get {
+                return ResourceManager.GetString("DeletePartyContributionQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Somebody has to share the expense.
+        /// </summary>
+        public static string PartyNeedsSharer {
+            get {
+                return ResourceManager.GetString("PartyNeedsSharer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the expense.
+        /// </summary>
+        public static string FailedToSavePartyExpense {
+            get {
+                return ResourceManager.GetString("FailedToSavePartyExpense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the contribution.
+        /// </summary>
+        public static string FailedToSavePartyContribution {
+            get {
+                return ResourceManager.GetString("FailedToSavePartyContribution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Paid {0}.
+        /// </summary>
+        public static string PartyPaidLine {
+            get {
+                return ResourceManager.GetString("PartyPaidLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Handed in {0}.
+        /// </summary>
+        public static string PartyHandedInLine {
+            get {
+                return ResourceManager.GetString("PartyHandedInLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share {0}.
+        /// </summary>
+        public static string PartyShareLine {
+            get {
+                return ResourceManager.GetString("PartyShareLine", resourceCulture);
+            }
+        }
     }
 }

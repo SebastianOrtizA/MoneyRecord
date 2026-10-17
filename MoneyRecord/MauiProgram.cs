@@ -182,6 +182,9 @@ namespace MoneyRecord
             builder.Services.AddTransient<TripsViewModel>();
             builder.Services.AddTransient<TripViewModel>();
             builder.Services.AddTransient<TripCategoriesViewModel>();
+            builder.Services.AddTransient<PartiesViewModel>();
+            builder.Services.AddTransient<PartyViewModel>();
+            builder.Services.AddTransient<FriendsViewModel>();
             builder.Services.AddTransient<PayeesViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
@@ -210,6 +213,9 @@ namespace MoneyRecord
             builder.Services.AddTransient<TripsPage>();
             builder.Services.AddTransient<TripPage>();
             builder.Services.AddTransient<TripCategoriesPage>();
+            builder.Services.AddTransient<PartiesPage>();
+            builder.Services.AddTransient<PartyPage>();
+            builder.Services.AddTransient<FriendsPage>();
             builder.Services.AddTransient<PayeesPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();

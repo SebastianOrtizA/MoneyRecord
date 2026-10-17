@@ -2313,4 +2313,187 @@ Monto: {2}</value>
   <data name="PleaseChooseCategoryForEach" xml:space="preserve">
     <value>Elige una categoría para cada categoría de viaje</value>
   </data>
+  <data name="PartiesTitle" xml:space="preserve">
+    <value>Fiestas</value>
+  </data>
+  <data name="PartyFriends" xml:space="preserve">
+    <value>Amigos</value>
+  </data>
+  <data name="NoPartiesYet" xml:space="preserve">
+    <value>Aún no hay fiestas</value>
+  </data>
+  <data name="AddPartyToStart" xml:space="preserve">
+    <value>Añade una fiesta para repartir los gastos de un evento compartido</value>
+  </data>
+  <data name="NewParty" xml:space="preserve">
+    <value>Nueva fiesta</value>
+  </data>
+  <data name="EditParty" xml:space="preserve">
+    <value>Editar fiesta</value>
+  </data>
+  <data name="PartyName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="PartyNamePlaceholder" xml:space="preserve">
+    <value>p. ej. Cumpleaños de Ana</value>
+  </data>
+  <data name="PartyBudgetOptional" xml:space="preserve">
+    <value>Presupuesto (opcional)</value>
+  </data>
+  <data name="PartyMembers" xml:space="preserve">
+    <value>Quién participa</value>
+  </data>
+  <data name="PartyNoFriendsYet" xml:space="preserve">
+    <value>Añade primero amigos y elige quién participa</value>
+  </data>
+  <data name="PleaseEnterPartyName" xml:space="preserve">
+    <value>Escribe un nombre para la fiesta</value>
+  </data>
+  <data name="PartyNeedsMembers" xml:space="preserve">
+    <value>Elige al menos una persona</value>
+  </data>
+  <data name="PartyMemberInUse" xml:space="preserve">
+    <value>No se puede quitar a una persona con gastos o aportaciones</value>
+  </data>
+  <data name="PartyNobodyShares" xml:space="preserve">
+    <value>Quitar a esta persona dejaría un gasto sin nadie con quien repartirlo</value>
+  </data>
+  <data name="FailedToLoadParties" xml:space="preserve">
+    <value>No se pudieron cargar las fiestas</value>
+  </data>
+  <data name="FailedToSaveParty" xml:space="preserve">
+    <value>No se pudo guardar la fiesta</value>
+  </data>
+  <data name="FailedToDeleteParty" xml:space="preserve">
+    <value>No se pudo eliminar la fiesta</value>
+  </data>
+  <data name="FriendsTitle" xml:space="preserve">
+    <value>Amigos</value>
+  </data>
+  <data name="NoFriendsYet" xml:space="preserve">
+    <value>Aún no hay amigos</value>
+  </data>
+  <data name="AddFriendToStart" xml:space="preserve">
+    <value>Añade a las personas con las que compartes gastos</value>
+  </data>
+  <data name="FriendNamePlaceholder" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="AddFriend" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="RenameFriend" xml:space="preserve">
+    <value>Renombrar</value>
+  </data>
+  <data name="RenameFriendTitle" xml:space="preserve">
+    <value>Renombrar amigo</value>
+  </data>
+  <data name="DeleteFriendQuestion" xml:space="preserve">
+    <value>¿Eliminar a {0}?</value>
+  </data>
+  <data name="FriendInParty" xml:space="preserve">
+    <value>Este amigo está en una fiesta y no se puede eliminar</value>
+  </data>
+  <data name="FriendNameTaken" xml:space="preserve">
+    <value>Ya existe un amigo con este nombre</value>
+  </data>
+  <data name="FailedToLoadFriends" xml:space="preserve">
+    <value>No se pudieron cargar los amigos</value>
+  </data>
+  <data name="FailedToSaveFriend" xml:space="preserve">
+    <value>No se pudo guardar el amigo</value>
+  </data>
+  <data name="PartyLeft" xml:space="preserve">
+    <value>Quedan {0}</value>
+  </data>
+  <data name="PartyOver" xml:space="preserve">
+    <value>Te pasas {0}</value>
+  </data>
+  <data name="PartyBalances" xml:space="preserve">
+    <value>Saldos</value>
+  </data>
+  <data name="PartyExpenses" xml:space="preserve">
+    <value>Gastos</value>
+  </data>
+  <data name="PartyContributions" xml:space="preserve">
+    <value>Aportaciones</value>
+  </data>
+  <data name="PartyPot" xml:space="preserve">
+    <value>Bote</value>
+  </data>
+  <data name="PartyPotHint" xml:space="preserve">
+    <value>Dinero aportado por adelantado, de todos</value>
+  </data>
+  <data name="AddPartyExpense" xml:space="preserve">
+    <value>Añadir gasto</value>
+  </data>
+  <data name="EditPartyExpense" xml:space="preserve">
+    <value>Editar gasto</value>
+  </data>
+  <data name="AddPartyContribution" xml:space="preserve">
+    <value>Añadir aportación</value>
+  </data>
+  <data name="EditPartyContribution" xml:space="preserve">
+    <value>Editar aportación</value>
+  </data>
+  <data name="PartyPaidBy" xml:space="preserve">
+    <value>Pagado por</value>
+  </data>
+  <data name="PartyPaidByPot" xml:space="preserve">
+    <value>El bote</value>
+  </data>
+  <data name="PartyPaidByLine" xml:space="preserve">
+    <value>Pagado por {0}</value>
+  </data>
+  <data name="PartyWho" xml:space="preserve">
+    <value>Quién</value>
+  </data>
+  <data name="PartySharedBetween" xml:space="preserve">
+    <value>Repartido entre</value>
+  </data>
+  <data name="PartySharedLine" xml:space="preserve">
+    <value>Repartido entre {0} de {1}</value>
+  </data>
+  <data name="PartyOwed" xml:space="preserve">
+    <value>le deben {0}</value>
+  </data>
+  <data name="PartyOwes" xml:space="preserve">
+    <value>debe {0}</value>
+  </data>
+  <data name="PartyEven" xml:space="preserve">
+    <value>en paz</value>
+  </data>
+  <data name="NoPartyExpenses" xml:space="preserve">
+    <value>Aún no hay gastos</value>
+  </data>
+  <data name="NoPartyContributions" xml:space="preserve">
+    <value>Aún no hay aportaciones</value>
+  </data>
+  <data name="DeletePartyQuestion" xml:space="preserve">
+    <value>¿Eliminar esta fiesta y todo lo que contiene?</value>
+  </data>
+  <data name="DeletePartyExpenseQuestion" xml:space="preserve">
+    <value>¿Eliminar este gasto?</value>
+  </data>
+  <data name="DeletePartyContributionQuestion" xml:space="preserve">
+    <value>¿Eliminar esta aportación?</value>
+  </data>
+  <data name="PartyNeedsSharer" xml:space="preserve">
+    <value>Alguien tiene que compartir el gasto</value>
+  </data>
+  <data name="FailedToSavePartyExpense" xml:space="preserve">
+    <value>No se pudo guardar el gasto</value>
+  </data>
+  <data name="FailedToSavePartyContribution" xml:space="preserve">
+    <value>No se pudo guardar la aportación</value>
+  </data>
+  <data name="PartyPaidLine" xml:space="preserve">
+    <value>Pagó {0}</value>
+  </data>
+  <data name="PartyHandedInLine" xml:space="preserve">
+    <value>Aportó {0}</value>
+  </data>
+  <data name="PartyShareLine" xml:space="preserve">
+    <value>Su parte {0}</value>
+  </data>
 </root>

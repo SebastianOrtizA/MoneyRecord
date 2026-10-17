@@ -114,8 +114,8 @@ crashes at runtime (XAML is inflated at runtime there).
   password switch; restore asks for a protected backup's password)
 
 `MoneyRecord/` (app)
-- `ViewModels/` — 16 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 18 XAML pages with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
+- `ViewModels/` — 19 ViewModels using [ObservableProperty] and [RelayCommand] source generators
+- `Views/` — 21 XAML pages with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab. `AboutPage` / `LicensePage` show the licences (full texts in
@@ -172,7 +172,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   `//TransactionsPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//CashFlowReportPage`,
   `//NetWorthReportPage`, `//BudgetPage`, `//MorePage`
 - Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
-  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `PayeesPage`, `TripsPage`, `TripPage`, `TripCategoriesPage`, `TransfersPage`, `SettingsPage`
+  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `PayeesPage`, `TripsPage`, `TripPage`, `TripCategoriesPage`, `PartiesPage` (cards + new/edit sheet), `PartyPage`, `FriendsPage`, `TransfersPage`, `SettingsPage`
 - Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See
   all" → `//TransactionsPage`, Upcoming "See all" → `RecurringTransactionsPage?Show=Upcoming`, budgets "See all" →
   `//BudgetPage`, goals card → `GoalsPage`

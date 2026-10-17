@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.FriendsPage"
+             x:DataType="viewmodels:FriendsViewModel"
+             Title="{ext:Localize FriendsTitle}">
+
+    <Grid RowDefinitions="Auto,*">
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="16,8">
+            <Entry Text="{Binding NewName}" Placeholder="{ext:Localize FriendNamePlaceholder}" MaxLength="40" FontSize="16"
+                   ReturnCommand="{Binding AddCommand}" />
+            <Button Grid.Column="1" Text="{ext:Localize AddFriend}" Command="{Binding AddCommand}"
+                    HeightRequest="40" CornerRadius="20" Padding="16,0" VerticalOptions="Center"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+        </Grid>
+
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
+            <!-- One row per friend (a tap offers rename / delete), footer = empty state -->
+            <CollectionView ItemsSource="{Binding Friends}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Participant">
+                        <Border Style="{StaticResource Card}" Margin="16,4" Padding="14,12">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:FriendsViewModel}}, Path=OpenCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" StrokeShape="Ellipse"
+                                        VerticalOptions="Center"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                    <Label Text="&#xF0004;" FontFamily="MaterialDesignIcons" FontSize="20"
+                                           HorizontalOptions="Center" VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                </Border>
+                                <Label Grid.Column="1" Text="{Binding Name}" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"
+                                       LineBreakMode="TailTruncation" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.Footer>
+                    <VerticalStackLayout Spacing="12" Padding="32,48" IsVisible="{Binding IsEmpty}">
+                        <Label Text="&#xF0849;" FontFamily="MaterialDesignIcons" FontSize="64" HorizontalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        <Label Text="{ext:Localize NoFriendsYet}" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                        <Label Text="{ext:Localize AddFriendToStart}" FontSize="14" HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    </VerticalStackLayout>
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+
+</ContentPage>

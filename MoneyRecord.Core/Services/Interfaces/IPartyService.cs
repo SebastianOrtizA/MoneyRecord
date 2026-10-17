@@ -4,7 +4,7 @@ namespace MoneyRecord.Services.Interfaces
 {
     /// <summary>
     /// Parties: shared events with their members, expenses and contributions, kept apart from the ledger. Money is checked
-    /// here; anything that would leave a party inconsistent throws <see cref="InvalidOperationException"/> or
+    /// here; anything that would leave a party inconsistent throws <see cref="PartyProblemException"/> (an <see cref="InvalidOperationException"/>) or
     /// <see cref="ArgumentException"/>.
     /// </summary>
     public interface IPartyService
@@ -15,10 +15,10 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>The friend with this name (<see cref="Helpers.PayeeNames.Same"/>), created when there is none.</summary>
         Task<Participant> AddParticipantAsync(string name);
 
-        /// <exception cref="InvalidOperationException">Another friend already has this name.</exception>
+        /// <exception cref="PartyProblemException">Another friend already has this name.</exception>
         Task RenameParticipantAsync(int participantId, string name);
 
-        /// <exception cref="InvalidOperationException">The friend is in a party.</exception>
+        /// <exception cref="PartyProblemException">The friend is in a party.</exception>
         Task DeleteParticipantAsync(int participantId);
 
         /// <summary>Every party, the latest first.</summary>
@@ -27,7 +27,7 @@ namespace MoneyRecord.Services.Interfaces
         Task<PartyEvent?> GetAsync(int partyId);
 
         /// <summary>Creates (Id 0) or updates a party with its members (at least one).</summary>
-        /// <exception cref="InvalidOperationException">A member with expenses or contributions is taken out.</exception>
+        /// <exception cref="PartyProblemException">A member with expenses or contributions is taken out.</exception>
         Task<int> SaveAsync(PartyEvent party, IReadOnlyCollection<int> memberIds);
 
         /// <summary>Deletes the party with its members, expenses and contributions.</summary>
