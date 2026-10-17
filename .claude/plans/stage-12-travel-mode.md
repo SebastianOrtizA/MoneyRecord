@@ -1,6 +1,6 @@
 # Stage 12: Travel Mode
 
-**Status**: In progress (12.1 in review; 12.2 next)
+**Status**: Done (12.1, 12.2; 12.2 in review)
 **Depends on**: Stages 6–11
 **Source**: User request, 2026-10-14; designed with the owner 2026-10-17
 
@@ -23,15 +23,15 @@ ends, its expenses move into the normal ledger under real categories, so reports
 - Add form: while a trip is active a new expense goes to it by default (banner + trip category grid); "Not part of the
   trip" brings back the normal categories. Income, transfers, splits and schedules stay normal.
 
-## 12.1 (done in PR)
+## 12.1 (merged, PR #61)
 - Core: `Trip`, `TripCategory`, `TripBudget`, `Transaction.TripId/TripCategoryId`, `Category.IsTravel`, `TripService`
   (start, summary, end, reopen, delete, trip categories), backup (still v4) + CSV columns `Trip,TripCategory`, tests.
 - App: More → Trips (`TripsPage` list + start/edit sheet, `TripPage` summary / per-category / expenses / edit / delete,
   `TripCategoriesPage`), add-form trip mode, a trip line in the transaction details, Travel never offered in pickers
   (add form, CSV import) and not deletable.
 
-## 12.2 (next)
-- End trip sheet + Reopen on `TripPage` (the service already does both), Home card for the active trip, tests.
+## 12.2
+- `TripPage`: End trip sheet (one row per trip category used, prefilled from the last end, "same category for all"), Reopen for an ended trip; Home card for the active trip (name, spent of budget; a tap opens it).
 
 ## Verify
 Core tests (TripServiceTests, backup round-trip) + a `/run-moneyrecord` flow (en + es): start a trip, add expenses, check

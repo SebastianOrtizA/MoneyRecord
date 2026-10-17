@@ -6380,5 +6380,77 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("TravelCategoryCannotDelete", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End trip.
+        /// </summary>
+        public static string EndTrip {
+            get {
+                return ResourceManager.GetString("EndTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose where each trip category's expenses go in your normal categories..
+        /// </summary>
+        public static string EndTripHint {
+            get {
+                return ResourceManager.GetString("EndTripHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same category for all.
+        /// </summary>
+        public static string SameCategoryForAll {
+            get {
+                return ResourceManager.GetString("SameCategoryForAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reopen trip.
+        /// </summary>
+        public static string ReopenTrip {
+            get {
+                return ResourceManager.GetString("ReopenTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reopen "{0}"? Its expenses move back to Travel..
+        /// </summary>
+        public static string ReopenTripConfirmation {
+            get {
+                return ResourceManager.GetString("ReopenTripConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trip ended.
+        /// </summary>
+        public static string TripEndedToast {
+            get {
+                return ResourceManager.GetString("TripEndedToast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update the trip.
+        /// </summary>
+        public static string FailedToEndTrip {
+            get {
+                return ResourceManager.GetString("FailedToEndTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a category for each trip category.
+        /// </summary>
+        public static string PleaseChooseCategoryForEach {
+            get {
+                return ResourceManager.GetString("PleaseChooseCategoryForEach", resourceCulture);
+            }
+        }
     }
 }

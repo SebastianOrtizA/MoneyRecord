@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
@@ -7,12 +8,26 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
 {
+    /// <summary>One trip category in the End trip sheet: the real category its expenses move to.</summary>
+    public partial class TripEndRow(TripCategory category, List<Category> choices, Category? selected) : ObservableObject
+    {
+        public TripCategory Source { get; } = category;
+
+        // On the row itself: a Picker in a BindableLayout template needs its ItemsSource on the item (an ancestor binding
+        // resolves after SelectedItem and clears it)
+        public List<Category> Choices { get; } = choices;
+
+        [ObservableProperty]
+        private Category? selected = selected;
+    }
+
     /// <summary>One trip: spent against its budget, per trip category, and its expenses.</summary>
     [QueryProperty(nameof(TripIdText), "TripId")]
     public partial class TripViewModel : ObservableObject
     {
         private readonly ITripService _trips;
         private readonly IAccountRepository _accountRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly INavigationService _navigation;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
@@ -23,10 +38,14 @@ namespace MoneyRecord.ViewModels
         private bool isLoading;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasTrip), nameof(Title))]
+        [NotifyPropertyChangedFor(nameof(HasTrip), nameof(Title), nameof(IsActiveTrip), nameof(IsEndedTrip))]
         private TripCard? card;
 
         public bool HasTrip => Card != null;
+
+        public bool IsActiveTrip => Card is { IsActive: true };
+
+        public bool IsEndedTrip => Card is { IsActive: false };
 
         public string Title => Card?.Name ?? AppResources.TripsTitle;
 
@@ -42,11 +61,12 @@ namespace MoneyRecord.ViewModels
 
         public bool HasEntries => Entries.Count > 0;
 
-        public TripViewModel(ITripService trips, IAccountRepository accountRepository, INavigationService navigation,
+        public TripViewModel(ITripService trips, IAccountRepository accountRepository, ICategoryRepository categoryRepository, INavigationService navigation,
             IErrorHandler errorHandler, IDialogService dialogService)
         {
             _trips = trips;
             _accountRepository = accountRepository;
+            _categoryRepository = categoryRepository;
             _navigation = navigation;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
@@ -65,6 +85,7 @@ namespace MoneyRecord.ViewModels
                 IsLoading = true;
                 var summary = await _trips.GetSummaryAsync(tripId);
                 var expenses = await _trips.GetExpensesAsync(tripId);
+                _expenses = expenses;
                 var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
                 var tripCategories = (await _trips.GetCategoriesAsync()).ToDictionary(c => c.Id, c => c.Name);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -94,6 +115,116 @@ namespace MoneyRecord.ViewModels
             {
                 if (!cancellationToken.IsCancellationRequested)
                     IsLoading = false;
+            }
+        }
+
+        // The trip's expenses, for the End trip sheet (which trip categories were used)
+        private List<Transaction> _expenses = [];
+
+        [ObservableProperty]
+        private bool isEndSheetOpen;
+
+        public ObservableCollection<TripEndRow> EndRows { get; } = [];
+
+        /// <summary>The real expense categories an expense can move to (never "Travel").</summary>
+        [ObservableProperty]
+        private List<Category> endCategories = [];
+
+        /// <summary>Picking one here sets every row to it.</summary>
+        [ObservableProperty]
+        private Category? sameForAll;
+
+        partial void OnSameForAllChanged(Category? value)
+        {
+            if (value == null)
+                return;
+            foreach (var row in EndRows)
+                row.Selected = value;
+        }
+
+        [RelayCommand]
+        private async Task OpenEndSheetAsync()
+        {
+            if (Card is not { IsActive: true })
+                return;
+
+            try
+            {
+                EndCategories = (await _categoryRepository.GetByTypeAsync(CategoryType.Expense)).Where(c => !c.IsTravel).ToList();
+                var usedIds = _expenses.Select(e => e.TripCategoryId).OfType<int>().ToHashSet();
+                var tripCategories = (await _trips.GetCategoriesAsync()).Where(c => usedIds.Contains(c.Id));
+                EndRows.Clear();
+                foreach (var tripCategory in tripCategories)
+                    EndRows.Add(new TripEndRow(tripCategory, EndCategories, EndCategories.FirstOrDefault(c => c.Id == tripCategory.LastCategoryId)));
+                SameForAll = null;
+                IsEndSheetOpen = true;
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadTrips);
+            }
+        }
+
+        [RelayCommand]
+        private void CloseEndSheet() => IsEndSheetOpen = false;
+
+        /// <summary>Closes the End trip sheet; false when it wasn't open.</summary>
+        public bool CloseTopOverlay()
+        {
+            if (!IsEndSheetOpen)
+                return false;
+
+            CloseEndSheet();
+            return true;
+        }
+
+        [RelayCommand]
+        private async Task EndTripAsync()
+        {
+            if (Card == null)
+                return;
+            if (EndRows.Any(r => r.Selected == null))
+            {
+                await _errorHandler.HandleAsync(AppResources.PleaseChooseCategoryForEach);
+                return;
+            }
+
+            try
+            {
+                await _trips.EndAsync(Card.TripId, EndRows.ToDictionary(r => r.Source.Id, r => r.Selected!.Id));
+                CloseEndSheet();
+                await LoadCommand.ExecuteAsync(null);
+                await _dialogService.ToastAsync(AppResources.TripEndedToast);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToEndTrip);
+            }
+        }
+
+        [RelayCommand]
+        private async Task ReopenAsync()
+        {
+            var trip = Card?.Trip;
+            if (trip == null || trip.IsActive)
+                return;
+
+            if (!await _dialogService.ConfirmAsync(AppResources.ReopenTrip,
+                    string.Format(AppResources.ReopenTripConfirmation, trip.Name), AppResources.ReopenTrip, AppResources.Cancel))
+                return;
+
+            try
+            {
+                await _trips.ReopenAsync(trip.Id);
+                await LoadCommand.ExecuteAsync(null);
+            }
+            catch (InvalidOperationException)
+            {
+                await _dialogService.AlertAsync(AppResources.Error, AppResources.TripAlreadyActive);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToEndTrip);
             }
         }
 
