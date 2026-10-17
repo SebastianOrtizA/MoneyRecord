@@ -1,6 +1,6 @@
 # Stage 12: Travel Mode
 
-**Status**: In progress (12.1 merged; 12.2 in review)
+**Status**: Complete (12.1 merged, PR #61; 12.2 merged, PR #62). Verified on the emulator 2026-10-17 (en + es: start, expenses, Home, end with a mapping, reopen). Released as v0.12.0-rc1.
 **Depends on**: Stages 6–11
 **Source**: User request, 2026-10-14; designed with the owner 2026-10-17
 
