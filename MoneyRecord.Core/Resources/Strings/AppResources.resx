@@ -2292,4 +2292,28 @@ Amount: {2}</value>
   <data name="TravelCategoryCannotDelete" xml:space="preserve">
     <value>The Travel category holds the expenses of your trips, so it can't be deleted. You can rename it.</value>
   </data>
+  <data name="EndTrip" xml:space="preserve">
+    <value>End trip</value>
+  </data>
+  <data name="EndTripHint" xml:space="preserve">
+    <value>Choose where each trip category's expenses go in your normal categories.</value>
+  </data>
+  <data name="SameCategoryForAll" xml:space="preserve">
+    <value>Same category for all</value>
+  </data>
+  <data name="ReopenTrip" xml:space="preserve">
+    <value>Reopen trip</value>
+  </data>
+  <data name="ReopenTripConfirmation" xml:space="preserve">
+    <value>Reopen "{0}"? Its expenses move back to Travel.</value>
+  </data>
+  <data name="TripEndedToast" xml:space="preserve">
+    <value>Trip ended</value>
+  </data>
+  <data name="FailedToEndTrip" xml:space="preserve">
+    <value>Failed to update the trip</value>
+  </data>
+  <data name="PleaseChooseCategoryForEach" xml:space="preserve">
+    <value>Choose a category for each trip category</value>
+  </data>
 </root>

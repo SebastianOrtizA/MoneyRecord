@@ -467,6 +467,34 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- The active trip: spent of its budget; a tap opens it -->
+            <Border Style="{StaticResource Card}" IsVisible="{Binding HasActiveTrip}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenTripCommand}"/>
+                </Border.GestureRecognizers>
+                <VerticalStackLayout Spacing="8">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Label Text="&#xF001D;" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                        <Label Grid.Column="1" Text="{Binding ActiveTrip.Name}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" LineBreakMode="TailTruncation"/>
+                        <Label Grid.Column="2" Text="{Binding ActiveTrip.DatesText}" FontSize="12" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                    </Grid>
+                    <ProgressBar IsVisible="{Binding ActiveTrip.HasBudget}"
+                                 Progress="{Binding ActiveTrip.ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
+                                 ProgressColor="{Binding ActiveTrip.Level, Converter={StaticResource BudgetLevelToColorConverter}}"
+                                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                 HeightRequest="10"/>
+                    <Label Text="{Binding ActiveTrip.SpentText}" FontSize="14">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
+                                <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Savings goals: the first three (today's balances, so the period doesn't apply); a tap opens Goals -->
             <Border Style="{StaticResource Card}"
                     IsVisible="{Binding HasGoals}">

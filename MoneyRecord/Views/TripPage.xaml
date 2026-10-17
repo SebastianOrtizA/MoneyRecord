@@ -4,10 +4,12 @@
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.TripPage"
              x:DataType="viewmodels:TripViewModel"
              Title="{Binding Title}">
 
+    <Grid>
     <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
         <ScrollView>
             <VerticalStackLayout Padding="16" Spacing="12" IsVisible="{Binding HasTrip}">
@@ -80,6 +82,15 @@
                     </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
 
+                <Button Text="{ext:Localize EndTrip}" Command="{Binding OpenEndSheetCommand}" IsVisible="{Binding IsActiveTrip}"
+                        HeightRequest="44" CornerRadius="22" Margin="0,8,0,0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                <Button Text="{ext:Localize ReopenTrip}" Command="{Binding ReopenCommand}" IsVisible="{Binding IsEndedTrip}"
+                        HeightRequest="44" CornerRadius="22" Margin="0,8,0,0" BorderWidth="1" BackgroundColor="Transparent"
+                        BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
                     <Button Text="{ext:Localize Edit}" Command="{Binding EditCommand}"
                             HeightRequest="44" CornerRadius="22"
@@ -93,5 +104,42 @@
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>
+
+    <!-- End trip: where each trip category's expenses go in the normal categories -->
+    <controls:BottomSheet Scroll="{x:Reference EndScroll}" IsOpen="{Binding IsEndSheetOpen}" CloseCommand="{Binding CloseEndSheetCommand}">
+        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{ext:Localize EndTrip}" FontSize="18" FontAttributes="Bold" />
+                <Label Text="{ext:Localize EndTripHint}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+            </VerticalStackLayout>
+
+            <ScrollView Grid.Row="1" x:Name="EndScroll">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{ext:Localize SameCategoryForAll}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    <Picker ItemsSource="{Binding EndCategories}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding SameForAll}"
+                            Title="{ext:Localize Category}" FontSize="16" MinimumHeightRequest="44" />
+                    <VerticalStackLayout Spacing="4" BindableLayout.ItemsSource="{Binding EndRows}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:TripEndRow">
+                                <Grid ColumnDefinitions="Auto,*,*" ColumnSpacing="8" MinimumHeightRequest="48">
+                                    <Label Text="{Binding Source.DisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                    <Label Grid.Column="1" Text="{Binding Source.Name}" FontSize="15" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                    <Picker Grid.Column="2" ItemsSource="{Binding Choices}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Selected}"
+                                            Title="{ext:Localize Category}" FontSize="15" MinimumHeightRequest="44" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <Button Grid.Row="2" Text="{ext:Localize EndTrip}" Command="{Binding EndTripCommand}"
+                    HeightRequest="44" CornerRadius="22"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+        </Grid>
+    </controls:BottomSheet>
+    </Grid>
 
 </ContentPage>

@@ -5,7 +5,8 @@ using Xunit;
 
 namespace MoneyRecord.Tests.Helpers;
 
-public class PluralsTests
+[Collection(LanguageCollection.Name)]
+public class PluralsTests : LanguageTestBase
 {
     [Fact]
     public void One_UsesSingular()

@@ -2289,4 +2289,28 @@ Monto: {2}</value>
   <data name="TravelCategoryCannotDelete" xml:space="preserve">
     <value>La categoría Viajes guarda los gastos de tus viajes, así que no se puede eliminar. Sí puedes cambiarle el nombre.</value>
   </data>
+  <data name="EndTrip" xml:space="preserve">
+    <value>Terminar viaje</value>
+  </data>
+  <data name="EndTripHint" xml:space="preserve">
+    <value>Elige a qué categoría normal va cada categoría de viaje.</value>
+  </data>
+  <data name="SameCategoryForAll" xml:space="preserve">
+    <value>La misma categoría para todas</value>
+  </data>
+  <data name="ReopenTrip" xml:space="preserve">
+    <value>Reabrir viaje</value>
+  </data>
+  <data name="ReopenTripConfirmation" xml:space="preserve">
+    <value>¿Reabrir "{0}"? Sus gastos vuelven a Viajes.</value>
+  </data>
+  <data name="TripEndedToast" xml:space="preserve">
+    <value>Viaje terminado</value>
+  </data>
+  <data name="FailedToEndTrip" xml:space="preserve">
+    <value>No se pudo actualizar el viaje</value>
+  </data>
+  <data name="PleaseChooseCategoryForEach" xml:space="preserve">
+    <value>Elige una categoría para cada categoría de viaje</value>
+  </data>
 </root>

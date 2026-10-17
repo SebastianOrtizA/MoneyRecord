@@ -26,6 +26,7 @@ namespace MoneyRecord.ViewModels
         private readonly IConversionService _conversion;
         private readonly IExchangeRateSettings _rateSettings;
         private readonly ISavingsGoalService _goals;
+        private readonly ITripService _trips;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -133,6 +134,13 @@ namespace MoneyRecord.ViewModels
 
         public bool HasGoals => GoalSummaries.Count > 0;
 
+        /// <summary>The active trip with its spending (Home card); null = none.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasActiveTrip))]
+        private TripCard? activeTrip;
+
+        public bool HasActiveTrip => ActiveTrip != null;
+
         /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
         public PeriodViewModel Period { get; }
 
@@ -140,9 +148,10 @@ namespace MoneyRecord.ViewModels
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
-            IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals)
+            IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips)
         {
             _goals = goals;
+            _trips = trips;
             _conversion = conversion;
             _rateSettings = rateSettings;
             _balanceService = balanceService;
@@ -223,9 +232,15 @@ namespace MoneyRecord.ViewModels
                     Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
                 var upcomingTask = _recurringService.GetUpcomingAsync();
                 // Goals reuse the balances above instead of loading them again
+                var tripTask = ActiveTripAsync();
+                async Task<TripCard?> ActiveTripAsync()
+                {
+                    var trip = await _trips.GetActiveAsync();
+                    return trip == null ? null : new TripCard(await _trips.GetSummaryAsync(trip.Id));
+                }
                 var goalsTask = GoalsAsync();
                 async Task<List<GoalProgress>> GoalsAsync() => await _goals.GetProgressAsync(await balancesTask);
-                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask);
+                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var balanceLines = CurrencyBalance.DisplayLines(
@@ -262,6 +277,7 @@ namespace MoneyRecord.ViewModels
 
                 // Goals don't follow the period: saved is today's balance
                 GoalSummaries = (await goalsTask).Take(3).ToList();
+                ActiveTrip = await tripTask;
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -297,5 +313,10 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task ViewAllGoalsAsync() => _navigationService.NavigateToAsync(nameof(GoalsPage));
+
+        [RelayCommand]
+        private Task OpenTripAsync() => ActiveTrip == null
+            ? Task.CompletedTask
+            : _navigationService.NavigateToAsync(nameof(TripPage), new Dictionary<string, object> { ["TripId"] = ActiveTrip.TripId.ToString() });
     }
 }
