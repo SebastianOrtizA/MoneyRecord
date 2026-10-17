@@ -11,6 +11,6 @@ namespace MoneyRecord.Services.Interfaces
         bool IsSupported { get; }
 
         /// <summary>The photo's lines of text with their boxes; empty when it has none or can't be read.</summary>
-        Task<IReadOnlyList<ReceiptLine>> ReadLinesAsync(string imagePath, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<ReceiptLine>> ReadLinesAsync(string imagePath);
     }
 }

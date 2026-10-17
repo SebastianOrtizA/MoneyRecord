@@ -100,7 +100,7 @@ crashes at runtime (XAML is inflated at runtime there).
   (currencies in use; transactions in one currency), CurrencyConverter (downloaded rates: nearest earlier day,
   inverse, across an earlier base; a transaction's own "Amount in USD" first), CsvTable / StatementDate /
   StatementAmount (bank statement CSV: table, date layouts, signed amounts), ReceiptReader (a receipt's
-  OCR lines → rows → total + date)
+  OCR lines → rows → total + date), ReceiptFill (what a reading changes in the add form)
 - `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and

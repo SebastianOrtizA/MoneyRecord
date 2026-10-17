@@ -99,6 +99,16 @@ public sealed class ReceiptReaderTests
         Read(Spain, "IVA 21%", "NIF B12345678", "Ref 123456789012", "-40,00", "Pan 1,20").Amount.Should().Be(1.20m);
 
     [Fact]
+    public void Item_that_looks_like_an_old_date_keeps_its_price()
+    {
+        // "1 MAYO 12" reads as 1 May 2012, too old for a receipt: the row is an item and 12,50 its price
+        var reading = Read(Spain, "1 MAYO 12,50", "Pan 1,20");
+
+        reading.Amount.Should().Be(12.50m);
+        reading.Date.Should().BeNull();
+    }
+
+    [Fact]
     public void Nothing_readable_gives_nothing()
     {
         var reading = Read(Us, "THANK YOU", "Please come again");

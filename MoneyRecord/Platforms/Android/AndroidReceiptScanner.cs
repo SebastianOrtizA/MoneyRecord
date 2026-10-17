@@ -17,13 +17,13 @@ namespace MoneyRecord.Platforms.Android
     {
         public bool IsSupported => true;
 
-        public async Task<IReadOnlyList<ReceiptLine>> ReadLinesAsync(string imagePath, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<ReceiptLine>> ReadLinesAsync(string imagePath)
         {
             // From the file: ML Kit turns the photo by its EXIF orientation
             using var file = new Java.IO.File(imagePath);
             var image = InputImage.FromFilePath(Application.Context, global::Android.Net.Uri.FromFile(file)!);
             using var recognizer = TextRecognition.GetClient(TextRecognizerOptions.DefaultOptions);
-            var text = (MLText)await recognizer.Process(image).AsAsync<MLText>().WaitAsync(cancellationToken);
+            var text = (MLText)await recognizer.Process(image).AsAsync<MLText>();
 
             return text.TextBlocks
                 .SelectMany(block => block.Lines)

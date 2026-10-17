@@ -368,7 +368,7 @@ Close the gap with competing finance apps. Each section can ship on its own.
   "Amount due" row, then a plain "Total" / "Importe" row, never subtotal, tax (unless "incl."), discount, cash or change
   rows; else the largest price; "1.234,56", "1,234.56", "$25.000" read per token; first date in range (not future, at
   most 5 years old), numeric day/month order by culture with the other order when the first is in the future, month
-  names in the app culture, English or Spanish), tested. Android `AndroidReceiptScanner` = ML Kit Latin text
+  names in the app culture, English or Spanish), tested. `ReceiptFill` (tested) decides what a reading changes in the form. Android `AndroidReceiptScanner` = ML Kit Latin text
   recognition, model bundled in the APK. Add form: a scan button beside the amount (camera or gallery); any new receipt
   photo is read: its total fills an empty amount, its date a new entry's date, with a toast; a different typed amount
   is kept ("The receipt says …") and the date left alone.

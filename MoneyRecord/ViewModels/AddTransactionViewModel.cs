@@ -829,6 +829,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task TakePhotoAsync()
         {
+            string? path = null;
             try
             {
                 if (!MediaPicker.Default.IsCaptureSupported)
@@ -839,31 +840,38 @@ namespace MoneyRecord.ViewModels
 
                 var photo = await MediaPicker.Default.CapturePhotoAsync();
                 if (photo != null)
-                    await SaveReceiptPhotoAsync(photo);
+                    path = await SaveReceiptPhotoAsync(photo);
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToTakePhoto);
             }
+            // After the photo is in: a failed reading is not a failed photo
+            if (path != null)
+                await ReadReceiptAsync(path);
         }
 
         [RelayCommand]
         private async Task PickPhotoAsync()
         {
+            string? path = null;
             try
             {
                 var photos = await MediaPicker.Default.PickPhotosAsync();
                 var photo = photos?.FirstOrDefault();
                 if (photo != null)
-                    await SaveReceiptPhotoAsync(photo);
+                    path = await SaveReceiptPhotoAsync(photo);
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToPickPhoto);
             }
+            if (path != null)
+                await ReadReceiptAsync(path);
         }
 
-        private async Task SaveReceiptPhotoAsync(FileResult photo)
+        /// <summary>Copies the photo into the receipts folder and shows it; returns its path.</summary>
+        private async Task<string> SaveReceiptPhotoAsync(FileResult photo)
         {
             var receiptsDir = _paths.ReceiptsFolder;
             Directory.CreateDirectory(receiptsDir);
@@ -877,7 +885,7 @@ namespace MoneyRecord.ViewModels
 
             _receipt.Set(filePath);
             ShowReceipt();
-            await ReadReceiptAsync(filePath);
+            return filePath;
         }
 
         /// <summary>The scan button beside the amount: a receipt photo from the camera or the gallery, then read.</summary>
@@ -892,10 +900,7 @@ namespace MoneyRecord.ViewModels
                 await PickPhotoAsync();
         }
 
-        /// <summary>
-        /// Reads a new receipt photo: its total fills an empty amount and, for a new entry, its date the date. A total that
-        /// differs from the amount already typed is only mentioned, and the date is left alone then (another purchase, maybe).
-        /// </summary>
+        /// <summary>Reads a new receipt photo and fills the form as <see cref="ReceiptFill"/> says, with a toast.</summary>
         private async Task ReadReceiptAsync(string path)
         {
             if (!_receiptScanner.IsSupported)
@@ -924,27 +929,24 @@ namespace MoneyRecord.ViewModels
                 return;
 
             var currency = SelectedAccount?.CurrencyCode;
+            long? typedCents = string.IsNullOrWhiteSpace(Amount) ? null : Money.ToCents(AmountParser.Parse(Amount, currency));
+            var fill = ReceiptFill.Apply(reading, typedCents, !IsEditMode, SelectedDate);
+
             var filled = new List<string>();
-            if (reading.Amount is { } total)
+            if (fill.Amount is { } amount)
             {
-                if (string.IsNullOrWhiteSpace(Amount))
-                {
-                    Amount = total.ToString();
-                    filled.Add(MoneyFormatter.Format(total, currency));
-                }
-                else if (Money.ToCents(AmountParser.Parse(Amount, currency)) != Money.ToCents(total))
-                {
-                    await _dialogService.ToastAsync(string.Format(AppResources.ReceiptSays, MoneyFormatter.Format(total, currency)));
-                    return;
-                }
+                Amount = amount.ToString();
+                filled.Add(MoneyFormatter.Format(amount, currency));
             }
-            if (reading.Date is { } date && !IsEditMode && date != SelectedDate.Date)
+            if (fill.Date is { } date)
             {
-                SelectedDate = date + SelectedDate.TimeOfDay;
+                SelectedDate = date;
                 filled.Add(DateFormatter.Format(date, DateStyle.Medium));
             }
 
-            if (filled.Count > 0)
+            if (fill.Differs is { } total)
+                await _dialogService.ToastAsync(string.Format(AppResources.ReceiptSays, MoneyFormatter.Format(total, currency)));
+            else if (filled.Count > 0)
                 await _dialogService.ToastAsync(string.Format(AppResources.ReceiptFilledIn, string.Join(" · ", filled)));
             else if (reading.IsEmpty)
                 await _dialogService.ToastAsync(AppResources.ReceiptNotRead);

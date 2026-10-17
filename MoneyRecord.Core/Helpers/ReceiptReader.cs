@@ -130,16 +130,19 @@ namespace MoneyRecord.Helpers
             });
             row = DayMonthYearRegex().Replace(row, m =>
             {
-                if (Month(m.Groups["month"].Value) is not { } month)
+                // Out of range ("1 MAYO 12,50": an item, not 2012) stays text, so its price still counts
+                if (Month(m.Groups["month"].Value) is not { } month
+                    || Valid(Year(int.Parse(m.Groups["year"].Value)), month, int.Parse(m.Groups["day"].Value), today) is not { } day)
                     return m.Value;
-                found ??= Valid(Year(int.Parse(m.Groups["year"].Value)), month, int.Parse(m.Groups["day"].Value), today);
+                found ??= day;
                 return " ";
             });
             row = MonthDayYearRegex().Replace(row, m =>
             {
-                if (Month(m.Groups["month"].Value) is not { } month)
+                if (Month(m.Groups["month"].Value) is not { } month
+                    || Valid(int.Parse(m.Groups["year"].Value), month, int.Parse(m.Groups["day"].Value), today) is not { } day)
                     return m.Value;
-                found ??= Valid(int.Parse(m.Groups["year"].Value), month, int.Parse(m.Groups["day"].Value), today);
+                found ??= day;
                 return " ";
             });
 

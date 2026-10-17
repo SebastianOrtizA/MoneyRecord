@@ -8,7 +8,7 @@ namespace MoneyRecord.Services
     {
         public bool IsSupported => false;
 
-        public Task<IReadOnlyList<ReceiptLine>> ReadLinesAsync(string imagePath, CancellationToken cancellationToken = default) =>
+        public Task<IReadOnlyList<ReceiptLine>> ReadLinesAsync(string imagePath) =>
             Task.FromResult<IReadOnlyList<ReceiptLine>>([]);
     }
 }
