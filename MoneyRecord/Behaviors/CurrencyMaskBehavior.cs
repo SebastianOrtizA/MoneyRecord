@@ -188,7 +188,7 @@ namespace MoneyRecord.Behaviors
         private string FormatValue(decimal value)
         {
             return ShowCurrencySymbol
-                ? MoneyFormatter.Format(value, CurrencyCode, Culture)
+                ? MoneyFormatter.FormatBesideCode(value, CurrencyCode, Culture)
                 : value.ToString($"N{DecimalPlaces}", Culture);
         }
     }

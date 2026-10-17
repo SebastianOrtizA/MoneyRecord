@@ -47,8 +47,8 @@ public class CurrencyBalanceTests
     {
         CurrencyBalance.DisplayLines([new CurrencyBalance("USD", 1250m, 2), new CurrencyBalance("EUR", 250m, 2)])
             .Should().Equal(
-                new BalanceLine($"{MoneyFormatter.Format(1250m, "USD")} USD", "USD"),
-                new BalanceLine($"{MoneyFormatter.Format(250m, "EUR")} EUR", "EUR"));
+                new BalanceLine(MoneyFormatter.FormatWithCode(1250m, "USD"), "USD"),
+                new BalanceLine(MoneyFormatter.FormatWithCode(250m, "EUR"), "EUR"));
     }
 
     [Fact]

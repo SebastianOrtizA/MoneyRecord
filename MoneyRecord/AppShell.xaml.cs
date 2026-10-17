@@ -10,6 +10,7 @@ namespace MoneyRecord
     {
         private readonly INavigationService _navigationService;
         private readonly ILogger<AppShell> _logger;
+        private ShellSection? _shownSection;
 
         public AppShell()
         {
@@ -41,12 +42,29 @@ namespace MoneyRecord
             this.Navigated += OnShellNavigated;
         }
 
-        private void OnShellNavigated(object? sender, ShellNavigatedEventArgs e)
+        private async void OnShellNavigated(object? sender, ShellNavigatedEventArgs e)
         {
             var currentRoute = e.Current?.Location?.ToString() ?? "";
             if (!string.IsNullOrEmpty(currentRoute))
             {
                 _navigationService.RecordNavigation(currentRoute);
+            }
+
+            // A tab always opens at its own page: Shell keeps each tab's pushed pages and would show them again
+            // (More → Accounts, Home, More showed Accounts), so the tab just left drops them
+            var left = _shownSection;
+            _shownSection = CurrentItem?.CurrentItem;
+            if (left == null || left == _shownSection || left.Navigation.NavigationStack.Count <= 1)
+                return;
+
+            // async void: an exception here would crash the app
+            try
+            {
+                await left.Navigation.PopToRootAsync(animated: false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Resetting the tab left failed");
             }
         }
 

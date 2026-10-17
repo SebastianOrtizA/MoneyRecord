@@ -1,12 +1,12 @@
 using MoneyRecord.Services;
-using System.Collections.Concurrent;
 using System.Globalization;
 
 namespace MoneyRecord.Helpers
 {
     /// <summary>
-    /// Formats money amounts in a currency, with the culture's separators and symbol placement, always putting the
-    /// minus sign before the currency symbol (-$50.00, never ($50.00) or $-50.00).
+    /// Formats money amounts in a currency with the culture's separators and a plain symbol in front of the number, the
+    /// minus sign before it, in every language (-$50.00, $1.401,75; never ($50.00), $-50.00, 1.401,75 $ or COL$300).
+    /// The code follows when the symbol alone could be another currency ("$500,00 USD" while the base is COP).
     /// </summary>
     public static class MoneyFormatter
     {
@@ -18,12 +18,15 @@ namespace MoneyRecord.Helpers
 
         /// <summary>
         /// Formats <paramref name="amount"/> in <paramref name="currencyCode"/> (an account's currency; null or empty
-        /// = the base currency) using <paramref name="culture"/> (default: the current culture).
+        /// = the base currency) using <paramref name="culture"/> (default: the current culture). The base currency is
+        /// just its symbol; another currency adds its code when its symbol is shared ("$1.200,00 COP" while the base
+        /// is USD, but "£5.00").
         /// </summary>
         public static string Format(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
         {
             var code = ResolveCurrencyCode(currencyCode);
-            return Format(amount, code, CurrencyService.GetMinorUnits(code), culture);
+            var text = FormatBesideCode(amount, code, culture);
+            return code != BaseCurrency && CurrencyService.HasSharedSymbol(code) ? $"{text} {code}" : text;
         }
 
         /// <summary>
@@ -36,20 +39,44 @@ namespace MoneyRecord.Helpers
             return amount > 0 ? (culture ?? CultureInfo.CurrentCulture).NumberFormat.PositiveSign + text : text;
         }
 
-        /// <summary>Like <see cref="Format(decimal, string?, CultureInfo?)"/> without decimals (chart axes).</summary>
+        /// <summary>The symbol and the number without decimals (chart axes, where the chart names the currency).</summary>
         public static string FormatWhole(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
         {
-            return Format(amount, ResolveCurrencyCode(currencyCode), 0, culture);
+            var code = ResolveCurrencyCode(currencyCode);
+            return FormatWithSymbol(amount, CurrencyService.GetSymbol(code), 0, culture);
         }
 
-        private static string Format(decimal amount, string code, int decimals, CultureInfo? culture)
+        /// <summary>
+        /// The amount, then always its code ("$6,000,300.00 COP"), for lines that tell currencies apart by their code.
+        /// A currency whose symbol is its code shows it once ("CHF 5.00").
+        /// </summary>
+        public static string FormatWithCode(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
         {
-            culture ??= CultureInfo.CurrentCulture;
-            var format = (NumberFormatInfo)culture.NumberFormat.Clone();
+            var code = ResolveCurrencyCode(currencyCode);
+            var text = FormatBesideCode(amount, code, culture);
+            return CurrencyService.GetSymbol(code) == code ? text : $"{text} {code}";
+        }
 
-            format.CurrencySymbol = GetSymbol(code, culture);
+        /// <summary>
+        /// The amount without its code, for one shown next to the code already (an account card's currency chip, an
+        /// amount field of that account): "$6.000.300,00".
+        /// </summary>
+        public static string FormatBesideCode(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
+        {
+            var code = ResolveCurrencyCode(currencyCode);
+            return FormatWithSymbol(amount, CurrencyService.GetSymbol(code), CurrencyService.GetMinorUnits(code), culture);
+        }
+
+        private static string FormatWithSymbol(decimal amount, string symbol, int decimals, CultureInfo? culture)
+        {
+            var format = (NumberFormatInfo)(culture ?? CultureInfo.CurrentCulture).NumberFormat.Clone();
+
+            format.CurrencySymbol = symbol;
             format.CurrencyDecimalDigits = decimals;
-            format.CurrencyNegativePattern = GetLeadingSignPattern(format.CurrencyPositivePattern);
+            // In front in every culture; a symbol ending in a letter or dot keeps a space from the digits ("CHF 5.00")
+            var spaced = char.IsLetter(symbol[^1]) || symbol[^1] == '.';
+            format.CurrencyPositivePattern = spaced ? 2 : 0; // "CHF n" / "$n"
+            format.CurrencyNegativePattern = spaced ? 9 : 1; // "-CHF n" / "-$n"
             return amount.ToString("C", format);
         }
 
@@ -72,49 +99,5 @@ namespace MoneyRecord.Helpers
         /// <summary>True when two currency codes name the same currency (empty = the base currency; case ignored).</summary>
         public static bool SameCurrency(string? currencyCode, string? otherCurrencyCode) =>
             ResolveCurrencyCode(currencyCode) == ResolveCurrencyCode(otherCurrencyCode);
-
-        /// <summary>The ISO currency of each culture's region (null = none), looked up once per culture.</summary>
-        private static readonly ConcurrentDictionary<string, string?> RegionCurrencies = new();
-
-        /// <summary>
-        /// The culture's own symbol when the currency is the culture region's currency ("$" for COP in es-CO);
-        /// otherwise an unambiguous symbol for the currency ("COL$" for COP in en-US).
-        /// </summary>
-        private static string GetSymbol(string code, CultureInfo culture)
-        {
-            var cultureSymbol = culture.NumberFormat.CurrencySymbol;
-            if (cultureSymbol != "¤" && !culture.IsNeutralCulture && !string.IsNullOrEmpty(culture.Name))
-            {
-                var regionCurrency = RegionCurrencies.GetOrAdd(culture.Name, GetRegionCurrency);
-                if (string.Equals(regionCurrency, code, StringComparison.OrdinalIgnoreCase))
-                    return cultureSymbol;
-            }
-            return CurrencyService.GetSymbol(code);
-        }
-
-        private static string? GetRegionCurrency(string cultureName)
-        {
-            try
-            {
-                return new RegionInfo(cultureName).ISOCurrencySymbol;
-            }
-            catch (ArgumentException)
-            {
-                return null; // No region for this culture: the currency's own symbol is used
-            }
-        }
-
-        /// <summary>
-        /// Maps a CurrencyPositivePattern to the CurrencyNegativePattern with the same symbol placement
-        /// and a leading minus sign.
-        /// </summary>
-        private static int GetLeadingSignPattern(int positivePattern) => positivePattern switch
-        {
-            0 => 1,  // $n   → -$n
-            1 => 5,  // n$   → -n$
-            2 => 9,  // $ n  → -$ n
-            3 => 8,  // n $  → -n $
-            _ => 1
-        };
     }
 }

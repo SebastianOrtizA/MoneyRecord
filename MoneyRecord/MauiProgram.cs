@@ -39,6 +39,7 @@ namespace MoneyRecord
                 // Toolkit converters return a default instead of throwing on unexpected input, like ours did
                 .UseMauiCommunityToolkit(options => options.SetShouldSuppressExceptionsInConverters(true))
                 .ConfigureDecimalEntry()
+                .ConfigureTabReselect()
                 // Reports charts (LiveChartsCore on SkiaSharp)
                 .UseSkiaSharp()
                 .UseLiveCharts()
@@ -317,6 +318,16 @@ namespace MoneyRecord
             Platforms.Android.Handlers.DecimalEntryHandler.Configure();
 #elif IOS
             Platforms.iOS.Handlers.DecimalEntryHandler.Configure();
+#endif
+            return builder;
+        }
+
+        /// <summary>Android: tapping the tab already shown goes back to its own page.</summary>
+        private static MauiAppBuilder ConfigureTabReselect(this MauiAppBuilder builder)
+        {
+#if ANDROID
+            builder.ConfigureMauiHandlers(handlers =>
+                handlers.AddHandler(typeof(Shell), typeof(Platforms.Android.Handlers.TabReselectShellRenderer)));
 #endif
             return builder;
         }
