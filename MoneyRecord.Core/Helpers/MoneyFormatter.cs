@@ -59,12 +59,30 @@ namespace MoneyRecord.Helpers
 
         /// <summary>
         /// The amount without its code, for one shown next to the code already (an account card's currency chip, an
-        /// amount field of that account): "$6.000.300,00".
+        /// amount field of that account): "$6.000.300,00", or "$6.000.300" when the currency's cents are hidden.
         /// </summary>
         public static string FormatBesideCode(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
         {
             var code = ResolveCurrencyCode(currencyCode);
-            return FormatWithSymbol(amount, CurrencyService.GetSymbol(code), CurrencyService.GetMinorUnits(code), culture);
+            return FormatWithSymbol(amount, CurrencyService.GetSymbol(code), CurrencyService.GetShownDecimals(code), culture);
+        }
+
+        /// <summary>
+        /// An amount in an entry field: like <see cref="FormatBesideCode"/>, but cents the amount has are shown even
+        /// when the currency hides them ("$12,50"), so saving the form keeps them.
+        /// </summary>
+        public static string FormatForEntry(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
+        {
+            var code = ResolveCurrencyCode(currencyCode);
+            return FormatWithSymbol(amount, CurrencyService.GetSymbol(code), EntryDecimals(amount, code), culture);
+        }
+
+        /// <summary>The decimals an entry shows <paramref name="amount"/> with: the currency's shown ones, more if it has cents.</summary>
+        public static int EntryDecimals(decimal amount, string? currencyCode)
+        {
+            var code = ResolveCurrencyCode(currencyCode);
+            var shown = CurrencyService.GetShownDecimals(code);
+            return decimal.Round(amount, shown) == amount ? shown : CurrencyService.GetMinorUnits(code);
         }
 
         private static string FormatWithSymbol(decimal amount, string symbol, int decimals, CultureInfo? culture)

@@ -49,7 +49,7 @@ namespace MoneyRecord.ViewModels
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
             IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
-            AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword)
+            AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword, CurrencyCentsViewModel cents)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -72,6 +72,7 @@ namespace MoneyRecord.ViewModels
             _exchangeRateSettings = exchangeRateSettings;
             AutoBackup = autoBackup;
             BackupPassword = backupPassword;
+            Cents = cents;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
             exchangeRatesStatus = LastUpdatedText();
@@ -82,6 +83,9 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The backup password switch, and restoring a protected backup.</summary>
         public BackupPasswordViewModel BackupPassword { get; }
+
+        /// <summary>The Show cents switches, one per currency in use.</summary>
+        public CurrencyCentsViewModel Cents { get; }
 
         [ObservableProperty]
         private IReadOnlyList<LanguageOption> languages = LanguageOption.All();
@@ -108,6 +112,8 @@ namespace MoneyRecord.ViewModels
             // The folder may be unreachable now, or the daily job made a backup
             AutoBackup.RefreshCommand.Execute(null);
             BackupPassword.RefreshCommand.Execute(null);
+            // Accounts in a new currency may have been added meanwhile
+            Cents.RefreshCommand.Execute(null);
         }
 
         // ---- Exchange rates ----
@@ -371,7 +377,10 @@ namespace MoneyRecord.ViewModels
         partial void OnBaseCurrencyChanged(Currency? value)
         {
             if (value != null)
+            {
                 _currencyService.SetBaseCurrencyCode(value.Code);
+                Cents.RefreshCommand.Execute(null);
+            }
         }
 
         [RelayCommand]

@@ -1,6 +1,6 @@
 # Stage 11: End Review
 
-**Status**: In progress (11.1 + 11.2 in review)
+**Status**: In progress (11.1, 11.2 done; 11.3 in review)
 **Source**: Issues and small requests the user noted while reviewing Stages 8.7a–8.7b (2026-10-13)
 
 ## Decisions (owner, 2026-10-16)
@@ -9,6 +9,7 @@
   lines that list several currencies, or a non-base currency whose symbol is shared ("$1.500,00 USD" while the base
   is EUR). Applies to every amount in the app, not only the balance card.
 - 11.3: the cents choice is per currency, not per account (totals are per currency, so they never mix forms).
+  Refined 2026-10-17: the switches live in Settings → Base currency ("Show cents", one per currency in use).
 - 11.4: add and edit move to the shared `BottomSheet`.
 - PRs: 11.1 + 11.2, then 11.3, then 11.4 + 11.6, then 11.5.
 
@@ -39,6 +40,12 @@
   do (`CurrencyService.GetMinorUnits`).
 - Idea: an `Account.ShowCents` flag (migration + backup format) feeding the minor units `MoneyFormatter` /
   `CurrencyMaskBehavior` use for that account's amounts. Decide how totals that mix accounts are shown.
+- Done as: per currency (owner decision), in Settings → Base currency → Show cents: one switch per currency in use (the
+  base, then each account's; JPY/CLP/KRW have no cents and aren't listed), with a live sample. Saved in the
+  `Currencies.HideCents` preference (like the base currency: not in backups), loaded by `CurrencyService.LoadSettings`.
+  `CurrencyService.GetShownDecimals` feeds `MoneyFormatter` (lists, totals, cards round to whole units);
+  `GetMinorUnits` stays the input precision, so typed cents are kept, and `MoneyFormatter.FormatForEntry` shows an
+  amount's cents in a form field (a stored "$1.250,50" isn't rounded by opening and saving the form).
 
 ### 11.4 Editing a category low in the list shows nothing
 - Categories: scroll down, tap Edit on a category near the bottom → nothing seems to happen. The edit form is the

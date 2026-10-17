@@ -5819,5 +5819,17 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("ReportTransfer", resourceCulture);
             }
         }
+        
+        public static string ShowCents {
+            get {
+                return ResourceManager.GetString("ShowCents", resourceCulture);
+            }
+        }
+        
+        public static string ShowCentsDescription {
+            get {
+                return ResourceManager.GetString("ShowCentsDescription", resourceCulture);
+            }
+        }
     }
 }

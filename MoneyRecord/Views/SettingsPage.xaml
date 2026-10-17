@@ -83,6 +83,45 @@
                                 Title="{ext:Localize SelectCurrency}"
                                 FontSize="16"
                                 MinimumHeightRequest="44"/>
+
+                        <!-- Show cents: one switch per currency in use that has cents -->
+                        <VerticalStackLayout Spacing="8"
+                                             IsVisible="{Binding Cents.CurrencyOptions.Count, Converter={StaticResource IntToBoolConverter}}">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{ext:Localize ShowCents}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Label Text="{ext:Localize ShowCentsDescription}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Cents.CurrencyOptions}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="corevm:CurrencyCentsOption">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" MinimumHeightRequest="48">
+                                            <VerticalStackLayout Grid.Column="0" Spacing="0" VerticalOptions="Center">
+                                                <Label FontSize="15"
+                                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}">
+                                                    <Label.FormattedText>
+                                                        <FormattedString>
+                                                            <Span Text="{Binding Code}" FontAttributes="Bold"/>
+                                                            <Span Text="{Binding Name, StringFormat=' · {0}'}"/>
+                                                        </FormattedString>
+                                                    </Label.FormattedText>
+                                                </Label>
+                                                <Label Text="{Binding Sample}"
+                                                       FontSize="13"
+                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            </VerticalStackLayout>
+                                            <Switch Grid.Column="1"
+                                                    IsToggled="{Binding ShowsCents}"
+                                                    VerticalOptions="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Frame>
 
