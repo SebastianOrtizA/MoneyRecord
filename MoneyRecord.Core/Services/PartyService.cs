@@ -94,7 +94,14 @@ namespace MoneyRecord.Services
 
                     db.Update(party);
                     db.Execute("DELETE FROM \"PartyMember\" WHERE PartyId = ?", party.Id);
+                    var left = db.Query<PartyExpenseExclusion>(
+                        "SELECT x.* FROM \"PartyExpenseExclusion\" x JOIN \"PartyExpense\" e ON e.Id = x.ExpenseId WHERE e.PartyId = ?", party.Id)
+                        .GroupBy(x => x.ExpenseId).ToDictionary(g => g.Key, g => g.Select(x => x.ParticipantId).ToHashSet());
                     var kept = db.Table<PartyExpense>().Where(e => e.PartyId == party.Id).ToList().Select(e => e.Id).ToList();
+                    // An expense nobody remaining shares can't be summed
+                    if (kept.Any(id => left.TryGetValue(id, out var excluded) && members.All(excluded.Contains)))
+                        throw new InvalidOperationException("Taking this person out would leave an expense with nobody to share it.");
+
                     foreach (var expenseId in kept)
                         db.Execute("DELETE FROM \"PartyExpenseExclusion\" WHERE ExpenseId = ? AND ParticipantId NOT IN (" +
                             string.Join(",", members) + ")", expenseId);

@@ -72,7 +72,7 @@ crashes at runtime (XAML is inflated at runtime there).
   transaction, replacing the edited ones; the own conversion shared out), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
   PartyService (friends list, parties with members, expenses split evenly minus exclusions, contributions to a common pot;
-  summary = balances + settle-up payments),   TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
+  summary = balances + settle-up payments), TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
   categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
   (zip backup/restore, CSV), CategoryIconService, SetupService (first-run setup: pending only on a new install;

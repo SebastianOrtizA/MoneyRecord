@@ -97,6 +97,19 @@ public sealed class PartyServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Save_TakingOutTheOnlySharerOfAnExpense_Throws()
+    {
+        await _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, Amount = 30m, PaidByParticipantId = _ana.Id }, [_ana.Id, _ben.Id]);
+        var party = (await _sut.GetAsync(_partyId))!;
+
+        var act = () => _sut.SaveAsync(party, [_ana.Id, _ben.Id]);
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        (await _sut.GetMembersAsync(_partyId)).Should().HaveCount(3);
+        (await _sut.GetSummaryAsync(_partyId)).TotalSpentCents.Should().Be(3000);
+    }
+
+    [Fact]
     public async Task SaveExpense_Invalid_Throws()
     {
         var zero = () => _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, AmountCents = 0, PaidByParticipantId = _ana.Id }, []);
