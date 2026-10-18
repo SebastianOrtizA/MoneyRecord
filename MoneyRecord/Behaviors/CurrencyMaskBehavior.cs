@@ -113,6 +113,33 @@ namespace MoneyRecord.Behaviors
             // Only format if the Entry is not focused (programmatic change from ViewModel)
             if (!_isFocused && !string.IsNullOrEmpty(e.NewTextValue))
                 FormatIfNotFocused(entry);
+            else if (_isFocused)
+                GroupWhileTyping(entry, e.OldTextValue);
+        }
+
+        /// <summary>
+        /// Shows the thousands separators as the user types ("1250" → "1,250") and keeps the caret next to the
+        /// same digit (<see cref="AmountMask"/>).
+        /// </summary>
+        private void GroupWhileTyping(Entry entry, string? oldText)
+        {
+            var text = entry.Text;
+            if (string.IsNullOrEmpty(text))
+                return;
+
+            var (result, newCaret) = AmountMask.Group(text, oldText, DecimalPlaces, AllowNegativeValues, Culture);
+            if (result == text)
+                return;
+
+            SetText(entry, result);
+            entry.CursorPosition = newCaret;
+
+            // The platform is still finishing the keystroke and moves the caret after this handler: set it again after
+            entry.Dispatcher.Dispatch(() =>
+            {
+                if (_isFocused && entry.Text == result)
+                    entry.CursorPosition = newCaret;
+            });
         }
 
         /// <summary>
@@ -163,7 +190,7 @@ namespace MoneyRecord.Behaviors
 
             // When focused, show raw numeric value for easier editing
             var value = AmountParser.ParseCurrencyValue(entry.Text, DecimalPlaces, AllowNegativeValues, CurrencyCode);
-            SetText(entry, value != 0 ? value.ToString($"F{MoneyFormatter.EntryDecimals(value, CurrencyCode)}", Culture) : string.Empty);
+            SetText(entry, value != 0 ? value.ToString($"N{MoneyFormatter.EntryDecimals(value, CurrencyCode)}", Culture) : string.Empty);
         }
 
         private void OnEntryUnfocused(object? sender, FocusEventArgs e)
