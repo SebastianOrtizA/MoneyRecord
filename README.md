@@ -212,9 +212,10 @@ CI (`.github/workflows/build-android.yml`) builds a Release `.apk` (GitHub Relea
 Store) on every push. A `v*` tag publishes them as a GitHub Release, and that build fails unless the release keystore
 is configured, so a published APK is never signed with the debug key.
 
-The tag build also uploads the `.aab` to Google Play's **internal testing** track, with the release notes in
+The tag build also uploads the `.aab` to Google Play's **closed testing** track (`alpha`; set the repository variable `PLAY_TRACK`
+for a custom-named closed track), with the release notes in
 `fastlane/metadata/android/<locale>/changelogs/default.txt` (update them before tagging; 500 characters at most).
-Promoting it to closed testing or production is done in Play Console. The upload uses the
+Promoting it to production is done in Play Console. The upload uses the
 `PLAY_SERVICE_ACCOUNT_JSON` secret: the JSON key of a Google Cloud service account (Google Play Android Developer API
 enabled) invited in Play Console → Users and permissions with the release-to-testing permissions. Without the secret
 the upload is skipped. While the app has never been published, Play only accepts draft releases: set the repository
