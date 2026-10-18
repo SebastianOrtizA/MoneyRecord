@@ -528,6 +528,12 @@ namespace MoneyRecord.ViewModels
                 await LoadCommand.ExecuteAsync(null);
                 await _dialogService.ToastAsync(string.Format(AppResources.PartyShareRecorded, MoneyFormatter.Format(transaction.Amount, party.CurrencyCode)));
             }
+            catch (PartyProblemException ex) when (ex.Problem == PartyProblem.ShareDeleted)
+            {
+                // The expense was deleted from Transactions: the link is cleared, so this time the pickers show
+                await LoadCommand.ExecuteAsync(null);
+                await RecordMyShareAsync();
+            }
             catch (PartyProblemException ex) when (ex.Problem == PartyProblem.NoShare)
             {
                 await _errorHandler.HandleAsync(AppResources.PartyNoShareYet);

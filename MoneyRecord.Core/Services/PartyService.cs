@@ -263,9 +263,21 @@ namespace MoneyRecord.Services
             if (summary.Party.OwnTransactionId is { } existingId)
                 transaction = await db.FindAsync<Transaction>(existingId);
             var isNew = transaction == null;
+            if (isNew && (accountId == null || categoryId == null))
+            {
+                // The expense was deleted elsewhere: forget it, so the next try asks for an account and a category again
+                await dbInitializer.RunInTransactionAsync(conn =>
+                {
+                    var stale = conn.Get<PartyEvent>(partyId);
+                    stale.OwnTransactionId = null;
+                    conn.Update(stale);
+                });
+                throw new PartyProblemException(PartyProblem.ShareDeleted, "The recorded share expense no longer exists.");
+            }
+
             transaction ??= new Transaction { Type = TransactionType.Expense };
             var chosenAccountId = accountId ?? transaction.AccountId ?? throw new ArgumentException("An account is needed.", nameof(accountId));
-            var chosenCategoryId = categoryId ?? (isNew ? throw new ArgumentException("A category is needed.", nameof(categoryId)) : transaction.CategoryId);
+            var chosenCategoryId = categoryId ?? transaction.CategoryId;
             var account = await db.FindAsync<Account>(chosenAccountId) ?? throw new ArgumentException("The account no longer exists.", nameof(accountId));
             if (!MoneyFormatter.SameCurrency(account.CurrencyCode, summary.Party.CurrencyCode))
                 throw new PartyProblemException(PartyProblem.AccountCurrency, "The account is in another currency than the party.");

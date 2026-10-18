@@ -297,4 +297,19 @@ public sealed class PartyServiceTests : IAsyncLifetime
         await _sut.SaveAsync(new PartyEvent { Id = _partyId, Name = "Birthday 2", Budget = 100m }, [_ana.Id, _cam.Id]);
         (await _sut.GetAsync(_partyId))!.MeParticipantId.Should().BeNull();
     }
+
+    [Fact]
+    public async Task RecordOwnShare_WhenTheExpenseWasDeleted_WithoutPicks_ClearsTheLinkAndSaysSo()
+    {
+        await _sut.SaveExpenseAsync(new PartyExpense { PartyId = _partyId, Amount = 30m, PaidByParticipantId = _ana.Id }, []);
+        var (accountId, categoryId) = await AccountAndCategoryAsync();
+        var transaction = await _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId);
+        await _db.DeleteAsync<Transaction>(transaction.Id);
+
+        var act = () => _sut.RecordOwnShareAsync(_partyId, _ben.Id, null, null);
+
+        (await act.Should().ThrowAsync<PartyProblemException>()).Which.Problem.Should().Be(PartyProblem.ShareDeleted);
+        (await _sut.GetAsync(_partyId))!.OwnTransactionId.Should().BeNull();
+        (await _sut.RecordOwnShareAsync(_partyId, _ben.Id, accountId, categoryId)).AmountCents.Should().Be(1000);
+    }
 }
