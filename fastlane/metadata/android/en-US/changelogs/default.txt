@@ -1,1 +1,1 @@
-First release on Google Play.
+Parties: split trips and shared expenses with friends, see who owes whom, settle up and share the summary, and record your own share as an expense. Backups now use format v5.

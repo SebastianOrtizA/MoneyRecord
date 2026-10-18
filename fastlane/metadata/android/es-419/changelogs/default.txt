@@ -1,1 +1,1 @@
-Primera versión en Google Play.
+Grupos: divide gastos compartidos y de viajes con amigos, mira quién debe a quién, salda cuentas y comparte el resumen, y registra tu parte como gasto. Las copias de seguridad usan ahora el formato v5.
