@@ -119,7 +119,7 @@ namespace MoneyRecord.Behaviors
 
         /// <summary>
         /// Shows the thousands separators as the user types ("1250" → "1,250") and keeps the caret next to the
-        /// same digit. Only the typed text changes: no symbol, no padding zeros.
+        /// same digit (<see cref="AmountMask"/>).
         /// </summary>
         private void GroupWhileTyping(Entry entry, string? oldText)
         {
@@ -127,101 +127,11 @@ namespace MoneyRecord.Behaviors
             if (string.IsNullOrEmpty(text))
                 return;
 
-            var format = Culture.NumberFormat;
-            var decimalSep = format.CurrencyDecimalSeparator;
-            var groupSep = format.CurrencyGroupSeparator;
-
-            // entry.CursorPosition is stale inside TextChanged, so find the caret from the edit: what follows it is
-            // the unchanged tail shared with the previous text
-            oldText ??= string.Empty;
-            var limit = Math.Min(oldText.Length, text.Length);
-            var prefix = 0;
-            while (prefix < limit && oldText[prefix] == text[prefix])
-                prefix++;
-            var suffix = 0;
-            while (suffix < limit - prefix && oldText[oldText.Length - 1 - suffix] == text[text.Length - 1 - suffix])
-                suffix++;
-            var caret = text.Length - suffix;
-
-            var negative = AllowNegativeValues && text.StartsWith(format.NegativeSign, StringComparison.Ordinal);
-            var integer = new System.Text.StringBuilder();
-            var fraction = new System.Text.StringBuilder();
-            var hasDecimal = false;
-
-            // Digits and the decimal mark that sit before the caret: the caret goes after the same number of them
-            var significantBeforeCaret = 0;
-            for (var i = 0; i < text.Length; i++)
-            {
-                var c = text[i];
-                var kept = false;
-                if (char.IsDigit(c))
-                {
-                    if (!hasDecimal)
-                    {
-                        integer.Append(c);
-                        kept = true;
-                    }
-                    else if (fraction.Length < DecimalPlaces)
-                    {
-                        fraction.Append(c);
-                        kept = true;
-                    }
-                }
-                else if (!hasDecimal && DecimalPlaces > 0 &&
-                         (c.ToString() == decimalSep || ((c == '.' || c == ',') && c.ToString() != groupSep)))
-                {
-                    hasDecimal = true;
-                    kept = true;
-                }
-
-                if (kept && i < caret)
-                    significantBeforeCaret++;
-            }
-
-            // "007" → "7", but keep a single zero ("0,5")
-            var digits = integer.ToString().TrimStart('0');
-            if (digits.Length == 0 && integer.Length > 0)
-                digits = "0";
-
-            var grouped = new System.Text.StringBuilder(negative ? format.NegativeSign : string.Empty);
-            // Leading zeros dropped before the caret no longer count
-            var dropped = integer.Length - digits.Length;
-            significantBeforeCaret = Math.Max(0, significantBeforeCaret - Math.Min(dropped, significantBeforeCaret));
-
-            var newCaret = grouped.Length;
-            var counted = 0;
-
-            for (var i = 0; i < digits.Length; i++)
-            {
-                if (i > 0 && (digits.Length - i) % 3 == 0)
-                    grouped.Append(groupSep);
-                grouped.Append(digits[i]);
-                counted++;
-                if (counted == significantBeforeCaret)
-                    newCaret = grouped.Length;
-            }
-
-            if (hasDecimal)
-            {
-                grouped.Append(decimalSep);
-                counted++;
-                if (counted == significantBeforeCaret)
-                    newCaret = grouped.Length;
-                foreach (var d in fraction.ToString())
-                {
-                    grouped.Append(d);
-                    counted++;
-                    if (counted == significantBeforeCaret)
-                        newCaret = grouped.Length;
-                }
-            }
-
-            var result = grouped.ToString();
+            var (result, newCaret) = AmountMask.Group(text, oldText, DecimalPlaces, AllowNegativeValues, Culture);
             if (result == text)
                 return;
 
             SetText(entry, result);
-            newCaret = Math.Clamp(newCaret, 0, result.Length);
             entry.CursorPosition = newCaret;
 
             // The platform is still finishing the keystroke and moves the caret after this handler: set it again after

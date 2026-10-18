@@ -50,7 +50,9 @@ namespace MoneyRecord.Platforms.Android.Handlers
             // and optionally the minus sign for negative values
             // The group separator of the culture is allowed too: the mask puts it in the text while typing
             var groupSeparator = CultureInfo.CurrentCulture.NumberFormat.CurrencyGroupSeparator;
-            var allowedChars = (allowNegative ? "0123456789.,-" : "0123456789.,") + groupSeparator;
+            var allowedChars = allowNegative ? "0123456789.,-" : "0123456789.,";
+            if (!allowedChars.Contains(groupSeparator))
+                allowedChars += groupSeparator;
             editText.KeyListener = DigitsKeyListener.GetInstance(allowedChars);
         }
     }
