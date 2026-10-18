@@ -48,7 +48,9 @@ namespace MoneyRecord.Platforms.Android.Handlers
 
             // Create a DigitsKeyListener that accepts digits plus decimal separators
             // and optionally the minus sign for negative values
-            var allowedChars = allowNegative ? "0123456789.,-" : "0123456789.,";
+            // The group separator of the culture is allowed too: the mask puts it in the text while typing
+            var groupSeparator = CultureInfo.CurrentCulture.NumberFormat.CurrencyGroupSeparator;
+            var allowedChars = (allowNegative ? "0123456789.,-" : "0123456789.,") + groupSeparator;
             editText.KeyListener = DigitsKeyListener.GetInstance(allowedChars);
         }
     }

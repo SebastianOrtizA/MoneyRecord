@@ -142,7 +142,11 @@
                                         <Label Text="{Binding Category.DisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center"
                                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                         <Label Grid.Column="1" Text="{Binding Category.Name}" FontSize="16" VerticalOptions="Center" LineBreakMode="TailTruncation" />
-                                        <controls:DecimalEntry Grid.Column="2" Text="{Binding Limit}" Placeholder="0.00" FontSize="16" HorizontalTextAlignment="End" />
+                                        <controls:DecimalEntry Grid.Column="2" Text="{Binding Limit}" Placeholder="0.00" FontSize="16" HorizontalTextAlignment="End">
+                                            <controls:DecimalEntry.Behaviors>
+                                                <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="False" />
+                                            </controls:DecimalEntry.Behaviors>
+                                        </controls:DecimalEntry>
                                     </Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
