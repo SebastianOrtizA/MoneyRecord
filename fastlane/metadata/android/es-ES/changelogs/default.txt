@@ -1,1 +1,1 @@
-Grupos: divide gastos compartidos y de viajes con amigos, mira quién debe a quién, salda cuentas y comparte el resumen, y registra tu parte como gasto. Las copias de seguridad usan ahora el formato v5.
+Los importes muestran ahora los separadores de miles mientras escribes, para leer fácilmente un número largo al introducirlo. También en el filtro de importe de Transacciones y en los límites por categoría de los viajes.

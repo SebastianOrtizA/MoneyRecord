@@ -1,1 +1,1 @@
-Parties: split trips and shared expenses with friends, see who owes whom, settle up and share the summary, and record your own share as an expense. Backups now use format v5.
+Amounts now show thousands separators as you type, so a long number is easy to read while you enter it. Also in the Transactions amount filter and trip category limits.
