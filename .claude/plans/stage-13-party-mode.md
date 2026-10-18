@@ -1,6 +1,6 @@
 # Stage 13: Party Mode
 
-**Status**: Design agreed 2026-10-17 (decisions below); 13.1, 13.2 done; 13.3a in review
+**Status**: Design agreed 2026-10-17 (decisions below); 13.1, 13.2, 13.3a done; 13.3b in review
 **Depends on**: Stages 6–11 (modernization); related to 10.7 splits and 10.8 debts
 **Complexity**: TBD
 **Source**: User request, 2026-10-14
@@ -34,8 +34,8 @@ in, the total, and who owes whom so that everybody ends up paying the same share
 - 13.2 UI (done): More → Parties (cards + new/edit sheet with friends ticked), Friends page, party page (spent of budget,
   balances with the pot line, expenses and contributions with sheets; tap = edit / delete); `PartyProblemException` names
   why a change was refused; display models `PartyCard` / `PartyBalanceRow` in Core (tested).
-- 13.3a (in review): settle-up on the party page: payments still to make with "Mark paid" (a `PartyPayment` record: counts in the balances, so the list shrinks; tap a made payment to delete = undo), share as text (summary + balances + who pays whom, system share sheet via `IFileSharer.ShareTextAsync`), backup/restore v5 (all party tables; parties weren't in backups before).
-- 13.3b: optional own-share expense (button on the party page: pick which friend is you, creates one normal expense for your share, re-pressing updates it).
+- 13.3a (done): settle-up on the party page: payments still to make with "Mark paid" (a `PartyPayment` record: counts in the balances, so the list shrinks; tap a made payment to delete = undo), share as text (summary + balances + who pays whom, system share sheet via `IFileSharer.ShareTextAsync`), backup/restore v5 (all party tables; parties weren't in backups before).
+- 13.3b (in review): "Record my share" button on the party page: pick which friend is you once (`PartyEvent.MeParticipantId`), then an account in the party's currency and an expense category; creates one normal expense (party name, party date, your share) and links it (`OwnTransactionId`), so pressing again ("Update my share") updates it, keeping its account and category. The party edit form keeps the link while you stay a member.
 
 ## Verify
 Defined once the design is agreed: Core tests for shares, rounding and settle-up + a `/run-moneyrecord` flow (en + es).

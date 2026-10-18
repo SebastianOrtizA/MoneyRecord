@@ -93,6 +93,10 @@ namespace MoneyRecord.Services
                     if (used.Any(id => !members.Contains(id)))
                         throw new PartyProblemException(PartyProblem.MemberInUse, "A person with expenses or contributions can't be taken out.");
 
+                    // The caller edits a copy without the owner's share link: keep it (the owner stays only while a member)
+                    var stored = db.Find<PartyEvent>(party.Id);
+                    party.MeParticipantId = stored?.MeParticipantId is { } me && members.Contains(me) ? me : null;
+                    party.OwnTransactionId = stored?.OwnTransactionId;
                     db.Update(party);
                     db.Execute("DELETE FROM \"PartyMember\" WHERE PartyId = ?", party.Id);
                     var left = db.Query<PartyExpenseExclusion>(
@@ -244,6 +248,58 @@ namespace MoneyRecord.Services
         {
             var db = await dbInitializer.GetConnectionAsync();
             await db.DeleteAsync<PartyPayment>(paymentId);
+        }
+
+        public async Task<Transaction> RecordOwnShareAsync(int partyId, int meParticipantId, int? accountId, int? categoryId)
+        {
+            var summary = await GetSummaryAsync(partyId);
+            var share = summary.Balances.FirstOrDefault(b => b.ParticipantId == meParticipantId && meParticipantId != PartyLedger.PotId)
+                ?? throw new ArgumentException("The owner isn't in the party.", nameof(meParticipantId));
+            if (share.ShareCents <= 0)
+                throw new PartyProblemException(PartyProblem.NoShare, "There is no share to record.");
+
+            var db = await dbInitializer.GetConnectionAsync();
+            Transaction? transaction = null;
+            if (summary.Party.OwnTransactionId is { } existingId)
+                transaction = await db.FindAsync<Transaction>(existingId);
+            var isNew = transaction == null;
+            if (isNew && (accountId == null || categoryId == null))
+            {
+                // The expense was deleted elsewhere: forget it, so the next try asks for an account and a category again
+                await dbInitializer.RunInTransactionAsync(conn =>
+                {
+                    var stale = conn.Get<PartyEvent>(partyId);
+                    stale.OwnTransactionId = null;
+                    conn.Update(stale);
+                });
+                throw new PartyProblemException(PartyProblem.ShareDeleted, "The recorded share expense no longer exists.");
+            }
+
+            transaction ??= new Transaction { Type = TransactionType.Expense };
+            var chosenAccountId = accountId ?? transaction.AccountId ?? throw new ArgumentException("An account is needed.", nameof(accountId));
+            var chosenCategoryId = categoryId ?? transaction.CategoryId;
+            var account = await db.FindAsync<Account>(chosenAccountId) ?? throw new ArgumentException("The account no longer exists.", nameof(accountId));
+            if (!MoneyFormatter.SameCurrency(account.CurrencyCode, summary.Party.CurrencyCode))
+                throw new PartyProblemException(PartyProblem.AccountCurrency, "The account is in another currency than the party.");
+
+            transaction.Date = summary.Party.Date;
+            transaction.Description = summary.Party.Name;
+            transaction.AmountCents = share.ShareCents;
+            transaction.AccountId = chosenAccountId;
+            transaction.CategoryId = chosenCategoryId;
+
+            await dbInitializer.RunInTransactionAsync(conn =>
+            {
+                if (isNew)
+                    conn.Insert(transaction);
+                else
+                    conn.Update(transaction);
+                var party = conn.Get<PartyEvent>(partyId);
+                party.MeParticipantId = meParticipantId;
+                party.OwnTransactionId = transaction.Id;
+                conn.Update(party);
+            });
+            return transaction;
         }
 
         public async Task<PartySummary> GetSummaryAsync(int partyId)

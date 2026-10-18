@@ -10,7 +10,13 @@ namespace MoneyRecord.Services
         /// <summary>A member with expenses or contributions would be taken out of a party.</summary>
         MemberInUse,
         /// <summary>Taking a member out would leave an expense nobody shares.</summary>
-        NobodyShares
+        NobodyShares,
+        /// <summary>The owner's share is zero, so there is nothing to record.</summary>
+        NoShare,
+        /// <summary>The account's currency isn't the party's.</summary>
+        AccountCurrency,
+        /// <summary>The recorded share expense is gone and no account or category was given; the link has been cleared.</summary>
+        ShareDeleted
     }
 
     public sealed class PartyProblemException(PartyProblem problem, string message) : InvalidOperationException(message)
