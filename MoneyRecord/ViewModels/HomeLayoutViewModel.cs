@@ -84,6 +84,19 @@ namespace MoneyRecord.ViewModels
             Save();
         }
 
+        /// <summary>A card dropped on another takes its place.</summary>
+        public void MoveTo(HomeCardItem item, HomeCardItem target)
+        {
+            var to = Items.IndexOf(target);
+            var from = Items.IndexOf(item);
+            if (from < 0 || to < 0 || from == to)
+                return;
+
+            Items.Move(from, to);
+            RefreshMoves();
+            Save();
+        }
+
         [RelayCommand]
         private void MoveUp(HomeCardItem? item) => Move(item, -1);
 
