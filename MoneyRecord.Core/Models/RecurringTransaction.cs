@@ -1,4 +1,5 @@
 using MoneyRecord.Helpers;
+using MoneyRecord.Resources.Strings;
 using SQLite;
 
 namespace MoneyRecord.Models
@@ -100,6 +101,11 @@ namespace MoneyRecord.Models
         /// <summary>The account's currency (empty = the base currency), filled in when the transaction is loaded for display.</summary>
         [Ignore]
         public string CurrencyCode { get; set; } = string.Empty;
+
+        /// <summary>The amount for a list: "≈ $85" or "Amount varies" for a variable schedule, the fixed amount otherwise.</summary>
+        [Ignore]
+        public string AmountText => !IsVariableAmount ? MoneyFormatter.Format(Amount, CurrencyCode)
+            : LastAmountCents != 0 ? MoneyFormatter.FormatEstimate(Money.FromCents(LastAmountCents), CurrencyCode) : AppResources.AmountVaries;
 
         [Ignore]
         public string FrequencyDisplay { get; set; } = string.Empty;

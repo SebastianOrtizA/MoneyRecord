@@ -74,7 +74,7 @@ crashes at runtime (XAML is inflated at runtime there).
   PartyService (friends list, parties with members, expenses split evenly minus exclusions, contributions to a common pot;
   summary = balances + settle-up payments), TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
   AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
-  categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
+  categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService (a variable-amount schedule, `IsVariableAmount`, is never created by processing: each due date is a pending `UpcomingEntry` to enter via the add form's `RecurringId` + `Occurrence` route or skip; `LastAmountCents` = the estimate), DataExportService
   (zip backup/restore, CSV), CategoryIconService, SetupService (first-run setup: pending only on a new install;
   applies the chosen accounts/categories, replacing the seed data on the first run),
   WhatsNewTracker + `IWhatsNewService` (the "What's new" alert: the Play changelog `fastlane/metadata/android/*/changelogs/default.txt`, bundled as `Changelog/{locale}.txt` assets and picked by `WhatsNewChangelog.Locale`, shown once per version after an update, again from About; a new install skips it),

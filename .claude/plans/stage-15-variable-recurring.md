@@ -1,6 +1,6 @@
 # Stage 15: Variable-amount recurring (bills that change each time)
 
-**Status**: 15.1 in review (core, no UI yet); 15.2 not started. Design agreed 2026-10-25 (decisions below)
+**Status**: 15.1 done (PR #79); 15.2 in review (UI). Design agreed 2026-10-25 (decisions below)
 **Depends on**: 11.7 scheduled recurring
 **Complexity**: Medium (2 PRs)
 **Source**: User request, 2026-10-25
@@ -57,6 +57,12 @@ so until then a tap opens the plain add form.
 - Recurring page: a **To enter** section at the top of Upcoming with Enter and Skip (confirm). Home's Upcoming card shows
   pending rows first with an "Enter" badge. `UpcomingRow` shows "≈" or "Amount varies".
 - Strings in en + es; `ResourceParityTests`.
+
+**Done as (15.2)**: as planned, plus `UpcomingEntry.CanEnter` (only a schedule's oldest pending row has Enter / Skip; the
+others wait their turn) and `RecurringTransaction.AmountText` ("≈ $85" / "Amount varies" in the Schedules list). The occurrence
+form locks the date (the service only accepts the schedule's next date) and skips trips, split and "Make recurring". Home
+lists due rows first and a tap opens the form; the Recurring page's Upcoming view has a "To enter" section with Enter and
+Skip (confirm). The edit form and the add form in schedule mode have an "Amount varies" switch (hidden for debts).
 
 ## Critical files
 - Changed: `Models/RecurringTransaction.cs`, `Models/UpcomingEntry.cs`, `Helpers/UpcomingSchedule.cs`,

@@ -15,6 +15,8 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(TypeName), "Type")]
     [QueryProperty(nameof(AccountIdString), "AccountId")]
     [QueryProperty(nameof(ScheduleName), "Schedule")]
+    [QueryProperty(nameof(RecurringIdString), "RecurringId")]
+    [QueryProperty(nameof(OccurrenceString), "Occurrence")]
     public partial class AddTransactionViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -23,6 +25,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITransactionRepository _transactionRepository;
         private readonly IBudgetRepository _budgetRepository;
         private readonly IRecurringTransactionRepository _recurringTransactionRepository;
+        private readonly IRecurringTransactionService _recurringService;
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
@@ -72,6 +75,32 @@ namespace MoneyRecord.ViewModels
             get => IsScheduleMode.ToString();
             set => IsScheduleMode = bool.TryParse(value, out var schedule) && schedule;
         }
+
+        /// <summary>A variable schedule's occurrence to enter (from its notification, Home or the Recurring page): the schedule's ID.</summary>
+        public string? RecurringIdString { get; set; }
+
+        /// <summary>The occurrence's date (yyyy-MM-dd) that goes with <see cref="RecurringIdString"/>.</summary>
+        public string? OccurrenceString { get; set; }
+
+        /// <summary>
+        /// Entering a variable schedule's due occurrence: the form is a new entry prefilled from the schedule, its date is the
+        /// occurrence's (fixed), and the save moves the schedule on (<see cref="IRecurringTransactionService.EnterOccurrenceAsync"/>).
+        /// </summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanMakeRecurring), nameof(CanEditDate))]
+        private bool isOccurrenceMode;
+
+        public bool CanEditDate => !IsOccurrenceMode;
+
+        private int _occurrenceRecurringId;
+
+        /// <summary>The new schedule's amount changes each time: the amount is optional (it becomes the first estimate).</summary>
+        [ObservableProperty]
+        private bool isVariableAmount;
+
+        /// <summary>"0.00", or the variable schedule's last amount ("≈ $85.00") while entering an occurrence.</summary>
+        [ObservableProperty]
+        private string amountPlaceholder = "0.00";
 
         /// <summary>
         /// A new schedule from the Recurring page: the date is its first occurrence (tomorrow at the earliest) and only the
@@ -203,7 +232,7 @@ namespace MoneyRecord.ViewModels
         private List<Category> SplitCategories => CategoryChoices.Select(c => c.Category).ToList();
 
         /// <summary>Only an expense can be split across categories (recurring transactions aren't split).</summary>
-        public bool CanSplit => TransactionType == TransactionType.Expense && !IsScheduleMode && !IsTripMode;
+        public bool CanSplit => TransactionType == TransactionType.Expense && !IsScheduleMode && !IsTripMode && !IsOccurrenceMode;
 
         /// <summary>The payment is split across categories: the parts replace the category grid.</summary>
         [ObservableProperty]
@@ -214,7 +243,7 @@ namespace MoneyRecord.ViewModels
         public ObservableCollection<SplitPartViewModel> SplitParts { get; } = [];
 
         /// <summary>"Make recurring" is offered for a new entry in one category (recurring transactions aren't split).</summary>
-        public bool CanMakeRecurring => !IsEditMode && !IsSplit && !IsTripMode;
+        public bool CanMakeRecurring => !IsEditMode && !IsSplit && !IsTripMode && !IsOccurrenceMode;
 
         /// <summary>A part can be removed while there are more than two (fewer is no split: switch it off instead).</summary>
         public bool CanRemoveSplitParts => SplitParts.Count > 2;
@@ -334,7 +363,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, IRecurringTransactionService recurringService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -342,6 +371,7 @@ namespace MoneyRecord.ViewModels
             _transactionRepository = transactionRepository;
             _budgetRepository = budgetRepository;
             _recurringTransactionRepository = recurringTransactionRepository;
+            _recurringService = recurringService;
             _navigationService = navigationService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
@@ -388,6 +418,9 @@ namespace MoneyRecord.ViewModels
             SelectedCategory = null;
             SelectedAccount = null;
             Title = AppResources.AddTransaction;
+            IsOccurrenceMode = false;
+            IsVariableAmount = false;
+            AmountPlaceholder = "0.00";
             IsEditMode = false;
             IsMoreDetailsOpen = false;
             TagsText = string.Empty;
@@ -574,6 +607,19 @@ namespace MoneyRecord.ViewModels
             {
                 // Add mode
                 IsEditMode = false;
+                var occurrence = await LoadOccurrenceAsync();
+                if (RecurringIdString != null && occurrence == null)
+                {
+                    await _errorHandler.HandleAsync(AppResources.OccurrenceNoLongerPending);
+                    await _navigationService.GoBackAsync();
+                    return;
+                }
+                if (occurrence != null)
+                {
+                    // Before the trip and categories load: the entry is the schedule's type, outside any trip
+                    TransactionType = occurrence.TransactionType;
+                    IsOccurrenceMode = true;
+                }
                 Title = TransactionType == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
                 await LoadAccountsAsync();
                 await LoadTripAsync(null);
@@ -588,6 +634,9 @@ namespace MoneyRecord.ViewModels
                     ? CategoryChoices.FirstOrDefault()?.Category
                     : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
 
+                if (occurrence != null)
+                    FillFromOccurrence(occurrence);
+
                 if (IsScheduleMode)
                 {
                     Title = TransactionType == TransactionType.Income ? AppResources.NewRecurringIncome : AppResources.NewRecurringExpense;
@@ -597,6 +646,41 @@ namespace MoneyRecord.ViewModels
                     IsMoreDetailsOpen = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// The variable schedule named by the route (<see cref="RecurringIdString"/>) when its occurrence on
+        /// <see cref="OccurrenceString"/> is still the next one due; null when the route names none or it is stale.
+        /// </summary>
+        private async Task<RecurringTransaction?> LoadOccurrenceAsync()
+        {
+            if (!int.TryParse(RecurringIdString, out var id)
+                || !DateTime.TryParseExact(OccurrenceString, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out var date))
+                return null;
+
+            var recurring = await _recurringTransactionRepository.GetByIdAsync(id);
+            if (recurring is not { IsActive: true, IsVariableAmount: true, DebtId: null }
+                || recurring.NextOccurrence.Date != date.Date || recurring.NextOccurrence > Now)
+                return null;
+
+            _occurrenceRecurringId = id;
+            return recurring;
+        }
+
+        /// <summary>Fills the entry from the schedule; the amount stays empty (its last one is the hint).</summary>
+        private void FillFromOccurrence(RecurringTransaction recurring)
+        {
+            _categoryChosen = true;
+            Title = string.Format(AppResources.PendingEntryTitle, recurring.Description);
+            SelectedDate = recurring.NextOccurrence.Date;
+            SelectedAccount = Accounts.FirstOrDefault(a => a.Id == recurring.AccountId) ?? SelectedAccount;
+            SelectedCategory = CategoryChoices.FirstOrDefault(c => c.Category.Id == recurring.CategoryId)?.Category ?? SelectedCategory;
+            PayeeText = _payees.FirstOrDefault(p => p.Id == recurring.PayeeId)?.Name ?? string.Empty;
+            Description = EntryDescription.ForEditing(recurring.Description, SelectedCategory?.Name);
+            IsMoreDetailsOpen = Description.Length > 0;
+            if (recurring.LastAmountCents != 0)
+                AmountPlaceholder = MoneyFormatter.FormatEstimate(Money.FromCents(recurring.LastAmountCents), SelectedAccount?.CurrencyCode ?? string.Empty);
         }
 
         private async Task LoadAccountsAsync()
@@ -613,7 +697,7 @@ namespace MoneyRecord.ViewModels
             _loadingTrip = true;
             try
             {
-                var active = TransactionType == TransactionType.Expense && !IsScheduleMode ? await _trips.GetActiveAsync() : null;
+                var active = TransactionType == TransactionType.Expense && !IsScheduleMode && !IsOccurrenceMode ? await _trips.GetActiveAsync() : null;
                 TripForEntry = edited == null ? active : edited.TripId is { } id && active?.Id == id ? active : null;
                 IsOutsideTrip = false;
                 TripInfoText = string.Empty;
@@ -782,7 +866,9 @@ namespace MoneyRecord.ViewModels
         private async Task SaveAsync()
         {
             var amountValue = AmountParser.Parse(Amount, SelectedAccount?.CurrencyCode);
-            if (amountValue <= 0 || !Money.IsInRange(amountValue))
+            // A variable schedule may leave the amount empty (the real one is typed each time)
+            var amountOptional = IsScheduleMode && IsVariableAmount && string.IsNullOrWhiteSpace(Amount);
+            if ((amountValue <= 0 && !amountOptional) || !Money.IsInRange(amountValue))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;
@@ -931,7 +1017,25 @@ namespace MoneyRecord.ViewModels
                 };
                 newTransaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
 
-                await _transactionRepository.SaveAsync(newTransaction);
+                if (IsOccurrenceMode)
+                {
+                    try
+                    {
+                        await _recurringService.EnterOccurrenceAsync(_occurrenceRecurringId, newTransaction);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        // Entered or skipped meanwhile (another screen), or the schedule changed
+                        _logger.LogWarning(ex, "Occurrence of recurring transaction {RecurringId} could not be entered", _occurrenceRecurringId);
+                        await _errorHandler.HandleAsync(AppResources.OccurrenceNoLongerPending);
+                        await _navigationService.GoBackAsync();
+                        return;
+                    }
+                }
+                else
+                {
+                    await _transactionRepository.SaveAsync(newTransaction);
+                }
                 savedTransactionId = newTransaction.Id;
                 _receipt.Commit();
                 if (!IsTripMode)
@@ -975,6 +1079,9 @@ namespace MoneyRecord.ViewModels
             await _recurringTransactionRepository.SaveAsync(new RecurringTransaction
             {
                 Amount = amount,
+                IsVariableAmount = IsScheduleMode && IsVariableAmount,
+                // A first amount typed for a variable schedule is its first estimate
+                LastAmountCents = IsScheduleMode && IsVariableAmount ? Money.ToCents(amount) : 0,
                 Description = description,
                 CategoryId = SelectedCategory!.Id,
                 AccountId = accountId,

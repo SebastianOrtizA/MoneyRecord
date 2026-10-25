@@ -125,6 +125,19 @@ public class UpcomingVariableTests
     }
 
     [Fact]
+    public void Only_the_oldest_pending_occurrence_of_a_schedule_can_be_entered()
+    {
+        var late = Variable(1, Today.AddMonths(-1), 8500);
+        var other = Variable(2, Today, 0);
+
+        var entries = UpcomingSchedule.Build([late, other], new Dictionary<int, Category>(), new Dictionary<int, Account>(), Today);
+
+        entries.Where(e => e.RecurringId == 1).Select(e => (e.Date, e.IsPending, e.CanEnter)).Should()
+            .Equal((Today.AddMonths(-1), true, true), (Today, true, false));
+        entries.Single(e => e.RecurringId == 2).CanEnter.Should().BeTrue();
+    }
+
+    [Fact]
     public void A_debt_schedule_is_never_variable()
     {
         var debt = Variable(1, Today, 8500);
@@ -151,6 +164,27 @@ public class UpcomingVariableTests
 [Collection(LanguageCollection.Name)]
 public sealed class UpcomingEntryTextTests : LanguageTestBase
 {
+    [Fact]
+    public void A_variable_estimate_is_the_last_amount_or_says_the_amount_varies()
+    {
+        new UpcomingEntry { IsVariable = true, Amount = 85m, CurrencyCode = "USD" }.EstimateText
+            .Should().Be(MoneyFormatter.FormatEstimate(85m, "USD")).And.StartWith("≈ ");
+        new UpcomingEntry { IsVariable = true, CurrencyCode = "USD" }.EstimateText.Should().Be("Amount varies");
+        new UpcomingEntry { Amount = 85m }.EstimateText.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void A_schedule_lists_its_estimate_when_variable_and_its_amount_otherwise()
+    {
+        var fixedOne = new RecurringTransaction { Amount = 20m, CurrencyCode = "USD" };
+        var variable = new RecurringTransaction { Amount = 20m, IsVariableAmount = true, LastAmountCents = 8500, CurrencyCode = "USD" };
+        var none = new RecurringTransaction { IsVariableAmount = true, CurrencyCode = "USD" };
+
+        fixedOne.AmountText.Should().Be(MoneyFormatter.Format(20m, "USD"));
+        variable.AmountText.Should().Be(MoneyFormatter.FormatEstimate(85m, "USD"));
+        none.AmountText.Should().Be("Amount varies");
+    }
+
     [Theory]
     [InlineData(0, "Today")]
     [InlineData(1, "Tomorrow")]

@@ -269,7 +269,8 @@ namespace MoneyRecord.ViewModels
                 RecentTransactions = new(entries.OrderByDescending(e => e.Date).Take(5));
                 HasRecentTransactions = RecentTransactions.Count > 0;
 
-                UpcomingEntries = (await upcomingTask).Take(3).ToList();
+                // Entries waiting for their amount come first
+                UpcomingEntries = (await upcomingTask).OrderByDescending(e => e.CanEnter).Take(3).ToList();
                 HasUpcoming = UpcomingEntries.Count > 0;
 
                 // The budget card uses the Home period, like the Budget page does with its own
@@ -307,6 +308,12 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task SeeAllTransactionsAsync() => _navigationService.NavigateToAsync($"//{nameof(TransactionsPage)}");
+
+        /// <summary>A due variable-amount row opens the add form on that occurrence; other rows do nothing.</summary>
+        [RelayCommand]
+        private Task EnterOccurrenceAsync(UpcomingEntry? entry) => entry is { CanEnter: true }
+            ? _navigationService.NavigateToAsync(ReminderService.PendingRoute(entry.RecurringId, entry.Date))
+            : Task.CompletedTask;
 
         [RelayCommand]
         private Task SeeAllUpcomingAsync() =>
