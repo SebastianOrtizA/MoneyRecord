@@ -107,11 +107,11 @@
                 </VerticalStackLayout>
             </Border>
 
-            <VerticalStackLayout x:Name="PeriodSummaryCard" Spacing="16" IsVisible="{Binding ShowPeriodSummary}">
+            <VerticalStackLayout x:Name="PeriodSummaryCard" Spacing="16" IsVisible="{Binding ShowPeriodPicker}">
             <controls:PeriodPicker BindingContext="{Binding Period}" />
 
             <!-- The period summary: base-currency cards, then the other currencies, in one container so they read as one -->
-            <Border Style="{StaticResource PeriodSummary}">
+            <Border Style="{StaticResource PeriodSummary}" IsVisible="{Binding ShowPeriodSummary}">
                 <VerticalStackLayout Spacing="8">
                     <!-- "Show in": one total converted into the base currency, or by currency (offered with several currencies
                          and downloaded rates; the reports' "≈" chip is the same choice) -->

@@ -40,7 +40,6 @@ namespace MoneyRecord.ViewModels
         public HomeLayoutViewModel(IHomeLayoutSettings settings)
         {
             _settings = settings;
-            Load(settings.Layout);
         }
 
         public void Initialize() => Load(_settings.Layout);
