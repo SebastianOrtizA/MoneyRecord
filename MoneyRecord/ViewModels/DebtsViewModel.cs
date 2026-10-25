@@ -96,8 +96,8 @@ namespace MoneyRecord.ViewModels
                 _accounts = (await accountsTask).OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
                 _payees = await payeesTask;
                 _all = await debtsTask;
-                OwedToYouText = Totals(DebtDirection.Lent);
-                YouOweText = Totals(DebtDirection.Borrowed);
+                OwedToYouText = DebtSummary.OutstandingTotals(_all, DebtDirection.Lent);
+                YouOweText = DebtSummary.OutstandingTotals(_all, DebtDirection.Borrowed);
                 ApplyFilter();
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -115,14 +115,6 @@ namespace MoneyRecord.ViewModels
                     IsLoading = false;
             }
         }
-
-        // Never added across currencies: "$120.00 · €40.00"
-        private string Totals(DebtDirection direction) => string.Join(" · ", _all
-            .Where(d => d.Direction == direction && !d.IsPaidOff)
-            .GroupBy(d => d.CurrencyCode)
-            .OrderBy(g => g.Key != MoneyFormatter.BaseCurrency)
-            .ThenBy(g => g.Key, StringComparer.Ordinal)
-            .Select(g => MoneyFormatter.Format(Money.FromCents(g.Sum(d => d.OutstandingCents)), g.Key)));
 
         private void ApplyFilter()
         {

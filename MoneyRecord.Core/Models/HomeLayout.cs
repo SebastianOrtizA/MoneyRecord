@@ -9,8 +9,11 @@ namespace MoneyRecord.Models
     {
         private const string HiddenMarker = ";hidden=";
 
-        /// <summary>Every card in its declared order, all shown.</summary>
-        public static HomeLayout Default => new(Enum.GetValues<HomeCard>(), new HashSet<HomeCard>());
+        /// <summary>Cards that start hidden (opt-in).</summary>
+        private static readonly HomeCard[] HiddenByDefault = [HomeCard.Debts];
+
+        /// <summary>Every card in its declared order; the opt-in ones hidden.</summary>
+        public static HomeLayout Default => new(Enum.GetValues<HomeCard>(), HiddenByDefault.ToHashSet());
 
         public bool IsShown(HomeCard card) => !Hidden.Contains(card);
 
@@ -24,8 +27,10 @@ namespace MoneyRecord.Models
             var hidden = parts.Length > 1 ? ParseCards(parts[1]).ToHashSet() : [];
             hidden.Remove(HomeCard.Balance);
 
-            // Cards this saved layout predates: at the end, shown
-            order.AddRange(Enum.GetValues<HomeCard>().Where(c => !order.Contains(c)));
+            // Cards this saved layout predates: at the end, with their default visibility
+            var added = Enum.GetValues<HomeCard>().Where(c => !order.Contains(c)).ToList();
+            order.AddRange(added);
+            hidden.UnionWith(added.Where(HiddenByDefault.Contains));
             return new HomeLayout(order, hidden);
         }
 

@@ -29,6 +29,7 @@ namespace MoneyRecord.ViewModels
         private readonly ISavingsGoalService _goals;
         private readonly ITripService _trips;
         private readonly IHomeLayoutSettings _layoutSettings;
+        private readonly IDebtService _debts;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -148,7 +149,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>Which cards show and in what order (Settings → Home screen); read again on every load.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals))]
+        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals), nameof(ShowDebts))]
         private HomeLayout layout = HomeLayout.Default;
 
         // A card shows when it is enabled and has something to show
@@ -160,6 +161,21 @@ namespace MoneyRecord.ViewModels
         public bool ShowBudgets => Layout.IsShown(HomeCard.Budgets) && HasBudgets;
         public bool ShowTrip => Layout.IsShown(HomeCard.Trip) && HasActiveTrip;
         public bool ShowGoals => Layout.IsShown(HomeCard.Goals) && HasGoals;
+        public bool ShowDebts => Layout.IsShown(HomeCard.Debts) && HasDebts;
+
+        /// <summary>The open debts, first by due date (Home card, off by default); the card shows once one is open.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasDebts), nameof(ShowDebts))]
+        private List<DebtSummary> debtSummaries = [];
+
+        public bool HasDebts => DebtSummaries.Count > 0;
+
+        /// <summary>"Owed to you" and "You owe", per currency (never added together); empty = nothing open.</summary>
+        [ObservableProperty]
+        private string debtsOwedToYouText = string.Empty;
+
+        [ObservableProperty]
+        private string debtsYouOweText = string.Empty;
 
         /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
         public PeriodViewModel Period { get; }
@@ -169,8 +185,9 @@ namespace MoneyRecord.ViewModels
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
             IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew,
-            IHomeLayoutSettings layoutSettings)
+            IHomeLayoutSettings layoutSettings, IDebtService debts)
         {
+            _debts = debts;
             _goals = goals;
             _layoutSettings = layoutSettings;
             _whatsNew = whatsNew;
@@ -268,8 +285,9 @@ namespace MoneyRecord.ViewModels
                     return trip == null ? null : new TripCard(await _trips.GetSummaryAsync(trip.Id));
                 }
                 // Goals reuse the balances above instead of loading them again
+                var debtsTask = IfShown(HomeCard.Debts, _debts.GetAllAsync, []);
                 var goalsTask = IfShown(HomeCard.Goals, async () => await _goals.GetProgressAsync(await balancesTask), []);
-                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask);
+                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask, debtsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 Layout = layout;
@@ -310,6 +328,11 @@ namespace MoneyRecord.ViewModels
                 // Goals don't follow the period: saved is today's balance
                 GoalSummaries = (await goalsTask).Take(3).ToList();
                 ActiveTrip = await tripTask;
+
+                var openDebts = (await debtsTask).Where(d => !d.IsPaidOff).ToList();
+                DebtsOwedToYouText = OrDash(DebtSummary.OutstandingTotals(openDebts, DebtDirection.Lent));
+                DebtsYouOweText = OrDash(DebtSummary.OutstandingTotals(openDebts, DebtDirection.Borrowed));
+                DebtSummaries = openDebts.Take(3).ToList();
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -354,6 +377,11 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task CustomizeHomeAsync() => _navigationService.NavigateToAsync(nameof(HomeLayoutPage));
+
+        private static string OrDash(string text) => text.Length > 0 ? text : "—";
+
+        [RelayCommand]
+        private Task OpenDebtsAsync() => _navigationService.NavigateToAsync(nameof(DebtsPage));
 
         [RelayCommand]
         private Task OpenTripAsync() => ActiveTrip == null

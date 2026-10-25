@@ -46,7 +46,8 @@ namespace MoneyRecord.Views
                 [HomeCard.Upcoming] = UpcomingCard,
                 [HomeCard.Budgets] = BudgetsCard,
                 [HomeCard.Trip] = ActiveTripCard,
-                [HomeCard.Goals] = GoalsCard
+                [HomeCard.Goals] = GoalsCard,
+                [HomeCard.Debts] = DebtsCard
             };
 
             for (var i = 0; i < _viewModel.Layout.Order.Count; i++)

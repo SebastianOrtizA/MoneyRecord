@@ -118,6 +118,7 @@ namespace MoneyRecord.ViewModels
             HomeCard.Budgets => AppResources.Budgets,
             HomeCard.Trip => AppResources.HomeCardTrip,
             HomeCard.Goals => AppResources.SavingsGoalsTitle,
+            HomeCard.Debts => AppResources.Debts,
             _ => card.ToString()
         };
     }

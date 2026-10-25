@@ -13,14 +13,14 @@ public class HomeLayoutTests
         var layout = HomeLayout.Parse(null);
 
         layout.Order.Should().Equal(Enum.GetValues<HomeCard>());
-        layout.Hidden.Should().BeEmpty();
+        layout.Hidden.Should().BeEquivalentTo([HomeCard.Debts]);
     }
 
     [Fact]
     public void Serialize_and_parse_round_trip()
     {
         var layout = new HomeLayout([HomeCard.Goals, HomeCard.Balance, HomeCard.Recent, HomeCard.PeriodSummary,
-            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip], new HashSet<HomeCard> { HomeCard.Budgets, HomeCard.Trip });
+            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts], new HashSet<HomeCard> { HomeCard.Budgets, HomeCard.Trip });
 
         var parsed = HomeLayout.Parse(layout.Serialize());
 
@@ -35,18 +35,26 @@ public class HomeLayoutTests
 
         layout.Order.Take(2).Should().Equal(HomeCard.Recent, HomeCard.Balance);
         layout.Order.Should().OnlyHaveUniqueItems().And.HaveCount(Enum.GetValues<HomeCard>().Length);
-        layout.Hidden.Should().BeEquivalentTo([HomeCard.Goals]);
+        layout.Hidden.Should().BeEquivalentTo([HomeCard.Goals, HomeCard.Debts]);
     }
 
     [Fact]
-    public void Cards_missing_from_a_saved_layout_are_appended_and_shown()
+    public void Cards_missing_from_a_saved_layout_are_appended_with_their_default_visibility()
     {
         var layout = HomeLayout.Parse("Goals,Balance;hidden=Goals");
 
         layout.Order.Should().Equal([HomeCard.Goals, HomeCard.Balance, HomeCard.PeriodSummary, HomeCard.Recent,
-            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip]);
+            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts]);
+        layout.IsShown(HomeCard.Debts).Should().BeFalse();
         layout.IsShown(HomeCard.Trip).Should().BeTrue();
         layout.IsShown(HomeCard.Goals).Should().BeFalse();
+    }
+
+    [Fact]
+    public void Debts_card_is_opt_in()
+    {
+        HomeLayout.Default.IsShown(HomeCard.Debts).Should().BeFalse();
+        HomeLayout.Parse("Debts,Balance").IsShown(HomeCard.Debts).Should().BeTrue();
     }
 
     [Fact]
