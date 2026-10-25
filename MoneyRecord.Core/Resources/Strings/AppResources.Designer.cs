@@ -7496,5 +7496,95 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("FailedToLoadWhatsNew", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total balance.
+        /// </summary>
+        public static string HomeCardBalance {
+            get {
+                return ResourceManager.GetString("HomeCardBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income and expenses.
+        /// </summary>
+        public static string HomeCardPeriodSummary {
+            get {
+                return ResourceManager.GetString("HomeCardPeriodSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Active trip.
+        /// </summary>
+        public static string HomeCardTrip {
+            get {
+                return ResourceManager.GetString("HomeCardTrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Customize Home.
+        /// </summary>
+        public static string CustomizeHome {
+            get {
+                return ResourceManager.GetString("CustomizeHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Home screen.
+        /// </summary>
+        public static string HomeLayoutTitle {
+            get {
+                return ResourceManager.GetString("HomeLayoutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Order and show or hide the Home cards.
+        /// </summary>
+        public static string HomeLayoutDescription {
+            get {
+                return ResourceManager.GetString("HomeLayoutDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cards without anything to show stay hidden. The total balance always shows..
+        /// </summary>
+        public static string HomeLayoutHint {
+            get {
+                return ResourceManager.GetString("HomeLayoutHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset to default.
+        /// </summary>
+        public static string HomeLayoutReset {
+            get {
+                return ResourceManager.GetString("HomeLayoutReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        public static string MoveUp {
+            get {
+                return ResourceManager.GetString("MoveUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        public static string MoveDown {
+            get {
+                return ResourceManager.GetString("MoveDown", resourceCulture);
+            }
+        }
     }
 }

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.HomeLayoutPage"
+             x:DataType="viewmodels:HomeLayoutViewModel"
+             Title="{ext:Localize HomeLayoutTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16,12,16,24" Spacing="10">
+            <Label Text="{ext:Localize HomeLayoutHint}" FontSize="13"
+                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+
+            <!-- One row per card: switch, name, move up / down (saved at every change) -->
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}" Spacing="8">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:HomeCardItem">
+                        <Border Style="{StaticResource Card}" Padding="14,6">
+                            <Border.GestureRecognizers>
+                                <!-- Long-press a row and drop it on another to move it there -->
+                                <DragGestureRecognizer CanDrag="True" DragStarting="OnDragStarting" DropCompleted="OnDragEnded" />
+                                <DropGestureRecognizer AllowDrop="True" DragOver="OnDragOver" DragLeave="OnDragLeave" Drop="OnDrop" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="4">
+                                <Label Text="{Binding Title}" FontSize="16" FontAttributes="Bold" VerticalOptions="Center"
+                                       LineBreakMode="TailTruncation" />
+                                <Switch Grid.Column="1" IsToggled="{Binding IsShown}" IsEnabled="{Binding CanHide}"
+                                        VerticalOptions="Center" />
+                                <Label Grid.Column="2" Text="&#xF0143;" FontFamily="MaterialDesignIcons" FontSize="24"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="44" HeightRequest="44"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                       IsEnabled="{Binding CanMoveUp}"
+                                       SemanticProperties.Description="{ext:Localize MoveUp}">
+                                    <Label.Triggers>
+                                        <Trigger TargetType="Label" Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0.2" />
+                                        </Trigger>
+                                    </Label.Triggers>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeLayoutViewModel}}, Path=MoveUpCommand}" CommandParameter="{Binding .}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                                <Label Grid.Column="3" Text="&#xF0140;" FontFamily="MaterialDesignIcons" FontSize="24"
+                                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="44" HeightRequest="44"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                       IsEnabled="{Binding CanMoveDown}"
+                                       SemanticProperties.Description="{ext:Localize MoveDown}">
+                                    <Label.Triggers>
+                                        <Trigger TargetType="Label" Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0.2" />
+                                        </Trigger>
+                                    </Label.Triggers>
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HomeLayoutViewModel}}, Path=MoveDownCommand}" CommandParameter="{Binding .}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <Button Text="{ext:Localize HomeLayoutReset}" Command="{Binding ResetCommand}" Margin="0,8,0,0"
+                    HeightRequest="44" CornerRadius="22" BackgroundColor="Transparent" BorderWidth="1"
+                    BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

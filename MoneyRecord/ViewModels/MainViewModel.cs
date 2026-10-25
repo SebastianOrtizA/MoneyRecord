@@ -28,6 +28,7 @@ namespace MoneyRecord.ViewModels
         private readonly IExchangeRateSettings _rateSettings;
         private readonly ISavingsGoalService _goals;
         private readonly ITripService _trips;
+        private readonly IHomeLayoutSettings _layoutSettings;
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -104,6 +105,7 @@ namespace MoneyRecord.ViewModels
         private bool isRefreshing;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowRecent))]
         private bool hasRecentTransactions;
 
         [ObservableProperty]
@@ -114,12 +116,14 @@ namespace MoneyRecord.ViewModels
         private List<UpcomingEntry> upcomingEntries = [];
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowUpcoming))]
         private bool hasUpcoming;
 
         [ObservableProperty]
         private ObservableCollection<BudgetProgress> budgetSummaries = [];
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowBudgets))]
         private bool hasBudgets;
 
         [ObservableProperty]
@@ -130,17 +134,32 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The first goals (open ones by target date); the card shows once a goal exists.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasGoals))]
+        [NotifyPropertyChangedFor(nameof(HasGoals), nameof(ShowGoals))]
         private List<GoalProgress> goalSummaries = [];
 
         public bool HasGoals => GoalSummaries.Count > 0;
 
         /// <summary>The active trip with its spending (Home card); null = none.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasActiveTrip))]
+        [NotifyPropertyChangedFor(nameof(HasActiveTrip), nameof(ShowTrip))]
         private TripCard? activeTrip;
 
         public bool HasActiveTrip => ActiveTrip != null;
+
+        /// <summary>Which cards show and in what order (Settings → Home screen); read again on every load.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals))]
+        private HomeLayout layout = HomeLayout.Default;
+
+        // A card shows when it is enabled and has something to show
+        // The period picker stays while a card that follows the period is on
+        public bool ShowPeriodPicker => Layout.IsShown(HomeCard.PeriodSummary) || Layout.IsShown(HomeCard.Recent) || Layout.IsShown(HomeCard.Budgets);
+        public bool ShowPeriodSummary => Layout.IsShown(HomeCard.PeriodSummary);
+        public bool ShowRecent => Layout.IsShown(HomeCard.Recent) && HasRecentTransactions;
+        public bool ShowUpcoming => Layout.IsShown(HomeCard.Upcoming) && HasUpcoming;
+        public bool ShowBudgets => Layout.IsShown(HomeCard.Budgets) && HasBudgets;
+        public bool ShowTrip => Layout.IsShown(HomeCard.Trip) && HasActiveTrip;
+        public bool ShowGoals => Layout.IsShown(HomeCard.Goals) && HasGoals;
 
         /// <summary>The shared period (Home, Transactions, Budgets, Spending / Income).</summary>
         public PeriodViewModel Period { get; }
@@ -149,9 +168,11 @@ namespace MoneyRecord.ViewModels
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
-            IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew)
+            IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew,
+            IHomeLayoutSettings layoutSettings)
         {
             _goals = goals;
+            _layoutSettings = layoutSettings;
             _whatsNew = whatsNew;
             _trips = trips;
             _conversion = conversion;
@@ -227,46 +248,52 @@ namespace MoneyRecord.ViewModels
             {
                 IsRefreshing = true;
 
+                // A hidden card skips its loads; the layout applies together with the results, so a card turned on again never shows old values
+                var layout = _layoutSettings.Layout;
+                Task<T> IfShown<T>(HomeCard card, Func<Task<T>> load, T whenHidden) =>
+                    layout.IsShown(card) ? load() : Task.FromResult(whenHidden);
+
                 var (startDate, endDate) = Period.Range;
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
-                var totalsTask = _conversion.GetPeriodTotalsAsync(startDate, endDate);
-                var stateTask = _conversion.GetStateAsync();
-                var entriesTask = _ledgerService.GetEntriesAsync(startDate, endDate);
-                var budgetsTask = _budgetSummaryService.GetSummaryAsync(
-                    Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate);
-                var upcomingTask = _recurringService.GetUpcomingAsync();
-                // Goals reuse the balances above instead of loading them again
-                var tripTask = ActiveTripAsync();
+                var totalsTask = IfShown(HomeCard.PeriodSummary, () => _conversion.GetPeriodTotalsAsync(startDate, endDate), null);
+                var stateTask = IfShown(HomeCard.PeriodSummary, _conversion.GetStateAsync, null);
+                var entriesTask = IfShown(HomeCard.Recent, () => _ledgerService.GetEntriesAsync(startDate, endDate), []);
+                var budgetsTask = IfShown(HomeCard.Budgets, () => _budgetSummaryService.GetSummaryAsync(
+                    Period.SelectedPeriod?.Type ?? PeriodType.CalendarMonth, Period.CustomStartDate, Period.CustomEndDate), []);
+                var upcomingTask = IfShown(HomeCard.Upcoming, () => _recurringService.GetUpcomingAsync(), []);
+                var tripTask = IfShown(HomeCard.Trip, ActiveTripAsync, null);
                 async Task<TripCard?> ActiveTripAsync()
                 {
                     var trip = await _trips.GetActiveAsync();
                     return trip == null ? null : new TripCard(await _trips.GetSummaryAsync(trip.Id));
                 }
-                var goalsTask = GoalsAsync();
-                async Task<List<GoalProgress>> GoalsAsync() => await _goals.GetProgressAsync(await balancesTask);
+                // Goals reuse the balances above instead of loading them again
+                var goalsTask = IfShown(HomeCard.Goals, async () => await _goals.GetProgressAsync(await balancesTask), []);
                 await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
+                Layout = layout;
                 var balanceLines = CurrencyBalance.DisplayLines(
                     CurrencyBalance.FromAccounts((await balancesTask).Where(b => !b.IsDebt), MoneyFormatter.BaseCurrency));
                 PrimaryBalance = balanceLines[0];
                 OtherBalances = balanceLines.Skip(1).ToList();
 
-                // A new record even when the values didn't change: the base currency may have (Settings)
-                var totals = await totalsTask;
-                BaseTotals = totals.Base;
-                OtherTotals = totals.Others;
-                IsConverted = totals.IsConverted;
-                // Offered with several currencies and some rates (the service's one rule)
-                CanSwitchShowIn = (await stateTask).CanConvert;
-                OnPropertyChanged(nameof(ConvertedChipText));
-                ConvertedNote = _rateSettings.LastUpdated is { } updated
-                    ? string.Format(AppResources.ConvertedAtDailyRate, DateFormatter.Format(updated, DateStyle.Medium))
-                    : string.Empty;
+                if (await totalsTask is { } totals)
+                {
+                    // A new record even when the values didn't change: the base currency may have (Settings)
+                    BaseTotals = totals.Base;
+                    OtherTotals = totals.Others;
+                    IsConverted = totals.IsConverted;
+                    // Offered with several currencies and some rates (the service's one rule)
+                    CanSwitchShowIn = (await stateTask)!.CanConvert;
+                    OnPropertyChanged(nameof(ConvertedChipText));
+                    ConvertedNote = _rateSettings.LastUpdated is { } updated
+                        ? string.Format(AppResources.ConvertedAtDailyRate, DateFormatter.Format(updated, DateStyle.Medium))
+                        : string.Empty;
+                }
 
                 // Whole transfers: the Recent card lists a transfer once
-                var entries = await entriesTask;
-                RecentTransactions = new(entries.OrderByDescending(e => e.Date).Take(5));
+                RecentTransactions = new((await entriesTask).OrderByDescending(e => e.Date).Take(5));
                 HasRecentTransactions = RecentTransactions.Count > 0;
 
                 // Entries waiting for their amount come first
@@ -324,6 +351,9 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task ViewAllGoalsAsync() => _navigationService.NavigateToAsync(nameof(GoalsPage));
+
+        [RelayCommand]
+        private Task CustomizeHomeAsync() => _navigationService.NavigateToAsync(nameof(HomeLayoutPage));
 
         [RelayCommand]
         private Task OpenTripAsync() => ActiveTrip == null

@@ -64,6 +64,7 @@ crashes at runtime (XAML is inflated at runtime there).
   `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
   `GetConnectionAsync`, `RunInTransactionAsync`; optional encryption), `SqliteSetup`
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M004`
+- `Models/HomeCard` + `HomeLayout` (Home cards' order + hidden set, one preference string; Balance never hidden; new cards appended) + `HomeLayoutSettings`; Settings → Home screen (`HomeLayoutPage`, move arrows + switches) and Home's "Customize Home" link; a hidden card skips its loads in `MainViewModel`, `MainPage.ArrangeCards` reorders the cards
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
   as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page), PayeeService (found or created by name on save,
   last category per type, rename / merge / delete), DebtService + DebtLedger (debts: totals in SQL, payments with an interest part,

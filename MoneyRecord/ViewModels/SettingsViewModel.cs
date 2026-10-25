@@ -387,6 +387,9 @@ namespace MoneyRecord.ViewModels
         private Task OpenSetupAsync() => _navigationService.NavigateToAsync(nameof(SetupPage));
 
         [RelayCommand]
+        private Task OpenHomeLayoutAsync() => _navigationService.NavigateToAsync(nameof(HomeLayoutPage));
+
+        [RelayCommand]
         private async Task SaveBackupLocalAsync()
         {
             try

@@ -15,11 +15,11 @@
                      Command="{Binding LoadDataCommand}">
             <ScrollView>
                 <!-- Bottom padding keeps the last card clear of the add button -->
-                <VerticalStackLayout Padding="16,12,16,88" Spacing="16">
+                <VerticalStackLayout x:Name="CardStack" Padding="16,12,16,88" Spacing="16">
             
             
             <!-- Total Balance Card (Prominent) -->
-            <Border BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#7B5FDB}"
+            <Border x:Name="BalanceCard" BackgroundColor="{AppThemeBinding Light=#512BD4, Dark=#7B5FDB}"
                     StrokeThickness="0"
                     StrokeShape="RoundRectangle 16"
                     Padding="20"
@@ -107,10 +107,11 @@
                 </VerticalStackLayout>
             </Border>
 
+            <VerticalStackLayout x:Name="PeriodSummaryCard" Spacing="16" IsVisible="{Binding ShowPeriodPicker}">
             <controls:PeriodPicker BindingContext="{Binding Period}" />
 
             <!-- The period summary: base-currency cards, then the other currencies, in one container so they read as one -->
-            <Border Style="{StaticResource PeriodSummary}">
+            <Border Style="{StaticResource PeriodSummary}" IsVisible="{Binding ShowPeriodSummary}">
                 <VerticalStackLayout Spacing="8">
                     <!-- "Show in": one total converted into the base currency, or by currency (offered with several currencies
                          and downloaded rates; the reports' "≈" chip is the same choice) -->
@@ -303,10 +304,11 @@
                            Margin="4,0,4,2" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                 </VerticalStackLayout>
             </Border>
+            </VerticalStackLayout>
 
             <!-- Recent Transactions Quick View -->
             <Border Style="{StaticResource Card}"
-                    IsVisible="{Binding HasRecentTransactions}">
+                    x:Name="RecentCard" IsVisible="{Binding ShowRecent}">
                 <VerticalStackLayout Spacing="10">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="{ext:Localize RecentTransactions}"
@@ -356,7 +358,7 @@
 
             <!-- Upcoming: the next scheduled recurring transactions -->
             <Border Style="{StaticResource Card}"
-                    IsVisible="{Binding HasUpcoming}">
+                    x:Name="UpcomingCard" IsVisible="{Binding ShowUpcoming}">
                 <VerticalStackLayout Spacing="10">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="{ext:Localize Upcoming}"
@@ -387,7 +389,7 @@
             </Border>
 
             <!-- Budget Summary Section -->
-            <Border Style="{StaticResource Card}" IsVisible="{Binding HasBudgets}">
+            <Border Style="{StaticResource Card}" x:Name="BudgetsCard" IsVisible="{Binding ShowBudgets}">
                 <VerticalStackLayout Spacing="10">
                     <Grid ColumnDefinitions="*,Auto">
                         <Label Text="{ext:Localize BudgetSummary}"
@@ -473,7 +475,7 @@
             </Border>
 
             <!-- The active trip: spent of its budget; a tap opens it -->
-            <Border Style="{StaticResource Card}" IsVisible="{Binding HasActiveTrip}">
+            <Border Style="{StaticResource Card}" x:Name="ActiveTripCard" IsVisible="{Binding ShowTrip}">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenTripCommand}"/>
                 </Border.GestureRecognizers>
@@ -502,7 +504,7 @@
 
             <!-- Savings goals: the first three (today's balances, so the period doesn't apply); a tap opens Goals -->
             <Border Style="{StaticResource Card}"
-                    IsVisible="{Binding HasGoals}">
+                    x:Name="GoalsCard" IsVisible="{Binding ShowGoals}">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ViewAllGoalsCommand}"/>
                 </Border.GestureRecognizers>
@@ -553,6 +555,12 @@
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </Border>
+
+            <Label Text="{ext:Localize CustomizeHome}" Style="{StaticResource CardLink}" HorizontalOptions="Center">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CustomizeHomeCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
 
                         </VerticalStackLayout>
                     </ScrollView>
