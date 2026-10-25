@@ -12,11 +12,16 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>Which goal each linked account belongs to (account ID → goal ID).</summary>
         Task<Dictionary<int, int>> GetLinkedAccountsAsync();
 
-        /// <summary>Adds (ID 0) or updates the goal and replaces its accounts, in one database transaction.</summary>
+        /// <summary>Which goal each linked pocket belongs to (pocket ID → goal ID).</summary>
+        Task<Dictionary<int, int>> GetLinkedPocketsAsync();
+
+        /// <summary>Adds (ID 0) or updates the goal and replaces its accounts and pockets, in one database transaction.</summary>
+        /// <param name="pocketIds">The goal's pockets; null keeps the ones it has.</param>
         /// <exception cref="InvalidOperationException">
-        /// An account is in another currency than the goal, or already belongs to another goal.
+        /// An account or pocket is in another currency than the goal, or already belongs to another goal; a pocket is
+        /// linked together with its own account (its money would count twice).
         /// </exception>
-        Task SaveAsync(SavingsGoal goal, IReadOnlyCollection<int> accountIds);
+        Task SaveAsync(SavingsGoal goal, IReadOnlyCollection<int> accountIds, IReadOnlyCollection<int>? pocketIds = null);
 
         /// <summary>Deletes the goal; its accounts and their money stay as they are.</summary>
         Task DeleteAsync(int goalId);

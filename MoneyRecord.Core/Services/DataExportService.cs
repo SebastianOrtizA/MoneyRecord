@@ -21,7 +21,7 @@ namespace MoneyRecord.Services
         /// savings goals and their accounts, payees, debts, trips (added before v4 shipped, so an app that can read v4 knows them).
         /// v5: parties (friends, parties with members, expenses, exclusions, contributions, settle-up payments).
         /// </summary>
-        public const int BackupVersion = 5;
+        public const int BackupVersion = 6;
 
         private const string DataEntryName = "data.json";
         private const string SnapshotPrefix = "pre-restore-";
@@ -99,7 +99,10 @@ namespace MoneyRecord.Services
                 PartyExpenses = conn.Table<PartyExpense>().ToList(),
                 PartyExpenseExclusions = conn.Table<PartyExpenseExclusion>().ToList(),
                 PartyContributions = conn.Table<PartyContribution>().ToList(),
-                PartyPayments = conn.Table<PartyPayment>().ToList()
+                PartyPayments = conn.Table<PartyPayment>().ToList(),
+                Pockets = conn.Table<Pocket>().ToList(),
+                PocketMovements = conn.Table<PocketMovement>().ToList(),
+                SavingsGoalPockets = conn.Table<SavingsGoalPocket>().ToList()
             });
             return backup;
         }
@@ -299,6 +302,9 @@ namespace MoneyRecord.Services
             EnsureUniqueIds(backup.PartyExpenseExclusions, x => x.Id);
             EnsureUniqueIds(backup.PartyContributions, c => c.Id);
             EnsureUniqueIds(backup.PartyPayments, p => p.Id);
+            EnsureUniqueIds(backup.Pockets, p => p.Id);
+            EnsureUniqueIds(backup.PocketMovements, m => m.Id);
+            EnsureUniqueIds(backup.SavingsGoalPockets, l => l.Id);
             return backup;
         }
 
@@ -342,6 +348,9 @@ namespace MoneyRecord.Services
             conn.DeleteAll<Trip>();
             conn.DeleteAll<Debt>();
             conn.DeleteAll<Payee>();
+            conn.DeleteAll<SavingsGoalPocket>();
+            conn.DeleteAll<PocketMovement>();
+            conn.DeleteAll<Pocket>();
             conn.DeleteAll<SavingsGoalAccount>();
             conn.DeleteAll<SavingsGoal>();
             conn.DeleteAll<RecurringTransaction>();
@@ -369,9 +378,12 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.PartyExpenses, e => e.Id)
                 + InsertKeepingIds(conn, backup.PartyExpenseExclusions, x => x.Id)
                 + InsertKeepingIds(conn, backup.PartyContributions, c => c.Id)
-                + InsertKeepingIds(conn, backup.PartyPayments, p => p.Id);
+                + InsertKeepingIds(conn, backup.PartyPayments, p => p.Id)
+                + InsertKeepingIds(conn, backup.Pockets, p => p.Id)
+                + InsertKeepingIds(conn, backup.PocketMovements, m => m.Id);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
+            InsertKeepingIds(conn, backup.SavingsGoalPockets, l => l.Id);
 
             // A backup from before trips has no trip categories: start with the defaults, as a new database does
             if (backup.TripCategories.Count == 0)
@@ -525,5 +537,8 @@ namespace MoneyRecord.Services
         public List<PartyExpenseExclusion> PartyExpenseExclusions { get; set; } = [];
         public List<PartyContribution> PartyContributions { get; set; } = [];
         public List<PartyPayment> PartyPayments { get; set; } = [];
+        public List<Pocket> Pockets { get; set; } = [];
+        public List<PocketMovement> PocketMovements { get; set; } = [];
+        public List<SavingsGoalPocket> SavingsGoalPockets { get; set; } = [];
     }
 }

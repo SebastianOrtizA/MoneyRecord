@@ -184,4 +184,76 @@ public sealed class SavingsGoalServiceTests : IAsyncLifetime
         (await Db.Table<SavingsGoal>().CountAsync()).Should().Be(0);
         (await _accounts.GetByIdAsync(b.Id)).Should().NotBeNull("the account and its money stay");
     }
+
+    // ---- Pockets ----
+
+    private async Task<Pocket> AddPocketAsync(Account account, decimal held)
+    {
+        var pocket = new Pocket { AccountId = account.Id, Name = "Travel", CreatedDate = new DateTime(2026, 1, 1) };
+        await Db.InsertAsync(pocket);
+        if (held != 0)
+            await Db.InsertAsync(new PocketMovement { PocketId = pocket.Id, Amount = held, Date = Today.AddDays(-3) });
+        return pocket;
+    }
+
+    [Fact]
+    public async Task A_linked_pocket_counts_its_money_not_its_accounts_and_adds_to_the_pace()
+    {
+        var bank = await AddAccountAsync("Bank", 2000m);
+        var pocket = await AddPocketAsync(bank, 500m);
+        await _sut.SaveAsync(Goal(), [], [pocket.Id]);
+
+        var progress = (await _sut.GetProgressAsync()).Single();
+
+        progress.Saved.Should().Be(500m);
+        progress.PocketIds.Should().Equal(pocket.Id);
+        progress.AccountNames.Should().Be("Bank › Travel");
+        progress.MonthlyPace.Should().BeGreaterThan(0m, "500 was set aside inside the pace window");
+    }
+
+    [Fact]
+    public async Task A_pocket_cannot_join_a_goal_with_its_own_account()
+    {
+        var bank = await AddAccountAsync("Bank", 2000m);
+        var pocket = await AddPocketAsync(bank, 500m);
+
+        var act = () => _sut.SaveAsync(Goal(), [bank.Id], [pocket.Id]);
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        (await Db.Table<SavingsGoal>().CountAsync()).Should().Be(0, "the goal rolls back");
+    }
+
+    [Fact]
+    public async Task A_pocket_in_another_currency_or_in_another_goal_is_refused()
+    {
+        var bank = await AddAccountAsync("Bank", 2000m);
+        var foreign = await AddAccountAsync("Foreign", 100m, Base == "EUR" ? "USD" : "EUR");
+        var pocket = await AddPocketAsync(bank, 500m);
+        var foreignPocket = await AddPocketAsync(foreign, 10m);
+        await _sut.SaveAsync(Goal("First"), [], [pocket.Id]);
+
+        var otherCurrency = () => _sut.SaveAsync(Goal("Second"), [], [foreignPocket.Id]);
+        var taken = () => _sut.SaveAsync(Goal("Third"), [], [pocket.Id]);
+
+        await otherCurrency.Should().ThrowAsync<InvalidOperationException>();
+        await taken.Should().ThrowAsync<InvalidOperationException>();
+        (await _sut.GetLinkedPocketsAsync()).Should().ContainSingle().Which.Key.Should().Be(pocket.Id);
+    }
+
+    [Fact]
+    public async Task Saving_without_pocket_ids_keeps_the_goals_pockets_and_deleting_the_goal_removes_the_links()
+    {
+        var bank = await AddAccountAsync("Bank", 2000m);
+        var pocket = await AddPocketAsync(bank, 500m);
+        var goal = Goal();
+        await _sut.SaveAsync(goal, [], [pocket.Id]);
+
+        goal.Name = "Renamed";
+        await _sut.SaveAsync(goal, []);
+        (await _sut.GetLinkedPocketsAsync()).Should().ContainKey(pocket.Id);
+
+        await _sut.DeleteAsync(goal.Id);
+        (await _sut.GetLinkedPocketsAsync()).Should().BeEmpty();
+        (await Db.FindAsync<Pocket>(pocket.Id)).Should().NotBeNull("the pocket stays");
+    }
 }

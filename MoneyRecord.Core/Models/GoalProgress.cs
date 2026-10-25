@@ -21,15 +21,21 @@ namespace MoneyRecord.Models
     {
         /// <param name="accounts">The linked accounts in the goal's currency (their balances are <paramref name="saved"/>).</param>
         /// <param name="uncounted">Linked accounts now in another currency: listed, not counted.</param>
+        /// <param name="pockets">The linked pockets in the goal's currency (their balances are part of <paramref name="saved"/>).</param>
+        /// <param name="uncountedPockets">Linked pockets whose account is now in another currency: listed, not counted.</param>
         /// <param name="monthlyPace">The accounts' average monthly change (<see cref="GoalProjection.MonthlyPace"/>).</param>
         public GoalProgress(SavingsGoal goal, IReadOnlyList<Account> accounts, IReadOnlyList<Account> uncounted,
-            decimal saved, decimal? monthlyPace, DateTime today)
+            decimal saved, decimal? monthlyPace, DateTime today,
+            IReadOnlyList<PocketSummary>? pockets = null, IReadOnlyList<PocketSummary>? uncountedPockets = null)
         {
+            pockets ??= [];
+            uncountedPockets ??= [];
             Goal = goal;
             AccountIds = accounts.Concat(uncounted).Select(a => a.Id).ToList();
-            AccountNames = string.Join(" · ", accounts.Select(a => a.Name));
-            UncountedAccountNames = string.Join(", ", uncounted.Select(a => a.Name));
-            UncountedText = uncounted.Count == 0
+            PocketIds = pockets.Concat(uncountedPockets).Select(p => p.PocketId).ToList();
+            AccountNames = string.Join(" · ", accounts.Select(a => a.Name).Concat(pockets.Select(p => p.DisplayName)));
+            UncountedAccountNames = string.Join(", ", uncounted.Select(a => a.Name).Concat(uncountedPockets.Select(p => p.DisplayName)));
+            UncountedText = uncounted.Count + uncountedPockets.Count == 0
                 ? string.Empty
                 : string.Format(AppResources.GoalAccountsNotCounted, UncountedAccountNames);
             Saved = saved;
@@ -60,7 +66,10 @@ namespace MoneyRecord.Models
         /// <summary>Every linked account, counted or not.</summary>
         public IReadOnlyList<int> AccountIds { get; }
 
-        /// <summary>"Savings · Vacation fund": the counted accounts.</summary>
+        /// <summary>Every linked pocket, counted or not.</summary>
+        public IReadOnlyList<int> PocketIds { get; }
+
+        /// <summary>"Savings · Bank › Travel": the counted accounts, then the counted pockets.</summary>
         public string AccountNames { get; }
 
         /// <summary>"Not counted (other currency): Euros" when a linked account changed currency; empty otherwise.</summary>
