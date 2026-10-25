@@ -1,6 +1,6 @@
 # Stage 16: Customizable Home (order, show/hide, Debts card)
 
-**Status**: Design proposed 2026-10-25; not started (confirm the open points with the owner before 16.1)
+**Status**: 16.1 in review (2026-10-25); 16.2 not started
 **Depends on**: 10.8 debts
 **Complexity**: Medium (2 PRs)
 **Source**: User request, 2026-10-25
@@ -23,6 +23,8 @@ chose "no Home card", so it stays opt-in).
 ## Sub-stages (branch + PR each)
 
 ### 16.1 Layout and editor
+**Done as (16.1)**: as planned, but the editor uses move up / down arrows per row instead of a drag-reorder `CollectionView` (reliable on Android), and `HomeCard` has no `Debts` yet (16.2 adds it; saved layouts append new cards). The Period picker and summary are one card (`PeriodSummary`).
+
 - Core: `HomeCard`, `HomeLayoutSettings` (`Parse` / `Serialize` / `Default`) + `HomeLayoutTests` (round-trip, unknown names,
   new cards appended, Balance always shown).
 - `MainPage.xaml`: each card `Border` gets `x:Name`; code-behind reorders the `VerticalStackLayout` children from

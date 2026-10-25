@@ -143,6 +143,7 @@ namespace MoneyRecord
 
             // App lock (the phone's own lock) and hidden balances
             builder.Services.AddSingleton<IPrivacySettings, PrivacySettings>();
+            builder.Services.AddSingleton<IHomeLayoutSettings, HomeLayoutSettings>();
             builder.Services.AddSingleton<AppLock>();
 #if ANDROID
             builder.Services.AddSingleton<IDeviceLock, Platforms.Android.AndroidDeviceLock>();
@@ -193,6 +194,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<PayeesViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
+            builder.Services.AddTransient<HomeLayoutViewModel>();
             builder.Services.AddTransient<SetupViewModel>();
             builder.Services.AddTransient<AboutViewModel>();
             builder.Services.AddTransient<LicenseViewModel>();
@@ -224,6 +226,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<PayeesPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();
+            builder.Services.AddTransient<HomeLayoutPage>();
             builder.Services.AddTransient<SetupPage>();
             builder.Services.AddTransient<AboutPage>();
             builder.Services.AddTransient<LicensePage>();

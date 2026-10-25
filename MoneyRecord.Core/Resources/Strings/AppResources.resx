@@ -2664,4 +2664,34 @@ Amount: {2}</value>
   <data name="AmountVariesHint" xml:space="preserve">
     <value>Nothing is saved automatically: you enter the amount each time.</value>
   </data>
+  <data name="HomeCardBalance" xml:space="preserve">
+    <value>Total balance</value>
+  </data>
+  <data name="HomeCardPeriodSummary" xml:space="preserve">
+    <value>Income and expenses</value>
+  </data>
+  <data name="HomeCardTrip" xml:space="preserve">
+    <value>Active trip</value>
+  </data>
+  <data name="CustomizeHome" xml:space="preserve">
+    <value>Customize Home</value>
+  </data>
+  <data name="HomeLayoutTitle" xml:space="preserve">
+    <value>Home screen</value>
+  </data>
+  <data name="HomeLayoutDescription" xml:space="preserve">
+    <value>Order and show or hide the Home cards</value>
+  </data>
+  <data name="HomeLayoutHint" xml:space="preserve">
+    <value>Cards without anything to show stay hidden. The total balance always shows.</value>
+  </data>
+  <data name="HomeLayoutReset" xml:space="preserve">
+    <value>Reset to default</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Move down</value>
+  </data>
 </root>

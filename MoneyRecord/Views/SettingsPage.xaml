@@ -185,6 +185,36 @@
                     </Grid>
                 </Border>
 
+                <!-- Home screen (card order and visibility) -->
+                <Border Style="{StaticResource Card}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenHomeLayoutCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="&#xF02DC;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="28"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{ext:Localize HomeLayoutTitle}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Label Text="{ext:Localize HomeLayoutDescription}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xF0142;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="24"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
+                    </Grid>
+                </Border>
+
                 <!-- Backup Section -->
                 <Border Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="16">
