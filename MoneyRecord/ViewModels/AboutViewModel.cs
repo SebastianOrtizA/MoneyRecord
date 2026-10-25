@@ -18,9 +18,9 @@ namespace MoneyRecord.ViewModels
 
         public AboutViewModel(INavigationService navigationService, IErrorHandler errorHandler, IWhatsNewService whatsNew)
         {
-            _whatsNew = whatsNew;
             _navigationService = navigationService;
             _errorHandler = errorHandler;
+            _whatsNew = whatsNew;
         }
 
         public string VersionText => string.Format(AppResources.AppVersion, AppInfo.Current.VersionString);

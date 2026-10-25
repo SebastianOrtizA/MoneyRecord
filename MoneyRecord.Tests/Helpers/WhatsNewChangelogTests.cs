@@ -15,7 +15,10 @@ public sealed class WhatsNewChangelogTests
     [InlineData("es-CO", "es-419")]
     [InlineData("es-MX", "es-419")]
     [InlineData("es-AR", "es-419")]
+    [InlineData("es-419", "es-419")]
+    [InlineData("es-US", "es-419")]
     [InlineData("es", "es-ES")]
+    [InlineData("", "en-US")]
     public void A_culture_gets_the_store_text_that_suits_it(string culture, string expected)
     {
         WhatsNewChangelog.Locale(new CultureInfo(culture)).Should().Be(expected);

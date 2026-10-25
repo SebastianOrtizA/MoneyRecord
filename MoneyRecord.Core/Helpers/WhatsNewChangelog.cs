@@ -19,8 +19,10 @@ namespace MoneyRecord.Helpers
             if (!culture.TwoLetterISOLanguageName.Equals("es", StringComparison.OrdinalIgnoreCase))
                 return Fallback;
 
-            // A neutral "es" has no region: Spain's text, like the language fallback elsewhere
-            var region = culture.IsNeutralCulture ? string.Empty : new RegionInfo(culture.Name).TwoLetterISORegionName;
+            // The region is the culture name's last part ("es-CO", "es-419"); read from the name, not RegionInfo, which
+            // does not know a UN region like 419. A neutral "es" has none: Spain's text, like the language fallback elsewhere
+            var parts = culture.Name.Split('-');
+            var region = parts.Length > 1 ? parts[^1] : string.Empty;
             return region.Length == 0 || region.Equals("ES", StringComparison.OrdinalIgnoreCase) ? "es-ES" : "es-419";
         }
 

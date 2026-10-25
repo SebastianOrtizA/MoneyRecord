@@ -56,7 +56,7 @@ namespace MoneyRecord.Services
         private async Task<string?> ReadNotesAsync()
         {
             var locale = WhatsNewChangelog.Locale(AppResources.Culture ?? CultureInfo.CurrentUICulture);
-            foreach (var candidate in new[] { locale, WhatsNewChangelog.Fallback }.Distinct())
+            foreach (var candidate in locale == WhatsNewChangelog.Fallback ? [locale] : (string[])[locale, WhatsNewChangelog.Fallback])
             {
                 try
                 {
