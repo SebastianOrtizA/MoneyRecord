@@ -103,6 +103,39 @@ public class UpcomingScheduleTests
     }
 }
 
+public class UpcomingVariableTests
+{
+    private static readonly DateTime Today = new(2026, 3, 15);
+
+    private static RecurringTransaction Variable(int id, DateTime next, long lastCents) => new()
+    {
+        Id = id, Description = "Power", AmountCents = 2000, TransactionType = TransactionType.Expense,
+        Frequency = RecurrenceFrequency.Monthly, StartDate = next, NextOccurrence = next, IsActive = true,
+        IsVariableAmount = true, LastAmountCents = lastCents
+    };
+
+    [Fact]
+    public void A_variable_schedule_shows_its_last_amount_and_is_pending_once_due()
+    {
+        var entries = UpcomingSchedule.Build([Variable(1, Today.AddDays(-2), 8500), Variable(2, Today.AddDays(5), 0)],
+            new Dictionary<int, Category>(), new Dictionary<int, Account>(), Today);
+
+        entries[0].Should().Match<UpcomingEntry>(e => e.IsVariable && e.IsPending && e.Amount == 85m && e.HasEstimate);
+        entries[1].Should().Match<UpcomingEntry>(e => e.IsVariable && !e.IsPending && e.Amount == 0m && !e.HasEstimate);
+    }
+
+    [Fact]
+    public void A_fixed_schedule_is_never_pending()
+    {
+        var fixedOne = Variable(1, Today, 0);
+        fixedOne.IsVariableAmount = false;
+
+        var entries = UpcomingSchedule.Build([fixedOne], new Dictionary<int, Category>(), new Dictionary<int, Account>(), Today);
+
+        entries.Should().ContainSingle().Which.Should().Match<UpcomingEntry>(e => !e.IsVariable && !e.IsPending && e.Amount == 20m);
+    }
+}
+
 [Collection(LanguageCollection.Name)]
 public sealed class UpcomingEntryTextTests : LanguageTestBase
 {

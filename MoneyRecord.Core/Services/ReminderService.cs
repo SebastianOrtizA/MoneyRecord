@@ -26,6 +26,7 @@ namespace MoneyRecord.Services
         public const int BudgetIdBase = 200_000;
         public const int DebtDueIdBase = 300_000;
         public const int DebtPaidIdBase = 400_000;
+        public const int PendingIdBase = 500_000;
 
         // The app's routes (see AppShell); Core can't name the page types
         public const string UpcomingRoute = "RecurringTransactionsPage?Show=Upcoming";
@@ -33,11 +34,16 @@ namespace MoneyRecord.Services
         public const string BudgetsRoute = "//BudgetPage";
         public const string DebtsRoute = "DebtsPage";
 
+        /// <summary>The add form on a variable schedule's occurrence (see AddTransactionViewModel).</summary>
+        public static string PendingRoute(int recurringId, DateTime occurrence) =>
+            $"{BalanceWidget.AddTransactionRoute}?RecurringId={recurringId}&Occurrence={occurrence:yyyy-MM-dd}";
+
         // What was already notified: the last bill occurrence per recurrence, per budget its period + alert level, and per
         // debt its due date
         private const string BillNotifiedKey = "Reminders.Bill.";
         private const string BudgetNotifiedKey = "Reminders.Budget.";
         private const string DebtDueNotifiedKey = "Reminders.DebtDue.";
+        private const string PendingNotifiedKey = "Reminders.Pending.";
 
         private bool CanNotify => settings.Enabled && notifications.IsSupported && notifications.AreAllowed;
 
@@ -48,6 +54,8 @@ namespace MoneyRecord.Services
                 await NotifyBillsAsync();
 
             var run = await ProcessRecurringAsync();
+            if (CanNotify)
+                await NotifyPendingAsync();
             if (run.Created > 0 && CanNotify && settings.RecurringAdded)
             {
                 notifications.Show(new AppNotification(RecurringAddedId, ReminderChannel.Bills,
@@ -84,6 +92,26 @@ namespace MoneyRecord.Services
             return run;
         }
 
+        /// <summary>
+        /// A variable-amount schedule with occurrences waiting to be entered: one notification per schedule, when it has a
+        /// pending date not notified yet. It opens the add form on the oldest one.
+        /// </summary>
+        private async Task NotifyPendingAsync()
+        {
+            foreach (var pending in (await recurring.GetPendingAsync()).GroupBy(e => e.RecurringId))
+            {
+                var oldest = pending.First();
+                if (pending.Max(e => e.Date) <= preferences.Get(PendingNotifiedKey + pending.Key, DateTime.MinValue))
+                    continue;
+
+                var parts = new[] { oldest.EstimateText, oldest.AccountName };
+                notifications.Show(new AppNotification(PendingIdBase + pending.Key, ReminderChannel.Bills,
+                    string.Format(AppResources.PendingEntryTitle, oldest.Description),
+                    string.Join(" · ", parts.Where(p => p.Length > 0)), PendingRoute(pending.Key, oldest.Date)));
+                preferences.Set(PendingNotifiedKey + pending.Key, pending.Max(e => e.Date));
+            }
+        }
+
         private async Task NotifyDebtsDueAsync()
         {
             var today = clock.GetLocalNow().DateTime.Date;
@@ -109,7 +137,7 @@ namespace MoneyRecord.Services
         {
             var today = clock.GetLocalNow().DateTime.Date;
             var due = (await recurring.GetUpcomingAsync(settings.BillDaysBefore))
-                .Where(e => e.Type == TransactionType.Expense && e.Date >= today);
+                .Where(e => e.Type == TransactionType.Expense && e.Date >= today && !e.IsPending);
 
             // The soonest occurrence of each recurrence not notified yet (a daily one gets one reminder a day)
             var bills = due.GroupBy(e => e.RecurringId)
@@ -118,7 +146,7 @@ namespace MoneyRecord.Services
 
             foreach (var bill in bills)
             {
-                var parts = new[] { bill.WhenText, MoneyFormatter.Format(bill.Amount, bill.CurrencyCode), bill.AccountName };
+                var parts = new[] { bill.WhenText, bill.IsVariable ? AppResources.AmountVaries : MoneyFormatter.Format(bill.Amount, bill.CurrencyCode), bill.AccountName };
                 notifications.Show(new AppNotification(BillIdBase + bill.RecurringId, ReminderChannel.Bills,
                     string.Format(AppResources.BillDueTitle, bill.Description),
                     string.Join(" · ", parts.Where(p => p.Length > 0)), UpcomingRoute));

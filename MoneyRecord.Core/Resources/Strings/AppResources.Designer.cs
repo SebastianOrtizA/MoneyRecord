@@ -3229,6 +3229,24 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Amount varies.
+        /// </summary>
+        public static string AmountVaries {
+            get {
+                return ResourceManager.GetString("AmountVaries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter {0}.
+        /// </summary>
+        public static string PendingEntryTitle {
+            get {
+                return ResourceManager.GetString("PendingEntryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bill due: {0}.
         /// </summary>
         public static string BillDueTitle {

@@ -2634,4 +2634,10 @@ Monto: {2}</value>
   <data name="FailedToLoadWhatsNew" xml:space="preserve">
     <value>No se pudieron cargar las notas de la versión</value>
   </data>
+  <data name="PendingEntryTitle" xml:space="preserve">
+    <value>Registrar: {0}</value>
+  </data>
+  <data name="AmountVaries" xml:space="preserve">
+    <value>El importe varía</value>
+  </data>
 </root>

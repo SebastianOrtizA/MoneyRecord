@@ -9,7 +9,7 @@ namespace MoneyRecord.Services.Repositories
             await (await TableAsync()).Where(r => r.IsActive).ToListAsync();
 
         public async Task<List<RecurringTransaction>> GetDueAsync(DateTime asOf) =>
-            await (await TableAsync()).Where(r => r.IsActive && r.NextOccurrence <= asOf).ToListAsync();
+            await (await TableAsync()).Where(r => r.IsActive && r.IsVariableAmount == false && r.NextOccurrence <= asOf).ToListAsync();
 
         public async Task<int> DeactivateAsync(int id)
         {

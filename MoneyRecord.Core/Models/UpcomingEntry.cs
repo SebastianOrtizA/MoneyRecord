@@ -24,6 +24,18 @@ namespace MoneyRecord.Models
 
         public string CategoryIconCode { get; init; } = IconHelper.DefaultCategoryIconCode;
 
+        public bool IsVariable { get; init; }
+
+        /// <summary>A variable-amount occurrence that is due (today or overdue): it waits for the user to enter or skip it.</summary>
+        public bool IsPending { get; init; }
+
+        /// <summary>A variable occurrence with a last amount to show as the estimate (<see cref="Amount"/>).</summary>
+        public bool HasEstimate => IsVariable && Amount != 0;
+
+        /// <summary>A variable occurrence's estimate: "≈ $85" from the last amount, or "Amount varies".</summary>
+        public string EstimateText => !IsVariable ? string.Empty
+            : HasEstimate ? "≈ " + MoneyFormatter.Format(Amount, CurrencyCode) : AppResources.AmountVaries;
+
         public string AccountName { get; init; } = string.Empty;
 
         /// <summary>The account's currency (empty = the base currency).</summary>

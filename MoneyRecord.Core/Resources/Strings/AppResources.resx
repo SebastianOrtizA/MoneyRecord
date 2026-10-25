@@ -2637,4 +2637,10 @@ Amount: {2}</value>
   <data name="FailedToLoadWhatsNew" xml:space="preserve">
     <value>Could not load the release notes</value>
   </data>
+  <data name="PendingEntryTitle" xml:space="preserve">
+    <value>Enter {0}</value>
+  </data>
+  <data name="AmountVaries" xml:space="preserve">
+    <value>Amount varies</value>
+  </data>
 </root>

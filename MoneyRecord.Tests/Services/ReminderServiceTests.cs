@@ -39,6 +39,7 @@ public sealed class ReminderServiceTests : LanguageTestBase
         _notifications.AreAllowed.Returns(true);
         _notifications.When(n => n.Show(Arg.Any<AppNotification>())).Do(c => _shown.Add(c.Arg<AppNotification>()));
         _recurring.GetUpcomingAsync(Arg.Any<int>()).Returns([]);
+        _recurring.GetPendingAsync().Returns([]);
         _recurring.ProcessDueTransactionsAsync().Returns(RecurringRun.None);
         _debts.GetAllAsync().Returns([]);
         _budgets.GetActiveBudgetsAsync().Returns([]);
@@ -80,6 +81,48 @@ public sealed class ReminderServiceTests : LanguageTestBase
         reminder.Title.Should().Be("Bill due: Rent");
         reminder.Message.Should().Be($"Tomorrow · {MoneyFormatter.Format(850m, "USD")} · Bank");
         reminder.Route.Should().Be(ReminderService.UpcomingRoute);
+    }
+
+    private static UpcomingEntry Pending(int recurringId, DateTime date, decimal amount = 0m) => new()
+    {
+        RecurringId = recurringId, Date = date, Description = "Electricity", Amount = amount, IsVariable = true,
+        IsPending = true, AccountName = "Bank", CurrencyCode = "USD"
+    };
+
+    [Fact]
+    public async Task A_pending_variable_occurrence_is_notified_once_and_opens_the_add_form()
+    {
+        _recurring.GetPendingAsync().Returns([Pending(4, Today.AddDays(-1), 85m), Pending(4, Today, 85m)]);
+
+        await _sut.RunDailyAsync();
+        await _sut.RunDailyAsync();
+
+        var note = _shown.Should().ContainSingle().Subject;
+        note.Id.Should().Be(ReminderService.PendingIdBase + 4);
+        note.Title.Should().Be("Enter Electricity");
+        note.Message.Should().Be($"≈ {MoneyFormatter.Format(85m, "USD")} · Bank");
+        note.Route.Should().Be("AddTransactionPage?RecurringId=4&Occurrence=2026-03-14");
+
+        _clock.Advance(TimeSpan.FromDays(31));
+        _recurring.GetPendingAsync().Returns([Pending(4, Today.AddDays(31))]);
+        await _sut.RunDailyAsync();
+        _shown.Should().HaveCount(2);
+        _shown[1].Message.Should().Be("Amount varies · Bank");
+    }
+
+    [Fact]
+    public async Task A_future_variable_bill_says_the_amount_varies()
+    {
+        _settings.BillDaysBefore = 1;
+        _recurring.GetUpcomingAsync(1).Returns([new UpcomingEntry
+        {
+            RecurringId = 1, Date = Today.AddDays(1), DaysAway = 1, Description = "Water", Type = TransactionType.Expense,
+            IsVariable = true, AccountName = "Bank"
+        }]);
+
+        await _sut.RunDailyAsync();
+
+        _shown.Should().ContainSingle().Which.Message.Should().Be("Tomorrow · Amount varies · Bank");
     }
 
     [Fact]
