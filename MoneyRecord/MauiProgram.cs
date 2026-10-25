@@ -115,6 +115,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IReminderSettings, ReminderSettings>();
             builder.Services.AddSingleton<IReminderService, ReminderService>();
             builder.Services.AddSingleton<NotificationLaunch>();
+            builder.Services.AddSingleton<WhatsNewTracker>();
+            builder.Services.AddSingleton<IWhatsNewService, WhatsNewService>();
 #if ANDROID
             builder.Services.AddSingleton<INotificationService, Platforms.Android.AndroidNotificationService>();
 #else

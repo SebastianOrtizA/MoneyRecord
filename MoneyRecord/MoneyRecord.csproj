@@ -62,6 +62,11 @@
 
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- The release notes of the "What's new" pop-up: the Play store changelogs, one per store locale -->
+		<MauiAsset Include="..\fastlane\metadata\android\en-US\changelogs\default.txt" LogicalName="Changelog/en-US.txt" Link="Resources\Changelog\en-US.txt" />
+		<MauiAsset Include="..\fastlane\metadata\android\es-ES\changelogs\default.txt" LogicalName="Changelog/es-ES.txt" Link="Resources\Changelog\es-ES.txt" />
+		<MauiAsset Include="..\fastlane\metadata\android\es-419\changelogs\default.txt" LogicalName="Changelog/es-419.txt" Link="Resources\Changelog\es-419.txt" />
 	</ItemGroup>
 
 	<ItemGroup>

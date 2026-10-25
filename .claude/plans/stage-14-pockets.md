@@ -113,3 +113,19 @@ is only an earmark, and a goal can track it.
      with "Keep pockets": Available goes negative (red). Cancel saves nothing.
   4. Take out the rest, then delete the pocket. Backup → restore keeps the pockets and goal links. An older (v5)
      backup restores with no pockets.
+
+### 14.5 What's new pop-up (added 2026-10-25)
+Owner request, to ship with the release that carries pockets: a pop-up with the new stuff of the latest release.
+- **Text = the Play store changelog** (`fastlane/metadata/android/{en-US,es-ES,es-419}/changelogs/default.txt`), bundled as
+  `Changelog/{locale}.txt` app assets (csproj `MauiAsset` links), so the store and the app share one text per release. The release-notes PR
+  that updates those files is what changes the pop-up; Spain gets es-ES, other Spanish es-419, anything else en-US
+  (`WhatsNewChangelog.Locale`).
+- **Shows once after an update**, over Home, in an alert titled "What's new in {version}" with a "Got it" button.
+  `WhatsNewTracker` keeps the last version shown in preferences (`WhatsNew.LastSeenVersion`). A new install records its version while the
+  first-run setup is pending (`IWhatsNewService.SkipForNewInstall`), so it sees nothing; an install that never recorded a version is an
+  update from before this existed and sees the notes once.
+- **About → "What's new"** shows the same text again at any time.
+- Core: `WhatsNewTracker`, `WhatsNewChangelog`, `IWhatsNewService`; app: `WhatsNewService` (asset read, alert), `MainViewModel.InitializeAsync`,
+  `App.CreateWindow`, `AboutViewModel` / `AboutPage`. Strings en + es. Tests: tracker, locale choice, and that the three store
+  changelogs exist and fit Play's 500 characters.
+- Before releasing pockets: update the three `default.txt` files in the release-notes PR (they still describe 0.13.1).

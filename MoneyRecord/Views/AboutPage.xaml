@@ -17,6 +17,17 @@
                     <Label Text="MoneyRecord" FontSize="22" FontAttributes="Bold" />
                     <Label Text="{Binding VersionText}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                     <Label Text="{ext:Localize AppLicenseNotice}" FontSize="14" Margin="0,4,0,0" />
+                    <Button Text="{ext:Localize WhatsNewMenu}"
+                            Command="{Binding ShowWhatsNewCommand}"
+                            HorizontalOptions="Start"
+                            Margin="0,4,0,0"
+                            HeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                     <Button Text="{ext:Localize SourceCode}"
                             Command="{Binding OpenSourceCodeCommand}"
                             HorizontalOptions="Start"

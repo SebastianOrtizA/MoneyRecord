@@ -17,12 +17,13 @@ namespace MoneyRecord
         private readonly IPrivacySettings _privacy;
         private readonly Func<LockPage> _createLockPage;
         private readonly IHomeScreenWidgets _widgets;
+        private readonly IWhatsNewService _whatsNew;
         private readonly ILogger<App> _logger;
 
         public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
             IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
-            IHomeScreenWidgets widgets, ILogger<App> logger)
+            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
@@ -37,13 +38,18 @@ namespace MoneyRecord
             _privacy = privacy;
             _createLockPage = createLockPage;
             _widgets = widgets;
+            _whatsNew = whatsNew;
             _logger = logger;
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
             // A new install starts with the setup; it swaps itself for the Shell when finished
-            Page page = _setupService.ResolveFirstRunPending()
+            var firstRun = _setupService.ResolveFirstRunPending();
+            // Nothing new to announce to a new install: it starts at this version
+            if (firstRun)
+                _whatsNew.SkipForNewInstall();
+            Page page = firstRun
                 ? _createSetupPage().AsFirstRun()
                 : new AppShell();
             var window = new Window(page);

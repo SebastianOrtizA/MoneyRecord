@@ -21,6 +21,7 @@ namespace MoneyRecord.ViewModels
         private readonly ICrashReportConsent _crashReports;
         private readonly IDialogService _dialogService;
         private readonly NotificationLaunch _notificationLaunch;
+        private readonly IWhatsNewService _whatsNew;
         private readonly IPrivacySettings _privacy;
         private readonly IDatabaseEncryption _databaseEncryption;
         private readonly IConversionService _conversion;
@@ -148,9 +149,10 @@ namespace MoneyRecord.ViewModels
             IRecurringTransactionService recurringService, IErrorHandler errorHandler,
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
-            IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips)
+            IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew)
         {
             _goals = goals;
+            _whatsNew = whatsNew;
             _trips = trips;
             _conversion = conversion;
             _rateSettings = rateSettings;
@@ -184,6 +186,8 @@ namespace MoneyRecord.ViewModels
             // Opened from a notification: its page, now that the Shell is ready
             await _notificationLaunch.OpenPendingAsync();
             await AskCrashReportsOnceAsync();
+            // After an update: what is new in this version (once per version)
+            await _whatsNew.ShowIfNewAsync();
         }
 
         /// <summary>Once, a week after first use: may the app send crash reports? (Only builds that can send ask.)</summary>
