@@ -18,5 +18,18 @@ namespace MoneyRecord.Services.Interfaces
         /// days later, soonest first (Home's Upcoming card, the Recurring page).
         /// </summary>
         Task<List<UpcomingEntry>> GetUpcomingAsync(int days = UpcomingSchedule.DefaultDays);
+
+        /// <summary>The variable-amount occurrences due through today that wait to be entered or skipped, oldest first.</summary>
+        Task<List<UpcomingEntry>> GetPendingAsync();
+
+        /// <summary>
+        /// Saves <paramref name="transaction"/> as the next occurrence of a variable-amount schedule: remembers its amount as the
+        /// estimate and moves the schedule on. Refuses (<see cref="InvalidOperationException"/>) a schedule that is not
+        /// variable or active, or a date that is not its next occurrence.
+        /// </summary>
+        Task EnterOccurrenceAsync(int recurringId, Transaction transaction);
+
+        /// <summary>Moves a variable-amount schedule past its next occurrence without creating anything.</summary>
+        Task SkipOccurrenceAsync(int recurringId);
     }
 }

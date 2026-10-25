@@ -52,7 +52,8 @@ namespace MoneyRecord.Helpers
 
                 foreach (var date in Occurrences(recurring, today.AddDays(days)))
                 {
-                    var cents = recurring.AmountCents;
+                    var variable = recurring.IsVariableAmount && recurring.DebtId == null;
+                    var cents = variable ? recurring.LastAmountCents : recurring.AmountCents;
                     if (left != null)
                     {
                         if (left <= 0)
@@ -69,6 +70,8 @@ namespace MoneyRecord.Helpers
                         DaysAway = Math.Max(0, (date - today).Days),
                         Description = recurring.Description,
                         Amount = Money.FromCents(cents),
+                        IsVariable = variable,
+                        IsPending = variable && date <= today,
                         Type = recurring.TransactionType,
                         CategoryName = left != null ? AppResources.Debts : category?.Name ?? string.Empty,
                         CategoryIconCode = left != null ? DebtSummary.IconCode : category?.IconCode ?? IconHelper.DefaultCategoryIconCode,

@@ -86,6 +86,115 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         saved.IsActive.Should().BeTrue();
     }
 
+    private async Task<RecurringTransaction> AddVariableAsync(DateTime start, long lastCents = 0, DateTime? end = null)
+    {
+        var recurring = await AddAsync(RecurrenceFrequency.Monthly, start, end);
+        recurring.IsVariableAmount = true;
+        recurring.LastAmountCents = lastCents;
+        await Db.UpdateAsync(recurring);
+        return recurring;
+    }
+
+    private static Transaction Entry(DateTime date, decimal amount) => new()
+    {
+        Date = date, Amount = amount, Description = "Gym", CategoryId = 3, AccountId = 2, Type = TransactionType.Expense
+    };
+
+    [Fact]
+    public async Task A_variable_amount_schedule_is_never_created_by_processing()
+    {
+        var gym = await AddVariableAsync(new DateTime(2026, 2, 10));
+
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(0);
+
+        (await TransactionsAsync()).Should().BeEmpty();
+        (await ReloadAsync(gym)).NextOccurrence.Should().Be(new DateTime(2026, 2, 10));
+    }
+
+    [Fact]
+    public async Task Missed_variable_occurrences_wait_oldest_first()
+    {
+        await AddVariableAsync(new DateTime(2026, 2, 10), lastCents: 8500);
+
+        var pending = await _sut.GetPendingAsync();
+
+        pending.Select(e => e.Date).Should().Equal(new DateTime(2026, 2, 10), new DateTime(2026, 3, 10));
+        pending.Should().AllSatisfy(e => { e.IsPending.Should().BeTrue(); e.Amount.Should().Be(85m); });
+    }
+
+    [Fact]
+    public async Task A_future_variable_occurrence_is_upcoming_but_not_pending()
+    {
+        await AddVariableAsync(new DateTime(2026, 3, 20));
+
+        (await _sut.GetPendingAsync()).Should().BeEmpty();
+        (await _sut.GetUpcomingAsync()).Should().ContainSingle().Which.IsVariable.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Entering_an_occurrence_saves_it_remembers_the_amount_and_moves_on()
+    {
+        var power = await AddVariableAsync(new DateTime(2026, 2, 10));
+
+        await _sut.EnterOccurrenceAsync(power.Id, Entry(new DateTime(2026, 2, 10), 85m));
+
+        (await TransactionsAsync()).Should().ContainSingle().Which.Amount.Should().Be(85m);
+        var saved = await ReloadAsync(power);
+        saved.LastAmountCents.Should().Be(8500);
+        saved.LastProcessedDate.Should().Be(new DateTime(2026, 2, 10));
+        saved.NextOccurrence.Should().Be(new DateTime(2026, 3, 10));
+        (await _sut.GetPendingAsync()).Should().ContainSingle().Which.Date.Should().Be(new DateTime(2026, 3, 10));
+    }
+
+    [Fact]
+    public async Task Only_the_next_occurrence_can_be_entered()
+    {
+        var power = await AddVariableAsync(new DateTime(2026, 2, 10));
+
+        var act = () => _sut.EnterOccurrenceAsync(power.Id, Entry(new DateTime(2026, 3, 10), 85m));
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        (await TransactionsAsync()).Should().BeEmpty();
+        (await ReloadAsync(power)).NextOccurrence.Should().Be(new DateTime(2026, 2, 10));
+    }
+
+    [Fact]
+    public async Task A_fixed_schedule_or_a_future_occurrence_cannot_be_entered()
+    {
+        var fixedGym = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 2, 10));
+        var later = await AddVariableAsync(new DateTime(2026, 3, 20));
+
+        var enterFixed = () => _sut.EnterOccurrenceAsync(fixedGym.Id, Entry(new DateTime(2026, 2, 10), 1m));
+        var skipLater = () => _sut.SkipOccurrenceAsync(later.Id);
+
+        await enterFixed.Should().ThrowAsync<InvalidOperationException>();
+        await skipLater.Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task Skipping_moves_on_without_creating_anything_or_changing_the_estimate()
+    {
+        var power = await AddVariableAsync(new DateTime(2026, 3, 10), lastCents: 8500);
+
+        await _sut.SkipOccurrenceAsync(power.Id);
+
+        (await TransactionsAsync()).Should().BeEmpty();
+        var saved = await ReloadAsync(power);
+        saved.NextOccurrence.Should().Be(new DateTime(2026, 4, 10));
+        saved.LastAmountCents.Should().Be(8500);
+        (await _sut.GetPendingAsync()).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Entering_the_last_occurrence_deactivates_the_schedule()
+    {
+        var power = await AddVariableAsync(new DateTime(2026, 3, 10), end: new DateTime(2026, 3, 31));
+
+        await _sut.EnterOccurrenceAsync(power.Id, Entry(new DateTime(2026, 3, 10), 40m));
+
+        (await ReloadAsync(power)).IsActive.Should().BeFalse();
+    }
+
     [Fact]
     public async Task An_occurrence_is_due_from_the_start_of_its_day()
     {

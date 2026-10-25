@@ -48,6 +48,52 @@ namespace MoneyRecord.Services
             return UpcomingSchedule.Build(recurrings, categories, accounts, _clock.GetLocalNow().DateTime, days, debtsLeft);
         }
 
+        public async Task<List<UpcomingEntry>> GetPendingAsync() =>
+            (await GetUpcomingAsync(0)).Where(e => e.IsPending).ToList();
+
+        public Task EnterOccurrenceAsync(int recurringId, Transaction transaction) =>
+            MoveOnAsync(recurringId, transaction);
+
+        public Task SkipOccurrenceAsync(int recurringId) => MoveOnAsync(recurringId, null);
+
+        /// <summary>
+        /// The next occurrence of a variable-amount schedule is entered (<paramref name="entry"/> saved, its amount kept as the
+        /// estimate) or skipped (null); either way the schedule moves on in the same database transaction.
+        /// The caller builds the entry from the schedule (account, category, type); only its date is checked here.
+        /// </summary>
+        private async Task MoveOnAsync(int recurringId, Transaction? entry)
+        {
+            await _processing.WaitAsync();
+            try
+            {
+                await _database.RunInTransactionAsync(db =>
+                {
+                    var recurring = db.Find<RecurringTransaction>(recurringId);
+                    if (recurring is not { IsActive: true, IsVariableAmount: true, DebtId: null })
+                        throw new InvalidOperationException($"Recurring transaction {recurringId} has nothing to enter");
+                    if (HasEnded(recurring) || recurring.NextOccurrence > _clock.GetLocalNow().DateTime)
+                        throw new InvalidOperationException($"Recurring transaction {recurringId} has no occurrence due");
+
+                    if (entry != null)
+                    {
+                        if (entry.Date.Date != recurring.NextOccurrence.Date)
+                            throw new InvalidOperationException($"{entry.Date:d} is not the next occurrence of recurring transaction {recurringId}");
+                        db.Insert(entry);
+                        recurring.LastAmountCents = Math.Abs(entry.AmountCents);
+                    }
+
+                    Advance(recurring);
+                    if (HasEnded(recurring))
+                        recurring.IsActive = false;
+                    db.Update(recurring);
+                });
+            }
+            finally
+            {
+                _processing.Release();
+            }
+        }
+
         /// <summary>
         /// Creates every occurrence that is due (catching up the periods missed while the app was closed) and moves
         /// each schedule on. A recurrence whose next occurrence is past its end date is deactivated. Runs one at a time.

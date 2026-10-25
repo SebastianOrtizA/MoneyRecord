@@ -74,6 +74,15 @@ namespace MoneyRecord.Models
 
         public bool IsActive { get; set; } = true;
 
+        /// <summary>
+        /// The amount changes each time (salary, electricity): nothing is created automatically. Each due occurrence waits in the
+        /// "to enter" list until the user types the real amount or skips it. Never set on a debt's schedule.
+        /// </summary>
+        public bool IsVariableAmount { get; set; }
+
+        /// <summary>The last amount entered for a variable schedule, in cents: the estimate shown (0 = none yet).</summary>
+        public long LastAmountCents { get; set; }
+
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [Ignore]

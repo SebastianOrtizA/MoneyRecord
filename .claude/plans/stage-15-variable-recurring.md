@@ -1,6 +1,6 @@
 # Stage 15: Variable-amount recurring (bills that change each time)
 
-**Status**: Design agreed 2026-10-25 (decisions below); not started
+**Status**: 15.1 in review (core, no UI yet); 15.2 not started. Design agreed 2026-10-25 (decisions below)
 **Depends on**: 11.7 scheduled recurring
 **Complexity**: Medium (2 PRs)
 **Source**: User request, 2026-10-25
@@ -38,6 +38,15 @@ notified, and a tap opens the add form already filled in. The user types the rea
   "amount varies" instead of an amount.
 - Tests: `RecurringTransactionServiceTests` (not auto-created, enter advances and stores the last amount, skip, catch-up of
   two occurrences, end date), `UpcomingScheduleTests`, `ReminderServiceTests` (pending notified once).
+
+**Done as (15.1)**: as planned. Notes: the pending notification is deliberately independent of the bill-reminder switch (it is an action prompt that replaces the
+automatic entry; it still needs notifications on); a debt's schedule is never variable (guarded in `UpcomingSchedule` and
+`MoveOnAsync`; 15.2 also hides the switch for debts); `GetPendingAsync` = `GetUpcomingAsync(0)` filtered to `IsPending`; Enter/Skip share one
+transaction and refuse a non-variable or inactive schedule, an occurrence not yet due, and (Enter) a date other than
+`NextOccurrence`; `UpcomingEntry.EstimateText` ("≈ $85" / "Amount varies") feeds the notification and 15.2's rows; pending
+occurrences are left out of the bill reminders (the pending notification covers them). The notification route
+(`ReminderService.PendingRoute` = `AddTransactionPage?RecurringId=..&Occurrence=yyyy-MM-dd`) is read by the add form in 15.2,
+so until then a tap opens the plain add form.
 
 ### 15.2 UI
 - Add form in schedule mode (`AddTransactionViewModel`, `Schedule=true`): an "Amount varies" switch; with it on, the amount is
