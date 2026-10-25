@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using Xunit;
 
@@ -20,8 +21,8 @@ public class DebtSummaryTotalsTests
             Make(DebtDirection.Borrowed, "EUR", 3_000, 0)
         };
 
-        DebtSummary.OutstandingTotals(debts, DebtDirection.Lent).Should().Contain("125").And.NotContain("EUR");
-        DebtSummary.OutstandingTotals(debts, DebtDirection.Borrowed).Should().Contain("30");
+        DebtSummary.OutstandingTotals(debts, DebtDirection.Lent).Should().Be(MoneyFormatter.Format(125m, "USD"));
+        DebtSummary.OutstandingTotals(debts, DebtDirection.Borrowed).Should().Be(MoneyFormatter.Format(30m, "EUR"));
     }
 
     [Fact]
