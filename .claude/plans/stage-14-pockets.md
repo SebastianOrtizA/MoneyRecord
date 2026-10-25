@@ -1,6 +1,6 @@
 # Stage 14: Pockets (money set aside inside an account)
 
-**Status**: 14.1 done; 14.2 in review (design agreed 2026-10-17)
+**Status**: 14.1 and 14.2 done; 14.3 in review (design agreed 2026-10-17)
 **Depends on**: 10.6 savings goals
 **Complexity**: Medium (3 PRs)
 **Source**: User request, 2026-10-17

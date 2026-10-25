@@ -17,6 +17,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITransferRepository _transferRepository;
         private readonly IBalanceService _balanceService;
         private readonly IPocketService _pocketService;
+        private readonly PocketCoverPrompt _pocketCover;
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
@@ -100,9 +101,10 @@ namespace MoneyRecord.ViewModels
         private int? _originalDestinationAccountId;
         private decimal _originalAmount;
 
-        public AddTransferViewModel(IAccountRepository accountRepository, ITransferRepository transferRepository, IBalanceService balanceService, IPocketService pocketService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService)
+        public AddTransferViewModel(IAccountRepository accountRepository, ITransferRepository transferRepository, IBalanceService balanceService, IPocketService pocketService, PocketCoverPrompt pocketCover, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService)
         {
             _pocketService = pocketService;
+            _pocketCover = pocketCover;
             _accountRepository = accountRepository;
             _transferRepository = transferRepository;
             _balanceService = balanceService;
@@ -317,6 +319,14 @@ namespace MoneyRecord.ViewModels
 
             var description = string.IsNullOrWhiteSpace(Description) ? AppResources.DefaultTransferDescription : Description;
 
+            // A transfer out that takes money set aside in pockets: ask which pocket to take it from
+            var originalOutflow = IsEditMode && Transfer != null && _originalSourceAccountId == SelectedSourceAccount.Id
+                && Transfer.Date < _balanceService.CountedBefore ? _originalAmount : 0;
+            var cover = await _pocketCover.AskAsync(SelectedSourceAccount.Id, amountValue - originalOutflow, SelectedDate);
+            if (!cover.Proceed)
+                return;
+            int? savedTransferId = null;
+
             try
             {
                 if (IsEditMode && Transfer != null)
@@ -330,6 +340,7 @@ namespace MoneyRecord.ViewModels
                     Transfer.DestinationAccountId = SelectedDestinationAccount.Id;
 
                     await _transferRepository.SaveAsync(Transfer);
+                    savedTransferId = Transfer.Id;
                     await _dialogService.ToastAsync(AppResources.TransferUpdatedSuccessfully);
                 }
                 else
@@ -346,13 +357,31 @@ namespace MoneyRecord.ViewModels
                     };
 
                     await _transferRepository.SaveAsync(newTransfer);
+                    savedTransferId = newTransfer.Id;
                 }
 
+                await RecordCoverAsync(SelectedSourceAccount.Id, cover, savedTransferId);
                 await _navigationService.GoBackAsync();
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToSaveTransfer);
+            }
+        }
+
+        /// <summary>Records the pockets' take-outs of a saved transfer; best-effort, the transfer is saved already.</summary>
+        private async Task RecordCoverAsync(int accountId, PocketCoverChoice cover, int? transferId)
+        {
+            if (cover.Takes.Count == 0)
+                return;
+
+            try
+            {
+                await _pocketService.CoverAsync(accountId, cover.Takes, SelectedDate, transferId: transferId);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToMovePocket);
             }
         }
 

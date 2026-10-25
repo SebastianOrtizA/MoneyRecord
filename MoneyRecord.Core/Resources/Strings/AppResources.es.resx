@@ -2616,4 +2616,10 @@ Monto: {2}</value>
   <data name="DeleteAccountPockets" xml:space="preserve">
     <value>Sus bolsillos también se eliminan.</value>
   </data>
+  <data name="PocketCoverTitle" xml:space="preserve">
+    <value>Esto usa {0} que apartaste. ¿De dónde lo sacamos?</value>
+  </data>
+  <data name="PocketCoverKeep" xml:space="preserve">
+    <value>Dejar los bolsillos como están</value>
+  </data>
 </root>

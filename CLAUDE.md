@@ -69,7 +69,7 @@ crashes at runtime (XAML is inflated at runtime there).
   last category per type, rename / merge / delete), DebtService + DebtLedger (debts: totals in SQL, payments with an interest part,
   the schedule = a `RecurringTransaction.DebtId` rule capped at what is left; `IAccountRepository.GetOwnAsync` leaves the
   hidden accounts out of pickers and lists), SplitService (saves a split expense: one transaction per part in one DB
-  transaction, replacing the edited ones; the own conversion shared out), PocketService (set aside / take out, available = balance minus pockets, `GetShortfallAsync`, `CoverAsync`; `PocketCover.Plan`), SavingsGoalService (goal
+  transaction, replacing the edited ones; the own conversion shared out), PocketService (set aside / take out, available = balance minus pockets, `GetShortfallAsync`, `CoverAsync`; `PocketCover.Plan`; `PocketCoverPrompt` = the question the expense and transfer forms ask before saving an entry that leaves its account with less than its pockets hold: take it from which pocket, keep, or cancel; the take-outs are recorded after the save, linked to the entry; recurring, CSV import, debt payments and party shares never ask), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
   PartyService (friends list, parties with members, expenses split evenly minus exclusions, contributions to a common pot;
   summary = balances + settle-up payments), TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
