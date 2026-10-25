@@ -109,7 +109,6 @@
                         <VerticalStackLayout IsVisible="{Binding HasPockets}" Spacing="4" Margin="56,0,0,0">
                             <Label Text="{Binding AvailableText}"
                                    FontSize="13"
-                                   LineBreakMode="TailTruncation"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}">
                                 <Label.Triggers>
                                     <DataTrigger TargetType="Label" Binding="{Binding IsOverCommitted}" Value="True">
