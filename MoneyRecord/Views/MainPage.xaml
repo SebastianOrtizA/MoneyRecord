@@ -348,7 +348,13 @@
                                            FontAttributes="Bold"
                                            VerticalOptions="Center"
                                            HorizontalTextAlignment="End"
-                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=HideBalances}" Value="True">
+                                                <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
                                 </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
