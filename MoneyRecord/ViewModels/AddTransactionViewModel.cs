@@ -33,6 +33,7 @@ namespace MoneyRecord.ViewModels
         private readonly IConversionService _conversion;
         private readonly IPayeeService _payeeService;
         private readonly ISplitService _splitService;
+        private readonly PocketCoverPrompt _pocketCover;
         private readonly ITripService _trips;
         private readonly IReceiptScanner _receiptScanner;
         private readonly TimeProvider _clock;
@@ -333,7 +334,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, ITripService trips, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -351,6 +352,7 @@ namespace MoneyRecord.ViewModels
             _conversion = conversion;
             _payeeService = payeeService;
             _splitService = splitService;
+            _pocketCover = pocketCover;
             _trips = trips;
             _receiptScanner = receiptScanner;
             _clock = clock;
@@ -850,6 +852,15 @@ namespace MoneyRecord.ViewModels
                 }
             }
 
+            // An expense that takes money set aside in pockets: ask which pocket to take it from (a schedule takes nothing yet)
+            var cover = PocketCoverChoice.KeepAsIs;
+            if (TransactionType == TransactionType.Expense && !schedulesOnly)
+            {
+                cover = await _pocketCover.AskAsync(accountId, ExtraOutflowOn(accountId, amountValue), SelectedDate);
+                if (!cover.Proceed)
+                    return;
+            }
+
             // After every check, so a refused save never leaves a new payee behind
             var payeeId = await _payeeService.ResolveAsync(PayeeText);
 
@@ -864,6 +875,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
+            int? savedTransactionId = null;
             // A split payment, or an edited one put back into one category, is replaced as a whole
             if (parts != null || _editedParts.Count > 0)
             {
@@ -894,6 +906,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
 
                 await _transactionRepository.SaveAsync(Transaction);
+                savedTransactionId = Transaction.Id;
                 _receipt.Commit(); // deletes a removed or replaced receipt
                 await _dialogService.ToastAsync(AppResources.TransactionUpdatedSuccessfully);
             }
@@ -919,6 +932,7 @@ namespace MoneyRecord.ViewModels
                 newTransaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
 
                 await _transactionRepository.SaveAsync(newTransaction);
+                savedTransactionId = newTransaction.Id;
                 _receipt.Commit();
                 if (!IsTripMode)
                     _entryDefaults.Remember(TransactionType, accountId, SelectedCategory.Id);
@@ -926,6 +940,8 @@ namespace MoneyRecord.ViewModels
                 if (start != null)
                     await SaveRecurringAsync(start, amountValue, savedDescription, accountId, payeeId);
             }
+
+            await _pocketCover.RecordAsync(accountId, cover, SelectedDate, transactionId: savedTransactionId);
 
             // An expense may take a budget to 80% or over it
             if (TransactionType == TransactionType.Expense)
@@ -937,6 +953,14 @@ namespace MoneyRecord.ViewModels
 
             await _navigationService.GoBackAsync();
         }
+
+        /// <summary>What saving takes out of <paramref name="accountId"/> on top of what the entry being edited took already.</summary>
+        private decimal ExtraOutflowOn(int accountId, decimal amount) =>
+            IsEditMode && Transaction is { Type: TransactionType.Expense } original
+                ? PocketCoverPrompt.ExtraOutflow(amount,
+                    _editedParts.Count > 0 ? Money.FromCents(_editedParts.Sum(p => p.AmountCents)) : original.Amount,
+                    original.Date, _balanceService.CountedBefore, original.AccountId == accountId)
+                : amount;
 
         /// <summary>The ledger category to save: "Travel" while the expense is part of the active trip, else the picked one.</summary>
         private async Task<int> CategoryIdToSaveAsync() => IsTripMode ? await _trips.GetTravelCategoryIdAsync() : SelectedCategory!.Id;

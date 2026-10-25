@@ -2619,4 +2619,10 @@ Amount: {2}</value>
   <data name="DeleteAccountPockets" xml:space="preserve">
     <value>Its pockets are deleted too.</value>
   </data>
+  <data name="PocketCoverTitle" xml:space="preserve">
+    <value>This uses {0} you set aside. Take it from:</value>
+  </data>
+  <data name="PocketCoverKeep" xml:space="preserve">
+    <value>Keep pockets as they are</value>
+  </data>
 </root>

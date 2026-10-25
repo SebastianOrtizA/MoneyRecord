@@ -7361,5 +7361,23 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("DeleteAccountPockets", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This uses {0} you set aside. Take it from:.
+        /// </summary>
+        public static string PocketCoverTitle {
+            get {
+                return ResourceManager.GetString("PocketCoverTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep pockets as they are.
+        /// </summary>
+        public static string PocketCoverKeep {
+            get {
+                return ResourceManager.GetString("PocketCoverKeep", resourceCulture);
+            }
+        }
     }
 }
