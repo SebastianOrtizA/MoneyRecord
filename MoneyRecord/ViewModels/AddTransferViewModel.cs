@@ -319,16 +319,18 @@ namespace MoneyRecord.ViewModels
 
             var description = string.IsNullOrWhiteSpace(Description) ? AppResources.DefaultTransferDescription : Description;
 
-            // A transfer out that takes money set aside in pockets: ask which pocket to take it from
-            var originalOutflow = IsEditMode && Transfer != null && _originalSourceAccountId == SelectedSourceAccount.Id
-                && Transfer.Date < _balanceService.CountedBefore ? _originalAmount : 0;
-            var cover = await _pocketCover.AskAsync(SelectedSourceAccount.Id, amountValue - originalOutflow, SelectedDate);
-            if (!cover.Proceed)
-                return;
-            int? savedTransferId = null;
-
             try
             {
+                // A transfer out that takes money set aside in pockets: ask which pocket to take it from
+                var extraOutflow = IsEditMode && Transfer != null
+                    ? PocketCoverPrompt.ExtraOutflow(amountValue, _originalAmount, Transfer.Date, _balanceService.CountedBefore,
+                        _originalSourceAccountId == SelectedSourceAccount.Id)
+                    : amountValue;
+                var cover = await _pocketCover.AskAsync(SelectedSourceAccount.Id, extraOutflow, SelectedDate);
+                if (!cover.Proceed)
+                    return;
+                int? savedTransferId = null;
+
                 if (IsEditMode && Transfer != null)
                 {
                     // Update existing transfer
@@ -360,28 +362,12 @@ namespace MoneyRecord.ViewModels
                     savedTransferId = newTransfer.Id;
                 }
 
-                await RecordCoverAsync(SelectedSourceAccount.Id, cover, savedTransferId);
+                await _pocketCover.RecordAsync(SelectedSourceAccount.Id, cover, SelectedDate, transferId: savedTransferId);
                 await _navigationService.GoBackAsync();
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToSaveTransfer);
-            }
-        }
-
-        /// <summary>Records the pockets' take-outs of a saved transfer; best-effort, the transfer is saved already.</summary>
-        private async Task RecordCoverAsync(int accountId, PocketCoverChoice cover, int? transferId)
-        {
-            if (cover.Takes.Count == 0)
-                return;
-
-            try
-            {
-                await _pocketService.CoverAsync(accountId, cover.Takes, SelectedDate, transferId: transferId);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToMovePocket);
             }
         }
 

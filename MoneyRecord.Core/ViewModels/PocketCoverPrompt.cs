@@ -21,8 +21,17 @@ namespace MoneyRecord.ViewModels
     /// pockets hold: which pocket(s) to take the difference from, or keep the pockets as they are (the account's Available
     /// then goes negative). Shared by both forms.
     /// </summary>
-    public sealed class PocketCoverPrompt(IDialogService dialogs, IPocketService pockets)
+    public sealed class PocketCoverPrompt(IDialogService dialogs, IPocketService pockets, IErrorHandler errors)
     {
+        /// <summary>
+        /// What an entry takes out of its account on top of what it took already: a new entry's amount; for an edit on the same
+        /// account, the new amount minus the original one (only when the original is counted in the balance, i.e. not dated
+        /// in the future).
+        /// </summary>
+        public static decimal ExtraOutflow(decimal newAmount, decimal originalAmount, DateTime originalDate, DateTime countedBefore,
+            bool sameAccount) =>
+            sameAccount && originalDate < countedBefore ? newAmount - originalAmount : newAmount;
+
         /// <param name="extraOutflow">
         /// What the entry takes out of the account on top of what it took already (a new entry's amount; for an edit, the
         /// new amount minus the original one). Zero or less never asks.
@@ -64,6 +73,26 @@ namespace MoneyRecord.ViewModels
             }
 
             return new PocketCoverChoice(true, takes);
+        }
+
+        /// <summary>
+        /// Records the take-outs of a saved entry, linked to it. Best-effort: the entry is saved already, so a failure is
+        /// reported (the pockets stay as they were) and nothing is thrown.
+        /// </summary>
+        public async Task RecordAsync(int accountId, PocketCoverChoice choice, DateTime date, int? transactionId = null,
+            int? transferId = null)
+        {
+            if (choice.Takes.Count == 0)
+                return;
+
+            try
+            {
+                await pockets.CoverAsync(accountId, choice.Takes, date, transactionId, transferId);
+            }
+            catch (Exception ex)
+            {
+                await errors.HandleAsync(ex, AppResources.FailedToMovePocket);
+            }
         }
     }
 }

@@ -14,12 +14,13 @@ public sealed class PocketCoverPromptTests
 
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
     private readonly IPocketService _pockets = Substitute.For<IPocketService>();
+    private readonly IErrorHandler _errors = Substitute.For<IErrorHandler>();
     private readonly Account _bank = new() { Id = 1, Name = "Bank", CurrencyCode = "USD" };
     private readonly PocketCoverPrompt _sut;
 
     public PocketCoverPromptTests()
     {
-        _sut = new PocketCoverPrompt(_dialogs, _pockets);
+        _sut = new PocketCoverPrompt(_dialogs, _pockets, _errors);
     }
 
     private PocketSummary Pocket(int id, string name, long cents) =>
@@ -139,5 +140,61 @@ public sealed class PocketCoverPromptTests
         var choice = await _sut.AskAsync(_bank.Id, 100m, Today);
 
         choice.Takes.Should().Equal(new PocketTake(11, 100m));
+    }
+
+    // ---- ExtraOutflow ----
+
+    private static readonly DateTime CountedBefore = new(2026, 10, 17);
+
+    [Fact]
+    public void An_edit_on_the_same_account_is_charged_only_the_difference()
+    {
+        PocketCoverPrompt.ExtraOutflow(1800m, 1500m, Today, CountedBefore, sameAccount: true).Should().Be(300m);
+        PocketCoverPrompt.ExtraOutflow(1000m, 1500m, Today, CountedBefore, sameAccount: true).Should().Be(-500m, "a smaller amount never asks");
+    }
+
+    [Fact]
+    public void An_edit_moved_to_another_account_is_charged_in_full()
+    {
+        PocketCoverPrompt.ExtraOutflow(1800m, 1500m, Today, CountedBefore, sameAccount: false).Should().Be(1800m);
+    }
+
+    [Fact]
+    public void An_original_dated_in_the_future_is_in_no_balance_so_the_new_amount_is_charged_in_full()
+    {
+        PocketCoverPrompt.ExtraOutflow(1800m, 1500m, CountedBefore, CountedBefore, sameAccount: true).Should().Be(1800m);
+    }
+
+    // ---- RecordAsync ----
+
+    [Fact]
+    public async Task Recording_covers_the_pockets_linked_to_the_saved_entry()
+    {
+        var takes = new[] { new PocketTake(10, 100m) };
+
+        await _sut.RecordAsync(_bank.Id, new PocketCoverChoice(true, takes), Today, transactionId: 7);
+
+        await _pockets.Received(1).CoverAsync(_bank.Id, takes, Today, 7, null);
+    }
+
+    [Fact]
+    public async Task Recording_nothing_does_not_touch_the_pockets()
+    {
+        await _sut.RecordAsync(_bank.Id, PocketCoverChoice.KeepAsIs, Today, transferId: 3);
+
+        await _pockets.DidNotReceiveWithAnyArgs().CoverAsync(default, default!, default, default, default);
+    }
+
+    [Fact]
+    public async Task A_failed_recording_is_reported_not_thrown()
+    {
+        var error = new InvalidOperationException("data changed");
+        _pockets.CoverAsync(Arg.Any<int>(), Arg.Any<IReadOnlyList<PocketTake>>(), Arg.Any<DateTime>(), Arg.Any<int?>(), Arg.Any<int?>())
+            .Returns<Task>(_ => throw error);
+
+        var act = () => _sut.RecordAsync(_bank.Id, new PocketCoverChoice(true, [new PocketTake(10, 100m)]), Today, transactionId: 7);
+
+        await act.Should().NotThrowAsync();
+        await _errors.Received(1).HandleAsync(error, AppResources.FailedToMovePocket);
     }
 }
