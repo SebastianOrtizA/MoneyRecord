@@ -2625,4 +2625,16 @@ Amount: {2}</value>
   <data name="PocketCoverKeep" xml:space="preserve">
     <value>Keep pockets as they are</value>
   </data>
+  <data name="WhatsNewTitle" xml:space="preserve">
+    <value>What's new in {0}</value>
+  </data>
+  <data name="WhatsNewGotIt" xml:space="preserve">
+    <value>Got it</value>
+  </data>
+  <data name="WhatsNewMenu" xml:space="preserve">
+    <value>What's new</value>
+  </data>
+  <data name="FailedToLoadWhatsNew" xml:space="preserve">
+    <value>Could not load the release notes</value>
+  </data>
 </root>

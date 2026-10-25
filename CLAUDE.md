@@ -77,6 +77,7 @@ crashes at runtime (XAML is inflated at runtime there).
   categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService, DataExportService
   (zip backup/restore, CSV), CategoryIconService, SetupService (first-run setup: pending only on a new install;
   applies the chosen accounts/categories, replacing the seed data on the first run),
+  WhatsNewTracker + `IWhatsNewService` (the "What's new" alert: the Play changelog `fastlane/metadata/android/*/changelogs/default.txt`, bundled as `Changelog/{locale}.txt` assets and picked by `WhatsNewChangelog.Locale`, shown once per version after an update, again from About; a new install skips it),
   LocalizationService (saved `Language` preference, empty = device), AppPaths (app data folder → database, receipts,
   backups), ErrorHandler (localized message via
   `IDialogService`, exception to `ILogger`; never show `ex.Message`),

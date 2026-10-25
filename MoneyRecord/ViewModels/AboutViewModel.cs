@@ -14,16 +14,21 @@ namespace MoneyRecord.ViewModels
 
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IWhatsNewService _whatsNew;
 
-        public AboutViewModel(INavigationService navigationService, IErrorHandler errorHandler)
+        public AboutViewModel(INavigationService navigationService, IErrorHandler errorHandler, IWhatsNewService whatsNew)
         {
             _navigationService = navigationService;
             _errorHandler = errorHandler;
+            _whatsNew = whatsNew;
         }
 
         public string VersionText => string.Format(AppResources.AppVersion, AppInfo.Current.VersionString);
 
         public IReadOnlyList<ThirdPartyComponent> Components => ThirdPartyComponent.All;
+
+        [RelayCommand]
+        private Task ShowWhatsNewAsync() => _whatsNew.ShowAsync();
 
         [RelayCommand]
         private Task OpenSourceCodeAsync() => OpenUrlAsync(SourceCodeUrl);

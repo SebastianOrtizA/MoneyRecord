@@ -7379,5 +7379,41 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("PocketCoverKeep", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What's new in {0}.
+        /// </summary>
+        public static string WhatsNewTitle {
+            get {
+                return ResourceManager.GetString("WhatsNewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Got it.
+        /// </summary>
+        public static string WhatsNewGotIt {
+            get {
+                return ResourceManager.GetString("WhatsNewGotIt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What's new.
+        /// </summary>
+        public static string WhatsNewMenu {
+            get {
+                return ResourceManager.GetString("WhatsNewMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not load the release notes.
+        /// </summary>
+        public static string FailedToLoadWhatsNew {
+            get {
+                return ResourceManager.GetString("FailedToLoadWhatsNew", resourceCulture);
+            }
+        }
     }
 }

@@ -2622,4 +2622,16 @@ Monto: {2}</value>
   <data name="PocketCoverKeep" xml:space="preserve">
     <value>Dejar los bolsillos como están</value>
   </data>
+  <data name="WhatsNewTitle" xml:space="preserve">
+    <value>Novedades de la versión {0}</value>
+  </data>
+  <data name="WhatsNewGotIt" xml:space="preserve">
+    <value>Entendido</value>
+  </data>
+  <data name="WhatsNewMenu" xml:space="preserve">
+    <value>Novedades</value>
+  </data>
+  <data name="FailedToLoadWhatsNew" xml:space="preserve">
+    <value>No se pudieron cargar las notas de la versión</value>
+  </data>
 </root>
