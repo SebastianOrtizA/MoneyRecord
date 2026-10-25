@@ -32,15 +32,15 @@ namespace MoneyRecord.Models
         /// <summary>The pending occurrence to act on: a schedule's oldest one (the others wait their turn, since entering or skipping goes in order).</summary>
         public bool CanEnter { get; init; }
 
-        /// <summary>A variable occurrence with a last amount to show as the estimate (<see cref="Amount"/>).</summary>
         /// <summary>A fixed amount: the row shows it signed; a variable one shows <see cref="EstimateText"/>.</summary>
         public bool IsFixedAmount => !IsVariable;
 
+        /// <summary>A variable occurrence with a last amount to show as the estimate (<see cref="Amount"/>).</summary>
         public bool HasEstimate => IsVariable && Amount != 0;
 
         /// <summary>A variable occurrence's estimate: "≈ $85" from the last amount, or "Amount varies".</summary>
         public string EstimateText => !IsVariable ? string.Empty
-            : HasEstimate ? "≈ " + MoneyFormatter.Format(Amount, CurrencyCode) : AppResources.AmountVaries;
+            : HasEstimate ? MoneyFormatter.FormatEstimate(Amount, CurrencyCode) : AppResources.AmountVaries;
 
         public string AccountName { get; init; } = string.Empty;
 

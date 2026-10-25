@@ -22,6 +22,10 @@ namespace MoneyRecord.Helpers
         /// just its symbol; another currency adds its code when its symbol is shared ("$1.200,00 COP" while the base
         /// is USD, but "£5.00").
         /// </summary>
+        /// <summary>A variable amount's estimate: "≈ $85.00".</summary>
+        public static string FormatEstimate(decimal amount, string? currencyCode = null, CultureInfo? culture = null) =>
+            "≈ " + Format(amount, currencyCode, culture);
+
         public static string Format(decimal amount, string? currencyCode = null, CultureInfo? culture = null)
         {
             var code = ResolveCurrencyCode(currencyCode);

@@ -680,7 +680,7 @@ namespace MoneyRecord.ViewModels
             Description = EntryDescription.ForEditing(recurring.Description, SelectedCategory?.Name);
             IsMoreDetailsOpen = Description.Length > 0;
             if (recurring.LastAmountCents != 0)
-                AmountPlaceholder = "≈ " + MoneyFormatter.Format(Money.FromCents(recurring.LastAmountCents), SelectedAccount?.CurrencyCode ?? string.Empty);
+                AmountPlaceholder = MoneyFormatter.FormatEstimate(Money.FromCents(recurring.LastAmountCents), SelectedAccount?.CurrencyCode ?? string.Empty);
         }
 
         private async Task LoadAccountsAsync()

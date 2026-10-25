@@ -224,7 +224,9 @@ namespace MoneyRecord.ViewModels
             EditSelectedFrequency = Frequencies.FirstOrDefault(f => f.Frequency == item.Frequency) ?? Frequencies[3];
             EditUseSpecificDay = item.DayOfMonth.HasValue;
             EditSelectedDayOfMonth = item.DayOfMonth ?? 1;
-            EditAmount = item.IsVariableAmount && item.AmountCents == 0 ? string.Empty : item.Amount.ToString("N2");
+            // A variable schedule shows its estimate (the last amount entered), which is what its list row shows too
+            var shownCents = item.IsVariableAmount && item.LastAmountCents != 0 ? item.LastAmountCents : item.AmountCents;
+            EditAmount = shownCents == 0 ? string.Empty : Money.FromCents(shownCents).ToString("N2");
             EditCanBeVariable = item.DebtId == null;
             EditIsVariableAmount = item.IsVariableAmount;
             // A debt's schedule is edited on the Debts page
@@ -324,8 +326,8 @@ namespace MoneyRecord.ViewModels
                 EditingItem.DayOfMonth = dayOfMonth;
                 EditingItem.Amount = newAmount;
                 EditingItem.IsVariableAmount = EditCanBeVariable && EditIsVariableAmount;
-                // A typed amount is the estimate until the first one is entered
-                if (EditingItem.IsVariableAmount && EditingItem.LastAmountCents == 0)
+                // The typed amount is a variable schedule's estimate (emptied = keep the last one)
+                if (EditingItem.IsVariableAmount && !amountOptional)
                     EditingItem.LastAmountCents = EditingItem.AmountCents;
                 if (EditCanMoveFirstDate)
                 {

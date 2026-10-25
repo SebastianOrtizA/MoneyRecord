@@ -105,7 +105,7 @@ namespace MoneyRecord.Models
         /// <summary>The amount for a list: "≈ $85" or "Amount varies" for a variable schedule, the fixed amount otherwise.</summary>
         [Ignore]
         public string AmountText => !IsVariableAmount ? MoneyFormatter.Format(Amount, CurrencyCode)
-            : LastAmountCents != 0 ? "≈ " + MoneyFormatter.Format(Money.FromCents(LastAmountCents), CurrencyCode) : AppResources.AmountVaries;
+            : LastAmountCents != 0 ? MoneyFormatter.FormatEstimate(Money.FromCents(LastAmountCents), CurrencyCode) : AppResources.AmountVaries;
 
         [Ignore]
         public string FrequencyDisplay { get; set; } = string.Empty;
