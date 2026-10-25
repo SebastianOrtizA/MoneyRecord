@@ -41,7 +41,10 @@ namespace MoneyRecord.ViewModels
         private bool isFormOpen;
 
         /// <summary>The add/edit sheet or the pocket sheet is open (the add button hides).</summary>
-        public bool IsSheetOpen => IsFormOpen || IsPocketOpen;
+        public bool IsSheetOpen => IsFormOpen || PocketSheet.IsOpen;
+
+        /// <summary>The pocket sheet.</summary>
+        public PocketSheetViewModel PocketSheet { get; }
 
         /// <summary>The account the sheet edits; null when it adds a new one.</summary>
         [ObservableProperty]
@@ -78,9 +81,8 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private List<Currency> availableCurrencies = new();
 
-        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler, IDialogService dialogService, IExchangeRateService exchangeRates, IPocketService pocketService)
+        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler, IDialogService dialogService, IExchangeRateService exchangeRates, IPocketService pocketService, PocketSheetViewModel pocket)
         {
-            _pocketService = pocketService;
             _accountRepository = accountRepository;
             _accountService = accountService;
             _categoryIconService = categoryIconService;
@@ -89,14 +91,20 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _exchangeRates = exchangeRates;
+            _pocketService = pocketService;
+            PocketSheet = pocket;
+            PocketSheet.Changed = () => LoadAccountsCommand.ExecuteAsync(null);
+            PocketSheet.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(PocketSheetViewModel.IsOpen))
+                    OnPropertyChanged(nameof(IsSheetOpen));
+            };
         }
 
         public Task InitializeAsync()
         {
             if (AvailableIcons.Count == 0)
                 AvailableIcons = new ObservableCollection<AccountIcon>(_categoryIconService.GetAccountIcons());
-            if (PocketIcons.Count == 0)
-                PocketIcons = new ObservableCollection<AccountIcon>(_categoryIconService.GetAccountIcons());
             if (AvailableCurrencies.Count == 0)
                 AvailableCurrencies = _currencyService.GetAvailableCurrencies();
             return LoadAccountsCommand.ExecuteAsync(null);
@@ -177,8 +185,8 @@ namespace MoneyRecord.ViewModels
         /// <summary>Closes the pocket sheet, else the add/edit sheet; false when neither was open.</summary>
         public bool CloseTopOverlay()
         {
-            if (IsPocketOpen)
-                ClosePocket();
+            if (PocketSheet.IsOpen)
+                PocketSheet.Close();
             else if (IsFormOpen)
                 CloseForm();
             else
@@ -189,7 +197,7 @@ namespace MoneyRecord.ViewModels
         /// <summary>The page went away: back here later shows the list, not a stale sheet.</summary>
         public void CloseAll()
         {
-            ClosePocket();
+            PocketSheet.Close();
             CloseForm();
         }
 
@@ -328,56 +336,7 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        // ----- Pocket sheet -----
-
-        // The pocket sheet's account (set for a new pocket too)
-        private Account? _pocketAccount;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsSheetOpen))]
-        private bool isPocketOpen;
-
-        /// <summary>The pocket the sheet edits; null when it adds a new one.</summary>
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsPocketEdit), nameof(PocketTitle), nameof(PocketSaveText))]
-        private Pocket? editingPocket;
-
-        public bool IsPocketEdit => EditingPocket != null;
-
-        public string PocketTitle => IsPocketEdit ? AppResources.EditPocket : AppResources.NewPocket;
-
-        public string PocketSaveText => IsPocketEdit ? AppResources.Save : AppResources.NewPocket;
-
-        [ObservableProperty]
-        private string pocketName = string.Empty;
-
-        [ObservableProperty]
-        private string pocketIconCode = string.Empty;
-
-        [ObservableProperty]
-        private ObservableCollection<AccountIcon> pocketIcons = new();
-
-        /// <summary>The amount to set aside or take out.</summary>
-        [ObservableProperty]
-        private string pocketAmount = string.Empty;
-
-        /// <summary>The pocket's account currency: the amount field formats in it.</summary>
-        [ObservableProperty]
-        private string pocketCurrencyCode = string.Empty;
-
-        /// <summary>"In this pocket: $500.00".</summary>
-        [ObservableProperty]
-        private string pocketHoldsText = string.Empty;
-
-        /// <summary>"Available in Bank: $1,500.00".</summary>
-        [ObservableProperty]
-        private string pocketAvailableText = string.Empty;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(HasPocketMovements))]
-        private List<PocketMovementRow> pocketMovements = [];
-
-        public bool HasPocketMovements => PocketMovements.Count > 0;
+        // ----- Pocket sheet (its own view model) -----
 
         /// <summary>The account sheet's "New pocket": closes that sheet and opens the pocket sheet for the account.</summary>
         [RelayCommand]
@@ -388,176 +347,11 @@ namespace MoneyRecord.ViewModels
                 return;
 
             CloseForm();
-            await OpenPocketSheetAsync(account, null);
+            await PocketSheet.OpenAsync(account, null);
         }
 
         [RelayCommand]
         private Task EditPocketAsync(PocketSummary? pocket) =>
-            pocket == null ? Task.CompletedTask : OpenPocketSheetAsync(pocket.Account, pocket.Pocket);
-
-        private async Task OpenPocketSheetAsync(Account account, Pocket? pocket)
-        {
-            _pocketAccount = account;
-            EditingPocket = pocket;
-            PocketName = pocket?.Name ?? string.Empty;
-            PocketAmount = string.Empty;
-            PocketCurrencyCode = MoneyFormatter.ResolveCurrencyCode(account.CurrencyCode);
-            SelectPocketIcon(pocket?.IconCode ?? new Pocket().IconCode);
-            await RefreshPocketAsync();
-            IsPocketOpen = true;
-        }
-
-        [RelayCommand]
-        private void SelectPocketIcon(string iconCode)
-        {
-            PocketIconCode = iconCode;
-            foreach (var icon in PocketIcons)
-                icon.IsSelected = icon.Code == iconCode;
-        }
-
-        /// <summary>What the pocket holds, what its account has available, and the movements.</summary>
-        private async Task RefreshPocketAsync()
-        {
-            var account = _pocketAccount;
-            if (account == null)
-                return;
-
-            try
-            {
-                var code = PocketCurrencyCode;
-                var inPockets = (await _pocketService.GetTotalsByAccountAsync()).GetValueOrDefault(account.Id);
-                var available = await _balanceService.GetAccountBalanceAsync(account.Id) - Money.FromCents(inPockets);
-                PocketAvailableText = string.Format(AppResources.PocketAccountAvailable, account.Name,
-                    MoneyFormatter.Format(available, code));
-
-                if (EditingPocket is { } pocket)
-                {
-                    var held = (await _pocketService.GetBalancesAsync()).GetValueOrDefault(pocket.Id);
-                    PocketHoldsText = string.Format(AppResources.PocketHolds, MoneyFormatter.Format(Money.FromCents(held), code));
-                    PocketMovements = (await _pocketService.GetMovementsAsync(pocket.Id))
-                        .Select(m => new PocketMovementRow(m, code)).ToList();
-                }
-                else
-                {
-                    PocketHoldsText = string.Empty;
-                    PocketMovements = [];
-                }
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadAccountBalances);
-            }
-        }
-
-        [RelayCommand]
-        private void ClosePocket()
-        {
-            IsPocketOpen = false;
-            EditingPocket = null;
-            _pocketAccount = null;
-        }
-
-        /// <summary>Saves the name and icon. A new pocket stays open, ready to have money set aside.</summary>
-        [RelayCommand]
-        private async Task SavePocketAsync()
-        {
-            var account = _pocketAccount;
-            var name = PocketName.Trim();
-            if (account == null)
-                return;
-            if (name.Length == 0)
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseEnterPocketName);
-                return;
-            }
-
-            var adding = EditingPocket == null;
-            var pocket = EditingPocket ?? new Pocket { AccountId = account.Id, CreatedDate = DateTime.Now };
-            pocket.Name = name;
-            pocket.IconCode = string.IsNullOrEmpty(PocketIconCode) ? pocket.IconCode : PocketIconCode;
-            try
-            {
-                await _pocketService.SaveAsync(pocket);
-                await LoadAccountsCommand.ExecuteAsync(null);
-                if (adding)
-                {
-                    EditingPocket = pocket;
-                    await RefreshPocketAsync();
-                }
-                else
-                {
-                    ClosePocket();
-                }
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToSavePocket);
-            }
-        }
-
-        [RelayCommand]
-        private Task SetAsideAsync() => MovePocketAsync(1);
-
-        [RelayCommand]
-        private Task TakeOutAsync() => MovePocketAsync(-1);
-
-        private async Task MovePocketAsync(int sign)
-        {
-            var pocket = EditingPocket;
-            var account = _pocketAccount;
-            if (pocket == null || account == null)
-                return;
-
-            var amount = AmountParser.Parse(PocketAmount, PocketCurrencyCode);
-            if (amount <= 0 || !Money.IsInRange(amount))
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
-                return;
-            }
-
-            try
-            {
-                await _pocketService.MoveAsync(pocket.Id, sign * amount, DateTime.Now);
-                PocketAmount = string.Empty;
-                await RefreshPocketAsync();
-                await LoadAccountsCommand.ExecuteAsync(null);
-            }
-            catch (PocketProblemException ex)
-            {
-                await _errorHandler.HandleAsync(ex.Problem == PocketProblem.NotEnoughAvailable
-                    ? string.Format(AppResources.PocketNotEnoughAvailable, account.Name)
-                    : AppResources.PocketNotEnoughInPocket);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToMovePocket);
-            }
-        }
-
-        /// <summary>Deletes the pocket in the sheet; the sheet stays open behind the question, so cancelling returns to it.</summary>
-        [RelayCommand]
-        private async Task DeletePocketAsync()
-        {
-            var pocket = EditingPocket;
-            var account = _pocketAccount;
-            if (pocket == null || account == null)
-                return;
-
-            if (!await _dialogService.ConfirmAsync(AppResources.ConfirmDelete,
-                    string.Format(AppResources.DeletePocketConfirmation, pocket.Name, account.Name),
-                    AppResources.YesDelete, AppResources.Cancel))
-                return;
-
-            try
-            {
-                await _pocketService.DeleteAsync(pocket.Id);
-                ClosePocket();
-                await LoadAccountsCommand.ExecuteAsync(null);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.FailedToDeletePocket);
-            }
-        }
+            pocket == null ? Task.CompletedTask : PocketSheet.OpenAsync(pocket.Account, pocket.Pocket);
     }
 }

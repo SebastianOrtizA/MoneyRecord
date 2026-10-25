@@ -200,18 +200,9 @@ namespace MoneyRecord.ViewModels
                     selected.Remove(choice.Id);
             }
 
-            var goalId = EditingGoal?.GoalId;
-            // Each free account, then its pockets in the goal's currency that no other goal has
-            var choices = new List<GoalAccountChoice>();
-            foreach (var account in _accounts.Where(a => MoneyFormatter.SameCurrency(a.CurrencyCode, FormCurrency)))
-            {
-                if (!_linked.TryGetValue(account.Id, out var owner) || owner == goalId)
-                    choices.Add(new GoalAccountChoice(account, _selectedIds.Contains(account.Id)));
-                choices.AddRange(_pockets
-                    .Where(p => p.Account.Id == account.Id)
-                    .Where(p => !_linkedPockets.TryGetValue(p.PocketId, out var pocketOwner) || pocketOwner == goalId)
-                    .Select(p => new GoalAccountChoice(p, _selectedPocketIds.Contains(p.PocketId))));
-            }
+            var choices = GoalLinkChoices.Build(_accounts, _pockets, _linked, _linkedPockets, EditingGoal?.GoalId, FormCurrency)
+                .Select(o => new GoalAccountChoice(o, (o.IsPocket ? _selectedPocketIds : _selectedIds).Contains(o.Id)))
+                .ToList();
 
             foreach (var choice in choices)
                 choice.Ticked += OnChoiceTicked;
@@ -224,8 +215,7 @@ namespace MoneyRecord.ViewModels
             if (sender is not GoalAccountChoice ticked)
                 return;
 
-            foreach (var other in AccountChoices.Where(c => c.IsSelected && c.IsPocket != ticked.IsPocket
-                         && c.Account.Id == ticked.Account.Id))
+            foreach (var other in AccountChoices.Where(c => c.IsSelected && ticked.Option.ExcludesOther(c.Option)))
                 other.IsSelected = false;
         }
 

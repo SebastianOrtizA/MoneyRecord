@@ -172,6 +172,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<AddTransactionViewModel>();
             builder.Services.AddTransient<ManageCategoriesViewModel>();
             builder.Services.AddTransient<ManageAccountsViewModel>();
+            builder.Services.AddTransient<PocketSheetViewModel>();
             builder.Services.AddTransient<TransfersViewModel>();
             builder.Services.AddTransient<AddTransferViewModel>();
             builder.Services.AddTransient<CategoryReportViewModel>();

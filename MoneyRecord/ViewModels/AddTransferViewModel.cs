@@ -256,10 +256,10 @@ namespace MoneyRecord.ViewModels
                 SourceAccountBalance = balance;
                 SourceAccountBalanceText = string.Format(AppResources.Available, MoneyFormatter.Format(balance, account.CurrencyCode));
                 // Money set aside inside the account is still in its balance: say how much
-                var inPockets = (await _pocketService.GetTotalsByAccountAsync()).GetValueOrDefault(account.Id);
+                var inPockets = (await _pocketService.GetPocketsAsync(account.Id)).Sum(p => p.Balance);
                 if (inPockets > 0 && account == SelectedSourceAccount)
                     SourceAccountBalanceText += " · " + string.Format(AppResources.InPockets,
-                        MoneyFormatter.Format(Money.FromCents(inPockets), account.CurrencyCode));
+                        MoneyFormatter.Format(inPockets, account.CurrencyCode));
             }
             catch (Exception ex)
             {
