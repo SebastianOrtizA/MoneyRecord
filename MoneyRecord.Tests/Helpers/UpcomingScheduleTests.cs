@@ -125,6 +125,19 @@ public class UpcomingVariableTests
     }
 
     [Fact]
+    public void Only_the_oldest_pending_occurrence_of_a_schedule_can_be_entered()
+    {
+        var late = Variable(1, Today.AddMonths(-1), 8500);
+        var other = Variable(2, Today, 0);
+
+        var entries = UpcomingSchedule.Build([late, other], new Dictionary<int, Category>(), new Dictionary<int, Account>(), Today);
+
+        entries.Where(e => e.RecurringId == 1).Select(e => (e.Date, e.IsPending, e.CanEnter)).Should()
+            .Equal((Today.AddMonths(-1), true, true), (Today, true, false));
+        entries.Single(e => e.RecurringId == 2).CanEnter.Should().BeTrue();
+    }
+
+    [Fact]
     public void A_debt_schedule_is_never_variable()
     {
         var debt = Variable(1, Today, 8500);

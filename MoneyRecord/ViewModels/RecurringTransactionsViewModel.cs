@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Views;
 using System.Collections.ObjectModel;
@@ -22,6 +23,7 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IDebtService _debtService;
         private readonly INavigationService _navigationService;
+        private readonly IRecurringTransactionService _recurringService;
         private readonly TimeProvider _clock;
 
         [ObservableProperty]
@@ -34,11 +36,23 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isUpcomingView;
 
+        /// <summary>The next 30 days of occurrences that are not waiting to be entered.</summary>
         [ObservableProperty]
         private List<UpcomingEntry> upcomingEntries = [];
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsUpcomingEmpty))]
         private bool hasUpcoming;
+
+        /// <summary>Variable-amount occurrences that are due: the "To enter" list (Enter and Skip on each schedule's oldest).</summary>
+        [ObservableProperty]
+        private List<UpcomingEntry> pendingEntries = [];
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsUpcomingEmpty))]
+        private bool hasPending;
+
+        public bool IsUpcomingEmpty => !HasUpcoming && !HasPending;
 
         public string? Show
         {
@@ -56,6 +70,13 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private RecurrenceFrequencyItem? editSelectedFrequency;
+
+        /// <summary>The edited schedule's amount changes each time (not offered for a debt's payments).</summary>
+        [ObservableProperty]
+        private bool editIsVariableAmount;
+
+        [ObservableProperty]
+        private bool editCanBeVariable;
 
         [ObservableProperty]
         private bool editUseSpecificDay;
@@ -94,8 +115,9 @@ namespace MoneyRecord.ViewModels
             ICategoryRepository categoryRepo,
             IAccountRepository accountRepo,
             IErrorHandler errorHandler, IDialogService dialogService, IDebtService debtService,
-            INavigationService navigationService, TimeProvider clock)
+            INavigationService navigationService, IRecurringTransactionService recurringService, TimeProvider clock)
         {
+            _recurringService = recurringService;
             _clock = clock;
             _debtService = debtService;
             _navigationService = navigationService;
@@ -166,7 +188,10 @@ namespace MoneyRecord.ViewModels
                 var debtsLeft = items.Any(r => r.DebtId != null)
                     ? await _debtService.GetOutstandingAsync()
                     : null;
-                UpcomingEntries = UpcomingSchedule.Build(items, categories, accounts, DateTime.Now, debtsLeft: debtsLeft);
+                var upcoming = UpcomingSchedule.Build(items, categories, accounts, DateTime.Now, debtsLeft: debtsLeft);
+                PendingEntries = upcoming.Where(e => e.IsPending).ToList();
+                HasPending = PendingEntries.Count > 0;
+                UpcomingEntries = upcoming.Where(e => !e.IsPending).ToList();
                 HasUpcoming = UpcomingEntries.Count > 0;
             }
             catch (Exception ex)
@@ -199,7 +224,9 @@ namespace MoneyRecord.ViewModels
             EditSelectedFrequency = Frequencies.FirstOrDefault(f => f.Frequency == item.Frequency) ?? Frequencies[3];
             EditUseSpecificDay = item.DayOfMonth.HasValue;
             EditSelectedDayOfMonth = item.DayOfMonth ?? 1;
-            EditAmount = item.Amount.ToString("N2");
+            EditAmount = item.IsVariableAmount && item.AmountCents == 0 ? string.Empty : item.Amount.ToString("N2");
+            EditCanBeVariable = item.DebtId == null;
+            EditIsVariableAmount = item.IsVariableAmount;
             // A debt's schedule is edited on the Debts page
             EditCanMoveFirstDate = item.DebtId == null && item.LastProcessedDate == null
                 && RecurringStart.IsFuture(item.NextOccurrence, _clock.GetLocalNow().DateTime);
@@ -224,6 +251,41 @@ namespace MoneyRecord.ViewModels
                 new Dictionary<string, object> { { "TransactionType", type.Value }, { "Schedule", bool.TrueString } });
         }
 
+        /// <summary>Opens the add form on a due occurrence: the user types the real amount there.</summary>
+        [RelayCommand]
+        private Task EnterOccurrenceAsync(UpcomingEntry? entry) => entry is { CanEnter: true }
+            ? _navigationService.NavigateToAsync(ReminderService.PendingRoute(entry.RecurringId, entry.Date))
+            : Task.CompletedTask;
+
+        [RelayCommand]
+        private async Task SkipOccurrenceAsync(UpcomingEntry? entry)
+        {
+            if (entry is not { CanEnter: true })
+                return;
+
+            var confirm = await _dialogService.ConfirmAsync(AppResources.SkipOccurrenceTitle,
+                string.Format(AppResources.SkipOccurrenceMessage, entry.Description, DateFormatter.Format(entry.Date, DateStyle.Medium)),
+                AppResources.Skip, AppResources.Cancel);
+            if (!confirm)
+                return;
+
+            try
+            {
+                await _recurringService.SkipOccurrenceAsync(entry.RecurringId);
+                await _dialogService.ToastAsync(AppResources.OccurrenceSkipped);
+            }
+            catch (InvalidOperationException)
+            {
+                // Entered or skipped meanwhile: the reload below shows what is left
+                await _errorHandler.HandleAsync(AppResources.OccurrenceNoLongerPending);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToUpdateRecurringTransaction);
+            }
+            await LoadRecurringTransactionsAsync();
+        }
+
         [RelayCommand]
         private void CancelEdit()
         {
@@ -237,7 +299,9 @@ namespace MoneyRecord.ViewModels
             if (EditingItem == null || EditSelectedFrequency == null) return;
 
             var newAmount = AmountParser.Parse(EditAmount, EditingItem.CurrencyCode);
-            if (newAmount <= 0 || !Money.IsInRange(newAmount))
+            // A variable schedule may have no amount at all (its last one is the estimate)
+            var amountOptional = EditIsVariableAmount && string.IsNullOrWhiteSpace(EditAmount);
+            if ((newAmount <= 0 && !amountOptional) || !Money.IsInRange(newAmount))
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
                 return;
@@ -259,6 +323,10 @@ namespace MoneyRecord.ViewModels
                 EditingItem.Frequency = frequency;
                 EditingItem.DayOfMonth = dayOfMonth;
                 EditingItem.Amount = newAmount;
+                EditingItem.IsVariableAmount = EditCanBeVariable && EditIsVariableAmount;
+                // A typed amount is the estimate until the first one is entered
+                if (EditingItem.IsVariableAmount && EditingItem.LastAmountCents == 0)
+                    EditingItem.LastAmountCents = EditingItem.AmountCents;
                 if (EditCanMoveFirstDate)
                 {
                     // Nothing created yet: the schedule starts on the new date (a monthly one keeps that day)

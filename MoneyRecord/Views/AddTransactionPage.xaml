@@ -25,7 +25,7 @@
                     <controls:DecimalEntry x:Name="AmountEntry"
                                            Grid.Column="1"
                                            Text="{Binding Amount}"
-                                           Placeholder="0.00"
+                                           Placeholder="{Binding AmountPlaceholder}"
                                            FontSize="32"
                                            FontAttributes="Bold"
                                            HorizontalTextAlignment="Center"
@@ -249,6 +249,7 @@
                 <Label Text="{Binding DateLabel}" FontSize="16" FontAttributes="Bold"/>
                 <DatePicker Date="{Binding SelectedDate}"
                             MinimumDate="{Binding MinimumDate}"
+                            IsEnabled="{Binding CanEditDate}"
                             Format="D"
                             FontSize="16"/>
                 <!-- A future date: only the schedule is saved, or the entry counts in balances from that date -->
@@ -369,6 +370,24 @@
                                     IsToggled="{Binding IsRecurring}"
                                     OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
                         </Grid>
+
+                        <!-- Variable amount: nothing is saved by itself; each due date waits to be entered -->
+                        <VerticalStackLayout Spacing="4" IsVisible="{Binding IsScheduleMode}">
+                            <Grid ColumnDefinitions="*,Auto" Padding="0">
+                                <Label Grid.Column="0"
+                                       Text="{ext:Localize AmountVaries}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       VerticalOptions="Center"/>
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding IsVariableAmount}"
+                                        OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                            </Grid>
+                            <Label Text="{ext:Localize AmountVariesHint}"
+                                   FontSize="13"
+                                   IsVisible="{Binding IsVariableAmount}"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        </VerticalStackLayout>
         
                         <VerticalStackLayout Spacing="12"
                                              IsVisible="{Binding IsRecurring}">

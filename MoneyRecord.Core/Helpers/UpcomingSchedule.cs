@@ -50,6 +50,7 @@ namespace MoneyRecord.Helpers
                 var account = accounts.GetValueOrDefault(recurring.AccountId);
                 long? left = recurring.DebtId is { } debtId ? debtsLeft?.GetValueOrDefault(debtId) ?? 0 : null;
 
+                var oldestPendingTaken = false;
                 foreach (var date in Occurrences(recurring, today.AddDays(days)))
                 {
                     var variable = recurring.IsVariableAmount && recurring.DebtId == null;
@@ -63,6 +64,7 @@ namespace MoneyRecord.Helpers
                         cents += recurring.InterestCents;
                     }
 
+                    var isPending = variable && date <= today;
                     entries.Add(new UpcomingEntry
                     {
                         RecurringId = recurring.Id,
@@ -71,13 +73,15 @@ namespace MoneyRecord.Helpers
                         Description = recurring.Description,
                         Amount = Money.FromCents(cents),
                         IsVariable = variable,
-                        IsPending = variable && date <= today,
+                        IsPending = isPending,
+                        CanEnter = isPending && !oldestPendingTaken,
                         Type = recurring.TransactionType,
                         CategoryName = left != null ? AppResources.Debts : category?.Name ?? string.Empty,
                         CategoryIconCode = left != null ? DebtSummary.IconCode : category?.IconCode ?? IconHelper.DefaultCategoryIconCode,
                         AccountName = account?.Name ?? string.Empty,
                         CurrencyCode = account?.CurrencyCode ?? string.Empty
                     });
+                    oldestPendingTaken |= isPending;
                 }
             }
 

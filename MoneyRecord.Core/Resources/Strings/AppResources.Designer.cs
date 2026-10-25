@@ -3229,6 +3229,69 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter.
+        /// </summary>
+        public static string EnterOccurrence {
+            get {
+                return ResourceManager.GetString("EnterOccurrence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To enter.
+        /// </summary>
+        public static string ToEnter {
+            get {
+                return ResourceManager.GetString("ToEnter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip this one?.
+        /// </summary>
+        public static string SkipOccurrenceTitle {
+            get {
+                return ResourceManager.GetString("SkipOccurrenceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} on {1} won't be recorded..
+        /// </summary>
+        public static string SkipOccurrenceMessage {
+            get {
+                return ResourceManager.GetString("SkipOccurrenceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipped.
+        /// </summary>
+        public static string OccurrenceSkipped {
+            get {
+                return ResourceManager.GetString("OccurrenceSkipped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This entry is no longer waiting to be entered..
+        /// </summary>
+        public static string OccurrenceNoLongerPending {
+            get {
+                return ResourceManager.GetString("OccurrenceNoLongerPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing is saved automatically: you enter the amount each time..
+        /// </summary>
+        public static string AmountVariesHint {
+            get {
+                return ResourceManager.GetString("AmountVariesHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Amount varies.
         /// </summary>
         public static string AmountVaries {

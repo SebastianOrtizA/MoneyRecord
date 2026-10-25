@@ -374,7 +374,12 @@
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding UpcomingEntries}" Spacing="6">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:UpcomingEntry">
-                                <controls:UpcomingRow/>
+                                <controls:UpcomingRow>
+                                    <controls:UpcomingRow.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=EnterOccurrenceCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </controls:UpcomingRow.GestureRecognizers>
+                                </controls:UpcomingRow>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>

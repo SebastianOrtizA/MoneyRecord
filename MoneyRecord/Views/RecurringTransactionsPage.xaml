@@ -47,6 +47,38 @@
                         <Label Text="{ext:Localize UpcomingSubtitle}"
                                FontSize="14"
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+
+                        <!-- To enter: variable-amount occurrences that are due; Enter opens the form, Skip drops one -->
+                        <VerticalStackLayout Spacing="8" IsVisible="{Binding HasPending}">
+                            <Label Text="{ext:Localize ToEnter}" FontSize="16" FontAttributes="Bold"/>
+                            <Border Style="{StaticResource Card}" Padding="12,8">
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding PendingEntries}" Spacing="4">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="models:UpcomingEntry">
+                                            <VerticalStackLayout Spacing="2">
+                                                <controls:UpcomingRow>
+                                                    <controls:UpcomingRow.GestureRecognizers>
+                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RecurringTransactionsViewModel}}, Path=EnterOccurrenceCommand}"
+                                                                              CommandParameter="{Binding .}"/>
+                                                    </controls:UpcomingRow.GestureRecognizers>
+                                                </controls:UpcomingRow>
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" IsVisible="{Binding CanEnter}">
+                                                    <Button Grid.Column="0"
+                                                            Text="{ext:Localize EnterOccurrence}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RecurringTransactionsViewModel}}, Path=EnterOccurrenceCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                    <Button Grid.Column="1"
+                                                            Text="{ext:Localize Skip}"
+                                                            Style="{StaticResource SegmentButton}"
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:RecurringTransactionsViewModel}}, Path=SkipOccurrenceCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </Border>
+                        </VerticalStackLayout>
                         <Border Style="{StaticResource Card}"
                                 Padding="12,8"
                                 IsVisible="{Binding HasUpcoming}">
@@ -60,7 +92,7 @@
                         </Border>
                         <VerticalStackLayout Spacing="16"
                                              Padding="40"
-                                             IsVisible="{Binding HasUpcoming, Converter={StaticResource InvertedBoolConverter}}">
+                                             IsVisible="{Binding IsUpcomingEmpty}">
                             <Label Text="&#xF00ED;"
                                    FontFamily="MaterialDesignIcons"
                                    FontSize="64"
@@ -88,6 +120,15 @@
                                        FontSize="18"
                                        FontAttributes="Bold"
                                        TextColor="{AppThemeBinding Light=#F57F17, Dark=#FFD54F}"/>
+
+                                <!-- The amount changes each time: it is entered when due (not for a debt's payments) -->
+                                <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding EditCanBeVariable}">
+                                    <Label Text="{ext:Localize AmountVaries}" FontSize="14" VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    <Switch Grid.Column="1"
+                                            IsToggled="{Binding EditIsVariableAmount}"
+                                            OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
+                                </Grid>
 
                                 <Label Text="{ext:Localize Amount}" FontSize="14"
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
@@ -221,10 +262,7 @@
                                                        FontAttributes="Bold"
                                                        TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}">
                                                     <Label.Text>
-                                                        <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
-                                                            <Binding Path="Amount"/>
-                                                            <Binding Path="CurrencyCode"/>
-                                                        </MultiBinding>
+                                                        <Binding Path="AmountText"/>
                                                     </Label.Text>
                                                 </Label>
 

@@ -2640,4 +2640,25 @@ Monto: {2}</value>
   <data name="AmountVaries" xml:space="preserve">
     <value>El importe varía</value>
   </data>
+  <data name="EnterOccurrence" xml:space="preserve">
+    <value>Registrar</value>
+  </data>
+  <data name="ToEnter" xml:space="preserve">
+    <value>Por registrar</value>
+  </data>
+  <data name="SkipOccurrenceTitle" xml:space="preserve">
+    <value>¿Omitir este?</value>
+  </data>
+  <data name="SkipOccurrenceMessage" xml:space="preserve">
+    <value>{0} del {1} no se registrará.</value>
+  </data>
+  <data name="OccurrenceSkipped" xml:space="preserve">
+    <value>Omitido</value>
+  </data>
+  <data name="OccurrenceNoLongerPending" xml:space="preserve">
+    <value>Este registro ya no está pendiente.</value>
+  </data>
+  <data name="AmountVariesHint" xml:space="preserve">
+    <value>No se guarda nada automáticamente: introduces el importe cada vez.</value>
+  </data>
 </root>

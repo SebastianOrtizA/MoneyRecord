@@ -2,6 +2,7 @@
 <!-- One scheduled occurrence (Home's Upcoming card, the Recurring page): icon, description, when, signed amount -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
              x:Class="MoneyRecord.Controls.UpcomingRow"
              x:DataType="models:UpcomingEntry">
@@ -32,17 +33,33 @@
                 </Label.FormattedText>
             </Label>
         </VerticalStackLayout>
-        <Label Grid.Column="2"
-               FontSize="15"
-               FontAttributes="Bold"
-               VerticalOptions="Center"
-               TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}">
-            <Label.Text>
-                <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
-                    <Binding Path="SignedAmount"/>
-                    <Binding Path="CurrencyCode"/>
-                </MultiBinding>
-            </Label.Text>
-        </Label>
+        <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="2">
+            <Label FontSize="15"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="End"
+                   IsVisible="{Binding IsFixedAmount}"
+                   TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}">
+                <Label.Text>
+                    <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
+                        <Binding Path="SignedAmount"/>
+                        <Binding Path="CurrencyCode"/>
+                    </MultiBinding>
+                </Label.Text>
+            </Label>
+            <!-- A variable amount: the last one as an estimate, or "Amount varies" -->
+            <Label Text="{Binding EstimateText}"
+                   FontSize="15"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="End"
+                   IsVisible="{Binding IsVariable}"
+                   TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}"/>
+            <!-- Due: tap the row to type the real amount -->
+            <Label Text="{ext:Localize EnterOccurrence}"
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="End"
+                   IsVisible="{Binding CanEnter}"
+                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark=#B39DDB}"/>
+        </VerticalStackLayout>
     </Grid>
 </ContentView>

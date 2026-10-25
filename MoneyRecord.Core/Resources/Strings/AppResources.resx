@@ -2643,4 +2643,25 @@ Amount: {2}</value>
   <data name="AmountVaries" xml:space="preserve">
     <value>Amount varies</value>
   </data>
+  <data name="EnterOccurrence" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="ToEnter" xml:space="preserve">
+    <value>To enter</value>
+  </data>
+  <data name="SkipOccurrenceTitle" xml:space="preserve">
+    <value>Skip this one?</value>
+  </data>
+  <data name="SkipOccurrenceMessage" xml:space="preserve">
+    <value>{0} on {1} won't be recorded.</value>
+  </data>
+  <data name="OccurrenceSkipped" xml:space="preserve">
+    <value>Skipped</value>
+  </data>
+  <data name="OccurrenceNoLongerPending" xml:space="preserve">
+    <value>This entry is no longer waiting to be entered.</value>
+  </data>
+  <data name="AmountVariesHint" xml:space="preserve">
+    <value>Nothing is saved automatically: you enter the amount each time.</value>
+  </data>
 </root>
