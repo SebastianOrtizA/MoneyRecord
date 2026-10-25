@@ -23,7 +23,7 @@ chose "no Home card", so it stays opt-in).
 ## Sub-stages (branch + PR each)
 
 ### 16.1 Layout and editor
-**Done as (16.1)**: as planned, but the editor uses move up / down arrows per row instead of a drag-reorder `CollectionView` (reliable on Android), and `HomeCard` has no `Debts` yet (16.2 adds it; saved layouts append new cards). The Period picker and summary are one card (`PeriodSummary`).
+**Done as (16.1)**: as planned, but the editor reorders by drag and drop (Drag/DropGestureRecognizer on each row; long-press, drop on another row) with move up / down arrows as a fallback, not a `CollectionView`, and `HomeCard` has no `Debts` yet (16.2 adds it; saved layouts append new cards). The Period picker and summary are one card (`PeriodSummary`).
 
 - Core: `HomeCard`, `HomeLayoutSettings` (`Parse` / `Serialize` / `Default`) + `HomeLayoutTests` (round-trip, unknown names,
   new cards appended, Balance always shown).
