@@ -171,6 +171,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   top tabs) · Budgets · More. Tabs keep implicit routes, so each tab page is a root at `//MainPage`,
   `//TransactionsPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//CashFlowReportPage`,
   `//NetWorthReportPage`, `//BudgetPage`, `//MorePage`
+- `ManageAccountsPage` lists each account's pockets under its card ("Available · in pockets"; a tap opens the pocket BottomSheet: name + icon, set aside / take out, movements, delete); the Goals sheet lists a pocket under its account (an account and its own pockets can't both be ticked)
 - Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
   `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `PayeesPage`, `TripsPage`, `TripPage`, `TripCategoriesPage`, `PartiesPage` (cards + new/edit sheet), `PartyPage`, `FriendsPage`, `TransfersPage`, `SettingsPage`
 - Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See

@@ -20,6 +20,7 @@ namespace MoneyRecord.ViewModels
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly IExchangeRateService _exchangeRates;
+        private readonly IPocketService _pocketService;
 
         /// <summary>The accounts grouped by currency, base currency first, each with its subtotal.</summary>
         [ObservableProperty]
@@ -36,7 +37,14 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The add/edit sheet is open.</summary>
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsSheetOpen))]
         private bool isFormOpen;
+
+        /// <summary>The add/edit sheet or the pocket sheet is open (the add button hides).</summary>
+        public bool IsSheetOpen => IsFormOpen || PocketSheet.IsOpen;
+
+        /// <summary>The pocket sheet.</summary>
+        public PocketSheetViewModel PocketSheet { get; }
 
         /// <summary>The account the sheet edits; null when it adds a new one.</summary>
         [ObservableProperty]
@@ -73,7 +81,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private List<Currency> availableCurrencies = new();
 
-        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler, IDialogService dialogService, IExchangeRateService exchangeRates)
+        public ManageAccountsViewModel(IAccountRepository accountRepository, IAccountService accountService, ICategoryIconService categoryIconService, IBalanceService balanceService, ICurrencyService currencyService, IErrorHandler errorHandler, IDialogService dialogService, IExchangeRateService exchangeRates, IPocketService pocketService, PocketSheetViewModel pocket)
         {
             _accountRepository = accountRepository;
             _accountService = accountService;
@@ -83,6 +91,14 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _exchangeRates = exchangeRates;
+            _pocketService = pocketService;
+            PocketSheet = pocket;
+            PocketSheet.Changed = () => LoadAccountsCommand.ExecuteAsync(null);
+            PocketSheet.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(PocketSheetViewModel.IsOpen))
+                    OnPropertyChanged(nameof(IsSheetOpen));
+            };
         }
 
         public Task InitializeAsync()
@@ -101,11 +117,12 @@ namespace MoneyRecord.ViewModels
             {
                 var accountsTask = _accountRepository.GetOwnAsync();
                 var balancesTask = _balanceService.GetAllAccountBalancesAsync();
-                await Task.WhenAll(accountsTask, balancesTask);
+                var pocketsTask = _pocketService.GetPocketsAsync();
+                await Task.WhenAll(accountsTask, balancesTask, pocketsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 Groups = AccountGroup.Build(await accountsTask, await balancesTask,
-                    _currencyService.GetBaseCurrencyCode(), CurrencyFilter);
+                    _currencyService.GetBaseCurrencyCode(), CurrencyFilter, await pocketsTask);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -165,14 +182,23 @@ namespace MoneyRecord.ViewModels
             EditingAccount = null;
         }
 
-        /// <summary>Closes the add/edit sheet; false when it wasn't open.</summary>
+        /// <summary>Closes the pocket sheet, else the add/edit sheet; false when neither was open.</summary>
         public bool CloseTopOverlay()
         {
-            if (!IsFormOpen)
+            if (PocketSheet.IsOpen)
+                PocketSheet.Close();
+            else if (IsFormOpen)
+                CloseForm();
+            else
                 return false;
-
-            CloseForm();
             return true;
+        }
+
+        /// <summary>The page went away: back here later shows the list, not a stale sheet.</summary>
+        public void CloseAll()
+        {
+            PocketSheet.Close();
+            CloseForm();
         }
 
         [RelayCommand]
@@ -209,6 +235,15 @@ namespace MoneyRecord.ViewModels
                 await _errorHandler.HandleAsync(AppResources.NegativeBalanceNotAllowed);
                 return;
             }
+
+            // Its pockets keep their amounts in the new currency but stop counting towards goals in the old one
+            if (EditingAccount is { } edited && FormCurrency is { } chosen
+                && !MoneyFormatter.SameCurrency(edited.CurrencyCode, chosen.Code)
+                && Groups.SelectMany(g => g).FirstOrDefault(i => i.Account.Id == edited.Id) is { HasPockets: true }
+                && !await _dialogService.ConfirmAsync(AppResources.Pockets,
+                    string.Format(AppResources.PocketsCurrencyChange, edited.Name, MoneyFormatter.ResolveCurrencyCode(edited.CurrencyCode)),
+                    AppResources.Save, AppResources.Cancel))
+                return;
 
             var account = EditingAccount ?? new Account { IsDefault = false, CreatedDate = DateTime.Now };
             account.Name = FormName.Trim();
@@ -272,6 +307,9 @@ namespace MoneyRecord.ViewModels
                     message = string.Format(AppResources.DeleteAccountNoTransactions, account.Name);
                 }
 
+                if (Groups.SelectMany(g => g).FirstOrDefault(i => i.Account.Id == account.Id) is { HasPockets: true })
+                    message += " " + AppResources.DeleteAccountPockets;
+
                 var confirm = await _dialogService.ConfirmAsync(
                     AppResources.ConfirmDelete,
                     message,
@@ -297,5 +335,23 @@ namespace MoneyRecord.ViewModels
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteAccount);
             }
         }
+
+        // ----- Pocket sheet (its own view model) -----
+
+        /// <summary>The account sheet's "New pocket": closes that sheet and opens the pocket sheet for the account.</summary>
+        [RelayCommand]
+        private async Task NewPocketAsync()
+        {
+            var account = EditingAccount;
+            if (account == null)
+                return;
+
+            CloseForm();
+            await PocketSheet.OpenAsync(account, null);
+        }
+
+        [RelayCommand]
+        private Task EditPocketAsync(PocketSummary? pocket) =>
+            pocket == null ? Task.CompletedTask : PocketSheet.OpenAsync(pocket.Account, pocket.Pocket);
     }
 }

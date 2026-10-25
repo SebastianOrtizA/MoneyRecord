@@ -199,7 +199,7 @@
                 <VerticalStackLayout BindableLayout.ItemsSource="{Binding AccountChoices}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="viewmodels:GoalAccountChoice">
-                            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" MinimumHeightRequest="44">
+                            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" MinimumHeightRequest="44" Margin="{Binding RowMargin}">
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnAccountRowTapped" />
                                 </Grid.GestureRecognizers>
@@ -207,13 +207,13 @@
                                           VerticalOptions="Center"
                                           Color="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                 <Label Grid.Column="1"
-                                       Text="{Binding Account.DisplayIcon}"
+                                       Text="{Binding DisplayIcon}"
                                        FontFamily="MaterialDesignIcons"
                                        FontSize="20"
                                        VerticalOptions="Center"
                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                                 <Label Grid.Column="2"
-                                       Text="{Binding Account.Name}"
+                                       Text="{Binding Name}"
                                        FontSize="16"
                                        LineBreakMode="TailTruncation"
                                        VerticalOptions="Center" />

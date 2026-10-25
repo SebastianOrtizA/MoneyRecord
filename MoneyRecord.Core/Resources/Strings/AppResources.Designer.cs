@@ -7163,5 +7163,203 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("FailedToRecordPartyShare", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pockets.
+        /// </summary>
+        public static string Pockets {
+            get {
+                return ResourceManager.GetString("Pockets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New pocket.
+        /// </summary>
+        public static string NewPocket {
+            get {
+                return ResourceManager.GetString("NewPocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit pocket.
+        /// </summary>
+        public static string EditPocket {
+            get {
+                return ResourceManager.GetString("EditPocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pocket name.
+        /// </summary>
+        public static string PocketName {
+            get {
+                return ResourceManager.GetString("PocketName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Travel.
+        /// </summary>
+        public static string PocketNamePlaceholder {
+            get {
+                return ResourceManager.GetString("PocketNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a pocket name.
+        /// </summary>
+        public static string PleaseEnterPocketName {
+            get {
+                return ResourceManager.GetString("PleaseEnterPocketName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set aside.
+        /// </summary>
+        public static string SetAside {
+            get {
+                return ResourceManager.GetString("SetAside", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take out.
+        /// </summary>
+        public static string TakeOut {
+            get {
+                return ResourceManager.GetString("TakeOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In this pocket: {0}.
+        /// </summary>
+        public static string PocketHolds {
+            get {
+                return ResourceManager.GetString("PocketHolds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available in {0}: {1}.
+        /// </summary>
+        public static string PocketAccountAvailable {
+            get {
+                return ResourceManager.GetString("PocketAccountAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Movements.
+        /// </summary>
+        public static string PocketMovements {
+            get {
+                return ResourceManager.GetString("PocketMovements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing set aside yet..
+        /// </summary>
+        public static string NoPocketMovements {
+            get {
+                return ResourceManager.GetString("NoPocketMovements", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available {0} · {1} in pockets.
+        /// </summary>
+        public static string AvailableAndInPockets {
+            get {
+                return ResourceManager.GetString("AvailableAndInPockets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} in pockets.
+        /// </summary>
+        public static string InPockets {
+            get {
+                return ResourceManager.GetString("InPockets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There isn't that much available in {0}..
+        /// </summary>
+        public static string PocketNotEnoughAvailable {
+            get {
+                return ResourceManager.GetString("PocketNotEnoughAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This pocket holds less than that..
+        /// </summary>
+        public static string PocketNotEnoughInPocket {
+            get {
+                return ResourceManager.GetString("PocketNotEnoughInPocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the pocket "{0}"? Its money goes back to {1}..
+        /// </summary>
+        public static string DeletePocketConfirmation {
+            get {
+                return ResourceManager.GetString("DeletePocketConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not save the pocket.
+        /// </summary>
+        public static string FailedToSavePocket {
+            get {
+                return ResourceManager.GetString("FailedToSavePocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not delete the pocket.
+        /// </summary>
+        public static string FailedToDeletePocket {
+            get {
+                return ResourceManager.GetString("FailedToDeletePocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not update the pocket.
+        /// </summary>
+        public static string FailedToMovePocket {
+            get {
+                return ResourceManager.GetString("FailedToMovePocket", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The pockets of {0} keep their amounts but stop counting towards goals in {1}. Change the currency anyway?.
+        /// </summary>
+        public static string PocketsCurrencyChange {
+            get {
+                return ResourceManager.GetString("PocketsCurrencyChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Its pockets are deleted too..
+        /// </summary>
+        public static string DeleteAccountPockets {
+            get {
+                return ResourceManager.GetString("DeleteAccountPockets", resourceCulture);
+            }
+        }
     }
 }

@@ -1641,7 +1641,7 @@ Amount: {2}</value>
     <value>Accounts that hold the savings</value>
   </data>
   <data name="GoalAccountsHint" xml:space="preserve">
-    <value>Saved = their balance. An account counts for one goal only.</value>
+    <value>Saved = their balance, or what a pocket holds. An account or pocket counts for one goal only, and an account is not ticked together with its own pockets.</value>
   </data>
   <data name="GoalNoFreeAccounts" xml:space="preserve">
     <value>No free accounts in {0}. Add one in Accounts.</value>
@@ -2552,5 +2552,71 @@ Amount: {2}</value>
   </data>
   <data name="FailedToRecordPartyShare" xml:space="preserve">
     <value>Could not record your share</value>
+  </data>
+  <data name="Pockets" xml:space="preserve">
+    <value>Pockets</value>
+  </data>
+  <data name="NewPocket" xml:space="preserve">
+    <value>New pocket</value>
+  </data>
+  <data name="EditPocket" xml:space="preserve">
+    <value>Edit pocket</value>
+  </data>
+  <data name="PocketName" xml:space="preserve">
+    <value>Pocket name</value>
+  </data>
+  <data name="PocketNamePlaceholder" xml:space="preserve">
+    <value>e.g. Travel</value>
+  </data>
+  <data name="PleaseEnterPocketName" xml:space="preserve">
+    <value>Please enter a pocket name</value>
+  </data>
+  <data name="SetAside" xml:space="preserve">
+    <value>Set aside</value>
+  </data>
+  <data name="TakeOut" xml:space="preserve">
+    <value>Take out</value>
+  </data>
+  <data name="PocketHolds" xml:space="preserve">
+    <value>In this pocket: {0}</value>
+  </data>
+  <data name="PocketAccountAvailable" xml:space="preserve">
+    <value>Available in {0}: {1}</value>
+  </data>
+  <data name="PocketMovements" xml:space="preserve">
+    <value>Movements</value>
+  </data>
+  <data name="NoPocketMovements" xml:space="preserve">
+    <value>Nothing set aside yet.</value>
+  </data>
+  <data name="AvailableAndInPockets" xml:space="preserve">
+    <value>Available {0} · {1} in pockets</value>
+  </data>
+  <data name="InPockets" xml:space="preserve">
+    <value>{0} in pockets</value>
+  </data>
+  <data name="PocketNotEnoughAvailable" xml:space="preserve">
+    <value>There isn't that much available in {0}.</value>
+  </data>
+  <data name="PocketNotEnoughInPocket" xml:space="preserve">
+    <value>This pocket holds less than that.</value>
+  </data>
+  <data name="DeletePocketConfirmation" xml:space="preserve">
+    <value>Delete the pocket "{0}"? Its money goes back to {1}.</value>
+  </data>
+  <data name="FailedToSavePocket" xml:space="preserve">
+    <value>Could not save the pocket</value>
+  </data>
+  <data name="FailedToDeletePocket" xml:space="preserve">
+    <value>Could not delete the pocket</value>
+  </data>
+  <data name="FailedToMovePocket" xml:space="preserve">
+    <value>Could not update the pocket</value>
+  </data>
+  <data name="PocketsCurrencyChange" xml:space="preserve">
+    <value>The pockets of {0} keep their amounts but stop counting towards goals in {1}. Change the currency anyway?</value>
+  </data>
+  <data name="DeleteAccountPockets" xml:space="preserve">
+    <value>Its pockets are deleted too.</value>
   </data>
 </root>

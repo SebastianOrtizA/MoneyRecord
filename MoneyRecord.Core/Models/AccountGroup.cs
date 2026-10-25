@@ -19,6 +19,25 @@ namespace MoneyRecord.Models
         public string LastActivityText => LastActivityDate is { } date
             ? string.Format(AppResources.LastActivityDate, DateFormatter.Format(date, DateStyle.Medium))
             : string.Empty;
+
+        /// <summary>The account's pockets, by name.</summary>
+        public IReadOnlyList<PocketSummary> Pockets { get; init; } = [];
+
+        public bool HasPockets => Pockets.Count > 0;
+
+        /// <summary>What its pockets hold (set aside inside the balance).</summary>
+        public decimal InPockets => Pockets.Sum(p => p.Balance);
+
+        /// <summary>The balance minus the pockets; negative when entries took money the pockets expected to keep.</summary>
+        public decimal Available => CurrentBalance - InPockets;
+
+        public bool IsOverCommitted => HasPockets && Available < 0;
+
+        /// <summary>"Available $1,500.00 · $500.00 in pockets"; empty without pockets.</summary>
+        public string AvailableText => HasPockets
+            ? string.Format(AppResources.AvailableAndInPockets,
+                MoneyFormatter.Format(Available, CurrencyCode), MoneyFormatter.Format(InPockets, CurrencyCode))
+            : string.Empty;
     }
 
     /// <summary>
@@ -46,10 +65,11 @@ namespace MoneyRecord.Models
         /// <paramref name="currencyFilter"/> only that currency's group is built (empty when it has no accounts).
         /// </summary>
         public static List<AccountGroup> Build(IEnumerable<Account> accounts, IEnumerable<AccountBalanceInfo> balances,
-            string baseCurrencyCode, string? currencyFilter = null)
+            string baseCurrencyCode, string? currencyFilter = null, IEnumerable<PocketSummary>? pockets = null)
         {
             baseCurrencyCode = baseCurrencyCode.ToUpperInvariant();
             var balanceMap = balances.ToDictionary(b => b.AccountId);
+            var pocketsByAccount = (pockets ?? []).GroupBy(p => p.Account.Id).ToDictionary(g => g.Key, g => g.ToList());
 
             return accounts
                 .Select(account => new AccountListItem
@@ -57,7 +77,8 @@ namespace MoneyRecord.Models
                     Account = account,
                     CurrencyCode = MoneyFormatter.ResolveCurrencyCode(account.CurrencyCode, baseCurrencyCode),
                     CurrentBalance = balanceMap.GetValueOrDefault(account.Id)?.CurrentBalance ?? account.InitialBalance,
-                    LastActivityDate = balanceMap.GetValueOrDefault(account.Id)?.LastActivityDate
+                    LastActivityDate = balanceMap.GetValueOrDefault(account.Id)?.LastActivityDate,
+                    Pockets = pocketsByAccount.GetValueOrDefault(account.Id) ?? []
                 })
                 .Where(item => string.IsNullOrEmpty(currencyFilter) || item.CurrencyCode == currencyFilter)
                 .GroupBy(item => item.CurrencyCode)

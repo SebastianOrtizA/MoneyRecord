@@ -16,6 +16,7 @@ namespace MoneyRecord.ViewModels
         private readonly IAccountRepository _accountRepository;
         private readonly ITransferRepository _transferRepository;
         private readonly IBalanceService _balanceService;
+        private readonly IPocketService _pocketService;
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
@@ -99,8 +100,9 @@ namespace MoneyRecord.ViewModels
         private int? _originalDestinationAccountId;
         private decimal _originalAmount;
 
-        public AddTransferViewModel(IAccountRepository accountRepository, ITransferRepository transferRepository, IBalanceService balanceService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService)
+        public AddTransferViewModel(IAccountRepository accountRepository, ITransferRepository transferRepository, IBalanceService balanceService, IPocketService pocketService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService)
         {
+            _pocketService = pocketService;
             _accountRepository = accountRepository;
             _transferRepository = transferRepository;
             _balanceService = balanceService;
@@ -253,6 +255,11 @@ namespace MoneyRecord.ViewModels
 
                 SourceAccountBalance = balance;
                 SourceAccountBalanceText = string.Format(AppResources.Available, MoneyFormatter.Format(balance, account.CurrencyCode));
+                // Money set aside inside the account is still in its balance: say how much
+                var inPockets = (await _pocketService.GetPocketsAsync(account.Id)).Sum(p => p.Balance);
+                if (inPockets > 0 && account == SelectedSourceAccount)
+                    SourceAccountBalanceText += " · " + string.Format(AppResources.InPockets,
+                        MoneyFormatter.Format(inPockets, account.CurrencyCode));
             }
             catch (Exception ex)
             {

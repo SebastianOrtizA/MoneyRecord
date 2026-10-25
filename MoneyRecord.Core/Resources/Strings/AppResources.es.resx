@@ -1639,7 +1639,7 @@ Monto: {2}</value>
     <value>Cuentas donde está el ahorro</value>
   </data>
   <data name="GoalAccountsHint" xml:space="preserve">
-    <value>Lo ahorrado = su saldo. Cada cuenta sirve para una sola meta.</value>
+    <value>Lo ahorrado = su saldo, o lo que tiene un bolsillo. Cada cuenta o bolsillo sirve para una sola meta, y una cuenta no se marca junto con sus propios bolsillos.</value>
   </data>
   <data name="GoalNoFreeAccounts" xml:space="preserve">
     <value>No hay cuentas libres en {0}. Añade una en Cuentas.</value>
@@ -2549,5 +2549,71 @@ Monto: {2}</value>
   </data>
   <data name="FailedToRecordPartyShare" xml:space="preserve">
     <value>No se pudo registrar tu parte</value>
+  </data>
+  <data name="Pockets" xml:space="preserve">
+    <value>Bolsillos</value>
+  </data>
+  <data name="NewPocket" xml:space="preserve">
+    <value>Nuevo bolsillo</value>
+  </data>
+  <data name="EditPocket" xml:space="preserve">
+    <value>Editar bolsillo</value>
+  </data>
+  <data name="PocketName" xml:space="preserve">
+    <value>Nombre del bolsillo</value>
+  </data>
+  <data name="PocketNamePlaceholder" xml:space="preserve">
+    <value>p. ej. Viaje</value>
+  </data>
+  <data name="PleaseEnterPocketName" xml:space="preserve">
+    <value>Escribe el nombre del bolsillo</value>
+  </data>
+  <data name="SetAside" xml:space="preserve">
+    <value>Apartar</value>
+  </data>
+  <data name="TakeOut" xml:space="preserve">
+    <value>Sacar</value>
+  </data>
+  <data name="PocketHolds" xml:space="preserve">
+    <value>En este bolsillo: {0}</value>
+  </data>
+  <data name="PocketAccountAvailable" xml:space="preserve">
+    <value>Disponible en {0}: {1}</value>
+  </data>
+  <data name="PocketMovements" xml:space="preserve">
+    <value>Movimientos</value>
+  </data>
+  <data name="NoPocketMovements" xml:space="preserve">
+    <value>Aún no has apartado nada.</value>
+  </data>
+  <data name="AvailableAndInPockets" xml:space="preserve">
+    <value>Disponible {0} · {1} en bolsillos</value>
+  </data>
+  <data name="InPockets" xml:space="preserve">
+    <value>{0} en bolsillos</value>
+  </data>
+  <data name="PocketNotEnoughAvailable" xml:space="preserve">
+    <value>No hay tanto disponible en {0}.</value>
+  </data>
+  <data name="PocketNotEnoughInPocket" xml:space="preserve">
+    <value>Este bolsillo tiene menos que eso.</value>
+  </data>
+  <data name="DeletePocketConfirmation" xml:space="preserve">
+    <value>¿Eliminar el bolsillo "{0}"? Su dinero vuelve a {1}.</value>
+  </data>
+  <data name="FailedToSavePocket" xml:space="preserve">
+    <value>No se pudo guardar el bolsillo</value>
+  </data>
+  <data name="FailedToDeletePocket" xml:space="preserve">
+    <value>No se pudo eliminar el bolsillo</value>
+  </data>
+  <data name="FailedToMovePocket" xml:space="preserve">
+    <value>No se pudo actualizar el bolsillo</value>
+  </data>
+  <data name="PocketsCurrencyChange" xml:space="preserve">
+    <value>Los bolsillos de {0} conservan sus importes pero dejan de contar para metas en {1}. ¿Cambiar la moneda de todos modos?</value>
+  </data>
+  <data name="DeleteAccountPockets" xml:space="preserve">
+    <value>Sus bolsillos también se eliminan.</value>
   </data>
 </root>
