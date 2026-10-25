@@ -276,6 +276,9 @@ namespace MoneyRecord.Services.Repositories
             await db.CreateTableAsync<PartyExpenseExclusion>();
             await db.CreateTableAsync<PartyContribution>();
             await db.CreateTableAsync<PartyPayment>();
+            await db.CreateTableAsync<Pocket>();
+            await db.CreateTableAsync<PocketMovement>();
+            await db.CreateTableAsync<SavingsGoalPocket>();
 
             if (isNewDatabase)
                 await migrations.StampLatestAsync(db);

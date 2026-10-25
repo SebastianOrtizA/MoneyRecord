@@ -53,7 +53,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         zip.Entries.Select(e => e.FullName).Should().BeEquivalentTo("data.json", "receipts/receipt_1.jpg");
         using var reader = new StreamReader(zip.GetEntry("data.json")!.Open());
         var json = await reader.ReadToEndAsync();
-        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 5");
+        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 6");
         json.Should().NotContain(_appData.Replace("\\", "\\\\"), "no device paths in a backup");
     }
 
@@ -113,12 +113,19 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         await Db.InsertAsync(new PartyExpenseExclusion { ExpenseId = cake.Id, ParticipantId = ben.Id });
         await Db.InsertAsync(new PartyContribution { PartyId = party.Id, ParticipantId = ben.Id, Amount = 5m });
         await Db.InsertAsync(new PartyPayment { PartyId = party.Id, FromId = ben.Id, ToId = ana.Id, Amount = 2m });
+        var travel = new Pocket { AccountId = bank.Id, Name = "Travel" };
+        await Db.InsertAsync(travel);
+        await Db.InsertAsync(new PocketMovement { PocketId = travel.Id, Amount = 25m, Date = new DateTime(2026, 10, 1) });
+        await Db.InsertAsync(new SavingsGoalPocket { GoalId = goal.Id, PocketId = travel.Id });
         var before = await DumpAsync();
         var backupPath = BackupPath("backup.zip");
         await _service.ExportBackupAsync(backupPath);
 
         // Change everything after the backup
         await Db.DeleteAllAsync<SavingsGoalAccount>();
+        await Db.DeleteAllAsync<SavingsGoalPocket>();
+        await Db.DeleteAllAsync<PocketMovement>();
+        await Db.DeleteAllAsync<Pocket>();
         await Db.DeleteAllAsync<Payee>();
         await Db.DeleteAllAsync<Debt>();
         await Db.DeleteAllAsync<PartyPayment>();
@@ -145,6 +152,8 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Directory.GetFiles(Receipts).Select(Path.GetFileName).Should().Equal("receipt_1.jpg");
         (await Db.Table<SavingsGoalAccount>().ToListAsync()).Should().ContainSingle()
             .Which.Should().BeEquivalentTo(new { GoalId = goal.Id, AccountId = bank.Id }, "the goal keeps its account; a link is not counted as an item");
+        (await Db.Table<SavingsGoalPocket>().ToListAsync()).Should().ContainSingle()
+            .Which.Should().BeEquivalentTo(new { GoalId = goal.Id, PocketId = travel.Id });
         File.Exists(result.SnapshotPath).Should().BeTrue();
     }
 
@@ -309,6 +318,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var result = await _service.RestoreAsync(path);
 
         result.RecordCount.Should().Be(5);
+        (await Db.Table<Pocket>().CountAsync()).Should().Be(0, "a backup from before pockets has none");
         var lunch = await Db.FindAsync<Transaction>(1);
         lunch.CategoryId.Should().Be(11);
         lunch.AccountId.Should().Be(5);
@@ -485,6 +495,8 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         rows.AddRange(await Db.Table<PartyExpenseExclusion>().ToListAsync());
         rows.AddRange(await Db.Table<PartyContribution>().ToListAsync());
         rows.AddRange(await Db.Table<PartyPayment>().ToListAsync());
+        rows.AddRange(await Db.Table<Pocket>().ToListAsync());
+        rows.AddRange(await Db.Table<PocketMovement>().ToListAsync());
         return rows;
     }
 }

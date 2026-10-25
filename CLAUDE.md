@@ -45,7 +45,7 @@ crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
 - `Models/` — 14 SQLite tables: Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
-  SavingsGoalAccount (a goal's accounts; one goal per account), Payee (optional on a transaction and a recurring one;
+  SavingsGoalAccount (a goal's accounts; one goal per account) + SavingsGoalPocket (its pockets), Pocket + PocketMovement (money set aside inside an account, an earmark only: signed movements, balance = their sum; `PocketSummary` displays one), Payee (optional on a transaction and a recurring one;
   `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups), Trip + TripCategory + TripBudget (a trip, its shared trip categories, its per-category limits; `Transaction.TripId`/`TripCategoryId`, `Category.IsTravel` = the system "Travel" category trip expenses sit in while the trip is active; `TripCard`/`TripSummary` display it), Debt (money lent / borrowed: a payee + a hidden account, `Account.IsDebt`,
   whose transfers are the debt's money; `DebtSummary` / `DebtMovement` display it).
   `Transaction.SplitId`: the parts of a split expense are plain transactions sharing the ID (`SplitPart` = one part to save). Plus display models
@@ -69,7 +69,7 @@ crashes at runtime (XAML is inflated at runtime there).
   last category per type, rename / merge / delete), DebtService + DebtLedger (debts: totals in SQL, payments with an interest part,
   the schedule = a `RecurringTransaction.DebtId` rule capped at what is left; `IAccountRepository.GetOwnAsync` leaves the
   hidden accounts out of pickers and lists), SplitService (saves a split expense: one transaction per part in one DB
-  transaction, replacing the edited ones; the own conversion shared out), SavingsGoalService (goal
+  transaction, replacing the edited ones; the own conversion shared out), PocketService (set aside / take out, available = balance minus pockets, `GetShortfallAsync`, `CoverAsync`; `PocketCover.Plan`), SavingsGoalService (goal
   progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
   PartyService (friends list, parties with members, expenses split evenly minus exclusions, contributions to a common pot;
   summary = balances + settle-up payments), TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
@@ -204,7 +204,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   load their period's rows (they chart them anyway)
 - Balances count the entries dated up to today (`IBalanceService.CountedBefore`): a future-dated transaction or transfer is
   listed (and in its period's totals) but in no balance before its date; what works back from today's balances stops there too
-- Backups: `.zip` with `data.json` (format v4, rows keep their IDs; savings goals included) + `receipts/`; restore snapshots go to `Backups/`
+- Backups: `.zip` with `data.json` (format v6, rows keep their IDs; savings goals and pockets included) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization
 - `.resx` resource files with `ResXFileCodeGenerator`

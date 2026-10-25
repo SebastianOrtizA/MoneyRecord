@@ -58,6 +58,10 @@ namespace MoneyRecord.Services
                     db.Execute("UPDATE \"RecurringTransaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
                     // Its goals keep their other accounts
                     db.Execute("DELETE FROM \"SavingsGoalAccount\" WHERE AccountId = ?", accountId);
+                    // Its pockets go with it: their movements and goal links too
+                    db.Execute("DELETE FROM \"PocketMovement\" WHERE PocketId IN (SELECT Id FROM \"Pocket\" WHERE AccountId = ?)", accountId);
+                    db.Execute("DELETE FROM \"SavingsGoalPocket\" WHERE PocketId IN (SELECT Id FROM \"Pocket\" WHERE AccountId = ?)", accountId);
+                    db.Execute("DELETE FROM \"Pocket\" WHERE AccountId = ?", accountId);
                     db.Delete<Account>(accountId);
                 });
             }

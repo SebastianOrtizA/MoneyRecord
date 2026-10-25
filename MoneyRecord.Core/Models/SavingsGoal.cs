@@ -46,4 +46,17 @@ namespace MoneyRecord.Models
         [Indexed(Name = "IX_SavingsGoalAccount_AccountId", Unique = true)]
         public int AccountId { get; set; }
     }
+
+    /// <summary>A pocket whose money counts towards a goal. A pocket belongs to one goal at most.</summary>
+    public class SavingsGoalPocket : IEntity
+    {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [Indexed(Name = "IX_SavingsGoalPocket_GoalId")]
+        public int GoalId { get; set; }
+
+        [Indexed(Name = "IX_SavingsGoalPocket_PocketId", Unique = true)]
+        public int PocketId { get; set; }
+    }
 }

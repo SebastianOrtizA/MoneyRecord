@@ -215,6 +215,28 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
         (await _categoryRepository.GetAllAsync()).Should().NotContain(c => c.Id == food.Id);
     }
 
+    [Fact]
+    public async Task DeleteAccount_RemovesItsPocketsMovementsAndGoalLinks()
+    {
+        await DefaultAccountAsync();
+        var bank = await AddAccountAsync("Bank");
+        var other = await AddAccountAsync("Other");
+        var pocket = new Pocket { AccountId = bank.Id, Name = "Travel" };
+        var kept = new Pocket { AccountId = other.Id, Name = "Kept" };
+        await Db.InsertAsync(pocket);
+        await Db.InsertAsync(kept);
+        await Db.InsertAsync(new PocketMovement { PocketId = pocket.Id, Amount = 50m });
+        await Db.InsertAsync(new PocketMovement { PocketId = kept.Id, Amount = 5m });
+        await Db.InsertAsync(new SavingsGoalPocket { GoalId = 1, PocketId = pocket.Id });
+        await Db.InsertAsync(new SavingsGoalPocket { GoalId = 1, PocketId = kept.Id });
+
+        await _accountService.DeleteAsync(bank.Id);
+
+        (await Db.Table<Pocket>().ToListAsync()).Should().ContainSingle().Which.Id.Should().Be(kept.Id);
+        (await Db.Table<PocketMovement>().ToListAsync()).Should().ContainSingle().Which.PocketId.Should().Be(kept.Id);
+        (await Db.Table<SavingsGoalPocket>().ToListAsync()).Should().ContainSingle().Which.PocketId.Should().Be(kept.Id);
+    }
+
     private async Task<Account> DefaultAccountAsync() => (await _accountRepository.GetDefaultAsync())!;
 
     private async Task<Account> AddAccountAsync(string name, string currencyCode = "")
