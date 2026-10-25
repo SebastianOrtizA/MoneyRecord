@@ -51,6 +51,14 @@ namespace MoneyRecord.Services
                 .ToList();
         }
 
+        public async Task<Dictionary<int, long>> GetChangesSinceAsync(DateTime since)
+        {
+            var db = await dbInitializer.GetConnectionAsync();
+            var rows = await db.QueryAsync<KeyedSum>(
+                "SELECT PocketId AS RowKey, SUM(AmountCents) AS Total FROM \"PocketMovement\" WHERE Date >= ? GROUP BY PocketId", since);
+            return rows.ToDictionary(r => r.RowKey, r => r.Total);
+        }
+
         public async Task<List<PocketMovement>> GetMovementsAsync(int pocketId)
         {
             var db = await dbInitializer.GetConnectionAsync();
@@ -67,9 +75,17 @@ namespace MoneyRecord.Services
                     throw new PocketProblemException(PocketProblem.DebtAccount, "A debt's account can't have pockets.");
 
                 if (pocket.Id == 0)
+                {
                     db.Insert(pocket);
-                else
-                    db.Update(pocket);
+                    return;
+                }
+
+                // Moving it would skip the goal and available checks of its new account
+                var existing = db.Find<Pocket>(pocket.Id)
+                    ?? throw new PocketProblemException(PocketProblem.PocketNotFound, $"Pocket {pocket.Id} does not exist.");
+                if (existing.AccountId != pocket.AccountId)
+                    throw new PocketProblemException(PocketProblem.AccountNotFound, "A pocket can't change account.");
+                db.Update(pocket);
             });
 
         public Task DeleteAsync(int pocketId) =>
@@ -89,22 +105,31 @@ namespace MoneyRecord.Services
             var db = await dbInitializer.GetConnectionAsync();
             var pocket = await db.FindAsync<Pocket>(pocketId)
                 ?? throw new PocketProblemException(PocketProblem.PocketNotFound, $"Pocket {pocketId} does not exist.");
+            // Read outside the transaction (it is async); what the pockets hold is read inside it, with the insert
+            var balanceCents = cents > 0 ? Money.ToCents(await balanceService.GetAccountBalanceAsync(pocket.AccountId)) : 0;
 
-            if (cents > 0)
+            await dbInitializer.RunInTransactionAsync(conn =>
             {
-                // Available = the account's balance minus everything its pockets hold
-                var balanceCents = Money.ToCents(await balanceService.GetAccountBalanceAsync(pocket.AccountId));
-                var inPockets = (await GetTotalsByAccountAsync()).GetValueOrDefault(pocket.AccountId);
-                if (cents > balanceCents - inPockets)
-                    throw new PocketProblemException(PocketProblem.NotEnoughAvailable,
-                        $"Account {pocket.AccountId} has {balanceCents - inPockets} cents available.");
-            }
-            else if (-cents > (await GetBalancesAsync()).GetValueOrDefault(pocketId))
-            {
-                throw new PocketProblemException(PocketProblem.NotEnoughInPocket, $"Pocket {pocketId} holds less than that.");
-            }
+                if (cents > 0)
+                {
+                    // Available = the account's balance minus everything its pockets hold
+                    var inPockets = conn.ExecuteScalar<long>(
+                        "SELECT COALESCE(SUM(m.AmountCents), 0) FROM \"PocketMovement\" m JOIN \"Pocket\" p ON p.Id = m.PocketId WHERE p.AccountId = ?",
+                        pocket.AccountId);
+                    if (cents > balanceCents - inPockets)
+                        throw new PocketProblemException(PocketProblem.NotEnoughAvailable,
+                            $"Account {pocket.AccountId} has {balanceCents - inPockets} cents available.");
+                }
+                else
+                {
+                    var held = conn.ExecuteScalar<long>(
+                        "SELECT COALESCE(SUM(AmountCents), 0) FROM \"PocketMovement\" WHERE PocketId = ?", pocketId);
+                    if (-cents > held)
+                        throw new PocketProblemException(PocketProblem.NotEnoughInPocket, $"Pocket {pocketId} holds less than that.");
+                }
 
-            await db.InsertAsync(new PocketMovement { PocketId = pocketId, AmountCents = cents, Date = date, Note = note });
+                conn.Insert(new PocketMovement { PocketId = pocketId, AmountCents = cents, Date = date, Note = note });
+            });
         }
 
         public async Task<decimal> GetShortfallAsync(int accountId, decimal extraOutflow, DateTime date)
@@ -122,12 +147,16 @@ namespace MoneyRecord.Services
             return shortfall > 0 ? Money.FromCents(shortfall) : 0;
         }
 
-        public Task CoverAsync(IReadOnlyList<PocketTake> takes, DateTime date, int? transactionId = null, int? transferId = null) =>
+        public Task CoverAsync(int accountId, IReadOnlyList<PocketTake> takes, DateTime date, int? transactionId = null, int? transferId = null) =>
             dbInitializer.RunInTransactionAsync(db =>
             {
                 foreach (var take in takes.Where(t => t.Amount > 0))
                 {
                     var cents = Money.ToCents(take.Amount);
+                    var pocket = db.Find<Pocket>(take.PocketId)
+                        ?? throw new PocketProblemException(PocketProblem.PocketNotFound, $"Pocket {take.PocketId} does not exist.");
+                    if (pocket.AccountId != accountId)
+                        throw new PocketProblemException(PocketProblem.PocketNotFound, $"Pocket {take.PocketId} is not in account {accountId}.");
                     var held = db.ExecuteScalar<long>(
                         "SELECT COALESCE(SUM(AmountCents), 0) FROM \"PocketMovement\" WHERE PocketId = ?", take.PocketId);
                     if (cents > held)

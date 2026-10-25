@@ -10,19 +10,13 @@ namespace MoneyRecord.Services
         private readonly DatabaseInitializer _dbInitializer;
         private readonly IAccountRepository _accountRepository;
         private readonly IBalanceService _balanceService;
+        private readonly IPocketService _pockets;
         private readonly TimeProvider _time;
 
-        // A pocket's total, read by sqlite-net
-        private sealed class PocketSum
-        {
-            public int PocketId { get; set; }
-
-            public long Total { get; set; }
-        }
-
         public SavingsGoalService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository,
-            IBalanceService balanceService, TimeProvider time)
+            IBalanceService balanceService, IPocketService pockets, TimeProvider time)
         {
+            _pockets = pockets;
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _balanceService = balanceService;
@@ -39,17 +33,15 @@ namespace MoneyRecord.Services
             var links = await db.Table<SavingsGoalAccount>().ToListAsync();
             var pocketLinks = await db.Table<SavingsGoalPocket>().ToListAsync();
             var accounts = (await _accountRepository.GetAllAsync()).ToDictionary(a => a.Id);
-            var pocketBalances = pocketLinks.Count == 0
-                ? new Dictionary<int, long>()
-                : (await db.QueryAsync<PocketSum>(
-                    "SELECT PocketId, SUM(AmountCents) AS Total FROM \"PocketMovement\" GROUP BY PocketId"))
-                    .ToDictionary(r => r.PocketId, r => r.Total);
-            var pockets = (await db.Table<Pocket>().ToListAsync()).ToDictionary(p => p.Id);
+            var pockets = pocketLinks.Count == 0
+                ? new Dictionary<int, PocketSummary>()
+                : (await _pockets.GetPocketsAsync()).ToDictionary(p => p.PocketId);
             var balanceOf = (balances ?? await _balanceService.GetAllAccountBalancesAsync())
                 .ToDictionary(b => b.AccountId, b => b.CurrentBalance);
             var today = _time.GetLocalNow().Date;
             // The pace window usually starts on the same day for every goal: one query per distinct start
             var changesSince = new Dictionary<DateTime, Dictionary<int, decimal>>();
+            var pocketChangesSince = new Dictionary<DateTime, Dictionary<int, long>>();
 
             var progress = new List<GoalProgress>();
             foreach (var goal in goals)
@@ -64,10 +56,7 @@ namespace MoneyRecord.Services
                 // A pocket counts like an account: while its account is in the goal's currency
                 var linkedPockets = pocketLinks.Where(l => l.GoalId == goal.Id)
                     .Select(l => pockets.GetValueOrDefault(l.PocketId))
-                    .OfType<Pocket>()
-                    .Select(p => (Pocket: p, Account: accounts.GetValueOrDefault(p.AccountId)))
-                    .Where(x => x.Account != null)
-                    .Select(x => new PocketSummary(x.Pocket, x.Account!, pocketBalances.GetValueOrDefault(x.Pocket.Id)))
+                    .OfType<PocketSummary>()
                     .ToList();
                 var countedPockets = linkedPockets.Where(p => MoneyFormatter.SameCurrency(p.Account.CurrencyCode, goal.CurrencyCode)).ToList();
                 var uncountedPockets = linkedPockets.Except(countedPockets).ToList();
@@ -80,11 +69,10 @@ namespace MoneyRecord.Services
                         counted.Select(a => a.CreatedDate).Concat(countedPockets.Select(p => p.Pocket.CreatedDate)).Min());
                     if (!changesSince.TryGetValue(start, out var changes))
                         changesSince[start] = changes = await _balanceService.GetChangesSinceAsync(start);
-                    var change = counted.Sum(a => changes.GetValueOrDefault(a.Id));
-                    foreach (var pocket in countedPockets)
-                        change += Money.FromCents(await db.ExecuteScalarAsync<long>(
-                            "SELECT COALESCE(SUM(AmountCents), 0) FROM \"PocketMovement\" WHERE PocketId = ? AND Date >= ?",
-                            pocket.PocketId, start));
+                    if (!pocketChangesSince.TryGetValue(start, out var pocketChanges))
+                        pocketChangesSince[start] = pocketChanges = await _pockets.GetChangesSinceAsync(start);
+                    var change = counted.Sum(a => changes.GetValueOrDefault(a.Id))
+                        + countedPockets.Sum(p => Money.FromCents(pocketChanges.GetValueOrDefault(p.PocketId)));
                     pace = GoalProjection.MonthlyPace(change, start, today);
                 }
 

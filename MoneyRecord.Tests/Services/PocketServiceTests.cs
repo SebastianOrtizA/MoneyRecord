@@ -126,15 +126,61 @@ public sealed class PocketServiceTests : IAsyncLifetime
         var pocket = await AddPocketAsync(bank);
         await _sut.MoveAsync(pocket.Id, 500m, Today);
 
-        await _sut.CoverAsync([new PocketTake(pocket.Id, 300m)], Today, transactionId: 7);
+        await _sut.CoverAsync(bank.Id, [new PocketTake(pocket.Id, 300m)], Today, transactionId: 7);
 
         (await _sut.GetBalancesAsync())[pocket.Id].Should().Be(20000);
         var last = (await _sut.GetMovementsAsync(pocket.Id)).First();
         last.AmountCents.Should().Be(-30000);
         last.TransactionId.Should().Be(7);
 
-        var tooMuch = () => _sut.CoverAsync([new PocketTake(pocket.Id, 300m)], Today);
+        var tooMuch = () => _sut.CoverAsync(bank.Id, [new PocketTake(pocket.Id, 300m)], Today);
         await tooMuch.Should().ThrowAsync<PocketProblemException>();
+    }
+
+    [Fact]
+    public async Task Cover_refuses_a_pocket_of_another_account()
+    {
+        var bank = await AddAccountAsync("Bank", 2000m);
+        var other = await AddAccountAsync("Other", 2000m);
+        var pocket = await AddPocketAsync(other);
+        await _sut.MoveAsync(pocket.Id, 500m, Today);
+
+        var act = () => _sut.CoverAsync(bank.Id, [new PocketTake(pocket.Id, 100m)], Today);
+
+        await act.Should().ThrowAsync<PocketProblemException>();
+        (await _sut.GetBalancesAsync())[pocket.Id].Should().Be(50000, "nothing was taken");
+    }
+
+    [Fact]
+    public async Task A_pocket_cannot_move_to_another_account_but_can_be_renamed()
+    {
+        var bank = await AddAccountAsync("Bank", 2000m);
+        var other = await AddAccountAsync("Other", 2000m);
+        var pocket = await AddPocketAsync(bank);
+
+        pocket.Name = "Holiday";
+        await _sut.SaveAsync(pocket);
+        (await _sut.GetPocketsAsync(bank.Id)).Single().Pocket.Name.Should().Be("Holiday");
+
+        pocket.AccountId = other.Id;
+        var act = () => _sut.SaveAsync(pocket);
+
+        await act.Should().ThrowAsync<PocketProblemException>();
+        (await Db.FindAsync<Pocket>(pocket.Id)).AccountId.Should().Be(bank.Id);
+    }
+
+    [Fact]
+    public async Task Changes_since_sums_the_movements_from_that_date_on()
+    {
+        var bank = await AddAccountAsync("Bank", 2000m);
+        var pocket = await AddPocketAsync(bank);
+        await _sut.MoveAsync(pocket.Id, 500m, Today.AddDays(-40));
+        await _sut.MoveAsync(pocket.Id, 100m, Today.AddDays(-5));
+        await _sut.MoveAsync(pocket.Id, -30m, Today.AddDays(-1));
+
+        var changes = await _sut.GetChangesSinceAsync(Today.AddDays(-10));
+
+        changes[pocket.Id].Should().Be(7000);
     }
 
     [Fact]

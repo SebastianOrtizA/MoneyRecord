@@ -32,7 +32,7 @@ public sealed class SavingsGoalServiceTests : IAsyncLifetime
         var clock = new FakeTimeProvider(new DateTimeOffset(Today.AddHours(12), TimeSpan.Zero));
         var balances = new BalanceService(_accounts, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), clock);
         clock.SetLocalTimeZone(TimeZoneInfo.Utc);
-        _sut = new SavingsGoalService(_dbInitializer, _accounts, balances, clock);
+        _sut = new SavingsGoalService(_dbInitializer, _accounts, balances, new PocketService(_dbInitializer, balances), clock);
     }
 
     public async Task DisposeAsync()
