@@ -23,7 +23,7 @@ namespace MoneyRecord.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            _viewModel.CloseFormCommand.Execute(null);
+            _viewModel.CloseAll();
         }
 
         public bool TryCloseOverlay() => _viewModel.CloseTopOverlay();

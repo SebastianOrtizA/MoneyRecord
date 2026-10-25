@@ -55,6 +55,7 @@
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditAccountCommand}"
                                                   CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="8">
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                             <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" StrokeShape="Ellipse"
                                     VerticalOptions="Center"
@@ -103,6 +104,47 @@
                                 </Label.Text>
                             </Label>
                         </Grid>
+
+                        <!-- Pockets: money set aside inside this account; a tap opens the pocket -->
+                        <VerticalStackLayout IsVisible="{Binding HasPockets}" Spacing="4" Margin="56,0,0,0">
+                            <Label Text="{Binding AvailableText}"
+                                   FontSize="13"
+                                   LineBreakMode="TailTruncation"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsOverCommitted}" Value="True">
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Pockets}" Spacing="2">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:PocketSummary">
+                                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" MinimumHeightRequest="36">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=EditPocketCommand}"
+                                                                      CommandParameter="{Binding .}" />
+                                            </Grid.GestureRecognizers>
+                                            <Label Text="{Binding DisplayIcon}"
+                                                   FontFamily="MaterialDesignIcons"
+                                                   FontSize="18"
+                                                   VerticalOptions="Center"
+                                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding Pocket.Name}"
+                                                   FontSize="14"
+                                                   VerticalOptions="Center"
+                                                   LineBreakMode="TailTruncation" />
+                                            <Label Grid.Column="2"
+                                                   Text="{Binding BalanceText}"
+                                                   FontSize="14"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                        </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -139,7 +181,7 @@
                 HorizontalOptions="End"
                 VerticalOptions="End"
                 SemanticProperties.Description="{ext:Localize AddAccountButton}"
-                IsVisible="{Binding IsFormOpen, Converter={StaticResource InvertedBoolConverter}}"
+                IsVisible="{Binding IsSheetOpen, Converter={StaticResource InvertedBoolConverter}}"
                 Command="{Binding AddAccountCommand}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                 TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
@@ -223,10 +265,146 @@
                 </ScrollView>
 
                 <!-- Delete only for an existing, non-default account -->
+                <VerticalStackLayout Grid.Row="2" Spacing="8">
+                    <Button Text="{ext:Localize NewPocket}"
+                            IsVisible="{Binding IsEditMode}"
+                            Command="{Binding NewPocketCommand}"
+                            HeightRequest="44"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Button Text="{ext:Localize DeleteButton}"
+                                IsVisible="{Binding CanDelete}"
+                                Command="{Binding DeleteAccountCommand}"
+                                Margin="0,0,12,0"
+                                HeightRequest="44"
+                                Padding="20,0"
+                                CornerRadius="22"
+                                BorderWidth="1"
+                                BackgroundColor="Transparent"
+                                BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                                TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                        <Button Grid.Column="1"
+                                Text="{Binding SaveText}"
+                                Command="{Binding SaveAccountCommand}"
+                                HeightRequest="44"
+                                CornerRadius="22"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Grid>
+        </controls:BottomSheet>
+
+        <!-- Pocket sheet: name + icon, then set aside / take out, the last movements and Delete -->
+        <controls:BottomSheet Scroll="{x:Reference PocketScroll}"
+                              Grid.RowSpan="2"
+                              IsOpen="{Binding IsPocketOpen}"
+                              CloseCommand="{Binding ClosePocketCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label Text="{Binding PocketTitle}" FontSize="18" FontAttributes="Bold" />
+
+                <ScrollView Grid.Row="1" x:Name="PocketScroll">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{ext:Localize PocketName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <Entry Text="{Binding PocketName}"
+                               Placeholder="{ext:Localize PocketNamePlaceholder}"
+                               FontSize="16" />
+
+                        <Label Text="{ext:Localize SelectIcon}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <FlexLayout Wrap="Wrap"
+                                    JustifyContent="Start"
+                                    AlignItems="Center"
+                                    BindableLayout.ItemsSource="{Binding PocketIcons}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:AccountIcon">
+                                    <Border StrokeThickness="3"
+                                            Padding="10"
+                                            Margin="4"
+                                            WidthRequest="52"
+                                            HeightRequest="52"
+                                            StrokeShape="RoundRectangle 10"
+                                            BackgroundColor="{Binding IsSelected, Converter={StaticResource BoolToSelectedBackgroundConverter}}">
+                                        <Border.Stroke>
+                                            <SolidColorBrush Color="{Binding IsSelected, Converter={StaticResource BoolToColorConverter}}" />
+                                        </Border.Stroke>
+                                        <Border.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ManageAccountsViewModel}}, Path=SelectPocketIconCommand}"
+                                                                  CommandParameter="{Binding Code}" />
+                                        </Border.GestureRecognizers>
+                                        <Label Text="{Binding DisplayIcon}"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="24"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="{Binding IsSelected, Converter={StaticResource BoolToIconColorConverter}}" />
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+
+                        <!-- Money moves only once the pocket exists -->
+                        <VerticalStackLayout IsVisible="{Binding IsPocketEdit}" Spacing="8" Margin="0,8,0,0">
+                            <Label Text="{Binding PocketHoldsText}" FontSize="16" FontAttributes="Bold" />
+                            <Label Text="{Binding PocketAvailableText}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <controls:DecimalEntry Text="{Binding PocketAmount}"
+                                                   Placeholder="0.00"
+                                                   FontSize="16">
+                                <controls:DecimalEntry.Behaviors>
+                                    <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding PocketCurrencyCode}" />
+                                </controls:DecimalEntry.Behaviors>
+                            </controls:DecimalEntry>
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <Button Text="{ext:Localize SetAside}"
+                                        Command="{Binding SetAsideCommand}"
+                                        HeightRequest="44"
+                                        CornerRadius="22"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                                <Button Grid.Column="1"
+                                        Text="{ext:Localize TakeOut}"
+                                        Command="{Binding TakeOutCommand}"
+                                        HeightRequest="44"
+                                        CornerRadius="22"
+                                        BorderWidth="1"
+                                        BackgroundColor="Transparent"
+                                        BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            </Grid>
+
+                            <Label Text="{ext:Localize PocketMovements}" FontSize="14" Margin="0,8,0,0" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <Label Text="{ext:Localize NoPocketMovements}"
+                                   IsVisible="{Binding HasPocketMovements, Converter={StaticResource InvertedBoolConverter}}"
+                                   FontSize="14"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding PocketMovements}" Spacing="6">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="models:PocketMovementRow">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                            <VerticalStackLayout>
+                                                <Label Text="{Binding Title}" FontSize="14" />
+                                                <Label Text="{Binding DetailText}" FontSize="12" LineBreakMode="TailTruncation"
+                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                            </VerticalStackLayout>
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding AmountText}"
+                                                   FontSize="14"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </ScrollView>
+
                 <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
                     <Button Text="{ext:Localize DeleteButton}"
-                            IsVisible="{Binding CanDelete}"
-                            Command="{Binding DeleteAccountCommand}"
+                            IsVisible="{Binding IsPocketEdit}"
+                            Command="{Binding DeletePocketCommand}"
                             Margin="0,0,12,0"
                             HeightRequest="44"
                             Padding="20,0"
@@ -236,8 +414,8 @@
                             BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
                             TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
                     <Button Grid.Column="1"
-                            Text="{Binding SaveText}"
-                            Command="{Binding SaveAccountCommand}"
+                            Text="{Binding PocketSaveText}"
+                            Command="{Binding SavePocketCommand}"
                             HeightRequest="44"
                             CornerRadius="22"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"

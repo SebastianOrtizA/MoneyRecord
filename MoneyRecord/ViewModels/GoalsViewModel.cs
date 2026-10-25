@@ -12,6 +12,7 @@ namespace MoneyRecord.ViewModels
     {
         private readonly ISavingsGoalService _goalService;
         private readonly IAccountRepository _accountRepository;
+        private readonly IPocketService _pocketService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
 
@@ -20,6 +21,10 @@ namespace MoneyRecord.ViewModels
         private Dictionary<int, int> _linked = [];
         // The ticked accounts: kept across a currency change, so switching back restores them
         private HashSet<int> _selectedIds = [];
+        // Pockets: the same, with the pocket IDs
+        private List<PocketSummary> _pockets = [];
+        private Dictionary<int, int> _linkedPockets = [];
+        private HashSet<int> _selectedPocketIds = [];
 
         [ObservableProperty]
         private bool isLoading;
@@ -90,9 +95,10 @@ namespace MoneyRecord.ViewModels
 
         public string NoFreeAccountsText => string.Format(AppResources.GoalNoFreeAccounts, FormCurrency);
 
-        public GoalsViewModel(ISavingsGoalService goalService, IAccountRepository accountRepository, IErrorHandler errorHandler,
+        public GoalsViewModel(ISavingsGoalService goalService, IAccountRepository accountRepository, IPocketService pocketService, IErrorHandler errorHandler,
             IDialogService dialogService)
         {
+            _pocketService = pocketService;
             _goalService = goalService;
             _accountRepository = accountRepository;
             _errorHandler = errorHandler;
@@ -111,11 +117,15 @@ namespace MoneyRecord.ViewModels
                 var goalsTask = _goalService.GetProgressAsync();
                 var accountsTask = _accountRepository.GetOwnAsync();
                 var linkedTask = _goalService.GetLinkedAccountsAsync();
-                await Task.WhenAll(goalsTask, accountsTask, linkedTask);
+                var pocketsTask = _pocketService.GetPocketsAsync();
+                var linkedPocketsTask = _goalService.GetLinkedPocketsAsync();
+                await Task.WhenAll(goalsTask, accountsTask, linkedTask, pocketsTask, linkedPocketsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 _accounts = (await accountsTask).OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
                 _linked = await linkedTask;
+                _pockets = await pocketsTask;
+                _linkedPockets = await linkedPocketsTask;
                 var baseCode = MoneyFormatter.BaseCurrency;
                 Currencies = _accounts
                     .Select(a => MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode))
@@ -150,7 +160,7 @@ namespace MoneyRecord.ViewModels
             FormAmount = string.Empty;
             HasTargetDate = false;
             TargetDate = DateTime.Today.AddYears(1);
-            OpenForm(Currencies.FirstOrDefault() ?? MoneyFormatter.BaseCurrency, []);
+            OpenForm(Currencies.FirstOrDefault() ?? MoneyFormatter.BaseCurrency, [], []);
         }
 
         [RelayCommand]
@@ -164,13 +174,14 @@ namespace MoneyRecord.ViewModels
             FormAmount = goal.TargetAmount.ToString();
             HasTargetDate = goal.Goal.TargetDate != null;
             TargetDate = goal.Goal.TargetDate ?? DateTime.Today.AddYears(1);
-            OpenForm(goal.CurrencyCode, goal.AccountIds);
+            OpenForm(goal.CurrencyCode, goal.AccountIds, goal.PocketIds);
         }
 
-        private void OpenForm(string currency, IEnumerable<int> selected)
+        private void OpenForm(string currency, IEnumerable<int> selectedAccounts, IEnumerable<int> selectedPockets)
         {
             AccountChoices = [];
-            _selectedIds = selected.ToHashSet();
+            _selectedIds = selectedAccounts.ToHashSet();
+            _selectedPocketIds = selectedPockets.ToHashSet();
             if (FormCurrency == currency)
                 BuildAccountChoices();
             else
@@ -182,18 +193,40 @@ namespace MoneyRecord.ViewModels
         {
             foreach (var choice in AccountChoices)
             {
+                var selected = choice.IsPocket ? _selectedPocketIds : _selectedIds;
                 if (choice.IsSelected)
-                    _selectedIds.Add(choice.Account.Id);
+                    selected.Add(choice.Id);
                 else
-                    _selectedIds.Remove(choice.Account.Id);
+                    selected.Remove(choice.Id);
             }
 
             var goalId = EditingGoal?.GoalId;
-            AccountChoices = _accounts
-                .Where(a => MoneyFormatter.SameCurrency(a.CurrencyCode, FormCurrency))
-                .Where(a => !_linked.TryGetValue(a.Id, out var owner) || owner == goalId)
-                .Select(a => new GoalAccountChoice(a, _selectedIds.Contains(a.Id)))
-                .ToList();
+            // Each free account, then its pockets in the goal's currency that no other goal has
+            var choices = new List<GoalAccountChoice>();
+            foreach (var account in _accounts.Where(a => MoneyFormatter.SameCurrency(a.CurrencyCode, FormCurrency)))
+            {
+                if (!_linked.TryGetValue(account.Id, out var owner) || owner == goalId)
+                    choices.Add(new GoalAccountChoice(account, _selectedIds.Contains(account.Id)));
+                choices.AddRange(_pockets
+                    .Where(p => p.Account.Id == account.Id)
+                    .Where(p => !_linkedPockets.TryGetValue(p.PocketId, out var pocketOwner) || pocketOwner == goalId)
+                    .Select(p => new GoalAccountChoice(p, _selectedPocketIds.Contains(p.PocketId))));
+            }
+
+            foreach (var choice in choices)
+                choice.Ticked += OnChoiceTicked;
+            AccountChoices = choices;
+        }
+
+        // An account and its own pockets can't both be in a goal: ticking one unticks the other kind
+        private void OnChoiceTicked(object? sender, EventArgs e)
+        {
+            if (sender is not GoalAccountChoice ticked)
+                return;
+
+            foreach (var other in AccountChoices.Where(c => c.IsSelected && c.IsPocket != ticked.IsPocket
+                         && c.Account.Id == ticked.Account.Id))
+                other.IsSelected = false;
         }
 
         [RelayCommand]
@@ -231,8 +264,9 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var accountIds = AccountChoices.Where(c => c.IsSelected).Select(c => c.Account.Id).ToList();
-            if (accountIds.Count == 0)
+            var accountIds = AccountChoices.Where(c => c.IsSelected && !c.IsPocket).Select(c => c.Id).ToList();
+            var pocketIds = AccountChoices.Where(c => c.IsSelected && c.IsPocket).Select(c => c.Id).ToList();
+            if (accountIds.Count + pocketIds.Count == 0)
             {
                 await _errorHandler.HandleAsync(AppResources.PleaseSelectGoalAccount);
                 return;
@@ -250,7 +284,7 @@ namespace MoneyRecord.ViewModels
             };
             try
             {
-                await _goalService.SaveAsync(goal, accountIds);
+                await _goalService.SaveAsync(goal, accountIds, pocketIds);
                 CloseForm();
                 await LoadGoalsCommand.ExecuteAsync(null);
                 if (adding)

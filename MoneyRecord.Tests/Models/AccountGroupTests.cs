@@ -66,6 +66,59 @@ public class AccountGroupTests
         items[1].LastActivityText.Should().BeEmpty();
     }
 
+    private static PocketSummary Pocket(Account account, string name, long cents) =>
+        new(new Pocket { Id = 1, AccountId = account.Id, Name = name }, account, cents);
+
+    [Fact]
+    public void Pockets_reduce_what_is_available_and_say_so()
+    {
+        var bank = Account(1, "USD");
+        var item = AccountGroup.Build([bank], [Balance(1, 2000m)], "USD",
+            pockets: [Pocket(bank, "Travel", 30000), Pocket(bank, "Rainy", 20000)]).Single().Single();
+
+        item.CurrentBalance.Should().Be(2000m);
+        item.InPockets.Should().Be(500m);
+        item.Available.Should().Be(1500m);
+        item.IsOverCommitted.Should().BeFalse();
+        item.AvailableText.Should().Be(string.Format(MoneyRecord.Resources.Strings.AppResources.AvailableAndInPockets,
+            MoneyFormatter.Format(1500m, "USD"), MoneyFormatter.Format(500m, "USD")));
+    }
+
+    [Fact]
+    public void Available_goes_negative_when_the_balance_falls_below_the_pockets()
+    {
+        var bank = Account(1, "USD");
+        var item = AccountGroup.Build([bank], [Balance(1, 300m)], "USD", pockets: [Pocket(bank, "Travel", 50000)])
+            .Single().Single();
+
+        item.Available.Should().Be(-200m);
+        item.IsOverCommitted.Should().BeTrue();
+    }
+
+    [Fact]
+    public void An_account_without_pockets_has_no_available_text()
+    {
+        var item = AccountGroup.Build([Account(1, "USD")], [Balance(1, 10m)], "USD").Single().Single();
+
+        item.HasPockets.Should().BeFalse();
+        item.AvailableText.Should().BeEmpty();
+        item.Available.Should().Be(10m);
+    }
+
+    [Fact]
+    public void Movement_rows_say_what_happened_with_a_sign()
+    {
+        var date = new DateTime(2026, 10, 16);
+        var setAside = new PocketMovementRow(new PocketMovement { Amount = 100m, Date = date }, "USD");
+        var takeOut = new PocketMovementRow(new PocketMovement { Amount = -30m, Date = date, Note = "Taxi" }, "USD");
+
+        setAside.AmountText.Should().Be("+" + MoneyFormatter.Format(100m, "USD"));
+        setAside.IsTakeOut.Should().BeFalse();
+        takeOut.AmountText.Should().Be("−" + MoneyFormatter.Format(30m, "USD"));
+        takeOut.DetailText.Should().EndWith("Taxi");
+        takeOut.Title.Should().Be(MoneyRecord.Resources.Strings.AppResources.TakeOut);
+    }
+
     [Fact]
     public void No_accounts_is_no_groups()
     {
