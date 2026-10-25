@@ -1,6 +1,6 @@
 # Stage 16: Customizable Home (order, show/hide, Debts card)
 
-**Status**: 16.1 in review (2026-10-25); 16.2 not started
+**Status**: 16.1 done (PR #81); 16.2 in review (2026-10-25)
 **Depends on**: 10.8 debts
 **Complexity**: Medium (2 PRs)
 **Source**: User request, 2026-10-25
@@ -33,6 +33,8 @@ chose "no Home card", so it stays opt-in).
   the layout in `InitializeAsync`.
 
 ### 16.2 Debts card
+**Done as (16.2)**: as planned; `HomeCard.Debts` is the last card and hidden by default (`HomeLayout` appends cards a saved layout lacks with their default visibility). `DebtSummary.OutstandingTotals` (Core, tested) now feeds both the Debts page and the card; `DebtSummary.DetailText` = "Owes you · Due …". Amounts follow Hide balances.
+
 - `MainViewModel` calls `IDebtService.GetAllAsync()` only when the card is enabled. The card shows "Owed to you" / "You owe"
   per currency (`CurrencyAmount.Totals`, never added together) and up to 3 open debts (person, outstanding, next due date).
   A tap opens `DebtsPage`. It is hidden by Hide balances, like the other amounts.

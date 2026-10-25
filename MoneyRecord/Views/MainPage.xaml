@@ -556,6 +556,59 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- Open debts: totals per currency and the first three; a tap opens Debts (off by default) -->
+            <Border Style="{StaticResource Card}" x:Name="DebtsCard" IsVisible="{Binding ShowDebts}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenDebtsCommand}"/>
+                </Border.GestureRecognizers>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="{ext:Localize Debts}" FontSize="18" FontAttributes="Bold"/>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="{ext:Localize DebtsOwedToYou}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <controls:AutoFitLabel Text="{Binding DebtsOwedToYouText}" MaxFontSize="16" FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource IncomeColor}, Dark={StaticResource IncomeColorDark}}">
+                                <controls:AutoFitLabel.Triggers>
+                                    <DataTrigger TargetType="controls:AutoFitLabel" Binding="{Binding HideBalances}" Value="True">
+                                        <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                    </DataTrigger>
+                                </controls:AutoFitLabel.Triggers>
+                            </controls:AutoFitLabel>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{ext:Localize DebtsYouOwe}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <controls:AutoFitLabel Text="{Binding DebtsYouOweText}" MaxFontSize="16" FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}">
+                                <controls:AutoFitLabel.Triggers>
+                                    <DataTrigger TargetType="controls:AutoFitLabel" Binding="{Binding HideBalances}" Value="True">
+                                        <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                    </DataTrigger>
+                                </controls:AutoFitLabel.Triggers>
+                            </controls:AutoFitLabel>
+                        </VerticalStackLayout>
+                    </Grid>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DebtSummaries}" Spacing="6">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:DebtSummary">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="{Binding Title}" FontSize="15" LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding DetailText}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="{Binding OutstandingText}" FontSize="15" FontAttributes="Bold" VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=HideBalances}" Value="True">
+                                                <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
             <Label Text="{ext:Localize CustomizeHome}" Style="{StaticResource CardLink}" HorizontalOptions="Center">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding CustomizeHomeCommand}"/>

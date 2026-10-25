@@ -9,6 +9,7 @@ namespace MoneyRecord.Models
         Upcoming,
         Budgets,
         Trip,
-        Goals
+        Goals,
+        Debts
     }
 }

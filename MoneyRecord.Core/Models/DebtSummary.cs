@@ -101,6 +101,9 @@ namespace MoneyRecord.Models
 
         public bool HasDue => DueText.Length > 0;
 
+        /// <summary>"Owes you · Due Oct 30, 2026" (the Home card line).</summary>
+        public string DetailText => HasDue ? $"{DirectionText} · {DueText}" : DirectionText;
+
         /// <summary>"Next payment $20.00 on Nov 1 · Monthly": the next scheduled one, capped at what is left.</summary>
         public string ScheduleText => Schedule is { } schedule && !IsSettledOrOver
             ? string.Format(AppResources.DebtNextPayment,
@@ -135,6 +138,14 @@ namespace MoneyRecord.Models
         /// overpaid = exceeded.
         /// </summary>
         public BudgetLevel Level => IsOverdue || IsOverpaid ? BudgetLevel.Exceeded : IsDueSoon ? BudgetLevel.High : BudgetLevel.OnTrack;
+
+        /// <summary>"$120.00 · €40.00": what is left on the open debts of one direction, per currency (never added across them).</summary>
+        public static string OutstandingTotals(IEnumerable<DebtSummary> debts, DebtDirection direction) => string.Join(" · ", debts
+            .Where(d => d.Direction == direction && !d.IsPaidOff)
+            .GroupBy(d => d.CurrencyCode)
+            .OrderBy(g => g.Key != MoneyFormatter.BaseCurrency)
+            .ThenBy(g => g.Key, StringComparer.Ordinal)
+            .Select(g => MoneyFormatter.Format(Money.FromCents(g.Sum(d => d.OutstandingCents)), g.Key)));
 
         public static string FrequencyName(RecurrenceFrequency frequency) => frequency switch
         {
