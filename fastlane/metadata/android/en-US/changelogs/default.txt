@@ -1,1 +1,1 @@
-Amounts now show thousands separators as you type, so a long number is easy to read while you enter it. Also in the Transactions amount filter and trip category limits.
+Pockets: set money aside inside an account and pick which pocket to take from when an expense dips into it. Variable-amount recurring bills you confirm each time. Customize Home (order, show/hide cards) plus an optional Debts card. A What's new pop-up after updates. Recent amounts now hide with Hide balances. Backups now use format v6.
