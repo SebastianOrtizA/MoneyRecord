@@ -125,6 +125,18 @@ public class UpcomingVariableTests
     }
 
     [Fact]
+    public void A_debt_schedule_is_never_variable()
+    {
+        var debt = Variable(1, Today, 8500);
+        debt.DebtId = 3;
+
+        var entries = UpcomingSchedule.Build([debt], new Dictionary<int, Category>(), new Dictionary<int, Account>(), Today,
+            debtsLeft: new Dictionary<int, long> { [3] = 100_000 });
+
+        entries.Should().ContainSingle().Which.Should().Match<UpcomingEntry>(e => !e.IsVariable && !e.IsPending && e.Amount == 20m);
+    }
+
+    [Fact]
     public void A_fixed_schedule_is_never_pending()
     {
         var fixedOne = Variable(1, Today, 0);

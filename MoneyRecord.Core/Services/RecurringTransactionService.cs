@@ -59,6 +59,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// The next occurrence of a variable-amount schedule is entered (<paramref name="entry"/> saved, its amount kept as the
         /// estimate) or skipped (null); either way the schedule moves on in the same database transaction.
+        /// The caller builds the entry from the schedule (account, category, type); only its date is checked here.
         /// </summary>
         private async Task MoveOnAsync(int recurringId, Transaction? entry)
         {
@@ -68,7 +69,7 @@ namespace MoneyRecord.Services
                 await _database.RunInTransactionAsync(db =>
                 {
                     var recurring = db.Find<RecurringTransaction>(recurringId);
-                    if (recurring is not { IsActive: true, IsVariableAmount: true })
+                    if (recurring is not { IsActive: true, IsVariableAmount: true, DebtId: null })
                         throw new InvalidOperationException($"Recurring transaction {recurringId} has nothing to enter");
                     if (HasEnded(recurring) || recurring.NextOccurrence > _clock.GetLocalNow().DateTime)
                         throw new InvalidOperationException($"Recurring transaction {recurringId} has no occurrence due");
