@@ -1,3 +1,10 @@
+## 0.18.0
+- Savings challenges: a savings game with daily amounts that double in levels or grow linearly, with optional rounding.
+- Pick a destination account or pocket and each day moves the money there from the account or pocket you choose.
+- The What's new pop-up lists each change on its own line and every version you missed.
+- Backups now use format v7.
+- Optimized app build.
+
 ## 0.16.0
 - Pockets: set money aside inside an account and pick which pocket to take from when an expense dips into it.
 - Variable-amount recurring bills you confirm each time.
