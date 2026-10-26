@@ -36,6 +36,9 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
 
         private List<Account> _accounts = [];
+        // The accounts the sheet is opened with (kept across the currency rebuild)
+        private int? _wantedFrom;
+        private int? _wantedTo;
 
         [ObservableProperty]
         private bool isLoading;
@@ -148,8 +151,6 @@ namespace MoneyRecord.ViewModels
             _dialogService = dialogService;
             selectedMode = Modes[0];
             selectedRounding = Roundings[0];
-            // The page lives as long as the app: the labels follow a language change
-            LocalizationService.Instance.LanguageChanged += (_, _) => RebuildLabels();
         }
 
         private static List<ChallengeModeOption> BuildModes() =>
@@ -176,6 +177,17 @@ namespace MoneyRecord.ViewModels
             SelectedMode = Modes.First(m => m.Mode == mode);
             SelectedRounding = Roundings.First(r => r.Cents == rounding);
         }
+
+        /// <summary>The picker labels follow a language change while the page is shown (the view model is transient).</summary>
+        public void WatchLanguage()
+        {
+            UnwatchLanguage();
+            LocalizationService.Instance.LanguageChanged += OnLanguageChanged;
+        }
+
+        public void UnwatchLanguage() => LocalizationService.Instance.LanguageChanged -= OnLanguageChanged;
+
+        private void OnLanguageChanged(object? sender, EventArgs e) => RebuildLabels();
 
         public Task InitializeAsync() => LoadChallengesCommand.ExecuteAsync(null);
 
@@ -246,9 +258,6 @@ namespace MoneyRecord.ViewModels
             SelectedRounding = Roundings.FirstOrDefault(r => r.Cents == challenge.RoundingCents) ?? Roundings[0];
             OpenForm(challenge.CurrencyCode, challenge.FromAccountId, challenge.ToAccountId);
         }
-
-        private int? _wantedFrom;
-        private int? _wantedTo;
 
         private void OpenForm(string currency, int? from, int? to)
         {

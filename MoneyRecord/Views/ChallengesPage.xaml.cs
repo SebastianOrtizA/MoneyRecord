@@ -17,12 +17,14 @@ namespace MoneyRecord.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            _viewModel.WatchLanguage();
             await _viewModel.InitializeAsync();
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
+            _viewModel.UnwatchLanguage();
             // Back here later: the list, not a stale sheet
             _viewModel.CloseFormCommand.Execute(null);
         }
