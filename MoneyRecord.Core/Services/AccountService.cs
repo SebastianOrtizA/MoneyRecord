@@ -58,9 +58,8 @@ namespace MoneyRecord.Services
                     db.Execute("UPDATE \"RecurringTransaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
                     // Its goals keep their other accounts
                     db.Execute("DELETE FROM \"SavingsGoalAccount\" WHERE AccountId = ?", accountId);
-                    // A challenge needs both accounts: it goes back to only marking days
-                    db.Execute("UPDATE \"SavingsChallenge\" SET FromAccountId = NULL, ToAccountId = NULL WHERE FromAccountId = ? OR ToAccountId = ?",
-                        accountId, accountId);
+                    // A challenge that saves into it goes back to only marking days
+                    db.Execute("UPDATE \"SavingsChallenge\" SET ToAccountId = NULL, ToPocketId = NULL WHERE ToAccountId = ?", accountId);
                     // Its pockets go with it: their movements and goal links too
                     db.Execute("DELETE FROM \"PocketMovement\" WHERE PocketId IN (SELECT Id FROM \"Pocket\" WHERE AccountId = ?)", accountId);
                     db.Execute("DELETE FROM \"SavingsGoalPocket\" WHERE PocketId IN (SELECT Id FROM \"Pocket\" WHERE AccountId = ?)", accountId);

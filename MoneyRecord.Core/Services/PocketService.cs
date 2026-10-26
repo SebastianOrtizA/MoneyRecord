@@ -2,6 +2,7 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
+using SQLite;
 
 namespace MoneyRecord.Services
 {
@@ -93,6 +94,8 @@ namespace MoneyRecord.Services
             {
                 db.Execute("DELETE FROM \"PocketMovement\" WHERE PocketId = ?", pocketId);
                 db.Execute("DELETE FROM \"SavingsGoalPocket\" WHERE PocketId = ?", pocketId);
+                // A challenge that saves into the pocket goes back to only marking days
+                db.Execute("UPDATE \"SavingsChallenge\" SET ToAccountId = NULL, ToPocketId = NULL WHERE ToPocketId = ?", pocketId);
                 db.Delete<Pocket>(pocketId);
             });
 
@@ -112,13 +115,7 @@ namespace MoneyRecord.Services
             {
                 if (cents > 0)
                 {
-                    // Available = the account's balance minus everything its pockets hold
-                    var inPockets = conn.ExecuteScalar<long>(
-                        "SELECT COALESCE(SUM(m.AmountCents), 0) FROM \"PocketMovement\" m JOIN \"Pocket\" p ON p.Id = m.PocketId WHERE p.AccountId = ?",
-                        pocket.AccountId);
-                    if (cents > balanceCents - inPockets)
-                        throw new PocketProblemException(PocketProblem.NotEnoughAvailable,
-                            $"Account {pocket.AccountId} has {balanceCents - inPockets} cents available.");
+                    EnsureAvailable(conn, pocket.AccountId, cents, balanceCents);
                 }
                 else
                 {
@@ -130,6 +127,17 @@ namespace MoneyRecord.Services
 
                 conn.Insert(new PocketMovement { PocketId = pocketId, AmountCents = cents, Date = date, Note = note });
             });
+        }
+
+        /// <summary>Setting aside <paramref name="cents"/> needs it available: the account.s balance minus everything its pockets hold.</summary>
+        internal static void EnsureAvailable(SQLiteConnection conn, int accountId, long cents, long balanceCents)
+        {
+            var inPockets = conn.ExecuteScalar<long>(
+                "SELECT COALESCE(SUM(m.AmountCents), 0) FROM \"PocketMovement\" m JOIN \"Pocket\" p ON p.Id = m.PocketId WHERE p.AccountId = ?",
+                accountId);
+            if (cents > balanceCents - inPockets)
+                throw new PocketProblemException(PocketProblem.NotEnoughAvailable,
+                    $"Account {accountId} has {balanceCents - inPockets} cents available.");
         }
 
         public async Task<decimal> GetShortfallAsync(int accountId, decimal extraOutflow, DateTime date)

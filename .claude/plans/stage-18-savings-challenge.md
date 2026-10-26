@@ -1,6 +1,6 @@
 # Stage 18: Savings challenge (doubling / linear game)
 
-**Status**: 18.1 merged (PR #87); 18.2 list + form in review; 18.3 not started. Design agreed 2026-10-25 (decisions below). In 18.2 a card tap opens the edit sheet; 18.3 makes it open the game page (edit/delete move to its menu)
+**Status**: 18.1 merged (PR #87); 18.2 merged (PR #88); 18.3 game page in review. Design agreed 2026-10-25 (decisions below). In 18.3 a card tap opens the game page and a pencil on the card opens the edit/delete sheet (no menu on the game page)
 **Depends on**: none (optional link to accounts and the 10.6 goals)
 **Complexity**: Medium to large (3 PRs)
 **Source**: User request, 2026-10-25
@@ -25,6 +25,7 @@ amount in any order and marks it done. A calendar grid shows the done and remain
 - Each done day stores its own `AmountCents`, so the history stays right even if the plan changes. The plan's settings (goal,
   days, mode, rounding) are locked once any day is done; name, accounts and start date stay editable.
 
+- **Money (changed 2026-10-26, owner request in PR #89)**: the challenge fixes only a *destination*, an account or one of its pockets. Each tap on a day asks the *source* (any account or pocket in the currency, or "just mark the day"). Moves: different accounts = a transfer; a source pocket = a take-out; a destination pocket = a set-aside (same account: only pocket to pocket, or account to pocket). One DB transaction; the day remembers its transfer and movement IDs so unmarking can undo them. This replaces the fixed from/to accounts above.
 - **Useful doublings** k = floor(log2(2G/unit + 1)) (a first amount of half a unit still counts), so $1,000 in 10 days is pure doubling (first day 0.98).
 - A day's `TransferId` can dangle (transfer kept on unmark, or deleted on the Transfers page): the UI must not assume it exists.
 
@@ -32,8 +33,8 @@ amount in any order and marks it done. A calendar grid shows the done and remain
 
 ### 18.1 Core
 - Models (created from the models, no migration): `SavingsChallenge` (Id, Name, GoalCents, CurrencyCode, StartDate, Days, Mode,
-  RoundingCents, FromAccountId?, ToAccountId?, CreatedDate) and `SavingsChallengeDay` (ChallengeId + DayNumber unique index,
-  AmountCents, DoneDate, TransferId?).
+  RoundingCents, ToAccountId?, ToPocketId?, CreatedDate) and `SavingsChallengeDay` (ChallengeId + DayNumber unique index,
+  AmountCents, DoneDate, TransferId?, SourceMovementId?, DestinationMovementId?).
 - `Helpers/ChallengePlan.Build(goalCents, days, mode, roundingCents)` returns day amounts, total and `MaxUsefulDoublings`.
   `ChallengePlanTests`: pure doubling, levels, linear, rounding totals, one day, JPY, a huge n.
 - `ISavingsChallengeService` / `SavingsChallengeService` (on `DatabaseInitializer`, like `SavingsGoalService`): CRUD,

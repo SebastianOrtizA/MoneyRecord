@@ -47,7 +47,7 @@ in both (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...). XAML that uses a Cor
 crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
-- `Models/` — 16 SQLite tables: SavingsChallenge + SavingsChallengeDay (savings game: `ChallengePlan.Build` = day amounts, doubling in levels or linear, optional rounding; days done keep their amount; optional from/to accounts record a transfer; `ISavingsChallengeService`; `ChallengeSummary` displays it), Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
+- `Models/` — 16 SQLite tables: SavingsChallenge + SavingsChallengeDay (savings game: `ChallengePlan.Build` = day amounts, doubling in levels or linear, optional rounding; days done keep their amount; optional destination account or pocket, each day asks the source account or pocket and moves the money (transfer / take-out / set-aside); `ISavingsChallengeService`; `ChallengeSummary` displays it), Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
   SavingsGoalAccount (a goal's accounts; one goal per account) + SavingsGoalPocket (its pockets), Pocket + PocketMovement (money set aside inside an account, an earmark only: signed movements, balance = their sum; `PocketSummary` displays one), Payee (optional on a transaction and a recurring one;
   `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups), Trip + TripCategory + TripBudget (a trip, its shared trip categories, its per-category limits; `Transaction.TripId`/`TripCategoryId`, `Category.IsTravel` = the system "Travel" category trip expenses sit in while the trip is active; `TripCard`/`TripSummary` display it), Debt (money lent / borrowed: a payee + a hidden account, `Account.IsDebt`,
   whose transfers are the debt's money; `DebtSummary` / `DebtMovement` display it).
@@ -120,7 +120,7 @@ crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 19 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 22 XAML pages (`ChallengesPage` = More → Savings challenge: cards + add/edit BottomSheet with a live plan preview) with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
+- `Views/` — 23 XAML pages (`ChallengesPage` = More → Savings challenge: cards + add/edit BottomSheet with a live plan preview; `ChallengePage` = the game: 7-column grid, a tap marks a day, optional transfer prompt) with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab. `AboutPage` / `LicensePage` show the licences (full texts in

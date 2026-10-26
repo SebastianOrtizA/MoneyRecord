@@ -34,7 +34,7 @@ namespace MoneyRecord.Models
         /// <summary>Stored value in cents (see <see cref="Money"/>).</summary>
         public long GoalCents { get; set; }
 
-        /// <summary>The challenge's currency (a resolved code, never empty): only accounts in it can be linked.</summary>
+        /// <summary>The challenge's currency (a resolved code, never empty): only accounts and pockets in it can be the destination.</summary>
         public string CurrencyCode { get; set; } = string.Empty;
 
         public DateTime StartDate { get; set; }
@@ -46,19 +46,21 @@ namespace MoneyRecord.Models
         /// <summary>Each day's amount is rounded to a multiple of this (cents); 0 = cents.</summary>
         public long RoundingCents { get; set; }
 
-        /// <summary>The account a day's money comes from; none = days are only marked.</summary>
-        public int? FromAccountId { get; set; }
-
-        /// <summary>The account a day's money goes to.</summary>
+        /// <summary>
+        /// Where the saved money ends up: this account (or, with <see cref="ToPocketId"/>, a pocket of it). None = days are
+        /// only marked. Each day asks where its money comes from.
+        /// </summary>
         public int? ToAccountId { get; set; }
+
+        public int? ToPocketId { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [Ignore]
-        public bool HasAccounts => FromAccountId != null && ToAccountId != null;
+        public bool HasDestination => ToAccountId != null;
     }
 
-    /// <summary>One day done: its own amount (the history stays right if the plan changes) and the transfer, if one was recorded.</summary>
+    /// <summary>One day done: its own amount (the history stays right if the plan changes) and the money it moved, if any.</summary>
     public class SavingsChallengeDay : IEntity
     {
         [PrimaryKey, AutoIncrement]
@@ -75,6 +77,13 @@ namespace MoneyRecord.Models
 
         public DateTime DoneDate { get; set; }
 
+        /// <summary>The transfer between accounts this day recorded, if any (it can be gone: deleted on the Transfers page).</summary>
         public int? TransferId { get; set; }
+
+        /// <summary>The take-out from the source pocket, if the money came from one.</summary>
+        public int? SourceMovementId { get; set; }
+
+        /// <summary>The set-aside in the destination pocket, if the money went to one.</summary>
+        public int? DestinationMovementId { get; set; }
     }
 }

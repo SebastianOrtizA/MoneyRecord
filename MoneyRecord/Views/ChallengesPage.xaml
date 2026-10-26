@@ -24,7 +24,7 @@
     <Grid>
         <RefreshView IsRefreshing="{Binding IsLoading}"
                      Command="{Binding LoadChallengesCommand}">
-            <!-- One card per challenge (a tap opens the edit sheet), footer = empty state -->
+            <!-- One card per challenge (a tap opens the game, the pencil the edit sheet), footer = empty state -->
             <CollectionView ItemsSource="{Binding Challenges}">
                 <CollectionView.Header>
                     <ContentView HeightRequest="6" />
@@ -34,11 +34,11 @@
                     <DataTemplate x:DataType="models:ChallengeSummary">
                         <Border Style="{StaticResource Card}" Margin="16,6" Padding="14">
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ChallengesViewModel}}, Path=EditChallengeCommand}"
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ChallengesViewModel}}, Path=OpenChallengeCommand}"
                                                       CommandParameter="{Binding .}" />
                             </Border.GestureRecognizers>
                             <VerticalStackLayout Spacing="10">
-                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
                                     <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" StrokeShape="Ellipse"
                                             VerticalOptions="Center"
                                             BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
@@ -61,6 +61,23 @@
                                            FontAttributes="Bold"
                                            VerticalOptions="Center"
                                            TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                    <!-- Edit / delete: the card itself opens the game -->
+                                    <Label Grid.Column="3"
+                                           Text="&#xF03EB;"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="22"
+                                           WidthRequest="40"
+                                           HeightRequest="40"
+                                           HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center"
+                                           VerticalOptions="Center"
+                                           SemanticProperties.Description="{ext:Localize EditChallenge}"
+                                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ChallengesViewModel}}, Path=EditChallengeCommand}"
+                                                                  CommandParameter="{Binding .}" />
+                                        </Label.GestureRecognizers>
+                                    </Label>
                                 </Grid>
 
                                 <ProgressBar Progress="{Binding Fraction}"
@@ -209,14 +226,9 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Label Text="{ext:Localize ChallengeFromAccount}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
-                <Picker ItemsSource="{Binding AccountOptions}"
-                        SelectedItem="{Binding FromAccount}"
-                        FontSize="16"
-                        MinimumHeightRequest="44" />
-                <Label Text="{ext:Localize ChallengeToAccount}" Style="{StaticResource FormCaption}" />
-                <Picker ItemsSource="{Binding AccountOptions}"
-                        SelectedItem="{Binding ToAccount}"
+                <Label Text="{ext:Localize ChallengeToAccount}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
+                <Picker ItemsSource="{Binding DestinationOptions}"
+                        SelectedItem="{Binding Destination}"
                         FontSize="16"
                         MinimumHeightRequest="44" />
                 <Label Text="{ext:Localize ChallengeAccountsHint}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
