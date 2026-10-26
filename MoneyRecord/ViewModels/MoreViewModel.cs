@@ -32,6 +32,7 @@ namespace MoneyRecord.ViewModels
             new("\U000F04DC", AppResources.Payees, nameof(PayeesPage)),
             new("\U000F0456", AppResources.RecurringTransactions, nameof(RecurringTransactionsPage)),
             new("\U000F1007", AppResources.SavingsGoals, nameof(GoalsPage)),
+            new("\U000F0538", AppResources.SavingsChallenges, nameof(ChallengesPage)),
             new("\U000F1218", AppResources.Debts, nameof(DebtsPage)),
             new("\U000F001D", AppResources.TripsTitle, nameof(TripsPage)),
             new("\U000F0849", AppResources.PartiesTitle, nameof(PartiesPage)),

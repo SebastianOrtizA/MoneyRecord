@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             x:Class="MoneyRecord.Views.ChallengesPage"
+             x:DataType="viewmodels:ChallengesViewModel"
+             Title="{ext:Localize SavingsChallenges}">
+
+    <ContentPage.Resources>
+        <Style x:Key="FormCaption" TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        </Style>
+        <Style x:Key="FormNote" TargetType="Label">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}"
+                     Command="{Binding LoadChallengesCommand}">
+            <!-- One card per challenge (a tap opens the edit sheet), footer = empty state -->
+            <CollectionView ItemsSource="{Binding Challenges}">
+                <CollectionView.Header>
+                    <ContentView HeightRequest="6" />
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ChallengeSummary">
+                        <Border Style="{StaticResource Card}" Margin="16,6" Padding="14">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ChallengesViewModel}}, Path=EditChallengeCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="10">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                    <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" StrokeShape="Ellipse"
+                                            VerticalOptions="Center"
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                        <Label Text="&#xF0538;"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="20"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                    </Border>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Name}"
+                                           FontSize="16"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           LineBreakMode="TailTruncation" />
+                                    <Label Grid.Column="2"
+                                           Text="{Binding DaysLeftText}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                </Grid>
+
+                                <ProgressBar Progress="{Binding Fraction}"
+                                             ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                             BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                                             HeightRequest="10" />
+
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <Label Text="{Binding SavedOfText}" FontSize="14" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Fraction, StringFormat='{0:P0}'}"
+                                           FontSize="14"
+                                           FontAttributes="Bold" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.Footer>
+                    <VerticalStackLayout>
+                        <!-- Empty state -->
+                        <VerticalStackLayout Spacing="12"
+                                             Padding="32,48"
+                                             IsVisible="{Binding HasChallenges, Converter={StaticResource InvertedBoolConverter}}">
+                            <Label Text="&#xF0538;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="64"
+                                   HorizontalOptions="Center"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                            <Label Text="{ext:Localize NoChallengesYet}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="{ext:Localize AddChallengeToStart}"
+                                   FontSize="14"
+                                   HorizontalTextAlignment="Center"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        </VerticalStackLayout>
+                        <!-- Room so the last card scrolls above the add button -->
+                        <ContentView HeightRequest="88" />
+                    </VerticalStackLayout>
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="30"
+                Padding="0"
+                Margin="0,0,16,16"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                SemanticProperties.Description="{ext:Localize AddChallenge}"
+                IsVisible="{Binding IsFormOpen, Converter={StaticResource InvertedBoolConverter}}"
+                Command="{Binding AddChallengeCommand}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}" />
+
+        <!-- Add / edit sheet: name, goal, currency, days, start, mode, rounding, accounts, live preview -->
+        <controls:BottomSheet Scroll="{x:Reference FormScroll}" IsOpen="{Binding IsFormOpen}" CloseCommand="{Binding CloseFormCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
+                <ScrollView Grid.Row="1" x:Name="FormScroll">
+                <VerticalStackLayout Spacing="8">
+
+                <Label Text="{ext:Localize ChallengeName}" Style="{StaticResource FormCaption}" />
+                <Entry Text="{Binding FormName}"
+                       Placeholder="{ext:Localize ChallengeNamePlaceholder}"
+                       MaxLength="60"
+                       FontSize="16" />
+
+                <Label Text="{Binding PlanLockedText}"
+                       IsVisible="{Binding IsPlanLocked}"
+                       Style="{StaticResource FormNote}" />
+
+                <!-- The currency picker only shows when the accounts use several -->
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="12"
+                      IsEnabled="{Binding IsPlanEditable}">
+                    <Label Text="{ext:Localize ChallengeGoal}" Style="{StaticResource FormCaption}" />
+                    <Label Grid.Column="1"
+                           Text="{ext:Localize Currency}"
+                           IsVisible="{Binding ShowCurrencyPicker}"
+                           Style="{StaticResource FormCaption}" />
+                    <controls:DecimalEntry Grid.Row="1"
+                                           Text="{Binding FormGoal}"
+                                           Placeholder="0.00"
+                                           FontSize="16">
+                        <controls:DecimalEntry.Behaviors>
+                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency}" />
+                        </controls:DecimalEntry.Behaviors>
+                    </controls:DecimalEntry>
+                    <Picker Grid.Row="1" Grid.Column="1"
+                            ItemsSource="{Binding Currencies}"
+                            SelectedItem="{Binding FormCurrency}"
+                            IsVisible="{Binding ShowCurrencyPicker}"
+                            Title="{ext:Localize SelectCurrency}"
+                            WidthRequest="96"
+                            FontSize="16"
+                            MinimumHeightRequest="44" />
+                </Grid>
+
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                    <Label Text="{ext:Localize ChallengeDays}" Style="{StaticResource FormCaption}" />
+                    <Label Grid.Column="1" Text="{ext:Localize ChallengeStartDate}" Style="{StaticResource FormCaption}" />
+                    <Entry Grid.Row="1"
+                           Text="{Binding FormDays}"
+                           Keyboard="Numeric"
+                           MaxLength="4"
+                           IsEnabled="{Binding IsPlanEditable}"
+                           FontSize="16" />
+                    <DatePicker Grid.Row="1" Grid.Column="1"
+                                Date="{Binding FormStartDate}"
+                                Format="d"
+                                FontSize="16" />
+                </Grid>
+
+                <Label Text="{ext:Localize ChallengeMode}" Style="{StaticResource FormCaption}" />
+                <Picker ItemsSource="{Binding Modes}"
+                        SelectedItem="{Binding SelectedMode}"
+                        IsEnabled="{Binding IsPlanEditable}"
+                        FontSize="16"
+                        MinimumHeightRequest="44" />
+
+                <Label Text="{ext:Localize ChallengeRounding}" Style="{StaticResource FormCaption}" />
+                <Picker ItemsSource="{Binding Roundings}"
+                        SelectedItem="{Binding SelectedRounding}"
+                        IsEnabled="{Binding IsPlanEditable}"
+                        FontSize="16"
+                        MinimumHeightRequest="44" />
+
+                <!-- Live preview of the plan -->
+                <Border Style="{StaticResource Card}" Padding="12" Margin="0,4"
+                        IsVisible="{Binding HasPreview}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{Binding PreviewDaysText}" FontSize="14" />
+                        <Label Text="{Binding PreviewTotalText}" FontSize="14" FontAttributes="Bold" />
+                        <Label Text="{Binding LevelsWarningText}"
+                               IsVisible="{Binding HasLevelsWarning}"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="{ext:Localize ChallengeFromAccount}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
+                <Picker ItemsSource="{Binding AccountOptions}"
+                        SelectedItem="{Binding FromAccount}"
+                        FontSize="16"
+                        MinimumHeightRequest="44" />
+                <Label Text="{ext:Localize ChallengeToAccount}" Style="{StaticResource FormCaption}" />
+                <Picker ItemsSource="{Binding AccountOptions}"
+                        SelectedItem="{Binding ToAccount}"
+                        FontSize="16"
+                        MinimumHeightRequest="44" />
+                <Label Text="{ext:Localize ChallengeAccountsHint}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                </VerticalStackLayout>
+                </ScrollView>
+
+                <!-- Delete only when editing -->
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,*" Margin="0,4,0,0">
+                    <Button Text="{ext:Localize DeleteButton}"
+                            IsVisible="{Binding IsEditMode}"
+                            Command="{Binding DeleteChallengeCommand}"
+                            Margin="0,0,12,0"
+                            HeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                    <Button Grid.Column="1"
+                            Text="{Binding SaveText}"
+                            Command="{Binding SaveChallengeCommand}"
+                            HeightRequest="44"
+                            CornerRadius="22"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                </Grid>
+            </Grid>
+        </controls:BottomSheet>
+    </Grid>
+
+</ContentPage>

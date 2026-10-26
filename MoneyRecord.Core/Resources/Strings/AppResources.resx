@@ -2694,4 +2694,121 @@ Amount: {2}</value>
   <data name="MoveDown" xml:space="preserve">
     <value>Move down</value>
   </data>
+  <data name="SavingsChallenges" xml:space="preserve">
+    <value>Savings challenge</value>
+  </data>
+  <data name="NoChallengesYet" xml:space="preserve">
+    <value>No challenges yet</value>
+  </data>
+  <data name="AddChallengeToStart" xml:space="preserve">
+    <value>Pick a goal and a number of days; the app works out what to save each day.</value>
+  </data>
+  <data name="AddChallenge" xml:space="preserve">
+    <value>Add challenge</value>
+  </data>
+  <data name="NewChallenge" xml:space="preserve">
+    <value>New challenge</value>
+  </data>
+  <data name="EditChallenge" xml:space="preserve">
+    <value>Edit challenge</value>
+  </data>
+  <data name="ChallengeName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ChallengeNamePlaceholder" xml:space="preserve">
+    <value>e.g. Holiday fund</value>
+  </data>
+  <data name="ChallengeGoal" xml:space="preserve">
+    <value>Goal</value>
+  </data>
+  <data name="ChallengeDays" xml:space="preserve">
+    <value>Days</value>
+  </data>
+  <data name="ChallengeStartDate" xml:space="preserve">
+    <value>Start date</value>
+  </data>
+  <data name="ChallengeMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="ChallengeModeDoubling" xml:space="preserve">
+    <value>Doubling (1, 2, 4, 8…)</value>
+  </data>
+  <data name="ChallengeModeLinear" xml:space="preserve">
+    <value>Linear (1, 2, 3, 4…)</value>
+  </data>
+  <data name="ChallengeRounding" xml:space="preserve">
+    <value>Round each day</value>
+  </data>
+  <data name="ChallengeRoundingNone" xml:space="preserve">
+    <value>No rounding</value>
+  </data>
+  <data name="ChallengeRoundTo" xml:space="preserve">
+    <value>To {0}</value>
+  </data>
+  <data name="ChallengeFromAccount" xml:space="preserve">
+    <value>Take the money from</value>
+  </data>
+  <data name="ChallengeToAccount" xml:space="preserve">
+    <value>Save it in</value>
+  </data>
+  <data name="ChallengeNoAccount" xml:space="preserve">
+    <value>None (only mark days)</value>
+  </data>
+  <data name="ChallengeAccountsHint" xml:space="preserve">
+    <value>With both accounts set, marking a day offers to record the transfer.</value>
+  </data>
+  <data name="ChallengePreviewDays" xml:space="preserve">
+    <value>First day {0} · last day {1}</value>
+  </data>
+  <data name="ChallengePreviewTotal" xml:space="preserve">
+    <value>Total {0}</value>
+  </data>
+  <data name="ChallengePreviewOver" xml:space="preserve">
+    <value>Total {0} · {1} over the goal</value>
+  </data>
+  <data name="ChallengePreviewUnder" xml:space="preserve">
+    <value>Total {0} · {1} under the goal</value>
+  </data>
+  <data name="ChallengeLevelsWarning" xml:space="preserve">
+    <value>Doubling every day for {0} days would start below one unit. The plan doubles in {1} steps that last several days each; with {1} days it doubles every day.</value>
+  </data>
+  <data name="ChallengePlanLocked" xml:space="preserve">
+    <value>The goal, days, mode and rounding can't change once a day is done.</value>
+  </data>
+  <data name="ChallengeSavedOf" xml:space="preserve">
+    <value>{0} saved of {1}</value>
+  </data>
+  <data name="ChallengeDaysLeftOne" xml:space="preserve">
+    <value>{0} day left</value>
+  </data>
+  <data name="ChallengeDaysLeftOther" xml:space="preserve">
+    <value>{0} days left</value>
+  </data>
+  <data name="ChallengeFinished" xml:space="preserve">
+    <value>Finished</value>
+  </data>
+  <data name="ChallengeAdded" xml:space="preserve">
+    <value>Challenge added</value>
+  </data>
+  <data name="PleaseEnterChallengeName" xml:space="preserve">
+    <value>Please enter a name</value>
+  </data>
+  <data name="PleaseEnterChallengeDays" xml:space="preserve">
+    <value>Enter between 1 and 3650 days</value>
+  </data>
+  <data name="FailedToLoadChallenges" xml:space="preserve">
+    <value>Failed to load challenges</value>
+  </data>
+  <data name="FailedToSaveChallenge" xml:space="preserve">
+    <value>Failed to save the challenge</value>
+  </data>
+  <data name="FailedToDeleteChallenge" xml:space="preserve">
+    <value>Failed to delete the challenge</value>
+  </data>
+  <data name="DeleteChallengeConfirmation" xml:space="preserve">
+    <value>Delete "{0}"? Transfers it recorded stay.</value>
+  </data>
+  <data name="PleaseSelectChallengeAccounts" xml:space="preserve">
+    <value>Pick two different accounts, or none</value>
+  </data>
 </root>

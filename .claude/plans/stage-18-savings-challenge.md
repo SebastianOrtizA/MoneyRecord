@@ -1,6 +1,6 @@
 # Stage 18: Savings challenge (doubling / linear game)
 
-**Status**: 18.1 Core in review (PR #87); 18.2 and 18.3 not started. Design agreed 2026-10-25 (decisions below)
+**Status**: 18.1 merged (PR #87); 18.2 list + form in review; 18.3 not started. Design agreed 2026-10-25 (decisions below). In 18.2 a card tap opens the edit sheet; 18.3 makes it open the game page (edit/delete move to its menu)
 **Depends on**: none (optional link to accounts and the 10.6 goals)
 **Complexity**: Medium to large (3 PRs)
 **Source**: User request, 2026-10-25
