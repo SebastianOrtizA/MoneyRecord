@@ -1,6 +1,6 @@
 # Stage 18: Savings challenge (doubling / linear game)
 
-**Status**: Design agreed 2026-10-25 (decisions below); not started
+**Status**: 18.1 Core in review (PR below); 18.2 and 18.3 not started. Design agreed 2026-10-25 (decisions below). Note: "useful doublings" k = floor(log2(2G/unit + 1)), so $1,000 in 10 days is pure doubling (first day 0.98)
 **Depends on**: none (optional link to accounts and the 10.6 goals)
 **Complexity**: Medium to large (3 PRs)
 **Source**: User request, 2026-10-25
