@@ -1,6 +1,6 @@
 # Stage 17: Dex / R8 optimization (Play Console warning)
 
-**Status**: 17 in review (2026-10-25). Warning: "La optimización de código DEX está por debajo de nuestro umbral — Ofuscación (1 %)", fix before Feb 2027
+**Status**: 17 done (PR #85 + workflow fix); the Play warning clears after the next upload. Warning: "La optimización de código DEX está por debajo de nuestro umbral — Ofuscación (1 %)"
 **Depends on**: CI Play upload (PR #70)
 **Complexity**: Small to medium (research, then one PR)
 **Source**: User request, 2026-10-25; the trigger is a Play Console warning
