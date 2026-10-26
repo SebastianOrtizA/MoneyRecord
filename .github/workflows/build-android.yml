@@ -2,10 +2,16 @@ name: Build & Test
 
 on:
   push:
-    branches: [main]
-    tags: ['v*']
+    branches: [main, 'release/**']
   pull_request:
     branches: [main]
+  # The Cut release and Backport workflows push with GITHUB_TOKEN, which starts no workflow: they dispatch this one
+  workflow_dispatch:
+
+# Two pushes to one release branch never compute the same patch number
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   DOTNET_VERSION: '10.0.x'
@@ -54,28 +60,37 @@ jobs:
     name: Build Android APK + AAB
     runs-on: windows-latest
     needs: test
+    outputs:
+      version: ${{ steps.version.outputs.name }}
+      publish: ${{ steps.version.outputs.publish }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # versionCode = run number (always increasing, as Android and the Play Store require). versionName comes from a
-      # v* tag (v1.2.0 → 1.2.0, v0.9.0-rc1 → 0.9.0-rc1); other builds keep the csproj's ApplicationDisplayVersion.
+      # versionCode = run number (always increasing, as Android and the Play Store require). On a release/<major>.<minor>
+      # branch versionName comes from .github/scripts/release-version.ps1 (next free patch for the line, published only
+      # when the release notes name it); other builds keep the csproj's ApplicationDisplayVersion.
       # run_number counts per workflow file: renaming or recreating this workflow restarts it at 1, so then add the
-      # last published versionCode as an offset. Runs first so a mistyped tag fails in seconds.
+      # last published versionCode as an offset. Runs first so a mistyped branch name fails in seconds.
       - name: Set version
         id: version
         shell: pwsh
         run: |
           $props = "-p:ApplicationVersion=${{ github.run_number }}"
-          if ($env:GITHUB_REF -like 'refs/tags/v*') {
-            $name = $env:GITHUB_REF_NAME.Substring(1)
-            if ($name -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z.]+)?$') {
-              Write-Host "::error::Tag $env:GITHUB_REF_NAME is not v<major>.<minor>.<patch>[-suffix]"
-              exit 1
-            }
+          $name = ''
+          $publish = 'false'
+          if ($env:GITHUB_REF -like 'refs/heads/release/*') {
+            $result = & .github/scripts/release-version.ps1 -Branch $env:GITHUB_REF_NAME
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+            $name = ($result | Where-Object { $_ -like 'name=*' }) -replace '^name=', ''
+            $publish = ($result | Where-Object { $_ -like 'publish=*' }) -replace '^publish=', ''
             $props += " -p:ApplicationDisplayVersion=$name"
           }
-          Write-Host "Version properties: $props"
+          Write-Host "Version '$name', publish $publish, properties: $props"
           "props=$props" >> $env:GITHUB_OUTPUT
+          "name=$name" >> $env:GITHUB_OUTPUT
+          "publish=$publish" >> $env:GITHUB_OUTPUT
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -85,22 +100,23 @@ jobs:
       - name: Install MAUI workloads
         run: dotnet workload install maui-android
 
-      # The csproj signs Release builds when MoneyRecord/moneyrecord.keystore exists. Tag builds are published,
-      # so they fail before the build when a signing secret is missing instead of shipping a debug-signed APK.
+      # The csproj signs Release builds when MoneyRecord/moneyrecord.keystore exists. Builds that publish
+      # (release branch, notes written) fail before the build when a signing secret is missing instead of shipping a debug-signed APK.
       - name: Decode signing keystore
         shell: pwsh
         env:
           ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
           HAS_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD != '' }}
           HAS_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD != '' }}
+          PUBLISH: ${{ steps.version.outputs.publish }}
         run: |
-          if ($env:GITHUB_REF -like 'refs/tags/v*') {
+          if ($env:PUBLISH -eq 'true') {
             $missing = @()
             if (-not $env:ANDROID_KEYSTORE_B64) { $missing += 'ANDROID_KEYSTORE_B64' }
             if ($env:HAS_KEYSTORE_PASSWORD -ne 'true') { $missing += 'KEYSTORE_PASSWORD' }
             if ($env:HAS_KEY_PASSWORD -ne 'true') { $missing += 'KEY_PASSWORD' }
             if ($missing) {
-              Write-Host "::error::Tag builds must be signed with the release keystore; missing secrets: $($missing -join ', ')"
+              Write-Host "::error::Release builds must be signed with the release keystore; missing secrets: $($missing -join ', ')"
               exit 1
             }
           }
@@ -157,7 +173,7 @@ jobs:
     name: Create GitHub Release
     runs-on: windows-latest
     needs: build-android
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: needs.build-android.outputs.publish == 'true'
     permissions:
       contents: write
     steps:
@@ -167,16 +183,18 @@ jobs:
           name: MoneyRecord-Android
           path: release
 
+      # The v<version> tag is created here, on the release branch's commit: tags exist for release branches only
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ needs.build-android.outputs.version }}
+          target_commitish: ${{ github.sha }}
           files: |
             release/*.apk
             release/*.aab
-          prerelease: ${{ contains(github.ref_name, '-') }}
           generate_release_notes: true
 
-  # A v* tag also sends the .aab to Google Play's closed testing track (alpha; set the
+  # A release-branch build also sends the .aab to Google Play's closed testing track (alpha; set the
   # repository variable PLAY_TRACK for a custom-named closed track); promoting it to production stays a manual
   # step in Play Console. Needs the PLAY_SERVICE_ACCOUNT_JSON secret (a service account
   # invited in Play Console with release-to-testing permissions; README, Releases). Release notes come from
@@ -185,7 +203,7 @@ jobs:
     name: Upload to Google Play (closed testing)
     runs-on: ubuntu-latest
     needs: build-android
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: needs.build-android.outputs.publish == 'true'
     steps:
       - name: Check Play credentials
         id: credentials
@@ -229,7 +247,7 @@ jobs:
           releaseFiles: release/*.aab
           # R8's deobfuscation file, so Play can read crash stack traces and stops warning about it
           mappingFile: release/mapping.txt
-          releaseName: ${{ github.ref_name }}
+          releaseName: v${{ needs.build-android.outputs.version }}
           track: ${{ vars.PLAY_TRACK || 'alpha' }}
           status: ${{ vars.PLAY_RELEASE_STATUS || 'completed' }}
           whatsNewDirectory: whatsnew
