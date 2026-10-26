@@ -270,6 +270,10 @@ public sealed class SavingsChallengeServiceTests : IAsyncLifetime
 
         challenge.Days = 40;
         await _sut.Invoking(s => s.SaveAsync(challenge)).Should().ThrowAsync<InvalidOperationException>();
+
+        challenge.Days = 30;
+        challenge.DayAmountCents = 1_000;
+        await _sut.Invoking(s => s.SaveAsync(challenge)).Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]

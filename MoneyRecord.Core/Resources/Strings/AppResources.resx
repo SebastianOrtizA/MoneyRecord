@@ -2736,6 +2736,21 @@ Amount: {2}</value>
   <data name="ChallengeModeLinear" xml:space="preserve">
     <value>Linear (1, 2, 3, 4…)</value>
   </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>Same every day</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>Amount per day (optional)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>Empty = split over the days</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>{0} every day</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>{0} a day · last day {1}</value>
+  </data>
   <data name="ChallengeRounding" xml:space="preserve">
     <value>Round each day</value>
   </data>

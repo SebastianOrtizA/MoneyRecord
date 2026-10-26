@@ -191,7 +191,7 @@
                            Text="{Binding FormDays}"
                            Keyboard="Numeric"
                            MaxLength="4"
-                           IsEnabled="{Binding IsPlanEditable}"
+                           IsEnabled="{Binding IsDaysEditable}"
                            FontSize="16" />
                     <DatePicker Grid.Row="1" Grid.Column="1"
                                 Date="{Binding FormStartDate}"
@@ -206,8 +206,19 @@
                         FontSize="16"
                         MinimumHeightRequest="44" />
 
-                <Label Text="{ext:Localize ChallengeRounding}" Style="{StaticResource FormCaption}" />
+                <Label Text="{ext:Localize ChallengeDayAmount}" Style="{StaticResource FormCaption}"
+                       IsVisible="{Binding IsEqualMode}" />
+                <Entry Text="{Binding FormDayAmount}"
+                       Placeholder="{ext:Localize ChallengeDayAmountHint}"
+                       Keyboard="Numeric"
+                       IsVisible="{Binding IsEqualMode}"
+                       IsEnabled="{Binding IsPlanEditable}"
+                       FontSize="16" />
+
+                <Label Text="{ext:Localize ChallengeRounding}" Style="{StaticResource FormCaption}"
+                       IsVisible="{Binding ShowRounding}" />
                 <Picker ItemsSource="{Binding Roundings}"
+                        IsVisible="{Binding ShowRounding}"
                         SelectedItem="{Binding SelectedRounding}"
                         IsEnabled="{Binding IsPlanEditable}"
                         FontSize="16"

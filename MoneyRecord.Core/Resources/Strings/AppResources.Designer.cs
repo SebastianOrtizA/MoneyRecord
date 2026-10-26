@@ -7713,6 +7713,51 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Same every day.
+        /// </summary>
+        public static string ChallengeModeEqual {
+            get {
+                return ResourceManager.GetString("ChallengeModeEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount per day (optional).
+        /// </summary>
+        public static string ChallengeDayAmount {
+            get {
+                return ResourceManager.GetString("ChallengeDayAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Empty = split over the days.
+        /// </summary>
+        public static string ChallengeDayAmountHint {
+            get {
+                return ResourceManager.GetString("ChallengeDayAmountHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} every day.
+        /// </summary>
+        public static string ChallengePreviewEqualSame {
+            get {
+                return ResourceManager.GetString("ChallengePreviewEqualSame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} a day · last day {1}.
+        /// </summary>
+        public static string ChallengePreviewEqualLast {
+            get {
+                return ResourceManager.GetString("ChallengePreviewEqualLast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Round each day.
         /// </summary>
         public static string ChallengeRounding {

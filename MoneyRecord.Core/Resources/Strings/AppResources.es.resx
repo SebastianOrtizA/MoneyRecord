@@ -2733,6 +2733,21 @@ Monto: {2}</value>
   <data name="ChallengeModeLinear" xml:space="preserve">
     <value>Lineal (1, 2, 3, 4…)</value>
   </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>Igual todos los días</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>Importe por día (opcional)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>Vacío = repartir entre los días</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>{0} cada día</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>{0} al día · último día {1}</value>
+  </data>
   <data name="ChallengeRounding" xml:space="preserve">
     <value>Redondear cada día</value>
   </data>
