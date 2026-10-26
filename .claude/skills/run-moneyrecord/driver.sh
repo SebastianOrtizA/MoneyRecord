@@ -46,7 +46,8 @@ case "$cmd" in
     # Debug builds use fast deployment: only -t:Run installs a working app (plain adb install crashes).
     # `deploy clean` uninstalls first: an up-to-date incremental build won't re-push missing assemblies.
     if [ "${1:-}" = "clean" ]; then adb uninstall "$PKG" >/dev/null 2>&1 || true; fi
-    "$DOTNET" build "$CSPROJ" -t:Run -f net10.0-android -c Debug -v q -nologo
+    # With a phone plugged in too, set ANDROID_SERIAL=emulator-5554 so adb and the MSBuild installer both pick the emulator
+    "$DOTNET" build "$CSPROJ" -t:Run -f net10.0-android -c Debug -v q -nologo ${ANDROID_SERIAL:+"-p:AdbTarget=-s $ANDROID_SERIAL"}
     ;;
   launch)
     wake

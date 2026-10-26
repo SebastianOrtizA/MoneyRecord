@@ -93,6 +93,8 @@ namespace MoneyRecord.Services
             {
                 db.Execute("DELETE FROM \"PocketMovement\" WHERE PocketId = ?", pocketId);
                 db.Execute("DELETE FROM \"SavingsGoalPocket\" WHERE PocketId = ?", pocketId);
+                // A challenge that saves into the pocket goes back to only marking days
+                db.Execute("UPDATE \"SavingsChallenge\" SET ToAccountId = NULL, ToPocketId = NULL WHERE ToPocketId = ?", pocketId);
                 db.Delete<Pocket>(pocketId);
             });
 

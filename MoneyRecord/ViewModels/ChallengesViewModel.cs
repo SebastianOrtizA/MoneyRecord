@@ -19,8 +19,8 @@ namespace MoneyRecord.ViewModels
         public override string ToString() => Label;
     }
 
-    /// <summary>An account to take from / save in; a null <see cref="Id"/> is "none".</summary>
-    public sealed record ChallengeAccountOption(int? Id, string Label)
+    /// <summary>A destination to pick: an account or a pocket; a null <see cref="Place"/> is "none".</summary>
+    public sealed record ChallengePlaceChoice(ChallengePlace? Place, string Label)
     {
         public override string ToString() => Label;
     }
@@ -32,14 +32,15 @@ namespace MoneyRecord.ViewModels
 
         private readonly ISavingsChallengeService _challengeService;
         private readonly IAccountRepository _accountRepository;
+        private readonly IPocketService _pocketService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigation;
 
         private List<Account> _accounts = [];
-        // The accounts the sheet is opened with (kept across the currency rebuild)
-        private int? _wantedFrom;
-        private int? _wantedTo;
+        private List<PocketSummary> _pockets = [];
+        // The destination the sheet is opened with (kept across the currency rebuild)
+        private ChallengePlace? _wantedDestination;
 
         [ObservableProperty]
         private bool isLoading;
@@ -93,7 +94,7 @@ namespace MoneyRecord.ViewModels
 
         partial void OnFormCurrencyChanged(string value)
         {
-            BuildAccountChoices();
+            BuildDestinationChoices();
             UpdatePreview();
         }
 
@@ -118,15 +119,13 @@ namespace MoneyRecord.ViewModels
 
         partial void OnSelectedRoundingChanged(ChallengeRoundingOption value) => UpdatePreview();
 
-        /// <summary>The accounts in the challenge's currency, after "none".</summary>
+        /// <summary>"None", then the accounts and pockets in the challenge's currency.</summary>
         [ObservableProperty]
-        private List<ChallengeAccountOption> accountOptions = [];
+        private List<ChallengePlaceChoice> destinationOptions = [];
 
+        /// <summary>Where the saved money goes; each day asks where it comes from.</summary>
         [ObservableProperty]
-        private ChallengeAccountOption? fromAccount;
-
-        [ObservableProperty]
-        private ChallengeAccountOption? toAccount;
+        private ChallengePlaceChoice? destination;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPreview))]
@@ -143,12 +142,13 @@ namespace MoneyRecord.ViewModels
 
         public bool HasLevelsWarning => LevelsWarningText.Length > 0;
 
-        public ChallengesViewModel(ISavingsChallengeService challengeService, IAccountRepository accountRepository, INavigationService navigation, IErrorHandler errorHandler,
+        public ChallengesViewModel(ISavingsChallengeService challengeService, IAccountRepository accountRepository, IPocketService pocketService, INavigationService navigation, IErrorHandler errorHandler,
             IDialogService dialogService)
         {
             _challengeService = challengeService;
             _navigation = navigation;
             _accountRepository = accountRepository;
+            _pocketService = pocketService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             selectedMode = Modes[0];
@@ -202,9 +202,11 @@ namespace MoneyRecord.ViewModels
 
                 var challengesTask = _challengeService.GetSummariesAsync();
                 var accountsTask = _accountRepository.GetOwnAsync();
-                await Task.WhenAll(challengesTask, accountsTask);
+                var pocketsTask = _pocketService.GetPocketsAsync();
+                await Task.WhenAll(challengesTask, accountsTask, pocketsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
+                _pockets = await pocketsTask;
                 _accounts = (await accountsTask).OrderBy(a => a.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
                 var baseCode = MoneyFormatter.BaseCurrency;
                 Currencies = _accounts
@@ -248,7 +250,7 @@ namespace MoneyRecord.ViewModels
             FormStartDate = DateTime.Today;
             SelectedMode = Modes[0];
             SelectedRounding = Roundings[0];
-            OpenForm(Currencies.FirstOrDefault() ?? MoneyFormatter.BaseCurrency, null, null);
+            OpenForm(Currencies.FirstOrDefault() ?? MoneyFormatter.BaseCurrency, null);
         }
 
         [RelayCommand]
@@ -265,17 +267,17 @@ namespace MoneyRecord.ViewModels
             FormStartDate = challenge.StartDate;
             SelectedMode = Modes.First(m => m.Mode == challenge.Mode);
             SelectedRounding = Roundings.FirstOrDefault(r => r.Cents == challenge.RoundingCents) ?? Roundings[0];
-            OpenForm(challenge.CurrencyCode, challenge.FromAccountId, challenge.ToAccountId);
+            OpenForm(challenge.CurrencyCode, challenge.ToPocketId != null ? ChallengePlace.Pocket(challenge.ToPocketId.Value)
+                : challenge.ToAccountId != null ? ChallengePlace.Account(challenge.ToAccountId.Value) : null);
         }
 
-        private void OpenForm(string currency, int? from, int? to)
+        private void OpenForm(string currency, ChallengePlace? destination)
         {
-            FromAccount = ToAccount = null;
-            _wantedFrom = from;
-            _wantedTo = to;
+            Destination = null;
+            _wantedDestination = destination;
             if (FormCurrency == currency)
             {
-                BuildAccountChoices();
+                BuildDestinationChoices();
                 UpdatePreview();
             }
             else
@@ -285,19 +287,15 @@ namespace MoneyRecord.ViewModels
             IsFormOpen = true;
         }
 
-        private void BuildAccountChoices()
+        private void BuildDestinationChoices()
         {
             // Keep what is picked across a currency change when it is still offered
-            _wantedFrom = FromAccount?.Id ?? _wantedFrom;
-            _wantedTo = ToAccount?.Id ?? _wantedTo;
-            var options = new List<ChallengeAccountOption> { new(null, AppResources.ChallengeNoAccount) };
-            options.AddRange(_accounts
-                .Where(a => MoneyFormatter.SameCurrency(a.CurrencyCode, FormCurrency))
-                .Select(a => new ChallengeAccountOption(a.Id, a.Name)));
-            AccountOptions = options;
-            FromAccount = options.FirstOrDefault(o => o.Id != null && o.Id == _wantedFrom) ?? options[0];
-            ToAccount = options.FirstOrDefault(o => o.Id != null && o.Id == _wantedTo) ?? options[0];
-            _wantedFrom = _wantedTo = null;
+            _wantedDestination = Destination?.Place ?? _wantedDestination;
+            var options = new List<ChallengePlaceChoice> { new(null, AppResources.ChallengeNoAccount) };
+            options.AddRange(ChallengeSources.Destinations(FormCurrency, _accounts, _pockets).Select(o => new ChallengePlaceChoice(o.Place, o.Label)));
+            DestinationOptions = options;
+            Destination = options.FirstOrDefault(o => o.Place != null && o.Place == _wantedDestination) ?? options[0];
+            _wantedDestination = null;
         }
 
         private void UpdatePreview()
@@ -360,14 +358,6 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            var from = FromAccount?.Id;
-            var to = ToAccount?.Id;
-            if ((from == null) != (to == null) || (from != null && from == to))
-            {
-                await _errorHandler.HandleAsync(AppResources.PleaseSelectChallengeAccounts);
-                return;
-            }
-
             var adding = !IsEditMode;
             var challenge = new SavingsChallenge
             {
@@ -379,8 +369,8 @@ namespace MoneyRecord.ViewModels
                 Days = days,
                 Mode = SelectedMode.Mode,
                 RoundingCents = SelectedRounding.Cents,
-                FromAccountId = from,
-                ToAccountId = to,
+                ToAccountId = Destination?.Place?.AccountId,
+                ToPocketId = Destination?.Place?.PocketId,
                 CreatedDate = Editing?.Challenge.CreatedDate ?? DateTime.Now
             };
             try

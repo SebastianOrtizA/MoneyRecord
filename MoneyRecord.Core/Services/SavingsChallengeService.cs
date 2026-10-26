@@ -2,17 +2,20 @@ using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
+using SQLite;
 
 namespace MoneyRecord.Services
 {
     public sealed class SavingsChallengeService : ISavingsChallengeService
     {
         private readonly DatabaseInitializer _dbInitializer;
+        private readonly IBalanceService _balances;
         private readonly TimeProvider _time;
 
-        public SavingsChallengeService(DatabaseInitializer dbInitializer, TimeProvider time)
+        public SavingsChallengeService(DatabaseInitializer dbInitializer, IBalanceService balances, TimeProvider time)
         {
             _dbInitializer = dbInitializer;
+            _balances = balances;
             _time = time;
         }
 
@@ -47,8 +50,9 @@ namespace MoneyRecord.Services
             {
                 var date = challenge.StartDate.Date.AddDays(i - 1);
                 days.Add(doneByDay.TryGetValue(i, out var d)
-                    ? new ChallengeDayInfo(i, date, d.AmountCents, true, d.DoneDate, d.TransferId)
-                    : new ChallengeDayInfo(i, date, plan.DayCents[i - 1], false, null, null));
+                    ? new ChallengeDayInfo(i, date, d.AmountCents, true, d.DoneDate,
+                        d.TransferId != null || d.SourceMovementId != null || d.DestinationMovementId != null)
+                    : new ChallengeDayInfo(i, date, plan.DayCents[i - 1], false, null, false));
             }
             var saved = days.Where(d => d.IsDone).Sum(d => d.AmountCents);
             var lastDay = challenge.StartDate.Date.AddDays(challenge.Days - 1);
@@ -67,11 +71,15 @@ namespace MoneyRecord.Services
                     throw new InvalidOperationException("A challenge needs at least one day.");
                 if (challenge.GoalCents <= 0)
                     throw new InvalidOperationException("The goal must be more than zero.");
-                if ((challenge.FromAccountId == null) != (challenge.ToAccountId == null))
-                    throw new InvalidOperationException("Set both accounts or neither.");
-                if (challenge.FromAccountId != null && challenge.FromAccountId == challenge.ToAccountId)
-                    throw new InvalidOperationException("The two accounts must differ.");
-                foreach (var accountId in new[] { challenge.FromAccountId, challenge.ToAccountId }.OfType<int>())
+
+                // A pocket decides its account
+                if (challenge.ToPocketId is { } pocketId)
+                {
+                    var pocket = db.Find<Pocket>(pocketId)
+                        ?? throw new InvalidOperationException($"Pocket {pocketId} does not exist.");
+                    challenge.ToAccountId = pocket.AccountId;
+                }
+                if (challenge.ToAccountId is { } accountId)
                 {
                     var account = db.Find<Account>(accountId)
                         ?? throw new InvalidOperationException($"Account {accountId} does not exist.");
@@ -103,53 +111,133 @@ namespace MoneyRecord.Services
                 db.Delete<SavingsChallenge>(challengeId);
             });
 
-        public Task MarkDoneAsync(int challengeId, int dayNumber, bool recordTransfer) =>
-            _dbInitializer.RunInTransactionAsync(db =>
+        public async Task MarkDoneAsync(int challengeId, int dayNumber, ChallengePlace? source)
+        {
+            var db = await _dbInitializer.GetConnectionAsync();
+            var challenge = await db.FindAsync<SavingsChallenge>(challengeId)
+                ?? throw new InvalidOperationException($"Challenge {challengeId} does not exist.");
+            if (dayNumber < 1 || dayNumber > challenge.Days)
+                throw new InvalidOperationException($"Day {dayNumber} is not in the challenge.");
+
+            var amount = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents)
+                .DayCents[dayNumber - 1];
+            var route = source == null ? null : await ResolveRouteAsync(db, challenge, source);
+            // Read outside the transaction (it is async); what the pockets hold is read inside it, with the inserts
+            var balanceCents = route is { NeedsTransfer: false, DestinationPocketId: not null }
+                ? Money.ToCents(await _balances.GetAccountBalanceAsync(route.DestinationAccountId))
+                : 0;
+            var now = _time.GetLocalNow().DateTime;
+
+            await _dbInitializer.RunInTransactionAsync(conn =>
             {
-                var challenge = db.Find<SavingsChallenge>(challengeId)
-                    ?? throw new InvalidOperationException($"Challenge {challengeId} does not exist.");
-                if (dayNumber < 1 || dayNumber > challenge.Days)
-                    throw new InvalidOperationException($"Day {dayNumber} is not in the challenge.");
-                if (db.Table<SavingsChallengeDay>().Count(d => d.ChallengeId == challengeId && d.DayNumber == dayNumber) > 0)
+                if (conn.Table<SavingsChallengeDay>().Count(d => d.ChallengeId == challengeId && d.DayNumber == dayNumber) > 0)
                     throw new InvalidOperationException($"Day {dayNumber} is already done.");
 
-                var amount = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents)
-                    .DayCents[dayNumber - 1];
-                var now = _time.GetLocalNow().DateTime;
-                int? transferId = null;
-                if (recordTransfer)
+                var day = new SavingsChallengeDay { ChallengeId = challengeId, DayNumber = dayNumber, AmountCents = amount, DoneDate = now };
+                if (route != null)
                 {
-                    if (!challenge.HasAccounts)
-                        throw new InvalidOperationException("The challenge has no accounts to move money between.");
-                    var from = db.Find<Account>(challenge.FromAccountId!.Value);
-                    var to = db.Find<Account>(challenge.ToAccountId!.Value);
-                    if (from == null || to == null)
-                        throw new InvalidOperationException("An account of the challenge no longer exists.");
-                    if (!MoneyFormatter.SameCurrency(from.CurrencyCode, challenge.CurrencyCode)
-                        || !MoneyFormatter.SameCurrency(to.CurrencyCode, challenge.CurrencyCode))
-                        throw new InvalidOperationException("An account of the challenge is in another currency.");
-                    var transfer = new Transfer
+                    int? transferId = null;
+                    if (route.NeedsTransfer)
                     {
-                        Date = now, AmountCents = amount, DestinationAmountCents = amount,
-                        SourceAccountId = from.Id, DestinationAccountId = to.Id, Description = challenge.Name
-                    };
-                    db.Insert(transfer);
-                    transferId = transfer.Id;
-                }
-                db.Insert(new SavingsChallengeDay
-                {
-                    ChallengeId = challengeId, DayNumber = dayNumber, AmountCents = amount, DoneDate = now, TransferId = transferId
-                });
-            });
+                        var transfer = new Transfer
+                        {
+                            Date = now, AmountCents = amount, DestinationAmountCents = amount, Description = challenge.Name,
+                            SourceAccountId = route.SourceAccountId, DestinationAccountId = route.DestinationAccountId
+                        };
+                        conn.Insert(transfer);
+                        transferId = transfer.Id;
+                        day.TransferId = transferId;
+                    }
 
-        public Task UnmarkAsync(int challengeId, int dayNumber, bool deleteTransfer) =>
+                    if (route.SourcePocketId is { } sourcePocket)
+                    {
+                        var held = conn.ExecuteScalar<long>(
+                            "SELECT COALESCE(SUM(AmountCents), 0) FROM \"PocketMovement\" WHERE PocketId = ?", sourcePocket);
+                        if (amount > held)
+                            throw new PocketProblemException(PocketProblem.NotEnoughInPocket, $"Pocket {sourcePocket} holds less than that.");
+                        var takeOut = new PocketMovement
+                        {
+                            PocketId = sourcePocket, AmountCents = -amount, Date = now, TransferId = transferId, Note = challenge.Name
+                        };
+                        conn.Insert(takeOut);
+                        day.SourceMovementId = takeOut.Id;
+                    }
+
+                    if (route.DestinationPocketId is { } destinationPocket)
+                    {
+                        // Money that arrived by transfer is new; money set aside inside the account must be available there
+                        if (!route.NeedsTransfer)
+                        {
+                            var inPockets = conn.ExecuteScalar<long>(
+                                "SELECT COALESCE(SUM(m.AmountCents), 0) FROM \"PocketMovement\" m JOIN \"Pocket\" p ON p.Id = m.PocketId WHERE p.AccountId = ?",
+                                route.DestinationAccountId);
+                            if (amount > balanceCents - inPockets)
+                                throw new PocketProblemException(PocketProblem.NotEnoughAvailable,
+                                    $"Account {route.DestinationAccountId} has {balanceCents - inPockets} cents available.");
+                        }
+                        var setAside = new PocketMovement
+                        {
+                            PocketId = destinationPocket, AmountCents = amount, Date = now, TransferId = transferId, Note = challenge.Name
+                        };
+                        conn.Insert(setAside);
+                        day.DestinationMovementId = setAside.Id;
+                    }
+                }
+                conn.Insert(day);
+            });
+        }
+
+        public Task UnmarkAsync(int challengeId, int dayNumber, bool undoMoney) =>
             _dbInitializer.RunInTransactionAsync(db =>
             {
                 var day = db.Table<SavingsChallengeDay>().FirstOrDefault(d => d.ChallengeId == challengeId && d.DayNumber == dayNumber)
                     ?? throw new InvalidOperationException($"Day {dayNumber} is not done.");
                 db.Delete<SavingsChallengeDay>(day.Id);
-                if (deleteTransfer && day.TransferId != null)
+                if (!undoMoney)
+                    return;
+                // Each may be gone already (a pocket deleted, a transfer deleted on the Transfers page): deleting a missing row is a no-op
+                if (day.SourceMovementId != null)
+                    db.Delete<PocketMovement>(day.SourceMovementId.Value);
+                if (day.DestinationMovementId != null)
+                    db.Delete<PocketMovement>(day.DestinationMovementId.Value);
+                if (day.TransferId != null)
                     db.Delete<Transfer>(day.TransferId.Value);
             });
+
+        private sealed record Route(int SourceAccountId, int? SourcePocketId, int DestinationAccountId, int? DestinationPocketId)
+        {
+            public bool NeedsTransfer => SourceAccountId != DestinationAccountId;
+        }
+
+        private static async Task<Route> ResolveRouteAsync(SQLiteAsyncConnection db, SavingsChallenge challenge, ChallengePlace source)
+        {
+            if (challenge.ToAccountId is not { } destinationAccount)
+                throw new InvalidOperationException("The challenge has no destination to move money to.");
+            if ((source.AccountId == null) == (source.PocketId == null))
+                throw new InvalidOperationException("The source is an account or a pocket.");
+
+            int sourceAccountId;
+            if (source.PocketId is { } pocketId)
+            {
+                var pocket = await db.FindAsync<Pocket>(pocketId)
+                    ?? throw new PocketProblemException(PocketProblem.PocketNotFound, $"Pocket {pocketId} does not exist.");
+                sourceAccountId = pocket.AccountId;
+            }
+            else
+            {
+                sourceAccountId = source.AccountId!.Value;
+            }
+
+            foreach (var accountId in new[] { sourceAccountId, destinationAccount }.Distinct())
+            {
+                var account = await db.FindAsync<Account>(accountId)
+                    ?? throw new InvalidOperationException($"Account {accountId} does not exist.");
+                if (!MoneyFormatter.SameCurrency(account.CurrencyCode, challenge.CurrencyCode))
+                    throw new InvalidOperationException($"Account {accountId} is in another currency than the challenge.");
+            }
+            if (!ChallengeSources.IsValidRoute(sourceAccountId, source.PocketId, destinationAccount, challenge.ToPocketId))
+                throw new InvalidOperationException("That source and the destination would not move any money.");
+            return new Route(sourceAccountId, source.PocketId, destinationAccount, challenge.ToPocketId);
+        }
     }
 }

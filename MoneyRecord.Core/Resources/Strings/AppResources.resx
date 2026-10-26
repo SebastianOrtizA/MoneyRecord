@@ -2745,17 +2745,11 @@ Amount: {2}</value>
   <data name="ChallengeRoundTo" xml:space="preserve">
     <value>To {0}</value>
   </data>
-  <data name="ChallengeFromAccount" xml:space="preserve">
-    <value>Take the money from</value>
-  </data>
   <data name="ChallengeToAccount" xml:space="preserve">
     <value>Save it in</value>
   </data>
   <data name="ChallengeNoAccount" xml:space="preserve">
     <value>None (only mark days)</value>
-  </data>
-  <data name="ChallengeAccountsHint" xml:space="preserve">
-    <value>With both accounts set, marking a day offers to record the transfer.</value>
   </data>
   <data name="ChallengePreviewDays" xml:space="preserve">
     <value>First day {0} · last day {1}</value>
@@ -2808,26 +2802,8 @@ Amount: {2}</value>
   <data name="DeleteChallengeConfirmation" xml:space="preserve">
     <value>Delete "{0}"? Transfers it recorded stay.</value>
   </data>
-  <data name="PleaseSelectChallengeAccounts" xml:space="preserve">
-    <value>Pick two different accounts, or none</value>
-  </data>
-  <data name="ChallengeRecordTransfer" xml:space="preserve">
-    <value>Record a transfer of {0}?</value>
-  </data>
-  <data name="ChallengeRecordTransferYes" xml:space="preserve">
-    <value>Record the transfer</value>
-  </data>
   <data name="ChallengeJustMark" xml:space="preserve">
     <value>Just mark the day</value>
-  </data>
-  <data name="ChallengeUnmarkTitle" xml:space="preserve">
-    <value>Unmark day {0}? It has a transfer of {1}.</value>
-  </data>
-  <data name="ChallengeUnmarkDeleteTransfer" xml:space="preserve">
-    <value>Unmark and delete the transfer</value>
-  </data>
-  <data name="ChallengeUnmarkKeepTransfer" xml:space="preserve">
-    <value>Unmark, keep the transfer</value>
   </data>
   <data name="ChallengeRemainingOnly" xml:space="preserve">
     <value>Remaining only</value>
@@ -2843,5 +2819,20 @@ Amount: {2}</value>
   </data>
   <data name="FailedToUpdateChallenge" xml:space="preserve">
     <value>Failed to update the day</value>
+  </data>
+  <data name="ChallengeAccountsHint" xml:space="preserve">
+    <value>When set, marking a day asks where the money comes from and moves it here: a transfer between accounts, or money taken out of or set aside in a pocket.</value>
+  </data>
+  <data name="ChallengeSourceTitle" xml:space="preserve">
+    <value>Where does the money for {0} come from?</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>Unmark day {0}? It moved {1}.</value>
+  </data>
+  <data name="ChallengeUnmarkUndo" xml:space="preserve">
+    <value>Unmark and undo the money moved</value>
+  </data>
+  <data name="ChallengeUnmarkKeep" xml:space="preserve">
+    <value>Unmark, keep the money moved</value>
   </data>
 </root>

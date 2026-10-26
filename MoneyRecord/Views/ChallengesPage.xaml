@@ -226,14 +226,9 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <Label Text="{ext:Localize ChallengeFromAccount}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
-                <Picker ItemsSource="{Binding AccountOptions}"
-                        SelectedItem="{Binding FromAccount}"
-                        FontSize="16"
-                        MinimumHeightRequest="44" />
-                <Label Text="{ext:Localize ChallengeToAccount}" Style="{StaticResource FormCaption}" />
-                <Picker ItemsSource="{Binding AccountOptions}"
-                        SelectedItem="{Binding ToAccount}"
+                <Label Text="{ext:Localize ChallengeToAccount}" Style="{StaticResource FormCaption}" Margin="0,8,0,0" />
+                <Picker ItemsSource="{Binding DestinationOptions}"
+                        SelectedItem="{Binding Destination}"
                         FontSize="16"
                         MinimumHeightRequest="44" />
                 <Label Text="{ext:Localize ChallengeAccountsHint}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />

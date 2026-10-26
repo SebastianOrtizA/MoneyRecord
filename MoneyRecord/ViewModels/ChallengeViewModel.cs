@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
@@ -42,6 +43,8 @@ namespace MoneyRecord.ViewModels
     public partial class ChallengeViewModel : ObservableObject
     {
         private readonly ISavingsChallengeService _challengeService;
+        private readonly IAccountRepository _accountRepository;
+        private readonly IPocketService _pocketService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly TimeProvider _time;
@@ -70,9 +73,11 @@ namespace MoneyRecord.ViewModels
 
         partial void OnShowRemainingOnlyChanged(bool value) => ApplyFilter();
 
-        public ChallengeViewModel(ISavingsChallengeService challengeService, IErrorHandler errorHandler, IDialogService dialogService, TimeProvider time)
+        public ChallengeViewModel(ISavingsChallengeService challengeService, IAccountRepository accountRepository, IPocketService pocketService, IErrorHandler errorHandler, IDialogService dialogService, TimeProvider time)
         {
             _challengeService = challengeService;
+            _accountRepository = accountRepository;
+            _pocketService = pocketService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _time = time;
@@ -118,8 +123,10 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;
-
-        /// <summary>Marks the day done (asking about the transfer when accounts are linked) or, when done, unmarks it.</summary>
+        /// <summary>
+        /// Marks the day done (asking where the money comes from when the challenge saves into an account or pocket) or, when
+        /// done, unmarks it (asking whether to undo the money it moved).
+        /// </summary>
         [RelayCommand]
         private async Task ToggleDayAsync(ChallengeCell? cell)
         {
@@ -132,41 +139,61 @@ namespace MoneyRecord.ViewModels
                 var day = cell.Day;
                 if (day.IsDone)
                 {
-                    var deleteTransfer = false;
-                    // The transfer may be gone already (deleted on the Transfers page): the question is only a hint
-                    if (day.TransferId != null)
+                    var undoMoney = false;
+                    // The money may be gone already (a transfer deleted on the Transfers page): the question is only a hint
+                    if (day.MovedMoney)
                     {
-                        var delete = AppResources.ChallengeUnmarkDeleteTransfer;
-                        var keep = AppResources.ChallengeUnmarkKeepTransfer;
+                        var undo = AppResources.ChallengeUnmarkUndo;
+                        var keep = AppResources.ChallengeUnmarkKeep;
                         var pick = await _dialogService.ActionSheetAsync(
-                            string.Format(AppResources.ChallengeUnmarkTitle, day.DayNumber, cell.AmountText), AppResources.Cancel, [delete, keep]);
-                        if (pick != delete && pick != keep)
+                            string.Format(AppResources.ChallengeUnmarkTitle, day.DayNumber, cell.AmountText), AppResources.Cancel, [undo, keep]);
+                        if (pick != undo && pick != keep)
                             return;
-                        deleteTransfer = pick == delete;
+                        undoMoney = pick == undo;
                     }
-                    await _challengeService.UnmarkAsync(challenge.Id, day.DayNumber, deleteTransfer);
+                    await _challengeService.UnmarkAsync(challenge.Id, day.DayNumber, undoMoney);
                 }
                 else
                 {
-                    var recordTransfer = false;
-                    if (challenge.HasAccounts)
+                    ChallengePlace? source = null;
+                    if (challenge.HasDestination)
                     {
-                        var record = AppResources.ChallengeRecordTransferYes;
-                        var justMark = AppResources.ChallengeJustMark;
-                        var pick = await _dialogService.ActionSheetAsync(
-                            string.Format(AppResources.ChallengeRecordTransfer, cell.AmountText), AppResources.Cancel, [record, justMark]);
-                        if (pick != record && pick != justMark)
+                        var choice = await AskSourceAsync(challenge, cell.AmountText);
+                        if (choice.Cancelled)
                             return;
-                        recordTransfer = pick == record;
+                        source = choice.Source;
                     }
-                    await _challengeService.MarkDoneAsync(challenge.Id, day.DayNumber, recordTransfer);
+                    await _challengeService.MarkDoneAsync(challenge.Id, day.DayNumber, source);
                 }
+            }
+            catch (PocketProblemException ex)
+            {
+                var destination = challenge.ToAccountId == null ? null : await _accountRepository.GetByIdAsync(challenge.ToAccountId.Value);
+                await _errorHandler.HandleAsync(ex.Problem == PocketProblem.NotEnoughAvailable
+                    ? string.Format(AppResources.PocketNotEnoughAvailable, destination?.Name)
+                    : AppResources.PocketNotEnoughInPocket);
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToUpdateChallenge);
             }
             await LoadCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>Which account or pocket the day's money comes from; "just mark the day" has no source.</summary>
+        private async Task<(bool Cancelled, ChallengePlace? Source)> AskSourceAsync(SavingsChallenge challenge, string amountText)
+        {
+            var accounts = await _accountRepository.GetOwnAsync();
+            var pockets = await _pocketService.GetPocketsAsync();
+            var options = ChallengeSources.Sources(challenge, accounts, pockets);
+            var labels = PickList.UniqueLabels(options.Select(o => o.Label));
+            var justMark = AppResources.ChallengeJustMark;
+            var pick = await _dialogService.ActionSheetAsync(
+                string.Format(AppResources.ChallengeSourceTitle, amountText), AppResources.Cancel, [.. labels, justMark]);
+            if (pick == justMark)
+                return (false, null);
+            var index = pick == null ? -1 : labels.IndexOf(pick);
+            return index < 0 ? (true, null) : (false, options[index].Place);
         }
     }
 }

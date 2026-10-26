@@ -7740,15 +7740,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Take the money from.
-        /// </summary>
-        public static string ChallengeFromAccount {
-            get {
-                return ResourceManager.GetString("ChallengeFromAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save it in.
         /// </summary>
         public static string ChallengeToAccount {
@@ -7763,15 +7754,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string ChallengeNoAccount {
             get {
                 return ResourceManager.GetString("ChallengeNoAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to With both accounts set, marking a day offers to record the transfer..
-        /// </summary>
-        public static string ChallengeAccountsHint {
-            get {
-                return ResourceManager.GetString("ChallengeAccountsHint", resourceCulture);
             }
         }
         
@@ -7929,65 +7911,11 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pick two different accounts, or none.
-        /// </summary>
-        public static string PleaseSelectChallengeAccounts {
-            get {
-                return ResourceManager.GetString("PleaseSelectChallengeAccounts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Record a transfer of {0}?.
-        /// </summary>
-        public static string ChallengeRecordTransfer {
-            get {
-                return ResourceManager.GetString("ChallengeRecordTransfer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Record the transfer.
-        /// </summary>
-        public static string ChallengeRecordTransferYes {
-            get {
-                return ResourceManager.GetString("ChallengeRecordTransferYes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Just mark the day.
         /// </summary>
         public static string ChallengeJustMark {
             get {
                 return ResourceManager.GetString("ChallengeJustMark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unmark day {0}? It has a transfer of {1}..
-        /// </summary>
-        public static string ChallengeUnmarkTitle {
-            get {
-                return ResourceManager.GetString("ChallengeUnmarkTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unmark and delete the transfer.
-        /// </summary>
-        public static string ChallengeUnmarkDeleteTransfer {
-            get {
-                return ResourceManager.GetString("ChallengeUnmarkDeleteTransfer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unmark, keep the transfer.
-        /// </summary>
-        public static string ChallengeUnmarkKeepTransfer {
-            get {
-                return ResourceManager.GetString("ChallengeUnmarkKeepTransfer", resourceCulture);
             }
         }
         
@@ -8033,6 +7961,51 @@ namespace MoneyRecord.Resources.Strings {
         public static string FailedToUpdateChallenge {
             get {
                 return ResourceManager.GetString("FailedToUpdateChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When set, marking a day asks where the money comes from and moves it here: a transfer between accounts, or money taken out of or set aside in a pocket..
+        /// </summary>
+        public static string ChallengeAccountsHint {
+            get {
+                return ResourceManager.GetString("ChallengeAccountsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Where does the money for {0} come from?.
+        /// </summary>
+        public static string ChallengeSourceTitle {
+            get {
+                return ResourceManager.GetString("ChallengeSourceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmark day {0}? It moved {1}..
+        /// </summary>
+        public static string ChallengeUnmarkTitle {
+            get {
+                return ResourceManager.GetString("ChallengeUnmarkTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmark and undo the money moved.
+        /// </summary>
+        public static string ChallengeUnmarkUndo {
+            get {
+                return ResourceManager.GetString("ChallengeUnmarkUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmark, keep the money moved.
+        /// </summary>
+        public static string ChallengeUnmarkKeep {
+            get {
+                return ResourceManager.GetString("ChallengeUnmarkKeep", resourceCulture);
             }
         }
         

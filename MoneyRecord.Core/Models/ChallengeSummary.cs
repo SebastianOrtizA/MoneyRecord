@@ -4,7 +4,7 @@ using MoneyRecord.Resources.Strings;
 namespace MoneyRecord.Models
 {
     /// <summary>One day of a challenge: planned or done amount.</summary>
-    public sealed record ChallengeDayInfo(int DayNumber, DateTime Date, long AmountCents, bool IsDone, DateTime? DoneDate, int? TransferId);
+    public sealed record ChallengeDayInfo(int DayNumber, DateTime Date, long AmountCents, bool IsDone, DateTime? DoneDate, bool MovedMoney);
 
     /// <summary>A challenge with its days, for display.</summary>
     public sealed record ChallengeSummary(SavingsChallenge Challenge, IReadOnlyList<ChallengeDayInfo> Days, long SavedCents, long TotalCents, int DaysLeft)

@@ -25,6 +25,7 @@ amount in any order and marks it done. A calendar grid shows the done and remain
 - Each done day stores its own `AmountCents`, so the history stays right even if the plan changes. The plan's settings (goal,
   days, mode, rounding) are locked once any day is done; name, accounts and start date stay editable.
 
+- **Money (changed 2026-10-26, owner request in PR #89)**: the challenge fixes only a *destination*, an account or one of its pockets. Each tap on a day asks the *source* (any account or pocket in the currency, or "just mark the day"). Moves: different accounts = a transfer; a source pocket = a take-out; a destination pocket = a set-aside (same account: only pocket to pocket, or account to pocket). One DB transaction; the day remembers its transfer and movement IDs so unmarking can undo them. This replaces the fixed from/to accounts above.
 - **Useful doublings** k = floor(log2(2G/unit + 1)) (a first amount of half a unit still counts), so $1,000 in 10 days is pure doubling (first day 0.98).
 - A day's `TransferId` can dangle (transfer kept on unmark, or deleted on the Transfers page): the UI must not assume it exists.
 

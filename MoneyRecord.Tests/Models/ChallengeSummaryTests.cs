@@ -11,7 +11,7 @@ public class ChallengeSummaryTests
     private static ChallengeSummary Summary(params bool[] done)
     {
         var challenge = new SavingsChallenge { Name = "Hucha", CurrencyCode = "USD", Days = done.Length };
-        var days = done.Select((d, i) => new ChallengeDayInfo(i + 1, new DateTime(2026, 10, 1).AddDays(i), 1_000, d, null, null)).ToList();
+        var days = done.Select((d, i) => new ChallengeDayInfo(i + 1, new DateTime(2026, 10, 1).AddDays(i), 1_000, d, null, false)).ToList();
         return new ChallengeSummary(challenge, days, days.Where(d => d.IsDone).Sum(d => d.AmountCents), days.Sum(d => d.AmountCents), DaysLeft: 2);
     }
 
