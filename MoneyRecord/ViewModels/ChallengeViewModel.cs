@@ -123,6 +123,7 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;
+
         /// <summary>
         /// Marks the day done (asking where the money comes from when the challenge saves into an account or pocket) or, when
         /// done, unmarks it (asking whether to undo the money it moved).

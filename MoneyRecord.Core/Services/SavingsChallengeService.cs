@@ -167,14 +167,7 @@ namespace MoneyRecord.Services
                     {
                         // Money that arrived by transfer is new; money set aside inside the account must be available there
                         if (!route.NeedsTransfer)
-                        {
-                            var inPockets = conn.ExecuteScalar<long>(
-                                "SELECT COALESCE(SUM(m.AmountCents), 0) FROM \"PocketMovement\" m JOIN \"Pocket\" p ON p.Id = m.PocketId WHERE p.AccountId = ?",
-                                route.DestinationAccountId);
-                            if (amount > balanceCents - inPockets)
-                                throw new PocketProblemException(PocketProblem.NotEnoughAvailable,
-                                    $"Account {route.DestinationAccountId} has {balanceCents - inPockets} cents available.");
-                        }
+                            PocketService.EnsureAvailable(conn, route.DestinationAccountId, amount, balanceCents);
                         var setAside = new PocketMovement
                         {
                             PocketId = destinationPocket, AmountCents = amount, Date = now, TransferId = transferId, Note = challenge.Name

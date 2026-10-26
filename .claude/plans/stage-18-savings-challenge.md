@@ -33,8 +33,8 @@ amount in any order and marks it done. A calendar grid shows the done and remain
 
 ### 18.1 Core
 - Models (created from the models, no migration): `SavingsChallenge` (Id, Name, GoalCents, CurrencyCode, StartDate, Days, Mode,
-  RoundingCents, FromAccountId?, ToAccountId?, CreatedDate) and `SavingsChallengeDay` (ChallengeId + DayNumber unique index,
-  AmountCents, DoneDate, TransferId?).
+  RoundingCents, ToAccountId?, ToPocketId?, CreatedDate) and `SavingsChallengeDay` (ChallengeId + DayNumber unique index,
+  AmountCents, DoneDate, TransferId?, SourceMovementId?, DestinationMovementId?).
 - `Helpers/ChallengePlan.Build(goalCents, days, mode, roundingCents)` returns day amounts, total and `MaxUsefulDoublings`.
   `ChallengePlanTests`: pure doubling, levels, linear, rounding totals, one day, JPY, a huge n.
 - `ISavingsChallengeService` / `SavingsChallengeService` (on `DatabaseInitializer`, like `SavingsGoalService`): CRUD,
