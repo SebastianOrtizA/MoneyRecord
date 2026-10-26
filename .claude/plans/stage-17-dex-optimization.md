@@ -1,6 +1,6 @@
 # Stage 17: Dex / R8 optimization (Play Console warning)
 
-**Status**: Design proposed 2026-10-25; not started (needs the exact Play Console warning text first)
+**Status**: 17 in review (2026-10-25). Warning: "La optimización de código DEX está por debajo de nuestro umbral — Ofuscación (1 %)", fix before Feb 2027
 **Depends on**: CI Play upload (PR #70)
 **Complexity**: Small to medium (research, then one PR)
 **Source**: User request, 2026-10-25; the trigger is a Play Console warning
@@ -37,3 +37,17 @@ Clear the Play Console warning and make a measured decision on R8 for the Androi
 
 ## Verify
 - The numbers table in this file; a Release AAB built in CI; the Play Console upload shows no warning; the smoke test passes.
+
+## Findings (2026-10-25)
+- Play warning: "DEX code optimization is below our threshold: Obfuscation (1 %)". Play's "App optimization" switch in Advanced
+  settings does not change it (it repackages the APKs, it doesn't rename our code).
+- The SDK's `proguard_xamarin.cfg` (used with `AndroidLinkTool=r8`) starts with `-dontobfuscate`, so R8 alone renames nothing.
+  The csproj target `DropSdkDontObfuscate` removes it from R8's input; its keep rules (without that line) and `-printmapping`
+  moved to `Platforms/Android/proguard.cfg` and a generated `proguard_mapping.cfg`.
+- Runtime failures found on the emulator and fixed with keep rules: `net.dot.android.ApplicationRegistration` (ClassNotFound),
+  `Lifecycle$State.DESTROYED` (members of the androidx/Google/Kotlin libraries are read over JNI: `-keepclassmembers`), and
+  `FitWindowsFrameLayout` (views inflated from XML by name: keep View/Fragment/Activity/etc. constructors).
+- Numbers (local Release publish): APK 74.4 MB → 71.4 MB, mapping.txt 32 MB, build ~165 s both, classes renamed 76 % (11,617
+  of 15,317 in `mapping.txt`); 15 % with a blanket `-keep class androidx.**`, hence `-keepclassmembers`).
+- Smoke test (Release APK, x86_64 emulator): start, add expense, reports chart, Settings/More, WorkManager job runs, receipt
+  OCR (ML Kit) fills amount and date. Not run: widget, biometric lock, backup folder picker, notifications.

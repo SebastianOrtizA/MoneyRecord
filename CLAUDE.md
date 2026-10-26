@@ -18,6 +18,9 @@ dotnet build MoneyRecord/MoneyRecord.csproj -f net10.0-windows10.0.19041.0
 # Run on Android emulator/device
 dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android
 
+# Release builds use R8 (obfuscation, mapping.txt next to the APK/AAB; CI hands it to Play). Keep rules: MoneyRecord/Platforms/Android/proguard.cfg
+# (a Java class used by name that R8 renames or removes only fails at runtime: smoke-test a Release APK after adding Android libraries)
+
 # Run tests (xUnit + NSubstitute + AwesomeAssertions; plain net10.0, run from PowerShell)
 dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 ```

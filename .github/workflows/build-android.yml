@@ -142,6 +142,7 @@ jobs:
           path: |
             publish/*-Signed.apk
             publish/*-Signed.aab
+            publish/mapping.txt
           if-no-files-found: error
 
   release:
@@ -218,6 +219,8 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.sebastianortiz.moneyrecord
           releaseFiles: release/*.aab
+          # R8's deobfuscation file, so Play can read crash stack traces and stops warning about it
+          mappingFile: release/mapping.txt
           releaseName: ${{ github.ref_name }}
           track: ${{ vars.PLAY_TRACK || 'alpha' }}
           status: ${{ vars.PLAY_RELEASE_STATUS || 'completed' }}

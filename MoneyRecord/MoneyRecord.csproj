@@ -46,6 +46,25 @@
 		<AndroidSigningKeyPass>$(KEY_PASSWORD)</AndroidSigningKeyPass>
 	</PropertyGroup>
 
+	<!-- Release code shrinking with R8: renames the Java code (Play's "DEX optimization" check wants obfuscation) and writes
+	     mapping.txt, which CI uploads to Play. The SDK's own proguard_xamarin.cfg starts with -dontobfuscate, which would
+	     switch renaming off for the whole run, so it is dropped from R8's input and its keep rules live in
+	     Platforms/Android/proguard.cfg instead. -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidLinkTool>r8</AndroidLinkTool>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<ProguardConfiguration Include="Platforms\Android\proguard.cfg" />
+	</ItemGroup>
+	<Target Name="DropSdkDontObfuscate" AfterTargets="_CalculateProguardConfigurationFiles" Condition="'$(AndroidLinkTool)' == 'r8'">
+		<ItemGroup>
+			<_ProguardConfiguration Remove="@(_ProguardConfiguration)" Condition="'%(Filename)%(Extension)' == 'proguard_xamarin.cfg'" />
+			<_ProguardConfiguration Include="$(IntermediateOutputPath)proguard_mapping.cfg" />
+		</ItemGroup>
+		<!-- the SDK file also held -printmapping -->
+		<WriteLinesToFile File="$(IntermediateOutputPath)proguard_mapping.cfg" Lines="-printmapping &quot;$([System.IO.Path]::GetFullPath('$(OutputPath)mapping.txt'))&quot;" Overwrite="true" />
+	</Target>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\moneyrecord.png" />

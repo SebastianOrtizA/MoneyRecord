@@ -1,6 +1,6 @@
 # Stage 16: Customizable Home (order, show/hide, Debts card)
 
-**Status**: 16.1 done (PR #81); 16.2 in review (2026-10-25)
+**Status**: Stage 16 complete (16.1 PR #81, 16.2 PR #82)
 **Depends on**: 10.8 debts
 **Complexity**: Medium (2 PRs)
 **Source**: User request, 2026-10-25
