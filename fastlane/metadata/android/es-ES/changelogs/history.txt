@@ -1,3 +1,10 @@
+## 0.18.0
+- Retos de ahorro: un juego de ahorro con importes diarios que se duplican por niveles o crecen de forma lineal, con redondeo opcional.
+- Elige una cuenta o bolsillo de destino y cada día mueve el dinero allí desde la cuenta o bolsillo que indiques.
+- El aviso de Novedades muestra cada cambio en su línea y todas las versiones que te perdiste.
+- Las copias de seguridad usan ahora el formato v7.
+- Compilación de la app optimizada.
+
 ## 0.16.0
 - Bolsillos: aparta dinero dentro de una cuenta y elige de qué bolsillo sacar cuando un gasto lo toca.
 - Recurrentes de importe variable que confirmas cada vez.
