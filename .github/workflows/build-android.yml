@@ -130,6 +130,11 @@ jobs:
           -o publish
           ${{ steps.version.outputs.props }}
 
+      # R8 writes the deobfuscation file next to the packages: without it the Play upload would only fail at the very end
+      - name: Check mapping.txt
+        shell: pwsh
+        run: if (-not (Test-Path publish/mapping.txt)) { throw "publish/mapping.txt is missing: R8 did not write it" }
+
       - name: Remove signing keystore
         if: always()
         shell: pwsh
@@ -142,6 +147,7 @@ jobs:
           path: |
             publish/*-Signed.apk
             publish/*-Signed.aab
+            publish/mapping.txt
           if-no-files-found: error
 
   release:
@@ -218,6 +224,8 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.sebastianortiz.moneyrecord
           releaseFiles: release/*.aab
+          # R8's deobfuscation file, so Play can read crash stack traces and stops warning about it
+          mappingFile: release/mapping.txt
           releaseName: ${{ github.ref_name }}
           track: ${{ vars.PLAY_TRACK || 'alpha' }}
           status: ${{ vars.PLAY_RELEASE_STATUS || 'completed' }}
