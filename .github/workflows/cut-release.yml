@@ -1,0 +1,54 @@
+name: Cut release
+
+# Creates release/<major>.<minor> from main for the version in the csproj (the line in progress), then moves main on to
+# the next line with a PR. The build of the new branch publishes <major>.<minor>.0 when its release notes are on main.
+on:
+  workflow_dispatch:
+    inputs:
+      next:
+        description: 'Version line main moves to after the cut'
+        type: choice
+        options: [minor, major]
+        default: minor
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  cut:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cut the branch and bump main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT: ${{ inputs.next }}
+        run: |
+          csproj=MoneyRecord/MoneyRecord.csproj
+          version=$(grep -oP '(?<=<ApplicationDisplayVersion>)\d+\.\d+\.\d+(?=<)' "$csproj")
+          major=${version%%.*}; rest=${version#*.}; minor=${rest%%.*}
+          branch="release/$major.$minor"
+          if git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+            echo "::error::$branch already exists"; exit 1
+          fi
+          if [ "$NEXT" = major ]; then next="$((major + 1)).0.0"; else next="$major.$((minor + 1)).0"; fi
+
+          git push origin "HEAD:refs/heads/$branch"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "bump-version-$next"
+          sed -i "s#<ApplicationDisplayVersion>$version<#<ApplicationDisplayVersion>$next<#" "$csproj"
+          git commit -am "Start version $next on main"
+          git push origin "bump-version-$next"
+          gh pr create --base main --head "bump-version-$next" --title "Start version $next" \
+            --body "Cut \`$branch\` from main. Main now builds as $next."
+
+          # Pushes with GITHUB_TOKEN start no workflow: build the new branch explicitly
+          gh workflow run build-android.yml --ref "$branch"

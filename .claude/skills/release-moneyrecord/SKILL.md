@@ -1,16 +1,16 @@
 ---
 name: release-moneyrecord
-description: Prepare and publish a MoneyRecord release (release notes in three languages, PR, then the v* tag that builds the APK/AAB and uploads to Google Play closed testing). Use when asked to release, cut a version, tag, write the release notes or the "What's new" text for a version.
+description: Prepare and publish a MoneyRecord release (release notes in three languages, PR, then the release branch that builds the APK/AAB and uploads to Google Play closed testing). Use when asked to release, cut a version, tag, write the release notes or the "What's new" text for a version.
 ---
 
-A release = a **notes PR**, then a **tag**. The tag build publishes the GitHub Release and uploads the `.aab` to Play's
-closed testing track, so the tag is outward-facing: **ask the owner before pushing it**, even if they asked for the notes.
+A release = a **notes PR**, then a **release branch**. A build of a release branch publishes the GitHub Release and uploads the `.aab` to Play's
+closed testing track, so it is outward-facing: **ask the owner before cutting it or merging a backport**, even if they asked for the notes.
 
 ## 1. Pick the version
 
-- Last tag: `git tag --sort=-v:refname | head -3`. Versions are `x.y.z` (a suffix like `-rc1` marks a pre-release).
-  The version name comes from the tag; the version code is the CI run number.
-- Ask the owner for the number when it is not given (patch for fixes, minor for features).
+- Last tag: `git tag --sort=-v:refname | head -3`. Versions are `x.y.z`. Major.minor = the `release/x.y` branch; the patch is
+  the next free `vx.y.N` tag on it; the version code is the CI run number. Tags are never pushed by hand.
+- A new minor or major: the version in `MoneyRecord.csproj` on main (e.g. 0.19.0). A fix: the next patch of a shipped line.
 
 ## 2. Collect what changed
 
@@ -33,13 +33,18 @@ word differs by region. Edit with the Edit tool (a shell `perl`/`sed` mangles `\
 Branch `release-notes-x.y.z` from main, run `dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj` from PowerShell,
 commit "Release notes for x.y.z", open a PR (the owner reviews via PR comments and merges).
 
-## 5. Tag (only after the owner says the PR is merged and agrees to release)
+## 5. Publish (only after the owner says the notes PR is merged and agrees to release)
 
-```bash
-git checkout main && git pull
-git tag vX.Y.Z && git push origin vX.Y.Z
-```
+A build of `release/<major>.<minor>` publishes (tag `v<major>.<minor>.<patch>`, GitHub Release, Play upload) only when the
+top `## ` section of the en-US `history.txt` is the version it computed; otherwise it just builds and says which notes
+are missing. Never push a tag or the branch by hand.
 
-Then watch `gh run list --limit 3`; the build fails unless the release keystore secrets are set. Promoting the Play
-release to production stays manual in Play Console. Optionally bump `ApplicationDisplayVersion` in
-`MoneyRecord/MoneyRecord.csproj` afterwards so untagged builds are distinguishable.
+- **New minor / major**: notes PR for `x.y.0` merged to main, then Actions → **Cut release** (or
+  `gh workflow run cut-release.yml -f next=minor`). It creates `release/x.y` from main, opens a PR moving main's csproj
+  to the next line, and builds `x.y.0`.
+- **Fix to a shipped line**: PR to main labelled `backport release/x.y` (create the label once per line:
+  `gh label create "backport release/x.y"`). On merge, Backport cherry-picks it onto the branch; the notes PR for
+  `x.y.N` (also labelled) is what publishes the patch. Conflicts are reported on the PR.
+
+Watch `gh run list --limit 3`; the build fails unless the release keystore secrets are set. Promoting the Play release
+to production stays manual in Play Console.

@@ -1,0 +1,54 @@
+name: Backport
+
+# A merged PR labelled "backport release/<major>.<minor>" is cherry-picked onto that branch, which then builds (and
+# publishes the next patch when its release notes are in). A conflict is reported on the PR to resolve by hand.
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  backport:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && contains(join(github.event.pull_request.labels.*.name, ','), 'backport release/')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cherry-pick onto the release branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, '|') }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          failed=0
+          IFS='|'
+          for label in $LABELS; do
+            case "$label" in "backport release/"*) ;; *) continue ;; esac
+            branch=${label#backport }
+            if ! git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+              gh pr comment "$PR" --body "Backport: branch \`$branch\` does not exist."; failed=1; continue
+            fi
+            git checkout -q -B "backport-target" "origin/$branch"
+            # A merge commit needs -m 1; squash and rebase merges are plain commits
+            parents=$(git rev-list --parents -n 1 "$SHA" | wc -w)
+            if [ "$parents" -gt 2 ]; then pick="git cherry-pick -m 1 $SHA"; else pick="git cherry-pick $SHA"; fi
+            if $pick && git push origin "HEAD:refs/heads/$branch"; then
+              gh workflow run build-android.yml --ref "$branch"
+              gh pr comment "$PR" --body "Backported to \`$branch\`. It publishes the next patch once its release notes are on that branch."
+            else
+              git cherry-pick --abort 2>/dev/null || true
+              gh pr comment "$PR" --body "Backport to \`$branch\` failed. By hand: \`git checkout $branch && $pick && git push\`."
+              failed=1
+            fi
+          done
+          exit $failed
