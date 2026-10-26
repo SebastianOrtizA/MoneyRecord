@@ -33,7 +33,7 @@ namespace MoneyRecord.Helpers
         /// <summary>
         /// The notes of every version after <paramref name="lastSeen"/> up to <paramref name="current"/>, so an update that
         /// skipped versions loses none of them; just the newest version's when nothing was recorded. A single version is its
-        /// change lines; several get their version as a heading. Null when there is nothing new.
+        /// change lines; any other (several, or the newest one older than the running version) get their version as a heading. Null when there is nothing new.
         /// </summary>
         public static string? Since(string history, string lastSeen, string current)
         {
@@ -51,7 +51,7 @@ namespace MoneyRecord.Helpers
             if (sections.Count == 0)
                 return null;
 
-            return sections.Count == 1
+            return sections.Count == 1 && sections[0].Version == currentVersion
                 ? sections[0].Notes
                 : string.Join("\n\n", sections.Select(s => $"{s.Label}\n{s.Notes}"));
         }
