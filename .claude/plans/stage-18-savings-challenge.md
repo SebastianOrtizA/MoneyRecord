@@ -1,6 +1,6 @@
 # Stage 18: Savings challenge (doubling / linear game)
 
-**Status**: 18.1 merged (PR #87); 18.2 merged (PR #88); 18.3 game page in review. Design agreed 2026-10-25 (decisions below). In 18.3 a card tap opens the game page and a pencil on the card opens the edit/delete sheet (no menu on the game page)
+**Status**: Stage 18 done (18.1 PR #87, 18.2 PR #88, 18.3 PR #89; 2026-10-26). Design agreed 2026-10-25, money model changed in PR #89 (see Decisions). Optional Home card for challenges not built
 **Depends on**: none (optional link to accounts and the 10.6 goals)
 **Complexity**: Medium to large (3 PRs)
 **Source**: User request, 2026-10-25
