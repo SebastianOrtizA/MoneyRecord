@@ -9,9 +9,11 @@ namespace MoneyRecord.Services
     {
         public const string LastSeenVersionKey = "WhatsNew.LastSeenVersion";
 
+        /// <summary>The version whose notes were shown last; empty when none was recorded.</summary>
+        public string LastSeen => preferences.Get(LastSeenVersionKey, string.Empty);
+
         /// <summary>True when the notes of <paramref name="version"/> have not been shown on this install.</summary>
-        public bool IsUnseen(string version) =>
-            !string.Equals(preferences.Get(LastSeenVersionKey, string.Empty), version, StringComparison.Ordinal);
+        public bool IsUnseen(string version) => !string.Equals(LastSeen, version, StringComparison.Ordinal);
 
         public void MarkSeen(string version) => preferences.Set(LastSeenVersionKey, version);
     }

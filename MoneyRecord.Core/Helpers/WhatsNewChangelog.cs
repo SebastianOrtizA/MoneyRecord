@@ -3,8 +3,9 @@ using System.Globalization;
 namespace MoneyRecord.Helpers
 {
     /// <summary>
-    /// Which release-notes text the app shows. The texts are the Play store changelogs
-    /// (<c>fastlane/metadata/android/{locale}/changelogs/default.txt</c>), bundled as app assets in a <c>Changelog/</c> folder.
+    /// Which release-notes text the app shows. The texts are the version history next to the Play store changelogs
+    /// (<c>fastlane/metadata/android/{locale}/changelogs/history.txt</c>), bundled as app assets in a <c>Changelog/</c> folder:
+    /// newest first, one <c>## 1.2.3</c> heading per version followed by its <c>- change</c> lines.
     /// </summary>
     public static class WhatsNewChangelog
     {
@@ -28,5 +29,57 @@ namespace MoneyRecord.Helpers
 
         /// <summary>The asset path of a store locale's text.</summary>
         public static string AssetPath(string locale) => $"{Folder}/{locale}.txt";
+
+        /// <summary>
+        /// The notes of every version after <paramref name="lastSeen"/> up to <paramref name="current"/>, so an update that
+        /// skipped versions loses none of them; just the newest version's when nothing was recorded. A single version is its
+        /// change lines; several get their version as a heading. Null when there is nothing new.
+        /// </summary>
+        public static string? Since(string history, string lastSeen, string current)
+        {
+            var currentVersion = ParseVersion(current);
+            var lastSeenVersion = ParseVersion(lastSeen);
+            if (currentVersion == null)
+                return null;
+
+            var sections = Parse(history)
+                .Where(s => s.Version <= currentVersion && (lastSeenVersion == null || s.Version > lastSeenVersion))
+                .OrderByDescending(s => s.Version)
+                .ToList();
+            if (lastSeenVersion == null)
+                sections = sections.Take(1).ToList();
+            if (sections.Count == 0)
+                return null;
+
+            return sections.Count == 1
+                ? sections[0].Notes
+                : string.Join("\n\n", sections.Select(s => $"{s.Label}\n{s.Notes}"));
+        }
+
+        private static IEnumerable<(Version Version, string Label, string Notes)> Parse(string history)
+        {
+            string? label = null;
+            var lines = new List<string>();
+            // The closing heading flushes the last section
+            foreach (var raw in history.Split('\n').Append("## "))
+            {
+                var line = raw.Trim();
+                if (!line.StartsWith("##", StringComparison.Ordinal))
+                {
+                    if (line.Length > 0)
+                        lines.Add(line);
+                    continue;
+                }
+
+                if (label != null && ParseVersion(label) is { } version && lines.Count > 0)
+                    yield return (version, label, string.Join("\n", lines));
+                label = line.TrimStart('#').Trim();
+                lines.Clear();
+            }
+        }
+
+        /// <summary>"0.16.0", or "0.9.0-rc1" as 0.9.0; null when it is not a version.</summary>
+        private static Version? ParseVersion(string text) =>
+            Version.TryParse(text.Split('-')[0].Trim(), out var version) ? version : null;
     }
 }
