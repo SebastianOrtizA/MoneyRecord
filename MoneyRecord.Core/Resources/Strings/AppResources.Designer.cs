@@ -7586,5 +7586,356 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("MoveDown", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Looks up a localized string similar to Savings challenge.
+        /// </summary>
+        public static string SavingsChallenges {
+            get {
+                return ResourceManager.GetString("SavingsChallenges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No challenges yet.
+        /// </summary>
+        public static string NoChallengesYet {
+            get {
+                return ResourceManager.GetString("NoChallengesYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick a goal and a number of days; the app works out what to save each day..
+        /// </summary>
+        public static string AddChallengeToStart {
+            get {
+                return ResourceManager.GetString("AddChallengeToStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add challenge.
+        /// </summary>
+        public static string AddChallenge {
+            get {
+                return ResourceManager.GetString("AddChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New challenge.
+        /// </summary>
+        public static string NewChallenge {
+            get {
+                return ResourceManager.GetString("NewChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit challenge.
+        /// </summary>
+        public static string EditChallenge {
+            get {
+                return ResourceManager.GetString("EditChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string ChallengeName {
+            get {
+                return ResourceManager.GetString("ChallengeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Holiday fund.
+        /// </summary>
+        public static string ChallengeNamePlaceholder {
+            get {
+                return ResourceManager.GetString("ChallengeNamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goal.
+        /// </summary>
+        public static string ChallengeGoal {
+            get {
+                return ResourceManager.GetString("ChallengeGoal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Days.
+        /// </summary>
+        public static string ChallengeDays {
+            get {
+                return ResourceManager.GetString("ChallengeDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start date.
+        /// </summary>
+        public static string ChallengeStartDate {
+            get {
+                return ResourceManager.GetString("ChallengeStartDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mode.
+        /// </summary>
+        public static string ChallengeMode {
+            get {
+                return ResourceManager.GetString("ChallengeMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Doubling (1, 2, 4, 8…).
+        /// </summary>
+        public static string ChallengeModeDoubling {
+            get {
+                return ResourceManager.GetString("ChallengeModeDoubling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linear (1, 2, 3, 4…).
+        /// </summary>
+        public static string ChallengeModeLinear {
+            get {
+                return ResourceManager.GetString("ChallengeModeLinear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Round each day.
+        /// </summary>
+        public static string ChallengeRounding {
+            get {
+                return ResourceManager.GetString("ChallengeRounding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No rounding.
+        /// </summary>
+        public static string ChallengeRoundingNone {
+            get {
+                return ResourceManager.GetString("ChallengeRoundingNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To {0}.
+        /// </summary>
+        public static string ChallengeRoundTo {
+            get {
+                return ResourceManager.GetString("ChallengeRoundTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take the money from.
+        /// </summary>
+        public static string ChallengeFromAccount {
+            get {
+                return ResourceManager.GetString("ChallengeFromAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save it in.
+        /// </summary>
+        public static string ChallengeToAccount {
+            get {
+                return ResourceManager.GetString("ChallengeToAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None (only mark days).
+        /// </summary>
+        public static string ChallengeNoAccount {
+            get {
+                return ResourceManager.GetString("ChallengeNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to With both accounts set, marking a day offers to record the transfer..
+        /// </summary>
+        public static string ChallengeAccountsHint {
+            get {
+                return ResourceManager.GetString("ChallengeAccountsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First day {0} · last day {1}.
+        /// </summary>
+        public static string ChallengePreviewDays {
+            get {
+                return ResourceManager.GetString("ChallengePreviewDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total {0}.
+        /// </summary>
+        public static string ChallengePreviewTotal {
+            get {
+                return ResourceManager.GetString("ChallengePreviewTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total {0} · {1} over the goal.
+        /// </summary>
+        public static string ChallengePreviewOver {
+            get {
+                return ResourceManager.GetString("ChallengePreviewOver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total {0} · {1} under the goal.
+        /// </summary>
+        public static string ChallengePreviewUnder {
+            get {
+                return ResourceManager.GetString("ChallengePreviewUnder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Doubling every day for {0} days would start below one unit. The plan doubles in {1} steps that last several days each; {1} days doubles every day..
+        /// </summary>
+        public static string ChallengeLevelsWarning {
+            get {
+                return ResourceManager.GetString("ChallengeLevelsWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The goal, days, mode and rounding can't change once a day is done..
+        /// </summary>
+        public static string ChallengePlanLocked {
+            get {
+                return ResourceManager.GetString("ChallengePlanLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} saved of {1}.
+        /// </summary>
+        public static string ChallengeSavedOf {
+            get {
+                return ResourceManager.GetString("ChallengeSavedOf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} day left.
+        /// </summary>
+        public static string ChallengeDaysLeftOne {
+            get {
+                return ResourceManager.GetString("ChallengeDaysLeftOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days left.
+        /// </summary>
+        public static string ChallengeDaysLeftOther {
+            get {
+                return ResourceManager.GetString("ChallengeDaysLeftOther", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished.
+        /// </summary>
+        public static string ChallengeFinished {
+            get {
+                return ResourceManager.GetString("ChallengeFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Challenge added.
+        /// </summary>
+        public static string ChallengeAdded {
+            get {
+                return ResourceManager.GetString("ChallengeAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a name.
+        /// </summary>
+        public static string PleaseEnterChallengeName {
+            get {
+                return ResourceManager.GetString("PleaseEnterChallengeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter between 1 and 3650 days.
+        /// </summary>
+        public static string PleaseEnterChallengeDays {
+            get {
+                return ResourceManager.GetString("PleaseEnterChallengeDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load challenges.
+        /// </summary>
+        public static string FailedToLoadChallenges {
+            get {
+                return ResourceManager.GetString("FailedToLoadChallenges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to save the challenge.
+        /// </summary>
+        public static string FailedToSaveChallenge {
+            get {
+                return ResourceManager.GetString("FailedToSaveChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete the challenge.
+        /// </summary>
+        public static string FailedToDeleteChallenge {
+            get {
+                return ResourceManager.GetString("FailedToDeleteChallenge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete "{0}"? Transfers it recorded stay..
+        /// </summary>
+        public static string DeleteChallengeConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteChallengeConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick two different accounts, or none.
+        /// </summary>
+        public static string PleaseSelectChallengeAccounts {
+            get {
+                return ResourceManager.GetString("PleaseSelectChallengeAccounts", resourceCulture);
+            }
+        }
+        
     }
 }

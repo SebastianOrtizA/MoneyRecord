@@ -35,6 +35,9 @@ namespace MoneyRecord.Helpers
         public static string Rows(int count) =>
             string.Format(count == 1 ? AppResources.ImportRowsOne : AppResources.ImportRowsOther, count);
 
+        public static string ChallengeDaysLeft(int count) =>
+            string.Format(count == 1 ? AppResources.ChallengeDaysLeftOne : AppResources.ChallengeDaysLeftOther, count);
+
         /// <summary>The import button: "Import 3 transactions".</summary>
         public static string ImportButton(int count) =>
             string.Format(count == 1 ? AppResources.ImportButtonOne : AppResources.ImportButtonOther, count);
