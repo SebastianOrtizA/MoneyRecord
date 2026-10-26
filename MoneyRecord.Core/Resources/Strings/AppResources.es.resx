@@ -2808,4 +2808,37 @@ Monto: {2}</value>
   <data name="PleaseSelectChallengeAccounts" xml:space="preserve">
     <value>Elige dos cuentas distintas, o ninguna</value>
   </data>
+  <data name="ChallengeRecordTransfer" xml:space="preserve">
+    <value>Â¿Registrar una transferencia de {0}?</value>
+  </data>
+  <data name="ChallengeRecordTransferYes" xml:space="preserve">
+    <value>Registrar la transferencia</value>
+  </data>
+  <data name="ChallengeJustMark" xml:space="preserve">
+    <value>Solo marcar el dÃ­a</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>Â¿Desmarcar el dÃ­a {0}? Tiene una transferencia de {1}.</value>
+  </data>
+  <data name="ChallengeUnmarkDeleteTransfer" xml:space="preserve">
+    <value>Desmarcar y eliminar la transferencia</value>
+  </data>
+  <data name="ChallengeUnmarkKeepTransfer" xml:space="preserve">
+    <value>Desmarcar y conservar la transferencia</value>
+  </data>
+  <data name="ChallengeRemainingOnly" xml:space="preserve">
+    <value>Solo pendientes</value>
+  </data>
+  <data name="ChallengeDayDescription" xml:space="preserve">
+    <value>DÃ­a {0}, {1}, {2}</value>
+  </data>
+  <data name="ChallengeDayDone" xml:space="preserve">
+    <value>hecho</value>
+  </data>
+  <data name="ChallengeDayPending" xml:space="preserve">
+    <value>pendiente</value>
+  </data>
+  <data name="FailedToUpdateChallenge" xml:space="preserve">
+    <value>No se pudo actualizar el dÃ­a</value>
+  </data>
 </root>

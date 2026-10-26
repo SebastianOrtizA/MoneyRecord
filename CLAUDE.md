@@ -120,7 +120,7 @@ crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 19 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 22 XAML pages (`ChallengesPage` = More → Savings challenge: cards + add/edit BottomSheet with a live plan preview) with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
+- `Views/` — 23 XAML pages (`ChallengesPage` = More → Savings challenge: cards + add/edit BottomSheet with a live plan preview; `ChallengePage` = the game: 7-column grid, a tap marks a day, optional transfer prompt) with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
   (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
   `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
   the type). `MorePage` lists the screens without a tab. `AboutPage` / `LicensePage` show the licences (full texts in

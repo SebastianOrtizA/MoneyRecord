@@ -7937,5 +7937,104 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Record a transfer of {0}?.
+        /// </summary>
+        public static string ChallengeRecordTransfer {
+            get {
+                return ResourceManager.GetString("ChallengeRecordTransfer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Record the transfer.
+        /// </summary>
+        public static string ChallengeRecordTransferYes {
+            get {
+                return ResourceManager.GetString("ChallengeRecordTransferYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Just mark the day.
+        /// </summary>
+        public static string ChallengeJustMark {
+            get {
+                return ResourceManager.GetString("ChallengeJustMark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmark day {0}? It has a transfer of {1}..
+        /// </summary>
+        public static string ChallengeUnmarkTitle {
+            get {
+                return ResourceManager.GetString("ChallengeUnmarkTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmark and delete the transfer.
+        /// </summary>
+        public static string ChallengeUnmarkDeleteTransfer {
+            get {
+                return ResourceManager.GetString("ChallengeUnmarkDeleteTransfer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unmark, keep the transfer.
+        /// </summary>
+        public static string ChallengeUnmarkKeepTransfer {
+            get {
+                return ResourceManager.GetString("ChallengeUnmarkKeepTransfer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remaining only.
+        /// </summary>
+        public static string ChallengeRemainingOnly {
+            get {
+                return ResourceManager.GetString("ChallengeRemainingOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Day {0}, {1}, {2}.
+        /// </summary>
+        public static string ChallengeDayDescription {
+            get {
+                return ResourceManager.GetString("ChallengeDayDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to done.
+        /// </summary>
+        public static string ChallengeDayDone {
+            get {
+                return ResourceManager.GetString("ChallengeDayDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to not done.
+        /// </summary>
+        public static string ChallengeDayPending {
+            get {
+                return ResourceManager.GetString("ChallengeDayPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update the day.
+        /// </summary>
+        public static string FailedToUpdateChallenge {
+            get {
+                return ResourceManager.GetString("FailedToUpdateChallenge", resourceCulture);
+            }
+        }
+        
     }
 }

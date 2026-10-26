@@ -2811,4 +2811,37 @@ Amount: {2}</value>
   <data name="PleaseSelectChallengeAccounts" xml:space="preserve">
     <value>Pick two different accounts, or none</value>
   </data>
+  <data name="ChallengeRecordTransfer" xml:space="preserve">
+    <value>Record a transfer of {0}?</value>
+  </data>
+  <data name="ChallengeRecordTransferYes" xml:space="preserve">
+    <value>Record the transfer</value>
+  </data>
+  <data name="ChallengeJustMark" xml:space="preserve">
+    <value>Just mark the day</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>Unmark day {0}? It has a transfer of {1}.</value>
+  </data>
+  <data name="ChallengeUnmarkDeleteTransfer" xml:space="preserve">
+    <value>Unmark and delete the transfer</value>
+  </data>
+  <data name="ChallengeUnmarkKeepTransfer" xml:space="preserve">
+    <value>Unmark, keep the transfer</value>
+  </data>
+  <data name="ChallengeRemainingOnly" xml:space="preserve">
+    <value>Remaining only</value>
+  </data>
+  <data name="ChallengeDayDescription" xml:space="preserve">
+    <value>Day {0}, {1}, {2}</value>
+  </data>
+  <data name="ChallengeDayDone" xml:space="preserve">
+    <value>done</value>
+  </data>
+  <data name="ChallengeDayPending" xml:space="preserve">
+    <value>not done</value>
+  </data>
+  <data name="FailedToUpdateChallenge" xml:space="preserve">
+    <value>Failed to update the day</value>
+  </data>
 </root>

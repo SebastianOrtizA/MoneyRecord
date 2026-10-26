@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
@@ -34,6 +34,7 @@ namespace MoneyRecord.ViewModels
         private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
+        private readonly INavigationService _navigation;
 
         private List<Account> _accounts = [];
         // The accounts the sheet is opened with (kept across the currency rebuild)
@@ -142,10 +143,11 @@ namespace MoneyRecord.ViewModels
 
         public bool HasLevelsWarning => LevelsWarningText.Length > 0;
 
-        public ChallengesViewModel(ISavingsChallengeService challengeService, IAccountRepository accountRepository, IErrorHandler errorHandler,
+        public ChallengesViewModel(ISavingsChallengeService challengeService, IAccountRepository accountRepository, INavigationService navigation, IErrorHandler errorHandler,
             IDialogService dialogService)
         {
             _challengeService = challengeService;
+            _navigation = navigation;
             _accountRepository = accountRepository;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
@@ -228,6 +230,13 @@ namespace MoneyRecord.ViewModels
                     IsLoading = false;
             }
         }
+
+        /// <summary>Opens the challenge's game page.</summary>
+        [RelayCommand]
+        private Task OpenChallengeAsync(ChallengeSummary? summary) =>
+            summary == null
+                ? Task.CompletedTask
+                : _navigation.NavigateToAsync(nameof(Views.ChallengePage), new Dictionary<string, object> { ["ChallengeId"] = summary.Challenge.Id.ToString() });
 
         [RelayCommand]
         private void AddChallenge()
