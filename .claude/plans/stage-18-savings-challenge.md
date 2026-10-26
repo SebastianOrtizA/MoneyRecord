@@ -1,6 +1,6 @@
 # Stage 18: Savings challenge (doubling / linear game)
 
-**Status**: 18.1 Core in review (PR below); 18.2 and 18.3 not started. Design agreed 2026-10-25 (decisions below). Note: "useful doublings" k = floor(log2(2G/unit + 1)), so $1,000 in 10 days is pure doubling (first day 0.98)
+**Status**: 18.1 Core in review (PR #87); 18.2 and 18.3 not started. Design agreed 2026-10-25 (decisions below)
 **Depends on**: none (optional link to accounts and the 10.6 goals)
 **Complexity**: Medium to large (3 PRs)
 **Source**: User request, 2026-10-25
@@ -24,6 +24,9 @@ amount in any order and marks it done. A calendar grid shows the done and remain
   the savings account to a 10.6 goal makes the goal count it, with no new link.
 - Each done day stores its own `AmountCents`, so the history stays right even if the plan changes. The plan's settings (goal,
   days, mode, rounding) are locked once any day is done; name, accounts and start date stay editable.
+
+- **Useful doublings** k = floor(log2(2G/unit + 1)) (a first amount of half a unit still counts), so $1,000 in 10 days is pure doubling (first day 0.98).
+- A day's `TransferId` can dangle (transfer kept on unmark, or deleted on the Transfers page): the UI must not assume it exists.
 
 ## Sub-stages (branch + PR each)
 

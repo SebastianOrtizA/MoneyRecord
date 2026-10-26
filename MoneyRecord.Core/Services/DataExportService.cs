@@ -20,6 +20,7 @@ namespace MoneyRecord.Services
         /// receipt paths relative to the zip ("receipts/receipt_x.jpg"). v4: transfers also store the destination amount;
         /// savings goals and their accounts, payees, debts, trips (added before v4 shipped, so an app that can read v4 knows them).
         /// v5: parties (friends, parties with members, expenses, exclusions, contributions, settle-up payments).
+        /// v6: pockets, their movements and their goal links. v7: savings challenges and their days.
         /// </summary>
         public const int BackupVersion = 7;
 

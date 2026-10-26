@@ -210,7 +210,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   load their period's rows (they chart them anyway)
 - Balances count the entries dated up to today (`IBalanceService.CountedBefore`): a future-dated transaction or transfer is
   listed (and in its period's totals) but in no balance before its date; what works back from today's balances stops there too
-- Backups: `.zip` with `data.json` (format v6, rows keep their IDs; savings goals and pockets included) + `receipts/`; restore snapshots go to `Backups/`
+- Backups: `.zip` with `data.json` (format v7, rows keep their IDs; savings goals, pockets and savings challenges included) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization
 - `.resx` resource files with `ResXFileCodeGenerator`

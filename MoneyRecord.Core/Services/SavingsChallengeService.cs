@@ -59,6 +59,10 @@ namespace MoneyRecord.Services
         public Task SaveAsync(SavingsChallenge challenge) =>
             _dbInitializer.RunInTransactionAsync(db =>
             {
+                if (string.IsNullOrWhiteSpace(challenge.Name))
+                    throw new InvalidOperationException("A challenge needs a name.");
+                if (challenge.RoundingCents < 0)
+                    throw new InvalidOperationException("The rounding can not be negative.");
                 if (challenge.Days < 1)
                     throw new InvalidOperationException("A challenge needs at least one day.");
                 if (challenge.GoalCents <= 0)
@@ -106,7 +110,7 @@ namespace MoneyRecord.Services
                     ?? throw new InvalidOperationException($"Challenge {challengeId} does not exist.");
                 if (dayNumber < 1 || dayNumber > challenge.Days)
                     throw new InvalidOperationException($"Day {dayNumber} is not in the challenge.");
-                if (db.Table<SavingsChallengeDay>().Any(d => d.ChallengeId == challengeId && d.DayNumber == dayNumber))
+                if (db.Table<SavingsChallengeDay>().Count(d => d.ChallengeId == challengeId && d.DayNumber == dayNumber) > 0)
                     throw new InvalidOperationException($"Day {dayNumber} is already done.");
 
                 var amount = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents)
