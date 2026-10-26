@@ -215,6 +215,7 @@ is configured, so a published APK is never signed with the debug key.
 The tag build also uploads the `.aab` to Google Play's **closed testing** track (`alpha`; set the repository variable `PLAY_TRACK`
 for a custom-named closed track), with the release notes in
 `fastlane/metadata/android/<locale>/changelogs/default.txt` (update them before tagging; 500 characters at most).
+Add the release as a new section on top of `history.txt` in the same folders too: the in-app "What's new" lists every version since the last one shown.
 Promoting it to production is done in Play Console. The upload uses the
 `PLAY_SERVICE_ACCOUNT_JSON` secret: the JSON key of a Google Cloud service account (Google Play Android Developer API
 enabled) invited in Play Console → Users and permissions with the release-to-testing permissions. Without the secret

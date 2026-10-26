@@ -1,0 +1,15 @@
+## 0.16.0
+- Pockets: set money aside inside an account and pick which pocket to take from when an expense dips into it.
+- Variable-amount recurring bills you confirm each time.
+- Customize Home (order, show/hide cards) plus an optional Debts card.
+- A What's new pop-up after updates.
+- Recent amounts now hide with Hide balances.
+- Backups now use format v6.
+
+## 0.13.1
+- Amounts now show thousands separators as you type, so a long number is easy to read while you enter it.
+- Also in the Transactions amount filter and trip category limits.
+
+## 0.13.0
+- Parties: split trips and shared expenses with friends, see who owes whom, settle up and share the summary, and record your own share as an expense.
+- Backups now use format v5.

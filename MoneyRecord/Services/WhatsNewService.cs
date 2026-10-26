@@ -28,7 +28,7 @@ namespace MoneyRecord.Services
             _showing = true;
             try
             {
-                var notes = await ReadNotesAsync();
+                var notes = await ReadNotesAsync(tracker.LastSeen);
                 // Recorded either way: a missing text must not come back at every start
                 tracker.MarkSeen(Version);
                 if (notes != null)
@@ -42,7 +42,7 @@ namespace MoneyRecord.Services
 
         public async Task ShowAsync()
         {
-            var notes = await ReadNotesAsync();
+            var notes = await ReadNotesAsync(string.Empty);
             if (notes == null)
                 await errors.HandleAsync(AppResources.FailedToLoadWhatsNew);
             else
@@ -52,8 +52,11 @@ namespace MoneyRecord.Services
         private Task ShowNotesAsync(string notes) =>
             dialogs.AlertAsync(string.Format(AppResources.WhatsNewTitle, Version), notes, AppResources.WhatsNewGotIt);
 
-        /// <summary>The notes in the app's language (the English ones when that has none); null when there are none.</summary>
-        private async Task<string?> ReadNotesAsync()
+        /// <summary>
+        /// The notes of the versions after <paramref name="lastSeen"/> (empty: just the running version's) in the app's
+        /// language (the English ones when that has none); null when there are none.
+        /// </summary>
+        private async Task<string?> ReadNotesAsync(string lastSeen)
         {
             var locale = WhatsNewChangelog.Locale(AppResources.Culture ?? CultureInfo.CurrentUICulture);
             foreach (var candidate in locale == WhatsNewChangelog.Fallback ? [locale] : (string[])[locale, WhatsNewChangelog.Fallback])
@@ -62,9 +65,9 @@ namespace MoneyRecord.Services
                 {
                     await using var stream = await FileSystem.Current.OpenAppPackageFileAsync(WhatsNewChangelog.AssetPath(candidate));
                     using var reader = new StreamReader(stream);
-                    var text = (await reader.ReadToEndAsync()).Trim();
-                    if (text.Length > 0)
-                        return text;
+                    var notes = WhatsNewChangelog.Since(await reader.ReadToEndAsync(), lastSeen, Version);
+                    if (notes != null)
+                        return notes;
                 }
                 catch (Exception ex)
                 {
