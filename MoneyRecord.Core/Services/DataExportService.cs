@@ -20,8 +20,9 @@ namespace MoneyRecord.Services
         /// receipt paths relative to the zip ("receipts/receipt_x.jpg"). v4: transfers also store the destination amount;
         /// savings goals and their accounts, payees, debts, trips (added before v4 shipped, so an app that can read v4 knows them).
         /// v5: parties (friends, parties with members, expenses, exclusions, contributions, settle-up payments).
+        /// v6: pockets, their movements and their goal links. v7: savings challenges and their days.
         /// </summary>
-        public const int BackupVersion = 6;
+        public const int BackupVersion = 7;
 
         private const string DataEntryName = "data.json";
         private const string SnapshotPrefix = "pre-restore-";
@@ -102,7 +103,9 @@ namespace MoneyRecord.Services
                 PartyPayments = conn.Table<PartyPayment>().ToList(),
                 Pockets = conn.Table<Pocket>().ToList(),
                 PocketMovements = conn.Table<PocketMovement>().ToList(),
-                SavingsGoalPockets = conn.Table<SavingsGoalPocket>().ToList()
+                SavingsGoalPockets = conn.Table<SavingsGoalPocket>().ToList(),
+                SavingsChallenges = conn.Table<SavingsChallenge>().ToList(),
+                SavingsChallengeDays = conn.Table<SavingsChallengeDay>().ToList()
             });
             return backup;
         }
@@ -305,6 +308,8 @@ namespace MoneyRecord.Services
             EnsureUniqueIds(backup.Pockets, p => p.Id);
             EnsureUniqueIds(backup.PocketMovements, m => m.Id);
             EnsureUniqueIds(backup.SavingsGoalPockets, l => l.Id);
+            EnsureUniqueIds(backup.SavingsChallenges, c => c.Id);
+            EnsureUniqueIds(backup.SavingsChallengeDays, d => d.Id);
             return backup;
         }
 
@@ -348,6 +353,8 @@ namespace MoneyRecord.Services
             conn.DeleteAll<Trip>();
             conn.DeleteAll<Debt>();
             conn.DeleteAll<Payee>();
+            conn.DeleteAll<SavingsChallengeDay>();
+            conn.DeleteAll<SavingsChallenge>();
             conn.DeleteAll<SavingsGoalPocket>();
             conn.DeleteAll<PocketMovement>();
             conn.DeleteAll<Pocket>();
@@ -380,7 +387,9 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.PartyContributions, c => c.Id)
                 + InsertKeepingIds(conn, backup.PartyPayments, p => p.Id)
                 + InsertKeepingIds(conn, backup.Pockets, p => p.Id)
-                + InsertKeepingIds(conn, backup.PocketMovements, m => m.Id);
+                + InsertKeepingIds(conn, backup.PocketMovements, m => m.Id)
+                + InsertKeepingIds(conn, backup.SavingsChallenges, c => c.Id)
+                + InsertKeepingIds(conn, backup.SavingsChallengeDays, d => d.Id);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
             InsertKeepingIds(conn, backup.SavingsGoalPockets, l => l.Id);
@@ -540,5 +549,7 @@ namespace MoneyRecord.Services
         public List<Pocket> Pockets { get; set; } = [];
         public List<PocketMovement> PocketMovements { get; set; } = [];
         public List<SavingsGoalPocket> SavingsGoalPockets { get; set; } = [];
+        public List<SavingsChallenge> SavingsChallenges { get; set; } = [];
+        public List<SavingsChallengeDay> SavingsChallengeDays { get; set; } = [];
     }
 }
