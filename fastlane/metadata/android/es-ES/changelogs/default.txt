@@ -1,1 +1,1 @@
-MoneyRecord ahora habla portugués (Brasil), francés e italiano, además de inglés y español: sigue el idioma del teléfono, o elígelo en Ajustes → Idioma. El escáner de tickets también lee tickets en francés, italiano y portugués.
+Corregido un bloqueo: elegir "Predeterminado del sistema" en Ajustes → Idioma podía colgar la app después de haber elegido otro idioma.

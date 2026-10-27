@@ -1,1 +1,1 @@
-O MoneyRecord agora fala português (Brasil), francês e italiano, além de inglês e espanhol: segue o idioma do celular, ou escolha um em Configurações → Idioma. A leitura de notas também entende recibos em francês, italiano e português.
+Corrigido um travamento: escolher "Padrão do sistema" em Configurações → Idioma podia travar o app depois de escolher outro idioma.

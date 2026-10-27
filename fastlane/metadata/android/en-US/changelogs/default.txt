@@ -1,1 +1,1 @@
-MoneyRecord now speaks Portuguese (Brazil), French and Italian, besides English and Spanish: it follows your phone's language, or pick one in Settings → Language. Receipt scanning also reads French, Italian and Portuguese receipts.
+Fixed a freeze: choosing "System default" in Settings → Language could hang the app after you had picked another language.
