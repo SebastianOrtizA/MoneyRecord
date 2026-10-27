@@ -18,9 +18,10 @@ $tagged = @(git tag --points-at $Head -l "v$line.*") | Where-Object { $_ -match 
 if ($tagged) {
     $name = ($tagged | Select-Object -First 1).Substring(1)
 } else {
-    $patches = @(git tag -l "v$line.*") |
-        ForEach-Object { if ($_ -match "^v$([regex]::Escape($line))\.(\d+)$") { [int]$Matches[1] } }
-    $next = if ($patches) { ($patches | Measure-Object -Maximum).Maximum + 1 } else { 0 }
+    # An array, and counted: a lone tag v<line>.0 gives the number 0, which is falsy as a plain value
+    $patches = @(@(git tag -l "v$line.*") |
+        ForEach-Object { if ($_ -match "^v$([regex]::Escape($line))\.(\d+)$") { [int]$Matches[1] } })
+    $next = if ($patches.Count -gt 0) { ($patches | Measure-Object -Maximum).Maximum + 1 } else { 0 }
     $name = "$line.$next"
 }
 
