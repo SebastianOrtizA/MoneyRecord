@@ -1,3 +1,8 @@
+## 0.18.1
+- Retos de ahorro: redondea cada día también a 5, 50 o 500, útil en monedas como el peso colombiano.
+- Nuevo modo "Igual todos los días": reparte la meta en partes iguales entre los días, o indica el importe por día y la app calcula cuántos días hacen falta. El último día lleva lo que reste.
+- La pantalla del reto abre en los próximos 30 días, con filtros por este mes, el mes pasado y el siguiente, los últimos 30 días de la meta y un rango de fechas, para que los retos largos sigan siendo ágiles.
+
 ## 0.18.0
 - Retos de ahorro: un juego de ahorro con importes diarios que se duplican por niveles o crecen de forma lineal, con redondeo opcional.
 - Elige una cuenta o bolsillo de destino y cada día mueve el dinero allí desde la cuenta o bolsillo que indiques.

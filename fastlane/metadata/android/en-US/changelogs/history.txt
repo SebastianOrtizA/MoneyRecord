@@ -1,3 +1,8 @@
+## 0.18.1
+- Savings challenges: round each day to 5, 50 or 500 too, handy for currencies like the Colombian peso.
+- New "Same every day" mode: split the goal evenly over the days, or set the amount per day and the app works out how many days it takes. The last day takes what is left.
+- The challenge page opens on the next 30 days, with filters for this, last and next month, the goal's last 30 days and a date range, so long challenges stay light.
+
 ## 0.18.0
 - Savings challenges: a savings game with daily amounts that double in levels or grow linearly, with optional rounding.
 - Pick a destination account or pocket and each day moves the money there from the account or pocket you choose.
