@@ -2847,6 +2847,9 @@ Monto: {2}</value>
   <data name="ChallengeNoDaysInView" xml:space="preserve">
     <value>No hay días que mostrar aquí.</value>
   </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · días {2}–{3} de {4}</value>
+  </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
     <value>DÃ­a {0}, {1}, {2}</value>
   </data>

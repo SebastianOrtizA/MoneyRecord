@@ -2850,6 +2850,9 @@ Amount: {2}</value>
   <data name="ChallengeNoDaysInView" xml:space="preserve">
     <value>No days to show here.</value>
   </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · days {2}–{3} of {4}</value>
+  </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
     <value>Day {0}, {1}, {2}</value>
   </data>

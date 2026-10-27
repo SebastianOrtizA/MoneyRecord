@@ -33,6 +33,20 @@ public class ChallengeDayFilterTests
     }
 
     [Fact]
+    public void A_pinned_start_keeps_the_window_still_when_the_first_day_is_marked()
+    {
+        var before = Days(100);
+        var anchor = ChallengeDayFilter.FirstPendingDay(before);
+        var after = Days(100, 1);
+
+        anchor.Should().Be(1);
+        Numbers(ChallengeDayFilter.Select(after, ChallengeView.Next30, Start, null, null, false, anchor)).Should().Equal(Enumerable.Range(1, 30));
+        Numbers(ChallengeDayFilter.Select(after, ChallengeView.Next30, Start, null, null, false)).Should().Equal(Enumerable.Range(2, 30));
+        ChallengeDayFilter.FirstPendingDay(after).Should().Be(2);
+        ChallengeDayFilter.FirstPendingDay(Days(3, 1, 2, 3)).Should().BeNull();
+    }
+
+    [Fact]
     public void A_short_challenge_shows_all_its_days()
     {
         Numbers(ChallengeDayFilter.Select(Days(10), ChallengeView.Next30, Start, null, null, false)).Should().HaveCount(10);

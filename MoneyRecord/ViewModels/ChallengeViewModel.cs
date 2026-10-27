@@ -48,6 +48,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isActive;
 
+        /// <summary>False for a month view that holds no day of the challenge: the chip is hidden.</summary>
+        [ObservableProperty]
+        private bool isAvailable = true;
+
         [RelayCommand]
         private void Select() => select(View);
     }
@@ -65,6 +69,8 @@ namespace MoneyRecord.ViewModels
 
         private List<ChallengeDayInfo> _days = [];
         private bool _rangeSet;
+        // Where the Next 30 days window starts: pinned for the visit, so marking a day does not slide it away
+        private int? _anchorDay;
 
         public string? ChallengeIdText { get; set; }
 
@@ -98,8 +104,17 @@ namespace MoneyRecord.ViewModels
         {
             foreach (var chip in ViewChips)
                 chip.IsActive = chip.View == value;
+            if (value == ChallengeView.Next30)
+                _anchorDay = ChallengeDayFilter.FirstPendingDay(_days);
             ApplyFilter();
         }
+
+        /// <summary>"Oct 26 – Nov 24 · days 1–30 of 365": what the grid shows.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasShowing))]
+        private string showingText = string.Empty;
+
+        public bool HasShowing => ShowingText.Length > 0;
 
         [ObservableProperty]
         private DateTime rangeFrom = DateTime.Today;
@@ -135,7 +150,13 @@ namespace MoneyRecord.ViewModels
             ];
         }
 
-        public Task InitializeAsync() => LoadCommand.ExecuteAsync(null);
+        public Task InitializeAsync()
+        {
+            // A new visit starts the window (and the range) at the first day not done again
+            _anchorDay = null;
+            _rangeSet = false;
+            return LoadCommand.ExecuteAsync(null);
+        }
 
         [RelayCommand(AllowConcurrentExecutions = true)]
         private async Task LoadAsync(CancellationToken cancellationToken)
@@ -150,13 +171,16 @@ namespace MoneyRecord.ViewModels
                 cancellationToken.ThrowIfCancellationRequested();
                 Summary = loaded;
                 _days = loaded == null ? [] : [.. loaded.Days];
+                _anchorDay ??= ChallengeDayFilter.FirstPendingDay(_days);
                 if (loaded != null && !_rangeSet)
                 {
-                    // The range starts as the whole challenge; the pickers change it
+                    // The range starts as the same 30 days as the default window; the pickers change it
                     _rangeSet = true;
-                    RangeFrom = loaded.Days[0].Date;
-                    RangeTo = loaded.Days[^1].Date;
+                    var first = Math.Clamp((_anchorDay ?? 1) - 1, 0, loaded.Days.Count - 1);
+                    RangeFrom = loaded.Days[first].Date;
+                    RangeTo = loaded.Days[Math.Min(first + ChallengeDayFilter.WindowDays - 1, loaded.Days.Count - 1)].Date;
                 }
+                UpdateChipAvailability();
                 ApplyFilter();
                 OnPropertyChanged(nameof(HasNoCells));
             }
@@ -186,9 +210,20 @@ namespace MoneyRecord.ViewModels
                 return;
             }
             var today = _time.GetLocalNow().Date;
-            Cells = ChallengeDayFilter.Select(_days, SelectedView, today, RangeFrom, RangeTo, ShowRemainingOnly)
-                .Select(d => new ChallengeCell(d, challenge.CurrencyCode, today))
-                .ToList();
+            var shown = ChallengeDayFilter.Select(_days, SelectedView, today, RangeFrom, RangeTo, ShowRemainingOnly, _anchorDay);
+            Cells = shown.Select(d => new ChallengeCell(d, challenge.CurrencyCode, today)).ToList();
+            ShowingText = shown.Count == 0
+                ? string.Empty
+                : string.Format(AppResources.ChallengeShowing, DateFormatter.Format(shown[0].Date, DateStyle.MonthDay),
+                    DateFormatter.Format(shown[^1].Date, DateStyle.MonthDay), shown[0].DayNumber, shown[^1].DayNumber, _days.Count);
+        }
+
+        /// <summary>The month chips hide while the challenge has no day in that month.</summary>
+        private void UpdateChipAvailability()
+        {
+            var today = _time.GetLocalNow().Date;
+            foreach (var chip in ViewChips.Where(c => c.View is ChallengeView.ThisMonth or ChallengeView.LastMonth or ChallengeView.NextMonth))
+                chip.IsAvailable = ChallengeDayFilter.Select(_days, chip.View, today, null, null, false).Count > 0;
         }
 
         private void SelectView(ChallengeView view) => SelectedView = view;

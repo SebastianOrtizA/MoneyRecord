@@ -37,17 +37,18 @@
                             <Label Text="{Binding Fraction, StringFormat='{0:P0}'}" FontSize="14" />
                         </VerticalStackLayout>
                     </Border>
-                    <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
-                        <HorizontalStackLayout BindableLayout.ItemsSource="{Binding ViewChips}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
-                                    <controls:FilterChip Text="{Binding Label}"
-                                                         IsActive="{Binding IsActive}"
-                                                         Command="{Binding SelectCommand}" />
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </HorizontalStackLayout>
-                    </ScrollView>
+                    <!-- Wraps, so every view is in sight (a scrolling row hid Date range off screen) -->
+                    <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding ViewChips}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
+                                <controls:FilterChip Text="{Binding Label}"
+                                                     IsActive="{Binding IsActive}"
+                                                     IsVisible="{Binding IsAvailable}"
+                                                     Margin="0,0,6,6"
+                                                     Command="{Binding SelectCommand}" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" IsVisible="{Binding IsRangeView}">
                         <Label Text="{ext:Localize ChallengeRangeFrom}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                         <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
@@ -58,6 +59,8 @@
                                          IsActive="{Binding ShowRemainingOnly}"
                                          Command="{Binding ToggleRemainingOnlyCommand}"
                                          HorizontalOptions="Start" />
+                    <Label Text="{Binding ShowingText}" IsVisible="{Binding HasShowing}"
+                           FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                 </VerticalStackLayout>
             </CollectionView.Header>
 
