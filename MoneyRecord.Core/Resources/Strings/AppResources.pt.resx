@@ -606,7 +606,7 @@ Valor: {2}</value>
     <value>Resumo do orçamento</value>
   </data>
   <data name="OnTrack" xml:space="preserve">
-    <value>No caminho certo</value>
+    <value>Em dia</value>
   </data>
   <data name="OverBudget" xml:space="preserve">
     <value>Acima do orçamento</value>
