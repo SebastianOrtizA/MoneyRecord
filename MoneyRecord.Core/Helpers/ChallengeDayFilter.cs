@@ -50,16 +50,33 @@ namespace MoneyRecord.Helpers
                     selected = days.Where(d => (from == null || d.Date.Date >= from.Value.Date) && (to == null || d.Date.Date <= to.Value.Date));
                     break;
                 default:
-                    var first = startDay is { } start ? Math.Clamp(start - 1, 0, Math.Max(0, days.Count - 1)) : days.ToList().FindIndex(d => !d.IsDone);
+                    var first = startDay is { } start ? Math.Clamp(start - 1, 0, Math.Max(0, days.Count - 1)) : FirstPendingIndex(days);
                     selected = first < 0 ? days.Skip(Math.Max(0, days.Count - WindowDays)) : days.Skip(first).Take(WindowDays);
                     break;
             }
             return (remainingOnly ? selected.Where(d => !d.IsDone) : selected).ToList();
         }
 
+        /// <summary>Whether a month view (this, last or next month) holds any day; other views always do.</summary>
+        public static bool HasDays(IReadOnlyList<ChallengeDayInfo> days, ChallengeView view, DateTime today) => view switch
+        {
+            ChallengeView.ThisMonth => InMonth(days, today).Any(),
+            ChallengeView.LastMonth => InMonth(days, today.AddMonths(-1)).Any(),
+            ChallengeView.NextMonth => InMonth(days, today.AddMonths(1)).Any(),
+            _ => days.Count > 0
+        };
+
         /// <summary>The number of the first day not done, or null when every day is done.</summary>
         public static int? FirstPendingDay(IReadOnlyList<ChallengeDayInfo> days) =>
             days.FirstOrDefault(d => !d.IsDone)?.DayNumber;
+
+        private static int FirstPendingIndex(IReadOnlyList<ChallengeDayInfo> days)
+        {
+            for (var i = 0; i < days.Count; i++)
+                if (!days[i].IsDone)
+                    return i;
+            return -1;
+        }
 
         private static IEnumerable<ChallengeDayInfo> InMonth(IReadOnlyList<ChallengeDayInfo> days, DateTime month) =>
             days.Where(d => d.Date.Year == month.Year && d.Date.Month == month.Month);

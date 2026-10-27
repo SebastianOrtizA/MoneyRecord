@@ -73,6 +73,11 @@ namespace MoneyRecord.Services
                     throw new InvalidOperationException("A challenge needs at least one day.");
                 if (challenge.GoalCents <= 0)
                     throw new InvalidOperationException("The goal must be more than zero.");
+                // A fixed daily amount belongs to the Equal mode and decides the days
+                if (challenge.DayAmountCents > 0 && challenge.Mode != ChallengeMode.Equal)
+                    throw new InvalidOperationException("A daily amount only goes with the same-every-day mode.");
+                if (challenge.DayAmountCents > 0 && challenge.Days != ChallengePlan.DaysFor(challenge.GoalCents, challenge.DayAmountCents))
+                    throw new InvalidOperationException("The days must be what the daily amount needs to reach the goal.");
 
                 // A pocket decides its account
                 if (challenge.ToPocketId is { } pocketId)

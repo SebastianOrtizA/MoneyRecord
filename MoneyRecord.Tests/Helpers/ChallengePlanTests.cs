@@ -98,6 +98,33 @@ public class ChallengePlanTests
     }
 
     [Fact]
+    public void Equal_rounds_down_instead_when_rounding_up_would_leave_no_room_for_the_last_day()
+    {
+        // 1,000 in 7 days with a step of 100: rounding up gives 200 a day (1,200 over); down gives 100 x 6 + 400
+        var plan = ChallengePlan.Build(100_000, 7, ChallengeMode.Equal, 10_000);
+
+        plan.DayCents.Should().Equal(10_000, 10_000, 10_000, 10_000, 10_000, 10_000, 40_000);
+        plan.TotalCents.Should().Be(100_000);
+    }
+
+    [Fact]
+    public void A_step_bigger_than_the_goal_allows_still_saves_one_step_a_day()
+    {
+        var plan = ChallengePlan.Build(10_000, 3, ChallengeMode.Equal, 5_000);
+
+        plan.DayCents.Should().Equal(5_000, 5_000, 5_000);
+    }
+
+    [Fact]
+    public void A_fixed_daily_amount_ignores_the_rounding()
+    {
+        var plan = ChallengePlan.Build(103_200_000, 207, ChallengeMode.Equal, 5_000_000, 500_000);
+
+        plan.DayCents[^1].Should().Be(200_000);
+        plan.TotalCents.Should().Be(103_200_000);
+    }
+
+    [Fact]
     public void A_fixed_daily_amount_sets_the_days_and_the_last_day_is_the_remainder()
     {
         DaysFor(103_200_000, 500_000).Should().Be(207);

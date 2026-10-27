@@ -84,11 +84,31 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private string formDays = "30";
 
-        partial void OnFormDaysChanged(string value) => UpdatePreview();
+        partial void OnFormDaysChanged(string value)
+        {
+            OnPropertyChanged(nameof(DaysEntryText));
+            UpdatePreview();
+        }
+
+        /// <summary>The days a typed daily amount needs to reach the goal; empty while that can't be worked out.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(DaysEntryText))]
+        private string derivedDays = string.Empty;
+
+        /// <summary>What the days entry shows: the typed days, or (read-only) the days the daily amount needs.</summary>
+        public string DaysEntryText
+        {
+            get => UsesDayAmount ? DerivedDays : FormDays;
+            set
+            {
+                if (!UsesDayAmount)
+                    FormDays = value;
+            }
+        }
 
         /// <summary>Equal mode: the fixed amount a day; empty = the goal split over the days.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(UsesDayAmount), nameof(IsDaysEditable), nameof(ShowRounding))]
+        [NotifyPropertyChangedFor(nameof(UsesDayAmount), nameof(IsDaysEditable), nameof(ShowRounding), nameof(DaysEntryText))]
         private string formDayAmount = string.Empty;
 
         partial void OnFormDayAmountChanged(string value) => UpdatePreview();
@@ -134,6 +154,7 @@ namespace MoneyRecord.ViewModels
             OnPropertyChanged(nameof(UsesDayAmount));
             OnPropertyChanged(nameof(IsDaysEditable));
             OnPropertyChanged(nameof(ShowRounding));
+            OnPropertyChanged(nameof(DaysEntryText));
             UpdatePreview();
         }
 
@@ -290,9 +311,10 @@ namespace MoneyRecord.ViewModels
             FormGoal = challenge.Goal.ToString();
             FormDays = challenge.Days.ToString();
             FormStartDate = challenge.StartDate;
-            FormDayAmount = challenge.DayAmountCents > 0 ? Money.FromCents(challenge.DayAmountCents).ToString() : string.Empty;
+            // The mode first: a daily amount only counts in the Equal mode
             SelectedMode = Modes.First(m => m.Mode == challenge.Mode);
             SelectedRounding = Roundings.FirstOrDefault(r => r.Cents == challenge.RoundingCents) ?? Roundings[0];
+            FormDayAmount = challenge.DayAmountCents > 0 ? Money.FromCents(challenge.DayAmountCents).ToString() : string.Empty;
             OpenForm(challenge.CurrencyCode, challenge.ToPocketId != null ? ChallengePlace.Pocket(challenge.ToPocketId.Value)
                 : challenge.ToAccountId != null ? ChallengePlace.Account(challenge.ToAccountId.Value) : null);
         }
@@ -325,10 +347,10 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>
-        /// The days and the daily amount (cents, 0 = none) the form means. A typed daily amount decides the days: they are
-        /// written back into the days field.
+        /// The days and the daily amount (cents, 0 = none) the form means: a typed daily amount decides the days, otherwise the
+        /// days typed. Reads the form only.
         /// </summary>
-        private bool TrySyncDays(decimal goal, out int days, out long dayAmountCents)
+        private bool TryGetDays(decimal goal, out int days, out long dayAmountCents)
         {
             dayAmountCents = 0;
             days = 0;
@@ -339,21 +361,20 @@ namespace MoneyRecord.ViewModels
                     return false;
                 dayAmountCents = Money.ToCents(amount);
                 days = ChallengePlan.DaysFor(Money.ToCents(goal), dayAmountCents);
-                if (days > MaxDays)
-                    return false;
-                if (FormDays != days.ToString())
-                    FormDays = days.ToString();
-                return true;
+                return days <= MaxDays;
             }
             return int.TryParse(FormDays, out days) && days >= 1 && days <= MaxDays;
         }
 
         private void UpdatePreview()
         {
-            PreviewDaysText = PreviewTotalText = LevelsWarningText = string.Empty;
+            PreviewDaysText = PreviewTotalText = LevelsWarningText = DerivedDays = string.Empty;
             var goal = AmountParser.Parse(FormGoal, FormCurrency);
-            if (goal <= 0 || !Money.IsInRange(goal) || !TrySyncDays(goal, out var days, out var dayAmountCents))
+            if (goal <= 0 || !Money.IsInRange(goal) || !TryGetDays(goal, out var days, out var dayAmountCents))
                 return;
+
+            if (UsesDayAmount)
+                DerivedDays = days.ToString();
 
             var goalCents = Money.ToCents(goal);
             var plan = ChallengePlan.Build(goalCents, days, SelectedMode.Mode, SelectedRounding.Cents, dayAmountCents);
@@ -406,7 +427,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            if (!TrySyncDays(goal, out var days, out var dayAmountCents))
+            if (!TryGetDays(goal, out var days, out var dayAmountCents))
             {
                 await _errorHandler.HandleAsync(UsesDayAmount && dayAmountCents == 0 ? AppResources.PleaseEnterValidAmount : AppResources.PleaseEnterChallengeDays);
                 return;
@@ -422,7 +443,7 @@ namespace MoneyRecord.ViewModels
                 StartDate = FormStartDate.Date,
                 Days = days,
                 Mode = SelectedMode.Mode,
-                RoundingCents = SelectedRounding.Cents,
+                RoundingCents = dayAmountCents > 0 ? 0 : SelectedRounding.Cents,
                 DayAmountCents = dayAmountCents,
                 ToAccountId = Destination?.Place?.AccountId,
                 ToPocketId = Destination?.Place?.PocketId,

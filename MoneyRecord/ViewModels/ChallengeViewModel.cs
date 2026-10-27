@@ -67,7 +67,7 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly TimeProvider _time;
 
-        private List<ChallengeDayInfo> _days = [];
+        private IReadOnlyList<ChallengeDayInfo> _days = [];
         private bool _rangeSet;
         // Where the Next 30 days window starts: pinned for the visit, so marking a day does not slide it away
         private int? _anchorDay;
@@ -119,12 +119,25 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private DateTime rangeFrom = DateTime.Today;
 
-        partial void OnRangeFromChanged(DateTime value) => ApplyFilter();
+        partial void OnRangeFromChanged(DateTime value)
+        {
+            // The range never runs backwards: moving From past To drags To along
+            if (value > RangeTo)
+                RangeTo = value;
+            else
+                ApplyFilter();
+        }
 
         [ObservableProperty]
         private DateTime rangeTo = DateTime.Today;
 
-        partial void OnRangeToChanged(DateTime value) => ApplyFilter();
+        partial void OnRangeToChanged(DateTime value)
+        {
+            if (value < RangeFrom)
+                RangeFrom = value;
+            else
+                ApplyFilter();
+        }
 
         [ObservableProperty]
         private bool showRemainingOnly;
@@ -170,7 +183,7 @@ namespace MoneyRecord.ViewModels
                 var loaded = await _challengeService.GetSummaryAsync(id);
                 cancellationToken.ThrowIfCancellationRequested();
                 Summary = loaded;
-                _days = loaded == null ? [] : [.. loaded.Days];
+                _days = loaded?.Days ?? [];
                 _anchorDay ??= ChallengeDayFilter.FirstPendingDay(_days);
                 if (loaded != null && !_rangeSet)
                 {
@@ -223,7 +236,10 @@ namespace MoneyRecord.ViewModels
         {
             var today = _time.GetLocalNow().Date;
             foreach (var chip in ViewChips.Where(c => c.View is ChallengeView.ThisMonth or ChallengeView.LastMonth or ChallengeView.NextMonth))
-                chip.IsAvailable = ChallengeDayFilter.Select(_days, chip.View, today, null, null, false).Count > 0;
+                chip.IsAvailable = ChallengeDayFilter.HasDays(_days, chip.View, today);
+            // A month view that has run out (a reload after the month changed) falls back to the default window
+            if (ViewChips.Any(c => c.View == SelectedView && !c.IsAvailable))
+                SelectedView = ChallengeView.Next30;
         }
 
         private void SelectView(ChallengeView view) => SelectedView = view;

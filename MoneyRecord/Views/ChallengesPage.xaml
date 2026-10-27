@@ -188,7 +188,7 @@
                     <Label Text="{ext:Localize ChallengeDays}" Style="{StaticResource FormCaption}" />
                     <Label Grid.Column="1" Text="{ext:Localize ChallengeStartDate}" Style="{StaticResource FormCaption}" />
                     <Entry Grid.Row="1"
-                           Text="{Binding FormDays}"
+                           Text="{Binding DaysEntryText}"
                            Keyboard="Numeric"
                            MaxLength="4"
                            IsEnabled="{Binding IsDaysEditable}"
