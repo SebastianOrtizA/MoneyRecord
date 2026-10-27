@@ -36,7 +36,7 @@
                         <Label Text="{ext:Localize Language}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                         <Picker ItemsSource="{Binding Languages}"
                                 ItemDisplayBinding="{Binding Name, x:DataType=models:LanguageOption}"
-                                SelectedItem="{Binding SelectedLanguage}"
+                                SelectedIndex="{Binding SelectedLanguageIndex}"
                                 Title="{ext:Localize Language}"
                                 FontSize="16"
                                 MinimumHeightRequest="44"/>

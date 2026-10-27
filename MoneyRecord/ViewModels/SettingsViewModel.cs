@@ -90,8 +90,13 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private IReadOnlyList<LanguageOption> languages = LanguageOption.All();
 
+        /// <summary>
+        /// The Language picker's position in <see cref="Languages"/>. By index, not by item: the lists are rebuilt in the
+        /// new language, and an item bound to a picker whose list was just replaced made MAUI's Picker flip the selection
+        /// between the item and null forever (UI thread at 100%, an ANR) when "System default" changed the language.
+        /// </summary>
         [ObservableProperty]
-        private LanguageOption? selectedLanguage;
+        private int selectedLanguageIndex = -1;
 
         [ObservableProperty]
         private IReadOnlyList<ThemeOption> themes = ThemeOption.All();
@@ -164,7 +169,7 @@ namespace MoneyRecord.ViewModels
 
         private void SelectPickers()
         {
-            SelectedLanguage = Languages.First(l => l.Code == _localization.LanguageSetting);
+            SelectedLanguageIndex = IndexOfLanguage(_localization.LanguageSetting);
             SelectedTheme = Themes.First(t => t.Choice == _themeService.Current);
             SelectedBillReminder = BillReminderOptions.FirstOrDefault(o => o.DaysBefore == _reminderSettings.BillDaysBefore)
                 ?? BillReminderOptions[0];
@@ -172,12 +177,23 @@ namespace MoneyRecord.ViewModels
                 ?? LockDelayOptions[0];
         }
 
-        partial void OnSelectedLanguageChanged(LanguageOption? value)
+        private int IndexOfLanguage(string code)
         {
-            if (value == null || value.Code == _localization.LanguageSetting)
+            for (var i = 0; i < Languages.Count; i++)
+            {
+                if (Languages[i].Code == code)
+                    return i;
+            }
+            return -1;
+        }
+
+        partial void OnSelectedLanguageIndexChanged(int value)
+        {
+            // -1 = the picker emptied itself while its list was replaced
+            if (value < 0 || value >= Languages.Count || Languages[value].Code == _localization.LanguageSetting)
                 return;
 
-            _localization.SetLanguage(value.Code, _preferences);
+            _localization.SetLanguage(Languages[value].Code, _preferences);
 
             // The pickers' "System default" / theme names are translated too
             Languages = LanguageOption.All();
