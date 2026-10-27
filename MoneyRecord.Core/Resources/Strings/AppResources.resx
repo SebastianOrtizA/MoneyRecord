@@ -2736,6 +2736,21 @@ Amount: {2}</value>
   <data name="ChallengeModeLinear" xml:space="preserve">
     <value>Linear (1, 2, 3, 4…)</value>
   </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>Same every day</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>Amount per day (optional)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>Empty = split over the days</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>{0} every day</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>{0} a day · last day {1}</value>
+  </data>
   <data name="ChallengeRounding" xml:space="preserve">
     <value>Round each day</value>
   </data>
@@ -2807,6 +2822,36 @@ Amount: {2}</value>
   </data>
   <data name="ChallengeRemainingOnly" xml:space="preserve">
     <value>Remaining only</value>
+  </data>
+  <data name="ChallengeViewNext30" xml:space="preserve">
+    <value>Next 30 days</value>
+  </data>
+  <data name="ChallengeViewThisMonth" xml:space="preserve">
+    <value>This month</value>
+  </data>
+  <data name="ChallengeViewLastMonth" xml:space="preserve">
+    <value>Last month</value>
+  </data>
+  <data name="ChallengeViewNextMonth" xml:space="preserve">
+    <value>Next month</value>
+  </data>
+  <data name="ChallengeViewGoalEnd" xml:space="preserve">
+    <value>Goal's last 30 days</value>
+  </data>
+  <data name="ChallengeViewRange" xml:space="preserve">
+    <value>Date range</value>
+  </data>
+  <data name="ChallengeRangeFrom" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="ChallengeRangeTo" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="ChallengeNoDaysInView" xml:space="preserve">
+    <value>No days to show here.</value>
+  </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · days {2}–{3} of {4}</value>
   </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
     <value>Day {0}, {1}, {2}</value>

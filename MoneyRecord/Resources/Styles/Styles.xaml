@@ -494,6 +494,12 @@
         <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
     </Style>
 
+    <!-- Secondary text: a caption or a note under a control -->
+    <Style x:Key="MutedLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+    </Style>
+
     <Style x:Key="ReportHeadline" TargetType="Label">
         <Setter Property="FontSize" Value="26" />
         <Setter Property="FontAttributes" Value="Bold" />

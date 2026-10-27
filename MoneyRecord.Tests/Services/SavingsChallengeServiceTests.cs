@@ -270,6 +270,39 @@ public sealed class SavingsChallengeServiceTests : IAsyncLifetime
 
         challenge.Days = 40;
         await _sut.Invoking(s => s.SaveAsync(challenge)).Should().ThrowAsync<InvalidOperationException>();
+
+    }
+
+    [Fact]
+    public async Task A_daily_amount_is_locked_with_the_plan_once_a_day_is_done()
+    {
+        var challenge = Challenge(mode: ChallengeMode.Equal);
+        challenge.DayAmountCents = 1_550;
+        await _sut.SaveAsync(challenge);
+        await _sut.MarkDoneAsync(challenge.Id, 1, null);
+
+        // Consistent (15 days of 3,100 reach the goal), so it is the lock that refuses it
+        challenge.DayAmountCents = 3_100;
+        challenge.Days = 15;
+        await _sut.Invoking(s => s.SaveAsync(challenge)).Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task A_daily_amount_needs_the_equal_mode_and_the_days_it_works_out_to()
+    {
+        var linear = Challenge();
+        linear.DayAmountCents = 1_550;
+        await _sut.Invoking(s => s.SaveAsync(linear)).Should().ThrowAsync<InvalidOperationException>();
+
+        var tooFewDays = Challenge(mode: ChallengeMode.Equal);
+        tooFewDays.DayAmountCents = 1_000;
+        await _sut.Invoking(s => s.SaveAsync(tooFewDays)).Should().ThrowAsync<InvalidOperationException>();
+
+        var right = Challenge(mode: ChallengeMode.Equal);
+        right.DayAmountCents = 1_000;
+        right.Days = 47;
+        await _sut.SaveAsync(right);
+        (await _sut.GetSummaryAsync(right.Id))!.TotalCents.Should().Be(46_500);
     }
 
     [Fact]
