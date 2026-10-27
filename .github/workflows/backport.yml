@@ -31,8 +31,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           failed=0
-          IFS='|'
-          for label in $LABELS; do
+          labels=$(printf '%s' "$LABELS" | tr '|' '\n')
+          # One label per line, read on fd 3 so the commands inside the loop never touch it (and IFS stays untouched)
+          while IFS= read -r label <&3; do
             case "$label" in "backport release/"*) ;; *) continue ;; esac
             branch=${label#backport }
             if ! git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
@@ -50,5 +51,5 @@ jobs:
               gh pr comment "$PR" --body "Backport to \`$branch\` failed. By hand: \`git checkout $branch && $pick && git push\`."
               failed=1
             fi
-          done
+          done 3<<< "$labels"
           exit $failed
