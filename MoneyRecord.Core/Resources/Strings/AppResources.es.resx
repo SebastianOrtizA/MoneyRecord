@@ -2820,6 +2820,33 @@ Monto: {2}</value>
   <data name="ChallengeRemainingOnly" xml:space="preserve">
     <value>Solo pendientes</value>
   </data>
+  <data name="ChallengeViewNext30" xml:space="preserve">
+    <value>Próximos 30 días</value>
+  </data>
+  <data name="ChallengeViewThisMonth" xml:space="preserve">
+    <value>Este mes</value>
+  </data>
+  <data name="ChallengeViewLastMonth" xml:space="preserve">
+    <value>Mes pasado</value>
+  </data>
+  <data name="ChallengeViewNextMonth" xml:space="preserve">
+    <value>Mes siguiente</value>
+  </data>
+  <data name="ChallengeViewGoalEnd" xml:space="preserve">
+    <value>Últimos 30 días de la meta</value>
+  </data>
+  <data name="ChallengeViewRange" xml:space="preserve">
+    <value>Rango de fechas</value>
+  </data>
+  <data name="ChallengeRangeFrom" xml:space="preserve">
+    <value>Desde</value>
+  </data>
+  <data name="ChallengeRangeTo" xml:space="preserve">
+    <value>Hasta</value>
+  </data>
+  <data name="ChallengeNoDaysInView" xml:space="preserve">
+    <value>No hay días que mostrar aquí.</value>
+  </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
     <value>DÃ­a {0}, {1}, {2}</value>
   </data>

@@ -38,6 +38,20 @@ namespace MoneyRecord.ViewModels
         public bool IsMissed { get; }
     }
 
+    /// <summary>A filter chip: which days the grid shows.</summary>
+    public sealed partial class ChallengeViewChip(ChallengeView view, string label, Action<ChallengeView> select) : ObservableObject
+    {
+        public ChallengeView View { get; } = view;
+
+        public string Label { get; } = label;
+
+        [ObservableProperty]
+        private bool isActive;
+
+        [RelayCommand]
+        private void Select() => select(View);
+    }
+
     /// <summary>One challenge as a game: a grid with a cell per day; a tap marks it done or not.</summary>
     [QueryProperty(nameof(ChallengeIdText), "ChallengeId")]
     public partial class ChallengeViewModel : ObservableObject
@@ -49,7 +63,8 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly TimeProvider _time;
 
-        private List<ChallengeCell> _cells = [];
+        private List<ChallengeDayInfo> _days = [];
+        private bool _rangeSet;
 
         public string? ChallengeIdText { get; set; }
 
@@ -64,9 +79,37 @@ namespace MoneyRecord.ViewModels
 
         public string Title => Summary?.Name ?? AppResources.SavingsChallenges;
 
-        /// <summary>The grid: every day, or only those not done while <see cref="ShowRemainingOnly"/>.</summary>
+        /// <summary>The grid: the days of the chosen view (30 days from the first not done by default), or only those not done while <see cref="ShowRemainingOnly"/>.</summary>
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasNoCells))]
         private List<ChallengeCell> cells = [];
+
+        public bool HasNoCells => HasChallenge && Cells.Count == 0;
+
+        public IReadOnlyList<ChallengeViewChip> ViewChips { get; private set; }
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsRangeView))]
+        private ChallengeView selectedView = ChallengeView.Next30;
+
+        public bool IsRangeView => SelectedView == ChallengeView.DateRange;
+
+        partial void OnSelectedViewChanged(ChallengeView value)
+        {
+            foreach (var chip in ViewChips)
+                chip.IsActive = chip.View == value;
+            ApplyFilter();
+        }
+
+        [ObservableProperty]
+        private DateTime rangeFrom = DateTime.Today;
+
+        partial void OnRangeFromChanged(DateTime value) => ApplyFilter();
+
+        [ObservableProperty]
+        private DateTime rangeTo = DateTime.Today;
+
+        partial void OnRangeToChanged(DateTime value) => ApplyFilter();
 
         [ObservableProperty]
         private bool showRemainingOnly;
@@ -81,6 +124,15 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _time = time;
+            ViewChips =
+            [
+                new(ChallengeView.Next30, AppResources.ChallengeViewNext30, SelectView) { IsActive = true },
+                new(ChallengeView.ThisMonth, AppResources.ChallengeViewThisMonth, SelectView),
+                new(ChallengeView.LastMonth, AppResources.ChallengeViewLastMonth, SelectView),
+                new(ChallengeView.NextMonth, AppResources.ChallengeViewNextMonth, SelectView),
+                new(ChallengeView.GoalEnd, AppResources.ChallengeViewGoalEnd, SelectView),
+                new(ChallengeView.DateRange, AppResources.ChallengeViewRange, SelectView)
+            ];
         }
 
         public Task InitializeAsync() => LoadCommand.ExecuteAsync(null);
@@ -97,11 +149,16 @@ namespace MoneyRecord.ViewModels
                 var loaded = await _challengeService.GetSummaryAsync(id);
                 cancellationToken.ThrowIfCancellationRequested();
                 Summary = loaded;
-                var today = _time.GetLocalNow().Date;
-                _cells = loaded == null
-                    ? []
-                    : loaded.Days.Select(d => new ChallengeCell(d, loaded.Challenge.CurrencyCode, today)).ToList();
+                _days = loaded == null ? [] : [.. loaded.Days];
+                if (loaded != null && !_rangeSet)
+                {
+                    // The range starts as the whole challenge; the pickers change it
+                    _rangeSet = true;
+                    RangeFrom = loaded.Days[0].Date;
+                    RangeTo = loaded.Days[^1].Date;
+                }
                 ApplyFilter();
+                OnPropertyChanged(nameof(HasNoCells));
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -119,7 +176,22 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private void ApplyFilter() => Cells = ShowRemainingOnly ? _cells.Where(c => !c.IsDone).ToList() : _cells;
+        /// <summary>Only the cells of the shown days are built: a long challenge stays light.</summary>
+        private void ApplyFilter()
+        {
+            var challenge = Summary?.Challenge;
+            if (challenge == null)
+            {
+                Cells = [];
+                return;
+            }
+            var today = _time.GetLocalNow().Date;
+            Cells = ChallengeDayFilter.Select(_days, SelectedView, today, RangeFrom, RangeTo, ShowRemainingOnly)
+                .Select(d => new ChallengeCell(d, challenge.CurrencyCode, today))
+                .ToList();
+        }
+
+        private void SelectView(ChallengeView view) => SelectedView = view;
 
         [RelayCommand]
         private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;

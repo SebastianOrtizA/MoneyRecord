@@ -7974,6 +7974,87 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next 30 days.
+        /// </summary>
+        public static string ChallengeViewNext30 {
+            get {
+                return ResourceManager.GetString("ChallengeViewNext30", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This month.
+        /// </summary>
+        public static string ChallengeViewThisMonth {
+            get {
+                return ResourceManager.GetString("ChallengeViewThisMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last month.
+        /// </summary>
+        public static string ChallengeViewLastMonth {
+            get {
+                return ResourceManager.GetString("ChallengeViewLastMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next month.
+        /// </summary>
+        public static string ChallengeViewNextMonth {
+            get {
+                return ResourceManager.GetString("ChallengeViewNextMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Goal's last 30 days.
+        /// </summary>
+        public static string ChallengeViewGoalEnd {
+            get {
+                return ResourceManager.GetString("ChallengeViewGoalEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date range.
+        /// </summary>
+        public static string ChallengeViewRange {
+            get {
+                return ResourceManager.GetString("ChallengeViewRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From.
+        /// </summary>
+        public static string ChallengeRangeFrom {
+            get {
+                return ResourceManager.GetString("ChallengeRangeFrom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To.
+        /// </summary>
+        public static string ChallengeRangeTo {
+            get {
+                return ResourceManager.GetString("ChallengeRangeTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No days to show here..
+        /// </summary>
+        public static string ChallengeNoDaysInView {
+            get {
+                return ResourceManager.GetString("ChallengeNoDaysInView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Day {0}, {1}, {2}.
         /// </summary>
         public static string ChallengeDayDescription {

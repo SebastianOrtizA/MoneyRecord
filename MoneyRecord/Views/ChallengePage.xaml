@@ -38,12 +38,26 @@
                         </VerticalStackLayout>
                     </Border>
                     <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
-                        <HorizontalStackLayout>
-                            <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
-                                                 IsActive="{Binding ShowRemainingOnly}"
-                                                 Command="{Binding ToggleRemainingOnlyCommand}" />
+                        <HorizontalStackLayout BindableLayout.ItemsSource="{Binding ViewChips}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
+                                    <controls:FilterChip Text="{Binding Label}"
+                                                         IsActive="{Binding IsActive}"
+                                                         Command="{Binding SelectCommand}" />
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
                         </HorizontalStackLayout>
                     </ScrollView>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" IsVisible="{Binding IsRangeView}">
+                        <Label Text="{ext:Localize ChallengeRangeFrom}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
+                        <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
+                    </Grid>
+                    <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
+                                         IsActive="{Binding ShowRemainingOnly}"
+                                         Command="{Binding ToggleRemainingOnlyCommand}"
+                                         HorizontalOptions="Start" />
                 </VerticalStackLayout>
             </CollectionView.Header>
 
@@ -98,6 +112,10 @@
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <Label Text="{ext:Localize ChallengeNoDaysInView}" HorizontalTextAlignment="Center" Margin="16,24" IsVisible="{Binding HasNoCells}" />
+            </CollectionView.EmptyView>
 
             <CollectionView.Footer>
                 <ContentView HeightRequest="24" />
