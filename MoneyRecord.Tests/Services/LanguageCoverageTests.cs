@@ -21,16 +21,11 @@ public class LanguageCoverageTests
 
     public static IEnumerable<object[]> Languages => AppLanguage.All.Select(l => new object[] { l.Code });
 
+    // es-419 has no AppLanguage row (Latin America shares "es"), but it is a store locale of its own
     public static IEnumerable<object[]> StoreLocales =>
         new[] { "en-US", "es-ES", "es-419" }
             .Concat(AppLanguage.All.Where(l => l.Code is not ("en" or "es")).Select(l => l.DefaultCulture))
             .Select(l => new object[] { l });
-
-    [Fact]
-    public void The_language_picker_lists_every_language()
-    {
-        LocalizationService.SupportedLanguages.Should().Equal(AppLanguage.All.Select(l => l.Code));
-    }
 
     [Theory]
     [MemberData(nameof(Languages))]

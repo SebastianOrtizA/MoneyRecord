@@ -10,7 +10,7 @@ namespace MoneyRecord.Models
         public static IReadOnlyList<LanguageOption> All() =>
         [
             new(string.Empty, AppResources.SystemDefault),
-            .. LocalizationService.SupportedLanguages.Select(code => new LanguageOption(code, LocalizationService.GetLanguageName(code))),
+            .. AppLanguage.All.Select(language => new LanguageOption(language.Code, LocalizationService.GetLanguageName(language.Code))),
         ];
     }
 }

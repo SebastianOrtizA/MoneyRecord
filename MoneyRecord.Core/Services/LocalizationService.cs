@@ -17,9 +17,6 @@ namespace MoneyRecord.Services
 
         public const string LanguagePreferenceKey = "Language";
 
-        /// <summary>The languages the app is translated to; the language setting is one of these or empty (the device's).</summary>
-        public static IReadOnlyList<string> SupportedLanguages { get; } = AppLanguage.All.Select(l => l.Code).ToList();
-
         /// <summary>A language's name in that language ("English", "Español", "Português"), for a language picker.</summary>
         public static string GetLanguageName(string code)
         {
@@ -48,7 +45,7 @@ namespace MoneyRecord.Services
 
         private void ApplyLanguage(string language)
         {
-            LanguageSetting = SupportedLanguages.Contains(language) ? language : string.Empty;
+            LanguageSetting = AppLanguage.Find(language)?.Code ?? string.Empty;
             if (LanguageSetting.Length == 0)
                 SetCultureFromSystem();
             else

@@ -18,7 +18,9 @@ namespace MoneyRecord.Helpers
         // A whole number on a total row ("TOTAL 25000" in a currency without cents); longer ones are references or phones
         private const int MaxIntegerDigits = 9;
 
-        private static readonly CultureInfo[] MonthCultures = [CultureInfo.InvariantCulture, CultureInfo.GetCultureInfo("es-ES"), CultureInfo.GetCultureInfo("pt-BR"), CultureInfo.GetCultureInfo("fr-FR"), CultureInfo.GetCultureInfo("it-IT")];
+        // Every app language's month names, so a receipt in any of them reads whatever the device language is
+        private static readonly CultureInfo[] MonthCultures =
+            [CultureInfo.InvariantCulture, .. AppLanguage.All.Select(l => CultureInfo.GetCultureInfo(l.DefaultCulture))];
 
         public static ReceiptReading Read(IEnumerable<ReceiptLine> lines, DateTime today, CultureInfo? culture = null) =>
             Read(Rows(lines), today, culture);

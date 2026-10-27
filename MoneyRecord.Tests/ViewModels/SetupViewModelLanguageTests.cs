@@ -1,5 +1,6 @@
 using System.Globalization;
 using AwesomeAssertions;
+using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
@@ -32,7 +33,7 @@ public sealed class SetupViewModelLanguageTests : LanguageTestBase
     [Fact]
     public void Languages_are_the_device_default_plus_each_supported_one()
     {
-        _sut.Languages.Select(l => l.Code).Should().Equal(["", .. LocalizationService.SupportedLanguages]);
+        _sut.Languages.Select(l => l.Code).Should().Equal(["", .. AppLanguage.All.Select(l => l.Code)]);
         _sut.SelectedLanguage.Code.Should().Be("en");
     }
 
