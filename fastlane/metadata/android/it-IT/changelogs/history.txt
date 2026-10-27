@@ -1,3 +1,6 @@
+## 0.19.1
+- Corretto un blocco: scegliere "Predefinita del sistema" in Impostazioni → Lingua poteva bloccare l'app dopo aver scelto un'altra lingua.
+
 ## 0.19.0
 - MoneyRecord ora parla portoghese (Brasile), francese e italiano, oltre a inglese e spagnolo. Segue la lingua del telefono, oppure scegline una in Impostazioni → Lingua.
 - La lettura degli scontrini capisce scontrini in francese, italiano e portoghese: totali, subtotali, imposte, resto e date.
