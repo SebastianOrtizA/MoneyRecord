@@ -43,7 +43,7 @@ namespace MoneyRecord.Services
 
         private static ChallengeSummary Summarize(SavingsChallenge challenge, List<SavingsChallengeDay> done, DateTime today)
         {
-            var plan = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents);
+            var plan = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents, challenge.DayAmountCents);
             var doneByDay = done.ToDictionary(d => d.DayNumber);
             var days = new List<ChallengeDayInfo>(challenge.Days);
             for (var i = 1; i <= challenge.Days; i++)
@@ -67,10 +67,17 @@ namespace MoneyRecord.Services
                     throw new InvalidOperationException("A challenge needs a name.");
                 if (challenge.RoundingCents < 0)
                     throw new InvalidOperationException("The rounding can not be negative.");
+                if (challenge.DayAmountCents < 0)
+                    throw new InvalidOperationException("The daily amount can not be negative.");
                 if (challenge.Days < 1)
                     throw new InvalidOperationException("A challenge needs at least one day.");
                 if (challenge.GoalCents <= 0)
                     throw new InvalidOperationException("The goal must be more than zero.");
+                // A fixed daily amount belongs to the Equal mode and decides the days
+                if (challenge.DayAmountCents > 0 && challenge.Mode != ChallengeMode.Equal)
+                    throw new InvalidOperationException("A daily amount only goes with the same-every-day mode.");
+                if (challenge.DayAmountCents > 0 && challenge.Days != ChallengePlan.DaysFor(challenge.GoalCents, challenge.DayAmountCents))
+                    throw new InvalidOperationException("The days must be what the daily amount needs to reach the goal.");
 
                 // A pocket decides its account
                 if (challenge.ToPocketId is { } pocketId)
@@ -99,6 +106,7 @@ namespace MoneyRecord.Services
                 var anyDone = db.Table<SavingsChallengeDay>().Count(d => d.ChallengeId == challenge.Id) > 0;
                 if (anyDone && (current.GoalCents != challenge.GoalCents || current.Days != challenge.Days
                     || current.Mode != challenge.Mode || current.RoundingCents != challenge.RoundingCents
+                    || current.DayAmountCents != challenge.DayAmountCents
                     || !MoneyFormatter.SameCurrency(current.CurrencyCode, challenge.CurrencyCode)))
                     throw new InvalidOperationException("The plan can't change once a day is done.");
                 db.Update(challenge);
@@ -119,7 +127,7 @@ namespace MoneyRecord.Services
             if (dayNumber < 1 || dayNumber > challenge.Days)
                 throw new InvalidOperationException($"Day {dayNumber} is not in the challenge.");
 
-            var amount = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents)
+            var amount = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents, challenge.DayAmountCents)
                 .DayCents[dayNumber - 1];
             var route = source == null ? null : await ResolveRouteAsync(db, challenge, source);
             // Read outside the transaction (it is async); what the pockets hold is read inside it, with the inserts

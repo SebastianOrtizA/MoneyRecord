@@ -37,13 +37,30 @@
                             <Label Text="{Binding Fraction, StringFormat='{0:P0}'}" FontSize="14" />
                         </VerticalStackLayout>
                     </Border>
-                    <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
-                        <HorizontalStackLayout>
-                            <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
-                                                 IsActive="{Binding ShowRemainingOnly}"
-                                                 Command="{Binding ToggleRemainingOnlyCommand}" />
-                        </HorizontalStackLayout>
-                    </ScrollView>
+                    <!-- Wraps, so every view is in sight (a scrolling row hid Date range off screen) -->
+                    <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding ViewChips}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
+                                <controls:FilterChip Text="{Binding Label}"
+                                                     IsActive="{Binding IsActive}"
+                                                     IsVisible="{Binding IsAvailable}"
+                                                     Margin="0,0,6,6"
+                                                     Command="{Binding SelectCommand}" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" IsVisible="{Binding IsRangeView}">
+                        <Label Text="{ext:Localize ChallengeRangeFrom}" Style="{StaticResource MutedLabel}" />
+                        <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" Style="{StaticResource MutedLabel}" />
+                        <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
+                        <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
+                    </Grid>
+                    <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
+                                         IsActive="{Binding ShowRemainingOnly}"
+                                         Command="{Binding ToggleRemainingOnlyCommand}"
+                                         HorizontalOptions="Start" />
+                    <Label Text="{Binding ShowingText}" IsVisible="{Binding HasShowing}"
+                           Style="{StaticResource MutedLabel}" FontSize="13" />
                 </VerticalStackLayout>
             </CollectionView.Header>
 
@@ -98,6 +115,10 @@
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <Label Text="{ext:Localize ChallengeNoDaysInView}" HorizontalTextAlignment="Center" Margin="16,24" IsVisible="{Binding HasNoCells}" />
+            </CollectionView.EmptyView>
 
             <CollectionView.Footer>
                 <ContentView HeightRequest="24" />
