@@ -1,3 +1,7 @@
+## 0.19.0
+- MoneyRecord ahora habla portugués (Brasil), francés e italiano, además de inglés y español. Sigue el idioma del teléfono, o elígelo en Ajustes → Idioma.
+- El escáner de tickets entiende tickets en francés, italiano y portugués: totales, subtotales, impuestos, cambio y fechas.
+
 ## 0.18.1
 - Retos de ahorro: redondea cada día también a 5, 50 o 500, útil en monedas como el peso colombiano.
 - Nuevo modo "Igual todos los días": reparte la meta en partes iguales entre los días, o indica el importe por día y la app calcula cuántos días hacen falta. El último día lleva lo que reste.

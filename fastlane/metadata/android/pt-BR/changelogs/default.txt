@@ -1,1 +1,1 @@
-Os desafios de economia agora podem arredondar cada dia para 5, 50 ou 500 e têm um novo modo "Igual todo dia": divida a meta pelos dias, ou defina um valor por dia e o app calcula quantos dias levará. A página do desafio abre nos próximos 30 dias, com filtros por mês, os últimos 30 dias da meta e um intervalo de datas.
+O MoneyRecord agora fala português (Brasil), francês e italiano, além de inglês e espanhol: segue o idioma do celular, ou escolha um em Configurações → Idioma. A leitura de notas também entende recibos em francês, italiano e português.

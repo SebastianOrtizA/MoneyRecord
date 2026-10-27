@@ -1,1 +1,1 @@
-Los retos de ahorro ahora redondean cada día a 5, 50 o 500 y tienen un modo nuevo "Igual todos los días": reparte la meta entre los días o indica un importe por día y la app calcula cuántos días hacen falta. La pantalla del reto abre en los próximos 30 días, con filtros por mes, los últimos 30 días de la meta y un rango de fechas.
+MoneyRecord ahora habla portugués (Brasil), francés e italiano, además de inglés y español: sigue el idioma del teléfono, o elígelo en Ajustes → Idioma. El escáner de tickets también lee tickets en francés, italiano y portugués.

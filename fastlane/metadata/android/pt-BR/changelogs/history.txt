@@ -1,3 +1,7 @@
+## 0.19.0
+- O MoneyRecord agora fala português (Brasil), francês e italiano, além de inglês e espanhol. Ele segue o idioma do celular, ou escolha um em Configurações → Idioma.
+- A leitura de notas fiscais entende recibos em francês, italiano e português: totais, subtotais, impostos, troco e datas.
+
 ## 0.18.1
 - Desafios de economia: arredonde cada dia também para 5, 50 ou 500, útil para moedas como o peso colombiano.
 - Novo modo "Igual todo dia": divida a meta igualmente pelos dias, ou defina o valor por dia e o app calcula quantos dias levará. O último dia leva o que sobrar.

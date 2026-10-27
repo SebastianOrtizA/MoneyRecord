@@ -1,3 +1,7 @@
+## 0.19.0
+- MoneyRecord ora parla portoghese (Brasile), francese e italiano, oltre a inglese e spagnolo. Segue la lingua del telefono, oppure scegline una in Impostazioni → Lingua.
+- La lettura degli scontrini capisce scontrini in francese, italiano e portoghese: totali, subtotali, imposte, resto e date.
+
 ## 0.18.1
 - Sfide di risparmio: arrotonda ogni giorno anche a 5, 50 o 500, comodo per valute come il peso colombiano.
 - Nuova modalità "Uguale ogni giorno": dividi l'obiettivo in parti uguali sui giorni, oppure fissa l'importo al giorno e l'app calcola quanti giorni servono. L'ultimo giorno prende quello che resta.
