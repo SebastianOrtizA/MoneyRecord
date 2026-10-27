@@ -1,0 +1,27 @@
+## 0.18.1
+- Desafios de economia: arredonde cada dia também para 5, 50 ou 500, útil para moedas como o peso colombiano.
+- Novo modo "Igual todo dia": divida a meta igualmente pelos dias, ou defina o valor por dia e o app calcula quantos dias levará. O último dia leva o que sobrar.
+- A página do desafio abre nos próximos 30 dias, com filtros para este mês, o mês passado e o próximo, os últimos 30 dias da meta e um intervalo de datas, para que desafios longos fiquem leves.
+
+## 0.18.0
+- Desafios de economia: um jogo de poupança com valores diários que dobram em etapas ou crescem de forma linear, com arredondamento opcional.
+- Escolha uma conta ou cofrinho de destino e cada dia move o dinheiro para lá a partir da conta ou cofrinho que você escolher.
+- O pop-up de novidades lista cada mudança em sua própria linha e todas as versões que você perdeu.
+- Os backups agora usam o formato v7.
+- Build do app otimizado.
+
+## 0.16.0
+- Cofrinhos: guarde dinheiro dentro de uma conta e escolha de qual cofrinho retirar quando uma despesa usar esse dinheiro.
+- Contas recorrentes de valor variável que você confirma a cada vez.
+- Personalize o Início (ordem, mostrar ou ocultar cartões) e um cartão opcional de Dívidas.
+- Um pop-up de novidades depois das atualizações.
+- Os valores recentes agora ficam ocultos com Ocultar saldos.
+- Os backups agora usam o formato v6.
+
+## 0.13.1
+- Os valores agora mostram separadores de milhar enquanto você digita, para que um número grande seja fácil de ler.
+- Também no filtro de valor das Transações e nos limites das categorias de viagem.
+
+## 0.13.0
+- Eventos: divida viagens e despesas compartilhadas com amigos, veja quem deve a quem, acerte as contas, compartilhe o resumo e registre a sua parte como despesa.
+- Os backups agora usam o formato v5.

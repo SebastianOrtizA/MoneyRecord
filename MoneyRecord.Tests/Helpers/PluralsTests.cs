@@ -23,6 +23,19 @@ public class PluralsTests : LanguageTestBase
         Plurals.Transactions(count).Should().Be(string.Format(LocalizationService.Instance.GetString("TransactionCountOther"), count));
     }
 
+    [Theory]
+    [InlineData("fr", true)]
+    [InlineData("es", false)]
+    [InlineData("it", false)]
+    [InlineData("pt", false)]
+    public void Zero_IsSingularOnlyWhereTheLanguageCountsItSo(string language, bool singular)
+    {
+        LocalizationService.Instance.SetLanguage(language, new FakePreferences());
+
+        var key = singular ? "TransactionCountOne" : "TransactionCountOther";
+        Plurals.Transactions(0).Should().Be(string.Format(LocalizationService.Instance.GetString(key), 0));
+    }
+
     [Fact]
     public void Recurring_UseSingularAndPlural()
     {

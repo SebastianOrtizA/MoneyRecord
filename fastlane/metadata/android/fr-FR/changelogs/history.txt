@@ -1,0 +1,27 @@
+## 0.18.1
+- Défis d'épargne : arrondis aussi chaque jour à 5, 50 ou 500, pratique pour des devises comme le peso colombien.
+- Nouveau mode « Identique chaque jour » : répartis l'objectif à parts égales sur les jours, ou fixe le montant par jour et l'appli calcule combien de jours il faut. Le dernier jour prend ce qui reste.
+- La page du défi s'ouvre sur les 30 prochains jours, avec des filtres pour ce mois, le mois dernier et le mois prochain, les 30 derniers jours de l'objectif et une plage de dates, pour que les longs défis restent légers.
+
+## 0.18.0
+- Défis d'épargne : un jeu d'épargne avec des montants quotidiens qui doublent par paliers ou augmentent de façon linéaire, avec arrondi facultatif.
+- Choisis un compte ou une enveloppe de destination, et chaque jour y déplace l'argent depuis le compte ou l'enveloppe que tu choisis.
+- La fenêtre Nouveautés affiche chaque changement sur sa propre ligne, ainsi que toutes les versions que tu as manquées.
+- Les sauvegardes utilisent désormais le format v7.
+- Build de l'appli optimisé.
+
+## 0.16.0
+- Enveloppes : mets de l'argent de côté dans un compte et choisis dans quelle enveloppe puiser quand une dépense l'entame.
+- Factures récurrentes à montant variable que tu confirmes à chaque fois.
+- Personnaliser l'accueil (ordre, afficher/masquer les cartes) et une carte Dettes facultative.
+- Une fenêtre Nouveautés après les mises à jour.
+- Les montants récents se masquent désormais avec Masquer les soldes.
+- Les sauvegardes utilisent désormais le format v6.
+
+## 0.13.1
+- Les montants affichent désormais des séparateurs de milliers pendant la saisie, pour lire facilement un long nombre en le saisissant.
+- Aussi dans le filtre de montant des transactions et les limites des catégories de voyage.
+
+## 0.13.0
+- Événements : partage les frais de voyages et de dépenses communes avec tes amis, vois qui doit quoi à qui, règle les comptes, partage le résumé et enregistre ta propre part comme dépense.
+- Les sauvegardes utilisent désormais le format v5.

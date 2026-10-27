@@ -131,7 +131,7 @@ and Windows are maintained too. All data stays on the device.
 - **First-run setup**: language, base currency, starting accounts and categories (it can be run again from Settings).
 
 ### Localization
-- English and Spanish, picked from the device language or chosen in Settings; the device region is kept for currency
+- English, Spanish, Portuguese (Brazil), French and Italian, picked from the device language or chosen in Settings; the device region is kept for currency
   and number formats (e.g. `es-CO`).
 - Dates use the culture's own patterns ("October 11, 2026" / "11 de octubre de 2026"), and counts use proper plurals.
 
@@ -272,7 +272,7 @@ MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the a
 │                       LedgerTransfers, CategoryReportBuilder, RecurrenceCalculator, Debouncer
 ├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal, Payee, Debt (tables)
 │                       + display models (LedgerEntry, TransactionGroup, CategoryAmount, AccountBalanceInfo, BudgetProgress, ...)
-├── Resources/Strings/  AppResources.resx (English), AppResources.es.resx (Spanish)
+├── Resources/Strings/  AppResources.resx (English), AppResources.{es,pt,fr,it}.resx
 ├── Services/
 │   ├── Interfaces/     Service and repository interfaces, IAppPaths
 │   ├── Repositories/   RepositoryBase<T> + SQLite repositories (SQL totals), DatabaseInitializer (schema + seed data)

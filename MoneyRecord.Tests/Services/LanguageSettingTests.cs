@@ -1,5 +1,6 @@
 using System.Globalization;
 using AwesomeAssertions;
+using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using Xunit;
@@ -53,7 +54,7 @@ public sealed class LanguageSettingTests : LanguageTestBase
 
     [Theory]
     [InlineData("")]
-    [InlineData("fr")]
+    [InlineData("de")]
     public void An_empty_or_unsupported_language_follows_the_device(string saved)
     {
         _preferences.Set(LocalizationService.LanguagePreferenceKey, saved);
@@ -61,13 +62,16 @@ public sealed class LanguageSettingTests : LanguageTestBase
         Sut.LoadLanguage(_preferences);
 
         Sut.LanguageSetting.Should().BeEmpty();
-        var deviceLanguage = LocalizationService.DeviceCulture.TwoLetterISOLanguageName == "es" ? "es" : "en";
+        var deviceLanguage = AppLanguage.For(LocalizationService.DeviceCulture).Code;
         CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Should().Be(deviceLanguage);
     }
 
     [Theory]
     [InlineData("en", "English")]
     [InlineData("es", "Español")]
+    [InlineData("pt", "Português")]
+    [InlineData("fr", "Français")]
+    [InlineData("it", "Italiano")]
     public void Language_names_are_written_in_their_own_language(string code, string name)
     {
         LocalizationService.GetLanguageName(code).Should().Be(name);

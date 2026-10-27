@@ -11,6 +11,9 @@ public class LocalizationServiceTests
     [InlineData("es", "es-CO", "es-CO")]
     [InlineData("es", "es-MX", "es-MX")]
     [InlineData("en", "en-GB", "en-GB")]
+    [InlineData("fr", "fr-CA", "fr-CA")]
+    [InlineData("pt", "pt-PT", "pt-PT")]
+    [InlineData("it", "it-CH", "it-CH")]
     public void ResolveCulture_SameLanguage_KeepsDeviceRegion(string language, string device, string expected)
     {
         LocalizationService.ResolveCulture(language, new CultureInfo(device)).Name.Should().Be(expected);
@@ -18,6 +21,10 @@ public class LocalizationServiceTests
 
     [Theory]
     [InlineData("en", "fr-FR", "en-US")]
+    [InlineData("fr", "en-US", "fr-FR")]
+    [InlineData("pt", "es-ES", "pt-BR")]
+    [InlineData("it", "en-US", "it-IT")]
+    [InlineData("de", "en-US", "en-US")]
     [InlineData("es", "en-US", "es-ES")]
     [InlineData("es", "es", "es-ES")]
     public void ResolveCulture_OtherLanguageOrNoRegion_FallsBack(string language, string device, string expected)

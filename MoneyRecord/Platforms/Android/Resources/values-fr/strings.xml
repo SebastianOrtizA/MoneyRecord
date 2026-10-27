@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Solde</string>
+    <string name="widget_description">Le solde d\'un compte avec des boutons dépense, revenu et virement</string>
+    <string name="widget_preview_account">Espèces</string>
+    <string name="widget_preview_balance">1 250,00 €</string>
+    <string name="widget_expense">Dépense</string>
+    <string name="widget_income">Revenu</string>
+    <string name="widget_transfer">Virer</string>
+</resources>

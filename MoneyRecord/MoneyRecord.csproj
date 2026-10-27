@@ -86,6 +86,9 @@
 		<MauiAsset Include="..\fastlane\metadata\android\en-US\changelogs\history.txt" LogicalName="Changelog/en-US.txt" Link="Resources\Changelog\en-US.txt" />
 		<MauiAsset Include="..\fastlane\metadata\android\es-ES\changelogs\history.txt" LogicalName="Changelog/es-ES.txt" Link="Resources\Changelog\es-ES.txt" />
 		<MauiAsset Include="..\fastlane\metadata\android\es-419\changelogs\history.txt" LogicalName="Changelog/es-419.txt" Link="Resources\Changelog\es-419.txt" />
+		<MauiAsset Include="..\fastlane\metadata\android\pt-BR\changelogs\history.txt" LogicalName="Changelog/pt-BR.txt" Link="Resources\Changelog\pt-BR.txt" />
+		<MauiAsset Include="..\fastlane\metadata\android\fr-FR\changelogs\history.txt" LogicalName="Changelog/fr-FR.txt" Link="Resources\Changelog\fr-FR.txt" />
+		<MauiAsset Include="..\fastlane\metadata\android\it-IT\changelogs\history.txt" LogicalName="Changelog/it-IT.txt" Link="Resources\Changelog\it-IT.txt" />
 	</ItemGroup>
 
 	<ItemGroup>

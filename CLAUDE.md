@@ -112,7 +112,7 @@ crashes at runtime (XAML is inflated at runtime there).
   inverse, across an earlier base; a transaction's own "Amount in USD" first), CsvTable / StatementDate /
   StatementAmount (bank statement CSV: table, date layouts, signed amounts), ReceiptReader (a receipt's
   OCR lines → rows → total + date), ReceiptFill (what a reading changes in the add form)
-- `Resources/Strings/` — Localization: AppResources.resx (English), AppResources.es.resx (Spanish); public class
+- `Resources/Strings/` — Localization: AppResources.resx (English) + AppResources.{es,pt,fr,it}.resx; public class
 - `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
   Spending / Income show, plus the shared month count of the time-series reports and the reports' currency, `ReportCurrency`), SetupViewModel (setup assistant:
@@ -217,12 +217,12 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
 - `.resx` resource files with `ResXFileCodeGenerator`
 - XAML: `{ext:Localize KeyName}` markup extension (bindings, not static)
 - Code: `AppResources.KeyName` or `LocalizationService.Instance.GetString(key)`
-- Auto-detects system language (supports en, es)
+- Auto-detects system language; the supported ones are the rows of `AppLanguage.All` (en, es, pt-BR, fr, it): adding a language = one row there + `AppResources.xx.resx` + widget `values-xx` + `fastlane` folder (tests fail until all exist; see the project skill `/translate-moneyrecord`)
 - `LocalizationService.ResolveCulture` keeps the device region (`es` + `CO` → `es-CO`), never a neutral culture
 - Dates: `DateFormatter` / `DateTextConverter` (`Long`, `Medium`, `MonthDay`), never fixed patterns like `"MMM dd, yyyy"`
 - Counts: `Plurals` (`...One` / `...Other` keys), not `"{0} items"`
 - Filters and logic compare enums/IDs, never display strings
-- `ResourceParityTests` fail when a key, translation or `{n}` placeholder is missing in either language
+- `ResourceParityTests` fail when a key, translation or `{n}` placeholder is missing in any language
 
 ### Icons
 - Material Design Icons font (`materialdesignicons-webfont.ttf`, alias "MaterialDesignIcons")

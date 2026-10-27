@@ -1,0 +1,1 @@
+Les défis d'épargne arrondissent désormais chaque jour à 5, 50 ou 500 et ont un nouveau mode « Identique chaque jour » : répartis l'objectif sur les jours, ou fixe un montant par jour et l'appli calcule combien de jours il faut. La page du défi s'ouvre sur les 30 prochains jours, avec des filtres par mois, les 30 derniers jours de l'objectif et une plage de dates.
