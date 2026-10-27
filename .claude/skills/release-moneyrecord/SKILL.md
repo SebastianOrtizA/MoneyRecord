@@ -1,6 +1,6 @@
 ---
 name: release-moneyrecord
-description: Prepare and publish a MoneyRecord release (release notes in three languages, PR, then the release branch that builds the APK/AAB and uploads to Google Play closed testing). Use when asked to release, cut a version, tag, write the release notes or the "What's new" text for a version.
+description: Prepare and publish a MoneyRecord release (release notes in six locales, PR, then the release branch that builds the APK/AAB and uploads to Google Play closed testing). Use when asked to release, cut a version, tag, write the release notes or the "What's new" text for a version.
 ---
 
 A release = a **notes PR**, then a **release branch**. A build of a release branch publishes the GitHub Release and uploads the `.aab` to Play's
@@ -17,10 +17,10 @@ closed testing track, so it is outward-facing: **ask the owner before cutting it
 `git log <last-tag>..main --oneline` (PR titles carry the stage). Keep only what a user notices; skip refactors,
 tests, docs and CI. Write in the style of the previous notes (`git show <last-tag>:fastlane/metadata/android/en-US/changelogs/history.txt`).
 
-## 3. Write the notes in all three locales
+## 3. Write the notes in all locales
 
-Folders: `fastlane/metadata/android/{en-US,es-ES,es-419}/changelogs/`. es-ES and es-419 are the same text unless a
-word differs by region. Edit with the Edit tool (a shell `perl`/`sed` mangles `\n` and non-ASCII).
+Folders: `fastlane/metadata/android/{en-US,es-ES,es-419,pt-BR,fr-FR,it-IT}/changelogs/`. es-ES and es-419 are the same text unless a
+word differs by region. Write en-US first, then translate it into the other five (glossary: `/translate-moneyrecord`). Edit with the Edit tool (a shell `perl`/`sed` mangles `\n` and non-ASCII).
 
 - `default.txt` = Play's notes for this release: plain sentences, **500 characters at most** (a test enforces it).
 - `history.txt` = the in-app "What's new" text: add a new `## x.y.z` section at the **top**, a blank line after it,

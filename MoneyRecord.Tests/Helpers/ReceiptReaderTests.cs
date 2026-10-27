@@ -147,6 +147,19 @@ public sealed class ReceiptReaderTests
         Read(Spain, "Válido hasta 31/12/2027", "Cliente desde 01/01/2001", "Fecha 02/10/2026").Date
             .Should().Be(new DateTime(2026, 10, 2));
 
+    [Theory]
+    [InlineData("fr-FR", "Sous-total 20,00", "TVA 2,00", "TOTAL TTC 22,00", "Espèces 50,00", "Rendu 28,00", "14 oct. 2026")]
+    [InlineData("it-IT", "Subtotale 20,00", "IVA 2,00", "TOTALE 22,00", "Contanti 50,00", "Resto 28,00", "14 ottobre 2026")]
+    [InlineData("pt-BR", "Subtotal 20,00", "ICMS 2,00", "TOTAL 22,00", "Dinheiro 50,00", "Troco 28,00", "14 de outubro de 2026")]
+    public void Receipts_in_French_Italian_and_Portuguese_read_the_total_and_date(
+        string culture, string subtotal, string tax, string total, string cash, string change, string date)
+    {
+        var reading = Read(CultureInfo.GetCultureInfo(culture), "Boulangerie", date, subtotal, tax, total, cash, change);
+
+        reading.Amount.Should().Be(22.00m);
+        reading.Date.Should().Be(new DateTime(2026, 10, 14));
+    }
+
     [Fact]
     public void Dates_and_times_are_not_read_as_amounts()
     {

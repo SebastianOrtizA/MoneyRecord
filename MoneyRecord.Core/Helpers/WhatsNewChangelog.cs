@@ -1,3 +1,4 @@
+using MoneyRecord.Models;
 using System.Globalization;
 
 namespace MoneyRecord.Helpers
@@ -14,11 +15,16 @@ namespace MoneyRecord.Helpers
         /// <summary>The store locale used when the language has no text of its own.</summary>
         public const string Fallback = "en-US";
 
-        /// <summary>The store locale whose text suits <paramref name="culture"/>: Spain gets es-ES, other Spanish es-419.</summary>
+        /// <summary>
+        /// The store locale whose text suits <paramref name="culture"/>: a translated language's default locale (pt-BR, fr-FR,
+        /// it-IT), Spain es-ES and other Spanish es-419, English for any other language.
+        /// </summary>
         public static string Locale(CultureInfo culture)
         {
-            if (!culture.TwoLetterISOLanguageName.Equals("es", StringComparison.OrdinalIgnoreCase))
+            if (AppLanguage.Find(culture.TwoLetterISOLanguageName) is not { } language)
                 return Fallback;
+            if (language.Code != "es")
+                return language.DefaultCulture;
 
             // The region is the culture name's last part ("es-CO", "es-419"); read from the name, not RegionInfo, which
             // does not know a UN region like 419. A neutral "es" has none: Spain's text, like the language fallback elsewhere

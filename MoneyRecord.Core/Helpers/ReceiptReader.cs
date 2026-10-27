@@ -18,7 +18,9 @@ namespace MoneyRecord.Helpers
         // A whole number on a total row ("TOTAL 25000" in a currency without cents); longer ones are references or phones
         private const int MaxIntegerDigits = 9;
 
-        private static readonly CultureInfo[] MonthCultures = [CultureInfo.InvariantCulture, CultureInfo.GetCultureInfo("es-ES")];
+        // Every app language's month names, so a receipt in any of them reads whatever the device language is
+        private static readonly CultureInfo[] MonthCultures =
+            [CultureInfo.InvariantCulture, .. AppLanguage.All.Select(l => CultureInfo.GetCultureInfo(l.DefaultCulture))];
 
         public static ReceiptReading Read(IEnumerable<ReceiptLine> lines, DateTime today, CultureInfo? culture = null) =>
             Read(Rows(lines), today, culture);
@@ -190,20 +192,20 @@ namespace MoneyRecord.Helpers
             return plain.ToString();
         }
 
-        [GeneratedRegex(@"\b(total a pagar|a pagar|amount due|balance due|total due|grand total|total general|total factura|total venta|total compra)\b")]
+        [GeneratedRegex(@"\b(total a pagar|a pagar|amount due|balance due|total due|grand total|total general|total factura|total venta|total compra|net a payer|total a payer|totale da pagare|totale complessivo|total geral|valor a pagar)\b")]
         private static partial Regex StrongTotalRegex();
 
-        [GeneratedRegex(@"\b(total|importe|amount|suma|monto)\b")]
+        [GeneratedRegex(@"\b(total|totale|importe|amount|montant|suma|soma|monto|valor)\b")]
         private static partial Regex TotalRegex();
 
-        [GeneratedRegex(@"\b(sub\s*-?\s*total|descuentos?|dto|discount|ahorro|savings?|cambio|change|vuelto|vueltas|devuelta|efectivo|cash|recibido|entregado|tendered|items?|articulos?|unidades|uds|cantidad|qty|puntos|points|propina|tip)\b")]
+        [GeneratedRegex(@"\b(sub\s*-?\s*total|descuentos?|dto|discount|ahorro|savings?|cambio|change|vuelto|vueltas|devuelta|efectivo|cash|recibido|entregado|tendered|items?|articulos?|unidades|uds|cantidad|qty|puntos|points|propina|tip|sous\s*-?\s*total|subtotale|remise|reduction|rendu|monnaie|especes|pourboire|articles?|articoli|pezzi|quantite|quantita|sconto|resto|contanti|mancia|desconto|troco|dinheiro|gorjeta|itens|quantidade|pontos)\b")]
         private static partial Regex ExcludedRegex();
 
-        [GeneratedRegex(@"\b(iva|tax|taxes|vat|impuestos?|igic|base)\b")]
+        [GeneratedRegex(@"\b(iva|tva|tax|taxes|vat|impuestos?|impots?|imposte?|imposta|imposto|impostos|icms|igic|base)\b")]
         private static partial Regex TaxRegex();
 
         // "Total (IVA incluido)", "Total incl. tax": a total row that mentions the tax
-        [GeneratedRegex(@"\b(incl|incluido|incluidos|included|inc)\b")]
+        [GeneratedRegex(@"\b(incl|incluido|incluidos|included|inc|inclus|incluse|compris|comprise|ttc|incluso|inclusa|compreso|incluida|incluidas)\b")]
         private static partial Regex IncludedRegex();
 
         [GeneratedRegex(@"(?<![\p{L}\d.,])(?:\d{1,3}(?:[.,'’  ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)(?![\p{L}\d%]|[.,]\d)")]

@@ -1,0 +1,41 @@
+MoneyRecord est une appli simple et privée pour suivre ton argent. Note ce que tu dépenses et ce que tu gagnes, vois où part ton argent, respecte ton budget et épargne pour tes objectifs. Tes données restent sur ton téléphone : sans inscription, sans pub.
+
+<b>Saisie rapide</b>
+• Ajoute une dépense, un revenu ou un virement en quelques touches : le montant d'abord, puis une catégorie dans une grille qui place les plus récentes en premier.
+• Scanne un reçu : son total et sa date sont lus sur ton téléphone.
+• Bénéficiaires avec suggestions, étiquettes, photos de reçus et descriptions, si tu le souhaites.
+• Répartis un même reçu entre plusieurs catégories.
+
+<b>Comptes et devises</b>
+• Espèces, banque, épargne, cartes de crédit… chacun avec sa propre devise.
+• Totaux par devise, ou convertis dans ta devise principale avec les taux de change quotidiens (facultatif).
+• Masque les centimes des devises qui n'en ont pas besoin.
+
+<b>Budgets et objectifs d'épargne</b>
+• Limites de dépenses par catégorie, par jour, mois ou an : dans les clous, proche de la limite ou dépassé, d'un coup d'œil.
+• Objectifs d'épargne avec une date cible : combien mettre de côté chaque mois, et si ton rythme suffit pour y arriver.
+
+<b>Récurrentes et à venir</b>
+• Salaire, loyer, abonnements : tous les jours, toutes les semaines, toutes les deux semaines, tous les mois ou tous les ans, à partir d'aujourd'hui ou d'une date future.
+• Vois ce qui arrive dans les 30 prochains jours, avec des rappels avant l'échéance des factures et quand un budget est épuisé.
+
+<b>Argent prêté et emprunté</b>
+• Suis ce que tes amis te doivent et ce que tu leur dois, avec des paiements planifiés.
+
+<b>Rapports</b>
+• Dépenses et revenus par catégorie, tendances, flux de trésorerie et patrimoine net.
+• Touche un graphique pour voir les transactions qui le composent.
+• Exporte un rapport PDF ou un fichier CSV de n'importe quelle période.
+
+<b>Tes données, ton contrôle</b>
+• Fonctionne hors ligne. Sans compte, sans pub.
+• Sauvegardes complètes, manuelles ou automatiques (quotidiennes, hebdomadaires ou mensuelles) dans n'importe quel dossier, Google Drive inclus, avec un mot de passe facultatif.
+• Importe des relevés bancaires en CSV, avec détection des doublons et suggestion de catégories.
+• Verrouillage de l'appli par empreinte, visage ou verrouillage d'écran, et base de données chiffrée.
+• Rapports de plantage facultatifs, désactivés tant que tu ne les actives pas.
+
+<b>Pensée pour toi</b>
+• Widget d'écran d'accueil avec ton solde et des boutons d'ajout rapide.
+• Plusieurs langues, thème clair et sombre, une configuration rapide au premier démarrage.
+
+MoneyRecord est gratuite et open source (AGPL-3.0) : https://github.com/SebastianOrtizA/MoneyRecord

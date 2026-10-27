@@ -19,7 +19,13 @@ public sealed class WhatsNewChangelogTests
     [Theory]
     [InlineData("en-US", "en-US")]
     [InlineData("en-GB", "en-US")]
-    [InlineData("fr-FR", "en-US")]
+    [InlineData("de-DE", "en-US")]
+    [InlineData("fr-FR", "fr-FR")]
+    [InlineData("fr-CA", "fr-FR")]
+    [InlineData("it-IT", "it-IT")]
+    [InlineData("it-CH", "it-IT")]
+    [InlineData("pt-BR", "pt-BR")]
+    [InlineData("pt-PT", "pt-BR")]
     [InlineData("es-ES", "es-ES")]
     [InlineData("es-CO", "es-419")]
     [InlineData("es-MX", "es-419")]
@@ -43,6 +49,9 @@ public sealed class WhatsNewChangelogTests
     [InlineData("en-US")]
     [InlineData("es-ES")]
     [InlineData("es-419")]
+    [InlineData("pt-BR")]
+    [InlineData("fr-FR")]
+    [InlineData("it-IT")]
     public void Every_locale_the_app_picks_has_a_store_changelog_that_fits_the_play_limit(string locale)
     {
         var path = Path.Combine(FastlaneDir(), locale, "changelogs", "default.txt");
@@ -93,6 +102,9 @@ public sealed class WhatsNewChangelogTests
     [InlineData("en-US")]
     [InlineData("es-ES")]
     [InlineData("es-419")]
+    [InlineData("pt-BR")]
+    [InlineData("fr-FR")]
+    [InlineData("it-IT")]
     public void Every_locale_has_a_history_listing_the_same_versions(string locale)
     {
         var dir = FastlaneDir();

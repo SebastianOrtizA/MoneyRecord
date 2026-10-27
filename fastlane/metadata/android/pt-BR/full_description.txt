@@ -1,0 +1,41 @@
+O MoneyRecord é um controle financeiro simples e privado. Registre o que você gasta e ganha, veja para onde vai seu dinheiro, siga seu orçamento e economize para suas metas. Seus dados ficam no seu celular: sem cadastro, sem anúncios.
+
+<b>Lançamento rápido</b>
+• Adicione uma despesa, receita ou transferência em poucos toques: primeiro o valor, depois a categoria numa grade que mostra as mais recentes primeiro.
+• Escaneie um recibo: o total e a data são lidos no seu celular.
+• Favorecidos com sugestões, tags, fotos de recibos e descrições, se quiser.
+• Divida um recibo entre várias categorias.
+
+<b>Contas e moedas</b>
+• Dinheiro, banco, poupança, cartões de crédito… cada um com a sua moeda.
+• Totais por moeda, ou convertidos para a sua moeda principal com taxas de câmbio diárias (opcional).
+• Oculte os centavos das moedas que não precisam deles.
+
+<b>Orçamentos e metas de economia</b>
+• Limites de gastos por categoria, por dia, mês ou ano: no caminho certo, perto do limite ou acima do orçamento num relance.
+• Metas de economia com data alvo: quanto guardar por mês e se o seu ritmo leva você até lá.
+
+<b>Recorrentes e próximas</b>
+• Salário, aluguel, assinaturas: diárias, semanais, a cada duas semanas, mensais ou anuais, começando hoje ou numa data futura.
+• Veja o que vem nos próximos 30 dias, com lembretes antes do vencimento das contas e quando um orçamento acaba.
+
+<b>Dinheiro emprestado e pego emprestado</b>
+• Acompanhe o que seus amigos devem a você e o que você deve a eles, com pagamentos agendados.
+
+<b>Relatórios</b>
+• Gastos e receitas por categoria, tendências, fluxo de caixa e patrimônio.
+• Toque num gráfico para ver as transações por trás dele.
+• Exporte um relatório em PDF ou um arquivo CSV de qualquer período.
+
+<b>Seus dados, seu controle</b>
+• Funciona offline. Sem conta, sem anúncios.
+• Backups completos, manuais ou automáticos (diários, semanais ou mensais) em qualquer pasta, inclusive no Google Drive, com senha opcional.
+• Importe extratos bancários em CSV, com duplicadas encontradas e categorias sugeridas.
+• Bloqueio do app com digital, rosto ou bloqueio de tela, e banco de dados criptografado.
+• Relatórios de falhas opcionais, desativados a menos que você os ative.
+
+<b>Feito para você</b>
+• Widget na tela inicial com o seu saldo e botões de lançamento rápido.
+• Vários idiomas, tema claro e escuro, uma configuração rápida na primeira abertura.
+
+O MoneyRecord é gratuito e de código aberto (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

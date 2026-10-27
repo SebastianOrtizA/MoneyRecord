@@ -1,0 +1,2831 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- App General -->
+    <data name="AppTitle" xml:space="preserve">
+    <value>Money Record</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Início</value>
+  </data>
+  <data name="Transfers" xml:space="preserve">
+    <value>Transferências</value>
+  </data>
+  <data name="ManageAccounts" xml:space="preserve">
+    <value>Gerenciar contas</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Contas</value>
+  </data>
+  <data name="IncomeCategories" xml:space="preserve">
+    <value>Categorias de receita</value>
+  </data>
+  <data name="ExpenseCategories" xml:space="preserve">
+    <value>Categorias de despesa</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Resumo</value>
+  </data>
+  <data name="SelectPeriod" xml:space="preserve">
+    <value>Escolher período</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>De:</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Até:</value>
+  </data>
+  <data name="TotalBalance" xml:space="preserve">
+    <value>Saldo total (toque para ver detalhes)</value>
+  </data>
+  <data name="Incomes" xml:space="preserve">
+    <value>Receitas</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Despesas</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Receita</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transferência</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>Despesa</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transações</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="CalendarMonth" xml:space="preserve">
+    <value>Mês atual</value>
+  </data>
+  <data name="CalendarYear" xml:space="preserve">
+    <value>Ano atual</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Hoje</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>Semana passada</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>Mês passado</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>Ano passado</value>
+  </data>
+  <data name="CustomPeriod" xml:space="preserve">
+    <value>Personalizado</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="GroupByCategory" xml:space="preserve">
+    <value>Por categoria</value>
+  </data>
+  <data name="GroupByAccount" xml:space="preserve">
+    <value>Por conta</value>
+  </data>
+  <data name="Ungrouped" xml:space="preserve">
+    <value>Sem agrupar</value>
+  </data>
+  <data name="Grouped" xml:space="preserve">
+    <value>Agrupado</value>
+  </data>
+  <data name="SortOldestFirst" xml:space="preserve">
+    <value>Mais antigas primeiro</value>
+  </data>
+  <data name="SortNewestFirst" xml:space="preserve">
+    <value>Mais recentes primeiro</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Ordenar</value>
+  </data>
+  <data name="AddTransaction" xml:space="preserve">
+    <value>Adicionar transação</value>
+  </data>
+  <data name="AddIncome" xml:space="preserve">
+    <value>Adicionar receita</value>
+  </data>
+  <data name="AddExpense" xml:space="preserve">
+    <value>Adicionar despesa</value>
+  </data>
+  <data name="EditIncome" xml:space="preserve">
+    <value>Editar receita</value>
+  </data>
+  <data name="EditExpense" xml:space="preserve">
+    <value>Editar despesa</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="EnterDescription" xml:space="preserve">
+    <value>Digite uma descrição</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Conta</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Escolher conta</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>Escolher categoria</value>
+  </data>
+  <data name="NewTransfer" xml:space="preserve">
+    <value>Nova transferência</value>
+  </data>
+  <data name="EditTransfer" xml:space="preserve">
+    <value>Editar transferência</value>
+  </data>
+  <data name="NoTransfers" xml:space="preserve">
+    <value>Nenhuma transferência ainda</value>
+  </data>
+  <data name="TransferBetweenAccounts" xml:space="preserve">
+    <value>Transfira dinheiro entre suas contas</value>
+  </data>
+  <data name="FromAccount" xml:space="preserve">
+    <value>Conta de origem *</value>
+  </data>
+  <data name="ToAccount" xml:space="preserve">
+    <value>Conta de destino *</value>
+  </data>
+  <data name="SelectSourceAccount" xml:space="preserve">
+    <value>Escolher conta de origem</value>
+  </data>
+  <data name="SelectDestinationAccount" xml:space="preserve">
+    <value>Escolher conta de destino</value>
+  </data>
+  <data name="TransferButton" xml:space="preserve">
+    <value>Transferir</value>
+  </data>
+  <data name="TransferDescription" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="TransferOptional" xml:space="preserve">
+    <value>Transferência (opcional)</value>
+  </data>
+  <data name="FromLabel" xml:space="preserve">
+    <value>De:</value>
+  </data>
+  <data name="ToLabel" xml:space="preserve">
+    <value>Para:</value>
+  </data>
+  <data name="AddNewAccount" xml:space="preserve">
+    <value>Adicionar conta</value>
+  </data>
+  <data name="EditAccount" xml:space="preserve">
+    <value>Editar conta</value>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Nome da conta</value>
+  </data>
+  <data name="AccountNamePlaceholder" xml:space="preserve">
+    <value>ex.: Conta bancária, Dinheiro, Cartão de crédito</value>
+  </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>Saldo inicial</value>
+  </data>
+  <data name="SelectIcon" xml:space="preserve">
+    <value>Escolher ícone</value>
+  </data>
+  <data name="AddAccountButton" xml:space="preserve">
+    <value>Adicionar conta</value>
+  </data>
+  <data name="UpdateAccount" xml:space="preserve">
+    <value>Atualizar conta</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>Cancelar edição</value>
+  </data>
+  <data name="NoAccounts" xml:space="preserve">
+    <value>Nenhuma conta ainda. Toque em + para adicionar a primeira.</value>
+  </data>
+  <data name="AllowNegativeBalance" xml:space="preserve">
+    <value>Permitir saldo negativo</value>
+  </data>
+  <data name="InsufficientAccountBalance" xml:space="preserve">
+    <value>Essa despesa deixaria o saldo negativo. A conta '{0}' não permite saldo negativo.</value>
+  </data>
+  <data name="NegativeBalanceNotAllowed" xml:space="preserve">
+    <value>Saldo inicial negativo não é permitido. Ative 'Permitir saldo negativo' para usar um valor negativo.</value>
+  </data>
+  <data name="AddNewCategory" xml:space="preserve">
+    <value>Adicionar categoria</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Editar categoria</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Nome da categoria</value>
+  </data>
+  <data name="AddCategoryButton" xml:space="preserve">
+    <value>Adicionar categoria</value>
+  </data>
+  <data name="UpdateCategory" xml:space="preserve">
+    <value>Atualizar categoria</value>
+  </data>
+  <data name="YourCategories" xml:space="preserve">
+    <value>Suas categorias</value>
+  </data>
+  <data name="NoCategories" xml:space="preserve">
+    <value>Nenhuma categoria ainda. Adicione a primeira acima.</value>
+  </data>
+  <data name="TotalExpenses" xml:space="preserve">
+    <value>Total de despesas</value>
+  </data>
+  <data name="TotalIncome" xml:space="preserve">
+    <value>Total de receitas</value>
+  </data>
+  <data name="CategoryBreakdown" xml:space="preserve">
+    <value>Por categoria</value>
+  </data>
+  <data name="NoExpenseData" xml:space="preserve">
+    <value>Nenhuma despesa neste período</value>
+  </data>
+  <data name="NoIncomeData" xml:space="preserve">
+    <value>Nenhuma receita neste período</value>
+  </data>
+  <data name="AddExpensesToStart" xml:space="preserve">
+    <value>Adicione despesas para ver como você gasta</value>
+  </data>
+  <data name="AddIncomeToStart" xml:space="preserve">
+    <value>Adicione receitas para ver de onde vem seu dinheiro</value>
+  </data>
+  <data name="NoExpenseDataFound" xml:space="preserve">
+    <value>Nenhuma despesa encontrada</value>
+  </data>
+  <data name="NoIncomeDataFound" xml:space="preserve">
+    <value>Nenhuma receita encontrada</value>
+  </data>
+  <data name="AddExpenseTransactionsToSee" xml:space="preserve">
+    <value>Adicione despesas para ver a análise dos seus gastos</value>
+  </data>
+  <data name="AddIncomeTransactionsToSee" xml:space="preserve">
+    <value>Adicione receitas para ver a análise dos seus ganhos</value>
+  </data>
+  <data name="PleaseEnterValidAmount" xml:space="preserve">
+    <value>Digite um valor válido</value>
+  </data>
+  <data name="PleaseSelectAccount" xml:space="preserve">
+    <value>Escolha uma conta</value>
+  </data>
+  <data name="PleaseSelectCategory" xml:space="preserve">
+    <value>Escolha uma categoria</value>
+  </data>
+  <data name="PleaseEnterCategoryName" xml:space="preserve">
+    <value>Digite o nome da categoria</value>
+  </data>
+  <data name="PleaseEnterAccountName" xml:space="preserve">
+    <value>Digite o nome da conta</value>
+  </data>
+  <data name="PleaseSelectSourceAccount" xml:space="preserve">
+    <value>Escolha a conta de origem</value>
+  </data>
+  <data name="PleaseSelectDestinationAccount" xml:space="preserve">
+    <value>Escolha a conta de destino</value>
+  </data>
+  <data name="SourceDestinationMustBeDifferent" xml:space="preserve">
+    <value>As contas de origem e destino devem ser diferentes</value>
+  </data>
+  <data name="InsufficientFunds" xml:space="preserve">
+    <value>Saldo insuficiente na conta de origem</value>
+  </data>
+  <data name="DeleteTransaction" xml:space="preserve">
+    <value>Excluir transação</value>
+  </data>
+  <data name="DeleteTransactionConfirm" xml:space="preserve">
+    <value>Tem certeza de que quer excluir esta transação?</value>
+  </data>
+  <data name="DeleteTransfer" xml:space="preserve">
+    <value>Excluir transferência</value>
+  </data>
+  <data name="DeleteTransferConfirm" xml:space="preserve">
+    <value>Tem certeza de que quer excluir esta transferência?</value>
+  </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Excluir categoria</value>
+  </data>
+  <data name="DeleteCategoryConfirm" xml:space="preserve">
+    <value>Tem certeza de que quer excluir esta categoria?</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Excluir conta</value>
+  </data>
+  <data name="DeleteAccountConfirm" xml:space="preserve">
+    <value>Tem certeza de que quer excluir esta conta?</value>
+  </data>
+  <data name="CannotDelete" xml:space="preserve">
+    <value>Não é possível excluir</value>
+  </data>
+  <data name="LastCategoryCannotDelete" xml:space="preserve">
+    <value>Esta é a última categoria deste tipo. Você não pode excluí-la enquanto tiver transações. Crie outra categoria primeiro.</value>
+  </data>
+  <data name="CategoryHasTransactions" xml:space="preserve">
+    <value>Escolha uma nova categoria para '{0}':</value>
+  </data>
+  <data name="AvailableBalance" xml:space="preserve">
+    <value>Disponível: {0}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Voltar</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Categorias</value>
+  </data>
+  <data name="NoCategoriesYet" xml:space="preserve">
+    <value>Nenhuma categoria ainda</value>
+  </data>
+  <data name="DefaultAccountCash" xml:space="preserve">
+    <value>Dinheiro</value>
+  </data>
+  <data name="DefaultCategorySalary" xml:space="preserve">
+    <value>Salário</value>
+  </data>
+  <data name="DefaultCategoryFreelance" xml:space="preserve">
+    <value>Freelance</value>
+  </data>
+  <data name="DefaultCategoryInvestment" xml:space="preserve">
+    <value>Investimentos</value>
+  </data>
+  <data name="DefaultCategoryOtherIncome" xml:space="preserve">
+    <value>Outras receitas</value>
+  </data>
+  <data name="DefaultCategoryFood" xml:space="preserve">
+    <value>Alimentação</value>
+  </data>
+  <data name="DefaultCategoryTransportation" xml:space="preserve">
+    <value>Transporte</value>
+  </data>
+  <data name="DefaultCategoryEntertainment" xml:space="preserve">
+    <value>Lazer</value>
+  </data>
+  <data name="DefaultCategoryUtilities" xml:space="preserve">
+    <value>Contas da casa</value>
+  </data>
+  <data name="DefaultCategoryShopping" xml:space="preserve">
+    <value>Compras</value>
+  </data>
+  <data name="DefaultCategoryHome" xml:space="preserve">
+    <value>Casa</value>
+  </data>
+  <data name="DefaultCategoryOtherExpense" xml:space="preserve">
+    <value>Outras despesas</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Pronto</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Confirmar exclusão</value>
+  </data>
+  <data name="YesDelete" xml:space="preserve">
+    <value>Sim, excluir</value>
+  </data>
+  <data name="FailedToLoadAccountBalances" xml:space="preserve">
+    <value>Não foi possível carregar os saldos das contas</value>
+  </data>
+  <data name="FailedToLoadReportData" xml:space="preserve">
+    <value>Não foi possível carregar os dados do relatório</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="CannotDeleteDefaultAccount" xml:space="preserve">
+    <value>Não é possível excluir a conta padrão de Dinheiro</value>
+  </data>
+  <data name="DeleteAccountWithTransactions" xml:space="preserve">
+    <value>Tem certeza de que quer excluir '{0}'?
+
+{1} transação(ões) e {2} regra(s) recorrente(s) serão movidas para '{3}'.</value>
+  </data>
+  <data name="DeleteAccountNoTransactions" xml:space="preserve">
+    <value>Tem certeza de que quer excluir '{0}'?</value>
+  </data>
+  <data name="CategoryDeletedAndTransactionsMoved" xml:space="preserve">
+    <value>Categoria '{0}' excluída e {1} transação(ões) movida(s) para '{2}'</value>
+  </data>
+  <data name="DeleteCategoryConfirmation" xml:space="preserve">
+    <value>Tem certeza de que quer excluir '{0}'?</value>
+  </data>
+  <data name="TransferUpdatedSuccessfully" xml:space="preserve">
+    <value>Transferência atualizada</value>
+  </data>
+  <data name="FailedToSaveTransfer" xml:space="preserve">
+    <value>Não foi possível salvar a transferência</value>
+  </data>
+  <data name="FailedToLoadTransfers" xml:space="preserve">
+    <value>Não foi possível carregar as transferências</value>
+  </data>
+  <data name="DeleteTransferConfirmMessage" xml:space="preserve">
+    <value>Tem certeza de que quer excluir esta transferência?
+
+De: {0}
+Para: {1}
+Valor: {2}</value>
+  </data>
+  <data name="TransferDeletedSuccessfully" xml:space="preserve">
+    <value>Transferência excluída</value>
+  </data>
+  <data name="FailedToDeleteTransfer" xml:space="preserve">
+    <value>Não foi possível excluir a transferência</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Disponível: {0}</value>
+  </data>
+  <data name="AddCategoryToBudget" xml:space="preserve">
+    <value>Adicionar categoria ao orçamento</value>
+  </data>
+  <data name="BudgetLimit" xml:space="preserve">
+    <value>Limite do orçamento</value>
+  </data>
+  <data name="AddBudgetButton" xml:space="preserve">
+    <value>Adicionar orçamento</value>
+  </data>
+  <data name="NoBudgetsYet" xml:space="preserve">
+    <value>Nenhum orçamento ainda</value>
+  </data>
+  <data name="AddBudgetToStart" xml:space="preserve">
+    <value>Toque em + para definir um limite de gastos para uma categoria de despesa.</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>Restante</value>
+  </data>
+  <data name="Exceeded" xml:space="preserve">
+    <value>Excedido</value>
+  </data>
+  <data name="TotalBudgeted" xml:space="preserve">
+    <value>Orçado</value>
+  </data>
+  <data name="TotalSpent" xml:space="preserve">
+    <value>Gasto</value>
+  </data>
+  <data name="TotalRemaining" xml:space="preserve">
+    <value>Restante</value>
+  </data>
+  <data name="BudgetAddedSuccessfully" xml:space="preserve">
+    <value>Orçamento adicionado</value>
+  </data>
+  <data name="FailedToSaveBudget" xml:space="preserve">
+    <value>Não foi possível salvar o orçamento</value>
+  </data>
+  <data name="DeleteBudgetConfirmation" xml:space="preserve">
+    <value>Tem certeza de que quer remover '{0}' do seu orçamento?</value>
+  </data>
+  <data name="FailedToDeleteBudget" xml:space="preserve">
+    <value>Não foi possível excluir o orçamento</value>
+  </data>
+  <data name="EditBudget" xml:space="preserve">
+    <value>Editar orçamento</value>
+  </data>
+  <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
+    <value>Transação atualizada</value>
+  </data>
+  <data name="FailedToLoadTransactions" xml:space="preserve">
+    <value>Não foi possível carregar as transações</value>
+  </data>
+  <data name="ConfirmDeleteTransactionTitle" xml:space="preserve">
+    <value>Confirmar exclusão</value>
+  </data>
+  <data name="ConfirmDeleteTransactionMessage" xml:space="preserve">
+    <value>Tem certeza de que quer excluir esta transação?
+
+{0}
+{1}</value>
+  </data>
+  <data name="ConfirmDeleteTransferFromListMessage" xml:space="preserve">
+    <value>Tem certeza de que quer excluir esta transferência?
+
+{0}
+{1}</value>
+  </data>
+  <data name="TransactionDeletedSuccessfully" xml:space="preserve">
+    <value>Transação excluída</value>
+  </data>
+  <data name="FailedToDeleteTransaction" xml:space="preserve">
+    <value>Não foi possível excluir a transação</value>
+  </data>
+  <data name="PerDay" xml:space="preserve">
+    <value>Por dia</value>
+  </data>
+  <data name="PerMonth" xml:space="preserve">
+    <value>Por mês</value>
+  </data>
+  <data name="PerYear" xml:space="preserve">
+    <value>Por ano</value>
+  </data>
+  <data name="BudgetPeriod" xml:space="preserve">
+    <value>Período do orçamento</value>
+  </data>
+  <data name="BudgetExceeded" xml:space="preserve">
+    <value>⚠️ Orçamento excedido em '{0}'! Gasto {1} de um limite de {2}.</value>
+  </data>
+  <data name="BudgetNearLimit" xml:space="preserve">
+    <value>⚠️ Orçamento perto do limite em '{0}'. Restam só {1}.</value>
+  </data>
+  <data name="BudgetSummary" xml:space="preserve">
+    <value>Resumo do orçamento</value>
+  </data>
+  <data name="OnTrack" xml:space="preserve">
+    <value>Em dia</value>
+  </data>
+  <data name="OverBudget" xml:space="preserve">
+    <value>Acima do orçamento</value>
+  </data>
+  <data name="RecurringTransactions" xml:space="preserve">
+    <value>Recorrentes</value>
+  </data>
+  <data name="MakeRecurring" xml:space="preserve">
+    <value>Tornar recorrente</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Frequência</value>
+  </data>
+  <data name="SelectFrequency" xml:space="preserve">
+    <value>Escolher frequência</value>
+  </data>
+  <data name="HasEndDate" xml:space="preserve">
+    <value>Definir data final</value>
+  </data>
+  <data name="EndDateOptional" xml:space="preserve">
+    <value>Data final (opcional)</value>
+  </data>
+  <data name="FrequencyDaily" xml:space="preserve">
+    <value>Diária</value>
+  </data>
+  <data name="FrequencyWeekly" xml:space="preserve">
+    <value>Semanal</value>
+  </data>
+  <data name="FrequencyBiweekly" xml:space="preserve">
+    <value>A cada 2 semanas</value>
+  </data>
+  <data name="FrequencyMonthly" xml:space="preserve">
+    <value>Mensal</value>
+  </data>
+  <data name="FrequencyYearly" xml:space="preserve">
+    <value>Anual</value>
+  </data>
+  <data name="NextOccurrence" xml:space="preserve">
+    <value>Próxima</value>
+  </data>
+  <data name="NoRecurringTransactions" xml:space="preserve">
+    <value>Nenhuma transação recorrente</value>
+  </data>
+  <data name="AddRecurringToStart" xml:space="preserve">
+    <value>Toque em + para agendar uma, ou ative "Tornar recorrente" ao adicionar uma transação</value>
+  </data>
+  <data name="DeleteRecurringConfirmation" xml:space="preserve">
+    <value>Tem certeza de que quer excluir a transação recorrente '{0}'?</value>
+  </data>
+  <data name="RecurringTransactionDeleted" xml:space="preserve">
+    <value>Transação recorrente excluída</value>
+  </data>
+  <data name="FailedToLoadRecurringTransactions" xml:space="preserve">
+    <value>Não foi possível carregar as transações recorrentes</value>
+  </data>
+  <data name="FailedToDeleteRecurringTransaction" xml:space="preserve">
+    <value>Não foi possível excluir a transação recorrente</value>
+  </data>
+  <data name="FailedToUpdateRecurringTransaction" xml:space="preserve">
+    <value>Não foi possível atualizar a transação recorrente</value>
+  </data>
+  <data name="SpecificDayOfMonth" xml:space="preserve">
+    <value>Dia específico do mês</value>
+  </data>
+  <data name="SelectDay" xml:space="preserve">
+    <value>Escolher dia</value>
+  </data>
+  <data name="DayN" xml:space="preserve">
+    <value>dia {0}</value>
+  </data>
+  <data name="EditRecurring" xml:space="preserve">
+    <value>Editar transação recorrente</value>
+  </data>
+  <data name="RecurringTransactionUpdated" xml:space="preserve">
+    <value>Transação recorrente atualizada</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="BackupRestore" xml:space="preserve">
+    <value>Backup e restauração</value>
+  </data>
+  <data name="BackupRestoreDescription" xml:space="preserve">
+    <value>Exporte seus dados ou restaure de um backup</value>
+  </data>
+  <data name="ExportFullBackup" xml:space="preserve">
+    <value>Exportar backup completo (com recibos)</value>
+  </data>
+  <data name="SaveBackupLocal" xml:space="preserve">
+    <value>Salvar backup no aparelho</value>
+  </data>
+  <data name="ShareBackupExternal" xml:space="preserve">
+    <value>Compartilhar backup</value>
+  </data>
+  <data name="ExportTransactionsCsv" xml:space="preserve">
+    <value>Exportar transações (CSV)</value>
+  </data>
+  <data name="RestoreFromBackup" xml:space="preserve">
+    <value>Restaurar de um backup</value>
+  </data>
+  <data name="RestoreNote" xml:space="preserve">
+    <value>Restaurar um backup substitui todos os dados atuais. Seus dados atuais são salvos antes, então dá para desfazer a restauração.</value>
+  </data>
+  <data name="ShareBackup" xml:space="preserve">
+    <value>Compartilhar backup</value>
+  </data>
+  <data name="ShareTransactions" xml:space="preserve">
+    <value>Compartilhar transações</value>
+  </data>
+  <data name="BackupCreatedSuccessfully" xml:space="preserve">
+    <value>Backup criado</value>
+  </data>
+  <data name="CsvExportedSuccessfully" xml:space="preserve">
+    <value>CSV exportado</value>
+  </data>
+  <data name="FailedToCreateBackup" xml:space="preserve">
+    <value>Não foi possível criar o backup</value>
+  </data>
+  <data name="FailedToExportCsv" xml:space="preserve">
+    <value>Não foi possível exportar o CSV</value>
+  </data>
+  <data name="ConfirmRestore" xml:space="preserve">
+    <value>Confirmar restauração</value>
+  </data>
+  <data name="RestoreWarning" xml:space="preserve">
+    <value>Isso vai substituir TODOS os seus dados atuais pelos do backup. Seus dados atuais são salvos antes, então você pode desfazer a restauração. Continuar?</value>
+  </data>
+  <data name="YesRestore" xml:space="preserve">
+    <value>Sim, restaurar</value>
+  </data>
+  <data name="FailedToRestore" xml:space="preserve">
+    <value>Não foi possível restaurar o backup</value>
+  </data>
+  <data name="RestoreSuccessful" xml:space="preserve">
+    <value>{0} registros restaurados. Seus dados anteriores foram salvos como {1}; você pode restaurá-los depois pela lista de backups.</value>
+  </data>
+  <data name="RestoreComplete" xml:space="preserve">
+    <value>Restauração concluída</value>
+  </data>
+  <data name="UndoRestore" xml:space="preserve">
+    <value>Desfazer restauração</value>
+  </data>
+  <data name="RestoreUndone" xml:space="preserve">
+    <value>Restauração desfeita: seus dados anteriores voltaram</value>
+  </data>
+  <data name="SelectBackupFile" xml:space="preserve">
+    <value>Escolher arquivo de backup</value>
+  </data>
+  <data name="BaseCurrency" xml:space="preserve">
+    <value>Moeda base</value>
+  </data>
+  <data name="BaseCurrencyDescription" xml:space="preserve">
+    <value>Totais e relatórios aparecem nesta moeda. Saldos em outras moedas ficam separados, nunca somados.</value>
+  </data>
+  <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
+    <value>'{0}' usa {1}, mas a conta padrão '{2}' usa {3}. As transações e regras recorrentes dela não podem ser movidas para lá sem mudar o que valem: exclua-as primeiro.</value>
+  </data>
+  <data name="SearchTransactions" xml:space="preserve">
+    <value>Buscar transações...</value>
+  </data>
+  <data name="FilterByType" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="FilterByAccount" xml:space="preserve">
+    <value>Conta</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Todas as categorias</value>
+  </data>
+  <data name="AllAccounts" xml:space="preserve">
+    <value>Todas as contas</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>Mín.</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Máx.</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Limpar</value>
+  </data>
+  <data name="Trends" xml:space="preserve">
+    <value>Tendências</value>
+  </data>
+  <data name="NoTrendsData" xml:space="preserve">
+    <value>Nenhum dado de tendência</value>
+  </data>
+  <data name="AddTransactionsForTrends" xml:space="preserve">
+    <value>Adicione transações para ver suas tendências e padrões de gastos</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="TagsPlaceholder" xml:space="preserve">
+    <value>ex.: mercado, semanal, urgente</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>Recibo</value>
+  </data>
+  <data name="ReceiptAttached" xml:space="preserve">
+    <value>Recibo anexado</value>
+  </data>
+  <data name="CameraNotSupported" xml:space="preserve">
+    <value>Este aparelho não tem suporte à câmera</value>
+  </data>
+  <data name="FailedToTakePhoto" xml:space="preserve">
+    <value>Não foi possível tirar a foto</value>
+  </data>
+  <data name="FailedToPickPhoto" xml:space="preserve">
+    <value>Não foi possível escolher a foto</value>
+  </data>
+  <data name="ViewReceipt" xml:space="preserve">
+    <value>Ver recibo</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Moeda</value>
+  </data>
+  <data name="SelectCurrency" xml:space="preserve">
+    <value>Escolher moeda</value>
+  </data>
+  <data name="DefaultCurrency" xml:space="preserve">
+    <value>Moeda padrão</value>
+  </data>
+  <data name="RecentTransactions" xml:space="preserve">
+    <value>Transações recentes</value>
+  </data>
+  <data name="NetIncome" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>Ações rápidas</value>
+  </data>
+  <data name="AccountHasTransfers" xml:space="preserve">
+    <value>'{0}' tem {1} transferência(s). Exclua-as primeiro na página Transferências, para que os saldos das outras contas continuem corretos.</value>
+  </data>
+  <data name="ConfirmCategoryMove" xml:space="preserve">
+    <value>Mover {0} transação(ões) e {1} regra(s) recorrente(s) de '{2}' para '{3}' e depois excluir '{2}'?</value>
+  </data>
+  <data name="CategoryBudgetMoves" xml:space="preserve">
+    <value>O orçamento dela vai para '{0}'.</value>
+  </data>
+  <data name="CategoryBudgetDeleted" xml:space="preserve">
+    <value>O orçamento dela será excluído, porque '{0}' já tem um.</value>
+  </data>
+  <data name="DeleteCategoryWithBudget" xml:space="preserve">
+    <value>Tem certeza de que quer excluir '{0}'? O orçamento dela também será excluído.</value>
+  </data>
+  <data name="DeleteFailedDataChanged" xml:space="preserve">
+    <value>Não foi possível excluir '{0}' porque os dados mudaram nesse meio-tempo. Tente de novo.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Desconhecido</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="TransferToAccount" xml:space="preserve">
+    <value>Transferência para {0}</value>
+  </data>
+  <data name="TransferFromAccount" xml:space="preserve">
+    <value>Transferência de {0}</value>
+  </data>
+  <data name="TransactionCountOne" xml:space="preserve">
+    <value>{0} transação</value>
+  </data>
+  <data name="TransactionCountOther" xml:space="preserve">
+    <value>{0} transações</value>
+  </data>
+  <data name="DefaultTransferDescription" xml:space="preserve">
+    <value>Transferência</value>
+  </data>
+  <data name="FailedToDeleteAccount" xml:space="preserve">
+    <value>Não foi possível excluir a conta</value>
+  </data>
+  <data name="FailedToDeleteCategory" xml:space="preserve">
+    <value>Não foi possível excluir a categoria</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Relatórios</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Orçamentos</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Mais</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>Ver tudo</value>
+  </data>
+  <data name="ShowingCurrencyAccounts" xml:space="preserve">
+    <value>{0} contas</value>
+  </data>
+  <data name="ShowAllAccounts" xml:space="preserve">
+    <value>Ver todas</value>
+  </data>
+  <data name="FilterByAmount" xml:space="preserve">
+    <value>Valor</value>
+  </data>
+  <data name="FilterByTag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="AllTags" xml:space="preserve">
+    <value>Todas as tags</value>
+  </data>
+  <data name="NoTransactionsInPeriod" xml:space="preserve">
+    <value>Nenhuma transação neste período</value>
+  </data>
+  <data name="AddEntryHint" xml:space="preserve">
+    <value>Toque em + para adicionar uma despesa, receita ou transferência.</value>
+  </data>
+  <data name="NoMatchingTransactions" xml:space="preserve">
+    <value>Nenhuma transação corresponde aos filtros</value>
+  </data>
+  <data name="TryOtherFilters" xml:space="preserve">
+    <value>Mude ou limpe os filtros para ver mais.</value>
+  </data>
+  <data name="FilteredOfTotal" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="MoreDetails" xml:space="preserve">
+    <value>Mais detalhes</value>
+  </data>
+  <data name="LastActivityDate" xml:space="preserve">
+    <value>Última atividade: {0}</value>
+  </data>
+  <data name="AccountCountOne" xml:space="preserve">
+    <value>{0} conta</value>
+  </data>
+  <data name="AccountCountOther" xml:space="preserve">
+    <value>{0} contas</value>
+  </data>
+  <data name="NearLimit" xml:space="preserve">
+    <value>Perto do limite</value>
+  </data>
+  <data name="NoCategoriesLeftForBudget" xml:space="preserve">
+    <value>Toda categoria de despesa já tem orçamento.</value>
+  </data>
+  <data name="BudgetSpentOfLimit" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="OtherCategories" xml:space="preserve">
+    <value>Outras</value>
+  </data>
+  <data name="Spending" xml:space="preserve">
+    <value>Gastos</value>
+  </data>
+  <data name="DeltaVsPrevious" xml:space="preserve">
+    <value>{0} em relação ao período anterior</value>
+  </data>
+  <data name="DeltaNoChange" xml:space="preserve">
+    <value>Igual ao período anterior</value>
+  </data>
+  <data name="DeltaNothingBefore" xml:space="preserve">
+    <value>Nada no período anterior</value>
+  </data>
+  <data name="CashFlow" xml:space="preserve">
+    <value>Fluxo de caixa</value>
+  </data>
+  <data name="NetCashFlow" xml:space="preserve">
+    <value>Fluxo de caixa líquido</value>
+  </data>
+  <data name="NetWorth" xml:space="preserve">
+    <value>Patrimônio</value>
+  </data>
+  <data name="NetWorthCurrencyOnly" xml:space="preserve">
+    <value>Só contas em {0}</value>
+  </data>
+  <data name="BudgetVsActual" xml:space="preserve">
+    <value>Orçamento x real</value>
+  </data>
+  <data name="BudgetSeries" xml:space="preserve">
+    <value>Orçamento</value>
+  </data>
+  <data name="SpentSeries" xml:space="preserve">
+    <value>Gasto</value>
+  </data>
+  <data name="NetSeries" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="MonthsShown" xml:space="preserve">
+    <value>Meses</value>
+  </data>
+  <data name="TotalSpending" xml:space="preserve">
+    <value>Gastos nestes meses</value>
+  </data>
+  <data name="SetupAssistant" xml:space="preserve">
+    <value>Assistente de configuração</value>
+  </data>
+  <data name="SetupAssistantDescription" xml:space="preserve">
+    <value>Idioma, moeda base, contas e categorias iniciais</value>
+  </data>
+  <data name="SetupWelcome" xml:space="preserve">
+    <value>Boas-vindas ao MoneyRecord</value>
+  </data>
+  <data name="SetupStepOf" xml:space="preserve">
+    <value>Passo {0} de {1}</value>
+  </data>
+  <data name="SetupLanguageTitle" xml:space="preserve">
+    <value>Idioma e moeda</value>
+  </data>
+  <data name="SetupLanguageDescription" xml:space="preserve">
+    <value>Escolha o idioma do app e a moeda em que seus totais aparecem.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="SystemDefault" xml:space="preserve">
+    <value>Padrão do sistema</value>
+  </data>
+  <data name="SetupAccountsTitle" xml:space="preserve">
+    <value>Contas iniciais</value>
+  </data>
+  <data name="SetupAccountsDescription" xml:space="preserve">
+    <value>Onde você guarda seu dinheiro? Digite quanto cada conta tem hoje, em {0}.</value>
+  </data>
+  <data name="SetupAccountsAddDescription" xml:space="preserve">
+    <value>As contas novas são somadas às que você já tem, em {0}.</value>
+  </data>
+  <data name="SetupCategoriesTitle" xml:space="preserve">
+    <value>Escolha suas categorias</value>
+  </data>
+  <data name="SetupCategoriesDescription" xml:space="preserve">
+    <value>Desmarque as que você não vai usar. Você pode adicionar as suas depois.</value>
+  </data>
+  <data name="SetupCategoriesAddDescription" xml:space="preserve">
+    <value>As categorias marcadas que você ainda não tem serão adicionadas.</value>
+  </data>
+  <data name="SetupNeedsAccount" xml:space="preserve">
+    <value>Adicione pelo menos uma conta com nome.</value>
+  </data>
+  <data name="SetupFailed" xml:space="preserve">
+    <value>Não foi possível salvar a configuração. Tente de novo.</value>
+  </data>
+  <data name="SetupGetStarted" xml:space="preserve">
+    <value>Começar</value>
+  </data>
+  <data name="RemoveAccount" xml:space="preserve">
+    <value>Remover conta</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Próximo</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Pular</value>
+  </data>
+  <data name="LanguageAndAppearance" xml:space="preserve">
+    <value>Idioma e aparência</value>
+  </data>
+  <data name="LanguageAndAppearanceDescription" xml:space="preserve">
+    <value>O idioma do app e o visual claro ou escuro</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Escuro</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Versão, licença e componentes de código aberto</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versão {0}</value>
+  </data>
+  <data name="AppLicenseNotice" xml:space="preserve">
+    <value>MoneyRecord é software livre: você pode redistribuí-lo e modificá-lo sob a GNU Affero General Public License v3.0.</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Código-fonte</value>
+  </data>
+  <data name="OpenSourceComponents" xml:space="preserve">
+    <value>Componentes de código aberto</value>
+  </data>
+  <data name="OpenSourceComponentsDescription" xml:space="preserve">
+    <value>O MoneyRecord é feito com estes projetos. Toque em um para ler a licença.</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>Licença</value>
+  </data>
+  <data name="FailedToOpenLicense" xml:space="preserve">
+    <value>Não foi possível abrir o texto da licença.</value>
+  </data>
+  <data name="FailedToOpenLink" xml:space="preserve">
+    <value>Não foi possível abrir o link.</value>
+  </data>
+  <data name="ShareLogs" xml:space="preserve">
+    <value>Compartilhar logs</value>
+  </data>
+  <data name="ShareLogsDescription" xml:space="preserve">
+    <value>O registro de erros, para relatar um problema. Só tem detalhes técnicos.</value>
+  </data>
+  <data name="NoLogsYet" xml:space="preserve">
+    <value>Ainda não há nada no registro.</value>
+  </data>
+  <data name="FailedToShareLogs" xml:space="preserve">
+    <value>Não foi possível compartilhar os logs.</value>
+  </data>
+  <data name="CrashReports" xml:space="preserve">
+    <value>Enviar relatórios de falhas</value>
+  </data>
+  <data name="CrashReportsDescription" xml:space="preserve">
+    <value>Quando o app falhar, envia os detalhes técnicos ao desenvolvedor (pelo Sentry). Seus valores e descrições não são incluídos. Ao ativar, vale a partir da próxima vez que o app abrir.</value>
+  </data>
+  <data name="CrashReportsQuestionTitle" xml:space="preserve">
+    <value>Ajudar a melhorar o MoneyRecord?</value>
+  </data>
+  <data name="CrashReportsQuestion" xml:space="preserve">
+    <value>O app pode enviar um relatório de falha quando algo der errado? Os relatórios só têm detalhes técnicos, como o erro e a versão do Android, e não seus valores nem descrições. Você pode mudar isso em Configurações.</value>
+  </data>
+  <data name="CrashReportsAccept" xml:space="preserve">
+    <value>Enviar relatórios</value>
+  </data>
+  <data name="CrashReportsDecline" xml:space="preserve">
+    <value>Não, obrigado</value>
+  </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>Próximas</value>
+  </data>
+  <data name="UpcomingSubtitle" xml:space="preserve">
+    <value>Próximos 30 dias</value>
+  </data>
+  <data name="NoUpcoming" xml:space="preserve">
+    <value>Nada agendado para os próximos 30 dias</value>
+  </data>
+  <data name="RecurringSchedules" xml:space="preserve">
+    <value>Agendamentos</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Amanhã</value>
+  </data>
+  <data name="InDaysOne" xml:space="preserve">
+    <value>Em {0} dia</value>
+  </data>
+  <data name="InDaysOther" xml:space="preserve">
+    <value>Em {0} dias</value>
+  </data>
+  <data name="Reminders" xml:space="preserve">
+    <value>Lembretes</value>
+  </data>
+  <data name="RemindersDescription" xml:space="preserve">
+    <value>Contas antes do vencimento e orçamentos perto do limite</value>
+  </data>
+  <data name="BillReminders" xml:space="preserve">
+    <value>Lembretes de contas</value>
+  </data>
+  <data name="BillRemindersOff" xml:space="preserve">
+    <value>Desativado</value>
+  </data>
+  <data name="BillRemindersSameDay" xml:space="preserve">
+    <value>No dia</value>
+  </data>
+  <data name="DaysBeforeOne" xml:space="preserve">
+    <value>{0} dia antes</value>
+  </data>
+  <data name="DaysBeforeOther" xml:space="preserve">
+    <value>{0} dias antes</value>
+  </data>
+  <data name="BudgetAlerts" xml:space="preserve">
+    <value>Alertas de orçamento</value>
+  </data>
+  <data name="RecurringAddedAlerts" xml:space="preserve">
+    <value>Transações recorrentes adicionadas</value>
+  </data>
+  <data name="ChannelBills" xml:space="preserve">
+    <value>Contas e transações recorrentes</value>
+  </data>
+  <data name="BillDueTitle" xml:space="preserve">
+    <value>Conta a vencer: {0}</value>
+  </data>
+  <data name="BudgetNearLimitTitle" xml:space="preserve">
+    <value>{0}: orçamento perto do limite</value>
+  </data>
+  <data name="BudgetExceededTitle" xml:space="preserve">
+    <value>{0}: acima do orçamento</value>
+  </data>
+  <data name="RecurringAddedOne" xml:space="preserve">
+    <value>{0} transação recorrente foi adicionada</value>
+  </data>
+  <data name="RecurringAddedOther" xml:space="preserve">
+    <value>{0} transações recorrentes foram adicionadas</value>
+  </data>
+  <data name="RemindersOfferTitle" xml:space="preserve">
+    <value>Receber lembretes?</value>
+  </data>
+  <data name="RemindersOfferMessage" xml:space="preserve">
+    <value>O MoneyRecord pode avisar você antes do vencimento de uma conta e quando um orçamento chegar perto do limite. Você pode mudar isso em Configurações.</value>
+  </data>
+  <data name="RemindersOfferAccept" xml:space="preserve">
+    <value>Ativar</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Agora não</value>
+  </data>
+  <data name="NotificationsBlockedTitle" xml:space="preserve">
+    <value>Notificações desativadas</value>
+  </data>
+  <data name="NotificationsBlockedMessage" xml:space="preserve">
+    <value>Permita as notificações do MoneyRecord nas configurações do sistema para receber lembretes.</value>
+  </data>
+  <data name="OpenSystemSettings" xml:space="preserve">
+    <value>Abrir configurações</value>
+  </data>
+  <data name="AppLock" xml:space="preserve">
+    <value>Bloqueio do app</value>
+  </data>
+  <data name="AppLockDescription" xml:space="preserve">
+    <value>Pede sua digital, rosto ou o bloqueio de tela do celular para abrir o MoneyRecord</value>
+  </data>
+  <data name="LockAfter" xml:space="preserve">
+    <value>Bloquear após</value>
+  </data>
+  <data name="MinutesOne" xml:space="preserve">
+    <value>{0} minuto</value>
+  </data>
+  <data name="MinutesOther" xml:space="preserve">
+    <value>{0} minutos</value>
+  </data>
+  <data name="OneHour" xml:space="preserve">
+    <value>1 hora</value>
+  </data>
+  <data name="AppLocked" xml:space="preserve">
+    <value>O MoneyRecord está bloqueado</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Desbloquear</value>
+  </data>
+  <data name="UnlockSubtitle" xml:space="preserve">
+    <value>Use sua digital, rosto ou o bloqueio de tela do celular</value>
+  </data>
+  <data name="TurnOnAppLock" xml:space="preserve">
+    <value>Ativar o bloqueio do app</value>
+  </data>
+  <data name="NoScreenLockTitle" xml:space="preserve">
+    <value>Sem bloqueio de tela</value>
+  </data>
+  <data name="NoScreenLockMessage" xml:space="preserve">
+    <value>Defina antes um bloqueio de tela (PIN, padrão, senha ou digital) no celular e depois ative o bloqueio do app.</value>
+  </data>
+  <data name="HideBalances" xml:space="preserve">
+    <value>Ocultar saldos</value>
+  </data>
+  <data name="ShowBalances" xml:space="preserve">
+    <value>Mostrar saldos</value>
+  </data>
+  <data name="EncryptDatabase" xml:space="preserve">
+    <value>Criptografar banco de dados</value>
+  </data>
+  <data name="EncryptDatabaseDescription" xml:space="preserve">
+    <value>Seus dados são criptografados com uma chave guardada neste celular. Enquanto estiver ativado, o backup automático do Android não os inclui.</value>
+  </data>
+  <data name="EncryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Criptografar o banco de dados?</value>
+  </data>
+  <data name="EncryptDatabaseQuestion" xml:space="preserve">
+    <value>A chave fica neste celular, então o backup automático do Android e a transferência de celular para celular deixarão de incluir seus dados. Antes de trocar de celular, salve um backup em Backup e restauração (os arquivos de backup não são criptografados).</value>
+  </data>
+  <data name="EncryptDatabaseAccept" xml:space="preserve">
+    <value>Criptografar</value>
+  </data>
+  <data name="DecryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Desativar a criptografia?</value>
+  </data>
+  <data name="DecryptDatabaseQuestion" xml:space="preserve">
+    <value>Seus dados voltarão a ser guardados sem criptografia, e o backup automático do Android os incluirá.</value>
+  </data>
+  <data name="DecryptDatabaseAccept" xml:space="preserve">
+    <value>Desativar</value>
+  </data>
+  <data name="DatabaseEncrypted" xml:space="preserve">
+    <value>Banco de dados criptografado</value>
+  </data>
+  <data name="DatabaseDecrypted" xml:space="preserve">
+    <value>Criptografia desativada</value>
+  </data>
+  <data name="FailedToChangeEncryption" xml:space="preserve">
+    <value>Não foi possível mudar a criptografia. Seus dados não foram alterados.</value>
+  </data>
+  <data name="UnreadableDatabaseTitle" xml:space="preserve">
+    <value>Não foi possível abrir os dados criptografados</value>
+  </data>
+  <data name="UnreadableDatabaseMessage" xml:space="preserve">
+    <value>A chave do seu banco de dados criptografado não está mais neste celular, então o app começou com um banco novo. Restaure um backup em Configurações para recuperar seus dados.</value>
+  </data>
+  <data name="AmountReceived" xml:space="preserve">
+    <value>Valor recebido</value>
+  </data>
+  <data name="CrossCurrencyTransferHint" xml:space="preserve">
+    <value>As contas usam moedas diferentes ({0} → {1}): digite o valor que chegou.</value>
+  </data>
+  <data name="ExchangeRateValue" xml:space="preserve">
+    <value>Taxa: {0}</value>
+  </data>
+  <data name="BudgetNotCounted" xml:space="preserve">
+    <value>Não contado: {0}</value>
+  </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Taxas de câmbio</value>
+  </data>
+  <data name="ExchangeRatesDescription" xml:space="preserve">
+    <value>Baixa as taxas diárias de frankfurter.dev para converter outras moedas. Só os códigos das moedas e as datas são enviados.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Atualizar agora</value>
+  </data>
+  <data name="ExchangeRatesUpdated" xml:space="preserve">
+    <value>Atualizado {0}</value>
+  </data>
+  <data name="ExchangeRatesNever" xml:space="preserve">
+    <value>Ainda não baixadas</value>
+  </data>
+  <data name="ExchangeRatesUpdating" xml:space="preserve">
+    <value>Atualizando…</value>
+  </data>
+  <data name="ExchangeRatesUnavailable" xml:space="preserve">
+    <value>Sem taxas para {0}</value>
+  </data>
+  <data name="ExchangeRatesFailed" xml:space="preserve">
+    <value>Não foi possível baixar as taxas de câmbio. Verifique sua conexão e tente de novo.</value>
+  </data>
+  <data name="AmountInCurrency" xml:space="preserve">
+    <value>Valor em {0}</value>
+  </data>
+  <data name="ConvertedAmountHint" xml:space="preserve">
+    <value>Opcional: quanto custou em {0}, como aparece no seu extrato. Deixe vazio para usar a taxa baixada.</value>
+  </data>
+  <data name="ShowByCurrency" xml:space="preserve">
+    <value>Por moeda</value>
+  </data>
+  <data name="ConvertedAtDailyRate" xml:space="preserve">
+    <value>≈ Pela taxa de câmbio de cada dia · atualizado {0}</value>
+  </data>
+  <data name="NoRateYet" xml:space="preserve">
+    <value>Ainda sem taxa de câmbio</value>
+  </data>
+  <data name="NotConvertedNote" xml:space="preserve">
+    <value>Ainda sem taxa de câmbio: {0}</value>
+  </data>
+  <data name="ImportColumnName" xml:space="preserve">
+    <value>Coluna {0}</value>
+  </data>
+  <data name="ImportStatement" xml:space="preserve">
+    <value>Importar extrato bancário</value>
+  </data>
+  <data name="ImportStatementDescription" xml:space="preserve">
+    <value>Adicione a uma conta as movimentações de um arquivo CSV do site do seu banco.</value>
+  </data>
+  <data name="ImportChooseFile" xml:space="preserve">
+    <value>Escolher um arquivo CSV</value>
+  </data>
+  <data name="ImportChooseAnotherFile" xml:space="preserve">
+    <value>Escolher outro arquivo</value>
+  </data>
+  <data name="ImportIntro" xml:space="preserve">
+    <value>Exporte suas movimentações em CSV pelo site do seu banco e escolha o arquivo aqui. Você confere cada linha antes de qualquer coisa ser adicionada.</value>
+  </data>
+  <data name="ImportRowsOne" xml:space="preserve">
+    <value>{0} linha</value>
+  </data>
+  <data name="ImportRowsOther" xml:space="preserve">
+    <value>{0} linhas</value>
+  </data>
+  <data name="ImportNoTable" xml:space="preserve">
+    <value>Não foi encontrada neste arquivo nenhuma tabela com uma coluna de data e uma de valor.</value>
+  </data>
+  <data name="ImportFailedToRead" xml:space="preserve">
+    <value>Não foi possível ler o arquivo</value>
+  </data>
+  <data name="ImportDateColumn" xml:space="preserve">
+    <value>Coluna da data</value>
+  </data>
+  <data name="ImportDateFormat" xml:space="preserve">
+    <value>Formato da data</value>
+  </data>
+  <data name="ImportDescriptionColumn" xml:space="preserve">
+    <value>Coluna da descrição</value>
+  </data>
+  <data name="ImportAmountColumn" xml:space="preserve">
+    <value>Coluna do valor</value>
+  </data>
+  <data name="ImportPositiveIsExpense" xml:space="preserve">
+    <value>Valores positivos são despesas (faturas de cartão)</value>
+  </data>
+  <data name="ImportExpenseCategory" xml:space="preserve">
+    <value>Categoria das novas despesas</value>
+  </data>
+  <data name="ImportIncomeCategory" xml:space="preserve">
+    <value>Categoria das novas receitas</value>
+  </data>
+  <data name="ImportCategoryHint" xml:space="preserve">
+    <value>Uma descrição que você já usou recebe a mesma categoria da última vez. Toque na categoria de uma linha para mudá-la.</value>
+  </data>
+  <data name="ImportSummary" xml:space="preserve">
+    <value>Novas: {0} · Já registradas: {1} · Ilegíveis: {2}</value>
+  </data>
+  <data name="ImportAlreadyRecorded" xml:space="preserve">
+    <value>Já registrada</value>
+  </data>
+  <data name="ImportProblemDate" xml:space="preserve">
+    <value>Data ilegível</value>
+  </data>
+  <data name="ImportProblemAmount" xml:space="preserve">
+    <value>Valor ilegível</value>
+  </data>
+  <data name="ImportProblemZero" xml:space="preserve">
+    <value>Valor zero</value>
+  </data>
+  <data name="ImportButtonOne" xml:space="preserve">
+    <value>Importar {0} transação</value>
+  </data>
+  <data name="ImportButtonOther" xml:space="preserve">
+    <value>Importar {0} transações</value>
+  </data>
+  <data name="ImportDoneTitle" xml:space="preserve">
+    <value>Importação concluída</value>
+  </data>
+  <data name="ImportDoneMessage" xml:space="preserve">
+    <value>{0} adicionadas a {1}.</value>
+  </data>
+  <data name="ImportUndo" xml:space="preserve">
+    <value>Desfazer importação</value>
+  </data>
+  <data name="ImportUndone" xml:space="preserve">
+    <value>Importação desfeita</value>
+  </data>
+  <data name="ImportFailed" xml:space="preserve">
+    <value>Não foi possível importar as transações</value>
+  </data>
+  <data name="ImportLearnedCategory" xml:space="preserve">
+    <value>Mesma categoria da última vez</value>
+  </data>
+  <data name="ImportSavedMapping" xml:space="preserve">
+    <value>Mesmas colunas e conta da sua última importação de um arquivo deste banco.</value>
+  </data>
+  <data name="AutoBackups" xml:space="preserve">
+    <value>Backups automáticos</value>
+  </data>
+  <data name="AutoBackupsDescription" xml:space="preserve">
+    <value>Uma cópia de todos os seus dados, feita sozinha numa pasta que você escolher: num cartão SD ou num app de nuvem como o Google Drive</value>
+  </data>
+  <data name="BackupFolder" xml:space="preserve">
+    <value>Pasta</value>
+  </data>
+  <data name="BackupFolderNone" xml:space="preserve">
+    <value>Não escolhida</value>
+  </data>
+  <data name="ChooseFolder" xml:space="preserve">
+    <value>Escolher</value>
+  </data>
+  <data name="BackupFrequency" xml:space="preserve">
+    <value>Com que frequência</value>
+  </data>
+  <data name="BackupDaily" xml:space="preserve">
+    <value>Todo dia</value>
+  </data>
+  <data name="BackupWeekly" xml:space="preserve">
+    <value>Toda semana</value>
+  </data>
+  <data name="BackupMonthly" xml:space="preserve">
+    <value>Todo mês</value>
+  </data>
+  <data name="BackupsToKeep" xml:space="preserve">
+    <value>Manter</value>
+  </data>
+  <data name="BackupsOne" xml:space="preserve">
+    <value>{0} backup</value>
+  </data>
+  <data name="BackupsOther" xml:space="preserve">
+    <value>{0} backups</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Último backup: {0}</value>
+  </data>
+  <data name="NoBackupYet" xml:space="preserve">
+    <value>Ainda sem backup</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Fazendo backup…</value>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>O último backup falhou ({0})</value>
+  </data>
+  <data name="BackupFolderUnavailable" xml:space="preserve">
+    <value>O app não consegue mais acessar a pasta. Escolha-a de novo.</value>
+  </data>
+  <data name="BackUpNow" xml:space="preserve">
+    <value>Fazer backup agora</value>
+  </data>
+  <data name="AutoBackupNote" xml:space="preserve">
+    <value>Só os backups automáticos mais recentes são mantidos, e um novo só é feito quando algo mudou. Para restaurar um, use Restaurar de um backup → Escolher arquivo de backup.</value>
+  </data>
+  <data name="BackupPassword" xml:space="preserve">
+    <value>Proteger backups com senha</value>
+  </data>
+  <data name="BackupPasswordDescription" xml:space="preserve">
+    <value>Os backups, inclusive os automáticos, são criptografados. Sem a senha não dá para restaurá-los, então guarde-a em um lugar seguro.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Mudar senha</value>
+  </data>
+  <data name="BackupPasswordTitle" xml:space="preserve">
+    <value>Senha do backup</value>
+  </data>
+  <data name="BackupPasswordMessage" xml:space="preserve">
+    <value>Os backups só podem ser restaurados com esta senha. Se você a esquecer, não será possível abri-los.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Senha</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>Repita a senha</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>As senhas não coincidem</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Digite uma senha</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Mostrar senha</value>
+  </data>
+  <data name="RemoveBackupPasswordTitle" xml:space="preserve">
+    <value>Remover a senha do backup?</value>
+  </data>
+  <data name="RemoveBackupPasswordMessage" xml:space="preserve">
+    <value>Os novos backups não serão criptografados. Os backups feitos com a senha ainda precisam dela.</value>
+  </data>
+  <data name="RemovePassword" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="BackupPasswordSaved" xml:space="preserve">
+    <value>Senha do backup salva</value>
+  </data>
+  <data name="BackupPasswordRemoved" xml:space="preserve">
+    <value>Senha do backup removida</value>
+  </data>
+  <data name="RestorePasswordTitle" xml:space="preserve">
+    <value>Backup protegido</value>
+  </data>
+  <data name="RestorePasswordMessage" xml:space="preserve">
+    <value>Digite a senha com que este backup foi feito.</value>
+  </data>
+  <data name="RestoreWrongPassword" xml:space="preserve">
+    <value>Senha incorreta. Tente de novo.</value>
+  </data>
+  <data name="SavingsGoals" xml:space="preserve">
+    <value>Metas</value>
+  </data>
+  <data name="SavingsGoalsTitle" xml:space="preserve">
+    <value>Metas de economia</value>
+  </data>
+  <data name="AddGoal" xml:space="preserve">
+    <value>Adicionar meta</value>
+  </data>
+  <data name="EditGoal" xml:space="preserve">
+    <value>Editar meta</value>
+  </data>
+  <data name="GoalName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="GoalNamePlaceholder" xml:space="preserve">
+    <value>ex.: Férias</value>
+  </data>
+  <data name="GoalTarget" xml:space="preserve">
+    <value>Valor da meta</value>
+  </data>
+  <data name="GoalHasTargetDate" xml:space="preserve">
+    <value>Alcançar até uma data</value>
+  </data>
+  <data name="GoalAccounts" xml:space="preserve">
+    <value>Contas que guardam a economia</value>
+  </data>
+  <data name="GoalAccountsHint" xml:space="preserve">
+    <value>Guardado = o saldo delas, ou o que um cofrinho tem. Uma conta ou cofrinho conta para uma meta só, e uma conta não é marcada junto com os próprios cofrinhos.</value>
+  </data>
+  <data name="GoalNoFreeAccounts" xml:space="preserve">
+    <value>Nenhuma conta livre em {0}. Adicione uma em Contas.</value>
+  </data>
+  <data name="NoGoalsYet" xml:space="preserve">
+    <value>Nenhuma meta de economia ainda</value>
+  </data>
+  <data name="AddGoalToStart" xml:space="preserve">
+    <value>Adicione uma meta e vincule as contas que guardam o dinheiro dela.</value>
+  </data>
+  <data name="PleaseEnterGoalName" xml:space="preserve">
+    <value>Digite um nome para a meta</value>
+  </data>
+  <data name="PleaseSelectGoalAccount" xml:space="preserve">
+    <value>Escolha pelo menos uma conta</value>
+  </data>
+  <data name="GoalAdded" xml:space="preserve">
+    <value>Meta adicionada</value>
+  </data>
+  <data name="FailedToLoadGoals" xml:space="preserve">
+    <value>Não foi possível carregar as metas</value>
+  </data>
+  <data name="FailedToSaveGoal" xml:space="preserve">
+    <value>Não foi possível salvar a meta</value>
+  </data>
+  <data name="FailedToDeleteGoal" xml:space="preserve">
+    <value>Não foi possível excluir a meta</value>
+  </data>
+  <data name="DeleteGoalConfirmation" xml:space="preserve">
+    <value>Excluir a meta "{0}"? As contas dela e o dinheiro continuam.</value>
+  </data>
+  <data name="GoalReached" xml:space="preserve">
+    <value>Alcançada</value>
+  </data>
+  <data name="GoalBehind" xml:space="preserve">
+    <value>Atrasada</value>
+  </data>
+  <data name="GoalSavedOfTarget" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="GoalNeededPerMonth" xml:space="preserve">
+    <value>Guarde {0} por mês para alcançá-la até {1}</value>
+  </data>
+  <data name="GoalTargetDatePassed" xml:space="preserve">
+    <value>A data da meta era {0}</value>
+  </data>
+  <data name="GoalNotEnoughHistory" xml:space="preserve">
+    <value>Ainda não há histórico suficiente para uma projeção</value>
+  </data>
+  <data name="GoalNoRecentSavings" xml:space="preserve">
+    <value>Nenhuma economia nos últimos {0} meses</value>
+  </data>
+  <data name="GoalAtYourPace" xml:space="preserve">
+    <value>No seu ritmo: {0}</value>
+  </data>
+  <data name="GoalNotInSight" xml:space="preserve">
+    <value>No seu ritmo, não será alcançada tão cedo</value>
+  </data>
+  <data name="GoalAccountsNotCounted" xml:space="preserve">
+    <value>Não contadas (outra moeda): {0}</value>
+  </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>Ao salvar, as contas que agora estão em outra moeda são removidas: {0}</value>
+  </data>
+  <data name="Payee" xml:space="preserve">
+    <value>Favorecido</value>
+  </data>
+  <data name="PayeePlaceholder" xml:space="preserve">
+    <value>Loja, pessoa ou empresa (opcional)</value>
+  </data>
+  <data name="Payees" xml:space="preserve">
+    <value>Favorecidos</value>
+  </data>
+  <data name="SearchPayees" xml:space="preserve">
+    <value>Buscar favorecidos</value>
+  </data>
+  <data name="NoPayeesYet" xml:space="preserve">
+    <value>Nenhum favorecido ainda. Digite um ao adicionar uma despesa ou receita e ele aparece aqui.</value>
+  </data>
+  <data name="NoMatchingPayees" xml:space="preserve">
+    <value>Nenhum favorecido corresponde à busca.</value>
+  </data>
+  <data name="PayeeLastUsed" xml:space="preserve">
+    <value>último {0}</value>
+  </data>
+  <data name="RenamePayee" xml:space="preserve">
+    <value>Renomear</value>
+  </data>
+  <data name="RenamePayeeMessage" xml:space="preserve">
+    <value>Novo nome para "{0}"</value>
+  </data>
+  <data name="PayeeExistsTitle" xml:space="preserve">
+    <value>O favorecido já existe</value>
+  </data>
+  <data name="PayeeExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" já existe. Mesclar "{0}" nele?</value>
+  </data>
+  <data name="MergePayee" xml:space="preserve">
+    <value>Mesclar com outro favorecido</value>
+  </data>
+  <data name="MergePayeeInto" xml:space="preserve">
+    <value>Mesclar "{0}" com</value>
+  </data>
+  <data name="MergePayeeConfirmMessage" xml:space="preserve">
+    <value>"{0}" é excluído e o que o usa ({2}) passa para "{1}".</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Mesclar</value>
+  </data>
+  <data name="DeletePayee" xml:space="preserve">
+    <value>Excluir favorecido</value>
+  </data>
+  <data name="DeletePayeeConfirmation" xml:space="preserve">
+    <value>Excluir "{0}"? O que o usa ({1}) continua, sem favorecido.</value>
+  </data>
+  <data name="PayeesMerged" xml:space="preserve">
+    <value>Favorecidos mesclados</value>
+  </data>
+  <data name="PayeeDeleted" xml:space="preserve">
+    <value>Favorecido excluído</value>
+  </data>
+  <data name="FailedToLoadPayees" xml:space="preserve">
+    <value>Não foi possível carregar os favorecidos</value>
+  </data>
+  <data name="FailedToSavePayee" xml:space="preserve">
+    <value>Não foi possível atualizar o favorecido</value>
+  </data>
+  <data name="RecurringCountOne" xml:space="preserve">
+    <value>{0} recorrente</value>
+  </data>
+  <data name="RecurringCountOther" xml:space="preserve">
+    <value>{0} recorrentes</value>
+  </data>
+  <data name="SplitPayment" xml:space="preserve">
+    <value>Dividir entre categorias</value>
+  </data>
+  <data name="AddSplitPart" xml:space="preserve">
+    <value>Adicionar categoria</value>
+  </data>
+  <data name="SplitDescriptionPlaceholder" xml:space="preserve">
+    <value>Categoria de cada parte</value>
+  </data>
+  <data name="SplitLeftToAssign" xml:space="preserve">
+    <value>Falta atribuir: {0}</value>
+  </data>
+  <data name="SplitOverBy" xml:space="preserve">
+    <value>Passa do valor em {0}</value>
+  </data>
+  <data name="SplitFullyAssigned" xml:space="preserve">
+    <value>Tudo atribuído</value>
+  </data>
+  <data name="SplitPartNeedsCategory" xml:space="preserve">
+    <value>Escolha uma categoria para cada parte</value>
+  </data>
+  <data name="SplitPartNeedsAmount" xml:space="preserve">
+    <value>Digite um valor para cada parte</value>
+  </data>
+  <data name="SplitMustAddUp" xml:space="preserve">
+    <value>As partes devem somar {0}</value>
+  </data>
+  <data name="SplitPaymentLabel" xml:space="preserve">
+    <value>Pagamento dividido</value>
+  </data>
+  <data name="SplitPaymentTotal" xml:space="preserve">
+    <value>Pagamento dividido de {0} em {1} partes</value>
+  </data>
+  <data name="ConfirmDeleteSplitMessage" xml:space="preserve">
+    <value>Excluir este pagamento dividido de {0}? As {1} partes serão excluídas.</value>
+  </data>
+  <data name="Debts" xml:space="preserve">
+    <value>Dívidas</value>
+  </data>
+  <data name="AddDebt" xml:space="preserve">
+    <value>Adicionar dívida</value>
+  </data>
+  <data name="EditDebt" xml:space="preserve">
+    <value>Editar dívida</value>
+  </data>
+  <data name="AddDebtToStart" xml:space="preserve">
+    <value>Registre o dinheiro que você emprestou ou pegou emprestado e depois os pagamentos, conforme acontecem.</value>
+  </data>
+  <data name="NoDebtsYet" xml:space="preserve">
+    <value>Nenhuma dívida em aberto</value>
+  </data>
+  <data name="NoPaidOffDebts" xml:space="preserve">
+    <value>Nenhuma dívida quitada ainda</value>
+  </data>
+  <data name="DebtAdded" xml:space="preserve">
+    <value>Dívida adicionada</value>
+  </data>
+  <data name="DebtsOpen" xml:space="preserve">
+    <value>Em aberto</value>
+  </data>
+  <data name="DebtsOwedToYou" xml:space="preserve">
+    <value>Devem a você</value>
+  </data>
+  <data name="DebtsYouOwe" xml:space="preserve">
+    <value>Você deve</value>
+  </data>
+  <data name="DebtOwesYou" xml:space="preserve">
+    <value>Deve a você</value>
+  </data>
+  <data name="DebtYouOwe" xml:space="preserve">
+    <value>Você deve</value>
+  </data>
+  <data name="DebtILent" xml:space="preserve">
+    <value>Emprestei</value>
+  </data>
+  <data name="DebtIBorrowed" xml:space="preserve">
+    <value>Peguei emprestado</value>
+  </data>
+  <data name="DebtPerson" xml:space="preserve">
+    <value>Pessoa</value>
+  </data>
+  <data name="DebtPersonPlaceholder" xml:space="preserve">
+    <value>Com quem é</value>
+  </data>
+  <data name="DebtAmountLent" xml:space="preserve">
+    <value>Valor emprestado</value>
+  </data>
+  <data name="DebtAmountBorrowed" xml:space="preserve">
+    <value>Valor pego emprestado</value>
+  </data>
+  <data name="DebtFromAccount" xml:space="preserve">
+    <value>Pago de</value>
+  </data>
+  <data name="DebtIntoAccount" xml:space="preserve">
+    <value>Recebido em</value>
+  </data>
+  <data name="DebtPaidFromAccount" xml:space="preserve">
+    <value>Pago de</value>
+  </data>
+  <data name="DebtPaidIntoAccount" xml:space="preserve">
+    <value>Recebido em</value>
+  </data>
+  <data name="DebtAlreadyOwedOption" xml:space="preserve">
+    <value>Já devido (sem movimentar dinheiro)</value>
+  </data>
+  <data name="DebtAlreadyOwed" xml:space="preserve">
+    <value>Já devido</value>
+  </data>
+  <data name="DebtNote" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="DebtNotePlaceholder" xml:space="preserve">
+    <value>Para que foi (opcional)</value>
+  </data>
+  <data name="DebtHasDueDate" xml:space="preserve">
+    <value>Data de vencimento</value>
+  </data>
+  <data name="DebtHasSchedule" xml:space="preserve">
+    <value>Pagamentos agendados</value>
+  </data>
+  <data name="DebtScheduleAmount" xml:space="preserve">
+    <value>Cada pagamento</value>
+  </data>
+  <data name="DebtFirstPayment" xml:space="preserve">
+    <value>Primeiro pagamento</value>
+  </data>
+  <data name="DebtHasInterest" xml:space="preserve">
+    <value>Parte de juros</value>
+  </data>
+  <data name="DebtInterestHint" xml:space="preserve">
+    <value>Salva como despesa (ou receita) na categoria Juros, além do pagamento.</value>
+  </data>
+  <data name="DebtHistory" xml:space="preserve">
+    <value>Histórico</value>
+  </data>
+  <data name="DebtRecordPayment" xml:space="preserve">
+    <value>Registrar pagamento</value>
+  </data>
+  <data name="DebtLendMore" xml:space="preserve">
+    <value>Emprestar mais</value>
+  </data>
+  <data name="DebtBorrowMore" xml:space="preserve">
+    <value>Pegar mais emprestado</value>
+  </data>
+  <data name="DebtLeft" xml:space="preserve">
+    <value>Resta: {0}</value>
+  </data>
+  <data name="DebtPaymentTooLarge" xml:space="preserve">
+    <value>É mais do que resta ({0}).</value>
+  </data>
+  <data name="DebtNoAccountInCurrency" xml:space="preserve">
+    <value>Não há conta em {0}. Adicione uma em Contas primeiro.</value>
+  </data>
+  <data name="DebtPaidOffToast" xml:space="preserve">
+    <value>Dívida com {0} quitada</value>
+  </data>
+  <data name="DebtPaidOfTotal" xml:space="preserve">
+    <value>Devolvido {0} de {1}</value>
+  </data>
+  <data name="DebtDueOn" xml:space="preserve">
+    <value>Vence {0}</value>
+  </data>
+  <data name="DebtNextPayment" xml:space="preserve">
+    <value>Próximo pagamento {0} em {1} · {2}</value>
+  </data>
+  <data name="DebtInterestTotal" xml:space="preserve">
+    <value>Juros {0}</value>
+  </data>
+  <data name="DebtPaidOff" xml:space="preserve">
+    <value>Quitada</value>
+  </data>
+  <data name="DebtOverdue" xml:space="preserve">
+    <value>Atrasada</value>
+  </data>
+  <data name="DebtDueSoon" xml:space="preserve">
+    <value>Vence em breve</value>
+  </data>
+  <data name="DebtLent" xml:space="preserve">
+    <value>Emprestado</value>
+  </data>
+  <data name="DebtBorrowed" xml:space="preserve">
+    <value>Pego emprestado</value>
+  </data>
+  <data name="DebtPaidBack" xml:space="preserve">
+    <value>Devolvido</value>
+  </data>
+  <data name="DebtInterest" xml:space="preserve">
+    <value>Juros</value>
+  </data>
+  <data name="InterestCategory" xml:space="preserve">
+    <value>Juros</value>
+  </data>
+  <data name="DebtPaymentTo" xml:space="preserve">
+    <value>Pagamento a {0}</value>
+  </data>
+  <data name="DebtPaymentFrom" xml:space="preserve">
+    <value>Pagamento de {0}</value>
+  </data>
+  <data name="DebtCountOne" xml:space="preserve">
+    <value>{0} dívida</value>
+  </data>
+  <data name="DebtCountOther" xml:space="preserve">
+    <value>{0} dívidas</value>
+  </data>
+  <data name="DebtPaidOffLentTitle" xml:space="preserve">
+    <value>{0} devolveu tudo a você</value>
+  </data>
+  <data name="DebtPaidOffBorrowedTitle" xml:space="preserve">
+    <value>Sua dívida com {0} foi quitada</value>
+  </data>
+  <data name="DebtDueLentTitle" xml:space="preserve">
+    <value>{0} deve pagar você</value>
+  </data>
+  <data name="DebtDueBorrowedTitle" xml:space="preserve">
+    <value>Pague {0}</value>
+  </data>
+  <data name="DeleteDebtConfirmation" xml:space="preserve">
+    <value>Excluir a dívida com {0}? O histórico dela também é excluído, então os saldos das contas voltam a ser como seriam sem ela.</value>
+  </data>
+  <data name="DeleteDebtMovementConfirmation" xml:space="preserve">
+    <value>Excluir "{0}" de {1} ({2})?</value>
+  </data>
+  <data name="FailedToLoadDebts" xml:space="preserve">
+    <value>Não foi possível carregar as dívidas</value>
+  </data>
+  <data name="FailedToSaveDebt" xml:space="preserve">
+    <value>Não foi possível salvar a dívida</value>
+  </data>
+  <data name="FailedToDeleteDebt" xml:space="preserve">
+    <value>Não foi possível excluir a dívida</value>
+  </data>
+  <data name="PayeeHasDebts" xml:space="preserve">
+    <value>{0} tem dívidas. Exclua-as primeiro na página Dívidas, ou mescle {0} com outro favorecido.</value>
+  </data>
+  <data name="PleaseEnterDebtPerson" xml:space="preserve">
+    <value>Digite com quem é a dívida</value>
+  </data>
+  <data name="DebtsPaidOff" xml:space="preserve">
+    <value>Quitadas</value>
+  </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>Pago a mais em {0}</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>Sem isso, seria devolvido mais do que foi emprestado ou pego emprestado. Exclua os pagamentos primeiro.</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>Os pagamentos de dívidas são alterados na página Dívidas</value>
+  </data>
+  <data name="WidgetPickAccount" xml:space="preserve">
+    <value>Qual conta o widget deve mostrar?</value>
+  </data>
+  <data name="ScanReceipt" xml:space="preserve">
+    <value>Escanear recibo</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Tirar foto</value>
+  </data>
+  <data name="ChoosePhoto" xml:space="preserve">
+    <value>Escolher da galeria</value>
+  </data>
+  <data name="ReadingReceipt" xml:space="preserve">
+    <value>Lendo o recibo…</value>
+  </data>
+  <data name="ReceiptFilledIn" xml:space="preserve">
+    <value>Preenchido com o recibo: {0}</value>
+  </data>
+  <data name="ReceiptSays" xml:space="preserve">
+    <value>O recibo diz {0}</value>
+  </data>
+  <data name="ReceiptNotRead" xml:space="preserve">
+    <value>Nenhum total nem data encontrados no recibo</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="ExportReportFor" xml:space="preserve">
+    <value>Exportar {0}</value>
+  </data>
+  <data name="ExportPdfReport" xml:space="preserve">
+    <value>Relatório em PDF</value>
+  </data>
+  <data name="ExportPeriodCsv" xml:space="preserve">
+    <value>Transações (CSV)</value>
+  </data>
+  <data name="ShareReport" xml:space="preserve">
+    <value>Compartilhar relatório</value>
+  </data>
+  <data name="FailedToExportReport" xml:space="preserve">
+    <value>Não foi possível criar o relatório</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>Relatório financeiro</value>
+  </data>
+  <data name="ReportCreatedOn" xml:space="preserve">
+    <value>Criado em {0} com o MoneyRecord</value>
+  </data>
+  <data name="ReportPageOf" xml:space="preserve">
+    <value>Página {0} de {1}</value>
+  </data>
+  <data name="ReportSpendingByCategory" xml:space="preserve">
+    <value>Gastos por categoria</value>
+  </data>
+  <data name="ReportIncomeByCategory" xml:space="preserve">
+    <value>Receitas por categoria</value>
+  </data>
+  <data name="ReportShare" xml:space="preserve">
+    <value>Parte</value>
+  </data>
+  <data name="ReportLimit" xml:space="preserve">
+    <value>Limite</value>
+  </data>
+  <data name="ReportStatus" xml:space="preserve">
+    <value>Situação</value>
+  </data>
+  <data name="ReportBalanceOn" xml:space="preserve">
+    <value>Saldo em {0}</value>
+  </data>
+  <data name="ReportConvertedTo" xml:space="preserve">
+    <value>Convertido para {0} pela taxa de câmbio de cada dia (≈)</value>
+  </data>
+  <data name="ReportInCurrencyOnly" xml:space="preserve">
+    <value>Só valores em {0}; as outras moedas estão no resumo</value>
+  </data>
+  <data name="ReportTransfer" xml:space="preserve">
+    <value>Transferência</value>
+  </data>
+  <data name="ShowCents" xml:space="preserve">
+    <value>Mostrar centavos</value>
+  </data>
+  <data name="ShowCentsDescription" xml:space="preserve">
+    <value>Desativado mostra valores inteiros nessa moeda. Os valores continuam salvos até o centavo.</value>
+  </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>Receitas</value>
+  </data>
+  <data name="AddRecurring" xml:space="preserve">
+    <value>Adicionar transação recorrente</value>
+  </data>
+  <data name="NewRecurringExpense" xml:space="preserve">
+    <value>Nova despesa recorrente</value>
+  </data>
+  <data name="NewRecurringIncome" xml:space="preserve">
+    <value>Nova receita recorrente</value>
+  </data>
+  <data name="FirstDate" xml:space="preserve">
+    <value>Primeira data</value>
+  </data>
+  <data name="ScheduleStartsNote" xml:space="preserve">
+    <value>Só o agendamento é salvo: o primeiro lançamento é registrado em {0}.</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>Com data futura: conta nos saldos a partir de {0}.</value>
+  </data>
+  <data name="ScheduleDateMustBeFuture" xml:space="preserve">
+    <value>Escolha uma primeira data a partir de amanhã.</value>
+  </data>
+  <data name="RecurringScheduled" xml:space="preserve">
+    <value>Transação recorrente agendada</value>
+  </data>
+  <data name="TripCategoryLodging" xml:space="preserve">
+    <value>Hospedagem</value>
+  </data>
+  <data name="TripCategoryFlights" xml:space="preserve">
+    <value>Passagens aéreas</value>
+  </data>
+  <data name="TripCategoryTransport" xml:space="preserve">
+    <value>Transporte</value>
+  </data>
+  <data name="TripCategoryFood" xml:space="preserve">
+    <value>Alimentação</value>
+  </data>
+  <data name="TripCategoryActivities" xml:space="preserve">
+    <value>Passeios</value>
+  </data>
+  <data name="TripCategoryShopping" xml:space="preserve">
+    <value>Compras</value>
+  </data>
+  <data name="TripCategoryOther" xml:space="preserve">
+    <value>Outros</value>
+  </data>
+  <data name="TravelCategory" xml:space="preserve">
+    <value>Viagem</value>
+  </data>
+  <data name="TripActive" xml:space="preserve">
+    <value>Ativa</value>
+  </data>
+  <data name="TripEnded" xml:space="preserve">
+    <value>Encerrada</value>
+  </data>
+  <data name="TripSince" xml:space="preserve">
+    <value>Desde {0}</value>
+  </data>
+  <data name="SpentOfBudget" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="TripSpent" xml:space="preserve">
+    <value>Gasto: {0}</value>
+  </data>
+  <data name="TripNotConverted" xml:space="preserve">
+    <value>Não convertido: {0}</value>
+  </data>
+  <data name="TripBanner" xml:space="preserve">
+    <value>Viagem: {0}</value>
+  </data>
+  <data name="NotPartOfTrip" xml:space="preserve">
+    <value>Fora da viagem</value>
+  </data>
+  <data name="TripInfo" xml:space="preserve">
+    <value>Viagem: {0} · {1}</value>
+  </data>
+  <data name="TripInfoOnly" xml:space="preserve">
+    <value>Viagem: {0}</value>
+  </data>
+  <data name="TripsTitle" xml:space="preserve">
+    <value>Viagens</value>
+  </data>
+  <data name="TripCategoriesTitle" xml:space="preserve">
+    <value>Categorias da viagem</value>
+  </data>
+  <data name="AddTripCategory" xml:space="preserve">
+    <value>Adicionar categoria da viagem</value>
+  </data>
+  <data name="EditTripCategory" xml:space="preserve">
+    <value>Editar categoria da viagem</value>
+  </data>
+  <data name="FailedToLoadTrips" xml:space="preserve">
+    <value>Não foi possível carregar as viagens</value>
+  </data>
+  <data name="FailedToSaveTrip" xml:space="preserve">
+    <value>Não foi possível salvar a viagem</value>
+  </data>
+  <data name="FailedToDeleteTrip" xml:space="preserve">
+    <value>Não foi possível excluir a viagem</value>
+  </data>
+  <data name="FailedToSaveTripCategory" xml:space="preserve">
+    <value>Não foi possível salvar a categoria da viagem</value>
+  </data>
+  <data name="FailedToDeleteTripCategory" xml:space="preserve">
+    <value>Não foi possível excluir a categoria da viagem</value>
+  </data>
+  <data name="LastTripCategoryCannotDelete" xml:space="preserve">
+    <value>Esta é a única categoria da viagem e está em uso, então não pode ser excluída.</value>
+  </data>
+  <data name="TripCategoryInUse" xml:space="preserve">
+    <value>"{0}" é usada por despesas ou limites de viagens. Mova-os para:</value>
+  </data>
+  <data name="DeleteTripCategoryConfirmation" xml:space="preserve">
+    <value>Excluir a categoria da viagem "{0}"?</value>
+  </data>
+  <data name="StartTrip" xml:space="preserve">
+    <value>Iniciar viagem</value>
+  </data>
+  <data name="EditTrip" xml:space="preserve">
+    <value>Editar viagem</value>
+  </data>
+  <data name="TripName" xml:space="preserve">
+    <value>Nome da viagem</value>
+  </data>
+  <data name="TripNamePlaceholder" xml:space="preserve">
+    <value>Lisboa, verão</value>
+  </data>
+  <data name="TripStartDate" xml:space="preserve">
+    <value>Data de início</value>
+  </data>
+  <data name="TripBudgetOptional" xml:space="preserve">
+    <value>Orçamento (opcional)</value>
+  </data>
+  <data name="TripDefaultAccount" xml:space="preserve">
+    <value>Conta com que a viagem paga</value>
+  </data>
+  <data name="TripNoAccount" xml:space="preserve">
+    <value>Nenhuma (a última usada)</value>
+  </data>
+  <data name="TripLimits" xml:space="preserve">
+    <value>Limite por categoria da viagem (opcional)</value>
+  </data>
+  <data name="TripLimitsHint" xml:space="preserve">
+    <value>Na moeda da viagem. Deixe vazio para não ter limite.</value>
+  </data>
+  <data name="PleaseEnterTripName" xml:space="preserve">
+    <value>Digite o nome da viagem</value>
+  </data>
+  <data name="TripEndBeforeStart" xml:space="preserve">
+    <value>A viagem não pode terminar antes de começar</value>
+  </data>
+  <data name="TripAlreadyActive" xml:space="preserve">
+    <value>Outra viagem está ativa. Encerre-a primeiro.</value>
+  </data>
+  <data name="TripStarted" xml:space="preserve">
+    <value>Viagem iniciada</value>
+  </data>
+  <data name="NoTripsYet" xml:space="preserve">
+    <value>Nenhuma viagem ainda</value>
+  </data>
+  <data name="AddTripToStart" xml:space="preserve">
+    <value>Inicie uma viagem para registrar os gastos dela separados das despesas do dia a dia.</value>
+  </data>
+  <data name="DeleteTripConfirmation" xml:space="preserve">
+    <value>Excluir a viagem "{0}"? As despesas dela continuam nas suas transações.</value>
+  </data>
+  <data name="TripDeleteNeedsEnd" xml:space="preserve">
+    <value>Encerre a viagem antes de excluí-la.</value>
+  </data>
+  <data name="TripCategoriesBreakdown" xml:space="preserve">
+    <value>Por categoria</value>
+  </data>
+  <data name="TripExpenses" xml:space="preserve">
+    <value>Despesas</value>
+  </data>
+  <data name="NoTripExpenses" xml:space="preserve">
+    <value>Nenhuma despesa ainda</value>
+  </data>
+  <data name="TravelCategoryCannotDelete" xml:space="preserve">
+    <value>A categoria Viagem guarda as despesas das suas viagens, então não pode ser excluída. Você pode renomeá-la.</value>
+  </data>
+  <data name="EndTrip" xml:space="preserve">
+    <value>Encerrar viagem</value>
+  </data>
+  <data name="EndTripHint" xml:space="preserve">
+    <value>Escolha para onde vão, nas suas categorias normais, as despesas de cada categoria da viagem.</value>
+  </data>
+  <data name="SameCategoryForAll" xml:space="preserve">
+    <value>Mesma categoria para todas</value>
+  </data>
+  <data name="ReopenTrip" xml:space="preserve">
+    <value>Reabrir viagem</value>
+  </data>
+  <data name="ReopenTripConfirmation" xml:space="preserve">
+    <value>Reabrir "{0}"? As despesas dela voltam para Viagem.</value>
+  </data>
+  <data name="TripEndedToast" xml:space="preserve">
+    <value>Viagem encerrada</value>
+  </data>
+  <data name="FailedToEndTrip" xml:space="preserve">
+    <value>Não foi possível atualizar a viagem</value>
+  </data>
+  <data name="PleaseChooseCategoryForEach" xml:space="preserve">
+    <value>Escolha uma categoria para cada categoria da viagem</value>
+  </data>
+  <data name="PartiesTitle" xml:space="preserve">
+    <value>Eventos</value>
+  </data>
+  <data name="PartyFriends" xml:space="preserve">
+    <value>Amigos</value>
+  </data>
+  <data name="NoPartiesYet" xml:space="preserve">
+    <value>Nenhum evento ainda</value>
+  </data>
+  <data name="AddPartyToStart" xml:space="preserve">
+    <value>Adicione um evento para dividir os custos de algo em grupo</value>
+  </data>
+  <data name="NewParty" xml:space="preserve">
+    <value>Novo evento</value>
+  </data>
+  <data name="EditParty" xml:space="preserve">
+    <value>Editar evento</value>
+  </data>
+  <data name="PartyName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="PartyNamePlaceholder" xml:space="preserve">
+    <value>ex.: Aniversário da Ana</value>
+  </data>
+  <data name="PartyBudgetOptional" xml:space="preserve">
+    <value>Orçamento (opcional)</value>
+  </data>
+  <data name="PartyMembers" xml:space="preserve">
+    <value>Quem participa</value>
+  </data>
+  <data name="PartyNoFriendsYet" xml:space="preserve">
+    <value>Adicione amigos primeiro e depois escolha quem participa</value>
+  </data>
+  <data name="PleaseEnterPartyName" xml:space="preserve">
+    <value>Digite um nome para o evento</value>
+  </data>
+  <data name="PartyNeedsMembers" xml:space="preserve">
+    <value>Escolha pelo menos uma pessoa</value>
+  </data>
+  <data name="PartyMemberInUse" xml:space="preserve">
+    <value>Uma pessoa com despesas ou contribuições não pode ser retirada</value>
+  </data>
+  <data name="PartyNobodyShares" xml:space="preserve">
+    <value>Retirar esta pessoa deixaria uma despesa sem ninguém para dividi-la</value>
+  </data>
+  <data name="FailedToLoadParties" xml:space="preserve">
+    <value>Não foi possível carregar os eventos</value>
+  </data>
+  <data name="FailedToSaveParty" xml:space="preserve">
+    <value>Não foi possível salvar o evento</value>
+  </data>
+  <data name="FailedToDeleteParty" xml:space="preserve">
+    <value>Não foi possível excluir o evento</value>
+  </data>
+  <data name="FriendsTitle" xml:space="preserve">
+    <value>Amigos</value>
+  </data>
+  <data name="NoFriendsYet" xml:space="preserve">
+    <value>Nenhum amigo ainda</value>
+  </data>
+  <data name="AddFriendToStart" xml:space="preserve">
+    <value>Adicione as pessoas com quem você divide despesas</value>
+  </data>
+  <data name="FriendNamePlaceholder" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="AddFriend" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+  <data name="RenameFriend" xml:space="preserve">
+    <value>Renomear</value>
+  </data>
+  <data name="RenameFriendTitle" xml:space="preserve">
+    <value>Renomear amigo</value>
+  </data>
+  <data name="DeleteFriendQuestion" xml:space="preserve">
+    <value>Excluir {0}?</value>
+  </data>
+  <data name="FriendInParty" xml:space="preserve">
+    <value>Este amigo está em um evento e não pode ser excluído</value>
+  </data>
+  <data name="FriendNameTaken" xml:space="preserve">
+    <value>Já existe um amigo com este nome</value>
+  </data>
+  <data name="FailedToLoadFriends" xml:space="preserve">
+    <value>Não foi possível carregar os amigos</value>
+  </data>
+  <data name="FailedToSaveFriend" xml:space="preserve">
+    <value>Não foi possível salvar o amigo</value>
+  </data>
+  <data name="PartyLeft" xml:space="preserve">
+    <value>Restam {0}</value>
+  </data>
+  <data name="PartyOver" xml:space="preserve">
+    <value>{0} acima</value>
+  </data>
+  <data name="PartyBalances" xml:space="preserve">
+    <value>Saldos</value>
+  </data>
+  <data name="PartyExpenses" xml:space="preserve">
+    <value>Despesas</value>
+  </data>
+  <data name="PartyContributions" xml:space="preserve">
+    <value>Contribuições</value>
+  </data>
+  <data name="PartyPot" xml:space="preserve">
+    <value>Caixinha</value>
+  </data>
+  <data name="PartyPotHint" xml:space="preserve">
+    <value>Dinheiro entregue antes, dividido por todos</value>
+  </data>
+  <data name="AddPartyExpense" xml:space="preserve">
+    <value>Adicionar despesa</value>
+  </data>
+  <data name="EditPartyExpense" xml:space="preserve">
+    <value>Editar despesa</value>
+  </data>
+  <data name="AddPartyContribution" xml:space="preserve">
+    <value>Adicionar contribuição</value>
+  </data>
+  <data name="EditPartyContribution" xml:space="preserve">
+    <value>Editar contribuição</value>
+  </data>
+  <data name="PartyPaidBy" xml:space="preserve">
+    <value>Pago por</value>
+  </data>
+  <data name="PartyPaidByPot" xml:space="preserve">
+    <value>A caixinha</value>
+  </data>
+  <data name="PartyPaidByLine" xml:space="preserve">
+    <value>Pago por {0}</value>
+  </data>
+  <data name="PartyWho" xml:space="preserve">
+    <value>Quem</value>
+  </data>
+  <data name="PartySharedBetween" xml:space="preserve">
+    <value>Dividido entre</value>
+  </data>
+  <data name="PartySharedLine" xml:space="preserve">
+    <value>Dividido por {0} de {1}</value>
+  </data>
+  <data name="PartyOwed" xml:space="preserve">
+    <value>tem a receber {0}</value>
+  </data>
+  <data name="PartyOwes" xml:space="preserve">
+    <value>deve {0}</value>
+  </data>
+  <data name="PartyEven" xml:space="preserve">
+    <value>quite</value>
+  </data>
+  <data name="NoPartyExpenses" xml:space="preserve">
+    <value>Nenhuma despesa ainda</value>
+  </data>
+  <data name="NoPartyContributions" xml:space="preserve">
+    <value>Nenhuma contribuição ainda</value>
+  </data>
+  <data name="DeletePartyQuestion" xml:space="preserve">
+    <value>Excluir este evento e tudo que há nele?</value>
+  </data>
+  <data name="DeletePartyExpenseQuestion" xml:space="preserve">
+    <value>Excluir esta despesa?</value>
+  </data>
+  <data name="DeletePartyContributionQuestion" xml:space="preserve">
+    <value>Excluir esta contribuição?</value>
+  </data>
+  <data name="PartyNeedsSharer" xml:space="preserve">
+    <value>Alguém precisa dividir a despesa</value>
+  </data>
+  <data name="FailedToSavePartyExpense" xml:space="preserve">
+    <value>Não foi possível salvar a despesa</value>
+  </data>
+  <data name="FailedToSavePartyContribution" xml:space="preserve">
+    <value>Não foi possível salvar a contribuição</value>
+  </data>
+  <data name="PartyPaidLine" xml:space="preserve">
+    <value>Pagou {0}</value>
+  </data>
+  <data name="PartyHandedInLine" xml:space="preserve">
+    <value>Entregou {0}</value>
+  </data>
+  <data name="PartyShareLine" xml:space="preserve">
+    <value>Parte {0}</value>
+  </data>
+  <data name="PartySettleUp" xml:space="preserve">
+    <value>Acertar as contas</value>
+  </data>
+  <data name="PartyPaysLine" xml:space="preserve">
+    <value>{0} paga {2} a {1}</value>
+  </data>
+  <data name="PartyAllSettled" xml:space="preserve">
+    <value>Todos estão quites</value>
+  </data>
+  <data name="PartyMarkPaid" xml:space="preserve">
+    <value>Marcar como pago</value>
+  </data>
+  <data name="PartyPaymentsMade" xml:space="preserve">
+    <value>Pagamentos feitos</value>
+  </data>
+  <data name="SharePartySummary" xml:space="preserve">
+    <value>Compartilhar resumo</value>
+  </data>
+  <data name="DeletePartyPaymentQuestion" xml:space="preserve">
+    <value>Excluir este pagamento? Ele voltará a contar como não pago.</value>
+  </data>
+  <data name="FailedToSavePartyPayment" xml:space="preserve">
+    <value>Não foi possível salvar o pagamento</value>
+  </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>Não foi possível compartilhar o resumo</value>
+  </data>
+  <data name="PartyRecordMyShare" xml:space="preserve">
+    <value>Registrar minha parte</value>
+  </data>
+  <data name="PartyUpdateMyShare" xml:space="preserve">
+    <value>Atualizar minha parte</value>
+  </data>
+  <data name="PartyWhichIsYou" xml:space="preserve">
+    <value>Qual amigo é você?</value>
+  </data>
+  <data name="PartyShareAccount" xml:space="preserve">
+    <value>Conta da sua parte</value>
+  </data>
+  <data name="PartyShareCategory" xml:space="preserve">
+    <value>Categoria da sua parte</value>
+  </data>
+  <data name="PartyShareRecorded" xml:space="preserve">
+    <value>Sua parte ({0}) está nas suas despesas</value>
+  </data>
+  <data name="PartyNoShareYet" xml:space="preserve">
+    <value>Você ainda não tem parte para registrar</value>
+  </data>
+  <data name="PartyNoAccountInCurrency" xml:space="preserve">
+    <value>Você não tem conta em {0}</value>
+  </data>
+  <data name="FailedToRecordPartyShare" xml:space="preserve">
+    <value>Não foi possível registrar sua parte</value>
+  </data>
+  <data name="Pockets" xml:space="preserve">
+    <value>Cofrinhos</value>
+  </data>
+  <data name="NewPocket" xml:space="preserve">
+    <value>Novo cofrinho</value>
+  </data>
+  <data name="EditPocket" xml:space="preserve">
+    <value>Editar cofrinho</value>
+  </data>
+  <data name="PocketName" xml:space="preserve">
+    <value>Nome do cofrinho</value>
+  </data>
+  <data name="PocketNamePlaceholder" xml:space="preserve">
+    <value>ex.: Viagem</value>
+  </data>
+  <data name="PleaseEnterPocketName" xml:space="preserve">
+    <value>Digite o nome do cofrinho</value>
+  </data>
+  <data name="SetAside" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="TakeOut" xml:space="preserve">
+    <value>Retirar</value>
+  </data>
+  <data name="PocketHolds" xml:space="preserve">
+    <value>Neste cofrinho: {0}</value>
+  </data>
+  <data name="PocketAccountAvailable" xml:space="preserve">
+    <value>Disponível em {0}: {1}</value>
+  </data>
+  <data name="PocketMovements" xml:space="preserve">
+    <value>Movimentações</value>
+  </data>
+  <data name="NoPocketMovements" xml:space="preserve">
+    <value>Nada guardado ainda.</value>
+  </data>
+  <data name="AvailableAndInPockets" xml:space="preserve">
+    <value>Disponível {0} · {1} em cofrinhos</value>
+  </data>
+  <data name="InPockets" xml:space="preserve">
+    <value>{0} em cofrinhos</value>
+  </data>
+  <data name="PocketNotEnoughAvailable" xml:space="preserve">
+    <value>Não há tanto disponível em {0}.</value>
+  </data>
+  <data name="PocketNotEnoughInPocket" xml:space="preserve">
+    <value>Este cofrinho tem menos do que isso.</value>
+  </data>
+  <data name="DeletePocketConfirmation" xml:space="preserve">
+    <value>Excluir o cofrinho "{0}"? O dinheiro dele volta para {1}.</value>
+  </data>
+  <data name="FailedToSavePocket" xml:space="preserve">
+    <value>Não foi possível salvar o cofrinho</value>
+  </data>
+  <data name="FailedToDeletePocket" xml:space="preserve">
+    <value>Não foi possível excluir o cofrinho</value>
+  </data>
+  <data name="FailedToMovePocket" xml:space="preserve">
+    <value>Não foi possível atualizar o cofrinho</value>
+  </data>
+  <data name="PocketsCurrencyChange" xml:space="preserve">
+    <value>Os cofrinhos de {0} mantêm os valores, mas deixam de contar para as metas em {1}. Mudar a moeda mesmo assim?</value>
+  </data>
+  <data name="DeleteAccountPockets" xml:space="preserve">
+    <value>Os cofrinhos dela também são excluídos.</value>
+  </data>
+  <data name="PocketCoverTitle" xml:space="preserve">
+    <value>Isso usa {0} que você guardou. Retirar de:</value>
+  </data>
+  <data name="PocketCoverKeep" xml:space="preserve">
+    <value>Manter os cofrinhos como estão</value>
+  </data>
+  <data name="WhatsNewTitle" xml:space="preserve">
+    <value>Novidades da versão {0}</value>
+  </data>
+  <data name="WhatsNewGotIt" xml:space="preserve">
+    <value>Entendi</value>
+  </data>
+  <data name="WhatsNewMenu" xml:space="preserve">
+    <value>Novidades</value>
+  </data>
+  <data name="FailedToLoadWhatsNew" xml:space="preserve">
+    <value>Não foi possível carregar as notas da versão</value>
+  </data>
+  <data name="PendingEntryTitle" xml:space="preserve">
+    <value>Lançar {0}</value>
+  </data>
+  <data name="AmountVaries" xml:space="preserve">
+    <value>Valor variável</value>
+  </data>
+  <data name="EnterOccurrence" xml:space="preserve">
+    <value>Lançar</value>
+  </data>
+  <data name="ToEnter" xml:space="preserve">
+    <value>A lançar</value>
+  </data>
+  <data name="SkipOccurrenceTitle" xml:space="preserve">
+    <value>Pular este?</value>
+  </data>
+  <data name="SkipOccurrenceMessage" xml:space="preserve">
+    <value>{0} em {1} não será registrado.</value>
+  </data>
+  <data name="OccurrenceSkipped" xml:space="preserve">
+    <value>Pulado</value>
+  </data>
+  <data name="OccurrenceNoLongerPending" xml:space="preserve">
+    <value>Este lançamento não está mais esperando para ser feito.</value>
+  </data>
+  <data name="AmountVariesHint" xml:space="preserve">
+    <value>Nada é salvo automaticamente: você digita o valor a cada vez.</value>
+  </data>
+  <data name="HomeCardBalance" xml:space="preserve">
+    <value>Saldo total</value>
+  </data>
+  <data name="HomeCardPeriodSummary" xml:space="preserve">
+    <value>Receitas e despesas</value>
+  </data>
+  <data name="HomeCardTrip" xml:space="preserve">
+    <value>Viagem ativa</value>
+  </data>
+  <data name="CustomizeHome" xml:space="preserve">
+    <value>Personalizar Início</value>
+  </data>
+  <data name="HomeLayoutTitle" xml:space="preserve">
+    <value>Tela inicial</value>
+  </data>
+  <data name="HomeLayoutDescription" xml:space="preserve">
+    <value>Ordene e mostre ou oculte os cartões do Início</value>
+  </data>
+  <data name="HomeLayoutHint" xml:space="preserve">
+    <value>Cartões sem nada para mostrar ficam ocultos. O saldo total sempre aparece.</value>
+  </data>
+  <data name="HomeLayoutReset" xml:space="preserve">
+    <value>Restaurar padrão</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Subir</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Descer</value>
+  </data>
+  <data name="SavingsChallenges" xml:space="preserve">
+    <value>Desafio de economia</value>
+  </data>
+  <data name="NoChallengesYet" xml:space="preserve">
+    <value>Nenhum desafio ainda</value>
+  </data>
+  <data name="AddChallengeToStart" xml:space="preserve">
+    <value>Escolha uma meta e um número de dias; o app calcula quanto guardar a cada dia.</value>
+  </data>
+  <data name="AddChallenge" xml:space="preserve">
+    <value>Adicionar desafio</value>
+  </data>
+  <data name="NewChallenge" xml:space="preserve">
+    <value>Novo desafio</value>
+  </data>
+  <data name="EditChallenge" xml:space="preserve">
+    <value>Editar desafio</value>
+  </data>
+  <data name="ChallengeName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="ChallengeNamePlaceholder" xml:space="preserve">
+    <value>ex.: Fundo para as férias</value>
+  </data>
+  <data name="ChallengeGoal" xml:space="preserve">
+    <value>Meta</value>
+  </data>
+  <data name="ChallengeDays" xml:space="preserve">
+    <value>Dias</value>
+  </data>
+  <data name="ChallengeStartDate" xml:space="preserve">
+    <value>Data de início</value>
+  </data>
+  <data name="ChallengeMode" xml:space="preserve">
+    <value>Modo</value>
+  </data>
+  <data name="ChallengeModeDoubling" xml:space="preserve">
+    <value>Dobrando (1, 2, 4, 8…)</value>
+  </data>
+  <data name="ChallengeModeLinear" xml:space="preserve">
+    <value>Linear (1, 2, 3, 4…)</value>
+  </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>Igual todo dia</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>Valor por dia (opcional)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>Vazio = dividir pelos dias</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>{0} por dia</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>{0} por dia · último dia {1}</value>
+  </data>
+  <data name="ChallengeRounding" xml:space="preserve">
+    <value>Arredondar cada dia</value>
+  </data>
+  <data name="ChallengeRoundingNone" xml:space="preserve">
+    <value>Sem arredondar</value>
+  </data>
+  <data name="ChallengeRoundTo" xml:space="preserve">
+    <value>Para {0}</value>
+  </data>
+  <data name="ChallengeToAccount" xml:space="preserve">
+    <value>Guardar em</value>
+  </data>
+  <data name="ChallengeNoAccount" xml:space="preserve">
+    <value>Nenhuma (só marcar dias)</value>
+  </data>
+  <data name="ChallengePreviewDays" xml:space="preserve">
+    <value>Primeiro dia {0} · último dia {1}</value>
+  </data>
+  <data name="ChallengePreviewTotal" xml:space="preserve">
+    <value>Total {0}</value>
+  </data>
+  <data name="ChallengePreviewOver" xml:space="preserve">
+    <value>Total {0} · {1} acima da meta</value>
+  </data>
+  <data name="ChallengePreviewUnder" xml:space="preserve">
+    <value>Total {0} · {1} abaixo da meta</value>
+  </data>
+  <data name="ChallengeLevelsWarning" xml:space="preserve">
+    <value>Dobrar todo dia durante {0} dias começaria abaixo de uma unidade. O plano dobra em {1} etapas de vários dias cada; com {1} dias, dobra todo dia.</value>
+  </data>
+  <data name="ChallengePlanLocked" xml:space="preserve">
+    <value>A meta, os dias, o modo e o arredondamento não podem mudar depois que um dia é concluído.</value>
+  </data>
+  <data name="ChallengeSavedOf" xml:space="preserve">
+    <value>{0} guardados de {1}</value>
+  </data>
+  <data name="ChallengeDaysLeftOne" xml:space="preserve">
+    <value>Falta {0} dia</value>
+  </data>
+  <data name="ChallengeDaysLeftOther" xml:space="preserve">
+    <value>Faltam {0} dias</value>
+  </data>
+  <data name="ChallengeFinished" xml:space="preserve">
+    <value>Concluído</value>
+  </data>
+  <data name="ChallengeAdded" xml:space="preserve">
+    <value>Desafio adicionado</value>
+  </data>
+  <data name="PleaseEnterChallengeName" xml:space="preserve">
+    <value>Digite um nome</value>
+  </data>
+  <data name="PleaseEnterChallengeDays" xml:space="preserve">
+    <value>Digite entre 1 e 3650 dias</value>
+  </data>
+  <data name="FailedToLoadChallenges" xml:space="preserve">
+    <value>Não foi possível carregar os desafios</value>
+  </data>
+  <data name="FailedToSaveChallenge" xml:space="preserve">
+    <value>Não foi possível salvar o desafio</value>
+  </data>
+  <data name="FailedToDeleteChallenge" xml:space="preserve">
+    <value>Não foi possível excluir o desafio</value>
+  </data>
+  <data name="DeleteChallengeConfirmation" xml:space="preserve">
+    <value>Excluir "{0}"? As transferências que ele registrou continuam.</value>
+  </data>
+  <data name="ChallengeJustMark" xml:space="preserve">
+    <value>Só marcar o dia</value>
+  </data>
+  <data name="ChallengeRemainingOnly" xml:space="preserve">
+    <value>Só os restantes</value>
+  </data>
+  <data name="ChallengeViewNext30" xml:space="preserve">
+    <value>Próximos 30 dias</value>
+  </data>
+  <data name="ChallengeViewThisMonth" xml:space="preserve">
+    <value>Este mês</value>
+  </data>
+  <data name="ChallengeViewLastMonth" xml:space="preserve">
+    <value>Mês passado</value>
+  </data>
+  <data name="ChallengeViewNextMonth" xml:space="preserve">
+    <value>Próximo mês</value>
+  </data>
+  <data name="ChallengeViewGoalEnd" xml:space="preserve">
+    <value>Últimos 30 dias da meta</value>
+  </data>
+  <data name="ChallengeViewRange" xml:space="preserve">
+    <value>Intervalo de datas</value>
+  </data>
+  <data name="ChallengeRangeFrom" xml:space="preserve">
+    <value>De</value>
+  </data>
+  <data name="ChallengeRangeTo" xml:space="preserve">
+    <value>Até</value>
+  </data>
+  <data name="ChallengeNoDaysInView" xml:space="preserve">
+    <value>Nenhum dia para mostrar aqui.</value>
+  </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · dias {2}–{3} de {4}</value>
+  </data>
+  <data name="ChallengeDayDescription" xml:space="preserve">
+    <value>Dia {0}, {1}, {2}</value>
+  </data>
+  <data name="ChallengeDayDone" xml:space="preserve">
+    <value>concluído</value>
+  </data>
+  <data name="ChallengeDayPending" xml:space="preserve">
+    <value>pendente</value>
+  </data>
+  <data name="FailedToUpdateChallenge" xml:space="preserve">
+    <value>Não foi possível atualizar o dia</value>
+  </data>
+  <data name="ChallengeAccountsHint" xml:space="preserve">
+    <value>Quando definida, ao marcar um dia o app pergunta de onde vem o dinheiro e o move para cá: uma transferência entre contas, ou dinheiro retirado ou guardado em um cofrinho.</value>
+  </data>
+  <data name="ChallengeSourceTitle" xml:space="preserve">
+    <value>De onde vem o dinheiro de {0}?</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>Desmarcar o dia {0}? Ele moveu {1}.</value>
+  </data>
+  <data name="ChallengeUnmarkUndo" xml:space="preserve">
+    <value>Desmarcar e desfazer o dinheiro movido</value>
+  </data>
+  <data name="ChallengeUnmarkKeep" xml:space="preserve">
+    <value>Desmarcar e manter o dinheiro movido</value>
+  </data>
+</root>

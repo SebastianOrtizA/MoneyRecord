@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Saldo</string>
+    <string name="widget_description">O saldo de uma conta com botões de despesa, receita e transferência</string>
+    <string name="widget_preview_account">Dinheiro</string>
+    <string name="widget_preview_balance">R$ 1.250,00</string>
+    <string name="widget_expense">Despesa</string>
+    <string name="widget_income">Receita</string>
+    <string name="widget_transfer">Transferir</string>
+</resources>

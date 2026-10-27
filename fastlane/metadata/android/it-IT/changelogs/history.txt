@@ -1,0 +1,31 @@
+## 0.19.0
+- MoneyRecord ora parla portoghese (Brasile), francese e italiano, oltre a inglese e spagnolo. Segue la lingua del telefono, oppure scegline una in Impostazioni → Lingua.
+- La lettura degli scontrini capisce scontrini in francese, italiano e portoghese: totali, subtotali, imposte, resto e date.
+
+## 0.18.1
+- Sfide di risparmio: arrotonda ogni giorno anche a 5, 50 o 500, comodo per valute come il peso colombiano.
+- Nuova modalità "Uguale ogni giorno": dividi l'obiettivo in parti uguali sui giorni, oppure fissa l'importo al giorno e l'app calcola quanti giorni servono. L'ultimo giorno prende quello che resta.
+- La pagina della sfida si apre sui prossimi 30 giorni, con filtri per questo mese, il precedente e il successivo, gli ultimi 30 giorni dell'obiettivo e un intervallo di date, così le sfide lunghe restano leggere.
+
+## 0.18.0
+- Sfide di risparmio: un gioco del risparmio con importi giornalieri che raddoppiano a livelli o crescono in modo lineare, con arrotondamento facoltativo.
+- Scegli un conto o un salvadanaio di destinazione e ogni giorno sposta lì i soldi dal conto o dal salvadanaio che indichi.
+- Il pop-up delle novità elenca ogni modifica su una riga e tutte le versioni che ti sei perso.
+- I backup ora usano il formato v7.
+- Compilazione dell'app ottimizzata.
+
+## 0.16.0
+- Salvadanai: accantona soldi dentro un conto e scegli da quale salvadanaio prelevare quando una spesa ne intacca il contenuto.
+- Bollette ricorrenti con importo variabile che confermi ogni volta.
+- Personalizza Home (ordine, mostra/nascondi schede) più una scheda Debiti facoltativa.
+- Un pop-up delle novità dopo gli aggiornamenti.
+- Gli importi recenti ora si nascondono con Nascondi saldi.
+- I backup ora usano il formato v6.
+
+## 0.13.1
+- Gli importi ora mostrano i separatori delle migliaia mentre scrivi, così un numero lungo si legge bene mentre lo inserisci.
+- Anche nel filtro per importo di Movimenti e nei limiti delle categorie del viaggio.
+
+## 0.13.0
+- Eventi: dividi viaggi e spese condivise con gli amici, vedi chi deve cosa a chi, salda i conti, condividi il riepilogo e registra la tua quota come spesa.
+- I backup ora usano il formato v5.

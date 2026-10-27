@@ -1,0 +1,1 @@
+MoneyRecord parle maintenant portugais (Brésil), français et italien, en plus de l'anglais et de l'espagnol : il suit la langue du téléphone, ou choisis-en une dans Réglages → Langue. La lecture des tickets comprend aussi le français, l'italien et le portugais.

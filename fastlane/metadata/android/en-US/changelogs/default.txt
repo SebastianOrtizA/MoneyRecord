@@ -1,1 +1,1 @@
-Savings challenges can now round each day to 5, 50 or 500, and have a new "Same every day" mode: split the goal over the days, or set an amount per day and the app works out how many days it takes. The challenge page opens on the next 30 days, with filters by month, the goal's last 30 days and a date range.
+MoneyRecord now speaks Portuguese (Brazil), French and Italian, besides English and Spanish: it follows your phone's language, or pick one in Settings → Language. Receipt scanning also reads French, Italian and Portuguese receipts.

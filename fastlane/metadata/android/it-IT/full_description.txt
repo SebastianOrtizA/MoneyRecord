@@ -1,0 +1,41 @@
+MoneyRecord è un'app semplice e privata per tenere traccia dei tuoi soldi. Registra quello che spendi e guadagni, scopri dove vanno i tuoi soldi, resta nel budget e risparmia per i tuoi obiettivi. I tuoi dati restano sul tuo telefono: niente registrazione, niente pubblicità.
+
+<b>Inserimento veloce</b>
+• Aggiungi una spesa, un'entrata o un trasferimento in pochi tocchi: prima l'importo, poi una categoria da una griglia che mette per prime quelle recenti.
+• Scansiona una ricevuta: totale e data vengono letti sul tuo telefono.
+• Beneficiari con suggerimenti, tag, foto delle ricevute e descrizioni, se le vuoi.
+• Dividi una sola ricevuta tra più categorie.
+
+<b>Conti e valute</b>
+• Contanti, banca, risparmi, carte di credito… ognuno con la sua valuta.
+• Totali per valuta, oppure convertiti nella tua valuta principale con i tassi di cambio giornalieri (facoltativo).
+• Nascondi i centesimi delle valute che non ne hanno bisogno.
+
+<b>Budget e obiettivi di risparmio</b>
+• Limiti di spesa per categoria, al giorno, al mese o all'anno: in linea, vicino al limite o oltre il budget, a colpo d'occhio.
+• Obiettivi di risparmio con una data: quanto mettere da parte ogni mese e se il tuo ritmo basta per arrivarci.
+
+<b>Ricorrenti e in arrivo</b>
+• Stipendio, affitto, abbonamenti: ogni giorno, settimana, 2 settimane, mese o anno, a partire da oggi o da una data futura.
+• Vedi cosa ti aspetta nei prossimi 30 giorni, con promemoria prima delle scadenze e quando un budget sta per finire.
+
+<b>Soldi prestati e ricevuti in prestito</b>
+• Tieni il conto di quello che gli amici ti devono e di quello che devi tu, con pagamenti programmati.
+
+<b>Report</b>
+• Spese ed entrate per categoria, andamento, flusso di cassa e patrimonio netto.
+• Tocca un grafico per vedere i movimenti che ci stanno dietro.
+• Esporta un report PDF o un file CSV di qualsiasi periodo.
+
+<b>I tuoi dati, sotto il tuo controllo</b>
+• Funziona offline. Nessun account, nessuna pubblicità.
+• Backup completi, a mano o automatici (ogni giorno, settimana o mese) in qualsiasi cartella, Google Drive compreso, con password facoltativa.
+• Importa gli estratti conto della banca da CSV: i duplicati vengono trovati e le categorie suggerite.
+• Blocco app con impronta, volto o blocco schermo, e database cifrato.
+• Segnalazioni di arresto anomalo facoltative, disattivate finché non le attivi.
+
+<b>Fatta per te</b>
+• Widget per la schermata Home con il tuo saldo e i pulsanti di aggiunta rapida.
+• Inglese e spagnolo, tema chiaro e scuro, una configurazione rapida al primo avvio.
+
+MoneyRecord è libera e open source (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

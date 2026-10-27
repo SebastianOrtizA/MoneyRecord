@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Saldo</string>
+    <string name="widget_description">Il saldo di un conto con pulsanti per spesa, entrata e trasferimento</string>
+    <string name="widget_preview_account">Contanti</string>
+    <string name="widget_preview_balance">1.250,00 €</string>
+    <string name="widget_expense">Spesa</string>
+    <string name="widget_income">Entrata</string>
+    <string name="widget_transfer">Trasferisci</string>
+</resources>

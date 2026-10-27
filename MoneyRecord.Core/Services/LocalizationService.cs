@@ -1,3 +1,4 @@
+using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using System.Globalization;
 
@@ -16,17 +17,14 @@ namespace MoneyRecord.Services
 
         public const string LanguagePreferenceKey = "Language";
 
-        /// <summary>The languages the app is translated to; the language setting is one of these or empty (the device's).</summary>
-        public static IReadOnlyList<string> SupportedLanguages { get; } = ["en", "es"];
-
-        /// <summary>A language's name in that language ("English", "Español"), for a language picker.</summary>
+        /// <summary>A language's name in that language ("English", "Español", "Português"), for a language picker.</summary>
         public static string GetLanguageName(string code)
         {
             var culture = CultureInfo.GetCultureInfo(code);
             return culture.TextInfo.ToUpper(culture.NativeName[0]) + culture.NativeName[1..];
         }
 
-        /// <summary>The chosen language ("en", "es"), or empty to follow the device.</summary>
+        /// <summary>The chosen language ("en", "es", "pt", "fr", "it"), or empty to follow the device.</summary>
         public string LanguageSetting { get; private set; } = string.Empty;
 
         private LocalizationService()
@@ -38,7 +36,7 @@ namespace MoneyRecord.Services
         public void LoadLanguage(IPreferencesService preferences) =>
             ApplyLanguage(preferences.Get(LanguagePreferenceKey, string.Empty));
 
-        /// <summary>Saves and applies a language ("en", "es", or empty for the device's).</summary>
+        /// <summary>Saves and applies a language ("en", "es", ..., or empty for the device's).</summary>
         public void SetLanguage(string language, IPreferencesService preferences)
         {
             preferences.Set(LanguagePreferenceKey, language);
@@ -47,7 +45,7 @@ namespace MoneyRecord.Services
 
         private void ApplyLanguage(string language)
         {
-            LanguageSetting = SupportedLanguages.Contains(language) ? language : string.Empty;
+            LanguageSetting = AppLanguage.Find(language)?.Code ?? string.Empty;
             if (LanguageSetting.Length == 0)
                 SetCultureFromSystem();
             else
@@ -56,11 +54,8 @@ namespace MoneyRecord.Services
 
         public void SetCultureFromSystem()
         {
-            // Spanish devices get Spanish; every other language defaults to English
-            var language = DeviceCulture.TwoLetterISOLanguageName.Equals("es", StringComparison.OrdinalIgnoreCase)
-                ? "es"
-                : "en";
-            SetCulture(language);
+            // A device in a translated language gets it; every other language defaults to English
+            SetCulture(AppLanguage.For(DeviceCulture).Code);
         }
 
         public void SetCulture(string cultureCode)
@@ -79,7 +74,7 @@ namespace MoneyRecord.Services
         /// <summary>
         /// Turns a language code into a specific culture so currency and number formats keep working:
         /// "es" on an es-CO device → es-CO (never neutral "es", whose currency symbol is "¤").
-        /// Falls back to en-US / es-ES when the device language differs or has no region.
+        /// Falls back to the language's default culture (en-US, es-ES, pt-BR, ...) when the device language differs or has no region.
         /// </summary>
         public static CultureInfo ResolveCulture(string cultureCode, CultureInfo deviceCulture)
         {
@@ -94,11 +89,7 @@ namespace MoneyRecord.Services
                 return deviceCulture;
             }
 
-            return requested.TwoLetterISOLanguageName switch
-            {
-                "es" => new CultureInfo("es-ES"),
-                _ => new CultureInfo("en-US")
-            };
+            return new CultureInfo((AppLanguage.Find(requested.TwoLetterISOLanguageName) ?? AppLanguage.English).DefaultCulture);
         }
 
         public string GetString(string key)

@@ -48,7 +48,7 @@
 			<Generator>PublicResXFileCodeGenerator</Generator>
 			<LastGenOutput>AppResources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
-		<EmbeddedResource Update="Resources\Strings\AppResources.es.resx">
+		<EmbeddedResource Update="Resources\Strings\AppResources.*.resx">
 			<DependentUpon>AppResources.resx</DependentUpon>
 		</EmbeddedResource>
 	</ItemGroup>
