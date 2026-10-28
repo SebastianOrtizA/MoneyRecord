@@ -98,6 +98,78 @@ public sealed class SavingsChallengeServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task A_linear_step_sets_the_days_and_builds_the_plan_from_the_first_day()
+    {
+        // 50 first, 20 more each day: nine days, the ninth takes the 40 left
+        var challenge = Challenge();
+        challenge.GoalCents = 100_000;
+        challenge.FirstDayCents = 5_000;
+        challenge.DayAmountCents = 2_000;
+        challenge.Days = 9;
+        await _sut.SaveAsync(challenge);
+
+        var summary = (await _sut.GetSummaryAsync(challenge.Id))!;
+
+        summary.Days.Select(d => d.AmountCents).Take(3).Should().Equal(5_000, 7_000, 9_000);
+        summary.Days[^1].AmountCents.Should().Be(4_000);
+        summary.TotalCents.Should().Be(100_000);
+    }
+
+    [Fact]
+    public async Task A_linear_step_with_the_wrong_days_is_refused()
+    {
+        var challenge = Challenge();
+        challenge.GoalCents = 100_000;
+        challenge.DayAmountCents = 2_000;
+        challenge.Days = 30;
+
+        await _sut.Invoking(s => s.SaveAsync(challenge)).Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task A_first_day_only_goes_with_the_linear_mode_and_must_leave_room_for_the_days()
+    {
+        var equal = Challenge(mode: ChallengeMode.Equal);
+        equal.FirstDayCents = 100;
+        await _sut.Invoking(s => s.SaveAsync(equal)).Should().ThrowAsync<InvalidOperationException>();
+
+        var tooHigh = Challenge();
+        tooHigh.GoalCents = 100_000;
+        tooHigh.Days = 10;
+        tooHigh.FirstDayCents = 20_000;
+        await _sut.Invoking(s => s.SaveAsync(tooHigh)).Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task The_first_day_is_part_of_the_plan_that_locks_once_a_day_is_done()
+    {
+        var challenge = Challenge();
+        challenge.GoalCents = 100_000;
+        challenge.Days = 10;
+        challenge.FirstDayCents = 5_000;
+        await _sut.SaveAsync(challenge);
+        await _sut.MarkDoneAsync(challenge.Id, 1, null);
+
+        challenge.FirstDayCents = 6_000;
+
+        await _sut.Invoking(s => s.SaveAsync(challenge)).Should().ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task A_doubling_challenge_made_before_still_saves_and_builds()
+    {
+        var challenge = Challenge(mode: ChallengeMode.Doubling);
+        challenge.GoalCents = 100_000;
+        challenge.Days = 10;
+        await _sut.SaveAsync(challenge);
+
+        var summary = (await _sut.GetSummaryAsync(challenge.Id))!;
+
+        summary.Days[0].AmountCents.Should().Be(98);
+        summary.Days.Should().HaveCount(10);
+    }
+
+    [Fact]
     public async Task An_account_source_records_a_transfer_to_the_destination_and_unmarking_can_delete_it()
     {
         var bank = await AddAccountAsync("Bank", 1000m);

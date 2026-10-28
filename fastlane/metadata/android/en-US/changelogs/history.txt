@@ -1,3 +1,10 @@
+## 0.19.2
+- Savings challenges: a linear challenge can now start from a first day and grow by an amount per day. Type the increase and the app works out how many days you need. Doubling is no longer offered for new challenges; the ones you already have keep working.
+- The challenge page has new filters: From start, This month (browse it month by month, as a calendar), Next 30 days and Date range, plus Only pending.
+- Dates in the challenge grid no longer get cut off in some languages.
+- Adding an entry: opening More details now scrolls down to the new fields.
+- Icons: many more to choose from for expense and income categories, and a few more for accounts.
+
 ## 0.19.1
 - Fixed a freeze: choosing "System default" in Settings → Language could hang the app after you had picked another language.
 
