@@ -247,8 +247,8 @@
                 <Border Style="{StaticResource Card}" Padding="12" Margin="0,4"
                         IsVisible="{Binding ShowPreviewCard}">
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="{Binding PreviewDaysText}" FontSize="14" />
-                        <Label Text="{Binding PreviewTotalText}" FontSize="14" FontAttributes="Bold" />
+                        <Label Text="{Binding PreviewDaysText}" FontSize="14" IsVisible="{Binding HasPreview}" />
+                        <Label Text="{Binding PreviewTotalText}" FontSize="14" FontAttributes="Bold" IsVisible="{Binding HasPreview}" />
                         <Label Text="{Binding PlanWarningText}"
                                IsVisible="{Binding HasPlanWarning}"
                                FontSize="13"

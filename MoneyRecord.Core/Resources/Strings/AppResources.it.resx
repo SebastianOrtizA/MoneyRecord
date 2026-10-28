@@ -2818,7 +2818,10 @@ Importo: {2}</value>
     <value>{0} – {1} · giorni {2}–{3} di {4}</value>
   </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
-    <value>Giorno {0}, {1}, {2}</value>
+    <value>Giorno {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>Servirebbero più di {0} giorni. Aumenta l'importo giornaliero o abbassa l'obiettivo.</value>
   </data>
   <data name="ChallengeDayDone" xml:space="preserve">
     <value>fatto</value>

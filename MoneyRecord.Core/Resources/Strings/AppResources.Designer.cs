@@ -8118,11 +8118,20 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Day {0}, {1}, {2}.
+        ///   Looks up a localized string similar to Day {0}, {1}, {2}, {3}.
         /// </summary>
         public static string ChallengeDayDescription {
             get {
                 return ResourceManager.GetString("ChallengeDayDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That needs more than {0} days. Raise the daily amount or lower the goal..
+        /// </summary>
+        public static string ChallengeTooManyDays {
+            get {
+                return ResourceManager.GetString("ChallengeTooManyDays", resourceCulture);
             }
         }
         

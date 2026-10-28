@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
@@ -126,9 +127,10 @@ namespace MoneyRecord.ViewModels
 
         partial void OnFormFirstDayChanged(string value) => UpdatePreview();
 
-        public bool IsEqualMode => SelectedMode.Mode == ChallengeMode.Equal;
+        // The picker can clear its selection for a moment while its items change
+        public bool IsEqualMode => SelectedMode?.Mode == ChallengeMode.Equal;
 
-        public bool IsLinearMode => SelectedMode.Mode == ChallengeMode.Linear;
+        public bool IsLinearMode => SelectedMode?.Mode == ChallengeMode.Linear;
 
         /// <summary>The typed daily amount of the mode: the Equal amount or the Linear step.</summary>
         private string DayAmountText => IsLinearMode ? FormStep : IsEqualMode ? FormDayAmount : string.Empty;
@@ -159,10 +161,9 @@ namespace MoneyRecord.ViewModels
 
         public bool ShowCurrencyPicker => Currencies.Count > 1;
 
-        // Doubling is offered only while editing a challenge that already uses it
-        private bool _offersDoubling;
-
-        public IReadOnlyList<ChallengeModeOption> Modes { get; private set; } = BuildModes(false);
+        // Doubling is in the list only while editing a challenge that already uses it; it is added and removed in place,
+        // so the picker keeps its selection (swapping the whole list made it clear it)
+        public ObservableCollection<ChallengeModeOption> Modes { get; } = new(BuildModes(false));
 
         public IReadOnlyList<ChallengeRoundingOption> Roundings { get; private set; } = BuildRoundings();
 
@@ -236,14 +237,14 @@ namespace MoneyRecord.ViewModels
             return modes;
         }
 
-        /// <summary>Offers Doubling (or stops offering it) in the mode picker, keeping the picked mode.</summary>
+        /// <summary>Offers Doubling (or stops offering it) in the mode picker. Select another mode before taking it away.</summary>
         private void OfferDoubling(bool offer)
         {
-            if (_offersDoubling == offer)
-                return;
-            _offersDoubling = offer;
-            Modes = BuildModes(offer);
-            OnPropertyChanged(nameof(Modes));
+            var doubling = Modes.FirstOrDefault(m => m.Mode == ChallengeMode.Doubling);
+            if (offer && doubling == null)
+                Modes.Add(new(ChallengeMode.Doubling, AppResources.ChallengeModeDoubling));
+            else if (!offer && doubling != null)
+                Modes.Remove(doubling);
         }
 
         private static List<ChallengeRoundingOption> BuildRoundings() =>
@@ -257,9 +258,11 @@ namespace MoneyRecord.ViewModels
         {
             var mode = SelectedMode.Mode;
             var rounding = SelectedRounding.Cents;
-            Modes = BuildModes(_offersDoubling);
+            var withDoubling = Modes.Any(m => m.Mode == ChallengeMode.Doubling);
+            Modes.Clear();
+            foreach (var option in BuildModes(withDoubling))
+                Modes.Add(option);
             Roundings = BuildRoundings();
-            OnPropertyChanged(nameof(Modes));
             OnPropertyChanged(nameof(Roundings));
             SelectedMode = Modes.First(m => m.Mode == mode);
             SelectedRounding = Roundings.First(r => r.Cents == rounding);
@@ -336,8 +339,8 @@ namespace MoneyRecord.ViewModels
             FormDayAmount = string.Empty;
             FormStep = string.Empty;
             FormFirstDay = string.Empty;
-            OfferDoubling(false);
             SelectedMode = Modes[0];
+            OfferDoubling(false);
             SelectedRounding = Roundings[0];
             OpenForm(Currencies.FirstOrDefault() ?? MoneyFormatter.BaseCurrency, null);
         }
@@ -428,12 +431,23 @@ namespace MoneyRecord.ViewModels
         private bool FirstDayTooHigh(decimal goal, int days, long firstDayCents) =>
             !UsesDayAmount && ChallengePlan.FirstDayTooHigh(Money.ToCents(goal), days, firstDayCents);
 
+        /// <summary>A daily amount (or step) so small that the goal would need more days than a challenge can have.</summary>
+        private bool TooManyDays(int days, long dayAmountCents) => UsesDayAmount && dayAmountCents > 0 && days > MaxDays;
+
+        private static string TooManyDaysText => string.Format(AppResources.ChallengeTooManyDays, MaxDays.ToString("N0"));
+
         private void UpdatePreview()
         {
             PreviewDaysText = PreviewTotalText = PlanWarningText = DerivedDays = string.Empty;
             var goal = AmountParser.Parse(FormGoal, FormCurrency);
-            if (goal <= 0 || !Money.IsInRange(goal) || !TryGetDays(goal, out var days, out var dayAmountCents, out var firstDayCents))
+            if (SelectedMode == null || goal <= 0 || !Money.IsInRange(goal))
                 return;
+            if (!TryGetDays(goal, out var days, out var dayAmountCents, out var firstDayCents))
+            {
+                if (TooManyDays(days, dayAmountCents))
+                    PlanWarningText = TooManyDaysText;
+                return;
+            }
 
             if (UsesDayAmount)
                 DerivedDays = days.ToString();
@@ -496,6 +510,11 @@ namespace MoneyRecord.ViewModels
 
             if (!TryGetDays(goal, out var days, out var dayAmountCents, out var firstDayCents))
             {
+                if (TooManyDays(days, dayAmountCents))
+                {
+                    await _errorHandler.HandleAsync(TooManyDaysText);
+                    return;
+                }
                 var badAmount = (UsesDayAmount && dayAmountCents == 0) || (HasFirstDayText && firstDayCents == 0);
                 await _errorHandler.HandleAsync(badAmount ? AppResources.PleaseEnterValidAmount : AppResources.PleaseEnterChallengeDays);
                 return;

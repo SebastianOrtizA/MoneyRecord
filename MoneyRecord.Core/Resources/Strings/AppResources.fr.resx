@@ -2819,7 +2819,10 @@ Montant : {2}</value>
     <value>{0} – {1} · jours {2}–{3} sur {4}</value>
   </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
-    <value>Jour {0}, {1}, {2}</value>
+    <value>Jour {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>Il faudrait plus de {0} jours. Augmente le montant quotidien ou baisse l'objectif.</value>
   </data>
   <data name="ChallengeDayDone" xml:space="preserve">
     <value>fait</value>

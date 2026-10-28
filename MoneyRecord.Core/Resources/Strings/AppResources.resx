@@ -2872,7 +2872,10 @@ Amount: {2}</value>
     <value>{0} – {1} · days {2}–{3} of {4}</value>
   </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
-    <value>Day {0}, {1}, {2}</value>
+    <value>Day {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>That needs more than {0} days. Raise the daily amount or lower the goal.</value>
   </data>
   <data name="ChallengeDayDone" xml:space="preserve">
     <value>done</value>

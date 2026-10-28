@@ -16,13 +16,13 @@ namespace MoneyRecord.ViewModels
         public ChallengeCell(ChallengeDayInfo day, string currencyCode, DateTime today, bool showMonth)
         {
             Day = day;
-            DateText = showMonth ? DateFormatter.Format(day.Date, DateStyle.MonthDay) : day.Date.Day.ToString();
+            DateText = showMonth ? DateFormatter.Format(day.Date, DateStyle.MonthDay) : day.Date.Day.ToString(CultureInfo.CurrentCulture);
             AmountText = MoneyFormatter.Format(Money.FromCents(day.AmountCents), currencyCode);
             IsToday = day.Date.Date == today;
             IsMissed = !day.IsDone && day.Date.Date < today;
             Description = string.Format(AppResources.ChallengeDayDescription, day.DayNumber, AmountText,
-                day.IsDone ? AppResources.ChallengeDayDone : AppResources.ChallengeDayPending)
-                + ", " + DateFormatter.Format(day.Date, DateStyle.Long);
+                day.IsDone ? AppResources.ChallengeDayDone : AppResources.ChallengeDayPending,
+                DateFormatter.Format(day.Date, DateStyle.Long));
         }
 
         /// <summary>An empty slot of the month calendar: it takes room but shows nothing.</summary>
@@ -125,14 +125,10 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The month of the calendar view (its 1st), always one the challenge has days in.</summary>
         [ObservableProperty]
-        private DateTime shownMonth = DateTime.Today;
+        private DateTime shownMonth;
 
-        partial void OnShownMonthChanged(DateTime value)
-        {
-            UpdateMonthNavigation();
-            if (IsMonthView)
-                ApplyFilter();
-        }
+        // The cells are rebuilt by whoever moves the month, once: the commands below, the view switch and the load
+        partial void OnShownMonthChanged(DateTime value) => UpdateMonthNavigation();
 
         /// <summary>"October 2026": the month the calendar shows.</summary>
         [ObservableProperty]
@@ -190,6 +186,7 @@ namespace MoneyRecord.ViewModels
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _time = time;
+            shownMonth = ChallengeDayFilter.ClampMonth([], time.GetLocalNow().Date);
             ViewChips =
             [
                 new(ChallengeView.FromStart, AppResources.ChallengeViewFromStart, SelectView),
@@ -292,20 +289,28 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private void PreviousMonth()
         {
-            if (CanGoPreviousMonth)
-                ShownMonth = ShownMonth.AddMonths(-1);
+            if (!CanGoPreviousMonth)
+                return;
+            ShownMonth = ShownMonth.AddMonths(-1);
+            ApplyFilter();
         }
 
         [RelayCommand]
         private void NextMonth()
         {
-            if (CanGoNextMonth)
-                ShownMonth = ShownMonth.AddMonths(1);
+            if (!CanGoNextMonth)
+                return;
+            ShownMonth = ShownMonth.AddMonths(1);
+            ApplyFilter();
         }
 
         /// <summary>Back to the current month (or the nearest one the challenge has).</summary>
         [RelayCommand]
-        private void CurrentMonth() => ShownMonth = ChallengeDayFilter.ClampMonth(_days, _time.GetLocalNow().Date);
+        private void CurrentMonth()
+        {
+            ShownMonth = ChallengeDayFilter.ClampMonth(_days, _time.GetLocalNow().Date);
+            ApplyFilter();
+        }
 
         [RelayCommand]
         private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;

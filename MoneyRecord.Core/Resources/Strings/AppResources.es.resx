@@ -2869,7 +2869,10 @@ Monto: {2}</value>
     <value>{0} – {1} · días {2}–{3} de {4}</value>
   </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
-    <value>Día {0}, {1}, {2}</value>
+    <value>Día {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>Eso necesita más de {0} días. Sube el importe diario o baja la meta.</value>
   </data>
   <data name="ChallengeDayDone" xml:space="preserve">
     <value>hecho</value>
