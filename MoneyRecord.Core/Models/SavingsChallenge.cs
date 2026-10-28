@@ -8,7 +8,7 @@ namespace MoneyRecord.Models
     {
         /// <summary>a, 2a, 4a, ... (in levels when the days outnumber the useful doublings).</summary>
         Doubling,
-        /// <summary>Day i saves i times the same step.</summary>
+        /// <summary>Day i saves the first day plus (i - 1) steps; both default to the step the goal and days make.</summary>
         Linear,
         /// <summary>Every day saves the same amount (the last day may take the remainder).</summary>
         Equal
@@ -48,8 +48,14 @@ namespace MoneyRecord.Models
         /// <summary>Each day's amount is rounded to a multiple of this (cents); 0 = cents.</summary>
         public long RoundingCents { get; set; }
 
-        /// <summary>Equal mode: the fixed amount saved each day (cents), the days then follow from the goal; 0 = the goal split over <see cref="Days"/>.</summary>
+        /// <summary>
+        /// Equal mode: the fixed amount saved each day (cents). Linear mode: the step each day adds. Either way the days then
+        /// follow from the goal; 0 = worked out from <see cref="Days"/>.
+        /// </summary>
         public long DayAmountCents { get; set; }
+
+        /// <summary>Linear mode: what day 1 saves (cents); 0 = the same as the step.</summary>
+        public long FirstDayCents { get; set; }
 
         /// <summary>
         /// Where the saved money ends up: this account (or, with <see cref="ToPocketId"/>, a pocket of it). None = days are

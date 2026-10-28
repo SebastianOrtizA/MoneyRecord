@@ -1,1 +1,1 @@
-Corrigido um travamento: escolher "Padrão do sistema" em Configurações → Idioma podia travar o app depois de escolher outro idioma.
+Desafios de economia: um desafio linear pode começar por um primeiro dia e crescer com um aumento por dia (digite o aumento e os dias são calculados), e a página do desafio tem filtros novos com um calendário do mês. As datas da grade não são mais cortadas em alguns idiomas, e Mais detalhes no formulário de adicionar rola até os campos novos. As categorias têm muito mais ícones para escolher, e as contas alguns a mais.

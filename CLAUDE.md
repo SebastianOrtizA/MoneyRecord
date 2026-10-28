@@ -48,7 +48,7 @@ in both (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...). XAML that uses a Cor
 crashes at runtime (XAML is inflated at runtime there).
 
 `MoneyRecord.Core/`
-- `Models/` — 16 SQLite tables: SavingsChallenge + SavingsChallengeDay (savings game: `ChallengePlan.Build` = day amounts, doubling in levels or linear, optional rounding; days done keep their amount; optional destination account or pocket, each day asks the source account or pocket and moves the money (transfer / take-out / set-aside); `ISavingsChallengeService`; `ChallengeSummary` displays it), Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
+- `Models/` — 16 SQLite tables: SavingsChallenge + SavingsChallengeDay (savings game: `ChallengePlan.Build` = day amounts: linear (optional first day + step, either one with the goal works out the days or the step) or the same every day, optional rounding; Doubling only for challenges made before, hidden when adding; days done keep their amount; optional destination account or pocket, each day asks the source account or pocket and moves the money (transfer / take-out / set-aside); `ISavingsChallengeService`; `ChallengeSummary` displays it), Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
   SavingsGoalAccount (a goal's accounts; one goal per account) + SavingsGoalPocket (its pockets), Pocket + PocketMovement (money set aside inside an account, an earmark only: signed movements, balance = their sum; `PocketSummary` displays one), Payee (optional on a transaction and a recurring one;
   `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups), Trip + TripCategory + TripBudget (a trip, its shared trip categories, its per-category limits; `Transaction.TripId`/`TripCategoryId`, `Category.IsTravel` = the system "Travel" category trip expenses sit in while the trip is active; `TripCard`/`TripSummary` display it), Debt (money lent / borrowed: a payee + a hidden account, `Account.IsDebt`,
   whose transfers are the debt's money; `DebtSummary` / `DebtMovement` display it).
@@ -211,7 +211,7 @@ against real temp SQLite files, backup/restore); they run on Linux too (CI uses 
   load their period's rows (they chart them anyway)
 - Balances count the entries dated up to today (`IBalanceService.CountedBefore`): a future-dated transaction or transfer is
   listed (and in its period's totals) but in no balance before its date; what works back from today's balances stops there too
-- Backups: `.zip` with `data.json` (format v7, rows keep their IDs; savings goals, pockets and savings challenges included) + `receipts/`; restore snapshots go to `Backups/`
+- Backups: `.zip` with `data.json` (format v8, rows keep their IDs; savings goals, pockets and savings challenges included) + `receipts/`; restore snapshots go to `Backups/`
 
 ### Localization
 - `.resx` resource files with `ResXFileCodeGenerator`

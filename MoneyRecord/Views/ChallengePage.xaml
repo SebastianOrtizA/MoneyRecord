@@ -43,24 +43,71 @@
                             <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
                                 <controls:FilterChip Text="{Binding Label}"
                                                      IsActive="{Binding IsActive}"
-                                                     IsVisible="{Binding IsAvailable}"
                                                      Margin="0,0,6,6"
                                                      Command="{Binding SelectCommand}" />
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </FlexLayout>
+                    <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
+                                         IsActive="{Binding ShowRemainingOnly}"
+                                         Command="{Binding ToggleRemainingOnlyCommand}"
+                                         HorizontalOptions="Start" />
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" IsVisible="{Binding IsRangeView}">
                         <Label Text="{ext:Localize ChallengeRangeFrom}" Style="{StaticResource MutedLabel}" />
                         <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" Style="{StaticResource MutedLabel}" />
                         <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
                         <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
                     </Grid>
-                    <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
-                                         IsActive="{Binding ShowRemainingOnly}"
-                                         Command="{Binding ToggleRemainingOnlyCommand}"
-                                         HorizontalOptions="Start" />
+                    <!-- Month: ‹ October 2026 ›, a tap on the name returns to the current month -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding IsMonthView}">
+                        <Label Text="&#xF0141;" FontFamily="MaterialDesignIcons" FontSize="24"
+                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="44" HeightRequest="44"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                               IsEnabled="{Binding CanGoPreviousMonth}"
+                               SemanticProperties.Description="{ext:Localize ChallengeMonthPrevious}">
+                            <Label.Triggers>
+                                <Trigger TargetType="Label" Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.2" />
+                                </Trigger>
+                            </Label.Triggers>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PreviousMonthCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <Label Grid.Column="1" Text="{Binding MonthText}" FontSize="16" FontAttributes="Bold"
+                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HeightRequest="44"
+                               SemanticProperties.Description="{ext:Localize ChallengeMonthCurrent}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding CurrentMonthCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                        <Label Grid.Column="2" Text="&#xF0142;" FontFamily="MaterialDesignIcons" FontSize="24"
+                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="44" HeightRequest="44"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                               IsEnabled="{Binding CanGoNextMonth}"
+                               SemanticProperties.Description="{ext:Localize ChallengeMonthNext}">
+                            <Label.Triggers>
+                                <Trigger TargetType="Label" Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.2" />
+                                </Trigger>
+                            </Label.Triggers>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NextMonthCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
                     <Label Text="{Binding ShowingText}" IsVisible="{Binding HasShowing}"
                            Style="{StaticResource MutedLabel}" FontSize="13" />
+                    <!-- Weekday names over the calendar columns: same width and spacing as the grid below (the header's padding is undone) -->
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*" ColumnSpacing="4" Margin="-16,0" IsVisible="{Binding IsMonthView}">
+                        <Label Text="{Binding WeekdayHeaders[0]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="1" Text="{Binding WeekdayHeaders[1]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="2" Text="{Binding WeekdayHeaders[2]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="3" Text="{Binding WeekdayHeaders[3]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="4" Text="{Binding WeekdayHeaders[4]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="5" Text="{Binding WeekdayHeaders[5]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
+                        <Label Grid.Column="6" Text="{Binding WeekdayHeaders[6]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
+                    </Grid>
                 </VerticalStackLayout>
             </CollectionView.Header>
 
@@ -77,6 +124,11 @@
                                                   CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
                         <Border.Triggers>
+                            <!-- An empty calendar slot: keeps its room, shows and takes nothing -->
+                            <DataTrigger TargetType="Border" Binding="{Binding IsBlank}" Value="True">
+                                <Setter Property="Opacity" Value="0" />
+                                <Setter Property="InputTransparent" Value="True" />
+                            </DataTrigger>
                             <!-- Today: outlined -->
                             <DataTrigger TargetType="Border" Binding="{Binding IsToday}" Value="True">
                                 <Setter Property="StrokeThickness" Value="3" />
@@ -88,13 +140,15 @@
                             </DataTrigger>
                         </Border.Triggers>
                         <VerticalStackLayout Spacing="1" VerticalOptions="Center">
-                            <Label Text="{Binding DateText}" FontSize="10" HorizontalTextAlignment="Center" LineBreakMode="NoWrap">
-                                <Label.Triggers>
+                            <!-- Fits its cell in any language ("27 de oct" shrinks instead of being cut) -->
+                            <controls:AutoFitLabel Text="{Binding DateText}" MaxFontSize="11" MinFontSize="7"
+                                                   HorizontalOptions="Fill" HorizontalTextAlignment="Center">
+                                <controls:AutoFitLabel.Triggers>
                                     <DataTrigger TargetType="Label" Binding="{Binding IsDone}" Value="True">
                                         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
                                     </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
+                                </controls:AutoFitLabel.Triggers>
+                            </controls:AutoFitLabel>
                             <controls:AutoFitLabel Text="{Binding AmountText}" MaxFontSize="13" MinFontSize="7"
                                                    FontAttributes="Bold"
                                                    HorizontalOptions="Fill" HorizontalTextAlignment="Center">
