@@ -1,1 +1,1 @@
-Corretto un blocco: scegliere "Predefinita del sistema" in Impostazioni → Lingua poteva bloccare l'app dopo aver scelto un'altra lingua.
+Sfide di risparmio: una sfida lineare può partire da un primo giorno e crescere di un aumento al giorno (scrivi l'aumento e i giorni vengono calcolati), e la pagina della sfida ha nuovi filtri con un calendario del mese. Le date della griglia non vengono più tagliate in alcune lingue, e Più dettagli nel modulo di aggiunta scorre fino ai campi nuovi.

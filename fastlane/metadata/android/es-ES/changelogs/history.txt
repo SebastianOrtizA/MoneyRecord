@@ -1,3 +1,9 @@
+## 0.19.2
+- Retos de ahorro: un reto lineal ahora puede empezar en un primer día y crecer con un aumento por día. Escribe el aumento y la app calcula cuántos días necesitas. El modo "Duplicando" ya no se ofrece en los retos nuevos; los que ya tienes siguen funcionando.
+- La página del reto tiene filtros nuevos: Desde el inicio, Este mes (se recorre mes a mes, como un calendario), Próximos 30 días y Rango de fechas, además de Solo pendientes.
+- Las fechas de la cuadrícula del reto ya no se cortan en algunos idiomas.
+- Al añadir un movimiento, abrir Más detalles ahora baja hasta los campos nuevos.
+
 ## 0.19.1
 - Corregido un bloqueo: elegir "Predeterminado del sistema" en Ajustes → Idioma podía colgar la app después de haber elegido otro idioma.
 

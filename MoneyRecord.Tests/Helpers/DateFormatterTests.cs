@@ -21,6 +21,13 @@ public class DateFormatterTests
         DateFormatter.Format(Date, DateStyle.MonthYear, culture).Should().Be("Oct 2026");
     }
 
+    [Fact]
+    public void A_month_heading_has_the_whole_month_name_in_capitals()
+    {
+        DateFormatter.FormatMonthYear(Date, CultureInfo.GetCultureInfo("en-US")).Should().Be("October 2026");
+        DateFormatter.FormatMonthYear(Date, CultureInfo.GetCultureInfo("es-ES")).Should().StartWith("Octubre").And.EndWith("2026");
+    }
+
     [Theory]
     [InlineData("es-ES")]
     [InlineData("es-CO")]

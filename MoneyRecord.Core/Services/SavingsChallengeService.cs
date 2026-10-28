@@ -43,7 +43,8 @@ namespace MoneyRecord.Services
 
         private static ChallengeSummary Summarize(SavingsChallenge challenge, List<SavingsChallengeDay> done, DateTime today)
         {
-            var plan = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents, challenge.DayAmountCents);
+            var plan = ChallengePlan.Build(challenge.GoalCents, challenge.Days, challenge.Mode, challenge.RoundingCents, challenge.DayAmountCents,
+                challenge.FirstDayCents);
             var doneByDay = done.ToDictionary(d => d.DayNumber);
             var days = new List<ChallengeDayInfo>(challenge.Days);
             for (var i = 1; i <= challenge.Days; i++)
@@ -73,11 +74,23 @@ namespace MoneyRecord.Services
                     throw new InvalidOperationException("A challenge needs at least one day.");
                 if (challenge.GoalCents <= 0)
                     throw new InvalidOperationException("The goal must be more than zero.");
-                // A fixed daily amount belongs to the Equal mode and decides the days
-                if (challenge.DayAmountCents > 0 && challenge.Mode != ChallengeMode.Equal)
-                    throw new InvalidOperationException("A daily amount only goes with the same-every-day mode.");
-                if (challenge.DayAmountCents > 0 && challenge.Days != ChallengePlan.DaysFor(challenge.GoalCents, challenge.DayAmountCents))
-                    throw new InvalidOperationException("The days must be what the daily amount needs to reach the goal.");
+                if (challenge.FirstDayCents < 0)
+                    throw new InvalidOperationException("The first day can not be negative.");
+                // A fixed daily amount (Equal) or step (Linear) decides the days
+                if (challenge.DayAmountCents > 0 && challenge.Mode is not (ChallengeMode.Equal or ChallengeMode.Linear))
+                    throw new InvalidOperationException("A daily amount only goes with the same-every-day or the linear mode.");
+                if (challenge.FirstDayCents > 0 && challenge.Mode != ChallengeMode.Linear)
+                    throw new InvalidOperationException("A first day only goes with the linear mode.");
+                if (challenge.DayAmountCents > 0)
+                {
+                    var neededDays = challenge.Mode == ChallengeMode.Linear
+                        ? ChallengePlan.DaysForLinear(challenge.GoalCents, challenge.FirstDayCents, challenge.DayAmountCents)
+                        : ChallengePlan.DaysFor(challenge.GoalCents, challenge.DayAmountCents);
+                    if (challenge.Days != neededDays)
+                        throw new InvalidOperationException("The days must be what the daily amount needs to reach the goal.");
+                }
+                else if (ChallengePlan.FirstDayTooHigh(challenge.GoalCents, challenge.Days, challenge.FirstDayCents))
+                    throw new InvalidOperationException("The first day is too high for the goal over these days.");
 
                 // A pocket decides its account
                 if (challenge.ToPocketId is { } pocketId)
@@ -106,7 +119,7 @@ namespace MoneyRecord.Services
                 var anyDone = db.Table<SavingsChallengeDay>().Count(d => d.ChallengeId == challenge.Id) > 0;
                 if (anyDone && (current.GoalCents != challenge.GoalCents || current.Days != challenge.Days
                     || current.Mode != challenge.Mode || current.RoundingCents != challenge.RoundingCents
-                    || current.DayAmountCents != challenge.DayAmountCents
+                    || current.DayAmountCents != challenge.DayAmountCents || current.FirstDayCents != challenge.FirstDayCents
                     || !MoneyFormatter.SameCurrency(current.CurrencyCode, challenge.CurrencyCode)))
                     throw new InvalidOperationException("The plan can't change once a day is done.");
                 db.Update(challenge);

@@ -1,1 +1,1 @@
-Corregido un bloqueo: elegir "Predeterminado del sistema" en Configuración → Idioma podía colgar la app después de haber elegido otro idioma.
+Retos de ahorro: un reto lineal puede empezar en un primer día y crecer con un aumento por día (escribe el aumento y se calculan los días), y la página del reto tiene filtros nuevos con un calendario del mes. Las fechas de la cuadrícula ya no se cortan en algunos idiomas, y Más detalles en el formulario de añadir baja hasta los campos nuevos.

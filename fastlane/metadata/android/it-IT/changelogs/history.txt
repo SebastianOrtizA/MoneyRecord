@@ -1,3 +1,9 @@
+## 0.19.2
+- Sfide di risparmio: una sfida lineare ora può partire da un primo giorno e crescere di un aumento al giorno. Scrivi l'aumento e l'app calcola quanti giorni ti servono. La modalità "Raddoppio" non viene più offerta per le nuove sfide; quelle che hai già continuano a funzionare.
+- La pagina della sfida ha nuovi filtri: Dall'inizio, Questo mese (si sfoglia mese per mese, come un calendario), Prossimi 30 giorni e Intervallo di date, più Solo da fare.
+- Le date nella griglia della sfida non vengono più tagliate in alcune lingue.
+- Aggiungendo un movimento, aprire Più dettagli ora scorre fino ai campi nuovi.
+
 ## 0.19.1
 - Corretto un blocco: scegliere "Predefinita del sistema" in Impostazioni → Lingua poteva bloccare l'app dopo aver scelto un'altra lingua.
 

@@ -2767,7 +2767,7 @@ Importo: {2}</value>
     <value>Segna solo il giorno</value>
   </data>
   <data name="ChallengeRemainingOnly" xml:space="preserve">
-    <value>Solo i restanti</value>
+    <value>Solo da fare</value>
   </data>
   <data name="ChallengeViewNext30" xml:space="preserve">
     <value>Prossimi 30 giorni</value>
@@ -2775,14 +2775,32 @@ Importo: {2}</value>
   <data name="ChallengeViewThisMonth" xml:space="preserve">
     <value>Questo mese</value>
   </data>
-  <data name="ChallengeViewLastMonth" xml:space="preserve">
-    <value>Mese scorso</value>
+  <data name="ChallengeFirstDay" xml:space="preserve">
+    <value>Primo giorno (facoltativo)</value>
   </data>
-  <data name="ChallengeViewNextMonth" xml:space="preserve">
-    <value>Mese prossimo</value>
+  <data name="ChallengeFirstDayHint" xml:space="preserve">
+    <value>Vuoto = come l'aumento</value>
   </data>
-  <data name="ChallengeViewGoalEnd" xml:space="preserve">
-    <value>Ultimi 30 giorni dell'obiettivo</value>
+  <data name="ChallengeStep" xml:space="preserve">
+    <value>Aumento al giorno (facoltativo)</value>
+  </data>
+  <data name="ChallengeStepHint" xml:space="preserve">
+    <value>Vuoto = calcolato dai giorni</value>
+  </data>
+  <data name="ChallengeFirstDayTooHigh" xml:space="preserve">
+    <value>Il primo giorno è troppo alto per questo obiettivo e questi giorni.</value>
+  </data>
+  <data name="ChallengeViewFromStart" xml:space="preserve">
+    <value>Dall'inizio</value>
+  </data>
+  <data name="ChallengeMonthPrevious" xml:space="preserve">
+    <value>Mese precedente</value>
+  </data>
+  <data name="ChallengeMonthNext" xml:space="preserve">
+    <value>Mese successivo</value>
+  </data>
+  <data name="ChallengeMonthCurrent" xml:space="preserve">
+    <value>Vai a questo mese</value>
   </data>
   <data name="ChallengeViewRange" xml:space="preserve">
     <value>Intervallo di date</value>

@@ -1,3 +1,9 @@
+## 0.19.2
+- Desafios de economia: um desafio linear agora pode começar por um primeiro dia e crescer com um aumento por dia. Digite o aumento e o app calcula quantos dias você precisa. O modo "Dobrando" não é mais oferecido em desafios novos; os que você já tem continuam funcionando.
+- A página do desafio tem filtros novos: Desde o início, Este mês (navegue mês a mês, como um calendário), Próximos 30 dias e Intervalo de datas, além de Só pendentes.
+- As datas na grade do desafio não são mais cortadas em alguns idiomas.
+- Ao adicionar uma transação, abrir Mais detalhes agora rola até os campos novos.
+
 ## 0.19.1
 - Corrigido um travamento: escolher "Padrão do sistema" em Configurações → Idioma podia travar o app depois de escolher outro idioma.
 

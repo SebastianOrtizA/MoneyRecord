@@ -1,1 +1,1 @@
-Fixed a freeze: choosing "System default" in Settings → Language could hang the app after you had picked another language.
+Savings challenges: a linear challenge can start from a first day and grow by an amount per day (type the increase and the days are worked out), and the challenge page has new filters with a month calendar. Dates in the challenge grid no longer get cut off in some languages, and More details on the add form scrolls to the new fields.

@@ -2826,14 +2826,32 @@ Monto: {2}</value>
   <data name="ChallengeViewThisMonth" xml:space="preserve">
     <value>Este mes</value>
   </data>
-  <data name="ChallengeViewLastMonth" xml:space="preserve">
-    <value>Mes pasado</value>
+  <data name="ChallengeFirstDay" xml:space="preserve">
+    <value>Primer día (opcional)</value>
   </data>
-  <data name="ChallengeViewNextMonth" xml:space="preserve">
+  <data name="ChallengeFirstDayHint" xml:space="preserve">
+    <value>Vacío = igual que el aumento</value>
+  </data>
+  <data name="ChallengeStep" xml:space="preserve">
+    <value>Aumento por día (opcional)</value>
+  </data>
+  <data name="ChallengeStepHint" xml:space="preserve">
+    <value>Vacío = calcular según los días</value>
+  </data>
+  <data name="ChallengeFirstDayTooHigh" xml:space="preserve">
+    <value>El primer día es demasiado alto para esta meta y estos días.</value>
+  </data>
+  <data name="ChallengeViewFromStart" xml:space="preserve">
+    <value>Desde el inicio</value>
+  </data>
+  <data name="ChallengeMonthPrevious" xml:space="preserve">
+    <value>Mes anterior</value>
+  </data>
+  <data name="ChallengeMonthNext" xml:space="preserve">
     <value>Mes siguiente</value>
   </data>
-  <data name="ChallengeViewGoalEnd" xml:space="preserve">
-    <value>Últimos 30 días de la meta</value>
+  <data name="ChallengeMonthCurrent" xml:space="preserve">
+    <value>Ir a este mes</value>
   </data>
   <data name="ChallengeViewRange" xml:space="preserve">
     <value>Rango de fechas</value>
@@ -2851,7 +2869,7 @@ Monto: {2}</value>
     <value>{0} – {1} · días {2}–{3} de {4}</value>
   </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
-    <value>DÃ­a {0}, {1}, {2}</value>
+    <value>Día {0}, {1}, {2}</value>
   </data>
   <data name="ChallengeDayDone" xml:space="preserve">
     <value>hecho</value>

@@ -1,3 +1,4 @@
+using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
@@ -8,21 +9,33 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
 {
-    /// <summary>One day of the grid: its date, amount and whether it is done, today or already past.</summary>
+    /// <summary>One day of the grid: its date, amount and whether it is done, today or already past; or an empty calendar slot.</summary>
     public sealed class ChallengeCell
     {
-        public ChallengeCell(ChallengeDayInfo day, string currencyCode, DateTime today)
+        /// <param name="showMonth">The date reads "Oct 27"; otherwise just the day number (the month is named nearby).</param>
+        public ChallengeCell(ChallengeDayInfo day, string currencyCode, DateTime today, bool showMonth)
         {
             Day = day;
-            DateText = DateFormatter.Format(day.Date, DateStyle.MonthDay);
+            DateText = showMonth ? DateFormatter.Format(day.Date, DateStyle.MonthDay) : day.Date.Day.ToString();
             AmountText = MoneyFormatter.Format(Money.FromCents(day.AmountCents), currencyCode);
             IsToday = day.Date.Date == today;
             IsMissed = !day.IsDone && day.Date.Date < today;
             Description = string.Format(AppResources.ChallengeDayDescription, day.DayNumber, AmountText,
-                day.IsDone ? AppResources.ChallengeDayDone : AppResources.ChallengeDayPending);
+                day.IsDone ? AppResources.ChallengeDayDone : AppResources.ChallengeDayPending)
+                + ", " + DateFormatter.Format(day.Date, DateStyle.Long);
         }
 
-        public ChallengeDayInfo Day { get; }
+        /// <summary>An empty slot of the month calendar: it takes room but shows nothing.</summary>
+        private ChallengeCell()
+        {
+            DateText = AmountText = Description = string.Empty;
+        }
+
+        public static ChallengeCell Blank() => new();
+
+        public ChallengeDayInfo? Day { get; }
+
+        public bool IsBlank => Day == null;
 
         public string DateText { get; }
 
@@ -30,7 +43,7 @@ namespace MoneyRecord.ViewModels
 
         public string Description { get; }
 
-        public bool IsDone => Day.IsDone;
+        public bool IsDone => Day?.IsDone ?? false;
 
         public bool IsToday { get; }
 
@@ -47,10 +60,6 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private bool isActive;
-
-        /// <summary>False for a month view that holds no day of the challenge: the chip is hidden.</summary>
-        [ObservableProperty]
-        private bool isAvailable = true;
 
         [RelayCommand]
         private void Select() => select(View);
@@ -95,10 +104,12 @@ namespace MoneyRecord.ViewModels
         public IReadOnlyList<ChallengeViewChip> ViewChips { get; private set; }
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsRangeView))]
+        [NotifyPropertyChangedFor(nameof(IsRangeView), nameof(IsMonthView))]
         private ChallengeView selectedView = ChallengeView.Next30;
 
         public bool IsRangeView => SelectedView == ChallengeView.DateRange;
+
+        public bool IsMonthView => SelectedView == ChallengeView.Month;
 
         partial void OnSelectedViewChanged(ChallengeView value)
         {
@@ -106,8 +117,35 @@ namespace MoneyRecord.ViewModels
                 chip.IsActive = chip.View == value;
             if (value == ChallengeView.Next30)
                 _anchorDay = ChallengeDayFilter.FirstPendingDay(_days);
+            if (value == ChallengeView.Month)
+                ShownMonth = ChallengeDayFilter.ClampMonth(_days, _time.GetLocalNow().Date);
+            UpdateMonthNavigation();
             ApplyFilter();
         }
+
+        /// <summary>The month of the calendar view (its 1st), always one the challenge has days in.</summary>
+        [ObservableProperty]
+        private DateTime shownMonth = DateTime.Today;
+
+        partial void OnShownMonthChanged(DateTime value)
+        {
+            UpdateMonthNavigation();
+            if (IsMonthView)
+                ApplyFilter();
+        }
+
+        /// <summary>"October 2026": the month the calendar shows.</summary>
+        [ObservableProperty]
+        private string monthText = string.Empty;
+
+        [ObservableProperty]
+        private bool canGoPreviousMonth;
+
+        [ObservableProperty]
+        private bool canGoNextMonth;
+
+        /// <summary>The weekday names over the calendar columns, starting at the culture's first day of the week.</summary>
+        public IReadOnlyList<string> WeekdayHeaders { get; } = ChallengeDayFilter.WeekdayHeaders(CultureInfo.CurrentCulture);
 
         /// <summary>"Oct 26 – Nov 24 · days 1–30 of 365": what the grid shows.</summary>
         [ObservableProperty]
@@ -154,11 +192,9 @@ namespace MoneyRecord.ViewModels
             _time = time;
             ViewChips =
             [
+                new(ChallengeView.FromStart, AppResources.ChallengeViewFromStart, SelectView),
+                new(ChallengeView.Month, AppResources.ChallengeViewThisMonth, SelectView),
                 new(ChallengeView.Next30, AppResources.ChallengeViewNext30, SelectView) { IsActive = true },
-                new(ChallengeView.ThisMonth, AppResources.ChallengeViewThisMonth, SelectView),
-                new(ChallengeView.LastMonth, AppResources.ChallengeViewLastMonth, SelectView),
-                new(ChallengeView.NextMonth, AppResources.ChallengeViewNextMonth, SelectView),
-                new(ChallengeView.GoalEnd, AppResources.ChallengeViewGoalEnd, SelectView),
                 new(ChallengeView.DateRange, AppResources.ChallengeViewRange, SelectView)
             ];
         }
@@ -193,7 +229,9 @@ namespace MoneyRecord.ViewModels
                     RangeFrom = loaded.Days[first].Date;
                     RangeTo = loaded.Days[Math.Min(first + ChallengeDayFilter.WindowDays - 1, loaded.Days.Count - 1)].Date;
                 }
-                UpdateChipAvailability();
+                // A reload keeps the month shown, unless the challenge changed under it
+                ShownMonth = ChallengeDayFilter.ClampMonth(_days, IsMonthView ? ShownMonth : _time.GetLocalNow().Date);
+                UpdateMonthNavigation();
                 ApplyFilter();
                 OnPropertyChanged(nameof(HasNoCells));
             }
@@ -223,26 +261,51 @@ namespace MoneyRecord.ViewModels
                 return;
             }
             var today = _time.GetLocalNow().Date;
-            var shown = ChallengeDayFilter.Select(_days, SelectedView, today, RangeFrom, RangeTo, ShowRemainingOnly, _anchorDay);
-            Cells = shown.Select(d => new ChallengeCell(d, challenge.CurrencyCode, today)).ToList();
+            var shown = ChallengeDayFilter.Select(_days, SelectedView, ShownMonth, RangeFrom, RangeTo, ShowRemainingOnly, _anchorDay);
+            if (IsMonthView)
+            {
+                // The calendar keeps empty slots so every day sits under its weekday; the month is named above it
+                var slots = ChallengeDayFilter.MonthSlots(_days, ShownMonth, ShowRemainingOnly, CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
+                Cells = slots.Select(d => d == null ? ChallengeCell.Blank() : new ChallengeCell(d, challenge.CurrencyCode, today, false)).ToList();
+            }
+            else
+            {
+                // The month is named on the first cell and wherever a month starts
+                Cells = shown.Select((d, i) => new ChallengeCell(d, challenge.CurrencyCode, today, i == 0 || d.Date.Day == 1)).ToList();
+            }
             ShowingText = shown.Count == 0
                 ? string.Empty
                 : string.Format(AppResources.ChallengeShowing, DateFormatter.Format(shown[0].Date, DateStyle.MonthDay),
                     DateFormatter.Format(shown[^1].Date, DateStyle.MonthDay), shown[0].DayNumber, shown[^1].DayNumber, _days.Count);
         }
 
-        /// <summary>The month chips hide while the challenge has no day in that month.</summary>
-        private void UpdateChipAvailability()
+        private void UpdateMonthNavigation()
         {
-            var today = _time.GetLocalNow().Date;
-            foreach (var chip in ViewChips.Where(c => c.View is ChallengeView.ThisMonth or ChallengeView.LastMonth or ChallengeView.NextMonth))
-                chip.IsAvailable = ChallengeDayFilter.HasDays(_days, chip.View, today);
-            // A month view that has run out (a reload after the month changed) falls back to the default window
-            if (ViewChips.Any(c => c.View == SelectedView && !c.IsAvailable))
-                SelectedView = ChallengeView.Next30;
+            MonthText = DateFormatter.FormatMonthYear(ShownMonth);
+            var span = ChallengeDayFilter.MonthSpan(_days);
+            CanGoPreviousMonth = span != null && ShownMonth > span.Value.First;
+            CanGoNextMonth = span != null && ShownMonth < span.Value.Last;
         }
 
         private void SelectView(ChallengeView view) => SelectedView = view;
+
+        [RelayCommand]
+        private void PreviousMonth()
+        {
+            if (CanGoPreviousMonth)
+                ShownMonth = ShownMonth.AddMonths(-1);
+        }
+
+        [RelayCommand]
+        private void NextMonth()
+        {
+            if (CanGoNextMonth)
+                ShownMonth = ShownMonth.AddMonths(1);
+        }
+
+        /// <summary>Back to the current month (or the nearest one the challenge has).</summary>
+        [RelayCommand]
+        private void CurrentMonth() => ShownMonth = ChallengeDayFilter.ClampMonth(_days, _time.GetLocalNow().Date);
 
         [RelayCommand]
         private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;
@@ -255,12 +318,11 @@ namespace MoneyRecord.ViewModels
         private async Task ToggleDayAsync(ChallengeCell? cell)
         {
             var challenge = Summary?.Challenge;
-            if (cell == null || challenge == null)
+            if (cell?.Day is not { } day || challenge == null)
                 return;
 
             try
             {
-                var day = cell.Day;
                 if (day.IsDone)
                 {
                     var undoMoney = false;
