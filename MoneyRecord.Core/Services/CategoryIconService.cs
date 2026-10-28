@@ -154,6 +154,9 @@ namespace MoneyRecord.Services
                 new AccountIcon { Code = "F1007", Name = "Piggy Bank" },        // piggy-bank
                 new AccountIcon { Code = "F0FEF", Name = "Credit Card" },       // credit-card
                 new AccountIcon { Code = "F0115", Name = "Cash" },              // cash-100
+                new AccountIcon { Code = "F0584", Name = "Wallet" },            // wallet
+                new AccountIcon { Code = "F012A", Name = "Investments" },       // chart-line
+                new AccountIcon { Code = "F00D6", Name = "Business" },          // briefcase
             ];
         }
 

@@ -34,6 +34,16 @@ public class CategoryIconServiceTests
     }
 
     [Fact]
+    public void EveryAccountIcon_IsUniqueAndAMaterialDesignCodePoint()
+    {
+        var icons = _service.GetAccountIcons();
+
+        icons.Select(i => i.Code).Should().OnlyHaveUniqueItems();
+        icons.Select(i => Convert.ToInt32(i.Code, 16)).Should().OnlyContain(code => code >= 0xF0000 && code <= 0xFFFFF);
+        icons.Select(i => i.Name).Should().OnlyContain(name => name.Length > 0);
+    }
+
+    [Fact]
     public void DefaultAndCashAccountIcons_AreInThePicker()
     {
         var codes = _service.GetAccountIcons().Select(i => i.Code).ToList();
