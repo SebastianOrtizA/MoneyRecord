@@ -43,8 +43,13 @@ are missing. Never push a tag or the branch by hand.
   `gh workflow run cut-release.yml -f next=minor`). It creates `release/x.y` from main, opens a PR moving main's csproj
   to the next line, and builds `x.y.0`.
 - **Fix to a shipped line**: PR to main labelled `backport release/x.y` (create the label once per line:
-  `gh label create "backport release/x.y"`). On merge, Backport cherry-picks it onto the branch; the notes PR for
-  `x.y.N` (also labelled) is what publishes the patch. Conflicts are reported on the PR.
+  `gh label create "backport release/x.y"`). `release/*` only takes changes through a pull request (ruleset "Review
+  Required"; a push is refused with GH013), so on merge Backport cherry-picks it onto `backport/<PR>-to-release-x.y` and
+  **opens a PR to the release branch**; merging that PR builds the branch. The notes PR for `x.y.N` (also labelled) opens
+  the PR whose merge publishes the patch, so merge the fix backports first, the notes backport last. A PR opened with
+  `GITHUB_TOKEN` runs no Build & Test; the push after its merge does. A conflict is reported on the PR with the commands
+  to make the backport PR by hand (`git checkout -b backport/<PR>-to-release-x.y origin/release/x.y`, `git cherry-pick
+  <squash sha>`, push, `gh pr create --base release/x.y`).
 
 Watch `gh run list --limit 3`; the build fails unless the release keystore secrets are set. Promoting the Play release
 to production stays manual in Play Console.
