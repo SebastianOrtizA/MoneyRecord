@@ -21,6 +21,28 @@ public class CategoryIconServiceTests
         codes.Should().Contain(DefaultCategory.All.Where(c => c.Type == type).Select(c => c.IconCode));
     }
 
+    [Theory]
+    [InlineData(CategoryType.Income)]
+    [InlineData(CategoryType.Expense)]
+    public void EveryCategoryIcon_IsUniqueAndAMaterialDesignCodePoint(CategoryType type)
+    {
+        var codes = _service.GetIconsForType(type).Select(i => i.Code).ToList();
+
+        codes.Should().OnlyHaveUniqueItems();
+        codes.Should().OnlyContain(code => Convert.ToInt32(code, 16) >= 0xF0000 && Convert.ToInt32(code, 16) <= 0xFFFFF);
+        _service.GetIconsForType(type).Select(i => i.Name).Should().OnlyContain(name => name.Length > 0);
+    }
+
+    [Fact]
+    public void EveryAccountIcon_IsUniqueAndAMaterialDesignCodePoint()
+    {
+        var icons = _service.GetAccountIcons();
+
+        icons.Select(i => i.Code).Should().OnlyHaveUniqueItems();
+        icons.Select(i => Convert.ToInt32(i.Code, 16)).Should().OnlyContain(code => code >= 0xF0000 && code <= 0xFFFFF);
+        icons.Select(i => i.Name).Should().OnlyContain(name => name.Length > 0);
+    }
+
     [Fact]
     public void DefaultAndCashAccountIcons_AreInThePicker()
     {
