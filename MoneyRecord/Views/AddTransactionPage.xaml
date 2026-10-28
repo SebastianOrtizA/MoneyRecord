@@ -17,7 +17,7 @@
 
     <!-- Fast entry: amount → payee → category → account → date; the rest under "More details"; Save stays at the bottom -->
     <Grid RowDefinitions="*,Auto">
-        <ScrollView>
+        <ScrollView x:Name="FormScroll">
             <VerticalStackLayout Padding="20" Spacing="16">
 
                 <!-- The amount, centred; the scan button beside it reads a receipt photo's total and date -->
@@ -259,9 +259,9 @@
                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
 
                 <!-- More details: description (defaults to the category name), tags, receipt, recurrence -->
-                <Grid ColumnDefinitions="*,Auto" Padding="0,8">
+                <Grid x:Name="MoreDetailsHeader" ColumnDefinitions="*,Auto" Padding="0,8">
                     <Grid.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ToggleMoreDetailsCommand}"/>
+                        <TapGestureRecognizer Command="{Binding ToggleMoreDetailsCommand}" Tapped="OnMoreDetailsTapped"/>
                     </Grid.GestureRecognizers>
                     <Label Text="{ext:Localize MoreDetails}"
                            FontSize="16"
