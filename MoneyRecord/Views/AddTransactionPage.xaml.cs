@@ -29,6 +29,14 @@ namespace MoneyRecord.Views
                 Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(300), () => AmountEntry.Focus());
         }
 
+        // Opened by a tap: bring the new fields into view once they are laid out (closing leaves the scroll as it is)
+        private void OnMoreDetailsTapped(object? sender, TappedEventArgs e)
+        {
+            if (_viewModel.IsMoreDetailsOpen)
+                Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(100),
+                    async () => await FormScroll.ScrollToAsync(MoreDetailsHeader, ScrollToPosition.Start, true));
+        }
+
         protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
         {
             base.OnNavigatedFrom(args);
