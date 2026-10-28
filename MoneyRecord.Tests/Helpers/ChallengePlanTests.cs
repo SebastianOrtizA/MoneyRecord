@@ -149,6 +149,94 @@ public class ChallengePlanTests
     }
 
     [Fact]
+    public void A_linear_step_alone_starts_at_the_step_and_the_last_day_is_what_is_left()
+    {
+        // 100 + 200 + 300 + 400 = 1,000 < 1,050: five days, the fifth takes the 50 left
+        ChallengePlan.DaysForLinear(105_000, 0, 10_000).Should().Be(5);
+        var plan = ChallengePlan.Build(105_000, 5, ChallengeMode.Linear, 0, 10_000);
+
+        plan.DayCents.Should().Equal(10_000, 20_000, 30_000, 40_000, 5_000);
+        plan.TotalCents.Should().Be(105_000);
+    }
+
+    [Fact]
+    public void A_linear_step_ignores_the_rounding()
+    {
+        var plan = ChallengePlan.Build(105_000, 5, ChallengeMode.Linear, 50_000, 10_000);
+
+        plan.DayCents.Should().Equal(10_000, 20_000, 30_000, 40_000, 5_000);
+    }
+
+    [Fact]
+    public void A_first_day_and_a_step_set_the_days()
+    {
+        // 50, 70, 90 ... : eight days add up to 960, the ninth takes the 40 left
+        ChallengePlan.DaysForLinear(100_000, 5_000, 2_000).Should().Be(9);
+        var plan = ChallengePlan.Build(100_000, 9, ChallengeMode.Linear, 0, 2_000, 5_000);
+
+        plan.DayCents.Take(3).Should().Equal(5_000, 7_000, 9_000);
+        plan.DayCents[^1].Should().Be(4_000);
+        plan.TotalCents.Should().Be(100_000);
+    }
+
+    [Fact]
+    public void An_exact_fit_has_no_smaller_last_day()
+    {
+        ChallengePlan.DaysForLinear(100_000, 0, 10_000).Should().Be(4);
+        ChallengePlan.Build(100_000, 4, ChallengeMode.Linear, 0, 10_000).DayCents.Should().Equal(10_000, 20_000, 30_000, 40_000);
+    }
+
+    [Fact]
+    public void A_step_bigger_than_the_goal_is_one_day()
+    {
+        ChallengePlan.DaysForLinear(5_000, 0, 10_000).Should().Be(1);
+        ChallengePlan.Build(5_000, 1, ChallengeMode.Linear, 0, 10_000).DayCents.Should().Equal(5_000);
+    }
+
+    [Fact]
+    public void A_long_linear_plan_is_found_without_overflow()
+    {
+        // 1,000,000,000.00 in steps of 0.01: n(n+1)/2 first reaches 1e11 at n = 447,214 (447,213 gives 99,999,957,291)
+        ChallengePlan.DaysForLinear(100_000_000_000, 0, 1).Should().Be(447_214);
+    }
+
+    [Fact]
+    public void A_first_day_without_a_step_works_the_step_out_from_the_days()
+    {
+        // 10 days from 50: the step is (1,000 - 500) / 45 = 11.11
+        var plan = ChallengePlan.Build(100_000, 10, ChallengeMode.Linear, 0, 0, 5_000);
+
+        plan.DayCents[0].Should().Be(5_000);
+        plan.DayCents[^1].Should().BeInRange(14_990, 15_010);
+        plan.DayCents.Zip(plan.DayCents.Skip(1)).Should().OnlyContain(p => p.Second >= p.First);
+        plan.TotalCents.Should().BeInRange(99_990, 100_010);
+    }
+
+    [Fact]
+    public void A_first_day_without_a_step_rounds_every_day_to_the_rounding()
+    {
+        var plan = ChallengePlan.Build(100_000, 10, ChallengeMode.Linear, 1_000, 0, 5_000);
+
+        plan.DayCents.Should().OnlyContain(c => c % 1_000 == 0 && c >= 1_000);
+    }
+
+    [Fact]
+    public void A_first_day_that_uses_up_the_goal_makes_every_day_the_same()
+    {
+        ChallengePlan.Build(100_000, 10, ChallengeMode.Linear, 0, 0, 10_000).DayCents.Should().OnlyContain(c => c == 10_000);
+        ChallengePlan.Build(50_000, 1, ChallengeMode.Linear, 0, 0, 10_000).DayCents.Should().Equal(50_000);
+    }
+
+    [Fact]
+    public void A_first_day_is_too_high_when_the_days_pass_the_goal_with_it_alone()
+    {
+        ChallengePlan.FirstDayTooHigh(100_000, 10, 20_000).Should().BeTrue();
+        ChallengePlan.FirstDayTooHigh(100_000, 10, 10_000).Should().BeFalse();
+        ChallengePlan.FirstDayTooHigh(100_000, 1, 200_000).Should().BeFalse();
+        ChallengePlan.FirstDayTooHigh(100_000, 10, 0).Should().BeFalse();
+    }
+
+    [Fact]
     public void Zero_days_is_refused()
     {
         var act = () => ChallengePlan.Build(100_000, 0, ChallengeMode.Linear, 0);

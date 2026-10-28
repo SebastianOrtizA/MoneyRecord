@@ -2821,7 +2821,7 @@ Amount: {2}</value>
     <value>Just mark the day</value>
   </data>
   <data name="ChallengeRemainingOnly" xml:space="preserve">
-    <value>Remaining only</value>
+    <value>Only pending</value>
   </data>
   <data name="ChallengeViewNext30" xml:space="preserve">
     <value>Next 30 days</value>
@@ -2829,14 +2829,32 @@ Amount: {2}</value>
   <data name="ChallengeViewThisMonth" xml:space="preserve">
     <value>This month</value>
   </data>
-  <data name="ChallengeViewLastMonth" xml:space="preserve">
-    <value>Last month</value>
+  <data name="ChallengeFirstDay" xml:space="preserve">
+    <value>First day (optional)</value>
   </data>
-  <data name="ChallengeViewNextMonth" xml:space="preserve">
+  <data name="ChallengeFirstDayHint" xml:space="preserve">
+    <value>Empty = same as the increase</value>
+  </data>
+  <data name="ChallengeStep" xml:space="preserve">
+    <value>Increase per day (optional)</value>
+  </data>
+  <data name="ChallengeStepHint" xml:space="preserve">
+    <value>Empty = worked out from the days</value>
+  </data>
+  <data name="ChallengeFirstDayTooHigh" xml:space="preserve">
+    <value>The first day is too high for this goal and these days.</value>
+  </data>
+  <data name="ChallengeViewFromStart" xml:space="preserve">
+    <value>From start</value>
+  </data>
+  <data name="ChallengeMonthPrevious" xml:space="preserve">
+    <value>Previous month</value>
+  </data>
+  <data name="ChallengeMonthNext" xml:space="preserve">
     <value>Next month</value>
   </data>
-  <data name="ChallengeViewGoalEnd" xml:space="preserve">
-    <value>Goal's last 30 days</value>
+  <data name="ChallengeMonthCurrent" xml:space="preserve">
+    <value>Go to this month</value>
   </data>
   <data name="ChallengeViewRange" xml:space="preserve">
     <value>Date range</value>
@@ -2854,7 +2872,10 @@ Amount: {2}</value>
     <value>{0} – {1} · days {2}–{3} of {4}</value>
   </data>
   <data name="ChallengeDayDescription" xml:space="preserve">
-    <value>Day {0}, {1}, {2}</value>
+    <value>Day {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>That needs more than {0} days. Raise the daily amount or lower the goal.</value>
   </data>
   <data name="ChallengeDayDone" xml:space="preserve">
     <value>done</value>

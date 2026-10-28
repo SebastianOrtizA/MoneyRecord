@@ -53,7 +53,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         zip.Entries.Select(e => e.FullName).Should().BeEquivalentTo("data.json", "receipts/receipt_1.jpg");
         using var reader = new StreamReader(zip.GetEntry("data.json")!.Open());
         var json = await reader.ReadToEndAsync();
-        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 7");
+        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 8");
         json.Should().NotContain(_appData.Replace("\\", "\\\\"), "no device paths in a backup");
     }
 
@@ -117,7 +117,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         await Db.InsertAsync(travel);
         await Db.InsertAsync(new PocketMovement { PocketId = travel.Id, Amount = 25m, Date = new DateTime(2026, 10, 1) });
         await Db.InsertAsync(new SavingsGoalPocket { GoalId = goal.Id, PocketId = travel.Id });
-        var challenge = new SavingsChallenge { Name = "Hucha", Goal = 100m, CurrencyCode = "EUR", StartDate = new DateTime(2026, 10, 1), Days = 5, Mode = ChallengeMode.Equal, DayAmountCents = 2_500, ToAccountId = bank.Id, ToPocketId = travel.Id };
+        var challenge = new SavingsChallenge { Name = "Hucha", Goal = 100m, CurrencyCode = "EUR", StartDate = new DateTime(2026, 10, 1), Days = 5, Mode = ChallengeMode.Linear, DayAmountCents = 2_500, FirstDayCents = 1_000, ToAccountId = bank.Id, ToPocketId = travel.Id };
         await Db.InsertAsync(challenge);
         await Db.InsertAsync(new SavingsChallengeDay { ChallengeId = challenge.Id, DayNumber = 2, AmountCents = 645, DoneDate = new DateTime(2026, 10, 2), TransferId = 5, SourceMovementId = 6, DestinationMovementId = 7 });
         var before = await DumpAsync();

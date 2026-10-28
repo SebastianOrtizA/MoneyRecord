@@ -206,6 +206,25 @@
                         FontSize="16"
                         MinimumHeightRequest="44" />
 
+                <!-- Linear: day 1 and the increase per day; either with the goal works out the rest -->
+                <Label Text="{ext:Localize ChallengeFirstDay}" Style="{StaticResource FormCaption}"
+                       IsVisible="{Binding IsLinearMode}" />
+                <Entry Text="{Binding FormFirstDay}"
+                       Placeholder="{ext:Localize ChallengeFirstDayHint}"
+                       Keyboard="Numeric"
+                       IsVisible="{Binding IsLinearMode}"
+                       IsEnabled="{Binding IsPlanEditable}"
+                       FontSize="16" />
+
+                <Label Text="{ext:Localize ChallengeStep}" Style="{StaticResource FormCaption}"
+                       IsVisible="{Binding IsLinearMode}" />
+                <Entry Text="{Binding FormStep}"
+                       Placeholder="{ext:Localize ChallengeStepHint}"
+                       Keyboard="Numeric"
+                       IsVisible="{Binding IsLinearMode}"
+                       IsEnabled="{Binding IsPlanEditable}"
+                       FontSize="16" />
+
                 <Label Text="{ext:Localize ChallengeDayAmount}" Style="{StaticResource FormCaption}"
                        IsVisible="{Binding IsEqualMode}" />
                 <Entry Text="{Binding FormDayAmount}"
@@ -226,12 +245,12 @@
 
                 <!-- Live preview of the plan -->
                 <Border Style="{StaticResource Card}" Padding="12" Margin="0,4"
-                        IsVisible="{Binding HasPreview}">
+                        IsVisible="{Binding ShowPreviewCard}">
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="{Binding PreviewDaysText}" FontSize="14" />
-                        <Label Text="{Binding PreviewTotalText}" FontSize="14" FontAttributes="Bold" />
-                        <Label Text="{Binding LevelsWarningText}"
-                               IsVisible="{Binding HasLevelsWarning}"
+                        <Label Text="{Binding PreviewDaysText}" FontSize="14" IsVisible="{Binding HasPreview}" />
+                        <Label Text="{Binding PreviewTotalText}" FontSize="14" FontAttributes="Bold" IsVisible="{Binding HasPreview}" />
+                        <Label Text="{Binding PlanWarningText}"
+                               IsVisible="{Binding HasPlanWarning}"
                                FontSize="13"
                                TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
                     </VerticalStackLayout>

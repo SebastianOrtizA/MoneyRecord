@@ -32,6 +32,14 @@ namespace MoneyRecord.Helpers
             return date.ToString(GetPattern(style, culture), culture);
         }
 
+        /// <summary>The whole month name with the year, capitalized: "October 2026" / "Octubre de 2026" (a month heading).</summary>
+        public static string FormatMonthYear(DateTime date, CultureInfo? culture = null)
+        {
+            culture ??= CultureInfo.CurrentCulture;
+            var text = date.ToString(culture.DateTimeFormat.YearMonthPattern, culture);
+            return text.Length == 0 ? text : char.ToUpper(text[0], culture) + text[1..];
+        }
+
         /// <summary>"Oct 1, 2026 – Oct 31, 2026" (<see cref="DateStyle.Medium"/>), or one date when both are the same day.</summary>
         public static string FormatRange(DateTime start, DateTime end, CultureInfo? culture = null)
         {
