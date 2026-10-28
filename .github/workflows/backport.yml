@@ -1,7 +1,12 @@
 name: Backport
 
-# A merged PR labelled "backport release/<major>.<minor>" is cherry-picked onto that branch, which then builds (and
-# publishes the next patch when its release notes are in). A conflict is reported on the PR to resolve by hand.
+# A merged PR labelled "backport release/<major>.<minor>" is cherry-picked onto a new branch backport/<PR>-to-release-<x.y>,
+# and a pull request from it to that release branch is opened. The release branches only take changes through a pull
+# request (a push from here is refused, GH013), so merging that PR is the step that builds the branch (and publishes the
+# next patch when its release notes are in): the owner decides when. A conflict is reported on the PR to resolve by hand.
+# Needs Settings -> Actions -> General -> "Allow GitHub Actions to create and approve pull requests". A pull request opened
+# with GITHUB_TOKEN starts no workflow, so the opened PR has no Build & Test run until it is merged (the push to the
+# release branch then builds it).
 on:
   pull_request:
     types: [closed]
@@ -10,7 +15,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  actions: write
 
 jobs:
   backport:
@@ -21,10 +25,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Cherry-pick onto the release branches
+      - name: Open a backport pull request per release branch
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
+          TITLE: ${{ github.event.pull_request.title }}
           SHA: ${{ github.event.pull_request.merge_commit_sha }}
           LABELS: ${{ join(github.event.pull_request.labels.*.name, '|') }}
         run: |
@@ -36,19 +41,32 @@ jobs:
           while IFS= read -r label <&3; do
             case "$label" in "backport release/"*) ;; *) continue ;; esac
             branch=${label#backport }
-            if ! git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
-              gh pr comment "$PR" --body "Backport: branch \`$branch\` does not exist."; failed=1; continue
-            fi
-            git checkout -q -B "backport-target" "origin/$branch"
+            work="backport/$PR-to-${branch//\//-}"
             # A merge commit needs -m 1; squash and rebase merges are plain commits
             parents=$(git rev-list --parents -n 1 "$SHA" | wc -w)
             if [ "$parents" -gt 2 ]; then pick="git cherry-pick -m 1 $SHA"; else pick="git cherry-pick $SHA"; fi
-            if $pick && git push origin "HEAD:refs/heads/$branch"; then
-              gh workflow run build-android.yml --ref "$branch"
-              gh pr comment "$PR" --body "Backported to \`$branch\`. It publishes the next patch once its release notes are on that branch."
+            by_hand="git fetch origin && git checkout -b $work origin/$branch && $pick && git push -u origin $work"
+            if ! git ls-remote --exit-code --heads origin "$branch" > /dev/null; then
+              gh pr comment "$PR" --body "Backport: branch \`$branch\` does not exist."; failed=1; continue
+            fi
+            if git ls-remote --exit-code --heads origin "$work" > /dev/null; then
+              gh pr comment "$PR" --body "Backport to \`$branch\` skipped: the branch \`$work\` already exists (an earlier run?). Look for its pull request, or delete the branch and re-run."
+              failed=1; continue
+            fi
+            git checkout -q -B "$work" "origin/$branch"
+            if $pick && git push -q origin "HEAD:refs/heads/$work"; then
+              body="Backport of #$PR (commit \`$SHA\`) onto \`$branch\`, opened by the Backport workflow.
+
+          \`$branch\` only takes changes through a pull request, so this is the step that builds it: if the top \`##\` section of the en-US \`history.txt\` there names a version without a tag, merging this publishes it (tag, GitHub Release, Play closed testing)."
+              if url=$(gh pr create --base "$branch" --head "$work" --title "Backport #$PR to $branch: $TITLE" --body "$body"); then
+                gh pr comment "$PR" --body "Backport to \`$branch\`: $url. Merging it builds the branch and publishes the next patch once its release notes are on it."
+              else
+                gh pr comment "$PR" --body "Backport to \`$branch\`: the branch \`$work\` is pushed but its pull request could not be opened (is \"Allow GitHub Actions to create and approve pull requests\" on?). Open one from \`$work\` to \`$branch\`."
+                failed=1
+              fi
             else
               git cherry-pick --abort 2>/dev/null || true
-              gh pr comment "$PR" --body "Backport to \`$branch\` failed. By hand: \`git checkout $branch && $pick && git push\`."
+              gh pr comment "$PR" --body "Backport to \`$branch\` failed (a conflict?). By hand: \`$by_hand\`, then open a pull request from \`$work\` to \`$branch\`."
               failed=1
             fi
           done 3<<< "$labels"

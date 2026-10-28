@@ -26,7 +26,7 @@ dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 ```
 
 On the emulator, use the project skill `/run-moneyrecord` (boot, deploy, screenshots, locale switching).
-To release (notes in three languages, PR, then Actions → Cut release; fixes are backported to `release/x.y` by PR label, tags come only from release branches), use the project skill `/release-moneyrecord`. Every release adds a `## x.y.z` section to each `changelogs/history.txt` (the in-app "What's new") as well as updating Play's `default.txt`.
+To release (notes in three languages, PR, then Actions → Cut release; fixes are backported to `release/x.y` by PR label (the Backport workflow opens a PR to the release branch, which only takes pull requests), tags come only from release branches), use the project skill `/release-moneyrecord`. Every release adds a `## x.y.z` section to each `changelogs/history.txt` (the in-app "What's new") as well as updating Play's `default.txt`.
 Plans for the staged roadmap live in `.claude/plans/` (one file per stage).
 
 **Solution file**: `MoneyRecord.slnx` (XML format)
