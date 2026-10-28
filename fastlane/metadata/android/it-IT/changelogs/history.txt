@@ -3,7 +3,7 @@
 - La pagina della sfida ha nuovi filtri: Dall'inizio, Questo mese (si sfoglia mese per mese, come un calendario), Prossimi 30 giorni e Intervallo di date, più Solo da fare.
 - Le date nella griglia della sfida non vengono più tagliate in alcune lingue.
 - Aggiungendo un movimento, aprire Più dettagli ora scorre fino ai campi nuovi.
-- Categorie: molte più icone tra cui scegliere, sia per le spese che per le entrate.
+- Icone: molte di più tra cui scegliere per le categorie di spese e di entrate, e alcune in più per i conti.
 
 ## 0.19.1
 - Corretto un blocco: scegliere "Predefinita del sistema" in Impostazioni → Lingua poteva bloccare l'app dopo aver scelto un'altra lingua.
