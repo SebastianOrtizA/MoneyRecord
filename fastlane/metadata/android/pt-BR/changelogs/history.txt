@@ -3,6 +3,7 @@
 - A página do desafio tem filtros novos: Desde o início, Este mês (navegue mês a mês, como um calendário), Próximos 30 dias e Intervalo de datas, além de Só pendentes.
 - As datas na grade do desafio não são mais cortadas em alguns idiomas.
 - Ao adicionar uma transação, abrir Mais detalhes agora rola até os campos novos.
+- Categorias: muito mais ícones para escolher, tanto nas de despesas quanto nas de receitas.
 
 ## 0.19.1
 - Corrigido um travamento: escolher "Padrão do sistema" em Configurações → Idioma podia travar o app depois de escolher outro idioma.

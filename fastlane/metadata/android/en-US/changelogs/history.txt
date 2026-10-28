@@ -3,6 +3,7 @@
 - The challenge page has new filters: From start, This month (browse it month by month, as a calendar), Next 30 days and Date range, plus Only pending.
 - Dates in the challenge grid no longer get cut off in some languages.
 - Adding an entry: opening More details now scrolls down to the new fields.
+- Categories: many more icons to choose from, for both expense and income categories.
 
 ## 0.19.1
 - Fixed a freeze: choosing "System default" in Settings → Language could hang the app after you had picked another language.

@@ -3,6 +3,7 @@
 - La page du défi a de nouveaux filtres : Depuis le début, Ce mois-ci (à parcourir mois par mois, comme un calendrier), 30 prochains jours et Plage de dates, ainsi que Pas faits seulement.
 - Les dates de la grille du défi ne sont plus coupées dans certaines langues.
 - Ajout d'une transaction : ouvrir Plus de détails fait maintenant défiler jusqu'aux nouveaux champs.
+- Catégories : beaucoup plus d'icônes au choix, pour les catégories de dépenses comme de revenus.
 
 ## 0.19.1
 - Correction d'un blocage : choisir « Par défaut du système » dans Réglages → Langue pouvait figer l'appli après avoir choisi une autre langue.
