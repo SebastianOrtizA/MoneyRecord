@@ -1,3 +1,6 @@
+## 0.20.0
+- New Support MoneyRecord screen (More tab) in the Google Play version: leave a small optional tip through Google Play to support the project. Nothing is locked or unlocked, whether you give or not.
+
 ## 0.19.2
 - Savings challenges: a linear challenge can now start from a first day and grow by an amount per day. Type the increase and the app works out how many days you need. Doubling is no longer offered for new challenges; the ones you already have keep working.
 - The challenge page has new filters: From start, This month (browse it month by month, as a calendar), Next 30 days and Date range, plus Only pending.
