@@ -2848,4 +2848,28 @@ Montant : {2}</value>
   <data name="ChallengeUnmarkKeep" xml:space="preserve">
     <value>Décocher et garder l'argent déplacé</value>
   </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>Soutenir MoneyRecord</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord est gratuit et open source, sans publicité ni suivi. S&apos;il t&apos;est utile, tu peux soutenir son développement. Rien n&apos;est verrouillé : tout fonctionne pareil, que tu donnes ou non.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Soutenir le projet</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Laisser un pourboire</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>Merci pour ton soutien !</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>Ton pourboire attend la confirmation du paiement. Merci !</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>Le pourboire n&apos;a pas pu être effectué.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>Les pourboires ne sont pas disponibles pour le moment. Réessaie plus tard.</value>
+  </data>
 </root>

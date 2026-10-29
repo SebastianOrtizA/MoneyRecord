@@ -2847,4 +2847,28 @@ Importo: {2}</value>
   <data name="ChallengeUnmarkKeep" xml:space="preserve">
     <value>Togli il segno, tieni lo spostamento</value>
   </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>Sostieni MoneyRecord</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord è gratuita e open source, senza pubblicità né tracciamento. Se ti è utile, puoi sostenerne lo sviluppo. Niente è bloccato: tutto funziona allo stesso modo, che tu doni o no.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Sostieni il progetto</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Lascia una mancia</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>Grazie per il tuo sostegno!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>La tua mancia è in attesa del completamento del pagamento. Grazie!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>Non è stato possibile completare la mancia.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>Le mance non sono disponibili al momento. Riprova più tardi.</value>
+  </data>
 </root>

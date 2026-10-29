@@ -2898,4 +2898,28 @@ Monto: {2}</value>
   <data name="ChallengeUnmarkKeep" xml:space="preserve">
     <value>Desmarcar y conservar el dinero movido</value>
   </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>Apoya MoneyRecord</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord es gratuita y de código abierto, sin anuncios ni seguimiento. Si te resulta útil, puedes apoyar su desarrollo. No se bloquea nada: todo funciona igual des o no.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Apoya el proyecto</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Deja una propina</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>¡Gracias por tu apoyo!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>Tu propina está esperando a que se complete el pago. ¡Gracias!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>No se pudo completar la propina.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>Las propinas no están disponibles ahora. Inténtalo más tarde.</value>
+  </data>
 </root>

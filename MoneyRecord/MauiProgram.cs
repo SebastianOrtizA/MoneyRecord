@@ -168,6 +168,13 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IReceiptScanner, NoReceiptScanner>();
 #endif
 
+            // Support: tips through Play Billing in the Google Play build (-p:Distribution=Play); no Support screen elsewhere
+#if PLAY_STORE
+            builder.Services.AddSingleton<ITipJar, Platforms.Android.PlayTipJar>();
+#else
+            builder.Services.AddSingleton<ITipJar, NoTipJar>();
+#endif
+
             // Register ViewModels
             // The one period every tab shows
             builder.Services.AddSingleton<PeriodViewModel>();
@@ -200,6 +207,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<HomeLayoutViewModel>();
             builder.Services.AddTransient<SetupViewModel>();
             builder.Services.AddTransient<AboutViewModel>();
+            builder.Services.AddTransient<SupportViewModel>();
             builder.Services.AddTransient<LicenseViewModel>();
             builder.Services.AddTransient<ImportStatementViewModel>();
             builder.Services.AddTransient<TrendsReportViewModel>();
@@ -234,6 +242,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<HomeLayoutPage>();
             builder.Services.AddTransient<SetupPage>();
             builder.Services.AddTransient<AboutPage>();
+            builder.Services.AddTransient<SupportPage>();
             builder.Services.AddTransient<LicensePage>();
             builder.Services.AddTransient<ImportStatementPage>();
             // App creates it only on a new install

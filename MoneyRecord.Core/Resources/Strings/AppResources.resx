@@ -2901,4 +2901,28 @@ Amount: {2}</value>
   <data name="ChallengeUnmarkKeep" xml:space="preserve">
     <value>Unmark, keep the money moved</value>
   </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>Support MoneyRecord</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord is free and open source, with no ads and no tracking. If it is useful to you, you can support its development. Nothing is locked: everything works the same whether you give or not.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Support the project</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Leave a tip</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>Thank you for your support!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>Your tip is waiting for the payment to complete. Thank you!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>The tip could not be completed.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>Tips are not available right now. Please try again later.</value>
+  </data>
 </root>

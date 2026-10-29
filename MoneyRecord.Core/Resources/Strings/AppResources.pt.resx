@@ -2849,4 +2849,28 @@ Valor: {2}</value>
   <data name="ChallengeUnmarkKeep" xml:space="preserve">
     <value>Desmarcar e manter o dinheiro movido</value>
   </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>Apoie o MoneyRecord</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>O MoneyRecord é gratuito e de código aberto, sem anúncios nem rastreamento. Se ele for útil para você, pode apoiar o desenvolvimento. Nada fica bloqueado: tudo funciona igual, você contribuindo ou não.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Apoie o projeto</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Deixe uma gorjeta</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>Obrigado pelo seu apoio!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>Sua gorjeta está aguardando a conclusão do pagamento. Obrigado!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>Não foi possível concluir a gorjeta.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>As gorjetas não estão disponíveis agora. Tente novamente mais tarde.</value>
+  </data>
 </root>

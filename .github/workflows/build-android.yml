@@ -132,8 +132,10 @@ jobs:
             Write-Host "::notice::No release keystore: this build is signed with the debug key."
           }
 
-      # Release builds produce both formats: the .apk for GitHub Releases / F-Droid, the .aab for the Play Store.
-      - name: Build Android APK + AAB (Release)
+      # Two builds of the same version: the .apk for GitHub Releases / F-Droid (no Support screen) and the
+      # .aab for the Play Store (Distribution=Play: the Support screen sells tips through Play Billing, which Play requires
+      # for payments to the developer and F-Droid could not ship). Each has its own folder and its own R8 mapping.txt.
+      - name: Build Android APK (Release)
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -143,15 +145,32 @@ jobs:
           dotnet publish MoneyRecord/MoneyRecord.csproj
           -f net10.0-android
           -c Release
-          -o publish
+          -o publish/direct
+          -p:AndroidPackageFormats=apk
+          ${{ steps.version.outputs.props }}
+
+      - name: Build Android AAB for Google Play (Release)
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: >
+          dotnet publish MoneyRecord/MoneyRecord.csproj
+          -f net10.0-android
+          -c Release
+          -o publish/play
+          -p:Distribution=Play
+          -p:AndroidPackageFormats=aab
           ${{ steps.version.outputs.props }}
 
       # R8 writes the deobfuscation file next to the packages: without it the Play upload would only fail at the very end
       - name: Check mapping.txt
         shell: pwsh
         run: |
-          if (-not (Test-Path publish/mapping.txt)) {
-            throw "publish/mapping.txt is missing, R8 did not write it"
+          foreach ($folder in 'direct', 'play') {
+            if (-not (Test-Path "publish/$folder/mapping.txt")) {
+              throw "publish/$folder/mapping.txt is missing, R8 did not write it"
+            }
           }
 
       - name: Remove signing keystore
@@ -164,9 +183,10 @@ jobs:
         with:
           name: MoneyRecord-Android
           path: |
-            publish/*-Signed.apk
-            publish/*-Signed.aab
-            publish/mapping.txt
+            publish/direct/*-Signed.apk
+            publish/direct/mapping.txt
+            publish/play/*-Signed.aab
+            publish/play/mapping.txt
           if-no-files-found: error
 
   release:
@@ -190,8 +210,8 @@ jobs:
           tag_name: v${{ needs.build-android.outputs.version }}
           target_commitish: ${{ github.sha }}
           files: |
-            release/*.apk
-            release/*.aab
+            release/direct/*.apk
+            release/play/*.aab
           generate_release_notes: true
 
   # A release-branch build also sends the .aab to Google Play's closed testing track (alpha; set the
@@ -244,9 +264,9 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: com.sebastianortiz.moneyrecord
-          releaseFiles: release/*.aab
-          # R8's deobfuscation file, so Play can read crash stack traces and stops warning about it
-          mappingFile: release/mapping.txt
+          releaseFiles: release/play/*.aab
+          # R8's deobfuscation file of that bundle, so Play can read crash stack traces and stops warning about it
+          mappingFile: release/play/mapping.txt
           releaseName: v${{ needs.build-android.outputs.version }}
           track: ${{ vars.PLAY_TRACK || 'alpha' }}
           status: ${{ vars.PLAY_RELEASE_STATUS || 'completed' }}

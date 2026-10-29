@@ -24,6 +24,8 @@ package reference is listed and that this file matches the app's list (`ThirdPar
 | Sentry SDKs (.NET, Android, Native) | MIT | Sentry and individual contributors | https://github.com/getsentry/sentry-dotnet | [Sentry.txt](MoneyRecord/Resources/Raw/Licenses/Sentry.txt) |
 | SQLite | Public domain |  | https://sqlite.org/copyright.html |  |
 | Google ML Kit Text Recognition (with Google Play services client libraries) | ML Kit and Google APIs terms (proprietary) | Google LLC | https://developers.google.com/ml-kit/terms |  |
+| Plugin.InAppBilling (Google Play build only) | MIT | James Montemagno / Refractored LLC | https://github.com/jamesmontemagno/InAppBillingPlugin | [InAppBilling.txt](MoneyRecord/Resources/Raw/Licenses/InAppBilling.txt) |
+| Google Play Billing Library (Google Play build only) | Android SDK License terms (proprietary) | Google LLC | https://developer.android.com/studio/terms |  |
 | LiveCharts2 | MIT | Alberto Rodriguez Orozco | https://github.com/beto-rodriguez/LiveCharts2 | [LiveCharts2.txt](MoneyRecord/Resources/Raw/Licenses/LiveCharts2.txt) |
 | SkiaSharp / HarfBuzzSharp (with Skia, HarfBuzz, FreeType, ICU, …) | MIT + bundled notices | Xamarin, Inc.; Microsoft Corporation; see the notices | https://github.com/mono/SkiaSharp | [SkiaSharp.txt](MoneyRecord/Resources/Raw/Licenses/SkiaSharp.txt) |
 | Material Design Icons | Apache-2.0 (font and icons) | Pictogrammers | https://pictogrammers.com/library/mdi/ | [MaterialDesignIcons.txt](MoneyRecord/Resources/Raw/Licenses/MaterialDesignIcons.txt) |
