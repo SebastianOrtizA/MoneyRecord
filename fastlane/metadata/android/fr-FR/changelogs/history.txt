@@ -1,3 +1,6 @@
+## 0.20.0
+- Nouvel écran Soutenir MoneyRecord (onglet Plus) dans la version Google Play : laisse un petit pourboire facultatif via Google Play pour soutenir le projet. Rien n'est verrouillé, que tu donnes ou non.
+
 ## 0.19.2
 - Défis d'épargne : un défi linéaire peut désormais commencer par un premier jour et grandir d'une augmentation par jour. Saisis l'augmentation et l'appli calcule le nombre de jours qu'il te faut. Le mode « Doublement » n'est plus proposé pour les nouveaux défis ; ceux que tu as déjà continuent de fonctionner.
 - La page du défi a de nouveaux filtres : Depuis le début, Ce mois-ci (à parcourir mois par mois, comme un calendrier), 30 prochains jours et Plage de dates, ainsi que Pas faits seulement.

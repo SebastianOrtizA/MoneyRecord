@@ -1,3 +1,6 @@
+## 0.20.0
+- Nueva pantalla Apoya MoneyRecord (pestaña Más) en la versión de Google Play: deja una pequeña propina opcional a través de Google Play para apoyar el proyecto. No se bloquea nada, des o no.
+
 ## 0.19.2
 - Retos de ahorro: un reto lineal ahora puede empezar en un primer día y crecer con un aumento por día. Escribe el aumento y la app calcula cuántos días necesitas. El modo "Duplicando" ya no se ofrece en los retos nuevos; los que ya tienes siguen funcionando.
 - La página del reto tiene filtros nuevos: Desde el inicio, Este mes (se recorre mes a mes, como un calendario), Próximos 30 días y Rango de fechas, además de Solo pendientes.
