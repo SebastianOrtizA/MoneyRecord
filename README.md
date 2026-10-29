@@ -130,6 +130,11 @@ and Windows are maintained too. All data stays on the device.
   Hide balances or the app lock is on.
 - **First-run setup**: language, base currency, starting accounts and categories (it can be run again from Settings).
 
+### Support the project
+- **More → Support MoneyRecord** (also a button in About), Google Play version only: three small optional tips through
+  Google Play Billing (Play requires its billing for payments to the developer); nothing is locked or unlocked. The
+  GitHub / F-Droid version has no Support screen and carries no billing library.
+
 ### Localization
 - English, Spanish, Portuguese (Brazil), French and Italian, picked from the device language or chosen in Settings; the device region is kept for currency
   and number formats (e.g. `es-CO`).
@@ -209,7 +214,10 @@ dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 ## Releases
 
 CI (`.github/workflows/build-android.yml`) builds a Release `.apk` (GitHub Releases / F-Droid) and `.aab` (Play
-Store) on every push. A `v*` tag publishes them as a GitHub Release, and that build fails unless the release keystore
+Store) on every push. They are two builds of the same version: the `.aab` is built with `-p:Distribution=Play`, which
+defines `PLAY_STORE` and adds the Play Billing library for the Support screen's tips (`ITipJar` / `PlayTipJar`); the
+`.apk` has no billing code, `BILLING` permission or Support screen (`NoTipJar`). Each has its own R8
+`mapping.txt`. A `v*` tag publishes them as a GitHub Release, and that build fails unless the release keystore
 is configured, so a published APK is never signed with the debug key.
 
 The tag build also uploads the `.aab` to Google Play's **closed testing** track (`alpha`; set the repository variable `PLAY_TRACK`

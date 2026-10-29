@@ -15,13 +15,19 @@ namespace MoneyRecord.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IErrorHandler _errorHandler;
         private readonly IWhatsNewService _whatsNew;
+        private readonly ITipJar _tipJar;
 
-        public AboutViewModel(INavigationService navigationService, IErrorHandler errorHandler, IWhatsNewService whatsNew)
+        public AboutViewModel(INavigationService navigationService, IErrorHandler errorHandler, IWhatsNewService whatsNew,
+            ITipJar tipJar)
         {
             _navigationService = navigationService;
             _errorHandler = errorHandler;
             _whatsNew = whatsNew;
+            _tipJar = tipJar;
         }
+
+        /// <summary>Tips are sold in the Google Play build only.</summary>
+        public bool ShowSupport => _tipJar.IsAvailable;
 
         public string VersionText => string.Format(AppResources.AppVersion, AppInfo.Current.VersionString);
 
@@ -32,6 +38,9 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task OpenSourceCodeAsync() => OpenUrlAsync(SourceCodeUrl);
+
+        [RelayCommand]
+        private Task OpenSupportAsync() => _navigationService.NavigateToAsync(nameof(SupportPage));
 
         /// <summary>Shows the component's licence text; one without a file (public domain) opens its website.</summary>
         [RelayCommand]

@@ -8207,5 +8207,77 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Support MoneyRecord.
+        /// </summary>
+        public static string SupportTitle {
+            get {
+                return ResourceManager.GetString("SupportTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyRecord is free and open source, with no ads and no tracking. If it is useful to you, you can support its development. Nothing is locked: everything works the same whether you give or not..
+        /// </summary>
+        public static string SupportIntro {
+            get {
+                return ResourceManager.GetString("SupportIntro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support the project.
+        /// </summary>
+        public static string SupportTheProject {
+            get {
+                return ResourceManager.GetString("SupportTheProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Leave a tip.
+        /// </summary>
+        public static string SupportTipsHeading {
+            get {
+                return ResourceManager.GetString("SupportTipsHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thank you for your support!.
+        /// </summary>
+        public static string SupportThanks {
+            get {
+                return ResourceManager.GetString("SupportThanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your tip is waiting for the payment to complete. Thank you!.
+        /// </summary>
+        public static string TipPending {
+            get {
+                return ResourceManager.GetString("TipPending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The tip could not be completed..
+        /// </summary>
+        public static string FailedToTip {
+            get {
+                return ResourceManager.GetString("FailedToTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tips are not available right now. Please try again later..
+        /// </summary>
+        public static string TipsUnavailable {
+            get {
+                return ResourceManager.GetString("TipsUnavailable", resourceCulture);
+            }
+        }
+        
     }
 }

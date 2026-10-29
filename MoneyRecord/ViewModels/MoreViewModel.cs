@@ -14,18 +14,21 @@ namespace MoneyRecord.ViewModels
     public partial class MoreViewModel : ObservableObject
     {
         private readonly INavigationService _navigationService;
+        private readonly ITipJar _tipJar;
 
         [ObservableProperty]
-        private IReadOnlyList<MoreItem> items = BuildItems();
+        private IReadOnlyList<MoreItem> items = [];
 
-        public MoreViewModel(INavigationService navigationService)
+        public MoreViewModel(INavigationService navigationService, ITipJar tipJar)
         {
             _navigationService = navigationService;
+            _tipJar = tipJar;
+            Items = BuildItems();
             // The More page lives as long as the app, so the titles follow a language change in Settings
             LocalizationService.Instance.LanguageChanged += (_, _) => Items = BuildItems();
         }
 
-        private static IReadOnlyList<MoreItem> BuildItems() =>
+        private IReadOnlyList<MoreItem> BuildItems() =>
         [
             new("\U000F0070", AppResources.Accounts, nameof(ManageAccountsPage)),
             new("\U000F0831", AppResources.Categories, nameof(ManageCategoriesPage)),
@@ -37,6 +40,8 @@ namespace MoneyRecord.ViewModels
             new("\U000F001D", AppResources.TripsTitle, nameof(TripsPage)),
             new("\U000F0849", AppResources.PartiesTitle, nameof(PartiesPage)),
             new("\U000F04E1", AppResources.Transfers, nameof(TransfersPage)),
+            // Tips are sold in the Google Play build only
+            .. (_tipJar.IsAvailable ? new MoreItem[] { new("\U000F02D1", AppResources.SupportTitle, nameof(SupportPage)) } : []),
             new("\U000F0493", AppResources.Settings, nameof(SettingsPage)),
         ];
 

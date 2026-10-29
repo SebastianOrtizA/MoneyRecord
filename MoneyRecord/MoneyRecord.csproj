@@ -127,6 +127,20 @@
 		<PackageReference Include="Xamarin.Google.MLKit.TextRecognition" Version="116.0.1.4" />
 	</ItemGroup>
 
+	<!-- Distribution: "Direct" (default: the GitHub Releases APK, F-Droid) has no Support screen; "Play"
+	     (-p:Distribution=Play, the .aab CI sends to Google Play) sells tips through Play Billing, which Play requires
+	     for payments to the developer and F-Droid refuses (proprietary). PLAY_STORE switches the code, and only this build
+	     carries the billing library and its BILLING permission. -->
+	<PropertyGroup>
+		<Distribution Condition="'$(Distribution)' == ''">Direct</Distribution>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Distribution)' == 'Play' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<DefineConstants>$(DefineConstants);PLAY_STORE</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(Distribution)' == 'Play' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="Plugin.InAppBilling" Version="10.0.0" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\MoneyRecord.Core\MoneyRecord.Core.csproj" />
 	</ItemGroup>

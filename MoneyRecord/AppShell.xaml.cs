@@ -39,6 +39,7 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(HomeLayoutPage), typeof(HomeLayoutPage));
             Routing.RegisterRoute(nameof(SetupPage), typeof(SetupPage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
+            Routing.RegisterRoute(nameof(SupportPage), typeof(SupportPage));
             Routing.RegisterRoute(nameof(LicensePage), typeof(LicensePage));
             Routing.RegisterRoute(nameof(ImportStatementPage), typeof(ImportStatementPage));
 

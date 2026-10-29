@@ -1,6 +1,6 @@
 # MoneyRecord privacy policy
 
-*Effective 16 October 2026. [Español abajo](#política-de-privacidad-de-moneyrecord).*
+*Effective 28 October 2026. [Español abajo](#política-de-privacidad-de-moneyrecord).*
 
 MoneyRecord is a personal finance app that keeps your data on your device. It has no accounts, ads, analytics or
 tracking of its own (see **Receipt reading** for the diagnostics Google's text recognition sends).
@@ -47,12 +47,19 @@ When you turn on **Settings → Exchange rates**, the app downloads daily exchan
 currency codes and dates (for example USD, COP and a date range), never your amounts, descriptions or accounts. Like
 any web request, it reveals your IP address to that server. The rates are stored on the device.
 
+## Supporting the project (optional)
+**More → Support MoneyRecord** changes nothing in the app: nothing is locked or unlocked, whether you give or not.
+In the Google Play version you can leave a tip through Google Play. Google processes the payment under its own terms
+and tells the developer about the sale; the app itself receives and stores no payment details, name or purchase
+history. The GitHub / F-Droid version has no Support screen.
+
 ## Logs
 The app writes technical logs (errors, app version, Android version) to its private storage, keeps them for 7 days at
 most, and doesn't log your amounts or descriptions. They leave the device only when you use **Settings → Share logs**.
 
 ## Permissions
 - **Camera:** only when you take a photo of a receipt.
+- **Google Play purchases (Google Play version only):** to leave a tip.
 - **Storage (Android 12 and older):** needed by the camera capture on those versions.
 - **Internet:** used for crash reports and exchange rates, when you have turned them on, and by ML Kit's
   diagnostics when you scan a receipt.
@@ -72,7 +79,7 @@ https://github.com/SebastianOrtizA/MoneyRecord/issues.
 
 # Política de privacidad de MoneyRecord
 
-*Vigente desde el 16 de octubre de 2026.*
+*Vigente desde el 28 de octubre de 2026.*
 
 MoneyRecord es una app de finanzas personales que guarda tus datos en tu dispositivo. No tiene cuentas, publicidad,
 analítica ni rastreo propios (consulta **Lectura de recibos** para los diagnósticos que envía el reconocimiento de texto de Google).
@@ -124,6 +131,12 @@ Cuando activas **Configuración → Tipos de cambio**, la app descarga tipos de 
 solo códigos de moneda y fechas (por ejemplo USD, COP y un rango de fechas), nunca tus importes, descripciones ni
 cuentas. Como cualquier solicitud web, revela tu dirección IP a ese servidor. Las tasas se guardan en el dispositivo.
 
+## Apoyar el proyecto (opcional)
+**Más → Apoya MoneyRecord** no cambia nada en la app: no se bloquea ni se desbloquea nada, des o no.
+En la versión de Google Play puedes dejar una propina a través de Google Play. Google procesa el pago según sus propias
+condiciones e informa al desarrollador de la venta; la app no recibe ni guarda datos de pago, nombre ni historial de
+compras. La versión de GitHub / F-Droid no tiene pantalla de apoyo.
+
 ## Registros
 La app escribe registros técnicos (errores, versión de la app, versión de Android) en su almacenamiento privado, los
 guarda 7 días como máximo y no registra tus importes ni descripciones. Solo salen del dispositivo cuando usas
@@ -131,6 +144,7 @@ guarda 7 días como máximo y no registra tus importes ni descripciones. Solo sa
 
 ## Permisos
 - **Cámara:** solo cuando tomas la foto de un recibo.
+- **Compras de Google Play (solo la versión de Google Play):** para dejar una propina.
 - **Almacenamiento (Android 12 y anteriores):** lo necesita la captura con la cámara en esas versiones.
 - **Internet:** se usa para los informes de errores y los tipos de cambio, cuando los has activado, y para los
   diagnósticos de ML Kit cuando escaneas un recibo.

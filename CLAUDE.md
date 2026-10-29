@@ -21,6 +21,10 @@ dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android
 # Release builds use R8 (obfuscation, mapping.txt next to the APK/AAB; CI hands it to Play). Keep rules: MoneyRecord/Platforms/Android/proguard.cfg
 # (a Java class used by name that R8 renames or removes only fails at runtime: smoke-test a Release APK after adding Android libraries)
 
+# Two Android distributions: default "Direct" (GitHub APK / F-Droid: no Support screen, `NoTipJar`) and
+# -p:Distribution=Play (the AAB: defines PLAY_STORE, adds Plugin.InAppBilling, `PlayTipJar` sells tips; Play requires its billing
+# for payments to the developer). Test billing changes with a Play-installed build and a license-tester account, never the Direct one
+
 # Run tests (xUnit + NSubstitute + AwesomeAssertions; plain net10.0, run from PowerShell)
 dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 ```
@@ -117,7 +121,7 @@ crashes at runtime (XAML is inflated at runtime there).
   `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
   Spending / Income show, plus the shared month count of the time-series reports and the reports' currency, `ReportCurrency`), SetupViewModel (setup assistant:
   language + base currency → starting accounts → default categories), ReportExportViewModel (the Reports tabs' Export button: PDF or period CSV), AutoBackupViewModel (Settings → Automatic backups), BackupPasswordViewModel (backup
-  password switch; restore asks for a protected backup's password)
+  password switch; restore asks for a protected backup's password), SupportViewModel (More → Support MoneyRecord + About button: the Play build only (`ITipJar.IsAvailable`; More and About hide it otherwise): lists the store's tips (`TipOption`, consumed at once, `TipOutcome`; `ConsumePendingAsync` at start settles a late payment); a tip unlocks nothing)
 
 `MoneyRecord/` (app)
 - `ViewModels/` — 19 ViewModels using [ObservableProperty] and [RelayCommand] source generators

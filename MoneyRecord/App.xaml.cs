@@ -18,12 +18,13 @@ namespace MoneyRecord
         private readonly Func<LockPage> _createLockPage;
         private readonly IHomeScreenWidgets _widgets;
         private readonly IWhatsNewService _whatsNew;
+        private readonly ITipJar _tipJar;
         private readonly ILogger<App> _logger;
 
         public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
             IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
-            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ILogger<App> logger)
+            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
@@ -39,6 +40,7 @@ namespace MoneyRecord
             _createLockPage = createLockPage;
             _widgets = widgets;
             _whatsNew = whatsNew;
+            _tipJar = tipJar;
             _logger = logger;
         }
 
@@ -62,6 +64,8 @@ namespace MoneyRecord
                 _ = ProcessRecurringThenBackUpAsync();
                 // Opt-in, once a day, best-effort: nothing waits for it
                 _ = _exchangeRates.UpdateIfDueAsync();
+                // A tip whose payment settled after the app closed (Play build; nothing elsewhere): best-effort, logs its own failures
+                _ = _tipJar.ConsumePendingAsync();
 #if ANDROID
                 // While the app is closed, the daily job creates them (and sends the reminders)
                 Platforms.Android.DailyReminderWorker.Schedule(Android.App.Application.Context);
