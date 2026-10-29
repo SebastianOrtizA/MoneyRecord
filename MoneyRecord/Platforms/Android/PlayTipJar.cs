@@ -57,7 +57,16 @@ namespace MoneyRecord.Platforms.Android
                             if (purchase.State != PurchaseState.Purchased)
                                 return TipOutcome.Failed;
 
-                            await billing.ConsumePurchaseAsync(purchase.ProductId, purchase.PurchaseToken);
+                            // Already paid: a consume that fails must not report a failed tip (the user may pay again).
+                            // ConsumePendingAsync retries at the next start, inside the 3 days before Play refunds it
+                            try
+                            {
+                                await billing.ConsumePurchaseAsync(purchase.ProductId, purchase.PurchaseToken);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.LogWarning(ex, "Tip {ProductId} paid but not consumed yet", purchase.ProductId);
+                            }
                             return TipOutcome.Thanked;
                         }
                         catch (InAppBillingPurchaseException ex) when (ex.PurchaseError == PurchaseError.AlreadyOwned && attempt == 0)
