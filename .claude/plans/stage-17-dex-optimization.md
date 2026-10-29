@@ -51,3 +51,16 @@ Clear the Play Console warning and make a measured decision on R8 for the Androi
   of 15,317 in `mapping.txt`); 15 % with a blanket `-keep class androidx.**`, hence `-keepclassmembers`).
 - Smoke test (Release APK, x86_64 emulator): start, add expense, reports chart, Settings/More, WorkManager job runs, receipt
   OCR (ML Kit) fills amount and date. Not run: widget, biometric lock, backup folder picker, notifications.
+
+## Follow-up (2026-10-28): Play still below 25 %
+- v0.19.2 on Play: Optimization 0 %, Obfuscation 18 %, Shrinking 18 % (R8 full mode on). The blanket `-keepclassmembers` over
+  `androidx.**`, `com.google.**`, `kotlin.**` and `kotlinx.**` keeps every member of those libraries: no renaming, shrinking or
+  inlining of them.
+- Narrowed to the packages the bindings read by name over JNI (androidx core/appcompat/lifecycle/work/security/..., Material,
+  ML Kit, Kotlin). Not kept any more: Sentry, Glide, GMS, Firebase, Gson, crypto and the other `com.google.**` libraries.
+- Each missing rule is a runtime crash, found by running the code: `Insets.left` (androidx.core, on start) and
+  `MasterKey$KeyScheme.AES256_GCM` (androidx.security, Settings: SecureStorage).
+- Numbers (local Release): mapping.txt 32.7 MB → 30.9 MB, APK 71.4 → 71.8 MB, about 99 % of the mapped members renamed.
+- Smoke test (Release APK): start, add expense, reports chart, Settings, daily worker + bill notification, receipt OCR, widget,
+  biometric lock, backup folder picker, backup password (set, protected restore, wrong password), database encryption.
+- Open: whether Play's numbers reach 25 % is only known after uploading a build; optimization may stay near 0 %.
