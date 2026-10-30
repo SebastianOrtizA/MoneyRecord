@@ -44,7 +44,6 @@ namespace MoneyRecord.Services
 
         public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths, IBackupHistory backupHistory)
         {
-            _backupHistory = backupHistory;
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -52,6 +51,7 @@ namespace MoneyRecord.Services
             _transferRepository = transferRepository;
             _payeeRepository = payeeRepository;
             _paths = paths;
+            _backupHistory = backupHistory;
         }
 
         public string BackupsFolder => _paths.BackupsFolder;
@@ -62,11 +62,18 @@ namespace MoneyRecord.Services
 
         public async Task<string> ExportBackupAsync(string destinationPath, string? password = null)
         {
+            var fingerprint = await WriteBackupAsync(destinationPath, password);
+            // Only a backup the user asked for (or the schedule): not the safety snapshot before a restore
+            _backupHistory.MarkWritten();
+            return fingerprint;
+        }
+
+        private async Task<string> WriteBackupAsync(string destinationPath, string? password)
+        {
             var backup = await ReadDataAsync();
             // Before WriteZip, which rewrites the receipt paths
             var fingerprint = Fingerprint(backup);
             await Task.Run(() => WriteZip(backup, destinationPath, password));
-            _backupHistory.MarkWritten();
             return fingerprint;
         }
 
@@ -192,7 +199,7 @@ namespace MoneyRecord.Services
 
                 // The safety net: no snapshot, no restore
                 var snapshotPath = Path.Combine(BackupsFolder, $"{SnapshotPrefix}{DateTime.Now:yyyyMMdd_HHmmss_fff}.zip");
-                await ExportBackupAsync(snapshotPath);
+                await WriteBackupAsync(snapshotPath, null);
 
                 var count = 0;
                 await _dbInitializer.RunInTransactionAsync(conn => count = ReplaceAll(conn, backup));

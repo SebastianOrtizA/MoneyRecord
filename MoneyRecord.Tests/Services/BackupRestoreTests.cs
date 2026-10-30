@@ -52,6 +52,21 @@ public sealed class BackupRestoreTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task The_safety_snapshot_before_a_restore_is_not_remembered_as_a_backup()
+    {
+        var backupPath = BackupPath("source.zip");
+        await _service.ExportBackupAsync(backupPath);
+        var history = new BackupHistory(new FakePreferences(), TimeProvider.System);
+        var service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer),
+            new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData), history);
+
+        var result = await service.RestoreAsync(backupPath);
+
+        File.Exists(result.SnapshotPath).Should().BeTrue();
+        history.LastWritten.Should().BeNull();
+    }
+
+    [Fact]
     public async Task Backup_IsAZipWithDataAndReceipts_PathsRelative()
     {
         var receipt = WriteReceipt("receipt_1.jpg", "photo-1");

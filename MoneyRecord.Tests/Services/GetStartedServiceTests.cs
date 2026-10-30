@@ -98,4 +98,20 @@ public class GetStartedServiceTests
 
         (await _sut.GetOpenAsync()).Should().BeNull();
     }
+
+    [Fact]
+    public async Task A_finished_checklist_stays_closed_when_something_is_turned_off_again()
+    {
+        _transactions.AnyAsync().Returns(false);
+        await _sut.GetOpenAsync();
+        _transactions.AnyAsync().Returns(true);
+        _backups.LastWritten.Returns(new DateTime(2026, 10, 1));
+        _privacy.LockEnabled.Returns(true);
+        _reminders.Enabled.Returns(true);
+        await _sut.GetOpenAsync();
+
+        _reminders.Enabled.Returns(false);
+
+        (await _sut.GetOpenAsync()).Should().BeNull();
+    }
 }

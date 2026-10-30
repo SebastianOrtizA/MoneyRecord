@@ -26,7 +26,12 @@ namespace MoneyRecord.Services
 
             var checklist = GetStartedChecklist.Build(new GetStartedState(hasTransactions, backups.LastWritten != null,
                 deviceLock.IsSupported && deviceLock.IsAvailable, privacy.LockEnabled, reminders.Enabled));
-            return checklist.IsComplete ? null : checklist;
+            if (!checklist.IsComplete)
+                return checklist;
+
+            // Done is done: turning something off again later doesn't bring the card back
+            Dismiss();
+            return null;
         }
 
         public void Dismiss() => preferences.Set(DismissedKey, 1);

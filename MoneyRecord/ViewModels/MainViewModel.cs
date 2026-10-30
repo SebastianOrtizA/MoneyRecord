@@ -110,6 +110,11 @@ namespace MoneyRecord.ViewModels
         [NotifyPropertyChangedFor(nameof(ShowRecentEmpty))]
         private bool hasRecentTransactions;
 
+        /// <summary>Home has loaded once; before that "nothing yet" would only be a flash.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowRecentEmpty))]
+        private bool hasLoaded;
+
         [ObservableProperty]
         private ObservableCollection<LedgerEntry> recentTransactions = [];
 
@@ -164,7 +169,7 @@ namespace MoneyRecord.ViewModels
         public bool ShowPeriodSummary => Layout.IsShown(HomeCard.PeriodSummary);
         // An empty period still shows the card, with a hint to add the first entry
         public bool ShowRecent => Layout.IsShown(HomeCard.Recent);
-        public bool ShowRecentEmpty => !HasRecentTransactions;
+        public bool ShowRecentEmpty => HasLoaded && !HasRecentTransactions;
         public bool ShowStartChecklist => Layout.IsShown(HomeCard.GetStarted) && StartChecklist != null;
         public bool ShowUpcoming => Layout.IsShown(HomeCard.Upcoming) && HasUpcoming;
         public bool ShowBudgets => Layout.IsShown(HomeCard.Budgets) && HasBudgets;
@@ -325,6 +330,7 @@ namespace MoneyRecord.ViewModels
                 // Whole transfers: the Recent card lists a transfer once
                 RecentTransactions = new((await entriesTask).OrderByDescending(e => e.Date).Take(5));
                 HasRecentTransactions = RecentTransactions.Count > 0;
+                HasLoaded = true;
 
                 // Entries waiting for their amount come first
                 UpcomingEntries = (await upcomingTask).OrderByDescending(e => e.CanEnter).Take(3).ToList();
