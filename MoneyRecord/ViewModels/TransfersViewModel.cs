@@ -100,34 +100,12 @@ namespace MoneyRecord.ViewModels
                 await LoadTransfersAsync();
 
                 if (deleted != null)
-                    await _dialogService.ToastWithUndoAsync(AppResources.TransferDeletedUndo, () => UndoDeleteAsync(deleted), () =>
-                    {
-                        _ledgerService.Discard(deleted);
-                        return Task.CompletedTask;
-                    });
+                    await DeleteUndo.OfferAsync(_dialogService, _ledgerService, _errorHandler, deleted, AppResources.TransferDeletedUndo,
+                        LoadTransfersAsync);
             }
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteTransfer);
-            }
-        }
-
-        private async Task UndoDeleteAsync(DeletedEntry deleted)
-        {
-            try
-            {
-                if (await _ledgerService.RestoreAsync(deleted))
-                {
-                    await LoadTransfersAsync();
-                    return;
-                }
-
-                _ledgerService.Discard(deleted);
-                await _dialogService.ToastAsync(AppResources.UndoNotPossible);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.UndoNotPossible);
             }
         }
     }

@@ -59,7 +59,7 @@ namespace MoneyRecord.Services
         public Task ToastAsync(string message) =>
             MainThread.InvokeOnMainThreadAsync(() => Toast.Make(message).Show());
 
-        public async Task ToastWithUndoAsync(string message, Func<Task> undo, Func<Task>? expired = null)
+        public async Task ToastWithUndoAsync(string message, Func<Task> undo, Func<Task> expired)
         {
             var pending = new PendingUndo(expired);
             await MainThread.InvokeOnMainThreadAsync(async () =>
@@ -84,7 +84,7 @@ namespace MoneyRecord.Services
         }
 
         private Task ExpireAsync(PendingUndo? pending) =>
-            pending is { } p && p.TrySettle() && p.Expired != null ? RunAsync(p.Expired) : Task.CompletedTask;
+            pending is { } p && p.TrySettle() ? RunAsync(p.Expired) : Task.CompletedTask;
 
         // The callbacks belong to the caller, which reports its own failures; this only keeps one from escaping a UI callback
         private async Task RunAsync(Func<Task> callback)
@@ -98,15 +98,15 @@ namespace MoneyRecord.Services
                 logger.LogError(ex, "A snackbar callback failed");
             }
         }
+
         /// <summary>An undo offer that ends exactly once: by Undo or by expiring.</summary>
-        private sealed class PendingUndo(Func<Task>? expired)
+        private sealed class PendingUndo(Func<Task> expired)
         {
             private int _settled;
 
-            public Func<Task>? Expired { get; } = expired;
+            public Func<Task> Expired { get; } = expired;
 
             public bool TrySettle() => Interlocked.Exchange(ref _settled, 1) == 0;
         }
-
     }
 }

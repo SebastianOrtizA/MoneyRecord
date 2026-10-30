@@ -31,6 +31,6 @@ namespace MoneyRecord.Services.Interfaces
         /// Shows a message with an Undo button for a few seconds. <paramref name="undo"/> runs when Undo is tapped;
         /// <paramref name="expired"/> when the message goes away without it (timeout, or another message replacing it).
         /// </summary>
-        Task ToastWithUndoAsync(string message, Func<Task> undo, Func<Task>? expired = null);
+        Task ToastWithUndoAsync(string message, Func<Task> undo, Func<Task> expired);
     }
 }

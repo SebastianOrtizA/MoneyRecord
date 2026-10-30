@@ -338,11 +338,8 @@ namespace MoneyRecord.ViewModels
                 await LoadDataCommand.ExecuteAsync(null);
 
                 if (deleted != null)
-                    await _dialogService.ToastWithUndoAsync(DeletedMessage(entry, deleted), () => UndoDeleteAsync(deleted), () =>
-                    {
-                        _ledgerService.Discard(deleted);
-                        return Task.CompletedTask;
-                    });
+                    await DeleteUndo.OfferAsync(_dialogService, _ledgerService, _errorHandler, deleted, DeletedMessage(entry, deleted),
+                        () => LoadDataCommand.ExecuteAsync(null));
                 return true;
             }
             catch (Exception ex)
@@ -360,24 +357,5 @@ namespace MoneyRecord.ViewModels
             : deleted.Transactions.Count > 1 ? string.Format(AppResources.SplitDeletedUndo, deleted.Transactions.Count)
             : entry.Kind == LedgerEntryKind.Income ? AppResources.IncomeDeletedUndo
             : AppResources.ExpenseDeletedUndo;
-
-        private async Task UndoDeleteAsync(DeletedEntry deleted)
-        {
-            try
-            {
-                if (await _ledgerService.RestoreAsync(deleted))
-                {
-                    await LoadDataCommand.ExecuteAsync(null);
-                    return;
-                }
-
-                _ledgerService.Discard(deleted);
-                await _dialogService.ToastAsync(AppResources.UndoNotPossible);
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleAsync(ex, AppResources.UndoNotPossible);
-            }
-        }
     }
 }
