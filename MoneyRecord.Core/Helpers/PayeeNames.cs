@@ -6,7 +6,7 @@ namespace MoneyRecord.Helpers
     /// <summary>Payee names: how a typed name is cleaned up, when two names are the same payee, and the form's suggestions.</summary>
     public static class PayeeNames
     {
-        private const CompareOptions Loose = CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace;
+        private const CompareOptions Loose = ListSearch.Loose;
 
         /// <summary>Trimmed, inner runs of spaces collapsed to one; empty when nothing was typed.</summary>
         public static string Normalize(string? name) =>

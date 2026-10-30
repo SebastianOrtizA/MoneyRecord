@@ -151,9 +151,8 @@ namespace MoneyRecord.ViewModels
         // A list too short for the search box ignores whatever was typed before it shrank
         private void ApplySearch()
         {
-            Groups = ShowSearch && !string.IsNullOrWhiteSpace(SearchText)
-                ? AccountGroup.Filter(_allGroups, SearchText)
-                : _allGroups;
+            var query = ListSearch.EffectiveQuery(_allGroups.Sum(g => g.Count), SearchText);
+            Groups = string.IsNullOrWhiteSpace(query) ? _allGroups : AccountGroup.Filter(_allGroups, query);
             OnPropertyChanged(nameof(ShowSearch));
             OnPropertyChanged(nameof(EmptyText));
         }

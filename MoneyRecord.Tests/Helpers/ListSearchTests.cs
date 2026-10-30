@@ -28,6 +28,16 @@ public class ListSearchTests
     }
 
     [Theory]
+    [InlineData(5, "ab", "")]
+    [InlineData(8, "ab", "")]
+    [InlineData(9, "ab", "ab")]
+    [InlineData(9, null, "")]
+    public void A_list_too_short_for_the_search_box_ignores_what_was_typed(int count, string? typed, string expected)
+    {
+        ListSearch.EffectiveQuery(count, typed).Should().Be(expected);
+    }
+
+    [Theory]
     [InlineData(0, false)]
     [InlineData(8, false)]
     [InlineData(9, true)]

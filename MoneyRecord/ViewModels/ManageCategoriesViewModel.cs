@@ -110,7 +110,7 @@ namespace MoneyRecord.ViewModels
         // A list too short for the search box ignores whatever was typed before it shrank
         private void ApplySearch()
         {
-            var query = ShowSearch ? SearchText : string.Empty;
+            var query = ListSearch.EffectiveQuery(_all.Count, SearchText);
             Categories = new(_all.Where(c => ListSearch.Matches(c.Name, query)));
             OnPropertyChanged(nameof(ShowSearch));
             OnPropertyChanged(nameof(EmptyText));
