@@ -173,6 +173,27 @@ jobs:
             }
           }
 
+      # Native crash reports (SIGSEGV) arrive as raw addresses; Sentry matches them to the libraries' debug IDs, so the
+      # published packages (zips: their lib/*/*.so are scanned) go up with every published build. A failed upload never
+      # blocks the release.
+      - name: Upload native debug symbols to Sentry
+        if: steps.version.outputs.publish == 'true'
+        continue-on-error: true
+        shell: pwsh
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: moneyrecord
+          SENTRY_PROJECT: dotnet-maui
+        run: |
+          if (-not $env:SENTRY_AUTH_TOKEN) {
+            Write-Host "::warning::SENTRY_AUTH_TOKEN is not set: native crashes of this release will not be symbolicated."
+            exit 0
+          }
+          npm install --global @sentry/cli@2.46.0
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          sentry-cli debug-files upload --wait publish/direct publish/play
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
       - name: Remove signing keystore
         if: always()
         shell: pwsh
