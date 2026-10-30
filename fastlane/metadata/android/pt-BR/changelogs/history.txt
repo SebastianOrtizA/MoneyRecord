@@ -1,3 +1,6 @@
+## 0.20.1
+- Metas: a tela de adicionar ou editar uma meta agora rola, então o botão Salvar continua ao alcance quando você tem muitas contas.
+
 ## 0.20.0
 - Nova tela Apoie o MoneyRecord (aba Mais) na versão do Google Play: deixe uma pequena gorjeta opcional pelo Google Play para apoiar o projeto. Nada fica bloqueado, você contribuindo ou não.
 

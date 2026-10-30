@@ -1,1 +1,1 @@
-Tu peux maintenant soutenir MoneyRecord avec un petit pourboire facultatif : Plus → Soutenir MoneyRecord (version Google Play). Rien n'est verrouillé, que tu donnes ou non.
+Objectifs : la feuille d'ajout ou de modification d'un objectif défile maintenant, donc Enregistrer reste accessible quand tu as beaucoup de comptes.

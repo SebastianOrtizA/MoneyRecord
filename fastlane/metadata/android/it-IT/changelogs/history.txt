@@ -1,3 +1,6 @@
+## 0.20.1
+- Obiettivi: il foglio per aggiungere o modificare un obiettivo ora scorre, così Salva resta raggiungibile quando hai molti conti.
+
 ## 0.20.0
 - Nuova schermata Sostieni MoneyRecord (scheda Altro) nella versione Google Play: lascia una piccola mancia facoltativa tramite Google Play per sostenere il progetto. Niente è bloccato, che tu doni o no.
 
