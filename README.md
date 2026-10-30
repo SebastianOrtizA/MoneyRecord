@@ -6,6 +6,19 @@ A .NET 10 MAUI app for tracking incomes, expenses and transfers across multiple 
 budgets, recurring transactions, reports and full backups. Android is the primary target; iOS, macOS (Mac Catalyst)
 and Windows are maintained too. All data stays on the device.
 
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1_home.png" width="190" alt="Home">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2_add_expense.png" width="190" alt="Add an expense">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3_transactions.png" width="190" alt="Transactions">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4_spending.png" width="190" alt="Spending report">
+</p>
+<p align="center">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5_budgets.png" width="190" alt="Budgets">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6_cash_flow.png" width="190" alt="Cash flow">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/7_trip.png" width="190" alt="Trip">
+  <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8_goals.png" width="190" alt="Savings goals">
+</p>
+
 ## Features
 
 ### Home
@@ -18,6 +31,8 @@ and Windows are maintained too. All data stays on the device.
 - Cards for **recent transactions**, **upcoming** recurring ones, **budgets** and **savings goals**, each with "See all".
 - **Hide balances**: the eye on the balance card replaces the amounts with "••••••" (remembered).
 - The **+** button opens a sheet: Expense, Income or Transfer.
+- **Customize Home** (Settings → Home screen, or the link on Home): reorder the cards and hide the ones you don't use.
+  An optional **Debts** card (off by default) lists the open debts.
 
 ### Transactions
 - **Transactions tab**: the full list grouped by category (default), by account, or flat; newest or oldest first;
@@ -72,6 +87,28 @@ and Windows are maintained too. All data stays on the device.
 - Each goal shows what to save per month to reach it by its date, and when the last 3 months' pace would reach it
   (On track / Behind / Reached). Home lists the first three.
 
+### Pockets
+- Set money aside **inside an account** (More → Accounts, under the account's card) for a purpose, without moving it.
+  A pocket is an earmark: the account balance doesn't change, and "available" is the balance minus its pockets.
+- When an expense or transfer would leave an account with less than its pockets hold, the form asks which pocket to
+  take it from (or to keep it as is).
+- A savings goal can count a pocket instead of a whole account.
+
+### Savings challenges
+- A savings game (More → Savings challenge): a daily amount that grows linearly or stays the same every day,
+  with optional rounding, shown as a calendar grid where a tap marks a day done.
+- Optionally each day moves the money for you, from the account or pocket you pick into a destination account or pocket.
+
+### Trips
+- One active trip at a time (More → Trips) with its own categories and per-category limits; its expenses sit in the
+  Travel category while it's active and are shown converted into the trip's currency.
+- Ending the trip maps each trip category to a real one; reopening it puts the expenses back.
+
+### Parties
+- Split trips and shared expenses with friends (More → Parties): expenses are shared evenly minus exclusions, with
+  contributions to a common pot.
+- See who owes whom, get the settle-up payments, share the summary and record your own share as an expense.
+
 ### Debts and loans
 - Money lent to or borrowed from a person (More → Debts): what is owed in each direction, paid back so far, and an
   optional due date (reminded before it, with the bill reminders). A debt that was owed before you started counts too.
@@ -84,6 +121,8 @@ and Windows are maintained too. All data stays on the device.
 ### Recurring transactions
 - Daily, weekly, biweekly, monthly (optionally on a specific day) or yearly rules, with an optional end date.
 - Due transactions are created when the app starts and, on Android, by a daily background job.
+- **Variable amounts**: a schedule whose amount changes each time (a utility bill) is never created for you; each due
+  date waits on Upcoming for you to enter the real amount, or skip it.
 - **Upcoming**: the next 30 days of scheduled transactions, on Home and on the Recurring page.
 - **Reminders** (Android, opt-in): a notification before a bill is due (on the day or 1–7 days before), when a
   budget reaches 80% of its limit or goes over it, and when the daily job adds recurring transactions. Set them in
@@ -129,6 +168,7 @@ and Windows are maintained too. All data stays on the device.
 - **Home-screen widget** (Android): a picked account's balance with Expense / Income / Transfer buttons; hidden while
   Hide balances or the app lock is on.
 - **First-run setup**: language, base currency, starting accounts and categories (it can be run again from Settings).
+- **What's new**: after an update, a pop-up lists the changes of every version since the last one shown (again from About).
 
 ### Support the project
 - **More → Support MoneyRecord** (also a button in About), Google Play version only: three small optional tips through
@@ -190,10 +230,6 @@ https://sebastianortiza.github.io/MoneyRecord/privacy.
   SecureStorage (its key) are left out
   (`Platforms/Android/Resources/xml`). Google's cloud backup holds at most 25 MB per app; past that it stops backing
   up the app, so use **Settings → Backup** for a complete copy.
-
-### Known limitation
-Totals that span accounts in different currencies (Home income/expense/net, reports, budgets, charts) are still added
-together and shown in the base currency. Proper conversion needs exchange rates (planned).
 
 ## Build, run & test
 
@@ -257,7 +293,10 @@ To sign a local Release build, put the file at `MoneyRecord/moneyrecord.keystore
 ## Technology stack
 - **.NET 10 / .NET MAUI** (Android, iOS, Mac Catalyst, Windows)
 - **CommunityToolkit.Mvvm** (MVVM source generators) and **CommunityToolkit.Maui** (toasts, behaviours)
-- **sqlite-net-pcl** + **SQLitePCLRaw** (local database)
+- **sqlite-net-pcl** + **SQLite3 Multiple Ciphers** (local, optionally encrypted database)
+- **LiveCharts** (charts), **PDFsharp-MigraDoc** (PDF reports), **CsvHelper**, **SharpZipLib** (AES-256 backups)
+- **ML Kit** text recognition (Android receipt scan), **Sentry** (opt-in crash reports), **Serilog** (logs)
+- **Plugin.InAppBilling**, Google Play build only (Support tips)
 - **Material Design Icons** font
 - Tests: **xUnit**, **NSubstitute**, **AwesomeAssertions**
 
@@ -275,43 +314,29 @@ Models (SQLite entities, money in cents)
 
 ```
 MoneyRecord.Core/       Plain net10.0 library, no MAUI (same namespaces as the app)
-├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper,
-│                       DateRangeHelper, PeriodHelper, IconHelper, ReceiptFiles, ReceiptDraft, LedgerFilter, LedgerGrouping,
-│                       LedgerTransfers, CategoryReportBuilder, RecurrenceCalculator, Debouncer
-├── Models/             Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal, Payee, Debt (tables)
-│                       + display models (LedgerEntry, TransactionGroup, CategoryAmount, AccountBalanceInfo, BudgetProgress, ...)
+├── Models/             SQLite tables (Account, Transaction, Transfer, Category, Budget, RecurringTransaction, SavingsGoal,
+│                       Pocket, Payee, Debt, Trip, Party, SavingsChallenge, ExchangeRate, ...) + display models
+├── Helpers/            Money (cents), MoneyFormatter, AmountParser, DateFormatter, Plurals, RecurrenceCalculator,
+│                       ledger filtering / grouping, report builders, CSV and receipt parsing
 ├── Resources/Strings/  AppResources.resx (English), AppResources.{es,pt,fr,it}.resx
 ├── Services/
 │   ├── Interfaces/     Service and repository interfaces, IAppPaths
-│   ├── Repositories/   RepositoryBase<T> + SQLite repositories (SQL totals), DatabaseInitializer (schema + seed data)
-│   │   └── Migrations/ IMigration, MigrationRunner, M001_Baseline, M002_MoneyAsCents, M003_AccountCurrencyCodes
-│   ├── AccountService, CategoryService          Transactional deletes
-│   ├── BalanceService                           Account balances and period totals (SQL sums)
-│   ├── TransactionEnrichmentService             Names/icons/currencies for display
-│   ├── LedgerService                            Home list rows (transactions + whole transfers), delete one
-│   ├── BudgetSummaryService                     Budget progress for a period (Home + Budget page)
-│   ├── SavingsGoalService                       Goal progress (linked accounts' balances) + projection
-│   ├── PayeeService                             Payees: found or created on save, use counts, rename / merge / delete
-│   ├── SplitService                             Saves a split expense as one transaction per category
-│   ├── DebtService, DebtLedger                  Debts: amounts, payments (+ interest), schedule, delete
-│   ├── CurrencyService                          Currencies, base currency, decimals
-│   ├── RecurringTransactionService              Creates due recurring transactions
-│   ├── DataExportService                        Zip backup, restore + snapshot, CSV export
-│   ├── ErrorHandler                             Friendly message to the user, exception to ILogger
-│   └── AppPaths, LocalizationService, CategoryIconService
-└── ViewModels/         TransactionFilterViewModel (Home search + filter panel, debounced typing)
+│   ├── Repositories/   RepositoryBase<T> + one SQLite repository per table (SQL totals), DatabaseInitializer
+│   │   └── Migrations/ IMigration, MigrationRunner, M001–M004
+│   └── (root)          Business services: balances, enrichment, ledger, budgets, goals, pockets, trips, parties, debts,
+│                       recurring, currency + exchange rates, backups (manual + automatic), CSV import / export,
+│                       PDF reports, reminders, app lock, What's new
+└── ViewModels/         MAUI-free view models (Transactions filter, shared period, setup, export, backups, support)
 MoneyRecord/            The MAUI app
-├── Behaviors/          CurrencyMaskBehavior (amount input in the account's currency)
-├── Controls/           FloatingActionMenu (+ FabComponents/), DecimalEntry, ChartDrawables
-├── Converters/         One XAML value converter per file (money, dates, colours, heatmap, ...)
-├── Extensions/         LocalizeExtension ({ext:Localize Key} in XAML)
-├── Platforms/          Android (back button, numeric entry handler), iOS, MacCatalyst, Windows
-├── Services/           NavigationService, DialogService, PreferencesService
-├── ViewModels/         One per page + FloatingMenuViewModel
-├── Views/              Main, AddTransaction, AddTransfer, Transfers, ManageAccounts, ManageCategories, Budget, Goals,
-│                       Payees, RecurringTransactions, CategoryReport (Expense/Income), TrendsReport, Settings
-├── App.xaml            Converters and styles; processes recurring transactions on start
-├── AppShell.xaml       Flyout menu and routes
+├── ViewModels/         One per page (CommunityToolkit.Mvvm source generators)
+├── Views/              XAML pages + code-behind (Home, Transactions, the Reports tabs, Budgets, More and its screens)
+├── Controls/           BottomSheet, AddEntryButton, period / currency pickers, FilterChip, DecimalEntry, ...
+├── Charts/             LiveCharts donut / columns / lines with one palette (light and dark)
+├── Behaviors/, Converters/, Extensions/   Amount mask, one value converter per file, {ext:Localize Key}
+├── Services/           NavigationService, DialogService, ThemeService, PreferencesService, platform fallbacks
+├── Platforms/          Android (notifications, daily job, biometrics, backup folder, widget, receipt scan), iOS,
+│                       MacCatalyst, Windows
+├── AppShell.xaml       Tab bar and routes
 └── MauiProgram.cs      Dependency injection
 MoneyRecord.Tests/      xUnit tests (net10.0, Core only): helpers, models, services, view models, migrations, backup/restore,
                         resource parity
