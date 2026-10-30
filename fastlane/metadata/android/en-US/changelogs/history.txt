@@ -1,3 +1,6 @@
+## 0.20.1
+- Goals: the add/edit goal sheet now scrolls, so Save stays reachable when you have many accounts.
+
 ## 0.20.0
 - New Support MoneyRecord screen (More tab) in the Google Play version: leave a small optional tip through Google Play to support the project. Nothing is locked or unlocked, whether you give or not.
 

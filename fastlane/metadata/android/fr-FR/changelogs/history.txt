@@ -1,3 +1,6 @@
+## 0.20.1
+- Objectifs : la feuille d'ajout ou de modification d'un objectif défile maintenant, donc Enregistrer reste accessible quand tu as beaucoup de comptes.
+
 ## 0.20.0
 - Nouvel écran Soutenir MoneyRecord (onglet Plus) dans la version Google Play : laisse un petit pourboire facultatif via Google Play pour soutenir le projet. Rien n'est verrouillé, que tu donnes ou non.
 
