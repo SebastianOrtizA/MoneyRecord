@@ -22,9 +22,22 @@ namespace MoneyRecord.ViewModels
         private readonly IExchangeRateService _exchangeRates;
         private readonly IPocketService _pocketService;
 
+        // Every account (after the currency filter); <Groups> is what the search leaves of them
+        private List<AccountGroup> _allGroups = [];
+
         /// <summary>The accounts grouped by currency, base currency first, each with its subtotal.</summary>
         [ObservableProperty]
         private List<AccountGroup> groups = new();
+
+        [ObservableProperty]
+        private string searchText = string.Empty;
+
+        /// <summary>The list is long enough for a search box.</summary>
+        public bool ShowSearch => ListSearch.ShowsSearch(_allGroups.Sum(g => g.Count));
+
+        public string EmptyText => _allGroups.Count == 0 ? AppResources.NoAccounts : AppResources.NoMatchingItems;
+
+        partial void OnSearchTextChanged(string value) => ApplySearch();
 
         /// <summary>From a Home currency line: only the accounts in this currency are listed (null = all).</summary>
         [ObservableProperty]
@@ -121,8 +134,9 @@ namespace MoneyRecord.ViewModels
                 await Task.WhenAll(accountsTask, balancesTask, pocketsTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
-                Groups = AccountGroup.Build(await accountsTask, await balancesTask,
+                _allGroups = AccountGroup.Build(await accountsTask, await balancesTask,
                     _currencyService.GetBaseCurrencyCode(), CurrencyFilter, await pocketsTask);
+                ApplySearch();
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
@@ -132,6 +146,15 @@ namespace MoneyRecord.ViewModels
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadAccountBalances);
             }
+        }
+
+        // A list too short for the search box ignores whatever was typed before it shrank
+        private void ApplySearch()
+        {
+            var query = ListSearch.EffectiveQuery(_allGroups.Sum(g => g.Count), SearchText);
+            Groups = string.IsNullOrWhiteSpace(query) ? _allGroups : AccountGroup.Filter(_allGroups, query);
+            OnPropertyChanged(nameof(ShowSearch));
+            OnPropertyChanged(nameof(EmptyText));
         }
 
         [RelayCommand]

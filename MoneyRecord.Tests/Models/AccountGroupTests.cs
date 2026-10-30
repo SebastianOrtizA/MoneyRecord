@@ -10,6 +10,12 @@ public class AccountGroupTests
     private static Account Account(int id, string currency, decimal initial = 0m) =>
         new() { Id = id, Name = $"Account {id}", CurrencyCode = currency, InitialBalance = initial };
 
+    private static Account Named(Account account, string name)
+    {
+        account.Name = name;
+        return account;
+    }
+
     private static AccountBalanceInfo Balance(int id, decimal amount, DateTime? lastActivity = null) =>
         new() { AccountId = id, CurrentBalance = amount, LastActivityDate = lastActivity };
 
@@ -36,6 +42,32 @@ public class AccountGroupTests
             .Single();
 
         group.HeaderText.Should().Be($"{MoneyFormatter.FormatWithCode(300m, "EUR")} · {Plurals.Accounts(2)}");
+    }
+
+    [Fact]
+    public void A_search_keeps_the_matching_accounts_and_the_whole_currency_total()
+    {
+        var groups = AccountGroup.Build(
+            [Named(Account(1, "EUR"), "Savings"), Named(Account(2, "EUR"), "Checking"), Named(Account(3, "USD"), "Cash")],
+            [Balance(1, 100m), Balance(2, 200m), Balance(3, 50m)], "USD");
+
+        var found = AccountGroup.Filter(groups, "sav");
+
+        var group = found.Should().ContainSingle().Which;
+        group.Select(i => i.Account.Id).Should().Equal(1);
+        group.CurrencyCode.Should().Be("EUR");
+        group.Subtotal.Should().Be(300m, "the header is the currency's total, not the matches'");
+        group.HeaderText.Should().Be($"{MoneyFormatter.FormatWithCode(300m, "EUR")} · {Plurals.Accounts(2)}");
+    }
+
+    [Fact]
+    public void A_search_also_matches_the_currency_code()
+    {
+        var groups = AccountGroup.Build([Account(1, "EUR"), Account(2, "USD"), Account(3, "")], [Balance(1, 1m), Balance(2, 2m), Balance(3, 3m)], "USD");
+
+        AccountGroup.Filter(groups, "eur").Single().Select(i => i.Account.Id).Should().Equal(1);
+        AccountGroup.Filter(groups, "usd").Single().Select(i => i.Account.Id).Should().Equal(2, 3);
+        AccountGroup.Filter(groups, "zzz").Should().BeEmpty();
     }
 
     [Fact]

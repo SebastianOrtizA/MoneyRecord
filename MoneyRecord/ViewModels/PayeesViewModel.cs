@@ -69,7 +69,7 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private void ApplySearch() => Payees = _all.Where(p => PayeeNames.Matches(p.Name, SearchText)).ToList();
+        private void ApplySearch() => Payees = _all.Where(p => ListSearch.Matches(p.Name, SearchText)).ToList();
 
         [RelayCommand]
         private async Task OpenPayeeAsync(PayeeSummary? payee)

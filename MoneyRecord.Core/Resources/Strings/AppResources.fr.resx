@@ -2880,4 +2880,13 @@
   <data name="SwipeHint" xml:space="preserve">
     <value>Fais glisser une ligne vers la gauche pour modifier ou supprimer</value>
   </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>Rechercher une catégorie</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>Rechercher un compte</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>Rien ne correspond à ta recherche.</value>
+  </data>
 </root>

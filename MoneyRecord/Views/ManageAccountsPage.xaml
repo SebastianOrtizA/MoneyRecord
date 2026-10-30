@@ -10,28 +10,38 @@
              x:DataType="viewmodels:ManageAccountsViewModel"
              Title="{ext:Localize ManageAccounts}">
     <Grid RowDefinitions="Auto,*">
-        <!-- Currency filter from a Home balance line -->
-        <Border IsVisible="{Binding HasCurrencyFilter}"
-                StrokeThickness="0"
-                StrokeShape="RoundRectangle 18"
-                Padding="14,4,4,4"
-                Margin="16,12,16,0"
-                HorizontalOptions="Start"
-                BackgroundColor="{AppThemeBinding Light=#EDE7F6, Dark=#311B92}">
-            <HorizontalStackLayout Spacing="8">
-                <Label Text="{Binding CurrencyFilterText}"
+        <VerticalStackLayout>
+            <!-- Currency filter from a Home balance line -->
+            <Border IsVisible="{Binding HasCurrencyFilter}"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 18"
+                    Padding="14,4,4,4"
+                    Margin="16,12,16,0"
+                    HorizontalOptions="Start"
+                    BackgroundColor="{AppThemeBinding Light=#EDE7F6, Dark=#311B92}">
+                <HorizontalStackLayout Spacing="8">
+                    <Label Text="{Binding CurrencyFilterText}"
+                           FontSize="14"
+                           VerticalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#311B92, Dark=#EDE7F6}" />
+                    <Button Text="{ext:Localize ShowAllAccounts}"
+                            Command="{Binding ClearCurrencyFilterCommand}"
+                            FontSize="13"
+                            Padding="12,0"
+                            HeightRequest="32"
+                            MinimumHeightRequest="32"
+                            CornerRadius="16" />
+                </HorizontalStackLayout>
+            </Border>
+            <!-- Only on a long list (more than 8 rows) -->
+            <SearchBar Placeholder="{ext:Localize SearchAccounts}"
+                       Text="{Binding SearchText}"
+                       IsVisible="{Binding ShowSearch}"
+                       Margin="16,8,16,0"
                        FontSize="14"
-                       VerticalOptions="Center"
-                       TextColor="{AppThemeBinding Light=#311B92, Dark=#EDE7F6}" />
-                <Button Text="{ext:Localize ShowAllAccounts}"
-                        Command="{Binding ClearCurrencyFilterCommand}"
-                        FontSize="13"
-                        Padding="12,0"
-                        HeightRequest="32"
-                        MinimumHeightRequest="32"
-                        CornerRadius="16" />
-            </HorizontalStackLayout>
-        </Border>
+                       HeightRequest="44"
+                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
+        </VerticalStackLayout>
 
         <!-- Accounts grouped by currency (base first); a tap opens the edit sheet -->
         <CollectionView Grid.Row="1"
@@ -155,7 +165,7 @@
                            FontSize="48"
                            HorizontalOptions="Center"
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
-                    <Label Text="{ext:Localize NoAccounts}"
+                    <Label Text="{Binding EmptyText}"
                            FontSize="16"
                            HorizontalTextAlignment="Center"
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />

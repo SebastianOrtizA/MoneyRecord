@@ -2881,4 +2881,13 @@
   <data name="SwipeHint" xml:space="preserve">
     <value>Deslize um item para a esquerda para editar ou excluir</value>
   </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>Buscar categorias</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>Buscar contas</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>Nada corresponde à sua busca.</value>
+  </data>
 </root>

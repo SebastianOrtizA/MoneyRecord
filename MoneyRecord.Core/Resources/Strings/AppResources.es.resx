@@ -2930,4 +2930,13 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SwipeHint" xml:space="preserve">
     <value>Desliza una fila a la izquierda para editar o eliminar</value>
   </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>Buscar categorías</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>Buscar cuentas</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>Nada coincide con tu búsqueda.</value>
+  </data>
 </root>

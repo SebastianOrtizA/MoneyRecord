@@ -2933,4 +2933,13 @@
   <data name="SwipeHint" xml:space="preserve">
     <value>Swipe a row left to edit or delete</value>
   </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>Search categories</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>Search accounts</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>Nothing matches your search.</value>
+  </data>
 </root>
