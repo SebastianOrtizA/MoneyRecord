@@ -74,7 +74,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M004`
 - `Models/HomeCard` + `HomeLayout` (Home cards' order + hidden set, one preference string; Balance never hidden; new cards appended) + `HomeLayoutSettings`; Settings → Home screen (`HomeLayoutPage`, move arrows + switches) and Home's "Customize Home" link; a hidden card skips its loads in `MainViewModel`, `MainPage.ArrangeCards` reorders the cards; the opt-in Debts card (off by default, `DebtSummary.OutstandingTotals`) lists the open debts
 - `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
-  as `LedgerEntry`; deletes one), BudgetSummaryService (budget progress for a period: Home card + Budget page), PayeeService (found or created by name on save,
+  as `LedgerEntry`; deletes one without asking and returns a `DeletedEntry` snapshot: `RestoreAsync` puts it back with its IDs (refused when an ID or a parent row is gone), `Discard` deletes the kept receipt photos; the Transactions and Transfers pages offer it as an Undo snackbar for 6 s), BudgetSummaryService (budget progress for a period: Home card + Budget page), PayeeService (found or created by name on save,
   last category per type, rename / merge / delete), DebtService + DebtLedger (debts: totals in SQL, payments with an interest part,
   the schedule = a `RecurringTransaction.DebtId` rule capped at what is left; `IAccountRepository.GetOwnAsync` leaves the
   hidden accounts out of pickers and lists), SplitService (saves a split expense: one transaction per part in one DB
@@ -144,7 +144,7 @@ crashes at runtime (XAML is inflated at runtime there).
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
-- `Services/` — NavigationService, DialogService (alerts/prompts/action sheets on the window's page + toast),
+- `Services/` — NavigationService, DialogService (alerts/prompts/action sheets on the window's page + toast + `ToastWithUndoAsync`, the Undo snackbar: one at a time, showing another makes the first final),
   ThemeService (saved System / Light / Dark → `UserAppTheme`), PreferencesService
   (MAUI Preferences), NoNotificationService / NoDeviceLock / NoReceiptScanner (platforms without reminders / app lock / receipt reading). SecureBackupPasswordStore
   (SecureStorage). ViewModels use `IDialogService` /

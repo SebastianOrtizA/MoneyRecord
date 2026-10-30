@@ -26,5 +26,11 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>Shows a short message that disappears on its own.</summary>
         Task ToastAsync(string message);
+
+        /// <summary>
+        /// Shows a message with an Undo button for a few seconds. <paramref name="undo"/> runs when Undo is tapped;
+        /// <paramref name="expired"/> when the message goes away without it (timeout, or another message replacing it).
+        /// </summary>
+        Task ToastWithUndoAsync(string message, Func<Task> undo, Func<Task> expired);
     }
 }

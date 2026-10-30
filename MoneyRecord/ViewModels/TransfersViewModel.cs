@@ -12,7 +12,7 @@ namespace MoneyRecord.ViewModels
     public partial class TransfersViewModel : ObservableObject
     {
         private readonly ITransactionEnrichmentService _enrichmentService;
-        private readonly ITransferRepository _transferRepository;
+        private readonly ILedgerService _ledgerService;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
@@ -26,10 +26,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool hasTransfers = false;
 
-        public TransfersViewModel(ITransactionEnrichmentService enrichmentService, ITransferRepository transferRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService)
+        public TransfersViewModel(ITransactionEnrichmentService enrichmentService, ILedgerService ledgerService, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService)
         {
             _enrichmentService = enrichmentService;
-            _transferRepository = transferRepository;
+            _ledgerService = ledgerService;
             _errorHandler = errorHandler;
             _dialogService = dialogService;
             _navigationService = navigationService;
@@ -94,20 +94,14 @@ namespace MoneyRecord.ViewModels
             if (transfer == null)
                 return;
 
-            var confirm = await _dialogService.ConfirmAsync(
-                AppResources.ConfirmDelete,
-                string.Format(AppResources.DeleteTransferConfirmMessage, transfer.SourceAccountName, transfer.DestinationAccountName, MoneyFormatter.Format(transfer.Amount, transfer.CurrencyCode)),
-                AppResources.YesDelete,
-                AppResources.Cancel);
-
-            if (!confirm)
-                return;
-
             try
             {
-                await _transferRepository.DeleteAsync(transfer);
+                var deleted = await _ledgerService.DeleteTransferAsync(transfer.Id);
                 await LoadTransfersAsync();
-                await _dialogService.ToastAsync(AppResources.TransferDeletedSuccessfully);
+
+                if (deleted != null)
+                    await DeleteUndo.OfferAsync(_dialogService, _ledgerService, _errorHandler, deleted, AppResources.TransferDeletedUndo,
+                        LoadTransfersAsync);
             }
             catch (Exception ex)
             {

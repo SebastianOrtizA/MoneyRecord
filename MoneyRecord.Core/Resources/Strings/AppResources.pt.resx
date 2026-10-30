@@ -496,16 +496,6 @@
   <data name="FailedToLoadTransfers" xml:space="preserve">
     <value>Não foi possível carregar as transferências</value>
   </data>
-  <data name="DeleteTransferConfirmMessage" xml:space="preserve">
-    <value>Tem certeza de que quer excluir esta transferência?
-
-De: {0}
-Para: {1}
-Valor: {2}</value>
-  </data>
-  <data name="TransferDeletedSuccessfully" xml:space="preserve">
-    <value>Transferência excluída</value>
-  </data>
   <data name="FailedToDeleteTransfer" xml:space="preserve">
     <value>Não foi possível excluir a transferência</value>
   </data>
@@ -562,24 +552,6 @@ Valor: {2}</value>
   </data>
   <data name="FailedToLoadTransactions" xml:space="preserve">
     <value>Não foi possível carregar as transações</value>
-  </data>
-  <data name="ConfirmDeleteTransactionTitle" xml:space="preserve">
-    <value>Confirmar exclusão</value>
-  </data>
-  <data name="ConfirmDeleteTransactionMessage" xml:space="preserve">
-    <value>Tem certeza de que quer excluir esta transação?
-
-{0}
-{1}</value>
-  </data>
-  <data name="ConfirmDeleteTransferFromListMessage" xml:space="preserve">
-    <value>Tem certeza de que quer excluir esta transferência?
-
-{0}
-{1}</value>
-  </data>
-  <data name="TransactionDeletedSuccessfully" xml:space="preserve">
-    <value>Transação excluída</value>
   </data>
   <data name="FailedToDeleteTransaction" xml:space="preserve">
     <value>Não foi possível excluir a transação</value>
@@ -1757,9 +1729,6 @@ Valor: {2}</value>
   <data name="SplitPaymentTotal" xml:space="preserve">
     <value>Pagamento dividido de {0} em {1} partes</value>
   </data>
-  <data name="ConfirmDeleteSplitMessage" xml:space="preserve">
-    <value>Excluir este pagamento dividido de {0}? As {1} partes serão excluídas.</value>
-  </data>
   <data name="Debts" xml:space="preserve">
     <value>Dívidas</value>
   </data>
@@ -2872,5 +2841,23 @@ Valor: {2}</value>
   </data>
   <data name="TipsUnavailable" xml:space="preserve">
     <value>As gorjetas não estão disponíveis agora. Tente novamente mais tarde.</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Desfazer</value>
+  </data>
+  <data name="ExpenseDeletedUndo" xml:space="preserve">
+    <value>Despesa excluída</value>
+  </data>
+  <data name="IncomeDeletedUndo" xml:space="preserve">
+    <value>Receita excluída</value>
+  </data>
+  <data name="TransferDeletedUndo" xml:space="preserve">
+    <value>Transferência excluída</value>
+  </data>
+  <data name="SplitDeletedUndo" xml:space="preserve">
+    <value>Pagamento dividido excluído ({0} partes)</value>
+  </data>
+  <data name="UndoNotPossible" xml:space="preserve">
+    <value>Não foi possível desfazer. O lançamento não pode mais ser restaurado.</value>
   </data>
 </root>

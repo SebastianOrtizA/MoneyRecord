@@ -37,7 +37,11 @@ namespace MoneyRecord
                     fonts.AddFont("materialdesignicons-webfont.ttf", "MaterialDesignIcons");
                 })
                 // Toolkit converters return a default instead of throwing on unexpected input, like ours did
-                .UseMauiCommunityToolkit(options => options.SetShouldSuppressExceptionsInConverters(true))
+                .UseMauiCommunityToolkit(options =>
+                {
+                    options.SetShouldSuppressExceptionsInConverters(true);
+                    options.SetShouldEnableSnackbarOnWindows(true);
+                })
                 .ConfigureDecimalEntry()
                 .ConfigureTabReselect()
                 // Reports charts (LiveChartsCore on SkiaSharp)

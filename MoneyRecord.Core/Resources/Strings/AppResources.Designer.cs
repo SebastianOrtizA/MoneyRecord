@@ -430,39 +430,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Are you sure you want to delete this transaction?
-        ///
-        ///{0}
-        ///${1:N2}.
-        /// </summary>
-        public static string ConfirmDeleteTransactionMessage {
-            get {
-                return ResourceManager.GetString("ConfirmDeleteTransactionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Confirm Delete.
-        /// </summary>
-        public static string ConfirmDeleteTransactionTitle {
-            get {
-                return ResourceManager.GetString("ConfirmDeleteTransactionTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Are you sure you want to delete this transfer?
-        ///
-        ///{0}
-        ///${1:N2}.
-        /// </summary>
-        public static string ConfirmDeleteTransferFromListMessage {
-            get {
-                return ResourceManager.GetString("ConfirmDeleteTransferFromListMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Custom Period.
         /// </summary>
         public static string CustomPeriod {
@@ -713,19 +680,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string DeleteTransferConfirm {
             get {
                 return ResourceManager.GetString("DeleteTransferConfirm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Are you sure you want to delete this transfer?
-        ///
-        ///From: {0}
-        ///To: {1}
-        ///Amount: ${2:N2}.
-        /// </summary>
-        public static string DeleteTransferConfirmMessage {
-            get {
-                return ResourceManager.GetString("DeleteTransferConfirmMessage", resourceCulture);
             }
         }
         
@@ -1558,15 +1512,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Transaction deleted successfully.
-        /// </summary>
-        public static string TransactionDeletedSuccessfully {
-            get {
-                return ResourceManager.GetString("TransactionDeletedSuccessfully", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Busca una cadena traducida similar a Transactions.
         /// </summary>
         public static string Transactions {
@@ -1608,15 +1553,6 @@ namespace MoneyRecord.Resources.Strings {
         public static string TransferButton {
             get {
                 return ResourceManager.GetString("TransferButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Busca una cadena traducida similar a Transfer deleted successfully.
-        /// </summary>
-        public static string TransferDeletedSuccessfully {
-            get {
-                return ResourceManager.GetString("TransferDeletedSuccessfully", resourceCulture);
             }
         }
         
@@ -5029,15 +4965,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete this split payment of {0}? All {1} parts are deleted..
-        /// </summary>
-        public static string ConfirmDeleteSplitMessage {
-            get {
-                return ResourceManager.GetString("ConfirmDeleteSplitMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Debts.
         /// </summary>
         public static string Debts {
@@ -8276,6 +8203,60 @@ namespace MoneyRecord.Resources.Strings {
         public static string TipsUnavailable {
             get {
                 return ResourceManager.GetString("TipsUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string Undo {
+            get {
+                return ResourceManager.GetString("Undo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expense deleted.
+        /// </summary>
+        public static string ExpenseDeletedUndo {
+            get {
+                return ResourceManager.GetString("ExpenseDeletedUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income deleted.
+        /// </summary>
+        public static string IncomeDeletedUndo {
+            get {
+                return ResourceManager.GetString("IncomeDeletedUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transfer deleted.
+        /// </summary>
+        public static string TransferDeletedUndo {
+            get {
+                return ResourceManager.GetString("TransferDeletedUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split payment deleted ({0} parts).
+        /// </summary>
+        public static string SplitDeletedUndo {
+            get {
+                return ResourceManager.GetString("SplitDeletedUndo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not undo. The entry can no longer be restored..
+        /// </summary>
+        public static string UndoNotPossible {
+            get {
+                return ResourceManager.GetString("UndoNotPossible", resourceCulture);
             }
         }
         

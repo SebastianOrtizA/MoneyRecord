@@ -326,33 +326,20 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private Task DeleteTransactionAsync(LedgerEntry? entry) => TryDeleteAsync(entry);
 
-        /// <summary>Asks first; true when the entry was deleted (not when the user cancelled or the delete failed).</summary>
+        /// <summary>Deletes at once and offers Undo; true when the entry is gone (not when the delete failed).</summary>
         private async Task<bool> TryDeleteAsync(LedgerEntry? entry)
         {
             if (entry == null)
                 return false;
 
-            var amount = MoneyFormatter.Format(entry.Amount, entry.CurrencyCode);
-            // Any part deletes the whole split payment, so the question names all of it
-            var splitParts = SplitPartsOf(entry);
-            var confirmMessage = splitParts.Count > 0
-                ? string.Format(AppResources.ConfirmDeleteSplitMessage, SplitTotalText(splitParts), splitParts.Count)
-                : entry.IsTransfer
-                ? string.Format(AppResources.ConfirmDeleteTransferFromListMessage, entry.Description, amount)
-                : string.Format(AppResources.ConfirmDeleteTransactionMessage, entry.Description, amount);
-
-            if (!await _dialogService.ConfirmAsync(AppResources.ConfirmDeleteTransactionTitle, confirmMessage,
-                    AppResources.YesDelete, AppResources.Cancel))
-                return false;
-
             try
             {
-                await _ledgerService.DeleteAsync(entry);
+                var deleted = await _ledgerService.DeleteAsync(entry);
                 await LoadDataCommand.ExecuteAsync(null);
 
-                await _dialogService.ToastAsync(entry.IsTransfer
-                    ? AppResources.TransferDeletedSuccessfully
-                    : AppResources.TransactionDeletedSuccessfully);
+                if (deleted != null)
+                    await DeleteUndo.OfferAsync(_dialogService, _ledgerService, _errorHandler, deleted, DeletedMessage(entry, deleted),
+                        () => LoadDataCommand.ExecuteAsync(null));
                 return true;
             }
             catch (Exception ex)
@@ -364,5 +351,11 @@ namespace MoneyRecord.ViewModels
                 return false;
             }
         }
+
+        private static string DeletedMessage(LedgerEntry entry, DeletedEntry deleted) =>
+            entry.IsTransfer ? AppResources.TransferDeletedUndo
+            : deleted.Transactions.Count > 1 ? string.Format(AppResources.SplitDeletedUndo, deleted.Transactions.Count)
+            : entry.Kind == LedgerEntryKind.Income ? AppResources.IncomeDeletedUndo
+            : AppResources.ExpenseDeletedUndo;
     }
 }
