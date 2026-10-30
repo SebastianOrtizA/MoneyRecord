@@ -10,6 +10,7 @@
              Title="{ext:Localize Categories}">
 
     <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout>
         <!-- Income / Expense switch -->
         <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="16,16,16,8">
             <Button Grid.Column="0"
@@ -37,6 +38,15 @@
                 </Button.Triggers>
             </Button>
         </Grid>
+        <!-- Only on a long list (more than 8 rows) -->
+        <SearchBar Placeholder="{ext:Localize SearchCategories}"
+                   Text="{Binding SearchText}"
+                   IsVisible="{Binding ShowSearch}"
+                   Margin="16,8,16,0"
+                   FontSize="14"
+                   HeightRequest="44"
+                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
+        </VerticalStackLayout>
 
         <!-- Categories of the shown type; a tap opens the edit sheet -->
         <CollectionView Grid.Row="1" ItemsSource="{Binding Categories}">
@@ -83,7 +93,7 @@
                            FontSize="48"
                            HorizontalOptions="Center"
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
-                    <Label Text="{ext:Localize NoCategoriesYet}"
+                    <Label Text="{Binding EmptyText}"
                            FontSize="16"
                            HorizontalTextAlignment="Center"
                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />

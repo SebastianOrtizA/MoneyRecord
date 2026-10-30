@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
@@ -21,8 +22,21 @@ namespace MoneyRecord.ViewModels
 
         public bool IsExpenseType => CategoryType == CategoryType.Expense;
 
+        // Every category of the shown type; <Categories> is what the search leaves of them
+        private List<Category> _all = [];
+
         [ObservableProperty]
         private ObservableCollection<Category> categories = new();
+
+        [ObservableProperty]
+        private string searchText = string.Empty;
+
+        /// <summary>The list is long enough for a search box.</summary>
+        public bool ShowSearch => ListSearch.ShowsSearch(_all.Count);
+
+        public string EmptyText => _all.Count == 0 ? AppResources.NoCategoriesYet : AppResources.NoMatchingItems;
+
+        partial void OnSearchTextChanged(string value) => ApplySearch();
 
         /// <summary>The add/edit sheet is open.</summary>
         [ObservableProperty]
@@ -72,6 +86,7 @@ namespace MoneyRecord.ViewModels
                 return;
 
             CloseForm();
+            SearchText = string.Empty;
             CategoryType = type;
             await InitializeAsync();
         }
@@ -88,12 +103,17 @@ namespace MoneyRecord.ViewModels
 
         private async Task LoadCategoriesAsync()
         {
-            var categoryList = await _categoryRepository.GetByTypeAsync(CategoryType);
-            Categories.Clear();
-            foreach (var category in categoryList)
-            {
-                Categories.Add(category);
-            }
+            _all = await _categoryRepository.GetByTypeAsync(CategoryType);
+            ApplySearch();
+        }
+
+        // A list too short for the search box ignores whatever was typed before it shrank
+        private void ApplySearch()
+        {
+            var query = ShowSearch ? SearchText : string.Empty;
+            Categories = new(_all.Where(c => ListSearch.Matches(c.Name, query)));
+            OnPropertyChanged(nameof(ShowSearch));
+            OnPropertyChanged(nameof(EmptyText));
         }
 
         [RelayCommand]
@@ -187,7 +207,7 @@ namespace MoneyRecord.ViewModels
                 if (usage.NeedsReplacement)
                 {
                     // Get other categories of the same type (excluding the one being deleted)
-                    var availableCategories = Categories.Where(c => c.Id != category.Id).ToList();
+                    var availableCategories = _all.Where(c => c.Id != category.Id).ToList();
 
                     if (availableCategories.Count == 0)
                     {

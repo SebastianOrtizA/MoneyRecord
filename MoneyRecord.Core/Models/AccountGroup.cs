@@ -46,19 +46,36 @@ namespace MoneyRecord.Models
     /// </summary>
     public sealed class AccountGroup : List<AccountListItem>
     {
-        public AccountGroup(string currencyCode, IEnumerable<AccountListItem> items) : base(items)
+        /// <param name="all">The whole currency's accounts when <paramref name="items"/> are only those a search found, so the header still shows the currency's total.</param>
+        public AccountGroup(string currencyCode, IEnumerable<AccountListItem> items, IReadOnlyCollection<AccountListItem>? all = null) : base(items)
         {
             CurrencyCode = currencyCode;
-            Subtotal = this.Sum(i => i.CurrentBalance);
+            all ??= this;
+            Subtotal = all.Sum(i => i.CurrentBalance);
+            AccountCount = all.Count;
         }
 
         public string CurrencyCode { get; }
 
         public decimal Subtotal { get; }
 
+        /// <summary>How many accounts the currency has (more than are listed while a search shows only some).</summary>
+        public int AccountCount { get; }
+
         /// <summary>"€300.00 EUR · 2 accounts" (bare sign + code, like the Home balance lines).</summary>
         public string HeaderText =>
-            $"{MoneyFormatter.FormatWithCode(Subtotal, CurrencyCode)} · {Plurals.Accounts(Count)}";
+            $"{MoneyFormatter.FormatWithCode(Subtotal, CurrencyCode)} · {Plurals.Accounts(AccountCount)}";
+
+        /// <summary>
+        /// The accounts whose name or currency code contain <paramref name="query"/> (ignoring case and accents), per currency;
+        /// currencies without a match are left out and each header keeps the currency's whole total.
+        /// </summary>
+        public static List<AccountGroup> Filter(IEnumerable<AccountGroup> groups, string? query) =>
+            groups
+                .Select(g => new AccountGroup(g.CurrencyCode,
+                    g.Where(i => ListSearch.Matches(i.Account.Name, query) || ListSearch.Matches(i.CurrencyCode, query)), g))
+                .Where(g => g.Count > 0)
+                .ToList();
 
         /// <summary>
         /// One group per currency, base currency first, then by code; accounts keep their given order. With

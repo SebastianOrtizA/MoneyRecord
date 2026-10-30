@@ -48,10 +48,6 @@ namespace MoneyRecord.Helpers
                 .ToList();
         }
 
-        /// <summary>The Payees page search: the names containing the text (ignoring case and accents).</summary>
-        public static bool Matches(string name, string? search) =>
-            Normalize(search) is var typed && (typed.Length == 0 || Compare.IndexOf(name, typed, Loose) >= 0);
-
         private static CompareInfo Compare => CultureInfo.CurrentCulture.CompareInfo;
 
         // 0 = the name starts with the text, 1 = one of its words does, 2 = it contains it, -1 = no match

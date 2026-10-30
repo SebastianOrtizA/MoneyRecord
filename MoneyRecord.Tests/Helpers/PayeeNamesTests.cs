@@ -72,14 +72,4 @@ public class PayeeNamesTests
         new PayeeSummary(1, "Gym", 0, null, RecurringCount: 1).UsesText
             .Should().Be($"{Plurals.Transactions(0)}, {Plurals.Recurring(1)}", "a payee only a schedule uses is not unused");
     }
-
-    [Theory]
-    [InlineData("", true)]
-    [InlineData("bak", true)]
-    [InlineData("CAFE", true)]
-    [InlineData("pharmacy", false)]
-    public void Matches_finds_the_text_anywhere(string search, bool expected)
-    {
-        PayeeNames.Matches("Bakery & Café", search).Should().Be(expected);
-    }
 }

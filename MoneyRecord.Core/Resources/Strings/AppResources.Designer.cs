@@ -8323,5 +8323,32 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Search categories.
+        /// </summary>
+        public static string SearchCategories {
+            get {
+                return ResourceManager.GetString("SearchCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search accounts.
+        /// </summary>
+        public static string SearchAccounts {
+            get {
+                return ResourceManager.GetString("SearchAccounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing matches your search..
+        /// </summary>
+        public static string NoMatchingItems {
+            get {
+                return ResourceManager.GetString("NoMatchingItems", resourceCulture);
+            }
+        }
+        
     }
 }
