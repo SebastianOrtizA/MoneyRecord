@@ -1,1 +1,1 @@
-You can now support MoneyRecord with a small optional tip: More → Support MoneyRecord (Google Play version). Nothing is locked or unlocked, whether you give or not.
+Goals: the add/edit goal sheet now scrolls, so Save stays reachable when you have many accounts.

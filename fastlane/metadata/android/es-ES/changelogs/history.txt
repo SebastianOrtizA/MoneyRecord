@@ -1,3 +1,6 @@
+## 0.20.1
+- Metas: la hoja para añadir o editar una meta ahora se desplaza, así que Guardar sigue al alcance cuando tienes muchas cuentas.
+
 ## 0.20.0
 - Nueva pantalla Apoya MoneyRecord (pestaña Más) en la versión de Google Play: deja una pequeña propina opcional a través de Google Play para apoyar el proyecto. No se bloquea nada, des o no.
 
