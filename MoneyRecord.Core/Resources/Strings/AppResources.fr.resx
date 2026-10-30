@@ -2859,4 +2859,25 @@
   <data name="UndoNotPossible" xml:space="preserve">
     <value>Impossible d'annuler. L'opération ne peut plus être restaurée.</value>
   </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Pour commencer</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Masquer</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>Ajoute ta première dépense</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Sauvegarde tes données</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Verrouille l'application</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Active les rappels</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Fais glisser une ligne vers la gauche pour modifier ou supprimer</value>
+  </data>
 </root>

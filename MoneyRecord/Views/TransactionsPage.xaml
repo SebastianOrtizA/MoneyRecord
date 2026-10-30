@@ -14,7 +14,7 @@
     <ContentPage.Resources>
         <!-- One row: tap opens the detail sheet, swipe left reveals Edit and Delete -->
         <DataTemplate x:Key="EntryTemplate" x:DataType="models:LedgerEntry">
-            <SwipeView Margin="16,4">
+            <SwipeView Margin="16,4" SwipeStarted="OnSwipeStarted">
                 <SwipeView.RightItems>
                     <!-- The first item sits at the edge; SwipeItemView so the labels can be white -->
                     <SwipeItems Mode="Reveal">
@@ -255,6 +255,10 @@
                                 </Label.GestureRecognizers>
                             </Label>
                         </Grid>
+                        <Label Text="{ext:Localize SwipeHint}"
+                               IsVisible="{Binding ShowSwipeHint}"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                     </VerticalStackLayout>
                 </CollectionView.Header>
 

@@ -17,6 +17,7 @@ namespace MoneyRecord.ViewModels
     {
         private readonly IBalanceService _balanceService;
         private readonly ILedgerService _ledgerService;
+        private readonly ISwipeHintSettings _swipeHint;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
@@ -111,6 +112,12 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isReceiptOpen;
 
+        /// <summary>The "swipe a row" caption above the list.</summary>
+        [ObservableProperty]
+        private bool showSwipeHint;
+
+        private bool _swipeHintDecided;
+
         public TransactionFilterViewModel Filters { get; }
 
         public bool IsDetailsOpen => SelectedEntry != null;
@@ -124,8 +131,9 @@ namespace MoneyRecord.ViewModels
 
         public TransactionsViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
             IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService,
-            TransactionsDrillDown drillDown, ITripService trips)
+            TransactionsDrillDown drillDown, ITripService trips, ISwipeHintSettings swipeHint)
         {
+            _swipeHint = swipeHint;
             _trips = trips;
             _balanceService = balanceService;
             _ledgerService = ledgerService;
@@ -143,8 +151,16 @@ namespace MoneyRecord.ViewModels
         /// <summary>The page appeared: load, and follow the shared period until <see cref="Deactivate"/>.</summary>
         public Task InitializeAsync()
         {
+            _swipeHintDecided = false;
             _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
             return LoadDataCommand.ExecuteAsync(null);
+        }
+
+        /// <summary>A row was swiped: the caption is no longer needed.</summary>
+        public void MarkSwipeSeen()
+        {
+            _swipeHint.MarkSeen();
+            ShowSwipeHint = false;
         }
 
         /// <summary>The page disappeared: stop following the period (it reloads when it appears again).</summary>
@@ -214,6 +230,15 @@ namespace MoneyRecord.ViewModels
                     ? (IReadOnlyList<object>)filtered
                     : LedgerGrouping.Group(filtered, CurrentGroupingMode, _accountBalances, _accounts);
                 IsEmpty = filtered.Count == 0;
+
+                // Once per visit, when there are rows to swipe
+                if (!_swipeHintDecided && filtered.Count > 0)
+                {
+                    _swipeHintDecided = true;
+                    ShowSwipeHint = _swipeHint.ShouldShow;
+                    if (ShowSwipeHint)
+                        _swipeHint.RecordVisit();
+                }
             });
         }
 

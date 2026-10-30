@@ -2909,4 +2909,25 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="UndoNotPossible" xml:space="preserve">
     <value>No se pudo deshacer. El movimiento ya no se puede restaurar.</value>
   </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Primeros pasos</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Ocultar</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>Agrega tu primer gasto</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Haz una copia de seguridad</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Protege la app con bloqueo</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Activa los recordatorios</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Desliza una fila a la izquierda para editar o eliminar</value>
+  </data>
 </root>

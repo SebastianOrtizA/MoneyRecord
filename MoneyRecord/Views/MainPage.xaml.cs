@@ -42,6 +42,7 @@ namespace MoneyRecord.Views
             {
                 [HomeCard.Balance] = BalanceCard,
                 [HomeCard.PeriodSummary] = PeriodSummaryCard,
+                [HomeCard.GetStarted] = StartChecklistCard,
                 [HomeCard.Recent] = RecentCard,
                 [HomeCard.Upcoming] = UpcomingCard,
                 [HomeCard.Budgets] = BudgetsCard,

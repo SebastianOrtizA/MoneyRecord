@@ -306,6 +306,59 @@
             </Border>
             </VerticalStackLayout>
 
+            <!-- First-run checklist: until it is hidden or done -->
+            <Border Style="{StaticResource Card}" x:Name="StartChecklistCard" IsVisible="{Binding ShowStartChecklist}">
+                <VerticalStackLayout Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ext:Localize GetStartedTitle}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="{ext:Localize GetStartedHide}"
+                               Style="{StaticResource CardLink}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding HideStartChecklistCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding StartChecklist.Rows}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:GetStartedRow">
+                                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" Padding="4,10">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=OpenStartStepCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Grid.GestureRecognizers>
+                                    <Label Text="{Binding DoneIcon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="22"
+                                           VerticalOptions="Center"
+                                           AutomationProperties.IsInAccessibleTree="False"
+                                           TextColor="{AppThemeBinding Light=#512BD4, Dark=#B39DFF}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Done}" Value="True">
+                                                <Setter Property="TextColor" Value="{AppThemeBinding Light=#2E7D32, Dark=#81C784}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Title}"
+                                           FontSize="15"
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Done}" Value="True">
+                                                <Setter Property="TextColor" Value="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
             <!-- Recent Transactions Quick View -->
             <Border Style="{StaticResource Card}"
                     x:Name="RecentCard" IsVisible="{Binding ShowRecent}">
@@ -323,7 +376,7 @@
                             </Label.GestureRecognizers>
                         </Label>
                     </Grid>
-                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecentTransactions}" Spacing="6">
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecentTransactions}" Spacing="6" IsVisible="{Binding HasRecentTransactions}">
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="models:LedgerEntry">
                                 <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" Padding="4,6">
@@ -358,6 +411,25 @@
                                 </Grid>
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <!-- An empty period: say how to add the first entry -->
+                    <VerticalStackLayout Padding="8,12" Spacing="8" IsVisible="{Binding ShowRecentEmpty}">
+                        <Label Text="&#xF0279;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="40"
+                               HorizontalOptions="Center"
+                               AutomationProperties.IsInAccessibleTree="False"
+                               TextColor="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"/>
+                        <Label Text="{ext:Localize NoTransactionsInPeriod}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                        <Label Text="{ext:Localize AddEntryHint}"
+                               FontSize="14"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                     </VerticalStackLayout>
                 </VerticalStackLayout>
             </Border>

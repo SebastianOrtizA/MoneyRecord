@@ -35,13 +35,14 @@ namespace MoneyRecord.Services
         private readonly ITransferRepository _transferRepository;
         private readonly IPayeeRepository _payeeRepository;
         private readonly IAppPaths _paths;
+        private readonly IBackupHistory _backupHistory;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths, IBackupHistory backupHistory)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
@@ -50,6 +51,7 @@ namespace MoneyRecord.Services
             _transferRepository = transferRepository;
             _payeeRepository = payeeRepository;
             _paths = paths;
+            _backupHistory = backupHistory;
         }
 
         public string BackupsFolder => _paths.BackupsFolder;
@@ -59,6 +61,14 @@ namespace MoneyRecord.Services
         // ---- Backup ----
 
         public async Task<string> ExportBackupAsync(string destinationPath, string? password = null)
+        {
+            var fingerprint = await WriteBackupAsync(destinationPath, password);
+            // Only a backup the user asked for (or the schedule): not the safety snapshot before a restore
+            _backupHistory.MarkWritten();
+            return fingerprint;
+        }
+
+        private async Task<string> WriteBackupAsync(string destinationPath, string? password)
         {
             var backup = await ReadDataAsync();
             // Before WriteZip, which rewrites the receipt paths
@@ -189,7 +199,7 @@ namespace MoneyRecord.Services
 
                 // The safety net: no snapshot, no restore
                 var snapshotPath = Path.Combine(BackupsFolder, $"{SnapshotPrefix}{DateTime.Now:yyyyMMdd_HHmmss_fff}.zip");
-                await ExportBackupAsync(snapshotPath);
+                await WriteBackupAsync(snapshotPath, null);
 
                 var count = 0;
                 await _dbInitializer.RunInTransactionAsync(conn => count = ReplaceAll(conn, backup));

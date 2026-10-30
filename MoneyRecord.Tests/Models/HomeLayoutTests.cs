@@ -12,7 +12,8 @@ public class HomeLayoutTests
     {
         var layout = HomeLayout.Parse(null);
 
-        layout.Order.Should().Equal(Enum.GetValues<HomeCard>());
+        layout.Order.Should().Equal(HomeCard.Balance, HomeCard.GetStarted, HomeCard.PeriodSummary, HomeCard.Recent,
+            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Goals, HomeCard.Debts);
         layout.Hidden.Should().BeEquivalentTo([HomeCard.Debts]);
     }
 
@@ -20,7 +21,7 @@ public class HomeLayoutTests
     public void Serialize_and_parse_round_trip()
     {
         var layout = new HomeLayout([HomeCard.Goals, HomeCard.Balance, HomeCard.Recent, HomeCard.PeriodSummary,
-            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts], new HashSet<HomeCard> { HomeCard.Budgets, HomeCard.Trip });
+            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts, HomeCard.GetStarted], new HashSet<HomeCard> { HomeCard.Budgets, HomeCard.Trip });
 
         var parsed = HomeLayout.Parse(layout.Serialize());
 
@@ -44,7 +45,8 @@ public class HomeLayoutTests
         var layout = HomeLayout.Parse("Goals,Balance;hidden=Goals");
 
         layout.Order.Should().Equal([HomeCard.Goals, HomeCard.Balance, HomeCard.PeriodSummary, HomeCard.Recent,
-            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts]);
+            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts, HomeCard.GetStarted]);
+        layout.IsShown(HomeCard.GetStarted).Should().BeTrue();
         layout.IsShown(HomeCard.Debts).Should().BeFalse();
         layout.IsShown(HomeCard.Trip).Should().BeTrue();
         layout.IsShown(HomeCard.Goals).Should().BeFalse();

@@ -89,7 +89,10 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IBudgetSummaryService, BudgetSummaryService>();
             builder.Services.AddSingleton<IRecurringTransactionService, RecurringTransactionService>();
             builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
+            builder.Services.AddSingleton<IBackupHistory, BackupHistory>();
             builder.Services.AddSingleton<IDataExportService, DataExportService>();
+            builder.Services.AddSingleton<IGetStartedService, GetStartedService>();
+            builder.Services.AddSingleton<ISwipeHintSettings, SwipeHintSettings>();
             builder.Services.AddSingleton<IReportExportService, ReportExportService>();
             builder.Services.AddSingleton<IFileSharer, FileSharer>();
             builder.Services.AddSingleton<IStatementImportService, StatementImportService>();

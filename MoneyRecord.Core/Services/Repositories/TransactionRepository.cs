@@ -19,6 +19,8 @@ namespace MoneyRecord.Services.Repositories
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
 
+        public async Task<bool> AnyAsync() => await (await TableAsync()).CountAsync() > 0;
+
         public async Task<List<Transaction>> GetSplitPartsAsync(string splitId) =>
             await (await TableAsync()).Where(t => t.SplitId == splitId).OrderBy(t => t.Id).ToListAsync();
 
