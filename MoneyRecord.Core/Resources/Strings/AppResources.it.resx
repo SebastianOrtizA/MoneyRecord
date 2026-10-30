@@ -2858,4 +2858,25 @@
   <data name="UndoNotPossible" xml:space="preserve">
     <value>Impossibile annullare. Il movimento non può più essere ripristinato.</value>
   </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Per iniziare</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Nascondi</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>Aggiungi la tua prima spesa</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Fai il backup dei tuoi dati</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Proteggi l'app con un blocco</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Attiva i promemoria</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Scorri una riga verso sinistra per modificare o eliminare</value>
+  </data>
 </root>

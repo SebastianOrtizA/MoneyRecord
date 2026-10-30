@@ -29,6 +29,7 @@ namespace MoneyRecord.ViewModels
         private readonly ISavingsGoalService _goals;
         private readonly ITripService _trips;
         private readonly IHomeLayoutSettings _layoutSettings;
+        private readonly IGetStartedService _getStarted;
         private readonly IDebtService _debts;
         private bool _askingCrashReports;
 
@@ -106,7 +107,7 @@ namespace MoneyRecord.ViewModels
         private bool isRefreshing;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowRecent))]
+        [NotifyPropertyChangedFor(nameof(ShowRecentEmpty))]
         private bool hasRecentTransactions;
 
         [ObservableProperty]
@@ -147,16 +148,24 @@ namespace MoneyRecord.ViewModels
 
         public bool HasActiveTrip => ActiveTrip != null;
 
+        /// <summary>The first-run checklist while it is open (Home card "Get started"); null once hidden or done.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowStartChecklist))]
+        private GetStartedChecklist? startChecklist;
+
         /// <summary>Which cards show and in what order (Settings → Home screen); read again on every load.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals), nameof(ShowDebts))]
+        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowRecentEmpty), nameof(ShowStartChecklist), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals), nameof(ShowDebts))]
         private HomeLayout layout = HomeLayout.Default;
 
         // A card shows when it is enabled and has something to show
         // The period picker stays while a card that follows the period is on
         public bool ShowPeriodPicker => Layout.IsShown(HomeCard.PeriodSummary) || Layout.IsShown(HomeCard.Recent) || Layout.IsShown(HomeCard.Budgets);
         public bool ShowPeriodSummary => Layout.IsShown(HomeCard.PeriodSummary);
-        public bool ShowRecent => Layout.IsShown(HomeCard.Recent) && HasRecentTransactions;
+        // An empty period still shows the card, with a hint to add the first entry
+        public bool ShowRecent => Layout.IsShown(HomeCard.Recent);
+        public bool ShowRecentEmpty => !HasRecentTransactions;
+        public bool ShowStartChecklist => Layout.IsShown(HomeCard.GetStarted) && StartChecklist != null;
         public bool ShowUpcoming => Layout.IsShown(HomeCard.Upcoming) && HasUpcoming;
         public bool ShowBudgets => Layout.IsShown(HomeCard.Budgets) && HasBudgets;
         public bool ShowTrip => Layout.IsShown(HomeCard.Trip) && HasActiveTrip;
@@ -185,8 +194,9 @@ namespace MoneyRecord.ViewModels
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
             IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew,
-            IHomeLayoutSettings layoutSettings, IDebtService debts)
+            IHomeLayoutSettings layoutSettings, IDebtService debts, IGetStartedService getStarted)
         {
+            _getStarted = getStarted;
             _debts = debts;
             _goals = goals;
             _layoutSettings = layoutSettings;
@@ -286,11 +296,13 @@ namespace MoneyRecord.ViewModels
                 }
                 // Goals reuse the balances above instead of loading them again
                 var debtsTask = IfShown(HomeCard.Debts, _debts.GetAllAsync, []);
+                var startTask = IfShown(HomeCard.GetStarted, _getStarted.GetOpenAsync, null);
                 var goalsTask = IfShown(HomeCard.Goals, async () => await _goals.GetProgressAsync(await balancesTask), []);
-                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask, debtsTask);
+                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask, debtsTask, startTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 Layout = layout;
+                StartChecklist = await startTask;
                 var balanceLines = CurrencyBalance.DisplayLines(
                     CurrencyBalance.FromAccounts((await balancesTask).Where(b => !b.IsDebt), MoneyFormatter.BaseCurrency));
                 PrimaryBalance = balanceLines[0];
@@ -377,6 +389,23 @@ namespace MoneyRecord.ViewModels
 
         [RelayCommand]
         private Task CustomizeHomeAsync() => _navigationService.NavigateToAsync(nameof(HomeLayoutPage));
+
+        [RelayCommand]
+        private Task OpenStartStepAsync(GetStartedRow? row) => row?.Step switch
+        {
+            null => Task.CompletedTask,
+            GetStartedStep.AddEntry => _navigationService.NavigateToAsync(nameof(AddTransactionPage),
+                new Dictionary<string, object> { { "TransactionType", TransactionType.Expense } }),
+            // Backup, app lock and reminders are all Settings cards
+            _ => _navigationService.NavigateToAsync(nameof(SettingsPage))
+        };
+
+        [RelayCommand]
+        private void HideStartChecklist()
+        {
+            _getStarted.Dismiss();
+            StartChecklist = null;
+        }
 
         private static string OrDash(string text) => text.Length > 0 ? text : "—";
 

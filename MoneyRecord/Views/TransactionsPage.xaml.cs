@@ -21,6 +21,8 @@ namespace MoneyRecord.Views
             await _viewModel.InitializeAsync();
         }
 
+        private void OnSwipeStarted(object? sender, SwipeStartedEventArgs e) => _viewModel.MarkSwipeSeen();
+
         protected override void OnDisappearing()
         {
             base.OnDisappearing();

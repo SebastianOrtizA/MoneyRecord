@@ -2912,4 +2912,25 @@
   <data name="UndoNotPossible" xml:space="preserve">
     <value>Could not undo. The entry can no longer be restored.</value>
   </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Get started</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>Add your first expense</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Back up your data</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Lock the app</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Turn on reminders</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Swipe a row left to edit or delete</value>
+  </data>
 </root>

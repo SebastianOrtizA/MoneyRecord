@@ -10,6 +10,9 @@ namespace MoneyRecord.Models
         Budgets,
         Trip,
         Goals,
-        Debts
+        Debts,
+
+        /// <summary>The first-run checklist; on a new install it sits right under the balance (see <see cref="HomeLayout.Default"/>).</summary>
+        GetStarted
     }
 }

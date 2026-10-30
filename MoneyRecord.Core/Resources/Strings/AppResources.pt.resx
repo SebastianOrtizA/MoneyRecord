@@ -2860,4 +2860,25 @@
   <data name="UndoNotPossible" xml:space="preserve">
     <value>Não foi possível desfazer. O lançamento não pode mais ser restaurado.</value>
   </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Primeiros passos</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Ocultar</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>Adicione sua primeira despesa</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Faça um backup dos seus dados</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Proteja o app com bloqueio</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Ative os lembretes</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Deslize um item para a esquerda para editar ou excluir</value>
+  </data>
 </root>

@@ -19,6 +19,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
     private AccountRepository _accountRepository = null!;
     private CategoryRepository _categoryRepository = null!;
     private DataExportService _service = null!;
+    private readonly BackupHistory _history = new(new FakePreferences(), TimeProvider.System);
 
     private SQLiteAsyncConnection Db { get; set; } = null!;
     private string Receipts => Path.Combine(_appData, "receipts");
@@ -31,13 +32,23 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Db = await _dbInitializer.GetConnectionAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
-        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData));
+        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData), _history);
     }
 
     public async Task DisposeAsync()
     {
         await Db.CloseAsync();
         Directory.Delete(_appData, recursive: true);
+    }
+
+    [Fact]
+    public async Task Writing_a_backup_is_remembered()
+    {
+        _history.LastWritten.Should().BeNull();
+
+        await _service.ExportBackupAsync(BackupPath("remembered.zip"));
+
+        _history.LastWritten.Should().NotBeNull();
     }
 
     [Fact]

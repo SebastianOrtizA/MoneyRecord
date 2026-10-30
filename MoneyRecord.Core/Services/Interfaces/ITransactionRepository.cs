@@ -10,6 +10,9 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
 
+        /// <summary>Whether there is any transaction at all.</summary>
+        Task<bool> AnyAsync();
+
         /// <summary>The parts of a split payment (see <see cref="Transaction.SplitId"/>), in the order they were saved.</summary>
         Task<List<Transaction>> GetSplitPartsAsync(string splitId);
 

@@ -8260,5 +8260,68 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Get started.
+        /// </summary>
+        public static string GetStartedTitle {
+            get {
+                return ResourceManager.GetString("GetStartedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide.
+        /// </summary>
+        public static string GetStartedHide {
+            get {
+                return ResourceManager.GetString("GetStartedHide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add your first expense.
+        /// </summary>
+        public static string GetStartedAddEntry {
+            get {
+                return ResourceManager.GetString("GetStartedAddEntry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back up your data.
+        /// </summary>
+        public static string GetStartedBackup {
+            get {
+                return ResourceManager.GetString("GetStartedBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lock the app.
+        /// </summary>
+        public static string GetStartedAppLock {
+            get {
+                return ResourceManager.GetString("GetStartedAppLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Turn on reminders.
+        /// </summary>
+        public static string GetStartedReminders {
+            get {
+                return ResourceManager.GetString("GetStartedReminders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Swipe a row left to edit or delete.
+        /// </summary>
+        public static string SwipeHint {
+            get {
+                return ResourceManager.GetString("SwipeHint", resourceCulture);
+            }
+        }
+        
     }
 }

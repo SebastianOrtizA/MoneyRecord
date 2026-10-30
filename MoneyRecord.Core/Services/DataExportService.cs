@@ -35,14 +35,16 @@ namespace MoneyRecord.Services
         private readonly ITransferRepository _transferRepository;
         private readonly IPayeeRepository _payeeRepository;
         private readonly IAppPaths _paths;
+        private readonly IBackupHistory _backupHistory;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths, IBackupHistory backupHistory)
         {
+            _backupHistory = backupHistory;
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -64,6 +66,7 @@ namespace MoneyRecord.Services
             // Before WriteZip, which rewrites the receipt paths
             var fingerprint = Fingerprint(backup);
             await Task.Run(() => WriteZip(backup, destinationPath, password));
+            _backupHistory.MarkWritten();
             return fingerprint;
         }
 
