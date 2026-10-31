@@ -12,6 +12,12 @@ namespace MoneyRecord.Views
             InitializeComponent();
             _viewModel = viewModel;
             BindingContext = _viewModel;
+            // The toolbar's search icon shows the box: ready to type
+            _viewModel.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(TransactionsViewModel.IsSearchOpen) && _viewModel.IsSearchOpen)
+                    SearchBox.Dispatcher.Dispatch(() => SearchBox.Focus());
+            };
         }
 
         protected override async void OnAppearing()

@@ -17,6 +17,7 @@ namespace MoneyRecord.ViewModels
     {
         private readonly IBalanceService _balanceService;
         private readonly ILedgerService _ledgerService;
+        private readonly ITransactionsViewSettings _viewSettings;
         private readonly ISwipeHintSettings _swipeHint;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
@@ -33,8 +34,22 @@ namespace MoneyRecord.ViewModels
         private List<AccountBalanceInfo> _accountBalances = [];
         private List<Account> _accounts = [];
 
+        /// <summary>How the list is grouped (saved: by date until the user picks another).</summary>
         [ObservableProperty]
-        private GroupingMode currentGroupingMode = GroupingMode.Category;
+        [NotifyPropertyChangedFor(nameof(ShowRowDates))]
+        private GroupingMode currentGroupingMode;
+
+        /// <summary>A day group names the date once, so its rows leave it out.</summary>
+        public bool ShowRowDates => CurrentGroupingMode != GroupingMode.Date;
+
+        partial void OnCurrentGroupingModeChanged(GroupingMode value) => _viewSettings.Grouping = value;
+
+        /// <summary>The search box is shown (opened by the toolbar's search icon).</summary>
+        [ObservableProperty]
+        private bool isSearchOpen;
+
+        [RelayCommand]
+        private void ToggleSearch() => IsSearchOpen = !IsSearchOpen;
 
         [ObservableProperty]
         private bool isAscending;
@@ -131,9 +146,11 @@ namespace MoneyRecord.ViewModels
 
         public TransactionsViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
             IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService,
-            TransactionsDrillDown drillDown, ITripService trips, ISwipeHintSettings swipeHint)
+            TransactionsDrillDown drillDown, ITripService trips, ISwipeHintSettings swipeHint, ITransactionsViewSettings viewSettings)
         {
             _swipeHint = swipeHint;
+            _viewSettings = viewSettings;
+            currentGroupingMode = viewSettings.Grouping;
             _trips = trips;
             _balanceService = balanceService;
             _ledgerService = ledgerService;
@@ -232,7 +249,7 @@ namespace MoneyRecord.ViewModels
             {
                 Items = CurrentGroupingMode == GroupingMode.None
                     ? (IReadOnlyList<object>)filtered
-                    : LedgerGrouping.Group(filtered, CurrentGroupingMode, _accountBalances, _accounts);
+                    : LedgerGrouping.Group(filtered, CurrentGroupingMode, _accountBalances, _accounts, IsAscending);
                 IsEmpty = filtered.Count == 0;
 
                 // Once per visit, when there are rows to swipe
@@ -253,16 +270,14 @@ namespace MoneyRecord.ViewModels
             ApplyFilters();
         }
 
+        /// <summary>The overflow menu: group by date, category or account, or no groups.</summary>
         [RelayCommand]
-        private void ToggleGrouping()
+        private void SetGrouping(GroupingMode mode)
         {
-            // None -> Category -> Account -> None
-            CurrentGroupingMode = CurrentGroupingMode switch
-            {
-                GroupingMode.None => GroupingMode.Category,
-                GroupingMode.Category => GroupingMode.Account,
-                _ => GroupingMode.None
-            };
+            if (mode == CurrentGroupingMode)
+                return;
+
+            CurrentGroupingMode = mode;
             ApplyFilters();
         }
 

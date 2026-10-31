@@ -2915,4 +2915,7 @@
   <data name="SelectedState" xml:space="preserve">
     <value>selezionato</value>
   </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>Per data</value>
+  </data>
 </root>

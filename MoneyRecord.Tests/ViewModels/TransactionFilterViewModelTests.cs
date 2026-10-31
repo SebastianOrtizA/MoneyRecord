@@ -218,6 +218,42 @@ public class TransactionFilterViewModelTests
     }
 
     [Fact]
+    public void Every_filter_that_is_on_is_a_chip_search_included()
+    {
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food", Tags = "work" }]);
+        _sut.ActiveChips.Should().BeEmpty();
+
+        _sut.SearchText = "bread";
+        _sut.SelectedTag = "work";   // raises Changed at once, and the chips follow
+        _sut.SelectedCategory = _sut.Categories[0];
+
+        _sut.ActiveChips.Select(c => c.Kind).Should().Equal(ActiveFilterKind.Search, ActiveFilterKind.Category, ActiveFilterKind.Tag);
+        _sut.ActiveChips[0].Text.Should().Contain("bread");
+        _sut.ActiveChips[1].Text.Should().Be("Food");
+    }
+
+    [Fact]
+    public void A_chips_cross_turns_that_filter_off_at_once_and_leaves_the_others()
+    {
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food", Tags = "work" }]);
+        _sut.SelectedTag = "work";
+        _sut.SelectedCategory = _sut.Categories[0];
+        _sut.MinAmountText = "10";
+        TypingPause();
+        _changes = 0;
+
+        _sut.RemoveChipCommand.Execute(_sut.ActiveChips.Single(c => c.Kind == ActiveFilterKind.Amount));
+
+        _sut.MinAmountText.Should().BeEmpty();
+        _sut.ActiveChips.Select(c => c.Kind).Should().Equal(ActiveFilterKind.Category, ActiveFilterKind.Tag);
+        _changes.Should().BeGreaterThan(0, "no waiting for the typing pause");
+
+        _sut.RemoveChipCommand.Execute(_sut.ActiveChips.Single(c => c.Kind == ActiveFilterKind.Tag));
+        _sut.SelectedTag.Should().BeNull();
+        _sut.SelectedCategory.Should().NotBeNull();
+    }
+
+    [Fact]
     public void ShowOnly_turns_every_other_filter_off_and_keeps_the_type_and_category_with_one_change()
     {
         _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food", Tags = "work" }]);

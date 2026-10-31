@@ -2969,4 +2969,7 @@
   <data name="SelectedState" xml:space="preserve">
     <value>selected</value>
   </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>By Date</value>
+  </data>
 </root>
