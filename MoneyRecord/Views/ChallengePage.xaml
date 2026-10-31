@@ -58,44 +58,8 @@
                         <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
                         <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
                     </Grid>
-                    <!-- Month: ‹ October 2026 ›, a tap on the name returns to the current month -->
-                    <Grid ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding IsMonthView}">
-                        <Label Text="&#xF0141;" FontFamily="MaterialDesignIcons" FontSize="24"
-                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="44" HeightRequest="44"
-                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                               IsEnabled="{Binding CanGoPreviousMonth}"
-                               SemanticProperties.Description="{ext:Localize ChallengeMonthPrevious}">
-                            <Label.Triggers>
-                                <Trigger TargetType="Label" Property="IsEnabled" Value="False">
-                                    <Setter Property="Opacity" Value="0.2" />
-                                </Trigger>
-                            </Label.Triggers>
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding PreviousMonthCommand}" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Label Grid.Column="1" Text="{Binding MonthText}" FontSize="16" FontAttributes="Bold"
-                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HeightRequest="44"
-                               SemanticProperties.Description="{ext:Localize ChallengeMonthCurrent}">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding CurrentMonthCommand}" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Label Grid.Column="2" Text="&#xF0142;" FontFamily="MaterialDesignIcons" FontSize="24"
-                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" WidthRequest="44" HeightRequest="44"
-                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                               IsEnabled="{Binding CanGoNextMonth}"
-                               SemanticProperties.Description="{ext:Localize ChallengeMonthNext}">
-                            <Label.Triggers>
-                                <Trigger TargetType="Label" Property="IsEnabled" Value="False">
-                                    <Setter Property="Opacity" Value="0.2" />
-                                </Trigger>
-                            </Label.Triggers>
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding NextMonthCommand}" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </Grid>
+                    <!-- Month: ‹ October 2026 ›, a tap on the name returns to the current month (the stepper the tabs use) -->
+                    <controls:PeriodStepper IsVisible="{Binding IsMonthView}" />
                     <Label Text="{Binding ShowingText}" IsVisible="{Binding HasShowing}"
                            Style="{StaticResource MutedLabel}" FontSize="13" />
                     <!-- Weekday names over the calendar columns: same width and spacing as the grid below (the header's padding is undone) -->

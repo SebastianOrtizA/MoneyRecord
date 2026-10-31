@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 
@@ -13,7 +14,7 @@ namespace MoneyRecord.ViewModels
     /// <see cref="MonthCount"/> instead, since they need whole months. Every report shows one currency,
     /// <see cref="ReportCurrency"/> (until exchange rates exist).
     /// </summary>
-    public partial class PeriodViewModel : ObservableObject
+    public partial class PeriodViewModel : ObservableObject, IPeriodStepperSource
     {
         // Set while ShowMonth changes three properties, so listeners reload once
         private bool _batching;
@@ -172,10 +173,10 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>The arrows show only for a calendar month or year (this one, or a custom one).</summary>
-        public bool CanStep => PeriodHelper.StepOf(SteppableRange().Start, SteppableRange().End) != null;
+        public bool CanStepBack => PeriodHelper.StepOf(SteppableRange().Start, SteppableRange().End) != null;
 
         /// <summary>Never past today: the current month or year is the last.</summary>
-        public bool CanStepForward => CanStep && Shifted(1) is { } next && next.Start <= Today;
+        public bool CanStepForward => CanStepBack && Shifted(1) is { } next && next.Start <= Today;
 
         private DateTime Today => _time.GetLocalNow().Date;
 
@@ -239,6 +240,13 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private void OpenSheet() => IsSheetOpen = true;
 
+        // The stepper's label opens the period sheet
+        IRelayCommand IPeriodStepperSource.PickCommand => OpenSheetCommand;
+
+        bool IPeriodStepperSource.HasPicker => true;
+
+        string IPeriodStepperSource.PickHint => AppResources.SelectPeriod;
+
         [RelayCommand]
         private void CloseSheet() => IsSheetOpen = false;
 
@@ -271,7 +279,7 @@ namespace MoneyRecord.ViewModels
         {
             OnPropertyChanged(nameof(Choices));
             OnPropertyChanged(nameof(Label));
-            OnPropertyChanged(nameof(CanStep));
+            OnPropertyChanged(nameof(CanStepBack));
             OnPropertyChanged(nameof(CanStepForward));
         }
 

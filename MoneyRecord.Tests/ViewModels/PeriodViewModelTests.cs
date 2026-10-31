@@ -164,7 +164,7 @@ public class PeriodViewModelTests
         var sut = Stepper();
         sut.SelectedPeriod = sut.Periods.First(p => p.Type == type);
 
-        sut.CanStep.Should().BeFalse();
+        sut.CanStepBack.Should().BeFalse();
         sut.Label.Should().Be(sut.SelectedPeriod.DisplayName);
     }
 
@@ -176,7 +176,7 @@ public class PeriodViewModelTests
         sut.CustomEndDate = new DateTime(2026, 4, 20);
         sut.SelectedPeriod = sut.Periods.First(p => p.Type == PeriodType.CustomPeriod);
 
-        sut.CanStep.Should().BeFalse();
+        sut.CanStepBack.Should().BeFalse();
         sut.Label.Should().Be(DateFormatter.FormatRange(new DateTime(2026, 3, 5), new DateTime(2026, 4, 20)));
     }
 

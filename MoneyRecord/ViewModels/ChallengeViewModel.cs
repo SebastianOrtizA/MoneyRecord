@@ -67,7 +67,7 @@ namespace MoneyRecord.ViewModels
 
     /// <summary>One challenge as a game: a grid with a cell per day; a tap marks it done or not.</summary>
     [QueryProperty(nameof(ChallengeIdText), "ChallengeId")]
-    public partial class ChallengeViewModel : ObservableObject
+    public partial class ChallengeViewModel : ObservableObject, IPeriodStepperSource
     {
         private readonly ISavingsChallengeService _challengeService;
         private readonly IAccountRepository _accountRepository;
@@ -132,13 +132,13 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>"October 2026": the month the calendar shows.</summary>
         [ObservableProperty]
-        private string monthText = string.Empty;
+        private string label = string.Empty;
 
         [ObservableProperty]
-        private bool canGoPreviousMonth;
+        private bool canStepBack;
 
         [ObservableProperty]
-        private bool canGoNextMonth;
+        private bool canStepForward;
 
         /// <summary>The weekday names over the calendar columns, starting at the culture's first day of the week.</summary>
         public IReadOnlyList<string> WeekdayHeaders { get; } = ChallengeDayFilter.WeekdayHeaders(CultureInfo.CurrentCulture);
@@ -278,27 +278,27 @@ namespace MoneyRecord.ViewModels
 
         private void UpdateMonthNavigation()
         {
-            MonthText = DateFormatter.FormatMonthYear(ShownMonth);
+            Label = DateFormatter.FormatMonthYear(ShownMonth);
             var span = ChallengeDayFilter.MonthSpan(_days);
-            CanGoPreviousMonth = span != null && ShownMonth > span.Value.First;
-            CanGoNextMonth = span != null && ShownMonth < span.Value.Last;
+            CanStepBack = span != null && ShownMonth > span.Value.First;
+            CanStepForward = span != null && ShownMonth < span.Value.Last;
         }
 
         private void SelectView(ChallengeView view) => SelectedView = view;
 
         [RelayCommand]
-        private void PreviousMonth()
+        private void Previous()
         {
-            if (!CanGoPreviousMonth)
+            if (!CanStepBack)
                 return;
             ShownMonth = ShownMonth.AddMonths(-1);
             ApplyFilter();
         }
 
         [RelayCommand]
-        private void NextMonth()
+        private void Next()
         {
-            if (!CanGoNextMonth)
+            if (!CanStepForward)
                 return;
             ShownMonth = ShownMonth.AddMonths(1);
             ApplyFilter();
@@ -311,6 +311,13 @@ namespace MoneyRecord.ViewModels
             ShownMonth = ChallengeDayFilter.ClampMonth(_days, _time.GetLocalNow().Date);
             ApplyFilter();
         }
+
+        // The stepper's label goes back to the current month; there is no list to open
+        IRelayCommand IPeriodStepperSource.PickCommand => CurrentMonthCommand;
+
+        bool IPeriodStepperSource.HasPicker => false;
+
+        string IPeriodStepperSource.PickHint => AppResources.ChallengeMonthCurrent;
 
         [RelayCommand]
         private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;
