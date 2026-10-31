@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using LiveChartsCore.SkiaSharpView.Maui;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.LifecycleEvents;
 using MoneyRecord.Helpers;
 using System.Reflection;
 using Serilog;
@@ -44,6 +45,7 @@ namespace MoneyRecord
                 })
                 .ConfigureDecimalEntry()
                 .ConfigureTabReselect()
+                .ConfigureNotificationRoute()
                 // Reports charts (LiveChartsCore on SkiaSharp)
                 .UseSkiaSharp()
                 .UseLiveCharts()
@@ -375,5 +377,56 @@ namespace MoneyRecord
 #endif
             return builder;
         }
+
+        /// <summary>
+        /// Android: a tapped notification or widget button opens the app on its page (<c>MainActivity.RouteExtra</c>).
+        /// Lifecycle events only fire once the MAUI app exists, unlike MainActivity itself, which has been seen running
+        /// with <c>IPlatformApplication.Current.Services</c> still null (Sentry: ArgumentNullException "provider").
+        /// </summary>
+        private static MauiAppBuilder ConfigureNotificationRoute(this MauiAppBuilder builder)
+        {
+#if ANDROID
+            builder.ConfigureLifecycleEvents(events => events.AddAndroid(android => android
+                // Home opens the page once the Shell is ready (not again after a rotation)
+                .OnCreate((activity, savedInstanceState) =>
+                {
+                    if (savedInstanceState == null)
+                        TakeNotificationRoute(activity.Intent, openNow: false);
+                })
+                // The app was running: open the page now. Keep the intent on the activity too, so a recreated activity
+                // (process death) replays this route and not the one it was first launched with
+                .OnNewIntent((activity, intent) =>
+                {
+                    if (intent != null)
+                        activity.Intent = intent;
+                    TakeNotificationRoute(intent, openNow: true);
+                })));
+#endif
+            return builder;
+        }
+
+#if ANDROID
+        private static void TakeNotificationRoute(Android.Content.Intent? intent, bool openNow)
+        {
+            var route = intent?.GetStringExtra(MainActivity.RouteExtra);
+            if (string.IsNullOrEmpty(route))
+                return;
+
+            // MAUI only fires these events once its services exist, so this is never null in practice
+            var launch = IPlatformApplication.Current?.Services?.GetService<NotificationLaunch>();
+            if (launch == null)
+                return;
+
+            // Running app: not while the Shell is missing (the first-run setup), or it would open later on an unrelated
+            // visit to Home. A cold start has no Shell yet by design: Home's first appearance opens the request, so after
+            // a cold start into the first-run setup it waits for Home's first visit
+            if (openNow && Shell.Current == null)
+                return;
+
+            launch.Request(route);
+            if (openNow)
+                MainThread.BeginInvokeOnMainThread(async () => await launch.OpenPendingAsync());
+        }
+#endif
     }
 }
