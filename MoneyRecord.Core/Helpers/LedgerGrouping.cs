@@ -2,20 +2,28 @@ using MoneyRecord.Models;
 
 namespace MoneyRecord.Helpers
 {
-    /// <summary>Groups Home's ledger entries by category or by account.</summary>
+    /// <summary>Groups the ledger entries by day, category or account.</summary>
     public static class LedgerGrouping
     {
+        // calendar
+        private const string DayIconCode = "F00ED";
+
         /// <summary>
         /// Category groups total their entries; account groups show the account's balance in its own currency
         /// (from <paramref name="balances"/>, 0 when it has none). Groups are keyed by ID (transfers, which have no
-        /// category, form one group) and sorted by name.
+        /// category, form one group) and sorted by name. Day groups hold one date each, open, with the day's net per currency
+        /// (transfers move money between own accounts and are left out of it), newest first unless <paramref name="ascending"/>.
         /// </summary>
         public static List<TransactionGroup> Group(
             IEnumerable<LedgerEntry> entries,
             GroupingMode mode,
             IReadOnlyCollection<AccountBalanceInfo>? balances = null,
-            IReadOnlyCollection<Account>? accounts = null)
+            IReadOnlyCollection<Account>? accounts = null,
+            bool ascending = false)
         {
+            if (mode == GroupingMode.Date)
+                return DayGroups(entries, ascending);
+
             var groups = mode switch
             {
                 GroupingMode.Category => entries
@@ -30,6 +38,27 @@ namespace MoneyRecord.Helpers
             };
 
             return groups.OrderBy(g => g.GroupName).ToList();
+        }
+
+        private static List<TransactionGroup> DayGroups(IEnumerable<LedgerEntry> entries, bool ascending)
+        {
+            var days = entries.GroupBy(e => e.Date.Date);
+            var ordered = ascending ? days.OrderBy(g => g.Key) : days.OrderByDescending(g => g.Key);
+
+            return ordered.Select(day =>
+            {
+                var items = day.ToList();
+                var totals = CurrencyAmount.Totals(
+                    items.Where(e => !e.IsTransfer).Select(e => new CurrencyAmount(e.CurrencyCode, e.SignedAmount)),
+                    MoneyFormatter.BaseCurrency);
+                // Coloured by its sign only when every currency agrees; otherwise (or with no net) it is neutral
+                var type = totals.Count > 0 && totals.All(t => t.Amount > 0) ? TransactionType.Income
+                    : totals.Count > 0 && totals.All(t => t.Amount < 0) ? TransactionType.Expense
+                    : TransactionType.Transfer;
+
+                return new TransactionGroup(DateFormatter.Format(day.Key, DateStyle.Long), DayIconCode, type, totals, items,
+                    totalsAreSigned: true, isExpanded: true);
+            }).ToList();
         }
 
         /// <summary>One category means one type: an income or expense category, or the transfers.</summary>

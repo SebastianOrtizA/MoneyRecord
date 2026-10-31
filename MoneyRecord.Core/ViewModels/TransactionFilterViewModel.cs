@@ -8,10 +8,27 @@ using System.Globalization;
 
 namespace MoneyRecord.ViewModels
 {
+    public enum ActiveFilterKind
+    {
+        Search,
+        Type,
+        Category,
+        Account,
+        Tag,
+        Amount
+    }
+
+    /// <summary>One filter that is on, shown as a chip that removes it.</summary>
+    public sealed record ActiveFilterChip(ActiveFilterKind Kind, string Text)
+    {
+        /// <summary>What a screen reader says for the chip: its cross removes the filter.</summary>
+        public string Description => string.Format(AppResources.RemoveFilter, Text);
+    }
+
     /// <summary>
-    /// The Transactions tab's search box and filter chips. A chip shows its filter's name, or the chosen value when it
-    /// filters; tapping it picks a value from a list (Amount opens a min/max row instead). <see cref="Changed"/> fires
-    /// when the filter changes: typed text once the typing stops, picks and buttons at once.
+    /// The Transactions tab's search box and filters. <see cref="Changed"/> fires when the filter changes: typed text
+    /// once the typing stops, picks and buttons at once. A pick list answers through <see cref="Picked"/>; every filter
+    /// that is on is a chip in <see cref="ActiveChips"/>.
     /// </summary>
     public partial class TransactionFilterViewModel : ObservableObject
     {
@@ -105,6 +122,65 @@ namespace MoneyRecord.ViewModels
         };
 
         public bool IsAmountActive => ParseAmountLimit(MinAmountText) != null || ParseAmountLimit(MaxAmountText) != null;
+
+        /// <summary>Every filter that is on, search included, as a chip under the page header.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasActiveChips))]
+        private List<ActiveFilterChip> activeChips = [];
+
+        public bool HasActiveChips => ActiveChips.Count > 0;
+
+        private List<ActiveFilterChip> BuildChips()
+        {
+            List<ActiveFilterChip> chips = [];
+            if (!string.IsNullOrWhiteSpace(SearchText))
+                chips.Add(new(ActiveFilterKind.Search, $"“{SearchText.Trim()}”"));
+            if (IsTypeActive)
+                chips.Add(new(ActiveFilterKind.Type, SelectedType!.Name));
+            if (IsCategoryActive)
+                chips.Add(new(ActiveFilterKind.Category, SelectedCategory!.Name));
+            if (IsAccountActive)
+                chips.Add(new(ActiveFilterKind.Account, SelectedAccount!.Name));
+            if (IsTagActive)
+                chips.Add(new(ActiveFilterKind.Tag, SelectedTag!));
+            if (IsAmountActive)
+                chips.Add(new(ActiveFilterKind.Amount, AmountChipText));
+            return chips;
+        }
+
+        /// <summary>A chip's cross: that filter goes off, and the list follows at once.</summary>
+        [RelayCommand]
+        private void RemoveChip(ActiveFilterChip? chip)
+        {
+            if (chip == null)
+                return;
+
+            switch (chip.Kind)
+            {
+                case ActiveFilterKind.Search:
+                    SearchText = string.Empty;
+                    break;
+                case ActiveFilterKind.Type:
+                    SelectedType = Types[0];
+                    break;
+                case ActiveFilterKind.Category:
+                    SelectedCategory = null;
+                    break;
+                case ActiveFilterKind.Account:
+                    SelectedAccount = null;
+                    break;
+                case ActiveFilterKind.Tag:
+                    SelectedTag = null;
+                    break;
+                case ActiveFilterKind.Amount:
+                    MinAmountText = string.Empty;
+                    MaxAmountText = string.Empty;
+                    break;
+            }
+
+            // Typed values (search, amount) wait for a pause when edited; a removal should not
+            RaiseChanged();
+        }
 
         /// <summary>How many filters narrow the list (type, category, account, tag, amount); the search text is not counted.</summary>
         public int ActiveCount => new[] { IsTypeActive, IsCategoryActive, IsAccountActive, IsTagActive, IsAmountActive }.Count(on => on);
@@ -242,6 +318,7 @@ namespace MoneyRecord.ViewModels
 
             _typingDebouncer.Cancel();
             OnPropertyChanged(nameof(ActiveCount));
+            ActiveChips = BuildChips();
             Changed?.Invoke();
         }
     }

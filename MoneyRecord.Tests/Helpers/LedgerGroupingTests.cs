@@ -14,6 +14,76 @@ public class LedgerGroupingTests
         CategoryId = category.GetHashCode(), CategoryName = category, CategoryIconCode = "F0001", AccountId = accountId, AccountName = account
     };
 
+    private static LedgerEntry On(DateTime date, LedgerEntry entry) => entry with { Date = date };
+
+    private static LedgerEntry Income(int id, long cents, string currency = "EUR") => new()
+    {
+        Kind = LedgerEntryKind.Income, SourceId = id, AmountCents = cents, CurrencyCode = currency, CategoryName = "Salary"
+    };
+
+    [Fact]
+    public void Day_groups_hold_one_date_each_open_and_newest_first()
+    {
+        var groups = LedgerGrouping.Group([
+            On(new DateTime(2026, 10, 29, 9, 0, 0), Expense(1, "Food", 1_000)),
+            On(new DateTime(2026, 10, 31, 18, 0, 0), Expense(2, "Food", 2_000)),
+            On(new DateTime(2026, 10, 31, 8, 0, 0), Expense(3, "Rent", 500))], GroupingMode.Date);
+
+        groups.Select(g => g.TransactionCount).Should().Equal(2, 1);
+        groups.Should().OnlyContain(g => g.IsExpanded);
+        groups[0].GroupName.Should().Be(DateFormatter.Format(new DateTime(2026, 10, 31), DateStyle.Long));
+    }
+
+    [Fact]
+    public void Day_groups_can_run_oldest_first()
+    {
+        var groups = LedgerGrouping.Group([
+            On(new DateTime(2026, 10, 31), Expense(1, "Food", 1_000)),
+            On(new DateTime(2026, 10, 29), Expense(2, "Food", 2_000))], GroupingMode.Date, ascending: true);
+
+        groups.Select(g => g.TransactionCount).Should().Equal(1, 1);
+        groups[0].GroupName.Should().Be(DateFormatter.Format(new DateTime(2026, 10, 29), DateStyle.Long));
+    }
+
+    [Fact]
+    public void A_day_totals_its_net_per_currency_and_never_adds_currencies()
+    {
+        var day = new DateTime(2026, 10, 31);
+        var group = LedgerGrouping.Group([
+            On(day, Income(1, 10_000, "ZZA")), On(day, Expense(2, "Food", 2_500, "ZZA")), On(day, Expense(3, "Food", 1_000, "ZZB"))],
+            GroupingMode.Date).Single();
+
+        // Two non-base currencies, so the order does not depend on the machine's base currency
+        group.Totals.Should().Equal(new CurrencyAmount("ZZA", 75m), new CurrencyAmount("ZZB", -10m));
+    }
+
+    [Fact]
+    public void A_day_is_coloured_by_its_sign_only_when_every_currency_agrees()
+    {
+        var day = new DateTime(2026, 10, 31);
+
+        LedgerGrouping.Group([On(day, Expense(1, "Food", 1_000, "ZZA")), On(day, Expense(2, "Food", 500, "ZZB"))], GroupingMode.Date)
+            .Single().Type.Should().Be(TransactionType.Expense);
+        LedgerGrouping.Group([On(day, Income(1, 1_000, "ZZA")), On(day, Income(2, 500, "ZZB"))], GroupingMode.Date)
+            .Single().Type.Should().Be(TransactionType.Income);
+        LedgerGrouping.Group([On(day, Income(1, 10_000, "ZZA")), On(day, Expense(2, "Food", 500, "ZZB"))], GroupingMode.Date)
+            .Single().Type.Should().Be(TransactionType.Transfer, "mixed signs get the neutral colour, not whichever currency sorts first");
+    }
+
+    [Fact]
+    public void A_transfer_moves_money_between_own_accounts_so_it_is_left_out_of_the_day_total()
+    {
+        var day = new DateTime(2026, 10, 31);
+        var transfer = new LedgerEntry { Kind = LedgerEntryKind.Transfer, SourceId = 9, AmountCents = 30_000, CurrencyCode = "EUR", Date = day };
+
+        var group = LedgerGrouping.Group([transfer, On(day, Expense(1, "Food", 1_000))], GroupingMode.Date).Single();
+
+        group.TransactionCount.Should().Be(2);
+        group.Totals.Should().Equal(new CurrencyAmount("EUR", -10m));
+
+        LedgerGrouping.Group([transfer], GroupingMode.Date).Single().Totals.Should().BeEmpty();
+    }
+
     [Fact]
     public void Category_groups_total_their_entries_and_are_sorted_by_name()
     {

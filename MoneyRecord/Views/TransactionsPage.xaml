@@ -11,6 +11,23 @@
              x:DataType="viewmodels:TransactionsViewModel"
              Title="{ext:Localize Transactions}">
 
+    <!-- Search is an icon (it opens the box under the header); the grouping and the sort order are in the overflow menu -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{ext:Localize SearchTransactions}"
+                     IconImageSource="{StaticResource SearchIcon}"
+                     Command="{Binding ToggleSearchCommand}" />
+        <ToolbarItem Order="Secondary" Text="{Binding ByDateText}"
+                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Date}" />
+        <ToolbarItem Order="Secondary" Text="{Binding ByCategoryText}"
+                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Category}" />
+        <ToolbarItem Order="Secondary" Text="{Binding ByAccountText}"
+                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Account}" />
+        <ToolbarItem Order="Secondary" Text="{Binding ListText}"
+                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.None}" />
+        <ToolbarItem Order="Secondary" Text="{Binding IsAscending, Converter={StaticResource BoolToSortTextConverter}}"
+                     Command="{Binding ToggleSortOrderCommand}" />
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Resources>
         <!-- One row: tap opens the detail sheet, swipe left reveals Edit and Delete -->
         <DataTemplate x:Key="EntryTemplate" x:DataType="models:LedgerEntry">
@@ -102,6 +119,7 @@
                                        SemanticProperties.Description="{ext:Localize ReceiptAttached}"
                                        TextColor="{AppThemeBinding Light=#4CAF50, Dark=#81C784}" />
                                 <Label Text="{Binding Date, Converter={StaticResource DateTextConverter}, ConverterParameter=Medium}"
+                                       IsVisible="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=ShowRowDates}"
                                        FontSize="12"
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                             </HorizontalStackLayout>
@@ -176,45 +194,48 @@
                             ItemTemplate="{StaticResource LedgerItemTemplateSelector}">
                 <CollectionView.Header>
                     <VerticalStackLayout Padding="16,12,16,4" Spacing="12">
-                        <controls:PeriodStepper BindingContext="{Binding Period}" />
-
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="4">
-                            <SearchBar Placeholder="{ext:Localize SearchTransactions}"
-                                       Text="{Binding Filters.SearchText}"
-                                       SearchCommand="{Binding Filters.SearchCommand}"
-                                       FontSize="14"
-                                       HeightRequest="44"
-                                       BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
-                            <controls:FilterButton Grid.Column="1" />
+                        <!-- The period in the middle, the filters' button at the edge (the page's search and grouping are in the toolbar) -->
+                        <Grid ColumnDefinitions="48,*,48">
+                            <controls:PeriodStepper Grid.Column="1" BindingContext="{Binding Period}" />
+                            <controls:FilterButton Grid.Column="2" />
                         </Grid>
 
-                        <!-- Count and Clear while filtered; grouping and sort -->
-                        <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="4">
+                        <!-- Opened by the toolbar's search icon -->
+                        <SearchBar x:Name="SearchBox"
+                                   IsVisible="{Binding IsSearchOpen}"
+                                   Placeholder="{ext:Localize SearchTransactions}"
+                                   Text="{Binding Filters.SearchText}"
+                                   SearchCommand="{Binding Filters.SearchCommand}"
+                                   FontSize="14"
+                                   HeightRequest="44"
+                                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
+
+                        <!-- Every filter that is on, each with a cross -->
+                        <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" IsVisible="{Binding Filters.HasActiveChips}">
+                            <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Filters.ActiveChips}">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="viewmodels:ActiveFilterChip">
+                                        <controls:FilterChip Text="{Binding Text, StringFormat='{0}  &#x2715;'}" IsActive="True"
+                                                             SemanticProperties.Description="{Binding Description}"
+                                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=Filters.RemoveChipCommand}"
+                                                             CommandParameter="{Binding .}" />
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </HorizontalStackLayout>
+                        </ScrollView>
+
+                        <!-- Count and Clear while filtered -->
+                        <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="4" IsVisible="{Binding HasActiveFilters}">
                             <Label Text="{Binding FilteredCountText}"
-                                   IsVisible="{Binding HasActiveFilters}"
                                    FontSize="13"
                                    VerticalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                             <Label Grid.Column="1"
                                    Text="{ext:Localize ClearFilters}"
-                                   IsVisible="{Binding HasActiveFilters}"
+                                   VerticalTextAlignment="Center"
                                    Style="{StaticResource CardLink}">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Filters.ClearCommand}" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                            <Label Grid.Column="3"
-                                   Text="{Binding CurrentGroupingMode, Converter={StaticResource BoolToGroupTextConverter}}"
-                                   Style="{StaticResource CardLink}">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding ToggleGroupingCommand}" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                            <Label Grid.Column="4"
-                                   Text="{Binding IsAscending, Converter={StaticResource BoolToSortTextConverter}}"
-                                   Style="{StaticResource CardLink}">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding ToggleSortOrderCommand}" />
                                 </Label.GestureRecognizers>
                             </Label>
                         </Grid>

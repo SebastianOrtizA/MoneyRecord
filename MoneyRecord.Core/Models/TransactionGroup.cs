@@ -7,7 +7,9 @@ namespace MoneyRecord.Models
     {
         None,
         Category,
-        Account
+        Account,
+        /// <summary>One group per day, newest first (or oldest first), with that day's net total per currency.</summary>
+        Date
     }
 
     /// <summary>An expandable group of the Home list, built by <see cref="LedgerGrouping"/>.</summary>
@@ -16,9 +18,13 @@ namespace MoneyRecord.Models
         [ObservableProperty]
         private bool isExpanded;
 
+        /// <param name="totalsAreSigned">The totals carry their own sign (a day's net), instead of taking it from <paramref name="type"/>.</param>
+        /// <param name="isExpanded">Starts open (a day shows its entries).</param>
         public TransactionGroup(string groupName, string groupIconCode, TransactionType type,
-            IReadOnlyList<CurrencyAmount> totals, IReadOnlyList<LedgerEntry> items)
+            IReadOnlyList<CurrencyAmount> totals, IReadOnlyList<LedgerEntry> items, bool totalsAreSigned = false, bool isExpanded = false)
         {
+            _totalsAreSigned = totalsAreSigned;
+            this.isExpanded = isExpanded;
             GroupName = groupName;
             GroupIconCode = groupIconCode;
             Type = type;
@@ -39,10 +45,14 @@ namespace MoneyRecord.Models
         public IReadOnlyList<CurrencyAmount> Totals { get; }
 
         /// <summary>"-$35.00", "-US$5.00", one line each: each total with the group's sign (none for transfers).</summary>
-        public string TotalText => CurrencyAmount.Format(Totals.Select(t => t with
-        {
-            Amount = Type == TransactionType.Expense ? -Math.Abs(t.Amount) : Math.Abs(t.Amount)
-        }).ToList(), separator: "\n");
+        public string TotalText => CurrencyAmount.Format(_totalsAreSigned
+            ? Totals
+            : Totals.Select(t => t with
+            {
+                Amount = Type == TransactionType.Expense ? -Math.Abs(t.Amount) : Math.Abs(t.Amount)
+            }).ToList(), separator: "\n");
+
+        private readonly bool _totalsAreSigned;
 
         public IReadOnlyList<LedgerEntry> Items { get; }
 

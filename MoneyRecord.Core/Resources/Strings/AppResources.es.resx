@@ -2966,4 +2966,10 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SelectedState" xml:space="preserve">
     <value>seleccionado</value>
   </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>Por Fecha</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Quitar filtro: {0}</value>
+  </data>
 </root>

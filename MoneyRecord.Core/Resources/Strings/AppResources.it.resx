@@ -2915,4 +2915,10 @@
   <data name="SelectedState" xml:space="preserve">
     <value>selezionato</value>
   </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>Per data</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Rimuovi filtro: {0}</value>
+  </data>
 </root>
