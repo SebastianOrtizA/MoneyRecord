@@ -28,9 +28,9 @@
 
                 <!-- Empty state -->
                 <controls:EmptyState IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}"
-                                       Icon="&#xF0127;"
-                                       Title="{ext:Localize NoTrendsData}"
-                                       Message="{ext:Localize AddTransactionsForTrends}" />
+                                     Icon="&#xF0127;"
+                                     Title="{ext:Localize NoTrendsData}"
+                                     Message="{ext:Localize AddTransactionsForTrends}" />
 
                 <!-- Spending per month; one series, so the title names it and there is no legend -->
                 <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">

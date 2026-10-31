@@ -28,9 +28,9 @@
                 <controls:CurrencyChips BindingContext="{Binding Period}" />
 
                 <controls:EmptyState IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}"
-                                       Icon="&#xF0127;"
-                                       Title="{ext:Localize NoNetWorthData}"
-                                       Message="{ext:Localize AddForNetWorth}" />
+                                     Icon="&#xF0127;"
+                                     Title="{ext:Localize NoNetWorthData}"
+                                     Message="{ext:Localize AddForNetWorth}" />
 
                 <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
                     <VerticalStackLayout Spacing="4">

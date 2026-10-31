@@ -18,6 +18,7 @@ namespace MoneyRecord.Controls
         public EmptyState()
         {
             InitializeComponent();
+            Refresh();
         }
 
         public string Icon
