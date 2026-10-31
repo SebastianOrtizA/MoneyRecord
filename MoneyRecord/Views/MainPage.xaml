@@ -207,9 +207,9 @@
                             </VerticalStackLayout>
                         </Border>
 
-                        <!-- Net Card: green, or the expense palette when net is negative -->
+                        <!-- Net Card: income blue, or the expense palette when net is negative -->
                         <Border Grid.Column="2"
-                                BackgroundColor="{AppThemeBinding Light=#E8F5E9, Dark=#1B5E20}"
+                                BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"
                                 StrokeThickness="0"
                                 StrokeShape="RoundRectangle 12"
                                 Padding="10">
@@ -223,7 +223,7 @@
                                        FontFamily="MaterialDesignIcons"
                                        FontSize="20"
                                        HorizontalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
+                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
                                             <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
@@ -231,7 +231,7 @@
                                     </Label.Triggers>
                                 </Label>
                                 <Label FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}"
+                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"
                                        HorizontalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
@@ -250,7 +250,7 @@
                                        FontAttributes="Bold"
                                        HorizontalOptions="Fill"
                                        HorizontalTextAlignment="Center"
-                                       TextColor="{AppThemeBinding Light=#1B5E20, Dark=#E8F5E9}">
+                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
                                             <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
@@ -285,16 +285,16 @@
                                         <controls:AutoFitLabel Text="{Binding ExpenseText}" Style="{StaticResource OtherCurrencyTotal}"
                                                TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
                                     </Border>
-                                    <!-- Green, or the expense palette when this currency's net is negative (like the Net card) -->
+                                    <!-- Income blue, or the expense palette when this currency's net is negative (like the Net card) -->
                                     <Border Grid.Column="2" Style="{StaticResource OtherCurrencyPill}"
-                                            BackgroundColor="{AppThemeBinding Light=#EFF8F0, Dark=#14321B}">
+                                            BackgroundColor="{AppThemeBinding Light=#EEF6FE, Dark=#122B4A}">
                                         <Border.Triggers>
                                             <DataTrigger TargetType="Border" Binding="{Binding IsNetNegative}" Value="True">
                                                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFF2F4, Dark=#3F1619}"/>
                                             </DataTrigger>
                                         </Border.Triggers>
                                         <controls:AutoFitLabel Text="{Binding NetText}" Style="{StaticResource OtherCurrencyTotal}"
-                                               TextColor="{AppThemeBinding Light=#2E7D32, Dark=#A5D6A7}">
+                                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
                                                     <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>

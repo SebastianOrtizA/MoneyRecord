@@ -9,27 +9,15 @@ namespace MoneyRecord.Converters
         {
             if (value is TransactionType type)
             {
-                if (type == TransactionType.Income)
+                return type switch
                 {
-                    // Green for income
-                    return Application.Current?.RequestedTheme == AppTheme.Dark
-                        ? Color.FromArgb("#66BB6A") // Light green for dark theme
-                        : Color.FromArgb("#2E7D32"); // Dark green for light theme
-                }
-                else if (type == TransactionType.Transfer)
-                {
-                    // Orange for transfer
-                    return Application.Current?.RequestedTheme == AppTheme.Dark
-                        ? Color.FromArgb("#FFB74D") // Light orange for dark theme
-                        : Color.FromArgb("#B85400"); // Dark orange for light theme (4.5:1 on white)
-                }
-                else
-                {
-                    // Red for expense
-                    return Application.Current?.RequestedTheme == AppTheme.Dark
-                        ? Color.FromArgb("#EF5350") // Light red for dark theme
-                        : Color.FromArgb("#D32F2F"); // Dark red for light theme
-                }
+                    TransactionType.Income => TypeColors.Income,
+                    // Orange for transfer; the dark one is 4.5:1 on white
+                    TransactionType.Transfer => Application.Current?.RequestedTheme == AppTheme.Dark
+                        ? Color.FromArgb("#FFB74D")
+                        : Color.FromArgb("#B85400"),
+                    _ => TypeColors.Expense
+                };
             }
             return Colors.Gray;
         }
