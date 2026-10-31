@@ -63,6 +63,9 @@ namespace MoneyRecord.ViewModels
 
         public bool HasHeldSlice => HeldSliceName.Length > 0;
 
+        // Releasing a press sends no event: the held slice clears itself once the finger has surely gone
+        private readonly Debouncer _releaseTimer = new(TimeSpan.FromSeconds(3));
+
         private ChartSlice[] _slices = [];
         private decimal _sliceTotal;
         private string _sliceCurrency = string.Empty;
@@ -73,6 +76,7 @@ namespace MoneyRecord.ViewModels
             var index = series == null ? -1 : Array.IndexOf(Slices, series);
             if (index < 0 || index >= _slices.Length)
             {
+                _releaseTimer.Cancel();
                 HeldSliceName = string.Empty;
                 HeldSliceValueText = string.Empty;
                 return;
@@ -80,6 +84,7 @@ namespace MoneyRecord.ViewModels
 
             HeldSliceName = _slices[index].Name;
             HeldSliceValueText = ChartFactory.SliceText(_slices[index], _sliceTotal, _sliceCurrency);
+            _ = _releaseTimer.RunAsync(() => HoldSlice(null));
         }
 
         [ObservableProperty]
