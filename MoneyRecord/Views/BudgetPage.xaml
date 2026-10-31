@@ -62,7 +62,8 @@
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:BudgetProgress">
-                        <Border Style="{StaticResource Card}" Margin="16,6" Padding="14">
+                        <Border Style="{StaticResource Card}" Margin="16,6" Padding="14"
+                                SemanticProperties.Description="{Binding AccessibilityText}">
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:BudgetViewModel}}, Path=EditBudgetCommand}"
                                                       CommandParameter="{Binding .}" />
@@ -85,16 +86,9 @@
                                                FontSize="16"
                                                FontAttributes="Bold"
                                                LineBreakMode="TailTruncation" />
-                                        <!-- "Per Month · $500.00": the limit as set -->
-                                        <Label FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}">
-                                            <Label.FormattedText>
-                                                <FormattedString>
-                                                    <Span Text="{Binding Period, Converter={StaticResource BudgetPeriodToDisplayConverter}}" />
-                                                    <Span Text=" · " />
-                                                    <Span Text="{Binding OriginalLimitAmount, Converter={StaticResource MoneyConverter}}" />
-                                                </FormattedString>
-                                            </Label.FormattedText>
-                                        </Label>
+                                        <Label Text="{Binding Period, Converter={StaticResource BudgetPeriodToDisplayConverter}}"
+                                               FontSize="12"
+                                               Style="{StaticResource SecondaryLabel}" />
                                     </VerticalStackLayout>
 
                                     <!-- Status: icon + words + colour, so colour isn't the only signal -->
@@ -104,7 +98,7 @@
                                                FontSize="16"
                                                VerticalOptions="Center"
                                                TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
-                                        <Label Text="{Binding StatusText}"
+                                        <Label Text="{Binding UsedPercentText}"
                                                FontSize="13"
                                                FontAttributes="Bold"
                                                VerticalOptions="Center"
@@ -112,34 +106,17 @@
                                     </HorizontalStackLayout>
                                 </Grid>
 
-                                <ProgressBar Progress="{Binding ProgressPercentage, Converter={StaticResource PercentageToProgressConverter}}"
-                                             ProgressColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}"
-                                             BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
-                                             HeightRequest="10" />
+                                <controls:BudgetBar Used="{Binding UsedPercentage}"
+                                                    BarColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
 
                                 <!-- Spent of the limit for the shown period; what is left or how much over -->
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <Label Text="{Binding SpentOfLimitText}" FontSize="14" />
                                     <Label Grid.Column="1"
+                                           Text="{Binding StatusLine}"
                                            FontSize="14"
                                            FontAttributes="Bold"
-                                           TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}">
-                                        <Label.FormattedText>
-                                            <FormattedString>
-                                                <Span Text="{Binding IsOverBudget, Converter={StaticResource BoolToOverBudgetLabelConverter}}" />
-                                                <Span Text=" " />
-                                                <Span>
-                                                    <Span.Text>
-                                                        <MultiBinding Converter="{StaticResource OverBudgetAmountConverter}">
-                                                            <Binding Path="IsOverBudget" />
-                                                            <Binding Path="ExceededAmount" />
-                                                            <Binding Path="RemainingAmount" />
-                                                        </MultiBinding>
-                                                    </Span.Text>
-                                                </Span>
-                                            </FormattedString>
-                                        </Label.FormattedText>
-                                    </Label>
+                                           TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
                                 </Grid>
 
                                 <!-- Expenses in other currencies: listed, not counted against the limit (base currency) -->

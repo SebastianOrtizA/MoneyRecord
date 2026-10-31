@@ -100,7 +100,7 @@
     <value>Al:</value>
   </data>
   <data name="TotalBalance" xml:space="preserve">
-    <value>Saldo totale (tocca per i dettagli)</value>
+    <value>Saldo totale</value>
   </data>
   <data name="Incomes" xml:space="preserve">
     <value>Entrate</value>
@@ -928,6 +928,15 @@
   </data>
   <data name="BudgetSpentOfLimit" xml:space="preserve">
     <value>{0} di {1}</value>
+  </data>
+  <data name="HomeSpentLine" xml:space="preserve">
+    <value>{0}: {1} spesi</value>
+  </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value>{0} rimasti</value>
+  </data>
+  <data name="BudgetOver" xml:space="preserve">
+    <value>{0} oltre</value>
   </data>
   <data name="OtherCategories" xml:space="preserve">
     <value>Altre</value>

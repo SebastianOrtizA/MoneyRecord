@@ -10,10 +10,20 @@ namespace MoneyRecord.Services
 
         private readonly Stack<string> _history = new();
         private bool _isNavigatingBack;
+        private bool _keepBackForNextRoot;
 
         public string? CurrentLocation { get; private set; }
 
         public bool CanGoBack => _history.Count > 0;
+
+        /// <summary>
+        /// The next navigation to a tab page (a report opening its transactions) remembers where it came from, so back
+        /// returns there instead of clearing the history and going Home. Applies once.
+        /// </summary>
+        public void KeepBackForNextRoot() => _keepBackForNextRoot = true;
+
+        /// <summary>Call when the Shell navigation started after <see cref="KeepBackForNextRoot"/> failed.</summary>
+        public void CancelKeepBack() => _keepBackForNextRoot = false;
 
         /// <summary>Records the location Shell navigated to.</summary>
         public void Record(string location)
@@ -24,7 +34,13 @@ namespace MoneyRecord.Services
             }
             else if (IsRoot(location))
             {
-                _history.Clear();
+                // A drill-down into a tab keeps the way back; any other tab page starts afresh
+                if (_keepBackForNextRoot && !string.IsNullOrEmpty(CurrentLocation))
+                    _history.Push(CurrentLocation);
+                else
+                    _history.Clear();
+
+                _keepBackForNextRoot = false;
             }
             else if (!string.IsNullOrEmpty(CurrentLocation))
             {

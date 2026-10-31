@@ -36,7 +36,8 @@
                     <VerticalStackLayout Spacing="4">
                         <Label Text="{ext:Localize NetWorth}" Style="{StaticResource ReportHeadlineLabel}" />
                         <Label Text="{Binding HeadlineText}" Style="{StaticResource ReportHeadline}" />
-                        <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}" />
+                        <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}"
+                               TextColor="{Binding DeltaTone, Converter={StaticResource DeltaToneToColorConverter}}" />
                         <Label Text="{Binding CurrencyNote}"
                                Style="{StaticResource ReportDelta}"
                                IsVisible="{Binding CurrencyNote, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />

@@ -1,9 +1,12 @@
 using Android.Views;
+using Android.Widget;
 using Google.Android.Material.BottomNavigation;
 using Google.Android.Material.Navigation;
+using Google.Android.Material.Tabs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Platform.Compatibility;
+using Microsoft.Maui.Platform;
 
 namespace MoneyRecord.Platforms.Android.Handlers
 {
@@ -15,6 +18,50 @@ namespace MoneyRecord.Platforms.Android.Handlers
     {
         protected override IShellBottomNavViewAppearanceTracker CreateBottomNavViewAppearanceTracker(ShellItem shellItem) =>
             new ReselectTracker(base.CreateBottomNavViewAppearanceTracker(shellItem), shellItem);
+
+        protected override IShellTabLayoutAppearanceTracker CreateTabLayoutAppearanceTracker(ShellSection shellSection) =>
+            new SentenceCaseTabs(base.CreateTabLayoutAppearanceTracker(shellSection));
+
+        /// <summary>
+        /// The Reports top tabs: the default upper case with letter spacing made the fifth title run off the screen,
+        /// so titles are sentence case at 14 sp and four and a half tabs show.
+        /// </summary>
+        private sealed class SentenceCaseTabs(IShellTabLayoutAppearanceTracker inner) : IShellTabLayoutAppearanceTracker
+        {
+            public void SetAppearance(TabLayout tabLayout, ShellAppearance appearance)
+            {
+                inner.SetAppearance(tabLayout, appearance);
+
+                // Unselected titles had too little contrast (secondary text colour, like the rest of the app)
+                var dark = Application.Current?.RequestedTheme == AppTheme.Dark;
+                var resources = Application.Current!.Resources;
+                tabLayout.SetTabTextColors(
+                    ((Color)resources[dark ? "TextSecondaryDark" : "TextSecondary"]).ToPlatform(),
+                    ((Color)resources[dark ? "White" : "Black"]).ToPlatform());
+
+                if (tabLayout.GetChildAt(0) is not ViewGroup strip)
+                    return;
+
+                for (var i = 0; i < strip.ChildCount; i++)
+                {
+                    if (strip.GetChildAt(i) is not ViewGroup tab)
+                        continue;
+                    for (var j = 0; j < tab.ChildCount; j++)
+                    {
+                        if (tab.GetChildAt(j) is TextView label)
+                        {
+                            label.SetAllCaps(false);
+                            label.LetterSpacing = 0;
+                            label.SetTextSize(global::Android.Util.ComplexUnitType.Sp, 14);
+                        }
+                    }
+                }
+            }
+
+            public void ResetAppearance(TabLayout tabLayout) => inner.ResetAppearance(tabLayout);
+
+            public void Dispose() => inner.Dispose();
+        }
 
         /// <summary>
         /// Keeps the default look and hooks the bottom bar it is handed (MAUI gives the tracker the bar on every

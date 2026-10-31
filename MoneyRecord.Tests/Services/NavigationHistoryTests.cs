@@ -139,4 +139,44 @@ public class NavigationHistoryTests
     {
         NavigationHistory.IsHome(location).Should().Be(expected);
     }
+
+    [Fact]
+    public void A_drill_down_into_a_tab_keeps_the_way_back_to_the_report()
+    {
+        var history = new NavigationHistory();
+        history.Record("//MainPage");
+        history.Record("//IncomeReportPage");
+
+        history.KeepBackForNextRoot();
+        history.Record("//TransactionsPage");
+
+        history.CanGoBack.Should().BeTrue();
+        history.BeginGoBack().Should().Be("//IncomeReportPage");
+    }
+
+    [Fact]
+    public void Keeping_the_way_back_applies_to_one_tab_page_only()
+    {
+        var history = new NavigationHistory();
+        history.Record("//ExpenseReportPage");
+        history.KeepBackForNextRoot();
+        history.Record("//TransactionsPage");
+
+        history.Record("//BudgetPage");
+
+        history.CanGoBack.Should().BeFalse();
+    }
+
+    [Fact]
+    public void A_failed_drill_down_does_not_leave_the_flag_set()
+    {
+        var history = new NavigationHistory();
+        history.Record("//ExpenseReportPage");
+        history.KeepBackForNextRoot();
+        history.CancelKeepBack();
+
+        history.Record("//BudgetPage");
+
+        history.CanGoBack.Should().BeFalse();
+    }
 }

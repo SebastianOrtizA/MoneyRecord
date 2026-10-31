@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace MoneyRecord.Models
 {
+    /// <summary>Whether a change is good news, bad news or neither (colour comes from the app, never the model).</summary>
+    public enum DeltaTone { Neutral, Good, Bad }
+
     /// <summary>A headline number against the same number for the previous period: "▲ 12% vs previous period".</summary>
     public sealed record PeriodDelta(decimal Current, decimal Previous)
     {
@@ -11,6 +14,14 @@ namespace MoneyRecord.Models
 
         /// <summary>The change as a fraction of the previous value; null when there was nothing before.</summary>
         public decimal? Change => Previous == 0 ? null : (Current - Previous) / Math.Abs(Previous);
+
+        /// <summary>Spending up is bad and down is good; for income, cash flow and net worth it is the other way round. No change or nothing before is neutral.</summary>
+        public DeltaTone ToneFor(bool higherIsBetter)
+        {
+            if (Change is not { } change || change == 0)
+                return DeltaTone.Neutral;
+            return (change > 0) == higherIsBetter ? DeltaTone.Good : DeltaTone.Bad;
+        }
 
         /// <summary>Arrow and percentage in words, so the direction isn't carried by colour; empty when both are zero.</summary>
         public string Text

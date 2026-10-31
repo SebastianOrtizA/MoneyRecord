@@ -49,7 +49,11 @@ namespace MoneyRecord.ViewModels
         [NotifyPropertyChangedFor(nameof(ShowOtherTotals), nameof(ShowNoRateCaption))]
         private bool hideBalances;
 
-        partial void OnHideBalancesChanged(bool value) => _privacy.HideBalances = value;
+        partial void OnHideBalancesChanged(bool value)
+        {
+            _privacy.HideBalances = value;
+            OnPropertyChanged(nameof(ShowSpentLine));
+        }
 
         [RelayCommand]
         private void ToggleHideBalances() => HideBalances = !HideBalances;
@@ -57,6 +61,18 @@ namespace MoneyRecord.ViewModels
         /// <summary>The period's totals in the base currency (the three cards).</summary>
         [ObservableProperty]
         private PeriodTotals baseTotals = new(string.Empty, 0, 0);
+
+        partial void OnBaseTotalsChanged(PeriodTotals value)
+        {
+            OnPropertyChanged(nameof(SpentLineText));
+            OnPropertyChanged(nameof(ShowSpentLine));
+        }
+
+        /// <summary>"October 2026: $1,770.00 spent": under the balance, so the card says how the period is going.</summary>
+        public string SpentLineText => string.Format(
+            LocalizationService.Instance.GetString("HomeSpentLine"), Period.Label, BaseTotals.ExpenseText);
+
+        public bool ShowSpentLine => BaseTotals.Expense > 0 && !HideBalances;
 
         /// <summary>The period's totals in every other currency, one row each under the cards (never added together).</summary>
         [ObservableProperty]

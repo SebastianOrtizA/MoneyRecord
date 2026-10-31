@@ -37,13 +37,23 @@
                         <Grid HeightRequest="260">
                             <lvc:PieChart Series="{Binding Slices}"
                                           LegendPosition="Hidden"
+                                          TooltipPosition="Hidden"
                                           InitialRotation="-90"
                                           BackgroundColor="Transparent">
                                 <lvc:PieChart.Behaviors>
                                     <charts:ChartTapBehavior />
+                                    <charts:ChartHoldBehavior Command="{Binding HoldSliceCommand}" />
                                 </lvc:PieChart.Behaviors>
                             </lvc:PieChart>
-                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" InputTransparent="True">
+                            <!-- The slice held under the finger, in the centre: the chart's own tooltip opens under the finger -->
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" InputTransparent="True"
+                                                 MaximumWidthRequest="150" IsVisible="{Binding HasHeldSlice}">
+                                <Label Text="{Binding HeldSliceName}" FontSize="14" HorizontalTextAlignment="Center" MaxLines="2"
+                                       LineBreakMode="TailTruncation" Style="{StaticResource SecondaryLabel}" />
+                                <Label Text="{Binding HeldSliceValueText}" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" InputTransparent="True"
+                                                 IsVisible="{Binding HasHeldSlice, Converter={StaticResource InvertedBoolConverter}}">
                                 <Label Text="{Binding Texts.TotalLabel}"
                                        FontSize="13"
                                        HorizontalTextAlignment="Center"
@@ -56,7 +66,7 @@
                                        FontSize="12"
                                        HorizontalTextAlignment="Center"
                                        MaximumWidthRequest="150"
-                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                       TextColor="{Binding DeltaTone, Converter={StaticResource DeltaToneToColorConverter}}" />
                             </VerticalStackLayout>
                         </Grid>
                     </Border>

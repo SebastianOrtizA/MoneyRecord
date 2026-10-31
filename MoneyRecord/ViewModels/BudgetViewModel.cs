@@ -135,7 +135,8 @@ namespace MoneyRecord.ViewModels
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     Budgets.Clear();
-                    foreach (var progress in budgetProgressList)
+                    // Most urgent first: exceeded, then the fullest
+                    foreach (var progress in budgetProgressList.OrderByDescending(b => b.Level).ThenByDescending(b => b.UsedPercentage))
                     {
                         Budgets.Add(progress);
                     }

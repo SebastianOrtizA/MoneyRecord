@@ -89,7 +89,9 @@ namespace MoneyRecord.ViewModels
             var shown = points.Skip(1).ToList();
             var approximate = Period.IsConverted ? MoneyFormatter.ApproximateMark : string.Empty;
             HeadlineText = approximate + MoneyFormatter.Format(shown[^1].Value, code);
-            DeltaText = new PeriodDelta(shown[^1].Value, points[0].Value).Text;
+            var delta = new PeriodDelta(shown[^1].Value, points[0].Value);
+            DeltaText = delta.Text;
+            DeltaTone = delta.ToneFor(higherIsBetter: true);
 
             MonthAxis = ChartFactory.LabelAxis(shown.Select(p => p.Label));
             MoneyAxis = ChartFactory.MoneyAxis(code, fromZero: false);

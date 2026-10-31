@@ -46,6 +46,9 @@ namespace MoneyRecord.ViewModels
         private string deltaText = string.Empty;
 
         [ObservableProperty]
+        private DeltaTone deltaTone;
+
+        [ObservableProperty]
         private Axis[] monthAxis = [];
 
         [ObservableProperty]
@@ -150,7 +153,7 @@ namespace MoneyRecord.ViewModels
             Period.ShowMonth(FirstMonth.AddMonths(monthIndex));
             _drillDown.Request(null, type);
             MainThread.BeginInvokeOnMainThread(async () =>
-                await _navigationService.NavigateToAsync($"//{nameof(TransactionsPage)}"));
+                await _navigationService.NavigateToKeepingBackAsync($"//{nameof(TransactionsPage)}"));
         }
     }
 }

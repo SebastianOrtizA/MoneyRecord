@@ -45,7 +45,9 @@ namespace MoneyRecord.ViewModels
             HasData = totals.Any(t => t.Income > 0 || t.Expense > 0);
             var net = totals.Sum(t => t.Net);
             HeadlineText = shown.FormatAmount(net, signed: true);
-            DeltaText = new PeriodDelta(net, previous.Sum(t => t.Net)).Text;
+            var delta = new PeriodDelta(net, previous.Sum(t => t.Net));
+            DeltaText = delta.Text;
+            DeltaTone = delta.ToneFor(higherIsBetter: true);
 
             MonthAxis = ChartFactory.LabelAxis(totals.Select(t => t.Label));
             MoneyAxis = ChartFactory.MoneyAxis(code);

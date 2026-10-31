@@ -35,13 +35,20 @@
                                FontSize="18"
                                TextColor="#FFFFFFCC"
                                VerticalOptions="Center"/>
+                        <!-- The chevron says the card opens the accounts -->
                         <Label Grid.Column="1"
-                               Text="{ext:Localize TotalBalance}"
                                FontSize="15"
                                TextColor="#FFFFFFCC"
                                LineBreakMode="WordWrap"
                                HorizontalTextAlignment="Center"
-                               VerticalOptions="Center"/>
+                               VerticalOptions="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="{ext:Localize TotalBalance}" />
+                                    <Span Text=" &#xF0142;" FontFamily="MaterialDesignIcons" FontSize="18" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                         <!-- Privacy mode: hides the balances and the period totals until tapped again -->
                         <Label Grid.Column="2"
                                Text="&#xF06D0;"
@@ -111,6 +118,12 @@
                            FontSize="13"
                            TextColor="#FFFFFF99"
                            HorizontalOptions="Center"/>
+                    <Label Text="{Binding SpentLineText}"
+                           IsVisible="{Binding ShowSpentLine}"
+                           FontSize="14"
+                           TextColor="#FFFFFFDD"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </Border>
 
