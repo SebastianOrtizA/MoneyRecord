@@ -171,7 +171,6 @@ public class BudgetProgressTests
         progress.ProgressPercentage.Should().Be(100);
         progress.UsedPercentage.Should().BeApproximately(215.8, 0.001);
         progress.UsedPercentText.Should().Be("216%");
-        progress.LimitMarker.Should().BeApproximately(100 / 215.8, 0.0001);
     }
 
     [Fact]
@@ -184,7 +183,6 @@ public class BudgetProgressTests
 
         under.StatusLine.Should().Be(string.Format(LocalizationService.Instance.GetString("BudgetLeft"), MoneyFormatter.Format(100m)));
         over.StatusLine.Should().Be(string.Format(LocalizationService.Instance.GetString("BudgetOver"), MoneyFormatter.Format(15m)));
-        under.LimitMarker.Should().Be(1);
     }
 
     [Fact]

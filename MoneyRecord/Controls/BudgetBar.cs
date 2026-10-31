@@ -57,6 +57,7 @@ namespace MoneyRecord.Controls
 
             var over = Used > 100;
             _notch.IsVisible = over;
+            // XProportional places the notch at x * (width - 2 px), so it sits at most 1 px off the exact limit: invisible at 8 dp
             if (over)
                 AbsoluteLayout.SetLayoutBounds(_notch, new Rect(100.0 / Used, 0, 2, 1));
         }

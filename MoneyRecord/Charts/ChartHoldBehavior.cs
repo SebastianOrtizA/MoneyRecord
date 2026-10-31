@@ -60,9 +60,8 @@ namespace MoneyRecord.Charts
             _ = _afterRelease.RunAsync(() =>
             {
                 // A new press began in the meantime: it owns the hold now
-                if (TouchClock.LastDownUtc is { } down && down > releasedAt)
-                    return;
-                Run(null);
+                if (PressTiming.MayClearAfterRelease(TouchClock.LastDownUtc, releasedAt))
+                    Run(null);
             });
         }
 
