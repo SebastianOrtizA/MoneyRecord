@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Globalization;
 using MoneyRecord.Helpers;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using SQLite;
 
 namespace MoneyRecord.Models
@@ -85,6 +87,21 @@ namespace MoneyRecord.Models
         [ObservableProperty]
         private double progressPercentage;
 
+        /// <summary>Spent as a share of the limit, not capped at 100: a bar that stops at full can't tell 216% from 100%.</summary>
+        [ObservableProperty]
+        private double usedPercentage;
+
+        /// <summary>"216%": the share used, whole numbers.</summary>
+        public string UsedPercentText => string.Format(CultureInfo.CurrentCulture, "{0:0}%", UsedPercentage);
+
+        /// <summary>"$115.80 over" or "$284.20 left": the one line that says where the budget stands.</summary>
+        public string StatusLine => IsOverBudget
+            ? string.Format(LocalizationService.Instance.GetString("BudgetOver"), MoneyFormatter.Format(ExceededAmount))
+            : string.Format(LocalizationService.Instance.GetString("BudgetLeft"), MoneyFormatter.Format(RemainingAmount));
+
+        /// <summary>Where the limit sits on a bar that is full: limit / spent when over, else 1 (no marker).</summary>
+        public double LimitMarker => UsedPercentage > 100 ? 100 / UsedPercentage : 1;
+
         [ObservableProperty]
         private bool isOverBudget;
 
@@ -158,9 +175,13 @@ namespace MoneyRecord.Models
                 ProgressPercentage = 0;
             }
 
+            UsedPercentage = LimitAmount > 0 ? (double)(SpentAmount / LimitAmount) * 100 : 0;
             IsOverBudget = SpentAmount > LimitAmount;
             ExceededAmount = IsOverBudget ? SpentAmount - LimitAmount : 0;
             RemainingAmount = IsOverBudget ? 0 : LimitAmount - SpentAmount;
+            OnPropertyChanged(nameof(StatusLine));
+            OnPropertyChanged(nameof(UsedPercentText));
+            OnPropertyChanged(nameof(LimitMarker));
 
             // The progress bar colour comes from the level (BudgetLevelToColorConverter, light/dark aware). Exceeded means
             // strictly over, like IsOverBudget: spending exactly the limit is High ("Near limit", "Remaining $0.00")

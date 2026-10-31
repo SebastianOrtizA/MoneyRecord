@@ -56,7 +56,7 @@
                                        FontSize="12"
                                        HorizontalTextAlignment="Center"
                                        MaximumWidthRequest="150"
-                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                       TextColor="{Binding DeltaTone, Converter={StaticResource DeltaToneToColorConverter}}" />
                             </VerticalStackLayout>
                         </Grid>
                     </Border>

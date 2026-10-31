@@ -46,6 +46,9 @@ namespace MoneyRecord.ViewModels
         private string deltaText = string.Empty;
 
         [ObservableProperty]
+        private DeltaTone deltaTone;
+
+        [ObservableProperty]
         private Axis[] monthAxis = [];
 
         [ObservableProperty]

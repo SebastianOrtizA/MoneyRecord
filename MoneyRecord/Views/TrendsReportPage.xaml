@@ -37,7 +37,8 @@
                     <VerticalStackLayout Spacing="4">
                         <Label Text="{ext:Localize TotalSpending}" Style="{StaticResource ReportHeadlineLabel}" />
                         <Label Text="{Binding HeadlineText}" Style="{StaticResource ReportHeadline}" />
-                        <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}" />
+                        <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}"
+                               TextColor="{Binding DeltaTone, Converter={StaticResource DeltaToneToColorConverter}}" />
                         <Label Text="{Binding NotConvertedText}" Style="{StaticResource ReportDelta}"
                                IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
                         <lvc:CartesianChart HeightRequest="220"

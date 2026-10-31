@@ -160,4 +160,30 @@ public class BudgetProgressTests
 
         progress.SpentOfLimitText.Should().Contain(MoneyFormatter.Format(400m)).And.Contain(MoneyFormatter.Format(500m));
     }
+
+    [Fact]
+    public void Used_percentage_is_not_capped_and_the_limit_notch_sits_where_the_limit_was()
+    {
+        var progress = new BudgetProgress { LimitAmount = 100m, SpentAmount = 215.80m };
+
+        progress.CalculateProgress();
+
+        progress.ProgressPercentage.Should().Be(100);
+        progress.UsedPercentage.Should().BeApproximately(215.8, 0.001);
+        progress.UsedPercentText.Should().Be("216%");
+        progress.LimitMarker.Should().BeApproximately(100 / 215.8, 0.0001);
+    }
+
+    [Fact]
+    public void Status_line_names_what_is_left_or_over()
+    {
+        var under = new BudgetProgress { LimitAmount = 500m, SpentAmount = 400m };
+        under.CalculateProgress();
+        var over = new BudgetProgress { LimitAmount = 100m, SpentAmount = 115m };
+        over.CalculateProgress();
+
+        under.StatusLine.Should().Be(string.Format(LocalizationService.Instance.GetString("BudgetLeft"), MoneyFormatter.Format(100m)));
+        over.StatusLine.Should().Be(string.Format(LocalizationService.Instance.GetString("BudgetOver"), MoneyFormatter.Format(15m)));
+        under.LimitMarker.Should().Be(1);
+    }
 }

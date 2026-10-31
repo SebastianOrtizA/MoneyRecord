@@ -58,7 +58,9 @@ namespace MoneyRecord.ViewModels
             HasBudgets = budgets.Count > 0 && code == MoneyFormatter.BaseCurrency;
             var spending = totals.Sum(t => t.Expense);
             HeadlineText = shown.FormatAmount(spending);
-            DeltaText = new PeriodDelta(spending, previous.Sum(t => t.Expense)).Text;
+            var delta = new PeriodDelta(spending, previous.Sum(t => t.Expense));
+            DeltaText = delta.Text;
+            DeltaTone = delta.ToneFor(higherIsBetter: false);
 
             MonthAxis = ChartFactory.LabelAxis(totals.Select(t => t.Label));
             MoneyAxis = ChartFactory.MoneyAxis(code);

@@ -51,6 +51,9 @@ namespace MoneyRecord.ViewModels
         private string deltaText = string.Empty;
 
         [ObservableProperty]
+        private DeltaTone deltaTone;
+
+        [ObservableProperty]
         private bool hasData;
 
         [ObservableProperty]
@@ -141,7 +144,9 @@ namespace MoneyRecord.ViewModels
                 var report = CategoryReportBuilder.Build(shown.Transactions, Type, (await categoriesTask).Select(c => c.Id), code);
                 TotalText = shown.FormatAmount(report.Total);
                 NotConvertedText = shown.NotConvertedText;
-                DeltaText = new PeriodDelta(report.Total, previous).Text;
+                var delta = new PeriodDelta(report.Total, previous);
+                DeltaText = delta.Text;
+                DeltaTone = delta.ToneFor(higherIsBetter: IsIncome);
                 HasData = report.Total > 0;
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {

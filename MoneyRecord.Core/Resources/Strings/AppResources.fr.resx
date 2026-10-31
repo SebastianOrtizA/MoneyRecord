@@ -101,7 +101,7 @@
     <value>Au :</value>
   </data>
   <data name="TotalBalance" xml:space="preserve">
-    <value>Solde total (touche pour les détails)</value>
+    <value>Solde total</value>
   </data>
   <data name="Incomes" xml:space="preserve">
     <value>Revenus</value>
@@ -929,6 +929,15 @@
   </data>
   <data name="BudgetSpentOfLimit" xml:space="preserve">
     <value>{0} sur {1}</value>
+  </data>
+  <data name="HomeSpentLine" xml:space="preserve">
+    <value>{0} : {1} dépensés</value>
+  </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value>{0} restant</value>
+  </data>
+  <data name="BudgetOver" xml:space="preserve">
+    <value>{0} en trop</value>
   </data>
   <data name="OtherCategories" xml:space="preserve">
     <value>Autres</value>
