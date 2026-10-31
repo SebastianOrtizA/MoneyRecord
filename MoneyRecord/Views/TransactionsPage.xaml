@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:corevm="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
              xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
@@ -214,7 +215,7 @@
                         <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" IsVisible="{Binding Filters.HasActiveChips}">
                             <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Filters.ActiveChips}">
                                 <BindableLayout.ItemTemplate>
-                                    <DataTemplate x:DataType="viewmodels:ActiveFilterChip">
+                                    <DataTemplate x:DataType="corevm:ActiveFilterChip">
                                         <controls:FilterChip Text="{Binding Text, StringFormat='{0}  &#x2715;'}" IsActive="True"
                                                              SemanticProperties.Description="{Binding Description}"
                                                              Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=Filters.RemoveChipCommand}"

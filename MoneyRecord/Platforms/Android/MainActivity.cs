@@ -3,7 +3,6 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using AndroidX.Activity;
-using MoneyRecord.Services;
 
 namespace MoneyRecord
 {
@@ -24,10 +23,6 @@ namespace MoneyRecord
 
             // Register back button callback using the modern OnBackPressedDispatcher
             OnBackPressedDispatcher.AddCallback(this, new BackPressedCallback(this));
-
-            // Opened from a notification: Home opens its page once the Shell is ready (not again after a rotation)
-            if (savedInstanceState == null)
-                TakeNotificationRoute(Intent, openNow: false);
         }
 
         /// <summary>Starts an activity and returns its result data; null when it was cancelled.</summary>
@@ -45,26 +40,6 @@ namespace MoneyRecord
             base.OnActivityResult(requestCode, resultCode, data);
             if (PendingResults.Remove(requestCode, out var result))
                 result.TrySetResult(resultCode == Result.Ok ? data : null);
-        }
-
-        protected override void OnNewIntent(Intent? intent)
-        {
-            base.OnNewIntent(intent);
-            // The app was running: open the page now
-            TakeNotificationRoute(intent, openNow: true);
-        }
-
-        private static void TakeNotificationRoute(Intent? intent, bool openNow)
-        {
-            var route = intent?.GetStringExtra(RouteExtra);
-            var launch = IPlatformApplication.Current?.Services.GetService<NotificationLaunch>();
-            // Not while the Shell is missing (the first-run setup): it would open later, on an unrelated visit to Home
-            if (string.IsNullOrEmpty(route) || launch == null || (openNow && Shell.Current == null))
-                return;
-
-            launch.Request(route);
-            if (openNow)
-                MainThread.BeginInvokeOnMainThread(async () => await launch.OpenPendingAsync());
         }
 
         private class BackPressedCallback : OnBackPressedCallback
