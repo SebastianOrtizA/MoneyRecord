@@ -1,1 +1,1 @@
-Metas: la hoja para añadir o editar una meta ahora se desplaza, así que Guardar sigue al alcance cuando tienes muchas cuentas.
+Borrar una transacción, un gasto dividido o una transferencia ya no pide confirmación: toca Deshacer para recuperarlo. Una tarjeta Primeros pasos en Inicio guía a los usuarios nuevos y las pantallas vacías dicen qué hacer. Búsqueda en Categorías y Cuentas. El texto grande ya no corta los importes. Mejor accesibilidad con TalkBack. Ingresos azules y gastos rojos en todas partes y recuadros de Inicio más sobrios.

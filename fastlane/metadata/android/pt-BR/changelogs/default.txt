@@ -1,1 +1,1 @@
-Metas: a tela de adicionar ou editar uma meta agora rola, então o botão Salvar continua ao alcance quando você tem muitas contas.
+Apagar uma transação, uma divisão ou uma transferência não pede mais confirmação: toque em Desfazer para recuperá-la. Um cartão Primeiros passos na tela inicial guia quem está começando, e as telas vazias dizem o que fazer. Busca em Categorias e Contas. O texto grande não corta mais os valores. Melhor acessibilidade com o TalkBack. Receitas azuis e despesas vermelhas em todo lugar e blocos da tela inicial mais discretos.

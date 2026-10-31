@@ -1,3 +1,11 @@
+## 1.0.0
+- Apagar uma transação, uma divisão ou uma transferência não pede mais confirmação: toque em Desfazer na mensagem que aparece para recuperá-la.
+- Novidade: um cartão Primeiros passos na tela inicial guia você pelos primeiros passos (adicionar uma despesa, fazer um backup, ativar os lembretes), e as telas vazias agora dizem o que fazer a seguir.
+- Categorias e Contas têm um campo de busca, e Transferências, Fluxo de caixa, Patrimônio e Favorecidos se explicam quando estão vazios.
+- Texto grande: os valores nunca são cortados, e as categorias, o texto do saldo e os botões cabem nos maiores tamanhos de fonte.
+- Melhor com o TalkBack: mais controles têm rótulo, as áreas de toque têm pelo menos 48 dp e o texto apagado ficou mais escuro.
+- Receitas são azuis e despesas vermelhas em todo lugar, os blocos da tela inicial ficaram mais discretos e os ícones da barra de status são legíveis sobre a barra roxa.
+
 ## 0.20.1
 - Metas: a tela de adicionar ou editar uma meta agora rola, então o botão Salvar continua ao alcance quando você tem muitas contas.
 

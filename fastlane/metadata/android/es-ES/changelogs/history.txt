@@ -1,3 +1,11 @@
+## 1.0.0
+- Borrar una transacción, un gasto dividido o una transferencia ya no pide confirmación: toca Deshacer en el mensaje que aparece para recuperarlo.
+- Novedad: una tarjeta Primeros pasos en Inicio te guía en los primeros pasos (añadir un gasto, hacer una copia de seguridad, activar los recordatorios), y las pantallas vacías ahora te dicen qué hacer a continuación.
+- Categorías y Cuentas tienen un cuadro de búsqueda, y Transferencias, Flujo de caja, Patrimonio y Beneficiarios se explican cuando están vacíos.
+- Texto grande: los importes nunca se cortan, y las categorías, el texto del saldo y los botones caben con los tamaños de letra más grandes.
+- Mejor con TalkBack: más controles tienen etiqueta, las zonas táctiles miden al menos 48 dp y el texto tenue es más oscuro.
+- Los ingresos son azules y los gastos rojos en todas partes, los recuadros de Inicio son más sobrios y los iconos de la barra de estado se ven bien sobre la barra morada.
+
 ## 0.20.1
 - Metas: la hoja para añadir o editar una meta ahora se desplaza, así que Guardar sigue al alcance cuando tienes muchas cuentas.
 
