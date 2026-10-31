@@ -22,6 +22,14 @@
     <Color x:Key="CardBackgroundDark">#1E1E1E</Color>
     <Color x:Key="TransferColor">#B85400</Color>
     <Color x:Key="TransferColorDark">#FFB74D</Color>
+    <!-- Home tiles: tonal containers (about 20% lightness in dark, text at 90%); Net uses these by sign, never a third hue -->
+    <Color x:Key="IncomeContainer">#E3F2FD</Color>
+    <Color x:Key="IncomeContainerDark">#0F2F4F</Color>
+    <Color x:Key="ExpenseContainer">#FFEBEE</Color>
+    <Color x:Key="ExpenseContainerDark">#4A1A1D</Color>
+    <!-- Secondary text: 5.7:1 on white, 7.5:1 on CardBackgroundDark -->
+    <Color x:Key="TextSecondary">#666666</Color>
+    <Color x:Key="TextSecondaryDark">#AAAAAA</Color>
 
     <!-- Purple tints: icon circles and group headers (PrimaryTint), a selected chip or cell in dark mode (light uses Secondary) -->
     <Color x:Key="PrimaryTint">#F0EDFA</Color>

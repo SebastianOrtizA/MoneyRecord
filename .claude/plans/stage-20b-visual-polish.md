@@ -1,6 +1,6 @@
 # Stage 20b: Visual and interaction polish (release 1.0.0, rest may follow in 1.0.x / 1.1)
 
-**Status:** proposed (UX/UI review of 2026-10-30); 20b.1 in review (system bar, income/expense tokens in converters and the Home Net tile; secondary-text tokens and tonal containers deferred). Each sub-stage starts only when the
+**Status:** proposed (UX/UI review of 2026-10-30); 20b.1 in review (system bar, income/expense tokens, TextSecondary + SecondaryLabel, tonal Home tiles, amount font; rest of the #666666 sweep as pages are touched). Each sub-stage starts only when the
 owner asks, one branch + PR each. Sits between Stage 20 (trust and polish) and Stage 21 (fast capture).
 
 ## Context
