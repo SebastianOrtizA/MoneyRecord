@@ -1,6 +1,6 @@
 # Stage 20b: Visual and interaction polish (release 1.0.0, rest may follow in 1.0.x / 1.1)
 
-**Status:** proposed (UX/UI review of 2026-10-30); 20b.1 in review (system bar, income/expense tokens, TextSecondary + SecondaryLabel, tonal Home tiles, amount font; rest of the #666666 sweep as pages are touched). Each sub-stage starts only when the
+**Status:** proposed (UX/UI review of 2026-10-30); 20b.3 split: 20b.3a (period stepper + filter sheets) merged as PR #132, 20b.3b (search icon, chips, day groups) merged as PR #133; 20b.1 done (was: in review (system bar, income/expense tokens, TextSecondary + SecondaryLabel, tonal Home tiles, amount font; rest of the #666666 sweep as pages are touched). Each sub-stage starts only when the
 owner asks, one branch + PR each. Sits between Stage 20 (trust and polish) and Stage 21 (fast capture).
 
 ## Context
