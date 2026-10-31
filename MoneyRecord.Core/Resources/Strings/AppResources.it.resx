@@ -2954,4 +2954,13 @@
   <data name="SearchSettings" xml:space="preserve">
     <value>Cerca nelle impostazioni</value>
   </data>
+  <data name="EnterAmount" xml:space="preserve">
+    <value>Inserisci un importo</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Ieri</value>
+  </data>
+  <data name="PickDate" xml:space="preserve">
+    <value>Scegli la data</value>
+  </data>
 </root>

@@ -17,6 +17,7 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(ScheduleName), "Schedule")]
     [QueryProperty(nameof(RecurringIdString), "RecurringId")]
     [QueryProperty(nameof(OccurrenceString), "Occurrence")]
+    [QueryProperty(nameof(AmountSeed), "Amount")]
     public partial class AddTransactionViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -49,8 +50,24 @@ namespace MoneyRecord.ViewModels
         private bool _categoryChosen;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanSplit))]
+        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(IsIncome), nameof(SaveText), nameof(TypeKind))]
         private TransactionType transactionType;
+
+        /// <summary>The form adds income: its amount and Save button take the income colour (expense otherwise).</summary>
+        public bool IsIncome => TransactionType == TransactionType.Income;
+
+        /// <summary>"Expense" or "Income": the type switch's active chip.</summary>
+        public string TypeKind => TransactionType.ToString();
+
+        /// <summary>
+        /// The Save button names what it adds ("Add expense", "Add income"), so a wrong type is seen before saving; saving
+        /// a change or a schedule just says "Save".
+        /// </summary>
+        public string SaveText => IsEditMode || IsScheduleMode || IsOccurrenceMode ? AppResources.Save
+            : TransactionType == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
+
+        /// <summary>The Expense | Income | Transfer switch: a new entry only (a saved one cannot change its type).</summary>
+        public bool ShowsTypeSwitch => !IsEditMode && !IsScheduleMode && !IsOccurrenceMode;
 
         [ObservableProperty]
         private Transaction? transaction;
@@ -65,6 +82,9 @@ namespace MoneyRecord.ViewModels
                     TransactionType = type;
             }
         }
+
+        /// <summary>The amount typed on the transfer form when its type switch brought the user here.</summary>
+        public string? AmountSeed { get; set; }
 
         /// <summary>A new entry in this account (the widget's buttons) instead of the last one used.</summary>
         public string? AccountIdString { get; set; }
@@ -87,7 +107,7 @@ namespace MoneyRecord.ViewModels
         /// occurrence's (fixed), and the save moves the schedule on (<see cref="IRecurringTransactionService.EnterOccurrenceAsync"/>).
         /// </summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanMakeRecurring), nameof(CanEditDate))]
+        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanMakeRecurring), nameof(CanEditDate), nameof(SaveText), nameof(ShowsTypeSwitch))]
         private bool isOccurrenceMode;
 
         public bool CanEditDate => !IsOccurrenceMode;
@@ -96,18 +116,19 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The new schedule's amount changes each time: the amount is optional (it becomes the first estimate).</summary>
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanSave))]
         private bool isVariableAmount;
 
         /// <summary>"0.00", or the variable schedule's last amount ("≈ $85.00") while entering an occurrence.</summary>
         [ObservableProperty]
-        private string amountPlaceholder = "0.00";
+        private string amountPlaceholder = AppResources.EnterAmount;
 
         /// <summary>
         /// A new schedule from the Recurring page: the date is its first occurrence (tomorrow at the earliest) and only the
         /// schedule is saved. No split, receipt, tags or own conversion: those belong to a recorded entry.
         /// </summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanScanReceipt), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails), nameof(MinimumDate), nameof(DateLabel))]
+        [NotifyPropertyChangedFor(nameof(CanSplit), nameof(CanScanReceipt), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails), nameof(MinimumDate), nameof(DateLabel), nameof(SaveText), nameof(ShowsTypeSwitch), nameof(ShowsDateChips), nameof(CanSave))]
         private bool isScheduleMode;
 
         /// <summary>
@@ -138,8 +159,31 @@ namespace MoneyRecord.ViewModels
                 DateFormatter.Format(SelectedDate, DateStyle.Long));
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails))]
+        [NotifyPropertyChangedFor(nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails), nameof(DatePreset), nameof(PickedDateText), nameof(IsDateToday), nameof(IsDateYesterday), nameof(IsDatePicked))]
         private DateTime selectedDate = DateTime.Now;
+
+        /// <summary>The Today | Yesterday | Pick date chips (a schedule only picks: it starts tomorrow at the earliest).</summary>
+        public bool ShowsDateChips => !IsScheduleMode;
+
+        public EntryDatePreset DatePreset => EntryDatePresets.Classify(SelectedDate, Now);
+        public bool IsDateToday => DatePreset == EntryDatePreset.Today;
+        public bool IsDateYesterday => DatePreset == EntryDatePreset.Yesterday;
+        public bool IsDatePicked => DatePreset == EntryDatePreset.Other;
+
+        /// <summary>The "Pick date" chip: its caption, or the date picked.</summary>
+        public string PickedDateText => IsDatePicked ? DateFormatter.Format(SelectedDate, DateStyle.Medium) : AppResources.PickDate;
+
+        /// <summary>Raised to open the date picker (the view owns the control).</summary>
+        public event EventHandler? PickDateRequested;
+
+        [RelayCommand(CanExecute = nameof(CanEditDate))]
+        private void SetToday() => SelectedDate = EntryDatePresets.Today(Now);
+
+        [RelayCommand(CanExecute = nameof(CanEditDate))]
+        private void SetYesterday() => SelectedDate = EntryDatePresets.Yesterday(Now);
+
+        [RelayCommand(CanExecute = nameof(CanEditDate))]
+        private void PickDate() => PickDateRequested?.Invoke(this, EventArgs.Empty);
 
         [ObservableProperty]
         private string description = string.Empty;
@@ -263,16 +307,89 @@ namespace MoneyRecord.ViewModels
         private bool isMoreDetailsOpen;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CanSave), nameof(AmountSymbol))]
         private Account? selectedAccount;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowsAccountChips))]
         private List<Account> accounts = new();
+
+        /// <summary>The currency symbol in front of the amount (the account's, else the base currency's).</summary>
+        public string AmountSymbol => CurrencyService.GetSymbol(MoneyFormatter.ResolveCurrencyCode(SelectedAccount?.CurrencyCode));
+
+        /// <summary>One to four own accounts show as chips (a tap each); more use the picker.</summary>
+        public bool ShowsAccountChips => Accounts.Count is >= 1 and <= 4;
+
+        /// <summary>The accounts as chips, the selected one highlighted.</summary>
+        [ObservableProperty]
+        private List<AccountChoice> accountChoices = [];
+
+        /// <summary>The type switch: Expense and Income change this form, Transfer swaps it for the transfer form.</summary>
+        [RelayCommand]
+        private async Task SwitchTypeAsync(string kind)
+        {
+            if (kind == "Transfer")
+            {
+                var parameters = new Dictionary<string, object>();
+                if (!string.IsNullOrWhiteSpace(Amount))
+                    parameters["Amount"] = Amount;
+                if (SelectedAccount != null)
+                    parameters["SourceAccountId"] = SelectedAccount.Id.ToString();
+                await _navigationService.ReplaceAsync(nameof(Views.AddTransferPage), parameters);
+                return;
+            }
+
+            if (kind == "Transfer" || !Enum.TryParse<TransactionType>(kind, out var type) || type == TransactionType || !ShowsTypeSwitch)
+                return;
+
+            try
+            {
+                TransactionType = type;
+                Title = type == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
+                // The old type's picks no longer apply: the split, the trip and the categories are the new type's
+                IsSplit = false;
+                _categoryChosen = false;
+                await LoadTripAsync(null);
+                await LoadCategoriesAsync();
+                SelectedCategory = null;
+                SelectedCategory = IsTripMode
+                    ? CategoryChoices.FirstOrDefault()?.Category
+                    : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadTrips);
+            }
+        }
+
+        [RelayCommand]
+        private void SelectAccount(AccountChoice choice) => SelectedAccount = choice.Account;
+
+        private void RebuildAccountChoices() =>
+            AccountChoices = Accounts.Select(a => new AccountChoice(a) { IsSelected = a.Id == SelectedAccount?.Id }).ToList();
+
+        /// <summary>
+        /// Save is offered once the amount reads as a valid sum and an account is picked (a variable schedule may leave the
+        /// amount empty); the other checks stay in <see cref="SaveAsync"/>.
+        /// </summary>
+        public bool CanSave
+        {
+            get
+            {
+                if (SelectedAccount == null)
+                    return false;
+                if (IsScheduleMode && IsVariableAmount && string.IsNullOrWhiteSpace(Amount))
+                    return true;
+                var value = AmountParser.Parse(Amount, SelectedAccount.CurrencyCode);
+                return value > 0 && Money.IsInRange(value);
+            }
+        }
 
         [ObservableProperty]
         private string title = string.Empty;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails))]
+        [NotifyPropertyChangedFor(nameof(CanMakeRecurring), nameof(FutureDateNote), nameof(SavesOnlySchedule), nameof(ShowsEntryDetails), nameof(SaveText), nameof(ShowsTypeSwitch))]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -392,6 +509,18 @@ namespace MoneyRecord.ViewModels
                 UpdateSplitRemaining();
             };
             _logger = logger;
+            // The commands that depend on a computed property follow it
+            PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(CanSave))
+                    SaveCommand.NotifyCanExecuteChanged();
+                else if (e.PropertyName == nameof(CanEditDate))
+                {
+                    SetTodayCommand.NotifyCanExecuteChanged();
+                    SetYesterdayCommand.NotifyCanExecuteChanged();
+                    PickDateCommand.NotifyCanExecuteChanged();
+                }
+            };
             _receipt = new ReceiptDraft(paths.ReceiptsFolder);
             selectedFrequencyItem = Frequencies[3];
         }
@@ -420,7 +549,7 @@ namespace MoneyRecord.ViewModels
             Title = AppResources.AddTransaction;
             IsOccurrenceMode = false;
             IsVariableAmount = false;
-            AmountPlaceholder = "0.00";
+            AmountPlaceholder = AppResources.EnterAmount;
             IsEditMode = false;
             IsMoreDetailsOpen = false;
             TagsText = string.Empty;
@@ -636,6 +765,8 @@ namespace MoneyRecord.ViewModels
 
                 if (occurrence != null)
                     FillFromOccurrence(occurrence);
+                else if (!string.IsNullOrWhiteSpace(AmountSeed))
+                    Amount = AmountSeed;
 
                 if (IsScheduleMode)
                 {
@@ -686,6 +817,7 @@ namespace MoneyRecord.ViewModels
         private async Task LoadAccountsAsync()
         {
             Accounts = await _accountRepository.GetOwnAsync();
+            RebuildAccountChoices();
         }
 
         /// <summary>
@@ -777,6 +909,8 @@ namespace MoneyRecord.ViewModels
 
         partial void OnSelectedAccountChanged(Account? value)
         {
+            foreach (var choice in AccountChoices)
+                choice.IsSelected = choice.Account.Id == value?.Id;
             CanConvert = value != null && !MoneyFormatter.SameCurrency(value.CurrencyCode, BaseCurrencyCode);
             UpdateConvertedRate();
             foreach (var part in SplitParts)
@@ -786,6 +920,7 @@ namespace MoneyRecord.ViewModels
 
         partial void OnAmountChanged(string value)
         {
+            OnPropertyChanged(nameof(CanSave));
             UpdateConvertedRate();
             UpdateSplitRemaining();
         }
@@ -862,7 +997,7 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanSave))]
         private async Task SaveAsync()
         {
             var amountValue = AmountParser.Parse(Amount, SelectedAccount?.CurrencyCode);

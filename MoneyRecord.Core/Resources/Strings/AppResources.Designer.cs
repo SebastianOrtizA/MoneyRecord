@@ -8480,5 +8480,32 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter an amount.
+        /// </summary>
+        public static string EnterAmount {
+            get {
+                return ResourceManager.GetString("EnterAmount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yesterday.
+        /// </summary>
+        public static string Yesterday {
+            get {
+                return ResourceManager.GetString("Yesterday", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick date.
+        /// </summary>
+        public static string PickDate {
+            get {
+                return ResourceManager.GetString("PickDate", resourceCulture);
+            }
+        }
     }
 }

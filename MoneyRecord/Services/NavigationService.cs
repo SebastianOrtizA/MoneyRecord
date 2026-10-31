@@ -49,5 +49,8 @@ namespace MoneyRecord.Services
 
         public Task NavigateToAsync(string route, IDictionary<string, object> parameters) =>
             Shell.Current.GoToAsync(route, parameters);
+
+        public Task ReplaceAsync(string route, IDictionary<string, object> parameters) =>
+            Shell.Current.GoToAsync($"../{route}", parameters);
     }
 }

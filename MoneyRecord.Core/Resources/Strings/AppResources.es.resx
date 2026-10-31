@@ -3005,4 +3005,13 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SearchSettings" xml:space="preserve">
     <value>Buscar en ajustes</value>
   </data>
+  <data name="EnterAmount" xml:space="preserve">
+    <value>Introduce un importe</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Ayer</value>
+  </data>
+  <data name="PickDate" xml:space="preserve">
+    <value>Elegir fecha</value>
+  </data>
 </root>
