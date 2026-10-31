@@ -36,6 +36,6 @@ O MoneyRecord é um controle financeiro simples e privado. Registre o que você 
 
 <b>Feito para você</b>
 • Widget na tela inicial com o seu saldo e botões de lançamento rápido.
-• Vários idiomas, tema claro e escuro, uma configuração rápida na primeira abertura.
+• Português, inglês, espanhol, francês e italiano, tema claro e escuro, uma configuração rápida na primeira abertura.
 
 O MoneyRecord é gratuito e de código aberto (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

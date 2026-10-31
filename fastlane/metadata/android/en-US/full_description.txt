@@ -36,6 +36,6 @@ MoneyRecord is a simple, private money tracker. Record what you spend and earn, 
 
 <b>Made for you</b>
 • Home-screen widget with your balance and quick add buttons.
-• English and Spanish, light and dark theme, a quick setup on first start.
+• English, Spanish, Portuguese, French and Italian, light and dark theme, a quick setup on first start.
 
 MoneyRecord is free and open source (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord
