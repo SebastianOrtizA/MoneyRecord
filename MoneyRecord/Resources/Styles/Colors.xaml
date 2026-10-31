@@ -22,6 +22,24 @@
     <Color x:Key="CardBackgroundDark">#1E1E1E</Color>
     <Color x:Key="TransferColor">#B85400</Color>
     <Color x:Key="TransferColorDark">#FFB74D</Color>
+    <!-- Home tiles: tonal containers (about 20% lightness in dark, text at 90%); Net uses these by sign, never a third hue -->
+    <Color x:Key="IncomeContainer">#E3F2FD</Color>
+    <Color x:Key="IncomeContainerDark">#0F2F4F</Color>
+    <Color x:Key="ExpenseContainer">#FFEBEE</Color>
+    <Color x:Key="ExpenseContainerDark">#4A1A1D</Color>
+    <!-- Text on the containers and pills: 7.8:1 / 6.1:1 in light (the plain tokens are 4.4:1 / 4.1:1 on them), light tints in dark -->
+    <Color x:Key="IncomeOnContainer">#0D47A1</Color>
+    <Color x:Key="IncomeOnContainerDark">#90CAF9</Color>
+    <Color x:Key="ExpenseOnContainer">#B71C1C</Color>
+    <Color x:Key="ExpenseOnContainerDark">#FFCDD2</Color>
+    <!-- The pills for the other currencies, one step quieter than the tiles -->
+    <Color x:Key="IncomePill">#EEF6FE</Color>
+    <Color x:Key="IncomePillDark">#122B4A</Color>
+    <Color x:Key="ExpensePill">#FFF2F4</Color>
+    <Color x:Key="ExpensePillDark">#3F1619</Color>
+    <!-- Secondary text: 5.7:1 on white, 7.5:1 on CardBackgroundDark -->
+    <Color x:Key="TextSecondary">#666666</Color>
+    <Color x:Key="TextSecondaryDark">#AAAAAA</Color>
 
     <!-- Purple tints: icon circles and group headers (PrimaryTint), a selected chip or cell in dark mode (light uses Secondary) -->
     <Color x:Key="PrimaryTint">#F0EDFA</Color>

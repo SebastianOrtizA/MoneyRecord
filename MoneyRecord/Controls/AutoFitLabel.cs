@@ -26,6 +26,7 @@ namespace MoneyRecord.Controls
 
         public AutoFitLabel()
         {
+            FontFamily = "OpenSansRegular"; // the Label style does not reach a subclass, so amounts fell back to Roboto
             LineBreakMode = LineBreakMode.NoWrap;
             MaxLines = 1;
             FontSize = MaxFontSize;

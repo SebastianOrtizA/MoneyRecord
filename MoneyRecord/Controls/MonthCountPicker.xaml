@@ -11,7 +11,7 @@
         <Label Text="{ext:Localize MonthsShown}"
                FontSize="16"
                VerticalOptions="Center"
-               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
         <Picker Grid.Column="1"
                 ItemsSource="{Binding MonthCountOptions}"
                 SelectedItem="{Binding MonthCount}"

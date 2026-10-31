@@ -17,6 +17,6 @@
         <Label x:Name="MessageLabel"
                FontSize="14"
                HorizontalTextAlignment="Center"
-               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
     </VerticalStackLayout>
 </ContentView>

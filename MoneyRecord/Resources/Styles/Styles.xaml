@@ -521,6 +521,12 @@
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F8F8FB, Dark=#171717}" />
     </Style>
 
+    <!-- Captions and hints: 12 sp secondary text -->
+    <Style x:Key="SecondaryLabel" TargetType="Label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}" />
+    </Style>
+
     <!-- Home: one total in another currency, a small pill under its card (tinted like the card) -->
     <Style x:Key="OtherCurrencyPill" TargetType="Border">
         <Setter Property="Padding" Value="2,6" />

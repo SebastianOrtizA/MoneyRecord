@@ -5,12 +5,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:MoneyRecord.Views"
     xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="MoneyRecord"
     FlyoutBehavior="Disabled"
     Shell.TabBarBackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1E1E1E}"
     Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
     Shell.TabBarTitleColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
     Shell.TabBarUnselectedColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}">
+
+    <Shell.Behaviors>
+        <!-- Light icons on the purple status bar -->
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary}" StatusBarStyle="LightContent" />
+    </Shell.Behaviors>
 
     <!-- Tabs and their pages keep implicit routes, so each page is a root at //PageRoute (NavigationHistory) -->
     <TabBar>

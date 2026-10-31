@@ -21,7 +21,7 @@
                    LineBreakMode="TailTruncation"/>
             <Label FontSize="12"
                    LineBreakMode="TailTruncation"
-                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}">
+                   TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}">
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="{Binding WhenText}" FontAttributes="Bold"/>
