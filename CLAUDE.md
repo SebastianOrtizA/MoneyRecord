@@ -1,265 +1,77 @@
 # MoneyRecord
 
-## Project Overview
-
-.NET 10 MAUI personal finance app for tracking incomes, expenses, transfers, budgets, and accounts. Android is the primary target (APK), but all platform targets (iOS, macCatalyst, Windows) are maintained.
-
-**License**: AGPL-3.0
+.NET 10 MAUI personal finance app (incomes, expenses, transfers, budgets, accounts). Android is the primary target (APK); iOS, macCatalyst and Windows are maintained. License: AGPL-3.0. Solution: `MoneyRecord.slnx`.
 
 ## Build & Run
 
 ```bash
-# Build Android
 dotnet build MoneyRecord/MoneyRecord.csproj -f net10.0-android
-
-# Build Windows
 dotnet build MoneyRecord/MoneyRecord.csproj -f net10.0-windows10.0.19041.0
-
-# Run on Android emulator/device
-dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android
-
-# Release builds use R8 (obfuscation, mapping.txt next to the APK/AAB; CI hands it to Play). Keep rules: MoneyRecord/Platforms/Android/proguard.cfg
-# (a Java class used by name that R8 renames or removes only fails at runtime: smoke-test a Release APK after adding Android libraries)
-
-# Two Android distributions: default "Direct" (GitHub APK / F-Droid: no Support screen, `NoTipJar`) and
-# -p:Distribution=Play (the AAB: defines PLAY_STORE, adds Plugin.InAppBilling, `PlayTipJar` sells tips; Play requires its billing
-# for payments to the developer). Test billing changes with a Play-installed build and a license-tester account, never the Direct one
-
-# Run tests (xUnit + NSubstitute + AwesomeAssertions; plain net10.0, run from PowerShell)
-dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
+dotnet build MoneyRecord/MoneyRecord.csproj -t:Run -f net10.0-android   # emulator/device
+dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj                  # xUnit + NSubstitute + AwesomeAssertions, plain net10.0, run from PowerShell
 ```
 
-On the emulator, use the project skill `/run-moneyrecord` (boot, deploy, screenshots, locale switching).
-To release (notes in three languages, PR, then Actions → Cut release; fixes are backported to `release/x.y` by PR label (the Backport workflow opens a PR to the release branch, which only takes pull requests), tags come only from release branches), use the project skill `/release-moneyrecord`. Every release adds a `## x.y.z` section to each `changelogs/history.txt` (the in-app "What's new") as well as updating Play's `default.txt`.
-Plans for the staged roadmap live in `.claude/plans/` (one file per stage).
-
-**Solution file**: `MoneyRecord.slnx` (XML format)
+- Release builds use R8 (rules: `MoneyRecord/Platforms/Android/proguard.cfg`; mapping.txt next to the APK/AAB). A Java class used by name that R8 renames/removes fails only at runtime: smoke-test a Release APK after adding Android libraries.
+- Two Android distributions: default "Direct" (GitHub APK / F-Droid: no Support screen, `NoTipJar`) and `-p:Distribution=Play` (AAB: defines PLAY_STORE, adds Plugin.InAppBilling, `PlayTipJar`; Play requires its billing for developer payments). Test billing with a Play-installed build and a license-tester account, never the Direct one.
+- Emulator: project skill `/run-moneyrecord`. Release: skill `/release-moneyrecord` (notes in all locales, PR, Actions → Cut release; fixes backported to `release/x.y` by PR label; tags only from release branches; every release adds a `## x.y.z` section to each `changelogs/history.txt` and updates Play's `default.txt`). Translations: `/translate-moneyrecord`.
+- Staged roadmap plans: `.claude/plans/` (one file per stage).
 
 ## Architecture
 
-```
-Models (SQLite entities, money in cents)
-  → Repositories (IRepository<T> + implementations, migrations)
-    → Business Services (BalanceService, TransactionEnrichmentService, AccountService, CategoryService, ...)
-      → ViewModels (CommunityToolkit.Mvvm, source generators)
-        → Views (XAML pages + code-behind)
-```
+Models (SQLite entities, money in cents) → Repositories (`IRepository<T>` + migrations) → Business services → ViewModels (CommunityToolkit.Mvvm) → Views (XAML + code-behind).
 
-### Key Directories
-Two projects: `MoneyRecord.Core/` (plain `net10.0`, no MAUI) and `MoneyRecord/` (the MAUI app). Namespaces are the same
-in both (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...). XAML that uses a Core type needs
-`xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"` — without `assembly=` a Debug build compiles but
-crashes at runtime (XAML is inflated at runtime there).
+Two projects with the same namespaces (`MoneyRecord.Models`, `MoneyRecord.Helpers`, ...):
+- `MoneyRecord.Core/` — plain `net10.0`, no MAUI, all testable logic: `Models/` (SQLite tables + display models), `Services/Interfaces/`, `Services/` (business services), `Services/Repositories/` (`RepositoryBase<T>`, one repo per table, `DatabaseInitializer`, `Migrations/` with `MigrationRunner.All`), `Helpers/`, `ViewModels/` (MAUI-free), `Resources/Strings/` (AppResources.resx + es/pt/fr/it).
+- `MoneyRecord/` — the MAUI app: `ViewModels/`, `Views/`, `Charts/` (LiveChartsCore: ChartFactory, ChartPalette), `Controls/` (BottomSheet, IOverlayHost, EmptyState, AutoFitLabel, ScaledLayout, ...), `Behaviors/`, `Converters/` (one per file, registered in `App.xaml`), `Services/` (Navigation, Dialog, Theme, Preferences, `No*` fallbacks for platforms), `Platforms/Android/` (notifications, WorkManager daily job, biometric lock, SAF backup folder, widget, ML Kit receipt scanner), `MauiProgram.cs` (DI).
+- `MoneyRecord.Tests/` — references Core only; real temp SQLite files for repository/migration/backup tests; runs on Linux (CI uses ubuntu-latest).
 
-`MoneyRecord.Core/`
-- `Models/` — 16 SQLite tables: SavingsChallenge + SavingsChallengeDay (savings game: `ChallengePlan.Build` = day amounts: linear (optional first day + step, either one with the goal works out the days or the step) or the same every day, optional rounding; Doubling only for challenges made before, hidden when adding; days done keep their amount; optional destination account or pocket, each day asks the source account or pocket and moves the money (transfer / take-out / set-aside); `ISavingsChallengeService`; `ChallengeSummary` displays it), Account, Transaction, Category, Transfer, Budget, RecurringTransaction, SavingsGoal +
-  SavingsGoalAccount (a goal's accounts; one goal per account) + SavingsGoalPocket (its pockets), Pocket + PocketMovement (money set aside inside an account, an earmark only: signed movements, balance = their sum; `PocketSummary` displays one), Payee (optional on a transaction and a recurring one;
-  `PayeeSummary` = with use count + last use), ExchangeRate (downloaded daily rates; a cache, not in backups), Trip + TripCategory + TripBudget (a trip, its shared trip categories, its per-category limits; `Transaction.TripId`/`TripCategoryId`, `Category.IsTravel` = the system "Travel" category trip expenses sit in while the trip is active; `TripCard`/`TripSummary` display it), Debt (money lent / borrowed: a payee + a hidden account, `Account.IsDebt`,
-  whose transfers are the debt's money; `DebtSummary` / `DebtMovement` display it).
-  `Transaction.SplitId`: the parts of a split expense are plain transactions sharing the ID (`SplitPart` = one part to save). Plus display models
-  (AccountBalanceInfo, AccountGroup/AccountListItem (Accounts screen: per-currency groups), CurrencyBalance,
-  CurrencyAmount (a total in one currency; per-currency totals, never added), PeriodTotals (Home: income / expense / net
-  per currency), GoalProgress (a goal's saved / status / plan texts), CurrencyChoice (report currency chip; the first one "≈ USD" = converted), BudgetSpent (counted vs
-  listed spending),
-  LedgerEntry, TransactionGroup, TransactionFilter/FilterOption, CategoryAmount/CategoryReport (report shares + chart
-  palette slot, donut slices), PeriodDelta ("vs previous period"), BudgetProgress/BudgetLevel, TypeFilterOption,
-  Currency, DefaultCategory (the seed categories by resource key; also offered by the setup), LanguageOption /
-  ThemeOption / BillReminderOption / LockDelayOption (picker items, named in the current language), AppNotification, UpcomingEntry (a scheduled recurring occurrence:
-  Home card + Recurring page), ThirdPartyComponent (About page licence list; a test
-  checks it covers every package reference))
-- `Services/Interfaces/` — Repository and service interfaces (`IRepository<T>`, one per repository and service), `IAppPaths`
-- `Services/Repositories/` — `RepositoryBase<T>` (CRUD over `IEntity`; cached Account/Category repositories override
-  `OnChanged`) + one repository per table, `DatabaseInitializer` (schema, seed data, runs migrations;
-  `GetConnectionAsync`, `RunInTransactionAsync`; optional encryption), `SqliteSetup`
-- `Services/Repositories/Migrations/` — `IMigration`, `MigrationRunner` (`All` = ordered list), `M001`–`M004`
-- `Models/HomeCard` + `HomeLayout` (Home cards' order + hidden set, one preference string; Balance never hidden; new cards appended; a new install's Default puts the Get started card under Balance) + `HomeLayoutSettings`; Settings → Home screen (`HomeLayoutPage`, move arrows + switches) and Home's "Customize Home" link; a hidden card skips its loads in `MainViewModel`, `MainPage.ArrangeCards` reorders the cards; the opt-in Debts card (off by default, `DebtSummary.OutstandingTotals`) lists the open debts
-- `Services/` — BalanceService, TransactionEnrichmentService, LedgerService (Home rows: transactions + whole transfers
-  as `LedgerEntry`; deletes one without asking and returns a `DeletedEntry` snapshot: `RestoreAsync` puts it back with its IDs (refused when an ID or a parent row is gone), `Discard` deletes the kept receipt photos; the Transactions and Transfers pages offer it as an Undo snackbar for 6 s), BudgetSummaryService (budget progress for a period: Home card + Budget page), PayeeService (found or created by name on save,
-  last category per type, rename / merge / delete), DebtService + DebtLedger (debts: totals in SQL, payments with an interest part,
-  the schedule = a `RecurringTransaction.DebtId` rule capped at what is left; `IAccountRepository.GetOwnAsync` leaves the
-  hidden accounts out of pickers and lists), SplitService (saves a split expense: one transaction per part in one DB
-  transaction, replacing the edited ones; the own conversion shared out), PocketService (set aside / take out, available = balance minus pockets, `GetShortfallAsync`, `CoverAsync`; `PocketCover.Plan`; `PocketCoverPrompt` = the question the expense and transfer forms ask before saving an entry that leaves its account with less than its pockets hold: take it from which pocket, keep, or cancel; the take-outs are recorded after the save, linked to the entry; recurring, CSV import, debt payments and party shares never ask), SavingsGoalService (goal
-  progress = the linked accounts' balance in the goal's currency; `GoalProjection`: needed per month, 3-month pace),
-  PartyService (friends list, parties with members, expenses split evenly minus exclusions, contributions to a common pot;
-  summary = balances + settle-up payments), TripService (one active trip; summary converted into the trip currency; End maps each trip category to a real category, Reopen puts expenses back in Travel; trip category CRUD),
-  AccountService / CategoryService (transactional deletes), EntryDefaultsService (add form: last account and recent
-  categories per type, in `IPreferencesService`), CurrencyService, RecurringTransactionService (a variable-amount schedule, `IsVariableAmount`, is never created by processing: each due date is a pending `UpcomingEntry` to enter via the add form's `RecurringId` + `Occurrence` route or skip; `LastAmountCents` = the estimate), DataExportService
-  (zip backup/restore, CSV), CategoryIconService, SetupService (first-run setup: pending only on a new install;
-  applies the chosen accounts/categories, replacing the seed data on the first run),
-  GetStartedService (Home's "Get started" card: `GetStartedChecklist.Build` = add a first entry, back up, app lock (only with a phone lock), reminders; hidden for good by "Hide", once all is done, or from the start when the install already has transactions; `FirstRun.ChecklistDismissed`) + BackupHistory (when a backup was last written by any path: `DataExportService.ExportBackupAsync`) + SwipeHintSettings (Transactions' "swipe a row" caption: 3 visits or until a swipe),
-  WhatsNewTracker + `IWhatsNewService` (the "What's new" alert: the version history `fastlane/metadata/android/*/changelogs/history.txt` (`## 1.2.3` + `- change` lines, newest first), bundled as `Changelog/{locale}.txt` assets, picked by `WhatsNewChangelog.Locale` and cut by `WhatsNewChangelog.Since` to every version after the last one shown: once after an update, the running version again from About; a new install skips it),
-  LocalizationService (saved `Language` preference, empty = device), AppPaths (app data folder → database, receipts,
-  backups), ErrorHandler (localized message via
-  `IDialogService`, exception to `ILogger`; never show `ex.Message`),
-  NavigationHistory (back-button stack; `//Route` = root), TransactionsDrillDown (a report asks Transactions to open
-  filtered; taken once), ReminderService (daily job: bill reminders, recurring processing, budget alerts; the one-time
-  offer) + ReminderSettings + `INotificationService`, NotificationLaunch (a tapped notification opens its page),
-  AppLock (when the app lock locks: start, back after the delay; never without a phone lock) + PrivacySettings +
-  `IDeviceLock`, ExchangeRateService (opt-in Frankfurter download of the missing days, at start and in the daily
-  job) + ExchangeRateSettings + `IExchangeRateSource` = FrankfurterRateSource, ConversionService (the "Show in" switch
-  applied: converted or by-currency totals for Home, reports and budgets) + CurrencyDisplaySettings,
-  ReportExportService (Reports → Export: a `PeriodReport` for a `ReportRequest`, written as a PDF by
-  `Pdf/PeriodReportPdf` (MigraDoc 6.2.4, the last MIT version); `Pdf/PdfFonts` = the embedded Open Sans and `Printable`
-  for what it lacks), `IFileSharer` (cache file + share sheet; MAUI `FileSharer`),
-  StatementImportService (CSV import into one account: preview with duplicates + learned categories, import, undo;
-  `StatementMapping` = the columns, `ImportRow` = a preview row), StatementMappingStore (the last import's
-  columns + account per header layout, in preferences), AutoBackupService (scheduled backups into the picked folder:
-  due by whole days, skipped while the data fingerprint is unchanged, keeps the newest N) + AutoBackupSettings +
-  `IBackupFolder`, `IBackupPasswordStore` (the backup password; `BackupPasswordException` when a backup needs it), BalanceWidget
-  (the home-screen widget: account per widget ID, hidden like Home, add-form routes) + `IHomeScreenWidgets` (redraw)
-- `Helpers/` — Money, MoneyFormatter, AmountParser, DateFormatter, Plurals, BudgetProjectionHelper, DateRangeHelper,
-  IconHelper (only place that parses icon hex codes), PeriodHelper, PickList (unique action-sheet labels), ReceiptFiles,
-  ReceiptDraft, LedgerFilter (search/filter/sort by IDs), LedgerGrouping, LedgerTransfers (splits transfers for the
-  account view), Debouncer, CategoryReportBuilder, EntryDescription (empty → category name), PayeeNames (normalize, same name ignoring case, suggestions), ListSearch (a list's search box: the text contains the query ignoring case and accents; Categories and Accounts show it above 8 rows, Payees always; an account also matches its currency code and its group header keeps the currency's whole total), SplitAllocation (left to assign; a total shared in proportion), RecurringStart (a new schedule: first entry now, or only the schedule for a future date), RecurrenceCalculator
-  (occurrences at 00:00; `DateRangeHelper.GetBudgetWindow` for a budget's current day/month/year), UpcomingSchedule (next 30
-  days of recurring occurrences, same rule), TransferRate (the rate a cross-currency transfer implies), ReportCurrencies
-  (currencies in use; transactions in one currency), PartyLedger (a party's even split with rotating leftover cents, balances with the pot as line ID 0, settle-up: largest debtor pays largest creditor), CurrencyConverter (downloaded rates: nearest earlier day,
-  inverse, across an earlier base; a transaction's own "Amount in USD" first), CsvTable / StatementDate /
-  StatementAmount (bank statement CSV: table, date layouts, signed amounts), ReceiptReader (a receipt's
-  OCR lines → rows → total + date), ReceiptFill (what a reading changes in the add form)
-- `Resources/Strings/` — Localization: AppResources.resx (English) + AppResources.{es,pt,fr,it}.resx; public class
-- `ViewModels/` — MAUI-free view models (testable): TransactionFilterViewModel (Transactions tab search + filter chips;
-  `ShowOnly` for a report drill-down), PeriodViewModel (singleton: the one period Home, Transactions, Budgets and
-  Spending / Income show, plus the shared month count of the time-series reports and the reports' currency, `ReportCurrency`), SetupViewModel (setup assistant:
-  language + base currency → starting accounts → default categories), ReportExportViewModel (the Reports tabs' Export button: PDF or period CSV), AutoBackupViewModel (Settings → Automatic backups), BackupPasswordViewModel (backup
-  password switch; restore asks for a protected backup's password), SupportViewModel (More → Support MoneyRecord + About button: the Play build only (`ITipJar.IsAvailable`; More and About hide it otherwise): lists the store's tips (`TipOption`, consumed at once, `TipOutcome`; `ConsumePendingAsync` at start settles a late payment); a tip unlocks nothing)
+Use `codegraph_explore` to find where a feature lives rather than relying on a file list here.
 
-`MoneyRecord/` (app)
-- `ViewModels/` — 19 ViewModels using [ObservableProperty] and [RelayCommand] source generators
-- `Views/` — 23 XAML pages (`ChallengesPage` = More → Savings challenge: cards + add/edit BottomSheet with a live plan preview; `ChallengePage` = the game: 7-column grid, a tap marks a day, optional transfer prompt) with code-behind. A row's `LedgerEntry.Title` is the payee when the description is automatic. Home keeps the summary cards; the full list is on `TransactionsPage`
-  (one CollectionView of entries or groups via `LedgerItemTemplateSelector`; swipe edits/deletes, a tap opens details).
-  `CategoryReportPage` serves both reports (`ExpenseReportPage` / `IncomeReportPage` are code-only subclasses that set
-  the type). `MorePage` lists the screens without a tab. `AboutPage` / `LicensePage` show the licences (full texts in
-  `Resources/Raw/Licenses/`). `LockPage` is the app lock (modal; App pushes it on start / `Window.Activated`). `PasswordPage` is
-  `IDialogService.PasswordAsync` (modal, hidden entry).
-  `SetupPage` is the window's page on a new install
-  (swapped for `AppShell` when done) and a pushed route from Settings
-- `Charts/` — ChartPalette (light/dark chart colours, categorical slots), ChartFactory (LiveChartsCore donut / columns /
-  lines / axes with one look; per-series tap handlers), ChartTapBehavior (drill-down on a real tap, never on a scroll)
-- `Controls/` — BottomSheet (the in-page sheet: dim, panel, handle, slide-up; `IsOpen` + `CloseCommand`), PeriodPicker /
-  MonthCountPicker / CurrencyChips (bind BindingContext to a page's `Period`; the chips hide with one currency), AddEntryButton (the one add button: opens an Expense /
-  Income / Transfer sheet; on Home and Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back
-  closes it first),
-  LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
-  EmptyState (the one "nothing here yet" block: icon, title, hint; Home's Recent card, Transfers, Payees, Trends, Cash flow and Net worth use it; the other lists keep their own empty views for now),
-  AutoFitLabel (one line; shrinks its font from `MaxFontSize` to fit: amounts in narrow places, e.g. Home's cards),
-  ScaledLayout (the system font scale; `FontScaleLayout` in Core decides what follows it: from 1.5x Home's Income / Expenses / Net tiles stack in one column and the add form's categories show two per row, from 1.15x three; a figure or a name is never cut, so a cell that can't hold it gets more room)
-- `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
-- `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
-  IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)
-- `Services/` — NavigationService, DialogService (alerts/prompts/action sheets on the window's page + toast + `ToastWithUndoAsync`, the Undo snackbar: one at a time, showing another makes the first final),
-  ThemeService (saved System / Light / Dark → `UserAppTheme`), PreferencesService
-  (MAUI Preferences), NoNotificationService / NoDeviceLock / NoReceiptScanner (platforms without reminders / app lock / receipt reading). SecureBackupPasswordStore
-  (SecureStorage). ViewModels use `IDialogService` /
-  `INavigationService`, never `Shell.Current` or `Toast`
-- `Platforms/Android/` — AndroidNotificationService (channels, `POST_NOTIFICATIONS`), DailyReminderWorker (WorkManager
-  job once a day at ~09:00: `IReminderService.RunDailyAsync`), AndroidDeviceLock (BiometricPrompt), AndroidBackupFolder (SAF folder picker, persisted tree permission), BalanceWidgetProvider +
-  BalanceWidgetConfigureActivity + AndroidHomeScreenWidgets (home-screen widget; redrawn when the app goes to the
-  background and after the daily job), AndroidReceiptScanner (ML Kit text recognition, bundled model), MainActivity
-  (notification route extra)
-- `MauiProgram.cs` — DI; `IAppPaths` = `new AppPaths(FileSystem.AppDataDirectory)`
+XAML that uses a Core type needs `xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"` — without `assembly=` a Debug build compiles but crashes at runtime.
 
-`MoneyRecord.Tests/` — xUnit tests on plain `net10.0`, referencing Core only (helpers, models, services, migrations
-against real temp SQLite files, backup/restore); they run on Linux too (CI uses ubuntu-latest)
-
-## Patterns & Conventions
+## Conventions
 
 ### MVVM
-- ViewModels extend `ObservableObject` (CommunityToolkit.Mvvm)
-- Properties: `[ObservableProperty]` source generator (generates `PropertyName` from `propertyName` field)
-- Commands: `[RelayCommand]` source generator (generates `XxxCommand` from `XxxAsync` method)
-- Partial methods: `partial void OnPropertyNameChanged(T value)` for property change reactions
-- Reloads: one `[RelayCommand(AllowConcurrentExecutions = true)]` load taking a `CancellationToken`; a new run cancels
-  the previous one (check the token after the awaits, catch the cancellation, only the last run clears the spinner).
-  Property-changed handlers call `LoadXCommand.Execute(null)`, never `_ = LoadXAsync()`
-- Views set `BindingContext` in constructor via DI, call `ViewModel.InitializeAsync()` in `OnAppearing()`
+- `ObservableObject`; `[ObservableProperty]` (field `propertyName` → `PropertyName`), `[RelayCommand]` (`XxxAsync` → `XxxCommand`), `partial void OnPropertyNameChanged(T value)`.
+- Reloads: one `[RelayCommand(AllowConcurrentExecutions = true)]` load taking a `CancellationToken`; a new run cancels the previous one (check the token after awaits, catch cancellation, only the last run clears the spinner). Property-changed handlers call `LoadXCommand.Execute(null)`, never `_ = LoadXAsync()`.
+- Views set `BindingContext` in the constructor via DI and call `ViewModel.InitializeAsync()` in `OnAppearing()`.
+- ViewModels use `IDialogService` / `INavigationService`, never `Shell.Current` or `Toast`. `ErrorHandler` shows a localized message and logs the exception; never show `ex.Message`.
 
-### Dependency Injection (MauiProgram.cs)
-- Services and repositories: **Singleton**
-- Pages and ViewModels: **Transient** (except MainPage + MainViewModel = Singleton)
-- All registrations use interface → implementation mapping
+### DI (MauiProgram.cs)
+Services and repositories Singleton; pages and ViewModels Transient (except MainPage + MainViewModel Singleton). Register interface → implementation.
 
 ### Navigation
-- Shell `TabBar` (`AppShell.xaml`): Home · Transactions · Reports (Spending / Income / Trends / Cash flow / Net worth
-  top tabs) · Budgets · More. Tabs keep implicit routes, so each tab page is a root at `//MainPage`,
-  `//TransactionsPage`, `//ExpenseReportPage`, `//IncomeReportPage`, `//TrendsReportPage`, `//CashFlowReportPage`,
-  `//NetWorthReportPage`, `//BudgetPage`, `//MorePage`
-- `ManageAccountsPage` lists each account's pockets under its card ("Available · in pockets"; a tap opens the pocket BottomSheet: name + icon, set aside / take out, movements, delete); the Goals sheet lists a pocket under its account (an account and its own pockets can't both be ticked)
-- Push routes: `AddTransactionPage`, `AddTransferPage` (tab bar hidden) and the More screens `ManageAccountsPage`,
-  `ManageCategoriesPage` (Income / Expense switch), `RecurringTransactionsPage`, `GoalsPage`, `PayeesPage`, `TripsPage`, `TripPage`, `TripCategoriesPage`, `PartiesPage` (cards + new/edit sheet), `PartyPage`, `FriendsPage`, `TransfersPage`, `SettingsPage`
-- Home links: balance card → `ManageAccountsPage` (`?CurrencyCode=` from a currency line filters it), Recent "See
-  all" → `//TransactionsPage`, Upcoming "See all" → `RecurringTransactionsPage?Show=Upcoming`, budgets "See all" →
-  `//BudgetPage`, goals card → `GoalsPage`
-- Custom `INavigationService` tracks navigation history for back button behavior: AppShell's `Navigated` event feeds
-  `NavigationHistory`; Android back → `Shell.SendBackButtonPressed()` → `AppShell.OnBackButtonPressed` (an open sheet
-  on an `IOverlayHost` page, then the previous page, then Home, then close)
+- Shell `TabBar`: Home · Transactions · Reports (Spending / Income / Trends / Cash flow / Net worth top tabs) · Budgets · More. Tab pages are roots at `//MainPage`, `//TransactionsPage`, `//ExpenseReportPage`, ... `//MorePage`. Other screens are pushed routes (Add Transaction/Transfer hide the tab bar; More lists the rest).
+- `INavigationService` tracks history for the back button: AppShell `Navigated` → `NavigationHistory`; Android back → `AppShell.OnBackButtonPressed` (open sheet on an `IOverlayHost` page, then previous page, then Home, then close).
 
 ### Database
-- SQLite via `sqlite-net-pcl` with `SQLiteAsyncConnection`
-- DB file: `moneyrecord.db3` in `FileSystem.AppDataDirectory`, or `moneyrecord-encrypted.db3` while Settings → Encrypt
-  database is on (`IDatabaseEncryption` = `DatabaseInitializer`; key in `IDatabaseKeyStore` = SecureStorage; neither file
-  nor key is in Android backup). Native SQLite is SQLite3 Multiple Ciphers: `SqliteSetup.Init` overrides sqlite-net's
-  e_sqlite3 provider (DatabaseInitializer's static ctor; tests via a module initializer)
-- No ORM relationships — joins done in application code via dictionary lookups
-- `DatabaseInitializer` handles schema creation + seed data, then the migration runner
-- Seed data: 4 income categories, 7 expense categories, 1 "Cash" account (allows negative balance, device currency)
-- **Money is stored as integer cents** (`AmountCents`, `InitialBalanceCents`, `LimitAmountCents`); the `decimal` properties
-  are `[Ignore]` wrappers (`Helpers/Money`). Fixed scale of 100 for every currency; zero-decimal currencies (JPY, ...)
-  only change display/input (`CurrencyService.GetMinorUnits`); Settings → Show cents hides a currency's cents in display
-  only (`GetShownDecimals`; entries still take and show typed cents, `MoneyFormatter.FormatForEntry`)
-- **Migrations** (`PRAGMA user_version`): the models describe the latest schema. A new database is created from the models
-  and stamped with the latest version; a migration only transforms a database from an older app version (after
-  `CreateTableAsync` has added new columns/indexes). Add new migrations at the end of `MigrationRunner.All`; set
-  `RewritesData = true` to get a `moneyrecord.db3.bak-v{n}` backup first. Indexes are `[Indexed(Name = "IX_…")]` on the models
-- Multi-row changes go through `DatabaseInitializer.RunInTransactionAsync` (deletes in AccountService/CategoryService,
-  backup snapshot, restore)
-- Totals are summed by SQLite (`SUM(ABS(AmountCents)) … GROUP BY` in the repositories), never by loading every row; converted
-  totals too (`SumByDayAsync`: per type, category, currency and day, each day converted at its rate). Only the reports
-  load their period's rows (they chart them anyway)
-- Balances count the entries dated up to today (`IBalanceService.CountedBefore`): a future-dated transaction or transfer is
-  listed (and in its period's totals) but in no balance before its date; what works back from today's balances stops there too
-- Backups: `.zip` with `data.json` (format v8, rows keep their IDs; savings goals, pockets and savings challenges included) + `receipts/`; restore snapshots go to `Backups/`
+- SQLite via `sqlite-net-pcl`; no ORM relationships (joins in application code via dictionaries). File `moneyrecord.db3` (or `moneyrecord-encrypted.db3` with SQLite3 Multiple Ciphers when Encrypt database is on; neither file nor key is in Android backup).
+- **Money is integer cents** (`AmountCents`, ...); `decimal` properties are `[Ignore]` wrappers (`Helpers/Money`). Scale is always 100; zero-decimal currencies and Settings → Show cents only change display/input (`GetShownDecimals`, `MoneyFormatter.FormatForEntry`).
+- **Migrations** (`PRAGMA user_version`): models describe the latest schema; a new DB is created from models and stamped latest. A migration only transforms older DBs (after `CreateTableAsync` adds columns/indexes). Append to `MigrationRunner.All`; `RewritesData = true` makes a `.bak-v{n}` backup first. Indexes: `[Indexed(Name = "IX_…")]`.
+- Multi-row changes go through `DatabaseInitializer.RunInTransactionAsync`.
+- Totals are summed by SQLite (`SUM … GROUP BY`), never by loading every row; only reports load their period's rows.
+- Balances count entries dated up to today (`IBalanceService.CountedBefore`); future-dated entries are listed and in period totals but in no balance before their date.
+- Backups: `.zip` with `data.json` (format v8, rows keep IDs) + `receipts/`; restore snapshots go to `Backups/`.
 
 ### Localization
-- `.resx` resource files with `ResXFileCodeGenerator`
-- XAML: `{ext:Localize KeyName}` markup extension (bindings, not static)
-- Code: `AppResources.KeyName` or `LocalizationService.Instance.GetString(key)`
-- Auto-detects system language; the supported ones are the rows of `AppLanguage.All` (en, es, pt-BR, fr, it): adding a language = one row there + `AppResources.xx.resx` + widget `values-xx` + `fastlane` folder (tests fail until all exist; see the project skill `/translate-moneyrecord`)
-- `LocalizationService.ResolveCulture` keeps the device region (`es` + `CO` → `es-CO`), never a neutral culture
-- Dates: `DateFormatter` / `DateTextConverter` (`Long`, `Medium`, `MonthDay`), never fixed patterns like `"MMM dd, yyyy"`
-- Counts: `Plurals` (`...One` / `...Other` keys), not `"{0} items"`
-- Filters and logic compare enums/IDs, never display strings
-- `ResourceParityTests` fail when a key, translation or `{n}` placeholder is missing in any language
+- `.resx` with `ResXFileCodeGenerator`. XAML: `{ext:Localize Key}`. Code: `AppResources.Key` or `LocalizationService.Instance.GetString(key)`.
+- Languages are the rows of `AppLanguage.All` (en, es, pt-BR, fr, it): a new one = a row there + `AppResources.xx.resx` + widget `values-xx` + `fastlane` folder (tests fail until all exist).
+- `ResolveCulture` keeps the device region (`es` + `CO` → `es-CO`), never a neutral culture.
+- Dates via `DateFormatter` / `DateTextConverter`, never fixed patterns. Counts via `Plurals` (`...One` / `...Other` keys). Filters and logic compare enums/IDs, never display strings.
+- `ResourceParityTests` fail on a missing key, translation or `{n}` placeholder.
 
 ### Icons
-- Material Design Icons font (`materialdesignicons-webfont.ttf`, alias "MaterialDesignIcons")
-- Hex codes stored as strings (e.g., `"F0770"` for tag icon)
-- `IconHelper.GetDisplayIcon()` converts hex to Unicode character
-- Default category icon: `"F0770"`, default account icon: `"F0070"`
+Material Design Icons font (alias "MaterialDesignIcons"); hex codes stored as strings (`"F0770"`); only `IconHelper` parses them. Defaults: category `F0770`, account `F0070`.
 
 ### Theming
-- Full light/dark support via `AppThemeBinding` throughout XAML
-- Colors defined in `Resources/Styles/Colors.xaml`
-- Primary: `#512BD4` (purple)
-- Cards: `<Border Style="{StaticResource Card}">` (pages override Padding / Margin); never `Frame` (obsolete)
+Light/dark via `AppThemeBinding`; colors in `Resources/Styles/Colors.xaml`; primary `#512BD4`. Cards: `<Border Style="{StaticResource Card}">`, never `Frame`.
 
 ## Key Decisions
 
-- Budget is **expense-only** (per-category spending limits, not income targets)
-- Transfers are a **separate table** from transactions (linked via TransferId on display)
-- Each account has a **currency**; amounts are shown with `MoneyFormatter.Format(amount, currencyCode)` (`MoneyFormatter.BaseCurrency` = the resolved base code, `SameCurrency(a, b)`) / `MoneyConverter`
-  / `CurrencyMoneyConverter`. An empty code means the **base currency** (Settings; default = device region currency)
-- Never add different currencies together unconverted: totals are per currency (`CurrencyAmount`, SQL `GROUP BY`
-  the account's currency; no account = base), or converted into the base with downloaded rates ("≈") when the shared
-  "Show in" choice says so (`IConversionService`). Budgets count base-currency expenses, plus converted ones while
-  converted
-- A transfer stores what left (`AmountCents`, source currency) and what arrived (`DestinationAmountCents`, destination
-  currency); they differ only between currencies
-- Accounts with transfers can't be deleted; account deletes into a different currency are refused
-- Budget progress uses `BudgetLevel` + `BudgetLevelToColorConverter` (light/dark aware); models hold no `Color`
-- `BudgetPeriod` enum: Day, Month, Year — projected via `BudgetProjectionHelper`
-- `PeriodType` enum for date range filtering: CalendarMonth, CalendarYear, Today, LastWeek, LastMonth, LastYear, CustomPeriod
-
-## CodeGraph
-
-This project is indexed by CodeGraph (`.codegraph/` directory). Use `codegraph_explore` as the primary tool for code exploration — it returns verbatim source, call paths, and blast radius in one call, including dynamic dispatch hops that grep can't follow.
+- Budget is expense-only (per-category limits). Transfers are a separate table from transactions.
+- Each account has a currency; format with `MoneyFormatter.Format(amount, currencyCode)` / `MoneyConverter` / `CurrencyMoneyConverter`. Empty code = base currency (Settings; default = device region currency).
+- Never add different currencies unconverted: totals are per currency (`CurrencyAmount`, SQL `GROUP BY` currency), or converted into the base with downloaded rates ("≈") when "Show in" says so (`IConversionService`).
+- A transfer stores what left (`AmountCents`) and what arrived (`DestinationAmountCents`); they differ only across currencies.
+- Accounts with transfers can't be deleted; deletes into a different currency are refused. Hidden accounts (`Account.IsDebt`) are left out of pickers via `IAccountRepository.GetOwnAsync`.
+- Budget colors via `BudgetLevel` + `BudgetLevelToColorConverter`; models hold no `Color`.
+- Split expenses are plain transactions sharing `Transaction.SplitId`. Pockets are earmarks inside an account (signed `PocketMovement`s). Recurring variable-amount schedules are never auto-created: each due date is a pending `UpcomingEntry`.
