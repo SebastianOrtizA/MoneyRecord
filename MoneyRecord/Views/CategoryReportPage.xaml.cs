@@ -1,10 +1,11 @@
+using MoneyRecord.Controls;
 using MoneyRecord.Models;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
 {
     /// <summary>The Spending or Income report; the two Reports top tabs are the subclasses below.</summary>
-    public partial class CategoryReportPage : ContentPage
+    public partial class CategoryReportPage : ContentPage, IOverlayHost
     {
         private readonly CategoryReportViewModel _viewModel;
 
@@ -26,7 +27,10 @@ namespace MoneyRecord.Views
         {
             base.OnDisappearing();
             _viewModel.Deactivate();
+            _viewModel.Period.TryCloseSheet();
         }
+
+        public bool TryCloseOverlay() => _viewModel.Period.TryCloseSheet();
     }
 
     public sealed class ExpenseReportPage(CategoryReportViewModel viewModel)

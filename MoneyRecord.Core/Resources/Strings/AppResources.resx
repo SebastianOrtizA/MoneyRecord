@@ -2963,4 +2963,10 @@
   <data name="AddForNetWorth" xml:space="preserve">
     <value>Add an account balance, income or expenses to see your net worth.</value>
   </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>Previous period</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>Next period</value>
+  </data>
 </root>

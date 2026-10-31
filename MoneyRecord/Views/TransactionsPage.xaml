@@ -176,7 +176,7 @@
                             ItemTemplate="{StaticResource LedgerItemTemplateSelector}">
                 <CollectionView.Header>
                     <VerticalStackLayout Padding="16,12,16,4" Spacing="12">
-                        <controls:PeriodPicker BindingContext="{Binding Period}" />
+                        <controls:PeriodStepper BindingContext="{Binding Period}" />
 
                         <SearchBar Placeholder="{ext:Localize SearchTransactions}"
                                    Text="{Binding Filters.SearchText}"
@@ -428,6 +428,8 @@
                 </Grid>
             </VerticalStackLayout>
         </controls:BottomSheet>
+
+        <controls:PeriodSheet BindingContext="{Binding Period}" />
 
         <!-- The receipt full screen; tap anywhere to close -->
         <Grid IsVisible="{Binding IsReceiptOpen}" BackgroundColor="Black"

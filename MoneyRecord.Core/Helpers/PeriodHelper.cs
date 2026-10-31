@@ -58,8 +58,39 @@ namespace MoneyRecord.Helpers
         public override int GetHashCode() => Period.GetHashCode();
     }
 
+    /// <summary>One row of the period sheet.</summary>
+    public record PeriodChoice(PeriodItem Item, bool IsSelected);
+
+    /// <summary>What the period stepper moves by.</summary>
+    public enum PeriodStep
+    {
+        Month,
+        Year
+    }
+
     public static class PeriodHelper
     {
+        /// <summary>
+        /// The step a range allows: <see cref="PeriodStep.Month"/> for exactly one calendar month,
+        /// <see cref="PeriodStep.Year"/> for exactly one calendar year, null for any other range.
+        /// </summary>
+        public static PeriodStep? StepOf(DateTime start, DateTime end) =>
+            DateRangeHelper.WholeMonths(start, end) switch
+            {
+                1 => PeriodStep.Month,
+                12 when start.Month == 1 => PeriodStep.Year,
+                _ => null
+            };
+
+        /// <summary>The month or year <paramref name="n"/> steps from the one starting at <paramref name="start"/>, whole, up to its last tick.</summary>
+        public static (DateTime Start, DateTime End) Shift(DateTime start, PeriodStep step, int n)
+        {
+            var first = step == PeriodStep.Year
+                ? new DateTime(start.Year + n, 1, 1)
+                : new DateTime(start.Year, start.Month, 1).AddMonths(n);
+            var next = step == PeriodStep.Year ? first.AddYears(1) : first.AddMonths(1);
+            return (first, next.AddTicks(-1));
+        }
 
         public static List<PeriodItem> GetReportPeriods() =>
         [

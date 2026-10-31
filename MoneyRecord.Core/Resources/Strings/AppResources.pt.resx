@@ -2911,4 +2911,10 @@
   <data name="AddForNetWorth" xml:space="preserve">
     <value>Adicione um saldo, receitas ou despesas para ver seu patrimônio.</value>
   </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>Período anterior</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>Período seguinte</value>
+  </data>
 </root>

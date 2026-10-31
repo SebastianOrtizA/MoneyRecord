@@ -32,7 +32,7 @@
             <CollectionView ItemsSource="{Binding Budgets}">
                 <CollectionView.Header>
                     <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
-                        <controls:PeriodPicker BindingContext="{Binding Period}" />
+                        <controls:PeriodStepper BindingContext="{Binding Period}" />
 
                         <!-- Totals -->
                         <Border IsVisible="{Binding HasBudgets}"
@@ -263,6 +263,8 @@
                 </Grid>
             </VerticalStackLayout>
         </controls:BottomSheet>
+
+        <controls:PeriodSheet BindingContext="{Binding Period}" />
     </Grid>
 
 </ContentPage>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The period list as a bottom sheet, one control for every page: BindingContext is the page's Period (PeriodViewModel). Place it last in the page's root grid -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             xmlns:helpers="clr-namespace:MoneyRecord.Helpers;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             x:Class="MoneyRecord.Controls.PeriodSheet"
+             x:DataType="viewmodels:PeriodViewModel"
+             IsVisible="{Binding IsSheetOpen}">
+
+    <controls:BottomSheet IsOpen="{Binding IsSheetOpen}" CloseCommand="{Binding CloseSheetCommand}">
+        <VerticalStackLayout Spacing="4">
+            <Label Text="{ext:Localize SelectPeriod}" FontSize="18" FontAttributes="Bold" Margin="0,0,0,8" />
+
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Choices}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="helpers:PeriodChoice">
+                        <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="48">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:PeriodViewModel}}, Path=SelectPeriodCommand}"
+                                                      CommandParameter="{Binding Item}" />
+                            </Grid.GestureRecognizers>
+                            <Label Text="{Binding Item.DisplayName}" FontSize="16" VerticalOptions="Center">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
+                                        <Setter Property="FontAttributes" Value="Bold" />
+                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <Label Grid.Column="1" Text="&#xF012C;" FontFamily="MaterialDesignIcons" FontSize="22"
+                                   VerticalOptions="Center" IsVisible="{Binding IsSelected}"
+                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" RowSpacing="12"
+                  Margin="0,8,0,0" IsVisible="{Binding IsCustomPeriodSelected}">
+                <Label Text="{ext:Localize From}" FontSize="16" VerticalOptions="Center" />
+                <DatePicker Grid.Column="1"
+                            Date="{Binding CustomStartDate}"
+                            Format="{x:Static helpers:DateFormatter.MediumPattern}"
+                            FontSize="16"
+                            MinimumHeightRequest="44" />
+                <Label Grid.Row="1" Text="{ext:Localize To}" FontSize="16" VerticalOptions="Center" />
+                <DatePicker Grid.Row="1" Grid.Column="1"
+                            Date="{Binding CustomEndDate}"
+                            Format="{x:Static helpers:DateFormatter.MediumPattern}"
+                            FontSize="16"
+                            MinimumHeightRequest="44" />
+            </Grid>
+
+            <Button Text="{ext:Localize OK}"
+                    Command="{Binding CloseSheetCommand}"
+                    IsVisible="{Binding IsCustomPeriodSelected}"
+                    Margin="0,8,0,0"
+                    MinimumHeightRequest="44"
+                    CornerRadius="22" />
+        </VerticalStackLayout>
+    </controls:BottomSheet>
+</ContentView>

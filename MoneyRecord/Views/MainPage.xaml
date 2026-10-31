@@ -115,7 +115,7 @@
             </Border>
 
             <VerticalStackLayout x:Name="PeriodSummaryCard" Spacing="16" IsVisible="{Binding ShowPeriodPicker}">
-            <controls:PeriodPicker BindingContext="{Binding Period}" />
+            <controls:PeriodStepper BindingContext="{Binding Period}" />
 
             <!-- The period summary: base-currency cards, then the other currencies, in one container so they read as one -->
             <Border Style="{StaticResource PeriodSummary}" IsVisible="{Binding ShowPeriodSummary}">
@@ -701,6 +701,7 @@
                 </Grid>
 
                 <controls:AddEntryButton x:Name="AddEntry" />
+                <controls:PeriodSheet BindingContext="{Binding Period}" />
             </Grid>
 
         </ContentPage>

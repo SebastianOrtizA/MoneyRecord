@@ -2960,4 +2960,10 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="AddForNetWorth" xml:space="preserve">
     <value>Agrega un saldo, ingresos o gastos para ver tu patrimonio.</value>
   </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>Período anterior</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>Período siguiente</value>
+  </data>
 </root>

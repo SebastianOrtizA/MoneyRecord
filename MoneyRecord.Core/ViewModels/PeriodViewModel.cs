@@ -58,9 +58,12 @@ namespace MoneyRecord.ViewModels
         /// <summary>The reports show every currency converted into the base (the "≈" chip).</summary>
         public bool IsConverted { get; private set; }
 
-        public PeriodViewModel(IConversionService conversion)
+        private readonly TimeProvider _time;
+
+        public PeriodViewModel(IConversionService conversion, TimeProvider? timeProvider = null)
         {
             _conversion = conversion;
+            _time = timeProvider ?? TimeProvider.System;
             selectedPeriod = periods.First(p => p.Type == PeriodType.CalendarMonth);
             // Lives as long as the app (singleton): the pickers follow a language change
             LocalizationService.Instance.LanguageChanged += (_, _) => RefreshNames();
@@ -152,6 +155,126 @@ namespace MoneyRecord.ViewModels
         /// <summary>The period just before <see cref="Range"/>, for "vs previous period".</summary>
         public (DateTime Start, DateTime End) PreviousRange => DateRangeHelper.GetPreviousRange(Range.Start, Range.End);
 
+        /// <summary>The stepper's text: the month or year, a named period, or the custom range.</summary>
+        public string Label
+        {
+            get
+            {
+                var (start, end) = SteppableRange();
+                return PeriodHelper.StepOf(start, end) switch
+                {
+                    PeriodStep.Month => DateFormatter.FormatMonthYear(start),
+                    PeriodStep.Year => start.Year.ToString(),
+                    _ when SelectedPeriod?.Type is PeriodType.CustomPeriod => DateFormatter.FormatRange(start, end),
+                    _ => SelectedPeriod?.DisplayName ?? string.Empty
+                };
+            }
+        }
+
+        /// <summary>The arrows show only for a calendar month or year (this one, or a custom one).</summary>
+        public bool CanStep => PeriodHelper.StepOf(SteppableRange().Start, SteppableRange().End) != null;
+
+        /// <summary>Never past today: the current month or year is the last.</summary>
+        public bool CanStepForward => CanStep && Shifted(1) is { } next && next.Start <= Today;
+
+        private DateTime Today => _time.GetLocalNow().Date;
+
+        // This month / this year follow the injected clock; anything else is the range as shown
+        private (DateTime Start, DateTime End) SteppableRange()
+        {
+            var today = Today;
+            return SelectedPeriod?.Type switch
+            {
+                PeriodType.CalendarMonth => PeriodHelper.Shift(today, PeriodStep.Month, 0),
+                PeriodType.CalendarYear => PeriodHelper.Shift(today, PeriodStep.Year, 0),
+                _ => Range
+            };
+        }
+
+        private (DateTime Start, DateTime End)? Shifted(int n)
+        {
+            var (start, end) = SteppableRange();
+            return PeriodHelper.StepOf(start, end) is { } step ? PeriodHelper.Shift(start, step, n) : null;
+        }
+
+        /// <summary>Moves a month or year back (-1) or forward (1); nothing for other periods or past today.</summary>
+        public void Step(int n)
+        {
+            if (Shifted(n) is not { } target || target.Start > Today)
+                return;
+
+            var (currentStart, currentEnd) = SteppableRange();
+            var step = PeriodHelper.StepOf(currentStart, currentEnd)!.Value;
+            var thisPeriod = PeriodHelper.Shift(Today, step, 0);
+            var type = target.Start == thisPeriod.Start
+                ? step == PeriodStep.Year ? PeriodType.CalendarYear : PeriodType.CalendarMonth
+                : PeriodType.CustomPeriod;
+
+            _batching = true;
+            try
+            {
+                CustomStartDate = target.Start;
+                CustomEndDate = target.End.Date;
+                SelectedPeriod = Periods.First(p => p.Type == type);
+            }
+            finally
+            {
+                _batching = false;
+            }
+
+            RaiseStepState();
+            Changed?.Invoke();
+        }
+
+        [RelayCommand]
+        private void Previous() => Step(-1);
+
+        [RelayCommand]
+        private void Next() => Step(1);
+
+        /// <summary>The period sheet (one control every page shows) is open.</summary>
+        [ObservableProperty]
+        private bool isSheetOpen;
+
+        [RelayCommand]
+        private void OpenSheet() => IsSheetOpen = true;
+
+        [RelayCommand]
+        private void CloseSheet() => IsSheetOpen = false;
+
+        /// <summary>The back button: closes the sheet if it is open.</summary>
+        public bool TryCloseSheet()
+        {
+            if (!IsSheetOpen)
+                return false;
+
+            IsSheetOpen = false;
+            return true;
+        }
+
+        /// <summary>A row of the sheet was tapped. Custom keeps the sheet open for its dates.</summary>
+        [RelayCommand]
+        private void SelectPeriod(PeriodItem? item)
+        {
+            if (item == null)
+                return;
+
+            SelectedPeriod = item;
+            if (item.Type != PeriodType.CustomPeriod)
+                IsSheetOpen = false;
+        }
+
+        /// <summary>The sheet's rows: every period, the shown one marked.</summary>
+        public IReadOnlyList<PeriodChoice> Choices => Periods.Select(p => new PeriodChoice(p, p.Equals(SelectedPeriod))).ToList();
+
+        private void RaiseStepState()
+        {
+            OnPropertyChanged(nameof(Choices));
+            OnPropertyChanged(nameof(Label));
+            OnPropertyChanged(nameof(CanStep));
+            OnPropertyChanged(nameof(CanStepForward));
+        }
+
         /// <summary>Shows one calendar month (a report drill-down into a month) as a custom period.</summary>
         public void ShowMonth(DateTime month)
         {
@@ -188,24 +311,33 @@ namespace MoneyRecord.ViewModels
             {
                 _batching = false;
             }
+
+            RaiseStepState();
         }
 
         partial void OnSelectedPeriodChanged(PeriodItem value)
         {
             IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
+            RaiseStepState();
             RaiseChanged();
         }
 
         partial void OnCustomStartDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
+            {
+                RaiseStepState();
                 RaiseChanged();
+            }
         }
 
         partial void OnCustomEndDateChanged(DateTime value)
         {
             if (IsCustomPeriodSelected)
+            {
+                RaiseStepState();
                 RaiseChanged();
+            }
         }
 
         partial void OnMonthCountChanged(int value) => MonthCountChanged?.Invoke();
