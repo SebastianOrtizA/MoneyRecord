@@ -1,3 +1,11 @@
+## 1.0.0
+- Supprimer une transaction, une répartition ou un virement ne demande plus de confirmation : touche Annuler dans le message qui apparaît pour le récupérer.
+- Nouveau : une carte Pour commencer sur l'accueil te guide pour les premiers pas (ajouter une dépense, sauvegarder tes données, activer les rappels), et les écrans vides te disent maintenant quoi faire ensuite.
+- Catégories et Comptes ont un champ de recherche, et Virements, Flux de trésorerie, Patrimoine net et Bénéficiaires s'expliquent quand ils sont vides.
+- Texte agrandi : les montants ne sont jamais coupés, et les catégories, la légende du solde et les boutons tiennent aux plus grandes tailles de police.
+- Mieux avec TalkBack : plus de contrôles ont une étiquette, les zones tactiles font au moins 48 dp et le texte pâle est plus foncé.
+- Les revenus sont bleus et les dépenses rouges partout, les tuiles de l'accueil sont plus sobres et les icônes de la barre d'état sont lisibles sur la barre violette.
+
 ## 0.20.1
 - Objectifs : la feuille d'ajout ou de modification d'un objectif défile maintenant, donc Enregistrer reste accessible quand tu as beaucoup de comptes.
 

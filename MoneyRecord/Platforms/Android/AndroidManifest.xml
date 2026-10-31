@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 	<application android:allowBackup="true" android:fullBackupContent="@xml/backup_rules" android:dataExtractionRules="@xml/data_extraction_rules" android:icon="@mipmap/moneyrecord" android:roundIcon="@mipmap/moneyrecord_round" android:supportsRtl="true"></application>
-	<!-- Only for opt-in crash reports (Sentry, off by default): nothing else goes online. Picking photos (photo picker)
-	     and files (system picker) needs no storage permission. -->
+	<!-- Online only for opt-in crash reports (Sentry), opt-in exchange rates (Frankfurter) and ML Kit's diagnostics when a receipt
+	     is scanned. Picking photos (photo picker) and files (system picker) needs no storage permission. -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.CAMERA" />
 	<!-- Reminders (opt-in, Settings): asked on Android 13+ when the user turns them on -->

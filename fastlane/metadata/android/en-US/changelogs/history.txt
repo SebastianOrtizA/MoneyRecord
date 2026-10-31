@@ -1,3 +1,11 @@
+## 1.0.0
+- Deleting a transaction, split or transfer no longer asks you to confirm: tap Undo in the message that appears to bring it back.
+- New: a Get started card on Home walks you through the first steps (add an expense, back up your data, turn on reminders), and empty screens now tell you what to do next.
+- Categories and Accounts have a search box, and Transfers, Cash flow, Net worth and Payees explain themselves when they are empty.
+- Large text: amounts are never cut off, and categories, the balance caption and buttons fit at the biggest font sizes.
+- Better with TalkBack: more controls have labels, tap targets are at least 48 dp and faint text is darker.
+- Income is blue and expenses red everywhere, the Home tiles are calmer, and the status bar icons are readable on the purple bar.
+
 ## 0.20.1
 - Goals: the add/edit goal sheet now scrolls, so Save stays reachable when you have many accounts.
 

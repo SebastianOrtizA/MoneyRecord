@@ -1,3 +1,11 @@
+## 1.0.0
+- Eliminare un movimento, una suddivisione o un trasferimento non chiede più conferma: tocca Annulla nel messaggio che compare per recuperarlo.
+- Novità: una scheda Per iniziare nella Home ti guida nei primi passi (aggiungere una spesa, fare un backup, attivare i promemoria), e le schermate vuote ora ti dicono cosa fare dopo.
+- Categorie e Conti hanno un campo di ricerca, e Trasferimenti, Flusso di cassa, Patrimonio netto e Beneficiari si spiegano quando sono vuoti.
+- Testo grande: gli importi non vengono mai tagliati, e le categorie, la didascalia del saldo e i pulsanti ci stanno con i caratteri più grandi.
+- Meglio con TalkBack: più controlli hanno un'etichetta, le aree di tocco sono di almeno 48 dp e il testo tenue è più scuro.
+- Le entrate sono blu e le spese rosse ovunque, i riquadri della Home sono più sobri e le icone della barra di stato sono leggibili sulla barra viola.
+
 ## 0.20.1
 - Obiettivi: il foglio per aggiungere o modificare un obiettivo ora scorre, così Salva resta raggiungibile quando hai molti conti.
 
