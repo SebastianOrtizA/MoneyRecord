@@ -53,6 +53,35 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private DeltaTone deltaTone;
 
+        /// <summary>The slice held under the finger (null when none): shown in the donut centre, not in a tooltip under the finger.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasHeldSlice))]
+        private string heldSliceName = string.Empty;
+
+        [ObservableProperty]
+        private string heldSliceValueText = string.Empty;
+
+        public bool HasHeldSlice => HeldSliceName.Length > 0;
+
+        private ChartSlice[] _slices = [];
+        private decimal _sliceTotal;
+        private string _sliceCurrency = string.Empty;
+
+        [RelayCommand]
+        private void HoldSlice(ISeries? series)
+        {
+            var index = series == null ? -1 : Array.IndexOf(Slices, series);
+            if (index < 0 || index >= _slices.Length)
+            {
+                HeldSliceName = string.Empty;
+                HeldSliceValueText = string.Empty;
+                return;
+            }
+
+            HeldSliceName = _slices[index].Name;
+            HeldSliceValueText = ChartFactory.SliceText(_slices[index], _sliceTotal, _sliceCurrency);
+        }
+
         [ObservableProperty]
         private bool hasData;
 
@@ -151,6 +180,10 @@ namespace MoneyRecord.ViewModels
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
                     Categories = new(report.Categories);
+                    _slices = [.. report.Slices];
+                    _sliceTotal = report.Total;
+                    _sliceCurrency = code;
+                    HeldSliceName = string.Empty;
                     Slices = ChartFactory.Donut(report.Slices, report.Total, code,
                         slice => OpenTransactionsCommand.Execute(slice.CategoryId));
                 });
@@ -192,7 +225,7 @@ namespace MoneyRecord.ViewModels
         private Task OpenTransactionsAsync(int? categoryId)
         {
             _drillDown.Request(categoryId, TransactionType);
-            return _navigationService.NavigateToAsync($"//{nameof(TransactionsPage)}");
+            return _navigationService.NavigateToKeepingBackAsync($"//{nameof(TransactionsPage)}");
         }
     }
 

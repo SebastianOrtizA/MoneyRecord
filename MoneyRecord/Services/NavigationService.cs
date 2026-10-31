@@ -33,6 +33,20 @@ namespace MoneyRecord.Services
 
         public Task NavigateToAsync(string route) => Shell.Current.GoToAsync(route);
 
+        public async Task NavigateToKeepingBackAsync(string route)
+        {
+            _history.KeepBackForNextRoot();
+            try
+            {
+                await Shell.Current.GoToAsync(route);
+            }
+            catch
+            {
+                _history.CancelKeepBack();
+                throw;
+            }
+        }
+
         public Task NavigateToAsync(string route, IDictionary<string, object> parameters) =>
             Shell.Current.GoToAsync(route, parameters);
     }

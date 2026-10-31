@@ -12,6 +12,13 @@ namespace MoneyRecord.Services.Interfaces
         Task GoBackAsync();
 
         Task NavigateToAsync(string route);
+
+        /// <summary>
+        /// Goes to a tab page but remembers the current page, so back returns here (a report opening its transactions)
+        /// instead of going Home.
+        /// </summary>
+        Task NavigateToKeepingBackAsync(string route);
+
         Task NavigateToAsync(string route, IDictionary<string, object> parameters);
     }
 }

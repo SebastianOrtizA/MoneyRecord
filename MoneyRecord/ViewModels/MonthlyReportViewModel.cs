@@ -153,7 +153,7 @@ namespace MoneyRecord.ViewModels
             Period.ShowMonth(FirstMonth.AddMonths(monthIndex));
             _drillDown.Request(null, type);
             MainThread.BeginInvokeOnMainThread(async () =>
-                await _navigationService.NavigateToAsync($"//{nameof(TransactionsPage)}"));
+                await _navigationService.NavigateToKeepingBackAsync($"//{nameof(TransactionsPage)}"));
         }
     }
 }

@@ -35,6 +35,11 @@ namespace MoneyRecord.Charts
         /// <summary>A named series of monthly values in one colour.</summary>
         public sealed record Line(string Name, IEnumerable<decimal> Values, Color Color);
 
+        /// <summary>"$383.00 · 45.0%": a slice's amount and its share of the total (just the amount when there is no total).</summary>
+        public static string SliceText(ChartSlice slice, decimal total, string currencyCode) => total > 0
+            ? $"{MoneyFormatter.Format(slice.Amount, currencyCode)} · {slice.Amount / total:P1}"
+            : MoneyFormatter.Format(slice.Amount, currencyCode);
+
         /// <summary>A donut: one series per slice (LiveCharts draws each pie series as a slice), no labels on it.</summary>
         public static ISeries[] Donut(IReadOnlyList<ChartSlice> slices, decimal total, string currencyCode, Action<ChartSlice> onTap) =>
             slices.Select(slice =>
@@ -47,10 +52,7 @@ namespace MoneyRecord.Charts
                     Stroke = ChartPalette.Paint(ChartPalette.Surface, 2),
                     InnerRadius = 80,
                     HoverPushout = 4,
-                    // Shows on hover (Windows); a tap on Android shows none, so the ranked list carries the values
-                    ToolTipLabelFormatter = _ => total > 0
-                        ? $"{MoneyFormatter.Format(slice.Amount, currencyCode)} · {slice.Amount / total:P1}"
-                        : MoneyFormatter.Format(slice.Amount, currencyCode)
+                    ToolTipLabelFormatter = _ => SliceText(slice, total, currencyCode)
                 };
                 OnTap(series, _ => onTap(slice));
                 return (ISeries)series;
