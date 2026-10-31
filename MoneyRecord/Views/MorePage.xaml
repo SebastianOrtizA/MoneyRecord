@@ -22,26 +22,26 @@
                         <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="viewmodels:MoreItem">
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MoreViewModel}}, Path=OpenCommand}"
-                                                  CommandParameter="{Binding .}"/>
-                        </Grid.GestureRecognizers>
-                        <Label Text="{Binding Icon}"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="24"
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
-                        <Label Grid.Column="1" Text="{Binding Title}" FontSize="16" VerticalOptions="Center"/>
-                        <Label Grid.Column="2"
-                               Text="&#xF0142;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="22"
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"/>
-                    </Grid>
-                                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MoreViewModel}}, Path=OpenCommand}"
+                                                                  CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+                                        <Label Text="{Binding Icon}"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="24"
+                                               VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                        <Label Grid.Column="1" Text="{Binding Title}" FontSize="16" VerticalOptions="Center"/>
+                                        <Label Grid.Column="2"
+                                               Text="&#xF0142;"
+                                               FontFamily="MaterialDesignIcons"
+                                               FontSize="22"
+                                               VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </DataTemplate>

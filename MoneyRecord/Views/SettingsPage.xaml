@@ -5,6 +5,7 @@
              xmlns:corevm="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              x:Class="MoneyRecord.Views.SettingsPage"
              x:DataType="viewmodels:SettingsViewModel"
              Title="{ext:Localize Settings}">
@@ -13,7 +14,8 @@
         <ScrollView>
             <VerticalStackLayout x:Name="SettingsStack" Padding="16" Spacing="0">
 
-                <!-- Find a setting: hides the cards whose title does not match (code-behind) -->
+                <!-- Find a setting by card title (code-behind). Each card sits in its own VerticalStackLayout that sets
+                     controls:SettingsSearch.Title; search hides that wrapper, so the card keeps its own IsVisible binding. -->
                 <Border Style="{StaticResource Card}" Padding="12,0" Margin="0,0,0,8">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
                         <Label Text="&#xF0349;" FontFamily="MaterialDesignIcons" FontSize="22" VerticalOptions="Center"
@@ -25,7 +27,7 @@
 
                 <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize SectionAppearance}"/>
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize LanguageAndAppearance}">
                 <!-- Language and theme -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="12">
@@ -64,7 +66,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize HomeLayoutTitle}">
                 <!-- Home screen (card order and visibility) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <Border.GestureRecognizers>
@@ -98,7 +100,7 @@
 
                 <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize GroupMoney}"/>
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize BaseCurrency}">
                 <!-- Base Currency Section -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="12">
@@ -167,7 +169,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize ExchangeRates}">
                 <!-- Exchange rates (opt-in download: it needs the internet) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="12">
@@ -207,7 +209,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize Reminders}">
                 <!-- Reminders (opt-in), where notifications are supported (Android) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding RemindersSupported}">
                     <VerticalStackLayout Spacing="12">
@@ -270,7 +272,7 @@
 
                 <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize SectionDataBackup}"/>
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize BackupRestore}">
                 <!-- Backup Section -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="16">
@@ -385,7 +387,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize AutoBackups}">
                 <!-- Automatic backups into a folder the user picks, where supported (Android) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}" BindingContext="{Binding AutoBackup}"
                         x:DataType="corevm:AutoBackupViewModel"
@@ -479,7 +481,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize ShareLogs}">
                 <!-- Share logs: the error log as a zip, to report a problem -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <Border.GestureRecognizers>
@@ -513,7 +515,7 @@
 
                 <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize SectionPrivacySecurity}"/>
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize AppLock}">
                 <!-- App lock (the phone's own lock), where supported (Android) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding AppLockSupported}">
                     <VerticalStackLayout Spacing="12">
@@ -554,7 +556,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize EncryptDatabase}">
                 <!-- Database encryption (opt-in), where the key can be kept (Android) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding EncryptionSupported}">
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
@@ -581,7 +583,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize CrashReports}">
                 <!-- Crash reports (opt-in), only in builds that can send them -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding CrashReportsAvailable}">
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
@@ -609,7 +611,7 @@
 
                 <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize About}"/>
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize SetupAssistant}">
                 <!-- Setup assistant (the first-run setup, again) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <Border.GestureRecognizers>
@@ -641,7 +643,7 @@
                 </Border>
                 </VerticalStackLayout>
 
-                <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize About}">
                 <!-- About: version, licence, open-source components -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <Border.GestureRecognizers>

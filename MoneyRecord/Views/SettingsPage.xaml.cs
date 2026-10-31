@@ -1,3 +1,5 @@
+using MoneyRecord.Controls;
+using MoneyRecord.Helpers;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
@@ -36,24 +38,12 @@ namespace MoneyRecord.Views
                 else if (child is VerticalStackLayout wrapper && wrapper.Children.FirstOrDefault() is Border card)
                 {
                     // A card its own binding hides (no biometrics, no Sentry...) stays hidden whatever is typed
-                    var match = query.Length == 0 || (FindTitle(card)?.Contains(query, StringComparison.CurrentCultureIgnoreCase) ?? false);
+                    var match = ListSearch.Matches(SettingsSearch.GetTitle(wrapper), query);
                     wrapper.IsVisible = match;
                     headerHasCard |= match && card.IsVisible;
                 }
             }
             if (header != null) header.IsVisible = headerHasCard;
         }
-
-        /// <summary>The card's title: its first bold label.</summary>
-        private static string? FindTitle(IVisualTreeElement element)
-        {
-            foreach (var child in element.GetVisualChildren())
-            {
-                if (child is Label { FontAttributes: FontAttributes.Bold } label) return label.Text;
-                if (FindTitle(child) is { } title) return title;
-            }
-            return null;
-        }
-
     }
 }

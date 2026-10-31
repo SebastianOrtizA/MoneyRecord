@@ -33,34 +33,32 @@ namespace MoneyRecord.ViewModels
 
         private IReadOnlyList<MoreGroup> BuildGroups() =>
         [
-            new(Localize("GroupMoney"),
+            new(AppResources.GroupMoney,
             [
                 new("\U000F0070", AppResources.Accounts, nameof(ManageAccountsPage)),
                 new("\U000F0831", AppResources.Categories, nameof(ManageCategoriesPage)),
                 new("\U000F04DC", AppResources.Payees, nameof(PayeesPage)),
                 new("\U000F04E1", AppResources.Transfers, nameof(TransfersPage)),
             ]),
-            new(Localize("GroupPlanning"),
+            new(AppResources.GroupPlanning,
             [
                 new("\U000F0456", AppResources.RecurringTransactions, nameof(RecurringTransactionsPage)),
                 new("\U000F1007", AppResources.SavingsGoals, nameof(GoalsPage)),
                 new("\U000F0538", AppResources.SavingsChallenges, nameof(ChallengesPage)),
             ]),
-            new(Localize("GroupSharedTravel"),
+            new(AppResources.GroupSharedTravel,
             [
                 new("\U000F1218", AppResources.Debts, nameof(DebtsPage)),
                 new("\U000F001D", AppResources.TripsTitle, nameof(TripsPage)),
                 new("\U000F0849", AppResources.PartiesTitle, nameof(PartiesPage)),
             ]),
-            new(Localize("GroupApp"),
+            new(AppResources.GroupApp,
             [
                 // Tips are sold in the Google Play build only
                 .. (_tipJar.IsAvailable ? new MoreItem[] { new("\U000F02D1", AppResources.SupportTitle, nameof(SupportPage)) } : []),
                 new("\U000F0493", AppResources.Settings, nameof(SettingsPage)),
             ]),
         ];
-
-        private static string Localize(string key) => LocalizationService.Instance.GetString(key);
 
         [RelayCommand]
         private Task OpenAsync(MoreItem item) => _navigationService.NavigateToAsync(item.Route);
