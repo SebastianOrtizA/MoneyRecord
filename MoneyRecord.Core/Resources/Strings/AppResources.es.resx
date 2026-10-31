@@ -2981,4 +2981,28 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="RemoveFilter" xml:space="preserve">
     <value>Quitar filtro: {0}</value>
   </data>
+  <data name="GroupMoney" xml:space="preserve">
+    <value>Dinero</value>
+  </data>
+  <data name="GroupPlanning" xml:space="preserve">
+    <value>Planificación</value>
+  </data>
+  <data name="GroupSharedTravel" xml:space="preserve">
+    <value>Compartido y viajes</value>
+  </data>
+  <data name="GroupApp" xml:space="preserve">
+    <value>Aplicación</value>
+  </data>
+  <data name="SectionAppearance" xml:space="preserve">
+    <value>Apariencia</value>
+  </data>
+  <data name="SectionDataBackup" xml:space="preserve">
+    <value>Datos y copia de seguridad</value>
+  </data>
+  <data name="SectionPrivacySecurity" xml:space="preserve">
+    <value>Privacidad y seguridad</value>
+  </data>
+  <data name="SearchSettings" xml:space="preserve">
+    <value>Buscar en ajustes</value>
+  </data>
 </root>

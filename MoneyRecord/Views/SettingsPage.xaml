@@ -11,10 +11,23 @@
 
     <Grid>
         <ScrollView>
-            <VerticalStackLayout Padding="16" Spacing="16">
+            <VerticalStackLayout x:Name="SettingsStack" Padding="16" Spacing="0">
 
+                <!-- Find a setting: hides the cards whose title does not match (code-behind) -->
+                <Border Style="{StaticResource Card}" Padding="12,0" Margin="0,0,0,8">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <Label Text="&#xF0349;" FontFamily="MaterialDesignIcons" FontSize="22" VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                        <Entry x:Name="SearchEntry" Grid.Column="1" Placeholder="{ext:Localize SearchSettings}" ClearButtonVisibility="WhileEditing"
+                               SemanticProperties.Description="{ext:Localize SearchSettings}" TextChanged="OnSearchChanged"/>
+                    </Grid>
+                </Border>
+
+                <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize SectionAppearance}"/>
+                <VerticalStackLayout Spacing="0">
                 <!-- Language and theme -->
-                <Border Style="{StaticResource Card}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                             <Label Grid.Column="0"
@@ -49,9 +62,45 @@
                                 MinimumHeightRequest="44"/>
                     </VerticalStackLayout>
                 </Border>
+                </VerticalStackLayout>
 
+                <VerticalStackLayout Spacing="0">
+                <!-- Home screen (card order and visibility) -->
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenHomeLayoutCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="&#xF02DC;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="28"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{ext:Localize HomeLayoutTitle}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Label Text="{ext:Localize HomeLayoutDescription}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xF0142;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="24"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
+                    </Grid>
+                </Border>
+                </VerticalStackLayout>
+
+                <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize GroupMoney}"/>
+                <VerticalStackLayout Spacing="0">
                 <!-- Base Currency Section -->
-                <Border Style="{StaticResource Card}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                             <Label Grid.Column="0"
@@ -116,9 +165,11 @@
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Border>
+                </VerticalStackLayout>
 
+                <VerticalStackLayout Spacing="0">
                 <!-- Exchange rates (opt-in download: it needs the internet) -->
-                <Border Style="{StaticResource Card}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                             <Label Grid.Column="0"
@@ -154,69 +205,74 @@
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
+                </VerticalStackLayout>
 
-                <!-- Setup assistant (the first-run setup, again) -->
-                <Border Style="{StaticResource Card}">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OpenSetupCommand}" />
-                    </Border.GestureRecognizers>
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                        <Label Grid.Column="0"
-                               Text="&#xF0068;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="28"
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
-                        <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="{ext:Localize SetupAssistant}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-                            <Label Text="{ext:Localize SetupAssistantDescription}"
-                                   FontSize="13"
-                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                <VerticalStackLayout Spacing="0">
+                <!-- Reminders (opt-in), where notifications are supported (Android) -->
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding RemindersSupported}">
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Label Grid.Column="0"
+                                   Text="&#xF009A;"
+                                   FontFamily="MaterialDesignIcons"
+                                   FontSize="28"
+                                   VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"/>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="{ext:Localize Reminders}"
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Label Text="{ext:Localize RemindersDescription}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            </VerticalStackLayout>
+                            <Switch Grid.Column="2"
+                                    IsToggled="{Binding RemindersEnabled}"
+                                    VerticalOptions="Center"/>
+                        </Grid>
+
+                        <VerticalStackLayout Spacing="8" IsVisible="{Binding RemindersEnabled}">
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize BillReminders}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Picker Grid.Column="1"
+                                        WidthRequest="170"
+                                        ItemsSource="{Binding BillReminderOptions}"
+                                        ItemDisplayBinding="{Binding Name, x:DataType=models:BillReminderOption}"
+                                        SelectedItem="{Binding SelectedBillReminder}"
+                                        Title="{ext:Localize BillReminders}"/>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize BudgetAlerts}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding BudgetAlertsEnabled}"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize RecurringAddedAlerts}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Switch Grid.Column="1"
+                                        IsToggled="{Binding RecurringAddedEnabled}"
+                                        VerticalOptions="Center"/>
+                            </Grid>
                         </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="&#xF0142;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="24"
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
-                    </Grid>
+                    </VerticalStackLayout>
                 </Border>
+                </VerticalStackLayout>
 
-                <!-- Home screen (card order and visibility) -->
-                <Border Style="{StaticResource Card}">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding OpenHomeLayoutCommand}" />
-                    </Border.GestureRecognizers>
-                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                        <Label Grid.Column="0"
-                               Text="&#xF02DC;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="28"
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
-                        <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="{ext:Localize HomeLayoutTitle}"
-                                   FontSize="18"
-                                   FontAttributes="Bold"
-                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-                            <Label Text="{ext:Localize HomeLayoutDescription}"
-                                   FontSize="13"
-                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        </VerticalStackLayout>
-                        <Label Grid.Column="2"
-                               Text="&#xF0142;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="24"
-                               VerticalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
-                    </Grid>
-                </Border>
-
+                <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize SectionDataBackup}"/>
+                <VerticalStackLayout Spacing="0">
                 <!-- Backup Section -->
-                <Border Style="{StaticResource Card}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <VerticalStackLayout Spacing="16">
                         <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
                             <Label Grid.Column="0"
@@ -327,9 +383,11 @@
                                FontAttributes="Italic"/>
                     </VerticalStackLayout>
                 </Border>
+                </VerticalStackLayout>
 
+                <VerticalStackLayout Spacing="0">
                 <!-- Automatic backups into a folder the user picks, where supported (Android) -->
-                <Border Style="{StaticResource Card}" BindingContext="{Binding AutoBackup}"
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}" BindingContext="{Binding AutoBackup}"
                         x:DataType="corevm:AutoBackupViewModel"
                         IsVisible="{Binding IsSupported}">
                     <VerticalStackLayout Spacing="12">
@@ -419,9 +477,11 @@
                         </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Border>
+                </VerticalStackLayout>
 
+                <VerticalStackLayout Spacing="0">
                 <!-- Share logs: the error log as a zip, to report a problem -->
-                <Border Style="{StaticResource Card}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ShareLogsCommand}" />
                     </Border.GestureRecognizers>
@@ -449,68 +509,13 @@
                                TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
                     </Grid>
                 </Border>
+                </VerticalStackLayout>
 
-                <!-- Reminders (opt-in), where notifications are supported (Android) -->
-                <Border Style="{StaticResource Card}" IsVisible="{Binding RemindersSupported}">
-                    <VerticalStackLayout Spacing="12">
-                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                            <Label Grid.Column="0"
-                                   Text="&#xF009A;"
-                                   FontFamily="MaterialDesignIcons"
-                                   FontSize="28"
-                                   VerticalOptions="Center"
-                                   TextColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"/>
-                            <VerticalStackLayout Grid.Column="1" Spacing="2">
-                                <Label Text="{ext:Localize Reminders}"
-                                       FontSize="18"
-                                       FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-                                <Label Text="{ext:Localize RemindersDescription}"
-                                       FontSize="13"
-                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                            </VerticalStackLayout>
-                            <Switch Grid.Column="2"
-                                    IsToggled="{Binding RemindersEnabled}"
-                                    VerticalOptions="Center"/>
-                        </Grid>
-
-                        <VerticalStackLayout Spacing="8" IsVisible="{Binding RemindersEnabled}">
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                <Label Text="{ext:Localize BillReminders}"
-                                       FontSize="15"
-                                       VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-                                <Picker Grid.Column="1"
-                                        WidthRequest="170"
-                                        ItemsSource="{Binding BillReminderOptions}"
-                                        ItemDisplayBinding="{Binding Name, x:DataType=models:BillReminderOption}"
-                                        SelectedItem="{Binding SelectedBillReminder}"
-                                        Title="{ext:Localize BillReminders}"/>
-                            </Grid>
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                <Label Text="{ext:Localize BudgetAlerts}"
-                                       FontSize="15"
-                                       VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-                                <Switch Grid.Column="1"
-                                        IsToggled="{Binding BudgetAlertsEnabled}"
-                                        VerticalOptions="Center"/>
-                            </Grid>
-                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
-                                <Label Text="{ext:Localize RecurringAddedAlerts}"
-                                       FontSize="15"
-                                       VerticalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
-                                <Switch Grid.Column="1"
-                                        IsToggled="{Binding RecurringAddedEnabled}"
-                                        VerticalOptions="Center"/>
-                            </Grid>
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
-                </Border>
-
+                <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize SectionPrivacySecurity}"/>
+                <VerticalStackLayout Spacing="0">
                 <!-- App lock (the phone's own lock), where supported (Android) -->
-                <Border Style="{StaticResource Card}" IsVisible="{Binding AppLockSupported}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding AppLockSupported}">
                     <VerticalStackLayout Spacing="12">
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                             <Label Grid.Column="0"
@@ -547,9 +552,11 @@
                         </Grid>
                     </VerticalStackLayout>
                 </Border>
+                </VerticalStackLayout>
 
+                <VerticalStackLayout Spacing="0">
                 <!-- Database encryption (opt-in), where the key can be kept (Android) -->
-                <Border Style="{StaticResource Card}" IsVisible="{Binding EncryptionSupported}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding EncryptionSupported}">
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                         <Label Grid.Column="0"
                                Text="&#xF0AAA;"
@@ -572,9 +579,11 @@
                                 VerticalOptions="Center"/>
                     </Grid>
                 </Border>
+                </VerticalStackLayout>
 
+                <VerticalStackLayout Spacing="0">
                 <!-- Crash reports (opt-in), only in builds that can send them -->
-                <Border Style="{StaticResource Card}" IsVisible="{Binding CrashReportsAvailable}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding CrashReportsAvailable}">
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
                         <Label Grid.Column="0"
                                Text="&#xF00E4;"
@@ -596,9 +605,45 @@
                                 VerticalOptions="Center"/>
                     </Grid>
                 </Border>
+                </VerticalStackLayout>
 
+                <Label Style="{StaticResource SecondaryLabel}" FontSize="13" FontAttributes="Bold" Margin="4,8,0,8" SemanticProperties.HeadingLevel="Level2"
+                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" Text="{ext:Localize About}"/>
+                <VerticalStackLayout Spacing="0">
+                <!-- Setup assistant (the first-run setup, again) -->
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenSetupCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="&#xF0068;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="28"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{ext:Localize SetupAssistant}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Label Text="{ext:Localize SetupAssistantDescription}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2"
+                               Text="&#xF0142;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="24"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
+                    </Grid>
+                </Border>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="0">
                 <!-- About: version, licence, open-source components -->
-                <Border Style="{StaticResource Card}">
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}">
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding OpenAboutCommand}" />
                     </Border.GestureRecognizers>
@@ -626,6 +671,7 @@
                                TextColor="{AppThemeBinding Light=#757575, Dark=#9E9E9E}"/>
                     </Grid>
                 </Border>
+                </VerticalStackLayout>
 
             </VerticalStackLayout>
         </ScrollView>

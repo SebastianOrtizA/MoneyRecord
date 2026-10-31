@@ -8,9 +8,20 @@
              Title="{ext:Localize More}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="0,8" BindableLayout.ItemsSource="{Binding Items}">
+        <VerticalStackLayout Padding="0,8" BindableLayout.ItemsSource="{Binding Groups}">
             <BindableLayout.ItemTemplate>
-                <DataTemplate x:DataType="viewmodels:MoreItem">
+                <DataTemplate x:DataType="viewmodels:MoreGroup">
+                    <VerticalStackLayout Margin="0,0,0,8">
+                        <Label Text="{Binding Title}"
+                               Style="{StaticResource SecondaryLabel}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               Margin="20,12,20,2"
+                               SemanticProperties.HeadingLevel="Level2"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding Items}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="viewmodels:MoreItem">
                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16" Padding="20,14">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MoreViewModel}}, Path=OpenCommand}"
@@ -29,6 +40,10 @@
                                VerticalOptions="Center"
                                TextColor="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"/>
                     </Grid>
+                                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
         </VerticalStackLayout>
