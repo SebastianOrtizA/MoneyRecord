@@ -29,7 +29,7 @@
                                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                         <Button Text="{ext:Localize ImportChooseFile}"
                                 Command="{Binding ChooseFileCommand}"
-                                HeightRequest="48"
+                                MinimumHeightRequest="48"
                                 CornerRadius="24"
                                 FontAttributes="Bold"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
@@ -49,7 +49,7 @@
                                     Command="{Binding ChooseFileCommand}"
                                     FontSize="13"
                                     Padding="12,0"
-                                    HeightRequest="36"
+                                    MinimumHeightRequest="36"
                                     CornerRadius="18"
                                     BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}"
                                     TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
@@ -231,7 +231,7 @@
                 Shadow="{Shadow Brush=Black, Offset='0,-2', Radius=6, Opacity=0.15}">
             <Button Text="{Binding ImportButtonText}"
                     Command="{Binding ImportCommand}"
-                    HeightRequest="48"
+                    MinimumHeightRequest="48"
                     CornerRadius="24"
                     FontAttributes="Bold"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"

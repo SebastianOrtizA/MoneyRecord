@@ -4668,7 +4668,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shop, person or company (optional).
+        ///   Looks up a localized string similar to Shop or person (optional).
         /// </summary>
         public static string PayeePlaceholder {
             get {

@@ -1630,7 +1630,7 @@
     <value>Bénéficiaire</value>
   </data>
   <data name="PayeePlaceholder" xml:space="preserve">
-    <value>Commerce, personne ou entreprise (facultatif)</value>
+    <value>Commerce ou personne (facultatif)</value>
   </data>
   <data name="Payees" xml:space="preserve">
     <value>Bénéficiaires</value>

@@ -142,7 +142,8 @@ crashes at runtime (XAML is inflated at runtime there).
   closes it first),
   LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
   EmptyState (the one "nothing here yet" block: icon, title, hint; Home's Recent card, Transfers, Payees, Trends, Cash flow and Net worth use it; the other lists keep their own empty views for now),
-  AutoFitLabel (one line; shrinks its font from `MaxFontSize` to fit: amounts in narrow places, e.g. Home's cards)
+  AutoFitLabel (one line; shrinks its font from `MaxFontSize` to fit: amounts in narrow places, e.g. Home's cards),
+  ScaledLayout (the system font scale; `FontScaleLayout` in Core decides what follows it: from 1.5x Home's Income / Expenses / Net tiles stack in one column and the add form's categories show two per row, from 1.15x three; a figure or a name is never cut, so a cell that can't hold it gets more room)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and
   IsStringNotNullOrEmpty come from CommunityToolkit.Maui (exceptions suppressed in `MauiProgram`)

@@ -16,7 +16,7 @@
                 Command="{Binding AddTransferCommand}"
                 FontSize="16"
                 FontAttributes="Bold"
-                HeightRequest="50"
+                MinimumHeightRequest="50"
                 CornerRadius="12"
                 BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"
                 TextColor="White"/>
@@ -94,7 +94,7 @@
                                                       Margin="0,8,0,0">
                                     <Button Text="{ext:Localize EditButton}"
                                             FontSize="14"
-                                            HeightRequest="36"
+                                            MinimumHeightRequest="36"
                                             Padding="16,0"
                                             CornerRadius="8"
                                             BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
@@ -103,7 +103,7 @@
                                             CommandParameter="{Binding .}"/>
                                     <Button Text="{ext:Localize DeleteButton}"
                                             FontSize="14"
-                                            HeightRequest="36"
+                                            MinimumHeightRequest="36"
                                             Padding="16,0"
                                             CornerRadius="8"
                                             BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"

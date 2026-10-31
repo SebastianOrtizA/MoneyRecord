@@ -62,7 +62,7 @@
             </VerticalStackLayout>
 
             <Button Text="{ext:Localize HomeLayoutReset}" Command="{Binding ResetCommand}" Margin="0,8,0,0"
-                    HeightRequest="44" CornerRadius="22" BackgroundColor="Transparent" BorderWidth="1"
+                    MinimumHeightRequest="44" CornerRadius="22" BackgroundColor="Transparent" BorderWidth="1"
                     BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                     TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
         </VerticalStackLayout>

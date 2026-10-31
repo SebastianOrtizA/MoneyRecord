@@ -23,7 +23,7 @@
                TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
         <Button Text="{ext:Localize Unlock}"
                 Clicked="OnUnlockClicked"
-                HeightRequest="48"
+                MinimumHeightRequest="48"
                 CornerRadius="24"
                 HorizontalOptions="Center"
                 Padding="40,0"/>

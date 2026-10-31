@@ -1680,7 +1680,7 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
     <value>Beneficiario</value>
   </data>
   <data name="PayeePlaceholder" xml:space="preserve">
-    <value>Comercio, persona o empresa (opcional)</value>
+    <value>Comercio o persona (opcional)</value>
   </data>
   <data name="Payees" xml:space="preserve">
     <value>Beneficiarios</value>
