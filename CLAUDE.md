@@ -40,6 +40,10 @@ XAML that uses a Core type needs `xmlns:models="clr-namespace:MoneyRecord.Models
 ### DI (MauiProgram.cs)
 Services and repositories Singleton; pages and ViewModels Transient (except MainPage + MainViewModel Singleton). Register interface → implementation.
 
+### Everyday UX
+- Deleting a transaction/split/transfer has no confirm: `ILedgerService.DeleteAsync` returns a `DeletedEntry`, and `IDialogService.ToastWithUndoAsync` offers Undo (`RestoreAsync`); receipt files go only when the snackbar expires. Heavy deletes (account, category, ...) still confirm.
+- Empty lists use the shared `EmptyState` control (icon, title, hint). New installs see the Home get-started card (`GetStartedChecklist`).
+
 ### Navigation
 - Shell `TabBar`: Home · Transactions · Reports (Spending / Income / Trends / Cash flow / Net worth top tabs) · Budgets · More. Tab pages are roots at `//MainPage`, `//TransactionsPage`, `//ExpenseReportPage`, ... `//MorePage`. Other screens are pushed routes (Add Transaction/Transfer hide the tab bar; More lists the rest).
 - `INavigationService` tracks history for the back button: AppShell `Navigated` → `NavigationHistory`; Android back → `AppShell.OnBackButtonPressed` (open sheet on an `IOverlayHost` page, then previous page, then Home, then close).

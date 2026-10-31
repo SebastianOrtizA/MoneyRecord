@@ -36,6 +36,6 @@ MoneyRecord es una app sencilla y privada para llevar tus cuentas. Registra lo q
 
 <b>Hecha para ti</b>
 • Widget en la pantalla de inicio con tu saldo y botones para agregar.
-• Español e inglés, tema claro y oscuro, una configuración rápida al empezar.
+• Español, inglés, portugués, francés e italiano, tema claro y oscuro, una configuración rápida al empezar.
 
 MoneyRecord es gratuita y de código abierto (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord
