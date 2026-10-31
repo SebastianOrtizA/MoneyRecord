@@ -19,9 +19,18 @@ namespace MoneyRecord
 
         public override bool DispatchTouchEvent(global::Android.Views.MotionEvent? e)
         {
-            if (e?.Action == global::Android.Views.MotionEventActions.Down)
-                MoneyRecord.Charts.TouchClock.LastDownUtc = DateTime.UtcNow;
-            return base.DispatchTouchEvent(e);
+            var handled = base.DispatchTouchEvent(e);
+            switch (e?.Action)
+            {
+                case global::Android.Views.MotionEventActions.Down:
+                    MoneyRecord.Charts.TouchClock.LastDownUtc = DateTime.UtcNow;
+                    break;
+                case global::Android.Views.MotionEventActions.Up or global::Android.Views.MotionEventActions.Cancel:
+                    MoneyRecord.Charts.TouchClock.RaiseReleased();
+                    break;
+            }
+
+            return handled;
         }
 
         protected override void OnCreate(Bundle? savedInstanceState)
