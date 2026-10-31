@@ -12,10 +12,7 @@ namespace MoneyRecord.Converters
                 return type switch
                 {
                     TransactionType.Income => TypeColors.Income,
-                    // Orange for transfer; the dark one is 4.5:1 on white
-                    TransactionType.Transfer => Application.Current?.RequestedTheme == AppTheme.Dark
-                        ? Color.FromArgb("#FFB74D")
-                        : Color.FromArgb("#B85400"),
+                    TransactionType.Transfer => TypeColors.Transfer,
                     _ => TypeColors.Expense
                 };
             }

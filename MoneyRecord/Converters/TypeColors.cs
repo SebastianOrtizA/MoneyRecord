@@ -7,6 +7,8 @@ namespace MoneyRecord.Converters
 
         public static Color Expense => Get("ExpenseColor", "ExpenseColorDark", Colors.Gray);
 
+        public static Color Transfer => Get("TransferColor", "TransferColorDark", Colors.Gray);
+
         /// <summary>Income colour for zero or more, expense colour below zero.</summary>
         public static Color ForSign(decimal amount) => amount >= 0 ? Income : Expense;
 

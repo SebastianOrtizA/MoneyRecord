@@ -143,10 +143,10 @@
                                        FontFamily="MaterialDesignIcons"
                                        FontSize="20"
                                        HorizontalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeOnContainerDark}}"/>
                                 <!-- "≈ Incomes" while converted: the mark goes on the caption so the amount keeps its line -->
                                 <Label FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#1565C0, Dark=#90CAF9}"
+                                       TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeOnContainerDark}}"
                                        HorizontalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
@@ -160,7 +160,7 @@
                                        FontAttributes="Bold"
                                        HorizontalOptions="Fill"
                                        HorizontalTextAlignment="Center"
-                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}">
+                                       TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeContainer}}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
                                             <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
@@ -181,9 +181,9 @@
                                        FontFamily="MaterialDesignIcons"
                                        FontSize="20"
                                        HorizontalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
+                                       TextColor="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                 <Label FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"
+                                       TextColor="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"
                                        HorizontalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
@@ -197,7 +197,7 @@
                                        FontAttributes="Bold"
                                        HorizontalOptions="Fill"
                                        HorizontalTextAlignment="Center"
-                                       TextColor="{AppThemeBinding Light=#D32F2F, Dark=#FFEBEE}">
+                                       TextColor="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseContainer}}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
                                             <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
@@ -223,15 +223,15 @@
                                        FontFamily="MaterialDesignIcons"
                                        FontSize="20"
                                        HorizontalOptions="Center"
-                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}">
+                                       TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeOnContainerDark}}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </Label>
                                 <Label FontSize="11"
-                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"
+                                       TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeOnContainerDark}}"
                                        HorizontalOptions="Center">
                                     <Label.FormattedText>
                                         <FormattedString>
@@ -241,7 +241,7 @@
                                     </Label.FormattedText>
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </Label>
@@ -250,13 +250,13 @@
                                        FontAttributes="Bold"
                                        HorizontalOptions="Fill"
                                        HorizontalTextAlignment="Center"
-                                       TextColor="{AppThemeBinding Light=#1976D2, Dark=#E3F2FD}">
+                                       TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeContainer}}">
                                     <Label.Triggers>
                                         <DataTrigger TargetType="Label" Binding="{Binding HideBalances}" Value="True">
                                             <Setter Property="Text" Value="{StaticResource HiddenAmount}"/>
                                         </DataTrigger>
                                         <DataTrigger TargetType="Label" Binding="{Binding BaseTotals.IsNetNegative}" Value="True">
-                                            <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#FFCDD2}"/>
+                                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                         </DataTrigger>
                                     </Label.Triggers>
                                 </controls:AutoFitLabel>
@@ -276,28 +276,28 @@
                             <DataTemplate x:DataType="models:PeriodTotals">
                                 <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
                                     <Border Style="{StaticResource OtherCurrencyPill}"
-                                            BackgroundColor="{AppThemeBinding Light=#EEF6FE, Dark=#122B4A}">
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource IncomePill}, Dark={StaticResource IncomePillDark}}">
                                         <controls:AutoFitLabel Text="{Binding IncomeText}" Style="{StaticResource OtherCurrencyTotal}"
-                                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeOnContainerDark}}"/>
                                     </Border>
                                     <Border Grid.Column="1" Style="{StaticResource OtherCurrencyPill}"
-                                            BackgroundColor="{AppThemeBinding Light=#FFF2F4, Dark=#3F1619}">
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource ExpensePill}, Dark={StaticResource ExpensePillDark}}">
                                         <controls:AutoFitLabel Text="{Binding ExpenseText}" Style="{StaticResource OtherCurrencyTotal}"
-                                               TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
+                                               TextColor="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                     </Border>
                                     <!-- Income blue, or the expense palette when this currency's net is negative (like the Net card) -->
                                     <Border Grid.Column="2" Style="{StaticResource OtherCurrencyPill}"
-                                            BackgroundColor="{AppThemeBinding Light=#EEF6FE, Dark=#122B4A}">
+                                            BackgroundColor="{AppThemeBinding Light={StaticResource IncomePill}, Dark={StaticResource IncomePillDark}}">
                                         <Border.Triggers>
                                             <DataTrigger TargetType="Border" Binding="{Binding IsNetNegative}" Value="True">
-                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#FFF2F4, Dark=#3F1619}"/>
+                                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource ExpensePill}, Dark={StaticResource ExpensePillDark}}"/>
                                             </DataTrigger>
                                         </Border.Triggers>
                                         <controls:AutoFitLabel Text="{Binding NetText}" Style="{StaticResource OtherCurrencyTotal}"
-                                               TextColor="{AppThemeBinding Light=#1976D2, Dark=#90CAF9}">
+                                               TextColor="{AppThemeBinding Light={StaticResource IncomeOnContainer}, Dark={StaticResource IncomeOnContainerDark}}">
                                             <Label.Triggers>
                                                 <DataTrigger TargetType="Label" Binding="{Binding IsNetNegative}" Value="True">
-                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light=#D32F2F, Dark=#EF9A9A}"/>
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </controls:AutoFitLabel>
@@ -392,15 +392,14 @@
                                            FontFamily="MaterialDesignIcons"
                                            FontSize="22"
                                            VerticalOptions="Center"
-                                           TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                           TextColor="{AppThemeBinding Light={StaticResource IncomeColor}, Dark={StaticResource IncomeColorDark}}"/>
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
                                         <Label Text="{Binding Title}"
                                                FontSize="14"
                                                FontAttributes="Bold"
                                                LineBreakMode="TailTruncation"/>
                                         <Label Text="{Binding Date, Converter={StaticResource DateTextConverter}, ConverterParameter=MonthDay}"
-                                               FontSize="12"
-                                               TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                               Style="{StaticResource SecondaryLabel}"/>
                                     </VerticalStackLayout>
                                     <Label Grid.Column="2"
                                            Text="{Binding ., Converter={StaticResource TransactionAmountConverter}}"
@@ -489,10 +488,10 @@
                                 <HorizontalStackLayout Spacing="3">
                                     <Label Text="{Binding BudgetsOverBudget}"
                                            FontSize="12"
-                                           TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                           TextColor="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                     <Label Text="{ext:Localize OverBudget}"
                                            FontSize="12"
-                                           TextColor="{AppThemeBinding Light=#C62828, Dark=#FFCDD2}"/>
+                                           TextColor="{AppThemeBinding Light={StaticResource ExpenseOnContainer}, Dark={StaticResource ExpenseOnContainerDark}}"/>
                                 </HorizontalStackLayout>
                             </Border>
                         </HorizontalStackLayout>
@@ -507,7 +506,7 @@
                                            FontFamily="MaterialDesignIcons"
                                            FontSize="22"
                                            VerticalOptions="Center"
-                                           TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}"/>
+                                           TextColor="{AppThemeBinding Light={StaticResource IncomeColor}, Dark={StaticResource IncomeColorDark}}"/>
                                     <Label Grid.Row="0" Grid.Column="1"
                                            Text="{Binding CategoryName}"
                                            FontSize="14"
@@ -636,7 +635,7 @@
                     <Label Text="{ext:Localize Debts}" FontSize="18" FontAttributes="Bold"/>
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                         <VerticalStackLayout Spacing="2">
-                            <Label Text="{ext:Localize DebtsOwedToYou}" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                            <Label Text="{ext:Localize DebtsOwedToYou}" Style="{StaticResource SecondaryLabel}"/>
                             <controls:AutoFitLabel Text="{Binding DebtsOwedToYouText}" MaxFontSize="16" FontAttributes="Bold"
                                                    TextColor="{AppThemeBinding Light={StaticResource IncomeColor}, Dark={StaticResource IncomeColorDark}}">
                                 <controls:AutoFitLabel.Triggers>
@@ -647,7 +646,7 @@
                             </controls:AutoFitLabel>
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="2">
-                            <Label Text="{ext:Localize DebtsYouOwe}" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                            <Label Text="{ext:Localize DebtsYouOwe}" Style="{StaticResource SecondaryLabel}"/>
                             <controls:AutoFitLabel Text="{Binding DebtsYouOweText}" MaxFontSize="16" FontAttributes="Bold"
                                                    TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}">
                                 <controls:AutoFitLabel.Triggers>
@@ -664,7 +663,7 @@
                                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                                     <VerticalStackLayout Spacing="2">
                                         <Label Text="{Binding Title}" FontSize="15" LineBreakMode="TailTruncation"/>
-                                        <Label Text="{Binding DetailText}" FontSize="12" TextColor="{AppThemeBinding Light={StaticResource TextSecondary}, Dark={StaticResource TextSecondaryDark}}"/>
+                                        <Label Text="{Binding DetailText}" Style="{StaticResource SecondaryLabel}"/>
                                     </VerticalStackLayout>
                                     <Label Grid.Column="1" Text="{Binding OutstandingText}" FontSize="15" FontAttributes="Bold" VerticalOptions="Center">
                                         <Label.Triggers>
