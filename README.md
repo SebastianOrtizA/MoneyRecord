@@ -19,6 +19,19 @@ and Windows are maintained too. All data stays on the device.
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8_goals.png" width="190" alt="Savings goals">
 </p>
 
+## Install
+
+MoneyRecord 1.0 runs on Android 7.0 (API 24) or newer.
+
+- **Google Play:** search for "MoneyRecord" (package `com.sebastianortiz.moneyrecord`). This version also has the optional Support
+  screen with small tips through Google Play Billing.
+- **GitHub Releases:** download the signed `.apk` from the [Releases page](https://github.com/SebastianOrtizA/MoneyRecord/releases).
+  It has no billing code and no Support screen. Updating over a Play install needs the same signing key, so uninstall first and
+  restore from a backup (**Settings → Backup**) when switching between the two.
+- **F-Droid:** not listed. The MAUI Android workload is a prebuilt Microsoft binary, which F-Droid's source-build policy does not accept.
+
+Your data stays on the device in every version; see [PRIVACY.md](PRIVACY.md).
+
 ## Features
 
 ### Home
@@ -249,7 +262,7 @@ dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj
 
 ## Releases
 
-CI (`.github/workflows/build-android.yml`) builds a Release `.apk` (GitHub Releases / F-Droid) and `.aab` (Play
+CI (`.github/workflows/build-android.yml`) builds a Release `.apk` (GitHub Releases) and `.aab` (Play
 Store) on every push. They are two builds of the same version: the `.aab` is built with `-p:Distribution=Play`, which
 defines `PLAY_STORE` and adds the Play Billing library for the Support screen's tips (`ITipJar` / `PlayTipJar`); the
 `.apk` has no billing code, `BILLING` permission or Support screen (`NoTipJar`). Each has its own R8
