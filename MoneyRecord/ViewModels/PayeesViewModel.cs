@@ -25,12 +25,14 @@ namespace MoneyRecord.ViewModels
         partial void OnSearchTextChanged(string value) => ApplySearch();
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(EmptyText), nameof(IsEmpty))]
+        [NotifyPropertyChangedFor(nameof(EmptyTitle), nameof(EmptyHint), nameof(IsEmpty))]
         private List<PayeeSummary> payees = [];
 
         public bool IsEmpty => Payees.Count == 0;
 
-        public string EmptyText => _all.Count == 0 ? AppResources.NoPayeesYet : AppResources.NoMatchingPayees;
+        public string EmptyTitle => _all.Count == 0 ? AppResources.NoPayeesYetTitle : AppResources.NoMatchingPayees;
+
+        public string EmptyHint => _all.Count == 0 ? AppResources.NoPayeesYetHint : string.Empty;
 
         public PayeesViewModel(IPayeeService payeeService, IErrorHandler errorHandler, IDialogService dialogService)
         {

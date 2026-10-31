@@ -56,6 +56,8 @@ namespace MoneyRecord.ViewModels
             var code = Period.ReportCurrency;
             var accounts = await accountsTask;
             var balances = await balancesTask;
+            var hasActivity = NetWorthBuilder.HasActivity(balances.Select(b => b.CurrentBalance),
+                (await transactionsTask).Count + (await transfersTask).Count);
             var currencyOf = accounts.ToDictionary(a => a.Id, a => MoneyFormatter.ResolveCurrencyCode(a.CurrencyCode, MoneyFormatter.BaseCurrency));
             var byCurrency = currencyOf.GroupBy(kv => kv.Value).ToDictionary(g => g.Key, g =>
             {
@@ -70,7 +72,7 @@ namespace MoneyRecord.ViewModels
                 // Each currency valued at each month end's rate, then added up
                 (points, var notConverted) = NetWorthBuilder.BuildConverted(byCurrency, await transactionsTask, await transfersTask,
                     baselineMonth, months + 1, await _exchangeRates.GetConverterAsync(), code, DateTime.Today);
-                HasData = byCurrency.Count > notConverted.Count;
+                HasData = hasActivity && byCurrency.Count > notConverted.Count;
                 CurrencyNote = notConverted.Count > 0
                     ? string.Format(AppResources.NotConvertedNote, string.Join(", ", notConverted))
                     : string.Empty;
@@ -80,7 +82,7 @@ namespace MoneyRecord.ViewModels
                 var counted = byCurrency.GetValueOrDefault(code);
                 points = NetWorthBuilder.Build(counted.CurrentTotal, counted.AccountIds ?? [], await transactionsTask,
                     await transfersTask, baselineMonth, months + 1);
-                HasData = counted.AccountIds?.Count > 0;
+                HasData = hasActivity && counted.AccountIds?.Count > 0;
                 CurrencyNote = byCurrency.Count > 1 ? string.Format(AppResources.NetWorthCurrencyOnly, code) : string.Empty;
             }
 

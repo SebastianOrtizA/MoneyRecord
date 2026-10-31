@@ -1639,9 +1639,6 @@
   <data name="SearchPayees" xml:space="preserve">
     <value>Buscar favorecidos</value>
   </data>
-  <data name="NoPayeesYet" xml:space="preserve">
-    <value>Nenhum favorecido ainda. Digite um ao adicionar uma despesa ou receita e ele aparece aqui.</value>
-  </data>
   <data name="NoMatchingPayees" xml:space="preserve">
     <value>Nenhum favorecido corresponde à busca.</value>
   </data>
@@ -2889,5 +2886,23 @@
   </data>
   <data name="NoMatchingItems" xml:space="preserve">
     <value>Nada corresponde à sua busca.</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>Nenhum favorecido ainda</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>Digite um ao adicionar uma despesa ou receita e ele aparece aqui.</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>Nenhum dado de fluxo de caixa ainda</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>Adicione receitas e despesas para ver seu fluxo de caixa.</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>Nenhum dado de patrimônio ainda</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>Adicione um saldo, receitas ou despesas para ver seu patrimônio.</value>
   </data>
 </root>

@@ -3,45 +3,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
              x:Class="MoneyRecord.Views.TransfersPage"
              x:DataType="viewmodels:TransfersViewModel"
              Title="{ext:Localize Transfers}">
 
-    <RefreshView IsRefreshing="{Binding IsRefreshing}"
-                 Command="{Binding LoadTransfersCommand}">
-        <VerticalStackLayout Padding="16,12" Spacing="16">
-            
-            <!-- Add Transfer Button -->
-            <Button Text="{ext:Localize NewTransfer}" 
-                    Command="{Binding AddTransferCommand}"
-                    FontSize="16"
-                    FontAttributes="Bold"
-                    HeightRequest="50"
-                    CornerRadius="12"
-                    BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"
-                    TextColor="White"/>
+    <!-- The list gets the rest of the page, so its empty state has room to show (inside a stack it collapsed to nothing) -->
+    <Grid RowDefinitions="Auto,*" RowSpacing="16" Padding="16,12">
+        <!-- Add Transfer Button -->
+        <Button Text="{ext:Localize NewTransfer}" 
+                Command="{Binding AddTransferCommand}"
+                FontSize="16"
+                FontAttributes="Bold"
+                HeightRequest="50"
+                CornerRadius="12"
+                BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"
+                TextColor="White"/>
 
-            <!-- Transfers List -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding LoadTransfersCommand}">
             <CollectionView ItemsSource="{Binding Transfers}">
                 <CollectionView.EmptyView>
-                    <VerticalStackLayout Padding="40" Spacing="12" HorizontalOptions="Center">
-                        <Label Text="&#xF04E1;" 
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="48" 
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        <Label Text="{ext:Localize NoTransfers}" 
-                               FontSize="18"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                        <Label Text="{ext:Localize TransferBetweenAccounts}" 
-                               FontSize="14"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               TextColor="{AppThemeBinding Light=#999999, Dark=#888888}"/>
-                    </VerticalStackLayout>
+                    <controls:EmptyState Icon="&#xF04E1;"
+                                         Title="{ext:Localize NoTransfers}"
+                                         Message="{ext:Localize TransferBetweenAccounts}" />
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Transfer">
@@ -129,8 +116,7 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-        </VerticalStackLayout>
-    </RefreshView>
+        </RefreshView>
+    </Grid>
 
 </ContentPage>

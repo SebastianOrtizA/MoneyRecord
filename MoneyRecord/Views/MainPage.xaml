@@ -413,24 +413,10 @@
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
                     <!-- An empty period: say how to add the first entry -->
-                    <VerticalStackLayout Padding="8,12" Spacing="8" IsVisible="{Binding ShowRecentEmpty}">
-                        <Label Text="&#xF0279;"
-                               FontFamily="MaterialDesignIcons"
-                               FontSize="40"
-                               HorizontalOptions="Center"
-                               AutomationProperties.IsInAccessibleTree="False"
-                               TextColor="{AppThemeBinding Light=#9E9E9E, Dark=#757575}"/>
-                        <Label Text="{ext:Localize NoTransactionsInPeriod}"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
-                        <Label Text="{ext:Localize AddEntryHint}"
-                               FontSize="14"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"
-                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
-                    </VerticalStackLayout>
+                    <controls:EmptyState IsVisible="{Binding ShowRecentEmpty}"
+                                         Icon="&#xF0279;"
+                                         Title="{ext:Localize NoTransactionsInPeriod}"
+                                         Message="{ext:Localize AddEntryHint}" />
                 </VerticalStackLayout>
             </Border>
 
