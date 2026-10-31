@@ -17,6 +17,13 @@ namespace MoneyRecord
         private static readonly Dictionary<int, TaskCompletionSource<Intent?>> PendingResults = [];
         private static int _lastRequestCode = 1000;
 
+        public override bool DispatchTouchEvent(global::Android.Views.MotionEvent? e)
+        {
+            if (e?.Action == global::Android.Views.MotionEventActions.Down)
+                MoneyRecord.Charts.TouchClock.LastDownUtc = DateTime.UtcNow;
+            return base.DispatchTouchEvent(e);
+        }
+
         protected override void OnCreate(Bundle? savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
