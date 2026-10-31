@@ -50,10 +50,11 @@ public class LedgerGroupingTests
     {
         var day = new DateTime(2026, 10, 31);
         var group = LedgerGrouping.Group([
-            On(day, Income(1, 10_000)), On(day, Expense(2, "Food", 2_500)), On(day, Expense(3, "Food", 1_000, "USD"))],
+            On(day, Income(1, 10_000, "ZZA")), On(day, Expense(2, "Food", 2_500, "ZZA")), On(day, Expense(3, "Food", 1_000, "ZZB"))],
             GroupingMode.Date).Single();
 
-        group.Totals.Should().Equal(new CurrencyAmount("EUR", 75m), new CurrencyAmount("USD", -10m));
+        // Two non-base currencies, so the order does not depend on the machine's base currency
+        group.Totals.Should().Equal(new CurrencyAmount("ZZA", 75m), new CurrencyAmount("ZZB", -10m));
     }
 
     [Fact]
