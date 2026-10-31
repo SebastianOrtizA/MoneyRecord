@@ -2919,4 +2919,7 @@
   <data name="GroupByDate" xml:space="preserve">
     <value>Par date</value>
   </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Retirer le filtre : {0}</value>
+  </data>
 </root>

@@ -36,8 +36,19 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>How the list is grouped (saved: by date until the user picks another).</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowRowDates))]
+        [NotifyPropertyChangedFor(nameof(ShowRowDates), nameof(ByDateText), nameof(ByCategoryText), nameof(ByAccountText), nameof(ListText))]
         private GroupingMode currentGroupingMode;
+
+        // The overflow menu marks the grouping in use
+        public string ByDateText => MenuText(GroupingMode.Date, AppResources.GroupByDate);
+
+        public string ByCategoryText => MenuText(GroupingMode.Category, AppResources.GroupByCategory);
+
+        public string ByAccountText => MenuText(GroupingMode.Account, AppResources.GroupByAccount);
+
+        public string ListText => MenuText(GroupingMode.None, AppResources.ListView);
+
+        private string MenuText(GroupingMode mode, string text) => CurrentGroupingMode == mode ? $"✓ {text}" : text;
 
         /// <summary>A day group names the date once, so its rows leave it out.</summary>
         public bool ShowRowDates => CurrentGroupingMode != GroupingMode.Date;

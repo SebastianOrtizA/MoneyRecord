@@ -7985,6 +7985,24 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By Date.
+        /// </summary>
+        public static string GroupByDate {
+            get {
+                return ResourceManager.GetString("GroupByDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove filter: {0}.
+        /// </summary>
+        public static string RemoveFilter {
+            get {
+                return ResourceManager.GetString("RemoveFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Date range.
         /// </summary>
         public static string ChallengeViewRange {

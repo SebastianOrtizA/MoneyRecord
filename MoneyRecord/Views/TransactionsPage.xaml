@@ -16,13 +16,13 @@
         <ToolbarItem Text="{ext:Localize SearchTransactions}"
                      IconImageSource="{StaticResource SearchIcon}"
                      Command="{Binding ToggleSearchCommand}" />
-        <ToolbarItem Order="Secondary" Text="{ext:Localize GroupByDate}"
+        <ToolbarItem Order="Secondary" Text="{Binding ByDateText}"
                      Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Date}" />
-        <ToolbarItem Order="Secondary" Text="{ext:Localize GroupByCategory}"
+        <ToolbarItem Order="Secondary" Text="{Binding ByCategoryText}"
                      Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Category}" />
-        <ToolbarItem Order="Secondary" Text="{ext:Localize GroupByAccount}"
+        <ToolbarItem Order="Secondary" Text="{Binding ByAccountText}"
                      Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Account}" />
-        <ToolbarItem Order="Secondary" Text="{ext:Localize ListView}"
+        <ToolbarItem Order="Secondary" Text="{Binding ListText}"
                      Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.None}" />
         <ToolbarItem Order="Secondary" Text="{Binding IsAscending, Converter={StaticResource BoolToSortTextConverter}}"
                      Command="{Binding ToggleSortOrderCommand}" />
@@ -215,7 +215,8 @@
                             <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding Filters.ActiveChips}">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate x:DataType="viewmodels:ActiveFilterChip">
-                                        <controls:FilterChip Text="{Binding Display}" IsActive="True"
+                                        <controls:FilterChip Text="{Binding Text, StringFormat='{0}  &#x2715;'}" IsActive="True"
+                                                             SemanticProperties.Description="{Binding Description}"
                                                              Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=Filters.RemoveChipCommand}"
                                                              CommandParameter="{Binding .}" />
                                     </DataTemplate>

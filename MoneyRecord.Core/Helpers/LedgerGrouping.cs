@@ -5,6 +5,9 @@ namespace MoneyRecord.Helpers
     /// <summary>Groups the ledger entries by day, category or account.</summary>
     public static class LedgerGrouping
     {
+        // calendar
+        private const string DayIconCode = "F00ED";
+
         /// <summary>
         /// Category groups total their entries; account groups show the account's balance in its own currency
         /// (from <paramref name="balances"/>, 0 when it has none). Groups are keyed by ID (transfers, which have no
@@ -48,16 +51,15 @@ namespace MoneyRecord.Helpers
                 var totals = CurrencyAmount.Totals(
                     items.Where(e => !e.IsTransfer).Select(e => new CurrencyAmount(e.CurrencyCode, e.SignedAmount)),
                     MoneyFormatter.BaseCurrency);
-                var type = totals.Count == 0 ? TransactionType.Transfer
-                    : totals[0].Amount >= 0 ? TransactionType.Income : TransactionType.Expense;
+                // Coloured by its sign only when every currency agrees; otherwise (or with no net) it is neutral
+                var type = totals.Count > 0 && totals.All(t => t.Amount > 0) ? TransactionType.Income
+                    : totals.Count > 0 && totals.All(t => t.Amount < 0) ? TransactionType.Expense
+                    : TransactionType.Transfer;
 
                 return new TransactionGroup(DateFormatter.Format(day.Key, DateStyle.Long), DayIconCode, type, totals, items,
                     totalsAreSigned: true, isExpanded: true);
             }).ToList();
         }
-
-        // calendar
-        private const string DayIconCode = "F00ED";
 
         /// <summary>One category means one type: an income or expense category, or the transfers.</summary>
         private static TransactionGroup CategoryGroup(string name, List<LedgerEntry> items)

@@ -58,6 +58,19 @@ public class LedgerGroupingTests
     }
 
     [Fact]
+    public void A_day_is_coloured_by_its_sign_only_when_every_currency_agrees()
+    {
+        var day = new DateTime(2026, 10, 31);
+
+        LedgerGrouping.Group([On(day, Expense(1, "Food", 1_000, "ZZA")), On(day, Expense(2, "Food", 500, "ZZB"))], GroupingMode.Date)
+            .Single().Type.Should().Be(TransactionType.Expense);
+        LedgerGrouping.Group([On(day, Income(1, 1_000, "ZZA")), On(day, Income(2, 500, "ZZB"))], GroupingMode.Date)
+            .Single().Type.Should().Be(TransactionType.Income);
+        LedgerGrouping.Group([On(day, Income(1, 10_000, "ZZA")), On(day, Expense(2, "Food", 500, "ZZB"))], GroupingMode.Date)
+            .Single().Type.Should().Be(TransactionType.Transfer, "mixed signs get the neutral colour, not whichever currency sorts first");
+    }
+
+    [Fact]
     public void A_transfer_moves_money_between_own_accounts_so_it_is_left_out_of_the_day_total()
     {
         var day = new DateTime(2026, 10, 31);

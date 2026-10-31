@@ -21,7 +21,8 @@ namespace MoneyRecord.ViewModels
     /// <summary>One filter that is on, shown as a chip that removes it.</summary>
     public sealed record ActiveFilterChip(ActiveFilterKind Kind, string Text)
     {
-        public string Display => $"{Text}  ✕";
+        /// <summary>What a screen reader says for the chip: its cross removes the filter.</summary>
+        public string Description => string.Format(AppResources.RemoveFilter, Text);
     }
 
     /// <summary>
