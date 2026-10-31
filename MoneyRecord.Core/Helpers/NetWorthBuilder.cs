@@ -15,6 +15,13 @@ namespace MoneyRecord.Helpers
     /// </summary>
     public static class NetWorthBuilder
     {
+        /// <summary>
+        /// Whether there is anything to chart: a balance other than zero, or an entry in the window. A new install's empty
+        /// Cash account would only draw a flat line at zero.
+        /// </summary>
+        public static bool HasActivity(IEnumerable<decimal> currentBalances, int entryCount) =>
+            entryCount > 0 || currentBalances.Any(b => b != 0);
+
         /// <param name="currentTotal">Today's balance of the counted accounts (their entries dated up to today).</param>
         /// <param name="accountIds">The counted accounts.</param>
         /// <param name="transactions">Every transaction dated after the end of the month before <paramref name="firstMonth"/>, up to today.</param>

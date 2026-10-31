@@ -4695,15 +4695,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No payees yet. Type one when you add an expense or income and it shows up here..
-        /// </summary>
-        public static string NoPayeesYet {
-            get {
-                return ResourceManager.GetString("NoPayeesYet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No payees match your search..
         /// </summary>
         public static string NoMatchingPayees {
@@ -8347,6 +8338,60 @@ namespace MoneyRecord.Resources.Strings {
         public static string NoMatchingItems {
             get {
                 return ResourceManager.GetString("NoMatchingItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No payees yet.
+        /// </summary>
+        public static string NoPayeesYetTitle {
+            get {
+                return ResourceManager.GetString("NoPayeesYetTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type one when you add an expense or income and it shows up here..
+        /// </summary>
+        public static string NoPayeesYetHint {
+            get {
+                return ResourceManager.GetString("NoPayeesYetHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No cash flow data yet.
+        /// </summary>
+        public static string NoCashFlowData {
+            get {
+                return ResourceManager.GetString("NoCashFlowData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add income and expenses to see your cash flow..
+        /// </summary>
+        public static string AddForCashFlow {
+            get {
+                return ResourceManager.GetString("AddForCashFlow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No net worth data yet.
+        /// </summary>
+        public static string NoNetWorthData {
+            get {
+                return ResourceManager.GetString("NoNetWorthData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add an account balance, income or expenses to see your net worth..
+        /// </summary>
+        public static string AddForNetWorth {
+            get {
+                return ResourceManager.GetString("AddForNetWorth", resourceCulture);
             }
         }
         

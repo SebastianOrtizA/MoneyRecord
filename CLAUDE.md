@@ -141,6 +141,7 @@ crashes at runtime (XAML is inflated at runtime there).
   Income / Transfer sheet; on Home and Transactions, named `AddEntry`), IOverlayHost (a page with a sheet: Android back
   closes it first),
   LedgerItemTemplateSelector, UpcomingRow (one Upcoming row), FilterChip (`IsActive` → active colours via its style), DecimalEntry (numeric keyboard),
+  EmptyState (the one "nothing here yet" block: icon, title, hint; Home's Recent card, Transfers, Payees, Trends, Cash flow and Net worth use it; the other lists keep their own empty views for now),
   AutoFitLabel (one line; shrinks its font from `MaxFontSize` to fit: amounts in narrow places, e.g. Home's cards)
 - `Behaviors/` — CurrencyMaskBehavior (amount input in the account's currency)
 - `Converters/` — one value converter per file (registered in `App.xaml`); InvertedBool, IntToBool and

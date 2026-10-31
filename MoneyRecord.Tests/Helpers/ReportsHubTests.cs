@@ -208,4 +208,15 @@ public class ReportsHubTests
 
         (changes, months).Should().Be((1, 1));
     }
+
+    [Theory]
+    [InlineData(new[] { 0.0 }, 0, false)]
+    [InlineData(new[] { 0.0, 0.0 }, 0, false)]
+    [InlineData(new[] { 0.0 }, 1, true)]
+    [InlineData(new[] { 25.5 }, 0, true)]
+    [InlineData(new[] { -10.0, 0.0 }, 0, true)]
+    public void Net_worth_has_data_with_a_balance_or_an_entry(double[] balances, int entries, bool expected)
+    {
+        NetWorthBuilder.HasActivity(balances.Select(b => (decimal)b), entries).Should().Be(expected);
+    }
 }

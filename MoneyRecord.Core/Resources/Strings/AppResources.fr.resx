@@ -1638,9 +1638,6 @@
   <data name="SearchPayees" xml:space="preserve">
     <value>Rechercher des bénéficiaires</value>
   </data>
-  <data name="NoPayeesYet" xml:space="preserve">
-    <value>Aucun bénéficiaire pour l'instant. Saisis-en un en ajoutant une dépense ou un revenu, et il apparaîtra ici.</value>
-  </data>
   <data name="NoMatchingPayees" xml:space="preserve">
     <value>Aucun bénéficiaire ne correspond à ta recherche.</value>
   </data>
@@ -2888,5 +2885,23 @@
   </data>
   <data name="NoMatchingItems" xml:space="preserve">
     <value>Rien ne correspond à ta recherche.</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>Aucun bénéficiaire pour l'instant</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>Saisis-en un en ajoutant une dépense ou un revenu, et il apparaîtra ici.</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>Aucune donnée de flux pour l'instant</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>Ajoute des revenus et des dépenses pour voir ton flux de trésorerie.</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>Aucune donnée de patrimoine pour l'instant</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>Ajoute un solde, des revenus ou des dépenses pour voir ton patrimoine net.</value>
   </data>
 </root>

@@ -1688,9 +1688,6 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SearchPayees" xml:space="preserve">
     <value>Buscar beneficiarios</value>
   </data>
-  <data name="NoPayeesYet" xml:space="preserve">
-    <value>Aún no hay beneficiarios. Escribe uno al añadir un gasto o ingreso y aparecerá aquí.</value>
-  </data>
   <data name="NoMatchingPayees" xml:space="preserve">
     <value>Ningún beneficiario coincide con la búsqueda.</value>
   </data>
@@ -2938,5 +2935,23 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   </data>
   <data name="NoMatchingItems" xml:space="preserve">
     <value>Nada coincide con tu búsqueda.</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>Aún no hay beneficiarios</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>Escribe uno al añadir un gasto o ingreso y aparecerá aquí.</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>Aún no hay datos de flujo de efectivo</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>Agrega ingresos y gastos para ver tu flujo de efectivo.</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>Aún no hay datos de patrimonio</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>Agrega un saldo, ingresos o gastos para ver tu patrimonio.</value>
   </data>
 </root>

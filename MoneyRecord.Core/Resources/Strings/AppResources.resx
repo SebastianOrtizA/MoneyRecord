@@ -1690,9 +1690,6 @@
   <data name="SearchPayees" xml:space="preserve">
     <value>Search payees</value>
   </data>
-  <data name="NoPayeesYet" xml:space="preserve">
-    <value>No payees yet. Type one when you add an expense or income and it shows up here.</value>
-  </data>
   <data name="NoMatchingPayees" xml:space="preserve">
     <value>No payees match your search.</value>
   </data>
@@ -2941,5 +2938,23 @@
   </data>
   <data name="NoMatchingItems" xml:space="preserve">
     <value>Nothing matches your search.</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>No payees yet</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>Type one when you add an expense or income and it shows up here.</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>No cash flow data yet</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>Add income and expenses to see your cash flow.</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>No net worth data yet</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>Add an account balance, income or expenses to see your net worth.</value>
   </data>
 </root>
