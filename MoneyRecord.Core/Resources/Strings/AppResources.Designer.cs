@@ -8407,5 +8407,78 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App.
+        /// </summary>
+        public static string GroupApp {
+            get {
+                return ResourceManager.GetString("GroupApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Money.
+        /// </summary>
+        public static string GroupMoney {
+            get {
+                return ResourceManager.GetString("GroupMoney", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Planning.
+        /// </summary>
+        public static string GroupPlanning {
+            get {
+                return ResourceManager.GetString("GroupPlanning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shared and travel.
+        /// </summary>
+        public static string GroupSharedTravel {
+            get {
+                return ResourceManager.GetString("GroupSharedTravel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search settings.
+        /// </summary>
+        public static string SearchSettings {
+            get {
+                return ResourceManager.GetString("SearchSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Appearance.
+        /// </summary>
+        public static string SectionAppearance {
+            get {
+                return ResourceManager.GetString("SectionAppearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data and backup.
+        /// </summary>
+        public static string SectionDataBackup {
+            get {
+                return ResourceManager.GetString("SectionDataBackup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy and security.
+        /// </summary>
+        public static string SectionPrivacySecurity {
+            get {
+                return ResourceManager.GetString("SectionPrivacySecurity", resourceCulture);
+            }
+        }
+
     }
 }

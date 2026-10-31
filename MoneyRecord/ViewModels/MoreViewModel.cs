@@ -10,6 +10,9 @@ namespace MoneyRecord.ViewModels
     /// <summary>A More row: icon glyph, localized title and the registered route it pushes.</summary>
     public record MoreItem(string Icon, string Title, string Route);
 
+    /// <summary>A headed block of More rows.</summary>
+    public record MoreGroup(string Title, IReadOnlyList<MoreItem> Items);
+
     /// <summary>More tab: opens the screens that don't have a tab of their own (pushed, so back returns here).</summary>
     public partial class MoreViewModel : ObservableObject
     {
@@ -17,32 +20,44 @@ namespace MoneyRecord.ViewModels
         private readonly ITipJar _tipJar;
 
         [ObservableProperty]
-        private IReadOnlyList<MoreItem> items = [];
+        private IReadOnlyList<MoreGroup> groups = [];
 
         public MoreViewModel(INavigationService navigationService, ITipJar tipJar)
         {
             _navigationService = navigationService;
             _tipJar = tipJar;
-            Items = BuildItems();
+            Groups = BuildGroups();
             // The More page lives as long as the app, so the titles follow a language change in Settings
-            LocalizationService.Instance.LanguageChanged += (_, _) => Items = BuildItems();
+            LocalizationService.Instance.LanguageChanged += (_, _) => Groups = BuildGroups();
         }
 
-        private IReadOnlyList<MoreItem> BuildItems() =>
+        private IReadOnlyList<MoreGroup> BuildGroups() =>
         [
-            new("\U000F0070", AppResources.Accounts, nameof(ManageAccountsPage)),
-            new("\U000F0831", AppResources.Categories, nameof(ManageCategoriesPage)),
-            new("\U000F04DC", AppResources.Payees, nameof(PayeesPage)),
-            new("\U000F0456", AppResources.RecurringTransactions, nameof(RecurringTransactionsPage)),
-            new("\U000F1007", AppResources.SavingsGoals, nameof(GoalsPage)),
-            new("\U000F0538", AppResources.SavingsChallenges, nameof(ChallengesPage)),
-            new("\U000F1218", AppResources.Debts, nameof(DebtsPage)),
-            new("\U000F001D", AppResources.TripsTitle, nameof(TripsPage)),
-            new("\U000F0849", AppResources.PartiesTitle, nameof(PartiesPage)),
-            new("\U000F04E1", AppResources.Transfers, nameof(TransfersPage)),
-            // Tips are sold in the Google Play build only
-            .. (_tipJar.IsAvailable ? new MoreItem[] { new("\U000F02D1", AppResources.SupportTitle, nameof(SupportPage)) } : []),
-            new("\U000F0493", AppResources.Settings, nameof(SettingsPage)),
+            new(AppResources.GroupMoney,
+            [
+                new("\U000F0070", AppResources.Accounts, nameof(ManageAccountsPage)),
+                new("\U000F0831", AppResources.Categories, nameof(ManageCategoriesPage)),
+                new("\U000F04DC", AppResources.Payees, nameof(PayeesPage)),
+                new("\U000F04E1", AppResources.Transfers, nameof(TransfersPage)),
+            ]),
+            new(AppResources.GroupPlanning,
+            [
+                new("\U000F0456", AppResources.RecurringTransactions, nameof(RecurringTransactionsPage)),
+                new("\U000F1007", AppResources.SavingsGoals, nameof(GoalsPage)),
+                new("\U000F0538", AppResources.SavingsChallenges, nameof(ChallengesPage)),
+            ]),
+            new(AppResources.GroupSharedTravel,
+            [
+                new("\U000F1218", AppResources.Debts, nameof(DebtsPage)),
+                new("\U000F001D", AppResources.TripsTitle, nameof(TripsPage)),
+                new("\U000F0849", AppResources.PartiesTitle, nameof(PartiesPage)),
+            ]),
+            new(AppResources.GroupApp,
+            [
+                // Tips are sold in the Google Play build only
+                .. (_tipJar.IsAvailable ? new MoreItem[] { new("\U000F02D1", AppResources.SupportTitle, nameof(SupportPage)) } : []),
+                new("\U000F0493", AppResources.Settings, nameof(SettingsPage)),
+            ]),
         ];
 
         [RelayCommand]

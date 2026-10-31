@@ -2932,4 +2932,28 @@
   <data name="RemoveFilter" xml:space="preserve">
     <value>Remover filtro: {0}</value>
   </data>
+  <data name="GroupMoney" xml:space="preserve">
+    <value>Dinheiro</value>
+  </data>
+  <data name="GroupPlanning" xml:space="preserve">
+    <value>Planejamento</value>
+  </data>
+  <data name="GroupSharedTravel" xml:space="preserve">
+    <value>Compartilhado e viagens</value>
+  </data>
+  <data name="GroupApp" xml:space="preserve">
+    <value>Aplicativo</value>
+  </data>
+  <data name="SectionAppearance" xml:space="preserve">
+    <value>Aparência</value>
+  </data>
+  <data name="SectionDataBackup" xml:space="preserve">
+    <value>Dados e backup</value>
+  </data>
+  <data name="SectionPrivacySecurity" xml:space="preserve">
+    <value>Privacidade e segurança</value>
+  </data>
+  <data name="SearchSettings" xml:space="preserve">
+    <value>Buscar nas configurações</value>
+  </data>
 </root>

@@ -2984,4 +2984,28 @@
   <data name="RemoveFilter" xml:space="preserve">
     <value>Remove filter: {0}</value>
   </data>
+  <data name="GroupMoney" xml:space="preserve">
+    <value>Money</value>
+  </data>
+  <data name="GroupPlanning" xml:space="preserve">
+    <value>Planning</value>
+  </data>
+  <data name="GroupSharedTravel" xml:space="preserve">
+    <value>Shared and travel</value>
+  </data>
+  <data name="GroupApp" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="SectionAppearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="SectionDataBackup" xml:space="preserve">
+    <value>Data and backup</value>
+  </data>
+  <data name="SectionPrivacySecurity" xml:space="preserve">
+    <value>Privacy and security</value>
+  </data>
+  <data name="SearchSettings" xml:space="preserve">
+    <value>Search settings</value>
+  </data>
 </root>
