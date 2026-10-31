@@ -2765,12 +2765,6 @@
   <data name="ChallengeViewFromStart" xml:space="preserve">
     <value>Dall'inizio</value>
   </data>
-  <data name="ChallengeMonthPrevious" xml:space="preserve">
-    <value>Mese precedente</value>
-  </data>
-  <data name="ChallengeMonthNext" xml:space="preserve">
-    <value>Mese successivo</value>
-  </data>
   <data name="ChallengeMonthCurrent" xml:space="preserve">
     <value>Vai a questo mese</value>
   </data>
@@ -2908,5 +2902,17 @@
   </data>
   <data name="AddForNetWorth" xml:space="preserve">
     <value>Aggiungi un saldo, entrate o spese per vedere il patrimonio netto.</value>
+  </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>Periodo precedente</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>Periodo successivo</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtri</value>
+  </data>
+  <data name="SelectedState" xml:space="preserve">
+    <value>selezionato</value>
   </data>
 </root>

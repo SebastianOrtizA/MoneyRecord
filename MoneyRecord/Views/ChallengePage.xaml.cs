@@ -1,8 +1,9 @@
+using MoneyRecord.Controls;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
 {
-    public partial class ChallengePage : ContentPage
+    public partial class ChallengePage : ContentPage, IOverlayHost
     {
         private readonly ChallengeViewModel _viewModel;
 
@@ -18,5 +19,13 @@ namespace MoneyRecord.Views
             base.OnAppearing();
             await _viewModel.InitializeAsync();
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _viewModel.CloseFilterCommand.Execute(null);
+        }
+
+        public bool TryCloseOverlay() => _viewModel.CloseTopOverlay();
     }
 }

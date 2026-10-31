@@ -67,7 +67,7 @@ namespace MoneyRecord.ViewModels
 
     /// <summary>One challenge as a game: a grid with a cell per day; a tap marks it done or not.</summary>
     [QueryProperty(nameof(ChallengeIdText), "ChallengeId")]
-    public partial class ChallengeViewModel : ObservableObject
+    public partial class ChallengeViewModel : ObservableObject, IPeriodStepperSource, IFilterSheetSource
     {
         private readonly ISavingsChallengeService _challengeService;
         private readonly IAccountRepository _accountRepository;
@@ -115,6 +115,7 @@ namespace MoneyRecord.ViewModels
         {
             foreach (var chip in ViewChips)
                 chip.IsActive = chip.View == value;
+            RaiseFilterCount();
             if (value == ChallengeView.Next30)
                 _anchorDay = ChallengeDayFilter.FirstPendingDay(_days);
             if (value == ChallengeView.Month)
@@ -132,13 +133,13 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>"October 2026": the month the calendar shows.</summary>
         [ObservableProperty]
-        private string monthText = string.Empty;
+        private string label = string.Empty;
 
         [ObservableProperty]
-        private bool canGoPreviousMonth;
+        private bool canStepBack;
 
         [ObservableProperty]
-        private bool canGoNextMonth;
+        private bool canStepForward;
 
         /// <summary>The weekday names over the calendar columns, starting at the culture's first day of the week.</summary>
         public IReadOnlyList<string> WeekdayHeaders { get; } = ChallengeDayFilter.WeekdayHeaders(CultureInfo.CurrentCulture);
@@ -176,7 +177,11 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool showRemainingOnly;
 
-        partial void OnShowRemainingOnlyChanged(bool value) => ApplyFilter();
+        partial void OnShowRemainingOnlyChanged(bool value)
+        {
+            RaiseFilterCount();
+            ApplyFilter();
+        }
 
         public ChallengeViewModel(ISavingsChallengeService challengeService, IAccountRepository accountRepository, IPocketService pocketService, IErrorHandler errorHandler, IDialogService dialogService, TimeProvider time)
         {
@@ -278,27 +283,33 @@ namespace MoneyRecord.ViewModels
 
         private void UpdateMonthNavigation()
         {
-            MonthText = DateFormatter.FormatMonthYear(ShownMonth);
+            Label = DateFormatter.FormatMonthYear(ShownMonth);
             var span = ChallengeDayFilter.MonthSpan(_days);
-            CanGoPreviousMonth = span != null && ShownMonth > span.Value.First;
-            CanGoNextMonth = span != null && ShownMonth < span.Value.Last;
+            CanStepBack = span != null && ShownMonth > span.Value.First;
+            CanStepForward = span != null && ShownMonth < span.Value.Last;
         }
 
-        private void SelectView(ChallengeView view) => SelectedView = view;
+        // A view settles the choice and closes the sheet; Date range stays open for its dates
+        private void SelectView(ChallengeView view)
+        {
+            SelectedView = view;
+            if (view != ChallengeView.DateRange)
+                CloseFilter();
+        }
 
         [RelayCommand]
-        private void PreviousMonth()
+        private void Previous()
         {
-            if (!CanGoPreviousMonth)
+            if (!CanStepBack)
                 return;
             ShownMonth = ShownMonth.AddMonths(-1);
             ApplyFilter();
         }
 
         [RelayCommand]
-        private void NextMonth()
+        private void Next()
         {
-            if (!CanGoNextMonth)
+            if (!CanStepForward)
                 return;
             ShownMonth = ShownMonth.AddMonths(1);
             ApplyFilter();
@@ -312,8 +323,50 @@ namespace MoneyRecord.ViewModels
             ApplyFilter();
         }
 
+        // The stepper's label goes back to the current month; there is no list to open
+        IRelayCommand IPeriodStepperSource.PickCommand => CurrentMonthCommand;
+
+        bool IPeriodStepperSource.HasPicker => false;
+
+        string IPeriodStepperSource.PickHint => AppResources.ChallengeMonthCurrent;
+
+        /// <summary>The filter sheet (the view, only pending, the date range), opened by the page's filter button.</summary>
+        [ObservableProperty]
+        private bool isFilterOpen;
+
+        // Next 30 days with every day is the default: anything else counts as a filter
+        public int ActiveFilterCount => (SelectedView != ChallengeView.Next30 ? 1 : 0) + (ShowRemainingOnly ? 1 : 0);
+
+        public bool HasActiveFilterCount => ActiveFilterCount > 0;
+
+        private void RaiseFilterCount()
+        {
+            OnPropertyChanged(nameof(ActiveFilterCount));
+            OnPropertyChanged(nameof(HasActiveFilterCount));
+        }
+
         [RelayCommand]
-        private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;
+        private void OpenFilter() => IsFilterOpen = true;
+
+        [RelayCommand]
+        private void CloseFilter() => IsFilterOpen = false;
+
+        [RelayCommand]
+        private void ClearFilters()
+        {
+            SelectedView = ChallengeView.Next30;
+            ShowRemainingOnly = false;
+        }
+
+        /// <summary>Closes the filter sheet; false when it was not open.</summary>
+        public bool CloseTopOverlay()
+        {
+            if (!IsFilterOpen)
+                return false;
+
+            CloseFilter();
+            return true;
+        }
 
         /// <summary>
         /// Marks the day done (asking where the money comes from when the challenge saves into an account or pocket) or, when

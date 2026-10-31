@@ -7976,24 +7976,6 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Previous month.
-        /// </summary>
-        public static string ChallengeMonthPrevious {
-            get {
-                return ResourceManager.GetString("ChallengeMonthPrevious", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Next month.
-        /// </summary>
-        public static string ChallengeMonthNext {
-            get {
-                return ResourceManager.GetString("ChallengeMonthNext", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Go to this month.
         /// </summary>
         public static string ChallengeMonthCurrent {

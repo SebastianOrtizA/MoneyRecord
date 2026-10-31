@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- A period as "‹ October 2026 ›": the BindingContext is an IPeriodStepperSource (a page's shared Period, or a savings challenge). The label opens the PeriodSheet the page holds, or whatever PickCommand does -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Controls.PeriodStepper"
+             x:DataType="viewmodels:IPeriodStepperSource">
+
+    <Grid ColumnDefinitions="48,*,48" HeightRequest="48">
+        <Label Text="&#xF0141;"
+               FontFamily="MaterialDesignIcons" FontSize="28"
+               HorizontalOptions="Fill" VerticalOptions="Fill"
+               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+               IsVisible="{Binding CanStepBack}"
+               SemanticProperties.Description="{ext:Localize PreviousPeriod}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding PreviousCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+
+        <HorizontalStackLayout Grid.Column="1" Spacing="4"
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               SemanticProperties.Description="{Binding PickHint}">
+            <HorizontalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding PickCommand}" />
+            </HorizontalStackLayout.GestureRecognizers>
+            <Label Text="{Binding Label}" FontSize="18" FontAttributes="Bold"
+                   VerticalOptions="Center" LineBreakMode="TailTruncation" />
+            <Label Text="&#xF0140;" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center" IsVisible="{Binding HasPicker}" />
+        </HorizontalStackLayout>
+
+        <!-- Hidden at the current month or year (never past today) -->
+        <Label Grid.Column="2" Text="&#xF0142;"
+               FontFamily="MaterialDesignIcons" FontSize="28"
+               HorizontalOptions="Fill" VerticalOptions="Fill"
+               HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+               IsVisible="{Binding CanStepForward}"
+               SemanticProperties.Description="{ext:Localize NextPeriod}">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NextCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+    </Grid>
+</ContentView>

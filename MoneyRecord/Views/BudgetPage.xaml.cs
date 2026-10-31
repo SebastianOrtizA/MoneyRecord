@@ -26,8 +26,9 @@ namespace MoneyRecord.Views
             _viewModel.Deactivate();
             // Another tab: come back to the list, not a stale sheet
             _viewModel.CloseFormCommand.Execute(null);
+            _viewModel.Period.TryCloseSheet();
         }
 
-        public bool TryCloseOverlay() => _viewModel.CloseTopOverlay();
+        public bool TryCloseOverlay() => _viewModel.Period.TryCloseSheet() || _viewModel.CloseTopOverlay();
     }
 }

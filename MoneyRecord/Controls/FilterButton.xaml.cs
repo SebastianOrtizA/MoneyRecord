@@ -1,8 +1,8 @@
 namespace MoneyRecord.Controls
 {
-    public partial class PeriodPicker : ContentView
+    public partial class FilterButton : ContentView
     {
-        public PeriodPicker()
+        public FilterButton()
         {
             InitializeComponent();
         }

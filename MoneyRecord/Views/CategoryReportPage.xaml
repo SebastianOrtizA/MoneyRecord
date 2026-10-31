@@ -22,13 +22,14 @@
                      Command="{Binding Export.ExportCommand}" />
     </ContentPage.ToolbarItems>
 
+    <Grid>
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadReportDataCommand}">
         <!-- The 16px gutter is inside the header, rows and footer, so the scrollbar sits at the screen edge -->
         <CollectionView ItemsSource="{Binding Categories}">
             <CollectionView.Header>
                 <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
-                    <controls:PeriodPicker BindingContext="{Binding Period}" />
+                    <controls:PeriodStepper BindingContext="{Binding Period}" />
                     <controls:CurrencyChips BindingContext="{Binding Period}" />
 
                     <!-- Donut with the total in the middle -->
@@ -134,4 +135,7 @@
             </CollectionView.Footer>
         </CollectionView>
     </RefreshView>
+
+    <controls:PeriodSheet BindingContext="{Binding Period}" />
+    </Grid>
 </ContentPage>

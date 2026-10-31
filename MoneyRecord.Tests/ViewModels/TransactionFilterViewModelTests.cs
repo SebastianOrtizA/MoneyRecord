@@ -128,6 +128,23 @@ public class TransactionFilterViewModelTests
     }
 
     [Fact]
+    public async Task A_pick_raises_Picked_but_cancelling_or_typing_an_amount_does_not()
+    {
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food" }]);
+        var picked = 0;
+        _sut.Picked += () => picked++;
+
+        PickInList(null);
+        await _sut.PickCategoryCommand.ExecuteAsync(null);
+        _sut.MinAmountText = "10";
+        picked.Should().Be(0);
+
+        PickInList("Food");
+        await _sut.PickCategoryCommand.ExecuteAsync(null);
+        picked.Should().Be(1);
+    }
+
+    [Fact]
     public async Task Picking_all_clears_the_chip_and_cancel_keeps_it()
     {
         _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, Tags = "work" }]);
@@ -175,16 +192,29 @@ public class TransactionFilterViewModelTests
     }
 
     [Fact]
-    public void Clear_also_resets_the_tag_and_hides_the_amount_row()
+    public void Clear_also_resets_the_tag_and_the_amount()
     {
         _sut.SelectedTag = "work";
-        _sut.ToggleAmountCommand.Execute(null);
+        _sut.MinAmountText = "10";
 
         _sut.ClearCommand.Execute(null);
 
         _sut.SelectedTag.Should().BeNull();
-        _sut.IsAmountVisible.Should().BeFalse();
+        _sut.ActiveCount.Should().Be(0);
         _sut.AmountChipText.Should().Be(AppResources.FilterByAmount);
+    }
+
+    [Fact]
+    public void The_active_count_counts_each_filter_once_and_leaves_the_search_out()
+    {
+        _sut.SearchText = "bread";
+        _sut.ActiveCount.Should().Be(0);
+
+        _sut.SelectedTag = "work";
+        _sut.MinAmountText = "10";
+        _sut.MaxAmountText = "50";
+
+        _sut.ActiveCount.Should().Be(2, "the tag, and the amount range as one");
     }
 
     [Fact]

@@ -34,9 +34,11 @@ namespace MoneyRecord.Views
         {
             base.OnDisappearing();
             _viewModel.Deactivate();
+            // The period is shared: another tab must not open with its sheet showing
+            _viewModel.Period.TryCloseSheet();
         }
 
-        public bool TryCloseOverlay() => AddEntry.TryClose();
+        public bool TryCloseOverlay() => _viewModel.Period.TryCloseSheet() || AddEntry.TryClose();
 
         /// <summary>
         /// Income, Expenses and Net side by side, or one under the other when the system font is large: an amount like

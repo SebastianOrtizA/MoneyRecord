@@ -22,9 +22,6 @@ namespace MoneyRecord.ViewModels
         private bool _clearing;
 
         [ObservableProperty]
-        private bool isAmountVisible;
-
-        [ObservableProperty]
         private string searchText = string.Empty;
 
         [ObservableProperty]
@@ -79,6 +76,9 @@ namespace MoneyRecord.ViewModels
 
         public event Action? Changed;
 
+        /// <summary>A pick list answered (type, category, account or tag): the filter is settled, unlike typing an amount.</summary>
+        public event Action? Picked;
+
         public string TypeChipText => IsTypeActive ? SelectedType!.Name : AppResources.FilterByType;
 
         public bool IsTypeActive => SelectedType?.Type != null;
@@ -105,6 +105,9 @@ namespace MoneyRecord.ViewModels
         };
 
         public bool IsAmountActive => ParseAmountLimit(MinAmountText) != null || ParseAmountLimit(MaxAmountText) != null;
+
+        /// <summary>How many filters narrow the list (type, category, account, tag, amount); the search text is not counted.</summary>
+        public int ActiveCount => new[] { IsTypeActive, IsCategoryActive, IsAccountActive, IsTagActive, IsAmountActive }.Count(on => on);
 
         public TransactionFilter ToFilter(bool ascending) => new(
             SearchText,
@@ -134,32 +137,41 @@ namespace MoneyRecord.ViewModels
         private async Task PickTypeAsync()
         {
             if (await PickAsync(AppResources.FilterByType, Types.Select(t => t.Name)) is int index)
+            {
                 SelectedType = Types[index];
+                Picked?.Invoke();
+            }
         }
 
         [RelayCommand]
         private async Task PickCategoryAsync()
         {
             if (await PickAsync(AppResources.FilterByCategory, [AppResources.AllCategories, .. Categories.Select(c => c.Name)]) is int index)
+            {
                 SelectedCategory = index == 0 ? null : Categories[index - 1];
+                Picked?.Invoke();
+            }
         }
 
         [RelayCommand]
         private async Task PickAccountAsync()
         {
             if (await PickAsync(AppResources.FilterByAccount, [AppResources.AllAccounts, .. Accounts.Select(a => a.Name)]) is int index)
+            {
                 SelectedAccount = index == 0 ? null : Accounts[index - 1];
+                Picked?.Invoke();
+            }
         }
 
         [RelayCommand]
         private async Task PickTagAsync()
         {
             if (await PickAsync(AppResources.FilterByTag, [AppResources.AllTags, .. Tags]) is int index)
+            {
                 SelectedTag = index == 0 ? null : Tags[index - 1];
+                Picked?.Invoke();
+            }
         }
-
-        [RelayCommand]
-        private void ToggleAmount() => IsAmountVisible = !IsAmountVisible;
 
         /// <summary>The index of the picked option; null when cancelled.</summary>
         private async Task<int?> PickAsync(string title, IEnumerable<string> options)
@@ -190,7 +202,6 @@ namespace MoneyRecord.ViewModels
                 SelectedTag = null;
                 MinAmountText = string.Empty;
                 MaxAmountText = string.Empty;
-                IsAmountVisible = false;
             }
             finally
             {
@@ -230,6 +241,7 @@ namespace MoneyRecord.ViewModels
                 return;
 
             _typingDebouncer.Cancel();
+            OnPropertyChanged(nameof(ActiveCount));
             Changed?.Invoke();
         }
     }
