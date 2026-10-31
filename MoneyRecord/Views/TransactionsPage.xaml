@@ -21,7 +21,7 @@
                         <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=DeleteTransactionCommand}"
                                        CommandParameter="{Binding .}">
                             <Grid WidthRequest="80"
-                                  BackgroundColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColor}}">
+                                  BackgroundColor="{StaticResource ExpenseColor}">
                                 <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                                     <Label Text="&#xF01B4;" FontFamily="MaterialDesignIcons" FontSize="22" TextColor="White"
                                            HorizontalOptions="Center" />
@@ -32,7 +32,7 @@
                         <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=EditTransactionCommand}"
                                        CommandParameter="{Binding .}">
                             <Grid WidthRequest="80"
-                                  BackgroundColor="{AppThemeBinding Light={StaticResource IncomeColor}, Dark={StaticResource IncomeColor}}">
+                                  BackgroundColor="{StaticResource IncomeColor}">
                                 <VerticalStackLayout Spacing="2" VerticalOptions="Center">
                                     <Label Text="&#xF03EB;" FontFamily="MaterialDesignIcons" FontSize="22" TextColor="White"
                                            HorizontalOptions="Center" />

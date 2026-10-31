@@ -79,7 +79,7 @@
                 <Button Grid.Column="1" 
                        Text="{ext:Localize TransferButton}" 
                        Command="{Binding SaveCommand}"
-                       BackgroundColor="{AppThemeBinding Light=#B85400, Dark=#FFB74D}"/>
+                       BackgroundColor="{AppThemeBinding Light={StaticResource TransferColor}, Dark={StaticResource TransferColorDark}}"/>
             </Grid>
 
         </VerticalStackLayout>
