@@ -1,6 +1,6 @@
 # Stage 15: Variable-amount recurring (bills that change each time)
 
-**Status**: 15.1 done (PR #79); 15.2 in review (UI). Design agreed 2026-10-25 (decisions below)
+**Status**: Complete (15.1 PR #79, 15.2 UI; shipped in 0.16.0). Design agreed 2026-10-25 (decisions below)
 **Depends on**: 11.7 scheduled recurring
 **Complexity**: Medium (2 PRs)
 **Source**: User request, 2026-10-25

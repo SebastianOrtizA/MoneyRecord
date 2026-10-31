@@ -840,6 +840,12 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="ViewReceipt" xml:space="preserve">
     <value>Ver Recibo</value>
   </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>Quitar foto</value>
+  </data>
+  <data name="CloseReceipt" xml:space="preserve">
+    <value>Cerrar recibo</value>
+  </data>
 
   <!-- Stage 3: Multi-Currency -->
   <data name="Currency" xml:space="preserve">

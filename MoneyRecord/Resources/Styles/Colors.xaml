@@ -20,7 +20,7 @@
     <!-- Card background; charts draw the gap between slices and bars in it, so the two always match -->
     <Color x:Key="CardBackground">#FFFFFF</Color>
     <Color x:Key="CardBackgroundDark">#1E1E1E</Color>
-    <Color x:Key="TransferColor">#FF9800</Color>
+    <Color x:Key="TransferColor">#B85400</Color>
     <Color x:Key="TransferColorDark">#FFB74D</Color>
 
     <!-- Purple tints: icon circles and group headers (PrimaryTint), a selected chip or cell in dark mode (light uses Secondary) -->

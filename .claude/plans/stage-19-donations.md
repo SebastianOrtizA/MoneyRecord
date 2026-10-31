@@ -1,7 +1,6 @@
 # Stage 19: Support / tips (Google Play Billing only)
 
-**Status:** 19 in review (branch stage-19-donations). Open items for the owner: Play Console payments profile + the three in-app
-products, licence-tester testing on a Play-installed build.
+**Status:** Complete (PRs #110, #111; shipped in 0.20.0). Play build only; the Play Console payments profile and in-app products are set up on the owner's side.
 
 ## Context
 The owner wants users to be able to give something back. Nothing unlocks: a tip changes nothing for givers or non-givers.

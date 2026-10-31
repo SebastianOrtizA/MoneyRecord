@@ -842,6 +842,12 @@
   <data name="ViewReceipt" xml:space="preserve">
     <value>View Receipt</value>
   </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>Remove photo</value>
+  </data>
+  <data name="CloseReceipt" xml:space="preserve">
+    <value>Close receipt</value>
+  </data>
 
   <!-- Stage 3: Multi-Currency -->
   <data name="Currency" xml:space="preserve">

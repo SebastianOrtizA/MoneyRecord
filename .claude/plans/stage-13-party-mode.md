@@ -1,6 +1,6 @@
 # Stage 13: Party Mode
 
-**Status**: Design agreed 2026-10-17 (decisions below); 13.1, 13.2, 13.3a done; 13.3b in review
+**Status**: Complete (13.1, 13.2, 13.3a, 13.3b done; shipped in 0.13.0)
 **Depends on**: Stages 6–11 (modernization); related to 10.7 splits and 10.8 debts
 **Complexity**: TBD
 **Source**: User request, 2026-10-14

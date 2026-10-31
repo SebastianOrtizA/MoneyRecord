@@ -21,7 +21,7 @@ namespace MoneyRecord.Converters
                     // Orange for transfer
                     return Application.Current?.RequestedTheme == AppTheme.Dark
                         ? Color.FromArgb("#FFB74D") // Light orange for dark theme
-                        : Color.FromArgb("#FF9800"); // Orange for light theme
+                        : Color.FromArgb("#B85400"); // Dark orange for light theme (4.5:1 on white)
                 }
                 else
                 {

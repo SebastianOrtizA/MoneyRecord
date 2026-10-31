@@ -18,8 +18,8 @@
                 FontAttributes="Bold"
                 MinimumHeightRequest="50"
                 CornerRadius="12"
-                BackgroundColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}"
-                TextColor="White"/>
+                BackgroundColor="{AppThemeBinding Light=#B85400, Dark=#FFB74D}"
+                TextColor="{AppThemeBinding Light=White, Dark={StaticResource PrimaryDarkText}}"/>
 
         <RefreshView Grid.Row="1"
                      IsRefreshing="{Binding IsRefreshing}"
@@ -43,7 +43,7 @@
                                 <Label Grid.Row="0" Grid.Column="1"
                                        FontSize="22"
                                        FontAttributes="Bold"
-                                       TextColor="{AppThemeBinding Light=#FF9800, Dark=#FFB74D}">
+                                       TextColor="{AppThemeBinding Light=#B85400, Dark=#FFB74D}">
                                     <Label.Text>
                                         <MultiBinding Converter="{StaticResource CurrencyMoneyConverter}">
                                             <Binding Path="Amount"/>
