@@ -28,8 +28,23 @@ $D boot          # start the AVD detached (or reuse it), wait for boot, wake the
 $D deploy clean  # uninstall + build + install + start (Debug, ~15 s). Always after boot, see Gotchas
 $D fresh         # optional: wipe DB/prefs -> first-run seed data
 $D launch        # force-stop + start; prints mCurrentFocus (should end in MainActivity)
-$D shot home     # prints the PNG path; open it with Read and LOOK at it
+$D where         # text only: resumed activity, app running?, fatal count
 ```
+
+### Screenshot policy (saves tokens: an image costs far more than text)
+
+Do **not** screenshot after every step. Walk known paths blind and check with text.
+
+1. **Known path** (listed in "Known paths" below) → `$D go ROUTE` / `tap` / `text`, then `$D where`. No image.
+2. **Confirm the screen** only when it matters → `$D title` (270 px page-title band, a few tokens).
+3. **Verify an outcome** (a value, a list, a layout) → `$D small NAME 450 TOP% BOTTOM%` cropped to the band you need
+   (e.g. `small x 450 10 60`). Full `shot` only for pixel detail (alignment, colors, store screenshots).
+4. **New feature or changed screen** (code you just wrote, a page not in Known paths) → look once with `small`
+   or `shot`, **then add its route/coordinates to "Known paths" below and to `go` in `driver.sh` in the same
+   session**, so the next run is blind.
+5. **A blind step went wrong** (`where` shows another activity or a crash, `title` shows the wrong page) → one `small`,
+   fix the stored coordinates, move on. Reset between routes with `$D go home`.
+6. Stack several `small` crops into one image (PowerShell System.Drawing) when you must compare many screens.
 
 Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/moneyrecord-shots/`). The path is printed in Windows form so Read can open it.
 
@@ -38,7 +53,11 @@ Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/mon
 | `boot` | start the emulator if none is attached, wait for `sys.boot_completed`, wake and keep the screen on |
 | `deploy [clean]` | `dotnet build -t:Run -f net10.0-android -c Debug`; `clean` uninstalls first |
 | `launch` | relaunch the app, print the focused window |
-| `shot NAME` | `screencap` to `NAME.png`, print the path |
+| `shot NAME` | full `screencap` to `NAME.png`, print the path (expensive: use sparingly) |
+| `small [NAME] [W=450] [TOP% BOT%]` | scaled and optionally cropped screenshot, ~4x cheaper. Coordinates in it: device px = crop px × (1080/W), plus the crop's top offset |
+| `title [NAME]` | page-title band only (270 px wide), the cheapest "which screen am I on" |
+| `where` | text only: resumed activity, app running, fatal-exception count |
+| `go ROUTE` | blind known route (see Known paths), 2 s between taps (`GO_WAIT`) |
 | `tap X Y` / `swipe X1 Y1 X2 Y2 [ms]` | input in device pixels (1080x2400) |
 | `text "STR"` | type into the focused field (spaces are handled) |
 | `key CODE` / `back` | key events, e.g. `key 67` (backspace), `key 123` (move to end) |
@@ -48,22 +67,33 @@ Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/mon
 | `crash [N]` | last N fatal/exception lines from logcat |
 | `stop` | kill the emulator |
 
-**Coordinates:** screenshots read back at 900x2000 in the Read tool, so multiply what you see by **1.2** to get the value for `tap`. Known spots (device pixels):
-- Bottom tabs at y=2262 (`tab NAME`). More page rows (x≈300): Accounts 374, Categories 513, Recurring 652, Transfers 791, Settings 930.
-- Add button (959,2069) opens the sheet: Expense (300,1621), Income (300,1801), Transfer (300,1980). Back closes it.
+## Known paths (verified 2026-10-31, 1080x2400; keep this section and `go` in driver.sh in sync)
+
+Scale for taps: full `shot` reads back at 900x2000, so ×1.2; `small` at width W, ×(1080/W) and add the crop's top offset.
+
+| route (`go X`) | taps | lands on (title) |
+|---|---|---|
+| `home` `transactions` `reports` `budgets` `more` | bottom tab y=2262, x = 108 / 323 / 539 / 755 / 971 | tab root |
+| `accounts` `categories` `payees` `recurring` `goals` `savings` `debts` `trips` `parties` `transfers` `settings` | More tab, then row at x=300, y = 374 + 139 × (row−1) in this order: 374 Accounts, 513 Categories, 652 Payees, 791 Recurring, 930 Goals, 1069 Savings challenge, 1208 Debts, 1346 Trips, 1485 Parties, 1624 Transfers, 1763 Settings | Manage Accounts, Categories, Payees, Recurring, Savings goals, Savings challenge, Debts, Trips, Parties, Transfers, Settings |
+| `add-expense` `add-income` `add-transfer` | Add button (959,2069), then sheet item (300,1621) / (300,1801) / (300,1980) | Add Expense / Income / Transfer |
+
+A new More row shifts every row below it by 139: update both this table and `go`. First run of a fresh install shows the setup
+wizard: Skip is at the top right (982,230).
+
+Other known spots (device pixels):
 - Home: total balance card (540,504) opens Manage Accounts (a currency line, with several currencies, filters it); Recent "See all" is at the card's top right. Reports tab: Expenses / Incomes / Trends top tabs at y≈358.
 - Add Expense / Income form: the amount is focused with the keypad open (type, then `back` to close it); category grid
   row 1 at y=760 (x = 175 / 420 / 663 / 907), row 2 at y=980; Save is pinned at (540,2242); "More details" (540,1698)
   opens description, tags, receipt and recurrence.
 - Alert OK button: about (906, alert bottom − 70).
 
-`uiautomator dump` returns nothing useful for MAUI views, so drive from screenshots.
+`uiautomator dump` returns nothing useful for MAUI views, so a screen can only be read from an image: follow the screenshot policy above.
 
-Example flow (verified): add an account.
+Example flow (verified): add an account, one cheap image at the end.
 ```bash
-$D tab more; sleep 2; $D tap 300 374; sleep 3   # Accounts
-$D tap 540 615; $D text "My Bank"; $D back    # name field
-$D shot accounts
+$D go accounts                                  # blind; confirm with `$D title` only if unsure
+$D tap 540 615; $D text "My Bank"; $D back     # name field
+$D small accounts 450 5 60                      # the one look that matters
 ```
 
 ## Run (human path)
