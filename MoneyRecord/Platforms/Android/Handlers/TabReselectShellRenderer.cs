@@ -6,6 +6,7 @@ using Google.Android.Material.Tabs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Platform.Compatibility;
+using Microsoft.Maui.Platform;
 
 namespace MoneyRecord.Platforms.Android.Handlers
 {
@@ -33,9 +34,10 @@ namespace MoneyRecord.Platforms.Android.Handlers
 
                 // Unselected titles had too little contrast (secondary text colour, like the rest of the app)
                 var dark = Application.Current?.RequestedTheme == AppTheme.Dark;
+                var resources = Application.Current!.Resources;
                 tabLayout.SetTabTextColors(
-                    global::Android.Graphics.Color.ParseColor(dark ? "#AAAAAA" : "#666666"),
-                    dark ? global::Android.Graphics.Color.White : global::Android.Graphics.Color.Black);
+                    ((Color)resources[dark ? "TextSecondaryDark" : "TextSecondary"]).ToPlatform(),
+                    ((Color)resources[dark ? "White" : "Black"]).ToPlatform());
 
                 if (tabLayout.GetChildAt(0) is not ViewGroup strip)
                     return;

@@ -186,4 +186,14 @@ public class BudgetProgressTests
         over.StatusLine.Should().Be(string.Format(LocalizationService.Instance.GetString("BudgetOver"), MoneyFormatter.Format(15m)));
         under.LimitMarker.Should().Be(1);
     }
+
+    [Fact]
+    public void Accessibility_text_says_the_status_in_words()
+    {
+        var progress = new BudgetProgress { CategoryName = "Food", LimitAmount = 100m, SpentAmount = 215m };
+        progress.CalculateProgress();
+
+        progress.AccessibilityText.Should().Contain("Food").And.Contain(progress.StatusText)
+            .And.Contain(progress.UsedPercentText).And.Contain(progress.StatusLine);
+    }
 }

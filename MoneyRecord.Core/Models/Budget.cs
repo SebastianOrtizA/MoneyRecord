@@ -112,7 +112,7 @@ namespace MoneyRecord.Models
         private decimal remainingAmount;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(StatusText), nameof(StatusIcon))]
+        [NotifyPropertyChangedFor(nameof(StatusText), nameof(StatusIcon), nameof(AccessibilityText))]
         private BudgetLevel level = BudgetLevel.OnTrack;
 
         /// <summary>
@@ -137,6 +137,9 @@ namespace MoneyRecord.Models
         /// <summary>"$400.00 of $500.00": spent of the limit for the shown period.</summary>
         public string SpentOfLimitText =>
             string.Format(AppResources.BudgetSpentOfLimit, MoneyFormatter.Format(SpentAmount), MoneyFormatter.Format(LimitAmount));
+
+        /// <summary>What a screen reader says for the card: category, status in words, percent used and what is left or over.</summary>
+        public string AccessibilityText => string.Join(", ", CategoryName, StatusText, UsedPercentText, StatusLine);
 
         public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
 
@@ -182,6 +185,7 @@ namespace MoneyRecord.Models
             OnPropertyChanged(nameof(StatusLine));
             OnPropertyChanged(nameof(UsedPercentText));
             OnPropertyChanged(nameof(LimitMarker));
+            OnPropertyChanged(nameof(AccessibilityText));
 
             // The progress bar colour comes from the level (BudgetLevelToColorConverter, light/dark aware). Exceeded means
             // strictly over, like IsOverBudget: spending exactly the limit is High ("Near limit", "Remaining $0.00")
