@@ -190,14 +190,14 @@
                                             Command="{Binding CancelEditCommand}"
                                             BackgroundColor="{AppThemeBinding Light=#757575, Dark=#616161}"
                                             TextColor="White"
-                                            HeightRequest="44"
+                                            MinimumHeightRequest="44"
                                             CornerRadius="8"/>
                                     <Button Grid.Column="1"
                                             Text="{ext:Localize Save}"
                                             Command="{Binding SaveEditCommand}"
                                             BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
                                             TextColor="White"
-                                            HeightRequest="44"
+                                            MinimumHeightRequest="44"
                                             CornerRadius="8"/>
                                 </Grid>
                             </VerticalStackLayout>

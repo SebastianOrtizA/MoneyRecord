@@ -149,7 +149,7 @@
                                     Text="{ext:Localize UpdateNow}"
                                     Command="{Binding UpdateExchangeRatesCommand}"
                                     FontSize="14"
-                                    HeightRequest="40"
+                                    MinimumHeightRequest="40"
                                     Padding="16,0"/>
                         </Grid>
                     </VerticalStackLayout>
@@ -250,7 +250,7 @@
                                     BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
                                     TextColor="White"
                                     FontSize="14"
-                                    HeightRequest="48"
+                                    MinimumHeightRequest="48"
                                     CornerRadius="10"/>
                             <Button Grid.Column="1"
                                     Text="{ext:Localize ShareBackupExternal}"
@@ -259,7 +259,7 @@
                                     BackgroundColor="{AppThemeBinding Light=#7B1FA2, Dark=#CE93D8}"
                                     TextColor="White"
                                     FontSize="14"
-                                    HeightRequest="48"
+                                    MinimumHeightRequest="48"
                                     CornerRadius="10"/>
                         </Grid>
 
@@ -285,7 +285,7 @@
                                     IsVisible="{Binding IsProtected}"
                                     HorizontalOptions="Start"
                                     FontSize="14"
-                                    HeightRequest="40"
+                                    MinimumHeightRequest="40"
                                     Padding="16,0"/>
                         </VerticalStackLayout>
 
@@ -295,7 +295,7 @@
                                 BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
                                 TextColor="White"
                                 FontSize="15"
-                                HeightRequest="48"
+                                MinimumHeightRequest="48"
                                 CornerRadius="10"/>
 
                         <!-- Bank statement (CSV) into one account; not a restore, nothing is replaced -->
@@ -304,7 +304,7 @@
                                 BackgroundColor="{AppThemeBinding Light=#00796B, Dark=#4DB6AC}"
                                 TextColor="White"
                                 FontSize="15"
-                                HeightRequest="48"
+                                MinimumHeightRequest="48"
                                 CornerRadius="10"/>
                         <Label Text="{ext:Localize ImportStatementDescription}"
                                FontSize="12"
@@ -317,7 +317,7 @@
                                 BackgroundColor="{AppThemeBinding Light=#F57C00, Dark=#FFB74D}"
                                 TextColor="White"
                                 FontSize="15"
-                                HeightRequest="48"
+                                MinimumHeightRequest="48"
                                 CornerRadius="10"/>
 
                         <!-- Restore Warning -->
@@ -372,7 +372,7 @@
                                         Command="{Binding ChooseFolderCommand}"
                                         IsEnabled="{Binding IsIdle}"
                                         FontSize="14"
-                                        HeightRequest="40"
+                                        MinimumHeightRequest="40"
                                         Padding="16,0"/>
                             </Grid>
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
@@ -409,7 +409,7 @@
                                         Command="{Binding BackUpNowCommand}"
                                         IsEnabled="{Binding CanBackUpNow}"
                                         FontSize="14"
-                                        HeightRequest="40"
+                                        MinimumHeightRequest="40"
                                         Padding="16,0"/>
                             </Grid>
                             <Label Text="{ext:Localize AutoBackupNote}"

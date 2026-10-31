@@ -1,4 +1,5 @@
 using MoneyRecord.Controls;
+using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.ViewModels;
 
@@ -11,6 +12,7 @@ namespace MoneyRecord.Views
         public MainPage(MainViewModel viewModel)
         {
             InitializeComponent();
+            ApplyFontScale();
             _viewModel = viewModel;
             BindingContext = _viewModel;
             _viewModel.PropertyChanged += (_, e) =>
@@ -23,6 +25,7 @@ namespace MoneyRecord.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            ApplyFontScale();
             // The load shows its own spinner and errors; the page renders right away
             await _viewModel.InitializeAsync();
         }
@@ -34,6 +37,29 @@ namespace MoneyRecord.Views
         }
 
         public bool TryCloseOverlay() => AddEntry.TryClose();
+
+        /// <summary>
+        /// Income, Expenses and Net side by side, or one under the other when the system font is large: an amount like
+        /// "-$1,405.50" doesn't fit a third of the width at 2x and must never be cut.
+        /// </summary>
+        private void ApplyFontScale()
+        {
+            // The tiles are the grid's children in XAML order: Income, Expenses, Net
+            var tiles = PeriodTiles.Children.OfType<View>().ToList();
+            var stacked = FontScaleLayout.StacksPeriodTiles(ScaledLayout.FontScale);
+            PeriodTiles.ColumnDefinitions = stacked
+                ? [new ColumnDefinition(GridLength.Star)]
+                : [new ColumnDefinition(GridLength.Star), new ColumnDefinition(GridLength.Star), new ColumnDefinition(GridLength.Star)];
+            PeriodTiles.RowDefinitions = stacked
+                ? [.. tiles.Select(_ => new RowDefinition(GridLength.Auto))]
+                : [];
+            PeriodTiles.RowSpacing = stacked ? 8 : 0;
+            for (var i = 0; i < tiles.Count; i++)
+            {
+                Grid.SetRow(tiles[i], stacked ? i : 0);
+                Grid.SetColumn(tiles[i], stacked ? 0 : i);
+            }
+        }
 
         /// <summary>Puts the cards in the saved order; the "Customize" link stays last.</summary>
         private void ArrangeCards()

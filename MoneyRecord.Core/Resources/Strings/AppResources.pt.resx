@@ -1631,7 +1631,7 @@
     <value>Favorecido</value>
   </data>
   <data name="PayeePlaceholder" xml:space="preserve">
-    <value>Loja, pessoa ou empresa (opcional)</value>
+    <value>Loja ou pessoa (opcional)</value>
   </data>
   <data name="Payees" xml:space="preserve">
     <value>Favorecidos</value>

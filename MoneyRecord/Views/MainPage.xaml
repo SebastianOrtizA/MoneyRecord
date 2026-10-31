@@ -29,18 +29,22 @@
                     <TapGestureRecognizer Command="{Binding OpenAccountsCommand}"/>
                 </Border.GestureRecognizers>
                 <VerticalStackLayout Spacing="8">
-                    <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" HorizontalOptions="Center">
                         <Label Text="&#xF0070;"
                                FontFamily="MaterialDesignIcons"
                                FontSize="18"
                                TextColor="#FFFFFFCC"
                                VerticalOptions="Center"/>
-                        <Label Text="{ext:Localize TotalBalance}"
+                        <Label Grid.Column="1"
+                               Text="{ext:Localize TotalBalance}"
                                FontSize="15"
                                TextColor="#FFFFFFCC"
+                               LineBreakMode="WordWrap"
+                               HorizontalTextAlignment="Center"
                                VerticalOptions="Center"/>
                         <!-- Privacy mode: hides the balances and the period totals until tapped again -->
-                        <Label Text="&#xF06D0;"
+                        <Label Grid.Column="2"
+                               Text="&#xF06D0;"
                                FontFamily="MaterialDesignIcons"
                                FontSize="20"
                                Padding="8,4"
@@ -57,7 +61,7 @@
                                 </DataTrigger>
                             </Label.Triggers>
                         </Label>
-                    </HorizontalStackLayout>
+                    </Grid>
                     <controls:AutoFitLabel Text="{Binding PrimaryBalance.Text}"
                            MaxFontSize="36"
                            FontAttributes="Bold"
@@ -124,7 +128,7 @@
                     </HorizontalStackLayout>
 
                     <!-- Income / Expense / Net Row -->
-                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                    <Grid x:Name="PeriodTiles" ColumnDefinitions="*,*,*" ColumnSpacing="8">
                         <!-- Incomes Card -->
                         <Border Grid.Column="0"
                                 BackgroundColor="{AppThemeBinding Light=#E3F2FD, Dark=#0D47A1}"

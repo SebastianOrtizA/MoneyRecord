@@ -1682,7 +1682,7 @@
     <value>Payee</value>
   </data>
   <data name="PayeePlaceholder" xml:space="preserve">
-    <value>Shop, person or company (optional)</value>
+    <value>Shop or person (optional)</value>
   </data>
   <data name="Payees" xml:space="preserve">
     <value>Payees</value>

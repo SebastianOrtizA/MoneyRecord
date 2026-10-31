@@ -25,7 +25,7 @@
                     <Button Text="{ext:Localize PartyFriends}"
                             Command="{Binding OpenFriendsCommand}"
                             Margin="16,8,16,2"
-                            HeightRequest="40"
+                            MinimumHeightRequest="40"
                             CornerRadius="20"
                             BorderWidth="1"
                             BackgroundColor="Transparent"
@@ -135,7 +135,7 @@
                             <Entry Text="{Binding NewFriendName}" Placeholder="{ext:Localize FriendNamePlaceholder}" MaxLength="40" FontSize="16"
                                    ReturnCommand="{Binding AddFriendCommand}" />
                             <Button Grid.Column="1" Text="{ext:Localize AddFriend}" Command="{Binding AddFriendCommand}"
-                                    HeightRequest="40" CornerRadius="20" Padding="16,0" VerticalOptions="Center"
+                                    MinimumHeightRequest="40" CornerRadius="20" Padding="16,0" VerticalOptions="Center"
                                     BackgroundColor="Transparent" BorderWidth="1"
                                     BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                     TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
@@ -146,7 +146,7 @@
                 <Button Grid.Row="2"
                         Text="{ext:Localize Save}"
                         Command="{Binding SavePartyCommand}"
-                        HeightRequest="44"
+                        MinimumHeightRequest="44"
                         CornerRadius="22"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                         TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />

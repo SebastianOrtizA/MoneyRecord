@@ -13,7 +13,7 @@
             <Entry Text="{Binding NewName}" Placeholder="{ext:Localize FriendNamePlaceholder}" MaxLength="40" FontSize="16"
                    ReturnCommand="{Binding AddCommand}" />
             <Button Grid.Column="1" Text="{ext:Localize AddFriend}" Command="{Binding AddCommand}"
-                    HeightRequest="40" CornerRadius="20" Padding="16,0" VerticalOptions="Center"
+                    MinimumHeightRequest="40" CornerRadius="20" Padding="16,0" VerticalOptions="Center"
                     BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                     TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
         </Grid>

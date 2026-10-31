@@ -175,17 +175,17 @@
                     </VerticalStackLayout>
 
                     <Button Text="{Binding RecordShareText}" Command="{Binding RecordMyShareCommand}" Margin="0,8,0,0"
-                            HeightRequest="44" CornerRadius="22" BorderWidth="1" BackgroundColor="Transparent"
+                            MinimumHeightRequest="44" CornerRadius="22" BorderWidth="1" BackgroundColor="Transparent"
                             BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                             TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
                         <Button Text="{ext:Localize Edit}" Command="{Binding EditCommand}"
-                                HeightRequest="44" CornerRadius="22"
+                                MinimumHeightRequest="44" CornerRadius="22"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                                 TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
                         <Button Grid.Column="1" Text="{ext:Localize DeleteButton}" Command="{Binding DeleteCommand}"
-                                HeightRequest="44" CornerRadius="22" BorderWidth="1" BackgroundColor="Transparent"
+                                MinimumHeightRequest="44" CornerRadius="22" BorderWidth="1" BackgroundColor="Transparent"
                                 BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
                                 TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
                     </Grid>
@@ -233,7 +233,7 @@
                 </ScrollView>
 
                 <Button Grid.Row="2" Text="{ext:Localize Save}" Command="{Binding SaveExpenseCommand}"
-                        HeightRequest="44" CornerRadius="22"
+                        MinimumHeightRequest="44" CornerRadius="22"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                         TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
             </Grid>
@@ -263,7 +263,7 @@
                 </ScrollView>
 
                 <Button Grid.Row="2" Text="{ext:Localize Save}" Command="{Binding SaveContributionCommand}"
-                        HeightRequest="44" CornerRadius="22"
+                        MinimumHeightRequest="44" CornerRadius="22"
                         BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                         TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
             </Grid>

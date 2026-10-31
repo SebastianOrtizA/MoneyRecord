@@ -271,7 +271,7 @@
                             IsVisible="{Binding IsEditMode}"
                             Command="{Binding DeleteChallengeCommand}"
                             Margin="0,0,12,0"
-                            HeightRequest="44"
+                            MinimumHeightRequest="44"
                             Padding="20,0"
                             CornerRadius="22"
                             BorderWidth="1"
@@ -281,7 +281,7 @@
                     <Button Grid.Column="1"
                             Text="{Binding SaveText}"
                             Command="{Binding SaveChallengeCommand}"
-                            HeightRequest="44"
+                            MinimumHeightRequest="44"
                             CornerRadius="22"
                             BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                             TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
