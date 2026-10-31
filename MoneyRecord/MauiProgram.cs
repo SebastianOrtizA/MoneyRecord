@@ -412,15 +412,10 @@ namespace MoneyRecord
             if (string.IsNullOrEmpty(route))
                 return;
 
-            IServiceProvider? services = IPlatformApplication.Current?.Services;
-            var launch = services?.GetService<NotificationLaunch>();
+            // MAUI only fires these events once its services exist, so this is never null in practice
+            var launch = IPlatformApplication.Current?.Services?.GetService<NotificationLaunch>();
             if (launch == null)
-            {
-                // The tap opens Home instead; leave a trace for the next report
-                Android.Util.Log.Warn("MoneyRecord", $"Notification route {route} dropped: services not ready");
-                Sentry.SentrySdk.AddBreadcrumb($"Notification route {route} dropped: services not ready");
                 return;
-            }
 
             // Running app: not while the Shell is missing (the first-run setup), or it would open later on an unrelated
             // visit to Home. A cold start has no Shell yet by design: Home's first appearance opens the request, so after
