@@ -393,8 +393,14 @@ namespace MoneyRecord
                     if (savedInstanceState == null)
                         TakeNotificationRoute(activity.Intent, openNow: false);
                 })
-                // The app was running: open the page now
-                .OnNewIntent((activity, intent) => TakeNotificationRoute(intent, openNow: true))));
+                // The app was running: open the page now. Keep the intent on the activity too, so a recreated activity
+                // (process death) replays this route and not the one it was first launched with
+                .OnNewIntent((activity, intent) =>
+                {
+                    if (intent != null)
+                        activity.Intent = intent;
+                    TakeNotificationRoute(intent, openNow: true);
+                })));
 #endif
             return builder;
         }
@@ -403,10 +409,23 @@ namespace MoneyRecord
         private static void TakeNotificationRoute(Android.Content.Intent? intent, bool openNow)
         {
             var route = intent?.GetStringExtra(MainActivity.RouteExtra);
+            if (string.IsNullOrEmpty(route))
+                return;
+
             IServiceProvider? services = IPlatformApplication.Current?.Services;
             var launch = services?.GetService<NotificationLaunch>();
-            // Not while the Shell is missing (the first-run setup): it would open later, on an unrelated visit to Home
-            if (string.IsNullOrEmpty(route) || launch == null || (openNow && Shell.Current == null))
+            if (launch == null)
+            {
+                // The tap opens Home instead; leave a trace for the next report
+                Android.Util.Log.Warn("MoneyRecord", $"Notification route {route} dropped: services not ready");
+                Sentry.SentrySdk.AddBreadcrumb($"Notification route {route} dropped: services not ready");
+                return;
+            }
+
+            // Running app: not while the Shell is missing (the first-run setup), or it would open later on an unrelated
+            // visit to Home. A cold start has no Shell yet by design: Home's first appearance opens the request, so after
+            // a cold start into the first-run setup it waits for Home's first visit
+            if (openNow && Shell.Current == null)
                 return;
 
             launch.Request(route);

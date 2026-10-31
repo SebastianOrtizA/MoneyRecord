@@ -26,6 +26,10 @@ namespace MoneyRecord.Services
             {
                 await navigation.NavigateToAsync(route);
             }
+            catch (OperationCanceledException ex)
+            {
+                logger.LogDebug(ex, "Opening the notification page {Route} was cancelled", route);
+            }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Opening the notification page {Route} failed", route);
