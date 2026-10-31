@@ -44,6 +44,7 @@ namespace MoneyRecord.Views
         /// </summary>
         private void ApplyFontScale()
         {
+            // The tiles are the grid's children in XAML order: Income, Expenses, Net
             var tiles = PeriodTiles.Children.OfType<View>().ToList();
             var stacked = FontScaleLayout.StacksPeriodTiles(ScaledLayout.FontScale);
             PeriodTiles.ColumnDefinitions = stacked

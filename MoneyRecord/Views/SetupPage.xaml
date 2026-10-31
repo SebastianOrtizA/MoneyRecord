@@ -112,7 +112,7 @@
                                                 FontFamily="MaterialDesignIcons"
                                                 FontSize="22"
                                                 WidthRequest="44"
-                                                MinimumHeightRequest="44"
+                                                HeightRequest="44"
                                                 Padding="0"
                                                 VerticalOptions="Center"
                                                 BackgroundColor="Transparent"

@@ -183,7 +183,7 @@
                 FontFamily="MaterialDesignIcons"
                 FontSize="28"
                 WidthRequest="60"
-                MinimumHeightRequest="60"
+                HeightRequest="60"
                 CornerRadius="30"
                 Padding="0"
                 Margin="0,0,16,16"
