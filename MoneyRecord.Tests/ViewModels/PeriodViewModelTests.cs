@@ -195,6 +195,33 @@ public class PeriodViewModelTests
     }
 
     [Fact]
+    public void This_month_and_this_year_follow_the_injected_clock_like_the_label()
+    {
+        var sut = Stepper();
+
+        sut.Range.Start.Should().Be(new DateTime(2026, 10, 1));
+        sut.Range.End.Date.Should().Be(new DateTime(2026, 10, 31));
+
+        sut.SelectedPeriod = sut.Periods.First(p => p.Type == PeriodType.CalendarYear);
+        sut.Range.Start.Should().Be(new DateTime(2026, 1, 1));
+        sut.Range.End.Date.Should().Be(new DateTime(2026, 12, 31));
+    }
+
+    [Fact]
+    public void The_sheet_rows_stay_the_same_while_custom_dates_are_edited()
+    {
+        var sut = Stepper();
+        sut.SelectedPeriod = sut.Periods.First(p => p.Type == PeriodType.CustomPeriod);
+        var rows = sut.Choices;
+
+        sut.CustomStartDate = new DateTime(2026, 3, 1);
+        sut.CustomEndDate = new DateTime(2026, 3, 20);
+
+        sut.Choices.Should().BeSameAs(rows);
+        sut.Choices.Should().ContainSingle(c => c.IsSelected).Which.Item.Type.Should().Be(PeriodType.CustomPeriod);
+    }
+
+    [Fact]
     public void Back_closes_an_open_sheet_once()
     {
         var sut = Stepper();

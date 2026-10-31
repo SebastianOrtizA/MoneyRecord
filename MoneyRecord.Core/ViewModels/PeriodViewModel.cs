@@ -66,6 +66,7 @@ namespace MoneyRecord.ViewModels
             _conversion = conversion;
             _time = timeProvider ?? TimeProvider.System;
             selectedPeriod = periods.First(p => p.Type == PeriodType.CalendarMonth);
+            RebuildChoices();
             // Lives as long as the app (singleton): the pickers follow a language change
             LocalizationService.Instance.LanguageChanged += (_, _) => RefreshNames();
         }
@@ -150,8 +151,16 @@ namespace MoneyRecord.ViewModels
             CurrencyChanged?.Invoke();
         }
 
-        public (DateTime Start, DateTime End) Range =>
-            DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate);
+        /// <summary>
+        /// The shown range. This month and this year follow the injected clock, like the stepper's label and arrows, so the
+        /// two never disagree; the other periods come from <see cref="DateRangeHelper"/>.
+        /// </summary>
+        public (DateTime Start, DateTime End) Range => SelectedPeriod?.Type switch
+        {
+            PeriodType.CalendarMonth => PeriodHelper.Shift(Today, PeriodStep.Month, 0),
+            PeriodType.CalendarYear => PeriodHelper.Shift(Today, PeriodStep.Year, 0),
+            _ => DateRangeHelper.GetDateRange(SelectedPeriod?.Type, CustomStartDate, CustomEndDate)
+        };
 
         /// <summary>The period just before <see cref="Range"/>, for "vs previous period".</summary>
         public (DateTime Start, DateTime End) PreviousRange => DateRangeHelper.GetPreviousRange(Range.Start, Range.End);
@@ -161,7 +170,7 @@ namespace MoneyRecord.ViewModels
         {
             get
             {
-                var (start, end) = SteppableRange();
+                var (start, end) = Range;
                 return PeriodHelper.StepOf(start, end) switch
                 {
                     PeriodStep.Month => DateFormatter.FormatMonthYear(start),
@@ -173,28 +182,23 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>The arrows show only for a calendar month or year (this one, or a custom one).</summary>
-        public bool CanStepBack => PeriodHelper.StepOf(SteppableRange().Start, SteppableRange().End) != null;
+        public bool CanStepBack
+        {
+            get
+            {
+                var (start, end) = Range;
+                return PeriodHelper.StepOf(start, end) != null;
+            }
+        }
 
         /// <summary>Never past today: the current month or year is the last.</summary>
         public bool CanStepForward => CanStepBack && Shifted(1) is { } next && next.Start <= Today;
 
         private DateTime Today => _time.GetLocalNow().Date;
 
-        // This month / this year follow the injected clock; anything else is the range as shown
-        private (DateTime Start, DateTime End) SteppableRange()
-        {
-            var today = Today;
-            return SelectedPeriod?.Type switch
-            {
-                PeriodType.CalendarMonth => PeriodHelper.Shift(today, PeriodStep.Month, 0),
-                PeriodType.CalendarYear => PeriodHelper.Shift(today, PeriodStep.Year, 0),
-                _ => Range
-            };
-        }
-
         private (DateTime Start, DateTime End)? Shifted(int n)
         {
-            var (start, end) = SteppableRange();
+            var (start, end) = Range;
             return PeriodHelper.StepOf(start, end) is { } step ? PeriodHelper.Shift(start, step, n) : null;
         }
 
@@ -204,18 +208,24 @@ namespace MoneyRecord.ViewModels
             if (Shifted(n) is not { } target || target.Start > Today)
                 return;
 
-            var (currentStart, currentEnd) = SteppableRange();
+            var (currentStart, currentEnd) = Range;
             var step = PeriodHelper.StepOf(currentStart, currentEnd)!.Value;
             var thisPeriod = PeriodHelper.Shift(Today, step, 0);
             var type = target.Start == thisPeriod.Start
                 ? step == PeriodStep.Year ? PeriodType.CalendarYear : PeriodType.CalendarMonth
                 : PeriodType.CustomPeriod;
 
+            Apply(type, target.Start, target.End);
+        }
+
+        /// <summary>Sets the period and its dates in one go: listeners reload once.</summary>
+        private void Apply(PeriodType type, DateTime start, DateTime end)
+        {
             _batching = true;
             try
             {
-                CustomStartDate = target.Start;
-                CustomEndDate = target.End.Date;
+                CustomStartDate = start;
+                CustomEndDate = end.Date;
                 SelectedPeriod = Periods.First(p => p.Type == type);
             }
             finally
@@ -273,11 +283,19 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>The sheet's rows: every period, the shown one marked.</summary>
-        public IReadOnlyList<PeriodChoice> Choices => Periods.Select(p => new PeriodChoice(p, p.Equals(SelectedPeriod))).ToList();
+        public IReadOnlyList<PeriodChoice> Choices => _choices;
+
+        private IReadOnlyList<PeriodChoice> _choices = [];
+
+        // Rebuilt when the period or the names change, not on every date edit, so the rows stay put while From / To are typed
+        private void RebuildChoices()
+        {
+            _choices = Periods.Select(p => new PeriodChoice(p, p.Equals(SelectedPeriod))).ToList();
+            OnPropertyChanged(nameof(Choices));
+        }
 
         private void RaiseStepState()
         {
-            OnPropertyChanged(nameof(Choices));
             OnPropertyChanged(nameof(Label));
             OnPropertyChanged(nameof(CanStepBack));
             OnPropertyChanged(nameof(CanStepForward));
@@ -287,19 +305,7 @@ namespace MoneyRecord.ViewModels
         public void ShowMonth(DateTime month)
         {
             var first = new DateTime(month.Year, month.Month, 1);
-            _batching = true;
-            try
-            {
-                CustomStartDate = first;
-                CustomEndDate = first.AddMonths(1).AddDays(-1);
-                SelectedPeriod = Periods.First(p => p.Type == PeriodType.CustomPeriod);
-            }
-            finally
-            {
-                _batching = false;
-            }
-
-            Changed?.Invoke();
+            Apply(PeriodType.CustomPeriod, first, first.AddMonths(1).AddDays(-1));
         }
 
         /// <summary>
@@ -320,12 +326,14 @@ namespace MoneyRecord.ViewModels
                 _batching = false;
             }
 
+            RebuildChoices();
             RaiseStepState();
         }
 
         partial void OnSelectedPeriodChanged(PeriodItem value)
         {
             IsCustomPeriodSelected = value?.Type == PeriodType.CustomPeriod;
+            RebuildChoices();
             RaiseStepState();
             RaiseChanged();
         }

@@ -2816,12 +2816,6 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="ChallengeViewFromStart" xml:space="preserve">
     <value>Desde el inicio</value>
   </data>
-  <data name="ChallengeMonthPrevious" xml:space="preserve">
-    <value>Mes anterior</value>
-  </data>
-  <data name="ChallengeMonthNext" xml:space="preserve">
-    <value>Mes siguiente</value>
-  </data>
   <data name="ChallengeMonthCurrent" xml:space="preserve">
     <value>Ir a este mes</value>
   </data>
@@ -2968,5 +2962,8 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   </data>
   <data name="Filters" xml:space="preserve">
     <value>Filtros</value>
+  </data>
+  <data name="SelectedState" xml:space="preserve">
+    <value>seleccionado</value>
   </data>
 </root>

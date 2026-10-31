@@ -2767,12 +2767,6 @@
   <data name="ChallengeViewFromStart" xml:space="preserve">
     <value>Desde o início</value>
   </data>
-  <data name="ChallengeMonthPrevious" xml:space="preserve">
-    <value>Mês anterior</value>
-  </data>
-  <data name="ChallengeMonthNext" xml:space="preserve">
-    <value>Próximo mês</value>
-  </data>
   <data name="ChallengeMonthCurrent" xml:space="preserve">
     <value>Ir para este mês</value>
   </data>
@@ -2919,5 +2913,8 @@
   </data>
   <data name="Filters" xml:space="preserve">
     <value>Filtros</value>
+  </data>
+  <data name="SelectedState" xml:space="preserve">
+    <value>selecionado</value>
   </data>
 </root>

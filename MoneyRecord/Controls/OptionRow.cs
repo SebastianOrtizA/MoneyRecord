@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using MoneyRecord.Services;
 
 namespace MoneyRecord.Controls
 {
@@ -8,9 +9,6 @@ namespace MoneyRecord.Controls
     /// </summary>
     public class OptionRow : Grid
     {
-        private static readonly Color PrimaryLight = Color.FromArgb("#512BD4");
-        private static readonly Color PrimaryDark = Color.FromArgb("#AC99EA");
-
         public static readonly BindableProperty TextProperty =
             BindableProperty.Create(nameof(Text), typeof(string), typeof(OptionRow), string.Empty,
                 propertyChanged: (bindable, _, _) => ((OptionRow)bindable).Update());
@@ -39,7 +37,7 @@ namespace MoneyRecord.Controls
             ColumnDefinitions = [new ColumnDefinition(GridLength.Star), new ColumnDefinition(GridLength.Auto)];
             MinimumHeightRequest = 48;
             SetColumn((BindableObject)_check, 1);
-            _check.SetAppThemeColor(Label.TextColorProperty, PrimaryLight, PrimaryDark);
+            ThemeColors.Apply(_check, "Primary", "PrimaryDark");
             Children.Add(_text);
             Children.Add(_check);
 
@@ -81,11 +79,13 @@ namespace MoneyRecord.Controls
         {
             _text.Text = Text;
             _check.IsVisible = IsSelected;
+            // TalkBack reads the text, and whether it is the current choice
+            SemanticProperties.SetDescription(this, IsSelected ? $"{Text}, {LocalizationService.Instance.GetString("SelectedState")}" : Text);
             _text.FontAttributes = IsSelected ? FontAttributes.Bold : FontAttributes.None;
             if (IsSelected)
-                _text.SetAppThemeColor(Label.TextColorProperty, PrimaryLight, PrimaryDark);
+                ThemeColors.Apply(_text, "Primary", "PrimaryDark");
             else
-                _text.SetAppThemeColor(Label.TextColorProperty, Colors.Black, Colors.White);
+                ThemeColors.Apply(_text, "Black", "White");
         }
     }
 }

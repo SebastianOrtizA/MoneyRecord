@@ -24,9 +24,6 @@ namespace MoneyRecord.Controls
         public static readonly BindableProperty CommandProperty =
             BindableProperty.Create(nameof(Command), typeof(ICommand), typeof(FilterRow));
 
-        private static readonly Color PrimaryLight = Color.FromArgb("#512BD4");
-        private static readonly Color PrimaryDark = Color.FromArgb("#AC99EA");
-
         private readonly Label _title = new() { FontSize = 16, VerticalOptions = LayoutOptions.Center };
         private readonly Label _value = new() { FontSize = 16, VerticalOptions = LayoutOptions.Center, LineBreakMode = LineBreakMode.TailTruncation };
 
@@ -96,10 +93,11 @@ namespace MoneyRecord.Controls
             _title.Text = Title;
             _value.Text = IsActive ? Value : AppResources.All;
             _value.FontAttributes = IsActive ? FontAttributes.Bold : FontAttributes.None;
+            SemanticProperties.SetDescription(this, $"{Title}, {_value.Text}");
             if (IsActive)
-                _value.SetAppThemeColor(Label.TextColorProperty, PrimaryLight, PrimaryDark);
+                ThemeColors.Apply(_value, "Primary", "PrimaryDark");
             else
-                _value.SetAppThemeColor(Label.TextColorProperty, Color.FromArgb("#666666"), Color.FromArgb("#AAAAAA"));
+                ThemeColors.Apply(_value, "TextSecondary", "TextSecondaryDark");
         }
     }
 }
