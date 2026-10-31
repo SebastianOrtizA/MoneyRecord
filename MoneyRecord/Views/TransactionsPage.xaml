@@ -392,46 +392,46 @@
             </VerticalStackLayout>
         </controls:BottomSheet>
 
-        <!-- The filters: one button with a count opens them; the page decides what is in the sheet -->
+        <!-- The filters: one button with a count opens them; the page decides what is in the sheet. A pick closes it; the amount range has its own OK -->
         <controls:FilterSheet>
             <controls:FilterSheet.Sections>
-            <VerticalStackLayout Spacing="12">
-                <FlexLayout Wrap="Wrap">
-                    <controls:FilterChip Text="{Binding Filters.TypeChipText}" IsActive="{Binding Filters.IsTypeActive}"
-                                         Margin="0,0,8,8" Command="{Binding Filters.PickTypeCommand}" />
-                    <controls:FilterChip Text="{Binding Filters.CategoryChipText}" IsActive="{Binding Filters.IsCategoryActive}"
-                                         Margin="0,0,8,8" Command="{Binding Filters.PickCategoryCommand}" />
-                    <controls:FilterChip Text="{Binding Filters.AccountChipText}" IsActive="{Binding Filters.IsAccountActive}"
-                                         Margin="0,0,8,8" Command="{Binding Filters.PickAccountCommand}" />
-                    <controls:FilterChip Text="{Binding Filters.TagChipText}" IsActive="{Binding Filters.IsTagActive}"
-                                         Margin="0,0,8,8" Command="{Binding Filters.PickTagCommand}" />
-                </FlexLayout>
+                <VerticalStackLayout Spacing="4">
+                    <controls:FilterRow Title="{ext:Localize FilterByType}" Value="{Binding Filters.TypeChipText}"
+                                        IsActive="{Binding Filters.IsTypeActive}" Command="{Binding Filters.PickTypeCommand}" />
+                    <controls:FilterRow Title="{ext:Localize FilterByCategory}" Value="{Binding Filters.CategoryChipText}"
+                                        IsActive="{Binding Filters.IsCategoryActive}" Command="{Binding Filters.PickCategoryCommand}" />
+                    <controls:FilterRow Title="{ext:Localize FilterByAccount}" Value="{Binding Filters.AccountChipText}"
+                                        IsActive="{Binding Filters.IsAccountActive}" Command="{Binding Filters.PickAccountCommand}" />
+                    <controls:FilterRow Title="{ext:Localize FilterByTag}" Value="{Binding Filters.TagChipText}"
+                                        IsActive="{Binding Filters.IsTagActive}" Command="{Binding Filters.PickTagCommand}" />
 
-                <!-- The limits apply to every currency -->
-                <Label Text="{ext:Localize FilterByAmount}" Style="{StaticResource SecondaryLabel}" />
-                <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="8">
-                    <controls:DecimalEntry Text="{Binding Filters.MinAmountText}"
-                                           Placeholder="{ext:Localize Min}"
-                                           FontSize="14"
-                                           HeightRequest="44"
-                                           BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
-                        <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="False" />
-                        </controls:DecimalEntry.Behaviors>
-                    </controls:DecimalEntry>
-                    <Label Grid.Column="1" Text="—" VerticalOptions="Center" />
-                    <controls:DecimalEntry Grid.Column="2"
-                                           Text="{Binding Filters.MaxAmountText}"
-                                           Placeholder="{ext:Localize Max}"
-                                           FontSize="14"
-                                           HeightRequest="44"
-                                           BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
-                        <controls:DecimalEntry.Behaviors>
-                            <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="False" />
-                        </controls:DecimalEntry.Behaviors>
-                    </controls:DecimalEntry>
-                </Grid>
-            </VerticalStackLayout>
+                    <!-- The limits apply to every currency -->
+                    <Label Text="{ext:Localize FilterByAmount}" Style="{StaticResource SecondaryLabel}" Margin="0,8,0,0" />
+                    <Grid ColumnDefinitions="*,Auto,*" ColumnSpacing="8">
+                        <controls:DecimalEntry Text="{Binding Filters.MinAmountText}"
+                                               Placeholder="{ext:Localize Min}"
+                                               FontSize="14"
+                                               HeightRequest="44"
+                                               BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
+                            <controls:DecimalEntry.Behaviors>
+                                <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="False" />
+                            </controls:DecimalEntry.Behaviors>
+                        </controls:DecimalEntry>
+                        <Label Grid.Column="1" Text="—" VerticalOptions="Center" />
+                        <controls:DecimalEntry Grid.Column="2"
+                                               Text="{Binding Filters.MaxAmountText}"
+                                               Placeholder="{ext:Localize Max}"
+                                               FontSize="14"
+                                               HeightRequest="44"
+                                               BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
+                            <controls:DecimalEntry.Behaviors>
+                                <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="False" />
+                            </controls:DecimalEntry.Behaviors>
+                        </controls:DecimalEntry>
+                    </Grid>
+                    <Button Text="{ext:Localize OK}" Command="{Binding CloseFilterCommand}"
+                            Margin="0,8,0,0" MinimumHeightRequest="44" CornerRadius="22" />
+                </VerticalStackLayout>
             </controls:FilterSheet.Sections>
         </controls:FilterSheet>
 

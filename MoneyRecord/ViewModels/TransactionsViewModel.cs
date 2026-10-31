@@ -145,6 +145,8 @@ namespace MoneyRecord.ViewModels
             _drillDown = drillDown;
             Filters = new TransactionFilterViewModel(dialogService);
             Filters.Changed += ApplyFilters;
+            // A pick settles the filter: the sheet closes, as the period sheet does
+            Filters.Picked += CloseFilter;
             Period = period;
         }
 

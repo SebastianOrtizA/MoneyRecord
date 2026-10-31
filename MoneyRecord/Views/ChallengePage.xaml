@@ -129,32 +129,36 @@
     </RefreshView>
 
 
-    <!-- The same sheet as Transactions, with this page's own filters -->
+    <!-- The same sheet as Transactions, with this page's own rows: a view closes it, except Date range (its dates have an OK) -->
     <controls:FilterSheet>
         <controls:FilterSheet.Sections>
-        <VerticalStackLayout Spacing="12">
-            <!-- Wraps, so every view is in sight -->
-            <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding ViewChips}">
-                <BindableLayout.ItemTemplate>
-                    <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
-                        <controls:FilterChip Text="{Binding Label}"
-                                             IsActive="{Binding IsActive}"
-                                             Margin="0,0,6,6"
-                                             Command="{Binding SelectCommand}" />
-                    </DataTemplate>
-                </BindableLayout.ItemTemplate>
-            </FlexLayout>
-            <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
-                                 IsActive="{Binding ShowRemainingOnly}"
-                                 Command="{Binding ToggleRemainingOnlyCommand}"
-                                 HorizontalOptions="Start" />
-            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" IsVisible="{Binding IsRangeView}">
-                <Label Text="{ext:Localize ChallengeRangeFrom}" Style="{StaticResource MutedLabel}" />
-                <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" Style="{StaticResource MutedLabel}" />
-                <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
-                <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
-            </Grid>
-        </VerticalStackLayout>
+            <VerticalStackLayout Spacing="4">
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding ViewChips}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
+                            <controls:OptionRow Text="{Binding Label}"
+                                                IsSelected="{Binding IsActive}"
+                                                Command="{Binding SelectCommand}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Spacing="12" Margin="0,4,0,0" IsVisible="{Binding IsRangeView}">
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12">
+                        <Label Text="{ext:Localize ChallengeRangeFrom}" Style="{StaticResource MutedLabel}" />
+                        <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" Style="{StaticResource MutedLabel}" />
+                        <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
+                        <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
+                    </Grid>
+                    <Button Text="{ext:Localize OK}" Command="{Binding CloseFilterCommand}"
+                            MinimumHeightRequest="44" CornerRadius="22" />
+                </VerticalStackLayout>
+
+                <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="48">
+                    <Label Text="{ext:Localize ChallengeRemainingOnly}" FontSize="16" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding ShowRemainingOnly}" VerticalOptions="Center" />
+                </Grid>
+            </VerticalStackLayout>
         </controls:FilterSheet.Sections>
     </controls:FilterSheet>
     </Grid>

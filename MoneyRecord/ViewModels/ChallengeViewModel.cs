@@ -289,7 +289,13 @@ namespace MoneyRecord.ViewModels
             CanStepForward = span != null && ShownMonth < span.Value.Last;
         }
 
-        private void SelectView(ChallengeView view) => SelectedView = view;
+        // A view settles the choice and closes the sheet; Date range stays open for its dates
+        private void SelectView(ChallengeView view)
+        {
+            SelectedView = view;
+            if (view != ChallengeView.DateRange)
+                CloseFilter();
+        }
 
         [RelayCommand]
         private void Previous()
@@ -361,9 +367,6 @@ namespace MoneyRecord.ViewModels
             CloseFilter();
             return true;
         }
-
-        [RelayCommand]
-        private void ToggleRemainingOnly() => ShowRemainingOnly = !ShowRemainingOnly;
 
         /// <summary>
         /// Marks the day done (asking where the money comes from when the challenge saves into an account or pocket) or, when

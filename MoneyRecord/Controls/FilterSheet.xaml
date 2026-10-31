@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- The page's filters in a bottom sheet: BindingContext is an IFilterSheetSource, and the page puts its own filters in
-     Sections (chips, pickers, a date range). Clear and OK are the same on every page. Place it last in the page's root grid -->
+<!-- The page's filters in a bottom sheet, built like the period sheet: BindingContext is an IFilterSheetSource, and the page
+     puts its own rows in Sections (OptionRow, FilterRow, ...). Picking a row closes the sheet when that settles the filter;
+     a page adds an OK button only where something is typed or picked after (a date range, an amount range). Clear shows
+     while a filter is on. Place it last in the page's root grid -->
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
@@ -11,25 +13,20 @@
              IsVisible="{Binding IsFilterOpen}">
 
     <controls:BottomSheet x:Name="Sheet" IsOpen="{Binding IsFilterOpen}" CloseCommand="{Binding CloseFilterCommand}">
-        <VerticalStackLayout Spacing="12">
-            <Label Text="{ext:Localize Filters}" FontSize="18" FontAttributes="Bold" />
+        <VerticalStackLayout Spacing="4">
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,8">
+                <Label Text="{ext:Localize Filters}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center" />
+                <Label Grid.Column="1" Text="{ext:Localize ClearFilters}" Style="{StaticResource CardLink}"
+                       IsVisible="{Binding HasActiveFilterCount}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearFiltersCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
 
             <ScrollView x:Name="SectionsScroll">
-                <ContentView x:Name="SectionsHost" Padding="0,4,0,0" />
+                <ContentView x:Name="SectionsHost" />
             </ScrollView>
-
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                <Button Text="{ext:Localize ClearFilters}"
-                        Command="{Binding ClearFiltersCommand}"
-                        MinimumHeightRequest="44" CornerRadius="22" BorderWidth="1"
-                        BackgroundColor="Transparent"
-                        BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
-                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                <Button Grid.Column="1"
-                        Text="{ext:Localize OK}"
-                        Command="{Binding CloseFilterCommand}"
-                        MinimumHeightRequest="44" CornerRadius="22" />
-            </Grid>
         </VerticalStackLayout>
     </controls:BottomSheet>
 </ContentView>

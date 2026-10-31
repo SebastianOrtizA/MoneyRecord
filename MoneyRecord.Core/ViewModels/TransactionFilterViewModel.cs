@@ -76,6 +76,9 @@ namespace MoneyRecord.ViewModels
 
         public event Action? Changed;
 
+        /// <summary>A pick list answered (type, category, account or tag): the filter is settled, unlike typing an amount.</summary>
+        public event Action? Picked;
+
         public string TypeChipText => IsTypeActive ? SelectedType!.Name : AppResources.FilterByType;
 
         public bool IsTypeActive => SelectedType?.Type != null;
@@ -134,28 +137,40 @@ namespace MoneyRecord.ViewModels
         private async Task PickTypeAsync()
         {
             if (await PickAsync(AppResources.FilterByType, Types.Select(t => t.Name)) is int index)
+            {
                 SelectedType = Types[index];
+                Picked?.Invoke();
+            }
         }
 
         [RelayCommand]
         private async Task PickCategoryAsync()
         {
             if (await PickAsync(AppResources.FilterByCategory, [AppResources.AllCategories, .. Categories.Select(c => c.Name)]) is int index)
+            {
                 SelectedCategory = index == 0 ? null : Categories[index - 1];
+                Picked?.Invoke();
+            }
         }
 
         [RelayCommand]
         private async Task PickAccountAsync()
         {
             if (await PickAsync(AppResources.FilterByAccount, [AppResources.AllAccounts, .. Accounts.Select(a => a.Name)]) is int index)
+            {
                 SelectedAccount = index == 0 ? null : Accounts[index - 1];
+                Picked?.Invoke();
+            }
         }
 
         [RelayCommand]
         private async Task PickTagAsync()
         {
             if (await PickAsync(AppResources.FilterByTag, [AppResources.AllTags, .. Tags]) is int index)
+            {
                 SelectedTag = index == 0 ? null : Tags[index - 1];
+                Picked?.Invoke();
+            }
         }
 
         /// <summary>The index of the picked option; null when cancelled.</summary>

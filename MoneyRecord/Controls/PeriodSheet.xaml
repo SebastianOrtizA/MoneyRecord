@@ -17,23 +17,10 @@
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding Choices}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="helpers:PeriodChoice">
-                        <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="48">
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:PeriodViewModel}}, Path=SelectPeriodCommand}"
-                                                      CommandParameter="{Binding Item}" />
-                            </Grid.GestureRecognizers>
-                            <Label Text="{Binding Item.DisplayName}" FontSize="16" VerticalOptions="Center">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding IsSelected}" Value="True">
-                                        <Setter Property="FontAttributes" Value="Bold" />
-                                        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                            <Label Grid.Column="1" Text="&#xF012C;" FontFamily="MaterialDesignIcons" FontSize="22"
-                                   VerticalOptions="Center" IsVisible="{Binding IsSelected}"
-                                   TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
-                        </Grid>
+                        <controls:OptionRow Text="{Binding Item.DisplayName}"
+                                            IsSelected="{Binding IsSelected}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:PeriodViewModel}}, Path=SelectPeriodCommand}"
+                                            CommandParameter="{Binding Item}" />
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </VerticalStackLayout>
