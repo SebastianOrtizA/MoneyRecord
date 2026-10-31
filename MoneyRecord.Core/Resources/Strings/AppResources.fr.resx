@@ -795,6 +795,12 @@
   <data name="ViewReceipt" xml:space="preserve">
     <value>Voir le reçu</value>
   </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>Supprimer la photo</value>
+  </data>
+  <data name="CloseReceipt" xml:space="preserve">
+    <value>Fermer le reçu</value>
+  </data>
   <data name="Currency" xml:space="preserve">
     <value>Devise</value>
   </data>

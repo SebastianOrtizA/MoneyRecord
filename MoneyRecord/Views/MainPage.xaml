@@ -47,7 +47,10 @@
                                Text="&#xF06D0;"
                                FontFamily="MaterialDesignIcons"
                                FontSize="20"
-                               Padding="8,4"
+                               MinimumWidthRequest="48"
+                               MinimumHeightRequest="48"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center"
                                TextColor="#FFFFFFCC"
                                VerticalOptions="Center"
                                SemanticProperties.Description="{ext:Localize HideBalances}">

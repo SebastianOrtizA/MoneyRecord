@@ -17,7 +17,7 @@ namespace MoneyRecord.Converters
                     // Orange for transfers
                     return Application.Current?.RequestedTheme == AppTheme.Dark
                         ? Color.FromArgb("#FFB74D")
-                        : Color.FromArgb("#FF9800");
+                        : Color.FromArgb("#B85400");
                 }
 
                 if (group.Type == TransactionType.Income)

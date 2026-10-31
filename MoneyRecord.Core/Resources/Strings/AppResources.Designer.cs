@@ -2102,6 +2102,18 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        public static string RemovePhoto {
+            get {
+                return ResourceManager.GetString("RemovePhoto", resourceCulture);
+            }
+        }
+
+        public static string CloseReceipt {
+            get {
+                return ResourceManager.GetString("CloseReceipt", resourceCulture);
+            }
+        }
+
         public static string Currency {
             get {
                 return ResourceManager.GetString("Currency", resourceCulture);

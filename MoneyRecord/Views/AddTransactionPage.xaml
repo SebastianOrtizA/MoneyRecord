@@ -231,7 +231,7 @@
                 <Border IsVisible="{Binding ShowBudgetWarning}"
                         BackgroundColor="{AppThemeBinding Light=#FFF3E0, Dark=#3E2723}"
                         StrokeShape="RoundRectangle 8"
-                        Stroke="{AppThemeBinding Light=#FF9800, Dark=#FF9800}"
+                        Stroke="#B85400"
                         StrokeThickness="1"
                         Padding="12">
                     <Label Text="{Binding BudgetWarningText}"
@@ -318,7 +318,7 @@
                                         WidthRequest="44"
                                         Padding="0"
                                         CornerRadius="8"
-                                        BackgroundColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"
+                                        BackgroundColor="#1976D2"
                                         TextColor="White"/>
                                 <Button Text="&#xF02E9;"
                                         FontFamily="MaterialDesignIcons"
@@ -329,18 +329,19 @@
                                         WidthRequest="44"
                                         Padding="0"
                                         CornerRadius="8"
-                                        BackgroundColor="{AppThemeBinding Light=#7B1FA2, Dark=#AB47BC}"
+                                        BackgroundColor="#7B1FA2"
                                         TextColor="White"/>
                                 <Button Text="&#xF0A7A;"
                                         FontFamily="MaterialDesignIcons"
                                         Command="{Binding RemovePhotoCommand}"
+                                        SemanticProperties.Description="{ext:Localize RemovePhoto}"
                                         IsVisible="{Binding HasReceipt}"
                                         FontSize="20"
                                         HeightRequest="44"
                                         WidthRequest="44"
                                         Padding="0"
                                         CornerRadius="8"
-                                        BackgroundColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}"
+                                        BackgroundColor="#D32F2F"
                                         TextColor="White"/>
                             </HorizontalStackLayout>
                             <Border IsVisible="{Binding HasReceipt}"
