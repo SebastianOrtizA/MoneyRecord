@@ -9,6 +9,7 @@
              x:DataType="viewmodels:ChallengeViewModel"
              Title="{Binding Title}">
 
+    <Grid>
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadCommand}">
         <!-- A cell per day, seven to a row; the summary and the filter chip are the header -->
@@ -37,31 +38,14 @@
                             <Label Text="{Binding Fraction, StringFormat='{0:P0}'}" FontSize="14" />
                         </VerticalStackLayout>
                     </Border>
-                    <!-- Wraps, so every view is in sight (a scrolling row hid Date range off screen) -->
-                    <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding ViewChips}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
-                                <controls:FilterChip Text="{Binding Label}"
-                                                     IsActive="{Binding IsActive}"
-                                                     Margin="0,0,6,6"
-                                                     Command="{Binding SelectCommand}" />
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </FlexLayout>
-                    <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
-                                         IsActive="{Binding ShowRemainingOnly}"
-                                         Command="{Binding ToggleRemainingOnlyCommand}"
-                                         HorizontalOptions="Start" />
-                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" IsVisible="{Binding IsRangeView}">
-                        <Label Text="{ext:Localize ChallengeRangeFrom}" Style="{StaticResource MutedLabel}" />
-                        <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" Style="{StaticResource MutedLabel}" />
-                        <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
-                        <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
+                    <!-- What the grid shows, and the filters (the view, only pending, a date range) in a sheet -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{Binding ShowingText}" IsVisible="{Binding HasShowing}" VerticalOptions="Center"
+                               Style="{StaticResource MutedLabel}" FontSize="13" />
+                        <controls:FilterButton Grid.Column="1" />
                     </Grid>
                     <!-- Month: ‹ October 2026 ›, a tap on the name returns to the current month (the stepper the tabs use) -->
                     <controls:PeriodStepper IsVisible="{Binding IsMonthView}" />
-                    <Label Text="{Binding ShowingText}" IsVisible="{Binding HasShowing}"
-                           Style="{StaticResource MutedLabel}" FontSize="13" />
                     <!-- Weekday names over the calendar columns: same width and spacing as the grid below (the header's padding is undone) -->
                     <Grid ColumnDefinitions="*,*,*,*,*,*,*" ColumnSpacing="4" Margin="-16,0" IsVisible="{Binding IsMonthView}">
                         <Label Text="{Binding WeekdayHeaders[0]}" Style="{StaticResource MutedLabel}" FontSize="12" HorizontalTextAlignment="Center" />
@@ -143,5 +127,36 @@
             </CollectionView.Footer>
         </CollectionView>
     </RefreshView>
+
+
+    <!-- The same sheet as Transactions, with this page's own filters -->
+    <controls:FilterSheet>
+        <controls:FilterSheet.Sections>
+        <VerticalStackLayout Spacing="12">
+            <!-- Wraps, so every view is in sight -->
+            <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding ViewChips}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:ChallengeViewChip">
+                        <controls:FilterChip Text="{Binding Label}"
+                                             IsActive="{Binding IsActive}"
+                                             Margin="0,0,6,6"
+                                             Command="{Binding SelectCommand}" />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+            <controls:FilterChip Text="{ext:Localize ChallengeRemainingOnly}"
+                                 IsActive="{Binding ShowRemainingOnly}"
+                                 Command="{Binding ToggleRemainingOnlyCommand}"
+                                 HorizontalOptions="Start" />
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="12" IsVisible="{Binding IsRangeView}">
+                <Label Text="{ext:Localize ChallengeRangeFrom}" Style="{StaticResource MutedLabel}" />
+                <Label Grid.Column="1" Text="{ext:Localize ChallengeRangeTo}" Style="{StaticResource MutedLabel}" />
+                <DatePicker Grid.Row="1" Date="{Binding RangeFrom}" Format="d" FontSize="16" />
+                <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding RangeTo}" Format="d" FontSize="16" />
+            </Grid>
+        </VerticalStackLayout>
+        </controls:FilterSheet.Sections>
+    </controls:FilterSheet>
+    </Grid>
 
 </ContentPage>

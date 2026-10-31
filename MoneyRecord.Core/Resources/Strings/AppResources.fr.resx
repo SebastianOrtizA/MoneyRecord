@@ -2916,4 +2916,7 @@
   <data name="NextPeriod" xml:space="preserve">
     <value>Période suivante</value>
   </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtres</value>
+  </data>
 </root>

@@ -175,16 +175,29 @@ public class TransactionFilterViewModelTests
     }
 
     [Fact]
-    public void Clear_also_resets_the_tag_and_hides_the_amount_row()
+    public void Clear_also_resets_the_tag_and_the_amount()
     {
         _sut.SelectedTag = "work";
-        _sut.ToggleAmountCommand.Execute(null);
+        _sut.MinAmountText = "10";
 
         _sut.ClearCommand.Execute(null);
 
         _sut.SelectedTag.Should().BeNull();
-        _sut.IsAmountVisible.Should().BeFalse();
+        _sut.ActiveCount.Should().Be(0);
         _sut.AmountChipText.Should().Be(AppResources.FilterByAmount);
+    }
+
+    [Fact]
+    public void The_active_count_counts_each_filter_once_and_leaves_the_search_out()
+    {
+        _sut.SearchText = "bread";
+        _sut.ActiveCount.Should().Be(0);
+
+        _sut.SelectedTag = "work";
+        _sut.MinAmountText = "10";
+        _sut.MaxAmountText = "50";
+
+        _sut.ActiveCount.Should().Be(2, "the tag, and the amount range as one");
     }
 
     [Fact]

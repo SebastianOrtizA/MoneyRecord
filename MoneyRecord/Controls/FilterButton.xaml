@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The filter icon with the number of filters that are on: BindingContext is an IFilterSheetSource, and the page holds its FilterSheet -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Controls.FilterButton"
+             x:DataType="viewmodels:IFilterSheetSource"
+             WidthRequest="48" HeightRequest="48"
+             SemanticProperties.Description="{ext:Localize Filters}">
+    <ContentView.GestureRecognizers>
+        <TapGestureRecognizer Command="{Binding OpenFilterCommand}" />
+    </ContentView.GestureRecognizers>
+
+    <Grid>
+        <Label Text="&#xF0236;" FontFamily="MaterialDesignIcons" FontSize="26"
+               HorizontalOptions="Center" VerticalOptions="Center"
+               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        <Border IsVisible="{Binding HasActiveFilterCount}"
+                HorizontalOptions="End" VerticalOptions="Start" Margin="0,4,2,0"
+                MinimumWidthRequest="18" HeightRequest="18" Padding="4,0"
+                StrokeThickness="0" StrokeShape="RoundRectangle 9"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}">
+            <Label Text="{Binding ActiveFilterCount}" FontSize="11" FontAttributes="Bold"
+                   HorizontalOptions="Center" VerticalOptions="Center"
+                   TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+        </Border>
+    </Grid>
+</ContentView>

@@ -22,9 +22,6 @@ namespace MoneyRecord.ViewModels
         private bool _clearing;
 
         [ObservableProperty]
-        private bool isAmountVisible;
-
-        [ObservableProperty]
         private string searchText = string.Empty;
 
         [ObservableProperty]
@@ -106,6 +103,9 @@ namespace MoneyRecord.ViewModels
 
         public bool IsAmountActive => ParseAmountLimit(MinAmountText) != null || ParseAmountLimit(MaxAmountText) != null;
 
+        /// <summary>How many filters narrow the list (type, category, account, tag, amount); the search text is not counted.</summary>
+        public int ActiveCount => new[] { IsTypeActive, IsCategoryActive, IsAccountActive, IsTagActive, IsAmountActive }.Count(on => on);
+
         public TransactionFilter ToFilter(bool ascending) => new(
             SearchText,
             SelectedType?.Type,
@@ -158,9 +158,6 @@ namespace MoneyRecord.ViewModels
                 SelectedTag = index == 0 ? null : Tags[index - 1];
         }
 
-        [RelayCommand]
-        private void ToggleAmount() => IsAmountVisible = !IsAmountVisible;
-
         /// <summary>The index of the picked option; null when cancelled.</summary>
         private async Task<int?> PickAsync(string title, IEnumerable<string> options)
         {
@@ -190,7 +187,6 @@ namespace MoneyRecord.ViewModels
                 SelectedTag = null;
                 MinAmountText = string.Empty;
                 MaxAmountText = string.Empty;
-                IsAmountVisible = false;
             }
             finally
             {
@@ -230,6 +226,7 @@ namespace MoneyRecord.ViewModels
                 return;
 
             _typingDebouncer.Cancel();
+            OnPropertyChanged(nameof(ActiveCount));
             Changed?.Invoke();
         }
     }

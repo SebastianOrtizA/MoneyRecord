@@ -29,6 +29,7 @@ namespace MoneyRecord.Views
             _viewModel.Deactivate();
             // Another tab or a pushed page: come back to the list, not a stale sheet
             _viewModel.CloseDetailsCommand.Execute(null);
+            _viewModel.CloseFilterCommand.Execute(null);
             _viewModel.Period.TryCloseSheet();
         }
 

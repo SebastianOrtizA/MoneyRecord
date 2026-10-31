@@ -2966,4 +2966,7 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="NextPeriod" xml:space="preserve">
     <value>Período siguiente</value>
   </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtros</value>
+  </data>
 </root>

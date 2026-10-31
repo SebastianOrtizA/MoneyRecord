@@ -13,7 +13,7 @@ namespace MoneyRecord.ViewModels
     /// Transactions tab: the period's transactions and transfers with search, filter chips, grouping and sort. A tap opens
     /// the entry's detail sheet; a swipe edits or deletes it.
     /// </summary>
-    public partial class TransactionsViewModel : ObservableObject
+    public partial class TransactionsViewModel : ObservableObject, IFilterSheetSource
     {
         private readonly IBalanceService _balanceService;
         private readonly ILedgerService _ledgerService;
@@ -222,6 +222,8 @@ namespace MoneyRecord.ViewModels
             var filtered = LedgerFilter.Apply(entries, filter);
 
             HasActiveFilters = filter.IsActive;
+            OnPropertyChanged(nameof(ActiveFilterCount));
+            OnPropertyChanged(nameof(HasActiveFilterCount));
             FilteredCountText = string.Format(AppResources.FilteredOfTotal, filtered.Count, entries.Count);
 
             MainThread.BeginInvokeOnMainThread(() =>
@@ -304,12 +306,34 @@ namespace MoneyRecord.ViewModels
                 CloseDetails();
         }
 
-        /// <summary>Closes the full-screen receipt, else the detail sheet; false when neither was open.</summary>
+        /// <summary>The filter sheet (type, category, account, tag, amount), opened by the page's filter button.</summary>
+        [ObservableProperty]
+        private bool isFilterOpen;
+
+        public int ActiveFilterCount => Filters.ActiveCount;
+
+        public bool HasActiveFilterCount => ActiveFilterCount > 0;
+
+        [RelayCommand]
+        private void OpenFilter() => IsFilterOpen = true;
+
+        [RelayCommand]
+        private void CloseFilter() => IsFilterOpen = false;
+
+        IRelayCommand IFilterSheetSource.ClearFiltersCommand => Filters.ClearCommand;
+
+        /// <summary>Closes the full-screen receipt, else the filter sheet, else the detail sheet; false when none was open.</summary>
         public bool CloseTopOverlay()
         {
             if (IsReceiptOpen)
             {
                 CloseReceipt();
+                return true;
+            }
+
+            if (IsFilterOpen)
+            {
+                CloseFilter();
                 return true;
             }
 
