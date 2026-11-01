@@ -56,6 +56,7 @@ namespace MoneyRecord.Services
 
                     db.Execute("UPDATE \"Transaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
                     db.Execute("UPDATE \"RecurringTransaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
+                    db.Execute("DELETE FROM \"QuickEntry\" WHERE AccountId = ?", accountId);
                     // Its goals keep their other accounts
                     db.Execute("DELETE FROM \"SavingsGoalAccount\" WHERE AccountId = ?", accountId);
                     // A challenge that saves into it goes back to only marking days

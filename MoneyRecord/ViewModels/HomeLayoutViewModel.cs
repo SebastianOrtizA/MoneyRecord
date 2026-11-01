@@ -120,6 +120,7 @@ namespace MoneyRecord.ViewModels
             HomeCard.Goals => AppResources.SavingsGoalsTitle,
             HomeCard.Debts => AppResources.Debts,
             HomeCard.GetStarted => AppResources.GetStartedTitle,
+            HomeCard.QuickEntries => AppResources.QuickEntries,
             _ => card.ToString()
         };
     }

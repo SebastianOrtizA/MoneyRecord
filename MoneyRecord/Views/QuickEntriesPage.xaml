@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:behaviors="clr-namespace:MoneyRecord.Behaviors"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.QuickEntriesPage"
+             x:DataType="viewmodels:QuickEntriesViewModel"
+             Title="{ext:Localize QuickEntries}">
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}"
+                     Command="{Binding LoadCommand}">
+            <!-- One row per quick entry (a tap edits it, the arrows reorder the Home chips), footer = empty state -->
+            <CollectionView ItemsSource="{Binding Items}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:QuickEntryItem">
+                        <Border Style="{StaticResource Card}" Margin="16,4" Padding="14,10">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:QuickEntriesViewModel}}, Path=OpenCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Border WidthRequest="40" HeightRequest="40" StrokeThickness="0" StrokeShape="Ellipse"
+                                        VerticalOptions="Center"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                    <Label Text="{Binding CategoryDisplayIcon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="20"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                </Border>
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                    <Label FontSize="12" LineBreakMode="TailTruncation"
+                                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}{0} · {1}">
+                                                <Binding Path="CategoryName" />
+                                                <Binding Path="AccountName" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2" Text="{Binding AmountText}" FontSize="14" VerticalOptions="Center" />
+                                <HorizontalStackLayout Grid.Column="3" Spacing="0" VerticalOptions="Center">
+                                    <Button Text="&#xF0143;" FontFamily="MaterialDesignIcons" FontSize="20"
+                                            BackgroundColor="Transparent" Padding="6,0" MinimumWidthRequest="44" MinimumHeightRequest="44"
+                                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:QuickEntriesViewModel}}, Path=MoveUpCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    <Button Text="&#xF0140;" FontFamily="MaterialDesignIcons" FontSize="20"
+                                            BackgroundColor="Transparent" Padding="6,0" MinimumWidthRequest="44" MinimumHeightRequest="44"
+                                            TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:QuickEntriesViewModel}}, Path=MoveDownCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </HorizontalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.Footer>
+                    <controls:EmptyState IsVisible="{Binding IsEmpty}"
+                                         Icon="&#xF0241;"
+                                         Title="{ext:Localize QuickEntriesEmptyTitle}"
+                                         Message="{ext:Localize QuickEntriesEmptyHint}" />
+                </CollectionView.Footer>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Text="&#xF0415;"
+                FontFamily="MaterialDesignIcons"
+                FontSize="28"
+                WidthRequest="60" HeightRequest="60" CornerRadius="30" Padding="0"
+                HorizontalOptions="End" VerticalOptions="End" Margin="0,0,16,16"
+                IsVisible="{Binding IsFormOpen, Converter={StaticResource InvertedBoolConverter}}"
+                Shadow="{Shadow Brush=Black, Offset='0,4', Radius=8, Opacity=0.35}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}"
+                SemanticProperties.Description="{ext:Localize NewQuickEntry}"
+                Command="{Binding AddCommand}" />
+
+        <!-- Add / edit sheet -->
+        <controls:BottomSheet Scroll="{x:Reference FormScroll}"
+                              IsOpen="{Binding IsFormOpen}"
+                              CloseCommand="{Binding CloseFormCommand}">
+            <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="12">
+                <Label Text="{Binding FormTitle}" FontSize="18" FontAttributes="Bold" />
+
+                <ScrollView Grid.Row="1" x:Name="FormScroll">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{ext:Localize QuickEntryName}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <Entry Text="{Binding FormName}"
+                               Placeholder="{ext:Localize QuickEntryNamePlaceholder}"
+                               FontSize="16" />
+
+                        <Picker ItemsSource="{Binding TypeNames}"
+                                SelectedIndex="{Binding FormTypeIndex}"
+                                FontSize="16"
+                                MinimumHeightRequest="44" />
+
+                        <Label Text="{ext:Localize QuickEntryAmountLabel}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <controls:DecimalEntry Text="{Binding FormAmount}"
+                                               Placeholder="0.00"
+                                               FontSize="16">
+                            <controls:DecimalEntry.Behaviors>
+                                <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrencyCode}" />
+                            </controls:DecimalEntry.Behaviors>
+                        </controls:DecimalEntry>
+
+                        <Label Text="{ext:Localize Category}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <Picker ItemsSource="{Binding FormCategories}"
+                                SelectedItem="{Binding FormCategory}"
+                                ItemDisplayBinding="{Binding Name, x:DataType=models:Category}"
+                                FontSize="16"
+                                MinimumHeightRequest="44" />
+
+                        <Label Text="{ext:Localize Account}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <Picker ItemsSource="{Binding FormAccounts}"
+                                SelectedItem="{Binding FormAccount}"
+                                ItemDisplayBinding="{Binding Name, x:DataType=models:Account}"
+                                FontSize="16"
+                                MinimumHeightRequest="44" />
+                    </VerticalStackLayout>
+                </ScrollView>
+
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+                    <Button Text="{ext:Localize DeleteButton}"
+                            IsVisible="{Binding IsFormEditing}"
+                            Command="{Binding DeleteFormCommand}"
+                            Margin="0,0,12,0"
+                            MinimumHeightRequest="44"
+                            Padding="20,0"
+                            CornerRadius="22"
+                            BorderWidth="1"
+                            BackgroundColor="Transparent"
+                            BorderColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}" />
+                    <Button Grid.Column="1"
+                            Text="{ext:Localize Save}"
+                            Command="{Binding SaveFormCommand}"
+                            MinimumHeightRequest="44"
+                            CornerRadius="22"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                            TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
+                </Grid>
+            </Grid>
+        </controls:BottomSheet>
+    </Grid>
+
+</ContentPage>

@@ -38,6 +38,7 @@ namespace MoneyRecord.ViewModels
                 new("\U000F0070", AppResources.Accounts, nameof(ManageAccountsPage)),
                 new("\U000F0831", AppResources.Categories, nameof(ManageCategoriesPage)),
                 new("\U000F04DC", AppResources.Payees, nameof(PayeesPage)),
+                new("\U000F0241", AppResources.QuickEntries, nameof(QuickEntriesPage)),
                 new("\U000F04E1", AppResources.Transfers, nameof(TransfersPage)),
             ]),
             new(AppResources.GroupPlanning,

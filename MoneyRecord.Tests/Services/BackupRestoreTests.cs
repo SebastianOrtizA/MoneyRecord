@@ -79,7 +79,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         zip.Entries.Select(e => e.FullName).Should().BeEquivalentTo("data.json", "receipts/receipt_1.jpg");
         using var reader = new StreamReader(zip.GetEntry("data.json")!.Open());
         var json = await reader.ReadToEndAsync();
-        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 8");
+        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 9");
         json.Should().NotContain(_appData.Replace("\\", "\\\\"), "no device paths in a backup");
     }
 
@@ -146,11 +146,13 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         var challenge = new SavingsChallenge { Name = "Hucha", Goal = 100m, CurrencyCode = "EUR", StartDate = new DateTime(2026, 10, 1), Days = 5, Mode = ChallengeMode.Linear, DayAmountCents = 2_500, FirstDayCents = 1_000, ToAccountId = bank.Id, ToPocketId = travel.Id };
         await Db.InsertAsync(challenge);
         await Db.InsertAsync(new SavingsChallengeDay { ChallengeId = challenge.Id, DayNumber = 2, AmountCents = 645, DoneDate = new DateTime(2026, 10, 2), TransferId = 5, SourceMovementId = 6, DestinationMovementId = 7 });
+        await Db.InsertAsync(new QuickEntry { Name = "Coffee", AmountCents = 350, CategoryId = food.Id, AccountId = bank.Id, PayeeId = bakery.Id, SortOrder = 2, UseCount = 4, LastUsedDate = new DateTime(2026, 10, 3) });
         var before = await DumpAsync();
         var backupPath = BackupPath("backup.zip");
         await _service.ExportBackupAsync(backupPath);
 
         // Change everything after the backup
+        await Db.DeleteAllAsync<QuickEntry>();
         await Db.DeleteAllAsync<SavingsChallengeDay>();
         await Db.DeleteAllAsync<SavingsChallenge>();
         await Db.DeleteAllAsync<SavingsGoalAccount>();
@@ -530,6 +532,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         rows.AddRange(await Db.Table<PocketMovement>().ToListAsync());
         rows.AddRange(await Db.Table<SavingsChallenge>().ToListAsync());
         rows.AddRange(await Db.Table<SavingsChallengeDay>().ToListAsync());
+        rows.AddRange(await Db.Table<QuickEntry>().ToListAsync());
         return rows;
     }
 }

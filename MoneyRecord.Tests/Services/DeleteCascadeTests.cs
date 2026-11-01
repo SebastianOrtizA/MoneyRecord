@@ -135,7 +135,35 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
         (await _accountService.GetUsageAsync(bank.Id)).Should().Be(new MoneyRecord.Services.Interfaces.AccountUsage(2, 1, 1));
     }
 
+    [Fact]
+    public async Task DeleteAccount_RemovesItsQuickEntries()
+    {
+        await DefaultAccountAsync();
+        var bank = await AddAccountAsync("Bank");
+        var (food, _) = await TwoExpenseCategoriesAsync();
+        await Db.InsertAsync(new QuickEntry { Name = "Coffee", CategoryId = food.Id, AccountId = bank.Id });
+
+        await _accountService.DeleteAsync(bank.Id);
+
+        (await Db.Table<QuickEntry>().CountAsync()).Should().Be(0);
+    }
+
     // ---- Categories ----
+
+    [Fact]
+    public async Task DeleteCategory_MovesQuickEntriesToTheReplacement_Or_RemovesThemWithoutOne()
+    {
+        var (food, transport) = await TwoExpenseCategoriesAsync();
+        await Db.InsertAsync(new QuickEntry { Name = "Coffee", CategoryId = food.Id, AccountId = 1 });
+        await Db.InsertAsync(new QuickEntry { Name = "Bus", CategoryId = transport.Id, AccountId = 1 });
+
+        await _categoryService.DeleteAsync(food.Id, transport.Id);
+        (await Db.Table<QuickEntry>().ToListAsync()).Should().OnlyContain(q => q.CategoryId == transport.Id).And.HaveCount(2);
+
+        await _categoryService.DeleteAsync(transport.Id, null);
+        (await Db.Table<QuickEntry>().CountAsync()).Should().Be(0);
+    }
+
 
     [Fact]
     public async Task DeleteCategory_MovesTransactionsRulesAndBudget()

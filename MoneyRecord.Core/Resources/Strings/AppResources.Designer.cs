@@ -8525,5 +8525,119 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("PickDate", resourceCulture);
             }
         }
+
+        public static string QuickEntries {
+            get {
+                return ResourceManager.GetString("QuickEntries", resourceCulture);
+            }
+        }
+
+        public static string QuickEntriesEmptyTitle {
+            get {
+                return ResourceManager.GetString("QuickEntriesEmptyTitle", resourceCulture);
+            }
+        }
+
+        public static string QuickEntriesEmptyHint {
+            get {
+                return ResourceManager.GetString("QuickEntriesEmptyHint", resourceCulture);
+            }
+        }
+
+        public static string QuickEntrySaved {
+            get {
+                return ResourceManager.GetString("QuickEntrySaved", resourceCulture);
+            }
+        }
+
+        public static string FailedToSaveQuickEntry {
+            get {
+                return ResourceManager.GetString("FailedToSaveQuickEntry", resourceCulture);
+            }
+        }
+
+        public static string FailedToLoadQuickEntries {
+            get {
+                return ResourceManager.GetString("FailedToLoadQuickEntries", resourceCulture);
+            }
+        }
+
+        public static string QuickEntryName {
+            get {
+                return ResourceManager.GetString("QuickEntryName", resourceCulture);
+            }
+        }
+
+        public static string QuickEntryNamePlaceholder {
+            get {
+                return ResourceManager.GetString("QuickEntryNamePlaceholder", resourceCulture);
+            }
+        }
+
+        public static string QuickEntryAmountLabel {
+            get {
+                return ResourceManager.GetString("QuickEntryAmountLabel", resourceCulture);
+            }
+        }
+
+        public static string QuickEntryAmountPrompt {
+            get {
+                return ResourceManager.GetString("QuickEntryAmountPrompt", resourceCulture);
+            }
+        }
+
+        public static string QuickEntrySuggestTitle {
+            get {
+                return ResourceManager.GetString("QuickEntrySuggestTitle", resourceCulture);
+            }
+        }
+
+        public static string QuickEntrySuggestMessage {
+            get {
+                return ResourceManager.GetString("QuickEntrySuggestMessage", resourceCulture);
+            }
+        }
+
+        public static string QuickEntryAdded {
+            get {
+                return ResourceManager.GetString("QuickEntryAdded", resourceCulture);
+            }
+        }
+
+        public static string QuickEntryDeleted {
+            get {
+                return ResourceManager.GetString("QuickEntryDeleted", resourceCulture);
+            }
+        }
+
+        public static string QuickEntryDeleteConfirm {
+            get {
+                return ResourceManager.GetString("QuickEntryDeleteConfirm", resourceCulture);
+            }
+        }
+
+        public static string NewQuickEntry {
+            get {
+                return ResourceManager.GetString("NewQuickEntry", resourceCulture);
+            }
+        }
+
+        public static string EditQuickEntry {
+            get {
+                return ResourceManager.GetString("EditQuickEntry", resourceCulture);
+            }
+        }
+
+        public static string MakeQuickEntry {
+            get {
+                return ResourceManager.GetString("MakeQuickEntry", resourceCulture);
+            }
+        }
+
+        public static string PleaseEnterQuickEntryName {
+            get {
+                return ResourceManager.GetString("PleaseEnterQuickEntryName", resourceCulture);
+            }
+        }
     }
 }

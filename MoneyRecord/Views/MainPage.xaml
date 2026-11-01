@@ -326,6 +326,39 @@
             </Border>
             </VerticalStackLayout>
 
+            <!-- Quick entries: one tap saves one (Undo in the toast); shown once there is one -->
+            <Border Style="{StaticResource Card}" x:Name="QuickEntriesCard" IsVisible="{Binding ShowQuickEntries}">
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="{ext:Localize QuickEntries}" FontSize="18" FontAttributes="Bold" VerticalOptions="Center"/>
+                        <Label Grid.Column="1" Text="{ext:Localize SeeAll}" Style="{StaticResource CardLink}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding OpenQuickEntriesCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </Grid>
+                    <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center" BindableLayout.ItemsSource="{Binding QuickChips}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:QuickEntryChip">
+                                <Border StrokeShape="RoundRectangle 18" StrokeThickness="1" Padding="12,8" Margin="0,0,8,8"
+                                        Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainViewModel}}, Path=RunQuickEntryCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Label Text="{Binding Item.CategoryDisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="16" VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                        <Label Text="{Binding Text}" FontSize="14" VerticalOptions="Center" LineBreakMode="TailTruncation"/>
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                </VerticalStackLayout>
+            </Border>
+
             <!-- First-run checklist: until it is hidden or done -->
             <Border Style="{StaticResource Card}" x:Name="StartChecklistCard" IsVisible="{Binding ShowStartChecklist}">
                 <VerticalStackLayout Spacing="6">

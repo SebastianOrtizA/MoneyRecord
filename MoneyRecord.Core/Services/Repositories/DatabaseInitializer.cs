@@ -281,6 +281,7 @@ namespace MoneyRecord.Services.Repositories
             await db.CreateTableAsync<SavingsGoalPocket>();
             await db.CreateTableAsync<SavingsChallenge>();
             await db.CreateTableAsync<SavingsChallengeDay>();
+            await db.CreateTableAsync<QuickEntry>();
 
             if (isNewDatabase)
                 await migrations.StampLatestAsync(db);

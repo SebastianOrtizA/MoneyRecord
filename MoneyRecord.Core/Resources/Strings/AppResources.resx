@@ -3032,4 +3032,61 @@
   <data name="CollapseAll" xml:space="preserve">
     <value>Collapse all</value>
   </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Quick entries</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>No quick entries yet</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Save what you repeat, like a coffee, and add it in one tap from Home.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} saved</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>Couldn't save the quick entry.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>Couldn't load the quick entries.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Coffee</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Amount (empty: ask each time)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>Amount for {0}</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>Make this a quick entry?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>You've entered "{0}" several times lately. Save it to add it in one tap?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Quick entry added</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Quick entry deleted</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>Delete "{0}"? Your transactions stay.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>New quick entry</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Edit quick entry</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Save as quick entry</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Please enter a name for the quick entry.</value>
+  </data>
 </root>

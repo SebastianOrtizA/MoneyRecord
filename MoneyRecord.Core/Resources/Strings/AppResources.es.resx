@@ -3029,4 +3029,61 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="CollapseAll" xml:space="preserve">
     <value>Contraer todo</value>
   </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Entradas rápidas</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>Aún no hay entradas rápidas</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Guarda lo que repites, como un café, y regístralo con un toque desde Inicio.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} guardado</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>No se pudo guardar la entrada rápida.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>No se pudieron cargar las entradas rápidas.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Café</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Importe (vacío: preguntar cada vez)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>Importe para {0}</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>¿Hacer de esto una entrada rápida?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>Has registrado «{0}» varias veces últimamente. ¿Guardarlo para añadirlo con un toque?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Entrada rápida añadida</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Entrada rápida eliminada</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>¿Eliminar «{0}»? Tus movimientos se conservan.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>Nueva entrada rápida</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Editar entrada rápida</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Guardar como entrada rápida</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Introduce un nombre para la entrada rápida.</value>
+  </data>
 </root>

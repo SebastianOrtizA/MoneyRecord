@@ -46,6 +46,7 @@ namespace MoneyRecord.Services
                         if (usage.NeedsReplacement)
                             throw new InvalidOperationException($"Category {categoryId} is in use and needs a replacement.");
 
+                        db.Execute("DELETE FROM \"QuickEntry\" WHERE CategoryId = ?", categoryId);
                         db.Execute("DELETE FROM \"Budget\" WHERE CategoryId = ?", categoryId);
                         db.Delete<Category>(categoryId);
                         result = new CategoryDeleteResult(0, 0, 0, usage.Budgets);
@@ -58,6 +59,7 @@ namespace MoneyRecord.Services
 
                     db.Execute("UPDATE \"Transaction\" SET CategoryId = ? WHERE CategoryId = ?", newId, categoryId);
                     db.Execute("UPDATE \"RecurringTransaction\" SET CategoryId = ? WHERE CategoryId = ?", newId, categoryId);
+                    db.Execute("UPDATE \"QuickEntry\" SET CategoryId = ? WHERE CategoryId = ?", newId, categoryId);
 
                     // One budget per category: the replacement keeps its own budget if it has one
                     var replacementHasBudget = db.Table<Budget>().Count(b => b.CategoryId == newId) > 0;

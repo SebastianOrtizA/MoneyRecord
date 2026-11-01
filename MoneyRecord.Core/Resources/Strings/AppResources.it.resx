@@ -2978,4 +2978,61 @@
   <data name="CollapseAll" xml:space="preserve">
     <value>Comprimi tutto</value>
   </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Voci rapide</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>Ancora nessuna voce rapida</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Salva ciò che ripeti, come un caffè, e aggiungilo con un tocco dalla Home.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} salvato</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>Impossibile salvare la voce rapida.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>Impossibile caricare le voci rapide.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Caffè</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Importo (vuoto: chiedi ogni volta)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>Importo per {0}</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>Creare una voce rapida?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>Hai inserito "{0}" più volte di recente. Salvarlo per aggiungerlo con un tocco?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Voce rapida aggiunta</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Voce rapida eliminata</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>Eliminare "{0}"? Le tue transazioni restano.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>Nuova voce rapida</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Modifica voce rapida</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Salva come voce rapida</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Inserisci un nome per la voce rapida.</value>
+  </data>
 </root>

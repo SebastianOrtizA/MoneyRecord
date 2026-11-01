@@ -25,6 +25,29 @@
                                           Command="{Binding SwitchTypeCommand}"
                                           IsVisible="{Binding ShowsTypeSwitch}"/>
 
+                <!-- Quick entries of this type: a tap fills the form (account, category, amount, payee); Save is still yours -->
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" IsVisible="{Binding HasQuickChips}">
+                    <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding QuickChips}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:QuickEntryChip">
+                                <Border StrokeShape="RoundRectangle 18" StrokeThickness="1" Padding="12,8"
+                                        Stroke="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                        BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:AddTransactionViewModel}}, Path=ApplyQuickEntryCommand}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </Border.GestureRecognizers>
+                                    <HorizontalStackLayout Spacing="6">
+                                        <Label Text="{Binding Item.CategoryDisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="16" VerticalOptions="Center"
+                                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                        <Label Text="{Binding Text}" FontSize="14" VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </ScrollView>
+
                 <!-- The amount in the type's colour, with the account's currency symbol in front; the scan button beside it
                      reads a receipt photo's total and date -->
                 <Grid ColumnDefinitions="44,Auto,*,44" ColumnSpacing="4">

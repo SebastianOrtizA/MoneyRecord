@@ -2980,4 +2980,61 @@
   <data name="CollapseAll" xml:space="preserve">
     <value>Recolher tudo</value>
   </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Lançamentos rápidos</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>Nenhum lançamento rápido ainda</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Salve o que você repete, como um café, e lance com um toque na tela inicial.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} salvo</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>Não foi possível salvar o lançamento rápido.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>Não foi possível carregar os lançamentos rápidos.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Café</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Valor (vazio: perguntar sempre)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>Valor para {0}</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>Criar um lançamento rápido?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>Você lançou "{0}" várias vezes ultimamente. Salvar para lançar com um toque?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Lançamento rápido adicionado</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Lançamento rápido excluído</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>Excluir "{0}"? Suas transações permanecem.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>Novo lançamento rápido</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Editar lançamento rápido</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Salvar como lançamento rápido</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Digite um nome para o lançamento rápido.</value>
+  </data>
 </root>
