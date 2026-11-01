@@ -31,6 +31,9 @@ namespace MoneyRecord.ViewModels
         private readonly IHomeLayoutSettings _layoutSettings;
         private readonly IGetStartedService _getStarted;
         private readonly IDebtService _debts;
+        private readonly IQuickEntryService _quickEntries;
+        private readonly QuickEntryRunner _quickRunner;
+        private List<QuickEntryItem> _quickItems = [];
         private bool _askingCrashReports;
 
         // While the page is shown: a period change (here or on another tab) reloads it
@@ -53,6 +56,43 @@ namespace MoneyRecord.ViewModels
         {
             _privacy.HideBalances = value;
             OnPropertyChanged(nameof(ShowSpentLine));
+            RebuildQuickChips();
+        }
+
+        /// <summary>The Home chips of the quick entries ("Coffee 3.50"; the name alone while balances are hidden).</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowQuickEntries))]
+        private List<QuickEntryChip> quickChips = [];
+
+        private void RebuildQuickChips() =>
+            QuickChips = _quickItems.Select(i => new QuickEntryChip(i, HideBalances ? i.Name : i.ChipText)).ToList();
+
+        /// <summary>One tap saves the quick entry (Undo in the toast); an entry without an amount asks for it first.</summary>
+        [RelayCommand]
+        private async Task RunQuickEntryAsync(QuickEntryChip? chip)
+        {
+            if (chip == null)
+                return;
+
+            long? cents = null;
+            if (chip.Item.AsksAmount)
+            {
+                var typed = await _dialogService.PromptAsync(chip.Item.Name,
+                    string.Format(AppResources.QuickEntryAmountPrompt, chip.Item.Name), AppResources.Save, AppResources.Cancel,
+                    numeric: true);
+                if (typed == null)
+                    return;
+
+                var amount = AmountParser.Parse(typed, chip.Item.CurrencyCode);
+                if (amount <= 0)
+                {
+                    await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
+                    return;
+                }
+                cents = Money.ToCents(amount);
+            }
+
+            await _quickRunner.RunAsync(chip.Item, cents, () => LoadDataCommand.ExecuteAsync(null));
         }
 
         [RelayCommand]
@@ -176,7 +216,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>Which cards show and in what order (Settings → Home screen); read again on every load.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowRecentEmpty), nameof(ShowStartChecklist), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals), nameof(ShowDebts))]
+        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowRecentEmpty), nameof(ShowStartChecklist), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals), nameof(ShowDebts), nameof(ShowQuickEntries))]
         private HomeLayout layout = HomeLayout.Default;
 
         // A card shows when it is enabled and has something to show
@@ -192,6 +232,7 @@ namespace MoneyRecord.ViewModels
         public bool ShowTrip => Layout.IsShown(HomeCard.Trip) && HasActiveTrip;
         public bool ShowGoals => Layout.IsShown(HomeCard.Goals) && HasGoals;
         public bool ShowDebts => Layout.IsShown(HomeCard.Debts) && HasDebts;
+        public bool ShowQuickEntries => Layout.IsShown(HomeCard.QuickEntries) && QuickChips.Count > 0;
 
         /// <summary>The open debts, first by due date (Home card, off by default); the card shows once one is open.</summary>
         [ObservableProperty]
@@ -215,9 +256,12 @@ namespace MoneyRecord.ViewModels
             INavigationService navigationService, ICrashReportConsent crashReports, IDialogService dialogService,
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
             IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew,
-            IHomeLayoutSettings layoutSettings, IDebtService debts, IGetStartedService getStarted)
+            IHomeLayoutSettings layoutSettings, IDebtService debts, IGetStartedService getStarted,
+            IQuickEntryService quickEntries, QuickEntryRunner quickRunner)
         {
             _getStarted = getStarted;
+            _quickEntries = quickEntries;
+            _quickRunner = quickRunner;
             _debts = debts;
             _goals = goals;
             _layoutSettings = layoutSettings;
@@ -319,11 +363,14 @@ namespace MoneyRecord.ViewModels
                 var debtsTask = IfShown(HomeCard.Debts, _debts.GetAllAsync, []);
                 var startTask = IfShown(HomeCard.GetStarted, _getStarted.GetOpenAsync, null);
                 var goalsTask = IfShown(HomeCard.Goals, async () => await _goals.GetProgressAsync(await balancesTask), []);
-                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask, debtsTask, startTask);
+                var quickTask = IfShown(HomeCard.QuickEntries, _quickEntries.GetAllAsync, []);
+                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask, debtsTask, startTask, quickTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 Layout = layout;
                 StartChecklist = await startTask;
+                _quickItems = await quickTask;
+                RebuildQuickChips();
                 var balanceLines = CurrencyBalance.DisplayLines(
                     CurrencyBalance.FromAccounts((await balancesTask).Where(b => !b.IsDebt), MoneyFormatter.BaseCurrency));
                 PrimaryBalance = balanceLines[0];
@@ -430,6 +477,9 @@ namespace MoneyRecord.ViewModels
         }
 
         private static string OrDash(string text) => text.Length > 0 ? text : "—";
+
+        [RelayCommand]
+        private Task OpenQuickEntriesAsync() => _navigationService.NavigateToAsync(nameof(QuickEntriesPage));
 
         [RelayCommand]
         private Task OpenDebtsAsync() => _navigationService.NavigateToAsync(nameof(DebtsPage));

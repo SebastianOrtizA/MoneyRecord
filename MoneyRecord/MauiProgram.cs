@@ -106,6 +106,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IPocketService, PocketService>();
             builder.Services.AddSingleton<PocketCoverPrompt>();
             builder.Services.AddSingleton<IPayeeService, PayeeService>();
+            builder.Services.AddSingleton<IQuickEntryService, QuickEntryService>();
+            builder.Services.AddSingleton<QuickEntryRunner>();
             builder.Services.AddSingleton<IDebtService, DebtService>();
             builder.Services.AddSingleton<ISplitService, SplitService>();
             builder.Services.AddSingleton<ITripService, TripService>();
@@ -212,6 +214,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<PartyViewModel>();
             builder.Services.AddTransient<FriendsViewModel>();
             builder.Services.AddTransient<PayeesViewModel>();
+            builder.Services.AddTransient<QuickEntriesViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
             builder.Services.AddTransient<HomeLayoutViewModel>();
@@ -247,6 +250,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<PartyPage>();
             builder.Services.AddTransient<FriendsPage>();
             builder.Services.AddTransient<PayeesPage>();
+            builder.Services.AddTransient<QuickEntriesPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();
             builder.Services.AddTransient<HomeLayoutPage>();

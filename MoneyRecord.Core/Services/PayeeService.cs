@@ -92,6 +92,7 @@ namespace MoneyRecord.Services
                 db.Execute("UPDATE \"Transaction\" SET PayeeId = ? WHERE PayeeId = ?", targetId, payeeId);
                 db.Execute("UPDATE \"RecurringTransaction\" SET PayeeId = ? WHERE PayeeId = ?", targetId, payeeId);
                 db.Execute("UPDATE \"Debt\" SET PayeeId = ? WHERE PayeeId = ?", targetId, payeeId);
+                db.Execute("UPDATE \"QuickEntry\" SET PayeeId = ? WHERE PayeeId = ?", targetId, payeeId);
                 RenameDebts(db, targetId, db.Find<Payee>(targetId).Name);
                 db.Delete<Payee>(payeeId);
             });
@@ -104,6 +105,7 @@ namespace MoneyRecord.Services
                     throw new InvalidOperationException($"Payee {payeeId} has debts; delete them or merge the payee.");
                 db.Execute("UPDATE \"Transaction\" SET PayeeId = NULL WHERE PayeeId = ?", payeeId);
                 db.Execute("UPDATE \"RecurringTransaction\" SET PayeeId = NULL WHERE PayeeId = ?", payeeId);
+                db.Execute("UPDATE \"QuickEntry\" SET PayeeId = NULL WHERE PayeeId = ?", payeeId);
                 db.Delete<Payee>(payeeId);
             });
 

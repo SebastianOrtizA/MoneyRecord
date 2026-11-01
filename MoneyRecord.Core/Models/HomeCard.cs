@@ -13,6 +13,9 @@ namespace MoneyRecord.Models
         Debts,
 
         /// <summary>The first-run checklist; on a new install it sits right under the balance (see <see cref="HomeLayout.Default"/>).</summary>
-        GetStarted
+        GetStarted,
+
+        /// <summary>The chips of the user's quick entries; the card shows only once there is one.</summary>
+        QuickEntries
     }
 }

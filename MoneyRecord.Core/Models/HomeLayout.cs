@@ -12,9 +12,10 @@ namespace MoneyRecord.Models
         /// <summary>Cards that start hidden (opt-in).</summary>
         private static readonly HomeCard[] HiddenByDefault = [HomeCard.Debts];
 
-        /// <summary>Every card in its declared order, Get started under Balance; the opt-in ones hidden.</summary>
+        /// <summary>Every card in its declared order, Get started and Quick entries under Balance; the opt-in ones hidden.</summary>
         public static HomeLayout Default => new(
-            [HomeCard.Balance, HomeCard.GetStarted, .. Enum.GetValues<HomeCard>().Where(c => c is not (HomeCard.Balance or HomeCard.GetStarted))],
+            [HomeCard.Balance, HomeCard.GetStarted, HomeCard.QuickEntries,
+             .. Enum.GetValues<HomeCard>().Where(c => c is not (HomeCard.Balance or HomeCard.GetStarted or HomeCard.QuickEntries))],
             HiddenByDefault.ToHashSet());
 
         public bool IsShown(HomeCard card) => !Hidden.Contains(card);

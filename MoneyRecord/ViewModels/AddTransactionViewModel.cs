@@ -40,6 +40,7 @@ namespace MoneyRecord.ViewModels
         private readonly ISplitService _splitService;
         private readonly PocketCoverPrompt _pocketCover;
         private readonly ITripService _trips;
+        private readonly IQuickEntryService _quickEntries;
         private readonly IReceiptScanner _receiptScanner;
         private readonly TimeProvider _clock;
         private readonly ILogger<AddTransactionViewModel> _logger;
@@ -365,6 +366,7 @@ namespace MoneyRecord.ViewModels
                 SelectedCategory = IsTripMode
                     ? CategoryChoices.FirstOrDefault()?.Category
                     : _entryDefaults.DefaultCategory(TransactionType, CategoryChoices.Select(c => c.Category));
+                await RefreshQuickChipsAsync();
             }
             catch (Exception ex)
             {
@@ -494,10 +496,11 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, IRecurringTransactionService recurringService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, IRecurringTransactionService recurringService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, IQuickEntryService quickEntries, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
+            _quickEntries = quickEntries;
             _balanceService = balanceService;
             _transactionRepository = transactionRepository;
             _budgetRepository = budgetRepository;
@@ -547,6 +550,7 @@ namespace MoneyRecord.ViewModels
             _receipt.Load(null);
             Transaction = null;
             TransactionType = TransactionType.Expense;
+            QuickChips = [];
             SelectedDate = DateTime.Now;
             Description = string.Empty;
             Amount = string.Empty;
@@ -796,6 +800,9 @@ namespace MoneyRecord.ViewModels
                 else if (!string.IsNullOrWhiteSpace(AmountSeed))
                     Amount = AmountSeed;
 
+                if (duplicate == null)
+                    await RefreshQuickChipsAsync();
+
                 if (IsScheduleMode)
                 {
                     Title = TransactionType == TransactionType.Income ? AppResources.NewRecurringIncome : AppResources.NewRecurringExpense;
@@ -860,6 +867,70 @@ namespace MoneyRecord.ViewModels
             IsMoreDetailsOpen = Description.Length > 0 || TagsText.Length > 0;
             // After the account: the amount field formats in the account's currency
             Amount = Money.FromCents(prefill.AmountCents).ToString();
+        }
+
+        /// <summary>The quick entries of this form's type, tapped to fill it (the user still saves): only for a plain new entry.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasQuickChips))]
+        private List<QuickEntryChip> quickChips = [];
+
+        public bool HasQuickChips => QuickChips.Count > 0;
+
+        private async Task RefreshQuickChipsAsync()
+        {
+            if (IsTripMode || IsScheduleMode || IsOccurrenceMode || IsEditMode)
+            {
+                QuickChips = [];
+                return;
+            }
+
+            try
+            {
+                QuickChips = (await _quickEntries.GetAllAsync())
+                    .Where(i => i.Entry.Type == TransactionType && !i.IsBroken)
+                    .Select(i => new QuickEntryChip(i, i.ChipText))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                // The chips are a shortcut: the form works without them
+                _logger.LogWarning(ex, "Quick entries could not be loaded for the add form");
+                QuickChips = [];
+            }
+        }
+
+        [RelayCommand]
+        private void ApplyQuickEntry(QuickEntryChip? chip)
+        {
+            if (chip == null)
+                return;
+
+            var entry = chip.Item.Entry;
+            FillFromDuplicate(new EntryPrefill(entry.AmountCents, entry.CategoryId, entry.AccountId, entry.PayeeId, null, entry.Description));
+            // An entry that asks for the amount leaves it empty
+            if (entry.AsksAmount)
+                Amount = string.Empty;
+        }
+
+        /// <summary>After a saved entry the user has repeated several times: offer to keep it as a quick entry (best effort).</summary>
+        private async Task OfferQuickEntryAsync(int transactionId)
+        {
+            try
+            {
+                if (await _quickEntries.SuggestAsync(transactionId) is not { } draft)
+                    return;
+
+                if (!await _dialogService.ConfirmAsync(AppResources.QuickEntrySuggestTitle,
+                        string.Format(AppResources.QuickEntrySuggestMessage, draft.Name), AppResources.MakeQuickEntry, AppResources.Cancel))
+                    return;
+
+                await _quickEntries.SaveAsync(draft);
+                await _dialogService.ToastAsync(AppResources.QuickEntryAdded);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Quick entry could not be offered for transaction {TransactionId}", transactionId);
+            }
         }
 
         private async Task LoadAccountsAsync()
@@ -1251,6 +1322,10 @@ namespace MoneyRecord.ViewModels
             // An entry in another currency (perhaps dated before the stored rates) gets its rates now, in the background
             if (CanConvert)
                 _ = _exchangeRates.UpdateIfEnabledAsync();
+
+            // A new, plain entry (not an edit, a split or a pending occurrence) may be worth a quick entry
+            if (savedTransactionId is { } newId && !IsEditMode && !IsOccurrenceMode && parts == null && !IsTripMode)
+                await OfferQuickEntryAsync(newId);
 
             await _navigationService.GoBackAsync();
         }

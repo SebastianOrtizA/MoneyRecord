@@ -174,4 +174,19 @@ public sealed class PayeeServiceTests : IAsyncLifetime
         (await Db.Table<RecurringTransaction>().FirstAsync()).PayeeId.Should().BeNull();
         (await Db.Table<Payee>().ToListAsync()).Select(p => p.Name).Should().Equal("Bakery");
     }
+
+    [Fact]
+    public async Task Delete_and_merge_move_quick_entries_to_the_other_payee_or_none()
+    {
+        var shop = await AddPayeeAsync("Shop");
+        var bakery = await AddPayeeAsync("Bakery");
+        await Db.InsertAsync(new QuickEntry { Name = "A", PayeeId = shop });
+        await Db.InsertAsync(new QuickEntry { Name = "B", PayeeId = bakery });
+
+        await _sut.MergeAsync(shop, bakery);
+        (await Db.Table<QuickEntry>().ToListAsync()).Should().OnlyContain(q => q.PayeeId == bakery);
+
+        await _sut.DeleteAsync(bakery);
+        (await Db.Table<QuickEntry>().ToListAsync()).Should().OnlyContain(q => q.PayeeId == null);
+    }
 }

@@ -2979,4 +2979,61 @@
   <data name="CollapseAll" xml:space="preserve">
     <value>Tout réduire</value>
   </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Saisies rapides</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>Aucune saisie rapide pour l'instant</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Enregistrez ce que vous répétez, comme un café, et ajoutez-le d'un geste depuis l'accueil.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} enregistré</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>Impossible d'enregistrer la saisie rapide.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>Impossible de charger les saisies rapides.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Café</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Montant (vide : demander à chaque fois)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>Montant pour {0}</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>En faire une saisie rapide ?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>Vous avez saisi « {0} » plusieurs fois récemment. L'enregistrer pour l'ajouter d'un geste ?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Saisie rapide ajoutée</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Saisie rapide supprimée</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>Supprimer « {0} » ? Vos transactions restent.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>Nouvelle saisie rapide</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Modifier la saisie rapide</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Enregistrer comme saisie rapide</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Saisissez un nom pour la saisie rapide.</value>
+  </data>
 </root>
