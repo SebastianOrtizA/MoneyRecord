@@ -18,6 +18,7 @@ namespace MoneyRecord.ViewModels
         private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
         private readonly IDialogService _dialogService;
+        private readonly IHomeScreenWidgets _widgets;
 
         private QuickEntry? _editing;
         private bool _loadingForm;
@@ -71,8 +72,9 @@ namespace MoneyRecord.ViewModels
         private string formCurrencyCode = string.Empty;
 
         public QuickEntriesViewModel(IQuickEntryService quickEntries, ICategoryRepository categoryRepository,
-            IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService)
+            IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, IHomeScreenWidgets widgets)
         {
+            _widgets = widgets;
             _quickEntries = quickEntries;
             _categoryRepository = categoryRepository;
             _accountRepository = accountRepository;
@@ -128,6 +130,7 @@ namespace MoneyRecord.ViewModels
             try
             {
                 await _quickEntries.MoveAsync(item.Id, up);
+                _ = _widgets.RefreshAsync();
                 await LoadCommand.ExecuteAsync(null);
             }
             catch (Exception ex)
@@ -228,6 +231,7 @@ namespace MoneyRecord.ViewModels
             try
             {
                 await _quickEntries.SaveAsync(entry);
+                _ = _widgets.RefreshAsync();
                 CloseForm();
                 await LoadCommand.ExecuteAsync(null);
             }
@@ -250,6 +254,7 @@ namespace MoneyRecord.ViewModels
             try
             {
                 await _quickEntries.DeleteAsync(entry.Id);
+                _ = _widgets.RefreshAsync();
                 CloseForm();
                 await LoadCommand.ExecuteAsync(null);
                 await _dialogService.ToastAsync(AppResources.QuickEntryDeleted);

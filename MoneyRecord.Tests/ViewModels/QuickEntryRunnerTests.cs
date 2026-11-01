@@ -70,6 +70,28 @@ public sealed class QuickEntryRunnerTests
     }
 
     [Fact]
+    public async Task An_asking_entry_prompts_and_saves_the_typed_amount()
+    {
+        _dialogs.PromptAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string?>(), Arg.Any<bool>()).Returns("12.75");
+
+        var saved = await _sut.RunWithPromptAsync(Item(0), Changed);
+
+        saved.Should().BeTrue();
+        await _quickEntries.Received(1).UseAsync(7, 1_275);
+    }
+
+    [Fact]
+    public async Task A_cancelled_or_invalid_prompt_saves_nothing()
+    {
+        _dialogs.PromptAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string?>(), Arg.Any<bool>()).Returns((string?)null, "0");
+
+        (await _sut.RunWithPromptAsync(Item(0), Changed)).Should().BeFalse();
+        (await _sut.RunWithPromptAsync(Item(0), Changed)).Should().BeFalse();
+
+        await _quickEntries.DidNotReceiveWithAnyArgs().UseAsync(default, default);
+    }
+
+    [Fact]
     public async Task An_amount_typed_for_an_asking_entry_is_saved()
     {
         var saved = await _sut.RunAsync(Item(0), 1_275, Changed);
