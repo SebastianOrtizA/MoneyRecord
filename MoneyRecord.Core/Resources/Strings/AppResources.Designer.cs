@@ -2030,6 +2030,24 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        public static string GroupBy {
+            get {
+                return ResourceManager.GetString("GroupBy", resourceCulture);
+            }
+        }
+
+        public static string ExpandAll {
+            get {
+                return ResourceManager.GetString("ExpandAll", resourceCulture);
+            }
+        }
+
+        public static string CollapseAll {
+            get {
+                return ResourceManager.GetString("CollapseAll", resourceCulture);
+            }
+        }
+
         public static string ClearFilters {
             get {
                 return ResourceManager.GetString("ClearFilters", resourceCulture);

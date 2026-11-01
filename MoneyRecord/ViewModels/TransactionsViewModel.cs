@@ -36,19 +36,17 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>How the list is grouped (saved: by date until the user picks another).</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowRowDates), nameof(ByDateText), nameof(ByCategoryText), nameof(ByAccountText), nameof(ListText))]
+        [NotifyPropertyChangedFor(nameof(ShowRowDates), nameof(GroupingChoices))]
         private GroupingMode currentGroupingMode;
 
-        // The overflow menu marks the grouping in use
-        public string ByDateText => MenuText(GroupingMode.Date, AppResources.GroupByDate);
-
-        public string ByCategoryText => MenuText(GroupingMode.Category, AppResources.GroupByCategory);
-
-        public string ByAccountText => MenuText(GroupingMode.Account, AppResources.GroupByAccount);
-
-        public string ListText => MenuText(GroupingMode.None, AppResources.ListView);
-
-        private string MenuText(GroupingMode mode, string text) => CurrentGroupingMode == mode ? $"✓ {text}" : text;
+        /// <summary>The "Group by" rows of the filter sheet, the one in use marked.</summary>
+        public IReadOnlyList<GroupingChoice> GroupingChoices =>
+        [
+            new(GroupingMode.Date, AppResources.GroupByDate, CurrentGroupingMode == GroupingMode.Date),
+            new(GroupingMode.Category, AppResources.GroupByCategory, CurrentGroupingMode == GroupingMode.Category),
+            new(GroupingMode.Account, AppResources.GroupByAccount, CurrentGroupingMode == GroupingMode.Account),
+            new(GroupingMode.None, AppResources.ListView, CurrentGroupingMode == GroupingMode.None)
+        ];
 
         /// <summary>A day group names the date once, so its rows leave it out.</summary>
         public bool ShowRowDates => CurrentGroupingMode != GroupingMode.Date;
@@ -63,7 +61,10 @@ namespace MoneyRecord.ViewModels
         private void ToggleSearch() => IsSearchOpen = !IsSearchOpen;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsNewestFirst))]
         private bool isAscending;
+
+        public bool IsNewestFirst => !IsAscending;
 
         [ObservableProperty]
         private bool isRefreshing;
@@ -72,12 +73,35 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private IReadOnlyList<object> items = [];
 
+        // Which groups are open survives a reload: edits and searches rebuild the groups
+        private readonly GroupExpansion _expansion = new();
+
+        /// <summary>The list is grouped and has groups: the "Expand all" link shows.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowListBar))]
+        private bool showExpandAll;
+
+        /// <summary>The row under the header: the filtered count and Clear, and the Expand all link.</summary>
+        public bool ShowListBar => HasActiveFilters || ShowExpandAll;
+
+        /// <summary>"Expand all" while some group is closed, else "Collapse all".</summary>
+        [ObservableProperty]
+        private string expandAllText = AppResources.ExpandAll;
+
+        private IEnumerable<TransactionGroup> CurrentGroups => Items.OfType<TransactionGroup>();
+
+        private void RefreshExpandAll()
+        {
+            ShowExpandAll = CurrentGroups.Any();
+            ExpandAllText = GroupExpansion.AnyCollapsed(CurrentGroups) ? AppResources.ExpandAll : AppResources.CollapseAll;
+        }
+
         /// <summary>True once a load found nothing to show (before the first load the list is just not there yet).</summary>
         [ObservableProperty]
         private bool isEmpty;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(EmptyTitle), nameof(EmptyHint))]
+        [NotifyPropertyChangedFor(nameof(EmptyTitle), nameof(EmptyHint), nameof(ShowListBar))]
         private bool hasActiveFilters;
 
         /// <summary>"12 of 30" while a filter is active.</summary>
@@ -182,7 +206,13 @@ namespace MoneyRecord.ViewModels
         public Task InitializeAsync()
         {
             _swipeHintDecided = false;
-            _periodWatch ??= Period.WatchChanges(() => LoadDataCommand.Execute(null));
+            _periodWatch ??= Period.WatchChanges(() =>
+            {
+                // Another period has other days
+                _expansion.Reset();
+                LoadDataCommand.Execute(null);
+            });
+            OnPropertyChanged(nameof(GroupingChoices));
             return LoadDataCommand.ExecuteAsync(null);
         }
 
@@ -258,9 +288,16 @@ namespace MoneyRecord.ViewModels
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                Items = CurrentGroupingMode == GroupingMode.None
-                    ? (IReadOnlyList<object>)filtered
-                    : LedgerGrouping.Group(filtered, CurrentGroupingMode, _accountBalances, _accounts, IsAscending);
+                if (CurrentGroupingMode == GroupingMode.None)
+                    Items = filtered;
+                else
+                {
+                    var groups = LedgerGrouping.Group(filtered, CurrentGroupingMode, _accountBalances, _accounts, IsAscending);
+                    // Closed, unless a search or filter is on: then the matches show
+                    _expansion.Apply(groups, filter.IsActive);
+                    Items = groups;
+                }
+                RefreshExpandAll();
                 IsEmpty = filtered.Count == 0;
 
                 // Once per visit, when there are rows to swipe
@@ -274,26 +311,48 @@ namespace MoneyRecord.ViewModels
             });
         }
 
+        /// <summary>The filter sheet's Order rows: a pick applies and closes the sheet.</summary>
         [RelayCommand]
-        private void ToggleSortOrder()
+        private void SetSortOrder(bool ascending)
         {
-            IsAscending = !IsAscending;
+            CloseFilter(); // a pick settles the sheet, even when nothing changes
+            if (ascending == IsAscending)
+                return;
+
+            IsAscending = ascending;
             ApplyFilters();
         }
 
-        /// <summary>The overflow menu: group by date, category or account, or no groups.</summary>
+        /// <summary>The filter sheet's Group by rows: date, category or account, or no groups.</summary>
         [RelayCommand]
         private void SetGrouping(GroupingMode mode)
         {
+            CloseFilter(); // a pick settles the sheet, even when nothing changes
             if (mode == CurrentGroupingMode)
                 return;
 
+            // Other groups, other keys
+            _expansion.Reset();
             CurrentGroupingMode = mode;
             ApplyFilters();
         }
 
         [RelayCommand]
-        private void ToggleGroupExpanded(TransactionGroup group) => group?.ToggleExpanded();
+        private void ToggleGroupExpanded(TransactionGroup group)
+        {
+            if (group == null)
+                return;
+
+            _expansion.Toggle(group);
+            RefreshExpandAll();
+        }
+
+        [RelayCommand]
+        private void ToggleExpandAll()
+        {
+            _expansion.SetAll(CurrentGroups, GroupExpansion.AnyCollapsed(CurrentGroups));
+            RefreshExpandAll();
+        }
 
         private List<LedgerEntry> SplitPartsOf(LedgerEntry? entry) => entry is { IsSplit: true }
             ? _entries.Where(e => e.SplitId == entry.SplitId).OrderBy(e => e.SourceId).ToList()

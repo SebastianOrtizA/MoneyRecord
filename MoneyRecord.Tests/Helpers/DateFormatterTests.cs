@@ -68,6 +68,26 @@ public class DateFormatterTests
         var culture = new CultureInfo("en-US");
 
         DateFormatter.FormatRange(Date, Date.AddDays(1).AddTicks(-1), culture).Should().Be(DateFormatter.Format(Date, DateStyle.Medium, culture));
-        DateFormatter.FormatRange(new DateTime(2026, 10, 1), new DateTime(2026, 10, 31), culture).Should().Be("Oct 1, 2026 – Oct 31, 2026");
+        DateFormatter.FormatRange(new DateTime(2026, 10, 1), new DateTime(2026, 10, 31), culture).Should().Be("Oct 1 – Oct 31, 2026");
+    }
+
+    [Fact]
+    public void FormatRange_keeps_both_years_across_years()
+    {
+        var culture = new CultureInfo("en-US");
+
+        DateFormatter.FormatRange(new DateTime(2025, 12, 20), new DateTime(2026, 1, 5), culture).Should().Be("Dec 20, 2025 – Jan 5, 2026");
+    }
+
+    [Fact]
+    public void FormatRange_in_Spanish_drops_the_start_year_only()
+    {
+        var culture = new CultureInfo("es-CO");
+
+        var text = DateFormatter.FormatRange(new DateTime(2026, 9, 30), new DateTime(2026, 10, 31), culture);
+
+        text.Should().StartWith(DateFormatter.Format(new DateTime(2026, 9, 30), DateStyle.MonthDay, culture));
+        text.Should().EndWith(DateFormatter.Format(new DateTime(2026, 10, 31), DateStyle.Medium, culture));
+        text[..text.IndexOf(DateFormatter.Format(new DateTime(2026, 10, 31), DateStyle.Medium, culture), StringComparison.Ordinal)].Should().NotContain("2026");
     }
 }

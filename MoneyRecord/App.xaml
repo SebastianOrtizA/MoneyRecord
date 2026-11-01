@@ -13,7 +13,6 @@
             </ResourceDictionary.MergedDictionaries>
             
             <converters:TransactionTypeToColorConverter x:Key="TransactionTypeToColorConverter" />
-            <converters:BoolToSortTextConverter x:Key="BoolToSortTextConverter" />
             <toolkit:InvertedBoolConverter x:Key="InvertedBoolConverter" />
             <converters:BoolToExpandIconConverter x:Key="BoolToExpandIconConverter" />
             <converters:BalanceToColorConverter x:Key="BalanceToColorConverter" />

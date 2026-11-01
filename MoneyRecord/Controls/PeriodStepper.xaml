@@ -19,16 +19,18 @@
             </Label.GestureRecognizers>
         </Label>
 
-        <HorizontalStackLayout Grid.Column="1" Spacing="4"
-                               HorizontalOptions="Center" VerticalOptions="Center"
-                               SemanticProperties.Description="{Binding PickHint}">
-            <HorizontalStackLayout.GestureRecognizers>
+        <!-- A Grid, not a stack: the label is measured against the width left, so a long range wraps instead of running off screen -->
+        <Grid Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="4"
+              HorizontalOptions="Center" VerticalOptions="Center"
+              SemanticProperties.Description="{Binding PickHint}">
+            <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding PickCommand}" />
-            </HorizontalStackLayout.GestureRecognizers>
+            </Grid.GestureRecognizers>
             <Label Text="{Binding Label}" FontSize="18" FontAttributes="Bold"
-                   VerticalOptions="Center" LineBreakMode="TailTruncation" />
-            <Label Text="&#xF0140;" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center" IsVisible="{Binding HasPicker}" />
-        </HorizontalStackLayout>
+                   VerticalOptions="Center" HorizontalTextAlignment="Center"
+                   LineBreakMode="WordWrap" MaxLines="2" />
+            <Label Grid.Column="1" Text="&#xF0140;" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center" IsVisible="{Binding HasPicker}" />
+        </Grid>
 
         <!-- Hidden at the current month or year (never past today) -->
         <Label Grid.Column="2" Text="&#xF0142;"

@@ -2964,4 +2964,13 @@
   <data name="PickDate" xml:space="preserve">
     <value>Choisir une date</value>
   </data>
+  <data name="GroupBy" xml:space="preserve">
+    <value>Grouper par</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Tout développer</value>
+  </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Tout réduire</value>
+  </data>
 </root>

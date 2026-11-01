@@ -12,21 +12,11 @@
              x:DataType="viewmodels:TransactionsViewModel"
              Title="{ext:Localize Transactions}">
 
-    <!-- Search is an icon (it opens the box under the header); the grouping and the sort order are in the overflow menu -->
+    <!-- Search is an icon (it opens the box under the header); the grouping and the sort order are in the filter sheet -->
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{ext:Localize SearchTransactions}"
                      IconImageSource="{StaticResource SearchIcon}"
                      Command="{Binding ToggleSearchCommand}" />
-        <ToolbarItem Order="Secondary" Text="{Binding ByDateText}"
-                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Date}" />
-        <ToolbarItem Order="Secondary" Text="{Binding ByCategoryText}"
-                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Category}" />
-        <ToolbarItem Order="Secondary" Text="{Binding ByAccountText}"
-                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.Account}" />
-        <ToolbarItem Order="Secondary" Text="{Binding ListText}"
-                     Command="{Binding SetGroupingCommand}" CommandParameter="{x:Static models:GroupingMode.None}" />
-        <ToolbarItem Order="Secondary" Text="{Binding IsAscending, Converter={StaticResource BoolToSortTextConverter}}"
-                     Command="{Binding ToggleSortOrderCommand}" />
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
@@ -225,18 +215,29 @@
                             </HorizontalStackLayout>
                         </ScrollView>
 
-                        <!-- Count and Clear while filtered -->
-                        <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="4" IsVisible="{Binding HasActiveFilters}">
+                        <!-- Count and Clear while filtered; Expand / Collapse all at the edge while the list has groups -->
+                        <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="4" IsVisible="{Binding ShowListBar}">
                             <Label Text="{Binding FilteredCountText}"
+                                   IsVisible="{Binding HasActiveFilters}"
                                    FontSize="13"
                                    VerticalOptions="Center"
                                    TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                             <Label Grid.Column="1"
+                                   IsVisible="{Binding HasActiveFilters}"
                                    Text="{ext:Localize ClearFilters}"
                                    VerticalTextAlignment="Center"
                                    Style="{StaticResource CardLink}">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding Filters.ClearCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <Label Grid.Column="3"
+                                   IsVisible="{Binding ShowExpandAll}"
+                                   Text="{Binding ExpandAllText}"
+                                   VerticalTextAlignment="Center"
+                                   Style="{StaticResource CardLink}">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleExpandAllCommand}" />
                                 </Label.GestureRecognizers>
                             </Label>
                         </Grid>
@@ -418,6 +419,26 @@
         <controls:FilterSheet>
             <controls:FilterSheet.Sections>
                 <VerticalStackLayout Spacing="4">
+                    <!-- How the list is shown: a pick applies and closes the sheet -->
+                    <Label Text="{ext:Localize GroupBy}" Style="{StaticResource SecondaryLabel}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding GroupingChoices}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:GroupingChoice">
+                                <controls:OptionRow Text="{Binding Name}"
+                                                    IsSelected="{Binding IsSelected}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=SetGroupingCommand}"
+                                                    CommandParameter="{Binding Mode}" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Label Text="{ext:Localize Sort}" Style="{StaticResource SecondaryLabel}" Margin="0,8,0,0" />
+                    <controls:OptionRow Text="{ext:Localize SortNewestFirst}" IsSelected="{Binding IsNewestFirst}"
+                                        Command="{Binding SetSortOrderCommand}" CommandParameter="{x:Boolean False}" />
+                    <controls:OptionRow Text="{ext:Localize SortOldestFirst}" IsSelected="{Binding IsAscending}"
+                                        Command="{Binding SetSortOrderCommand}" CommandParameter="{x:Boolean True}" />
+
+                    <Label Text="{ext:Localize Filters}" Style="{StaticResource SecondaryLabel}" Margin="0,8,0,0" />
                     <controls:FilterRow Title="{ext:Localize FilterByType}" Value="{Binding Filters.TypeChipText}"
                                         IsActive="{Binding Filters.IsTypeActive}" Command="{Binding Filters.PickTypeCommand}" />
                     <controls:FilterRow Title="{ext:Localize FilterByCategory}" Value="{Binding Filters.CategoryChipText}"
