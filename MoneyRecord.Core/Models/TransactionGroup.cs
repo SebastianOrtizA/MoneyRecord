@@ -19,18 +19,22 @@ namespace MoneyRecord.Models
         private bool isExpanded;
 
         /// <param name="totalsAreSigned">The totals carry their own sign (a day's net), instead of taking it from <paramref name="type"/>.</param>
-        /// <param name="isExpanded">Starts open (a day shows its entries).</param>
-        public TransactionGroup(string groupName, string groupIconCode, TransactionType type,
+        /// <param name="isExpanded">Starts open.</param>
+        public TransactionGroup(string key, string groupName, string groupIconCode, TransactionType type,
             IReadOnlyList<CurrencyAmount> totals, IReadOnlyList<LedgerEntry> items, bool totalsAreSigned = false, bool isExpanded = false)
         {
             _totalsAreSigned = totalsAreSigned;
             this.isExpanded = isExpanded;
+            Key = key;
             GroupName = groupName;
             GroupIconCode = groupIconCode;
             Type = type;
             Totals = totals;
             Items = items;
         }
+
+        /// <summary>Stable across reloads ("d:2026-10-31", "c:7", "a:3"), so a group keeps its open / closed state.</summary>
+        public string Key { get; }
 
         public string GroupName { get; }
 
