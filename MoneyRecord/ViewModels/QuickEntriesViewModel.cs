@@ -167,11 +167,13 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private async Task LoadFormCategoriesAsync(int? selectedId)
+        private async Task LoadFormCategoriesAsync(int? selectedId, CancellationToken cancellationToken = default)
         {
             var type = FormTypeIndex == 1 ? CategoryType.Income : CategoryType.Expense;
             // "Travel" holds trip expenses only
-            FormCategories = (await _categoryRepository.GetByTypeAsync(type)).Where(c => !c.IsTravel).ToList();
+            var categories = (await _categoryRepository.GetByTypeAsync(type)).Where(c => !c.IsTravel).ToList();
+            cancellationToken.ThrowIfCancellationRequested();
+            FormCategories = categories;
             FormCategory = FormCategories.FirstOrDefault(c => c.Id == selectedId) ?? FormCategories.FirstOrDefault();
         }
 
@@ -179,14 +181,19 @@ namespace MoneyRecord.ViewModels
         {
             // The categories of the other type don't fit
             if (!_loadingForm)
-                _ = ReloadFormCategoriesAsync();
+                ReloadFormCategoriesCommand.Execute(null);
         }
 
-        private async Task ReloadFormCategoriesAsync()
+        [RelayCommand(AllowConcurrentExecutions = true)]
+        private async Task ReloadFormCategoriesAsync(CancellationToken cancellationToken)
         {
             try
             {
-                await LoadFormCategoriesAsync(null);
+                await LoadFormCategoriesAsync(null, cancellationToken);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                // A newer toggle replaced this one
             }
             catch (Exception ex)
             {
