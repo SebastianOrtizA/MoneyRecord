@@ -46,6 +46,9 @@ namespace MoneyRecord.Controls
         private (string, FilterChip) Make(string kind, string text)
         {
             var chip = new FilterChip { Text = text, Margin = new Thickness(0, 0, 8, 8), Padding = new Thickness(16, 0) };
+            // Equal thirds while they fit; a large font wraps them instead
+            FlexLayout.SetGrow(chip, 1);
+            FlexLayout.SetBasis(chip, new Microsoft.Maui.Layouts.FlexBasis(0.3f, true));
             chip.Clicked += (_, _) =>
             {
                 if (Command?.CanExecute(kind) == true)
