@@ -12,6 +12,7 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(TransferIdString), "TransferId")]
     [QueryProperty(nameof(SourceAccountIdString), "SourceAccountId")]
     [QueryProperty(nameof(AmountSeed), "Amount")]
+    [QueryProperty(nameof(DuplicateIdString), "Duplicate")]
     public partial class AddTransferViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -25,6 +26,9 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private Transfer? transfer;
+
+        /// <summary>"Add again": the transfer to repeat as a new one dated today (accounts, amounts and notes).</summary>
+        public string? DuplicateIdString { get; set; }
 
         // Use string for query property to avoid type conversion issues with Shell navigation
         private string? _transferIdString;
@@ -207,7 +211,18 @@ namespace MoneyRecord.ViewModels
                 Description = AppResources.DefaultTransferDescription;
                 if (sourceAccountId != null)
                     SelectedSourceAccount = Accounts.FirstOrDefault(a => a.Id == sourceAccountId);
-                if (!string.IsNullOrWhiteSpace(AmountSeed))
+                if (int.TryParse(DuplicateIdString, out var duplicateId)
+                    && await _transferRepository.GetByIdAsync(duplicateId) is { } original)
+                {
+                    SelectedSourceAccount = Accounts.FirstOrDefault(a => a.Id == original.SourceAccountId);
+                    SelectedDestinationAccount = Accounts.FirstOrDefault(a => a.Id == original.DestinationAccountId);
+                    Description = original.Description;
+                    // After the accounts: the amount fields format in their currencies
+                    Amount = original.Amount.ToString();
+                    if (IsCrossCurrency)
+                        DestinationAmount = original.DestinationAmount.ToString();
+                }
+                else if (!string.IsNullOrWhiteSpace(AmountSeed))
                     Amount = AmountSeed;
             }
 

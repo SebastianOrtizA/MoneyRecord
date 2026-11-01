@@ -438,7 +438,7 @@ namespace MoneyRecord.ViewModels
                 return;
 
             // A debt's money is edited on the Debts page, where a payment can't exceed what is left
-            if (entry.IsTransfer && _accounts.Any(a => a.IsDebt && (a.Id == entry.AccountId || a.Id == entry.CounterpartAccountId)))
+            if (IsDebtTransfer(entry))
             {
                 await _navigationService.NavigateToAsync(nameof(DebtsPage));
                 await _dialogService.ToastAsync(AppResources.DebtEditOnDebtsPage);
@@ -457,6 +457,33 @@ namespace MoneyRecord.ViewModels
                 await _navigationService.NavigateToAsync(nameof(AddTransactionPage),
                     new Dictionary<string, object> { { "Transaction", transaction } });
             }
+        }
+
+        private bool IsDebtTransfer(LedgerEntry entry) =>
+            entry.IsTransfer && _accounts.Any(a => a.IsDebt && (a.Id == entry.AccountId || a.Id == entry.CounterpartAccountId));
+
+        /// <summary>
+        /// "Add again": opens the add form with this entry's account, category, payee, tags, notes and amount, dated today. A
+        /// debt's transfers are made on the Debts page; a split duplicates the one row that was picked.
+        /// </summary>
+        [RelayCommand(CanExecute = nameof(CanDuplicate))]
+        private async Task DuplicateTransactionAsync(LedgerEntry? entry)
+        {
+            if (!CanDuplicate(entry))
+                return;
+
+            await _navigationService.NavigateToAsync(entry!.IsTransfer ? nameof(AddTransferPage) : nameof(AddTransactionPage),
+                new Dictionary<string, object> { { "Duplicate", entry.SourceId.ToString() } });
+        }
+
+        private bool CanDuplicate(LedgerEntry? entry) => entry != null && !IsDebtTransfer(entry);
+
+        [RelayCommand]
+        private Task DuplicateSelectedAsync()
+        {
+            var entry = SelectedEntry;
+            CloseDetails();
+            return DuplicateTransactionAsync(entry);
         }
 
         [RelayCommand]

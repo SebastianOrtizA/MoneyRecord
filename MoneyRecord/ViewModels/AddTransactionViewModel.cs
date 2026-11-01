@@ -18,6 +18,7 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(RecurringIdString), "RecurringId")]
     [QueryProperty(nameof(OccurrenceString), "Occurrence")]
     [QueryProperty(nameof(AmountSeed), "Amount")]
+    [QueryProperty(nameof(DuplicateIdString), "Duplicate")]
     public partial class AddTransactionViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -88,6 +89,15 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>A new entry in this account (the widget's buttons) instead of the last one used.</summary>
         public string? AccountIdString { get; set; }
+
+        /// <summary>"Add again": the transaction to repeat as a new entry dated today (see <see cref="EntryPrefill"/>).</summary>
+        public string? DuplicateIdString { get; set; }
+
+        // The user (or the widget's route) picked the account: a payee's last account no longer replaces it
+        private bool _accountChosen;
+
+        // The amount a payee pick filled in: another payee's pick may replace it, anything typed stays
+        private string? _payeeFilledAmount;
 
         /// <summary>"true" from the Recurring page's + button: the form makes a schedule (<see cref="IsScheduleMode"/>).</summary>
         public string? ScheduleName
@@ -204,7 +214,7 @@ namespace MoneyRecord.ViewModels
             PayeeSuggestions = PayeeNames.Suggest(_payees, value);
             // A known payee typed in full (or taken from the keyboard's suggestions) picks its category too, like a chip
             if (!_categoryChosen && PayeeNames.Find(_payees, value) is { } payee)
-                _ = SelectLastCategoryAsync(payee);
+                _ = ApplyPayeeLastEntryAsync(payee);
         }
 
         /// <summary>
@@ -363,7 +373,11 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
-        private void SelectAccount(AccountChoice choice) => SelectedAccount = choice.Account;
+        private void SelectAccount(AccountChoice choice)
+        {
+            _accountChosen = true;
+            SelectedAccount = choice.Account;
+        }
 
         private void RebuildAccountChoices() =>
             AccountChoices = Accounts.Select(a => new AccountChoice(a) { IsSelected = a.Id == SelectedAccount?.Id }).ToList();
@@ -543,6 +557,8 @@ namespace MoneyRecord.ViewModels
             TripInfoText = string.Empty;
             _loadingTrip = false;
             _categoryChosen = false;
+            _accountChosen = false;
+            _payeeFilledAmount = null;
             PayeeText = string.Empty;
             SelectedCategory = null;
             SelectedAccount = null;
@@ -749,6 +765,14 @@ namespace MoneyRecord.ViewModels
                     TransactionType = occurrence.TransactionType;
                     IsOccurrenceMode = true;
                 }
+                // "Add again": a new entry of the repeated one's type (a transfer has its own form)
+                var duplicate = occurrence == null && int.TryParse(DuplicateIdString, out var duplicateId)
+                    ? await _transactionRepository.GetByIdAsync(duplicateId)
+                    : null;
+                if (duplicate is { Type: not TransactionType.Transfer })
+                    TransactionType = duplicate.Type;
+                else
+                    duplicate = null;
                 Title = TransactionType == TransactionType.Income ? AppResources.AddIncome : AppResources.AddExpense;
                 await LoadAccountsAsync();
                 await LoadTripAsync(null);
@@ -756,7 +780,9 @@ namespace MoneyRecord.ViewModels
                 await LoadPayeesAsync();
 
                 // The account the widget asked for, else the account and category last used for this type
-                SelectedAccount = (int.TryParse(AccountIdString, out var accountId) ? Accounts.FirstOrDefault(a => a.Id == accountId) : null)
+                var requestedAccount = int.TryParse(AccountIdString, out var accountId) ? Accounts.FirstOrDefault(a => a.Id == accountId) : null;
+                _accountChosen = requestedAccount != null;
+                SelectedAccount = requestedAccount
                     ?? (IsTripMode ? Accounts.FirstOrDefault(a => a.Id == TripForEntry!.AccountId) : null)
                     ?? _entryDefaults.DefaultAccount(TransactionType, Accounts);
                 SelectedCategory = IsTripMode
@@ -765,6 +791,8 @@ namespace MoneyRecord.ViewModels
 
                 if (occurrence != null)
                     FillFromOccurrence(occurrence);
+                else if (duplicate != null)
+                    FillFromDuplicate(EntryPrefill.From(duplicate));
                 else if (!string.IsNullOrWhiteSpace(AmountSeed))
                     Amount = AmountSeed;
 
@@ -812,6 +840,26 @@ namespace MoneyRecord.ViewModels
             IsMoreDetailsOpen = Description.Length > 0;
             if (recurring.LastAmountCents != 0)
                 AmountPlaceholder = MoneyFormatter.FormatEstimate(Money.FromCents(recurring.LastAmountCents), SelectedAccount?.CurrencyCode ?? string.Empty);
+        }
+
+        /// <summary>
+        /// Fills the new entry from the repeated one (dated today, no receipt, split or trip): the category and account when
+        /// they still exist, payee, tags, notes and amount. The category counts as chosen, so the payee can't change it.
+        /// </summary>
+        private void FillFromDuplicate(EntryPrefill prefill)
+        {
+            _categoryChosen = true;
+            _accountChosen = true;
+            if (Accounts.FirstOrDefault(a => a.Id == prefill.AccountId) is { } account)
+                SelectedAccount = account;
+            if (!IsTripMode && CategoryChoices.FirstOrDefault(c => c.Category.Id == prefill.CategoryId) is { } choice)
+                SelectedCategory = choice.Category;
+            PayeeText = _payees.FirstOrDefault(p => p.Id == prefill.PayeeId)?.Name ?? string.Empty;
+            TagsText = prefill.Tags ?? string.Empty;
+            Description = EntryDescription.ForEditing(prefill.Description, SelectedCategory?.Name);
+            IsMoreDetailsOpen = Description.Length > 0 || TagsText.Length > 0;
+            // After the account: the amount field formats in the account's currency
+            Amount = Money.FromCents(prefill.AmountCents).ToString();
         }
 
         private async Task LoadAccountsAsync()
@@ -878,22 +926,36 @@ namespace MoneyRecord.ViewModels
             PayeeText = payee.Name;
         }
 
-        /// <summary>Selects the category of the payee's latest entry of this type, when it is offered and still wanted.</summary>
-        private async Task SelectLastCategoryAsync(PayeeSummary payee)
+        /// <summary>
+        /// Starts from the payee's latest entry of this type: its category when it is offered and still wanted, the account it
+        /// was paid from unless one was picked, and its amount over an empty field (or an earlier payee's fill), in the same
+        /// currency only.
+        /// </summary>
+        private async Task ApplyPayeeLastEntryAsync(PayeeSummary payee)
         {
             try
             {
-                var categoryId = await _payeeService.GetLastCategoryAsync(payee.Id, TransactionType);
+                var last = await _payeeService.GetLastEntryAsync(payee.Id, TransactionType);
                 // Meanwhile the user may have picked a category or typed another payee
-                if (_categoryChosen || IsSplit || IsTripMode || !PayeeNames.Same(PayeeText, payee.Name))
+                if (last == null || _categoryChosen || IsSplit || IsTripMode || !PayeeNames.Same(PayeeText, payee.Name))
                     return;
-                if (CategoryChoices.FirstOrDefault(c => c.Category.Id == categoryId) is { } choice)
+
+                if (CategoryChoices.FirstOrDefault(c => c.Category.Id == last.CategoryId) is { } choice)
                     SelectedCategory = choice.Category;
+                if (!_accountChosen && Accounts.FirstOrDefault(a => a.Id == last.AccountId) is { } account)
+                    SelectedAccount = account;
+
+                if (SelectedAccount != null && last.AccountId == SelectedAccount.Id && last.AmountCents > 0
+                    && (Amount.Length == 0 || Amount == _payeeFilledAmount))
+                {
+                    Amount = Money.FromCents(last.AmountCents).ToString();
+                    _payeeFilledAmount = Amount;
+                }
             }
             catch (Exception ex)
             {
-                // Only a convenience: the user picks the category themselves
-                _logger.LogWarning(ex, "Could not look up the payee's last category");
+                // Only a convenience: the user fills the form themselves
+                _logger.LogWarning(ex, "Could not look up the payee's last entry");
             }
         }
 

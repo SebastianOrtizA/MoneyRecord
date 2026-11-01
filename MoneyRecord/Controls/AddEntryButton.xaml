@@ -4,8 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
              xmlns:ext="clr-namespace:MoneyRecord.Extensions"
-             xmlns:controls="clr-namespace:MoneyRecord.Controls"
-             x:Class="MoneyRecord.Controls.AddEntryButton"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"             x:Class="MoneyRecord.Controls.AddEntryButton"
              x:DataType="viewmodels:AddEntryViewModel">
 
     <Grid>
@@ -55,7 +54,8 @@
             </VerticalStackLayout>
         </controls:BottomSheet>
 
-        <Button Text="&#xF0415;"
+        <Button x:Name="AddButton"
+                Text="&#xF0415;"
                 FontFamily="MaterialDesignIcons"
                 FontSize="28"
                 WidthRequest="60"
@@ -66,6 +66,7 @@
                 HorizontalOptions="End"
                 VerticalOptions="End"
                 SemanticProperties.Description="{ext:Localize AddNew}"
+                SemanticProperties.Hint="{ext:Localize AddNewHint}"
                 IsVisible="{Binding IsOpen, Converter={StaticResource InvertedBoolConverter}}"
                 Command="{Binding OpenCommand}"
                 BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"

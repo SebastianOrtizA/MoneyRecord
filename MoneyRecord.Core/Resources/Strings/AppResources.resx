@@ -928,6 +928,12 @@
   <data name="AddNew" xml:space="preserve">
     <value>Add new</value>
   </data>
+  <data name="AddNewHint" xml:space="preserve">
+    <value>Double-tap and hold to add an expense directly</value>
+  </data>
+  <data name="DuplicateButton" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
   <data name="SeeAll" xml:space="preserve">
     <value>See all</value>
   </data>

@@ -13,8 +13,8 @@ namespace MoneyRecord.Services.Interfaces
         /// </summary>
         Task<int?> ResolveAsync(string? name);
 
-        /// <summary>The category of the payee's latest transaction of this type, if it has one.</summary>
-        Task<int?> GetLastCategoryAsync(int payeeId, TransactionType type);
+        /// <summary>The payee's latest transaction of this type (category, amount, account), if it has one.</summary>
+        Task<EntryPrefill?> GetLastEntryAsync(int payeeId, TransactionType type);
 
         /// <summary>Gives the payee a new name.</summary>
         /// <exception cref="InvalidOperationException">The name is empty or another payee has it (merge them instead).</exception>

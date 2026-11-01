@@ -876,6 +876,12 @@
   <data name="AddNew" xml:space="preserve">
     <value>Ajouter</value>
   </data>
+  <data name="AddNewHint" xml:space="preserve">
+    <value>Appuyez deux fois et maintenez pour ajouter directement une dépense</value>
+  </data>
+  <data name="DuplicateButton" xml:space="preserve">
+    <value>Dupliquer</value>
+  </data>
   <data name="SeeAll" xml:space="preserve">
     <value>Tout voir</value>
   </data>
