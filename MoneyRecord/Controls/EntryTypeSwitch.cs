@@ -7,7 +7,7 @@ namespace MoneyRecord.Controls
     /// The add forms' Expense | Income | Transfer switch: three chips, the <see cref="Selected"/> one active. A tap runs
     /// <see cref="Command"/> with "Expense", "Income" or "Transfer".
     /// </summary>
-    public class EntryTypeSwitch : Grid
+    public class EntryTypeSwitch : FlexLayout
     {
         public static readonly BindableProperty SelectedProperty =
             BindableProperty.Create(nameof(Selected), typeof(string), typeof(EntryTypeSwitch), string.Empty,
@@ -20,13 +20,13 @@ namespace MoneyRecord.Controls
 
         public EntryTypeSwitch()
         {
-            ColumnSpacing = 8;
-            ColumnDefinitions = [new(GridLength.Star), new(GridLength.Star), new(GridLength.Star)];
+            // Wraps to a second row when a large font leaves no room for three chips
+            Wrap = Microsoft.Maui.Layouts.FlexWrap.Wrap;
             _chips =
             [
-                Make("Expense", AppResources.Expense, 0),
-                Make("Income", AppResources.Income, 1),
-                Make("Transfer", AppResources.Transfer, 2)
+                Make("Expense", AppResources.Expense),
+                Make("Income", AppResources.Income),
+                Make("Transfer", AppResources.Transfer)
             ];
             Refresh();
         }
@@ -43,15 +43,15 @@ namespace MoneyRecord.Controls
             set => SetValue(CommandProperty, value);
         }
 
-        private (string, FilterChip) Make(string kind, string text, int column)
+        private (string, FilterChip) Make(string kind, string text)
         {
-            var chip = new FilterChip { Text = text, Padding = new Thickness(8, 0) };
+            var chip = new FilterChip { Text = text, Margin = new Thickness(0, 0, 8, 8), Padding = new Thickness(16, 0) };
             chip.Clicked += (_, _) =>
             {
                 if (Command?.CanExecute(kind) == true)
                     Command.Execute(kind);
             };
-            this.Add(chip, column);
+            Children.Add(chip);
             return (kind, chip);
         }
 

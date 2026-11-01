@@ -31,6 +31,7 @@
                     <Label Grid.Column="1"
                            Text="{Binding AmountSymbol}"
                            FontSize="32"
+                           FontAutoScalingEnabled="False"
                            FontAttributes="Bold"
                            VerticalOptions="Center"
                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}">
@@ -45,6 +46,7 @@
                                            Text="{Binding Amount}"
                                            Placeholder="{Binding AmountPlaceholder}"
                                            FontSize="32"
+                                           FontAutoScalingEnabled="False"
                                            FontAttributes="Bold"
                                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
                                            SemanticProperties.Description="{ext:Localize Amount}">
