@@ -315,7 +315,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private void SetSortOrder(bool ascending)
         {
-            CloseFilter();
+            CloseFilter(); // a pick settles the sheet, even when nothing changes
             if (ascending == IsAscending)
                 return;
 
@@ -327,7 +327,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private void SetGrouping(GroupingMode mode)
         {
-            CloseFilter();
+            CloseFilter(); // a pick settles the sheet, even when nothing changes
             if (mode == CurrentGroupingMode)
                 return;
 

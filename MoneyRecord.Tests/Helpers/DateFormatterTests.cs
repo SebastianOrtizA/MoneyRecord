@@ -88,6 +88,6 @@ public class DateFormatterTests
 
         text.Should().StartWith(DateFormatter.Format(new DateTime(2026, 9, 30), DateStyle.MonthDay, culture));
         text.Should().EndWith(DateFormatter.Format(new DateTime(2026, 10, 31), DateStyle.Medium, culture));
-        text.Split('–')[0].Should().NotContain("2026");
+        text[..text.IndexOf(DateFormatter.Format(new DateTime(2026, 10, 31), DateStyle.Medium, culture), StringComparison.Ordinal)].Should().NotContain("2026");
     }
 }

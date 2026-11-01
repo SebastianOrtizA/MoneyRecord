@@ -56,7 +56,8 @@ namespace MoneyRecord.Helpers
                     : totals.Count > 0 && totals.All(t => t.Amount < 0) ? TransactionType.Expense
                     : TransactionType.Transfer;
 
-                return new TransactionGroup("d:" + day.Key.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), DateFormatter.Format(day.Key, DateStyle.Long), DayIconCode, type, totals, items,
+                var key = "d:" + day.Key.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                return new TransactionGroup(key, DateFormatter.Format(day.Key, DateStyle.Long), DayIconCode, type, totals, items,
                     totalsAreSigned: true);
             }).ToList();
         }
