@@ -15,7 +15,6 @@
         <BackButtonBehavior Command="{Binding CancelCommand}"/>
     </Shell.BackButtonBehavior>
 
-    <!-- Fast entry: amount → payee → category → account → date; the rest under "More details"; Save stays at the bottom -->
     <!-- Fast entry: type, amount, category, account, date, then the optional payee; the rest under "More details"; Save stays at the bottom -->
     <Grid RowDefinitions="*,Auto">
         <ScrollView x:Name="FormScroll">
@@ -264,6 +263,7 @@
                     <!-- Opened by the Pick date chip (code-behind); invisible, but laid out so the platform can show its dialog -->
                     <Grid HeightRequest="0">
                     <DatePicker x:Name="DateChooser"
+                                AutomationProperties.IsInAccessibleTree="False"
                                 Date="{Binding SelectedDate}"
                                 MinimumDate="{Binding MinimumDate}"
                                 IsEnabled="{Binding CanEditDate}"
@@ -364,7 +364,8 @@
                                     <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding BaseCurrencyCode}"/>
                                 </controls:DecimalEntry.Behaviors>
                             </controls:DecimalEntry>
-                            <Label Text="{Binding ConvertedRateText}" Style="{StaticResource SecondaryLabel}"/>
+                            <Label Text="{Binding ConvertedRateText}" Style="{StaticResource SecondaryLabel}"
+                                   IsVisible="{Binding ConvertedRateText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}"/>
                         </VerticalStackLayout>
 
                         <!-- Receipt Photo Section -->
@@ -447,6 +448,7 @@
                                         OnColor="{AppThemeBinding Light=#1976D2, Dark=#42A5F5}"/>
                             </Grid>
                             <Label Text="{ext:Localize AmountVariesHint}"
+                                   IsVisible="{Binding IsVariableAmount}"
                                    Style="{StaticResource SecondaryLabel}"/>
                         </VerticalStackLayout>
         

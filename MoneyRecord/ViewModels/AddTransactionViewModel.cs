@@ -339,7 +339,7 @@ namespace MoneyRecord.ViewModels
                 return;
             }
 
-            if (kind == "Transfer" || !Enum.TryParse<TransactionType>(kind, out var type) || type == TransactionType || !ShowsTypeSwitch)
+            if (!Enum.TryParse<TransactionType>(kind, out var type) || type == TransactionType || !ShowsTypeSwitch)
                 return;
 
             try
