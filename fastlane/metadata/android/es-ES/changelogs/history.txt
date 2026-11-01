@@ -1,3 +1,8 @@
+## 1.1.1
+- Transacciones: agrupar por día, categoría o cuenta, y el orden, ahora están en la hoja de filtros (el menú ⋮ ya no existe).
+- Los grupos empiezan contraídos para recorrer la lista con más facilidad; se abren mientras buscas o filtras, y Expandir todo los abre de una vez.
+- Un rango de fechas personalizado largo ahora cabe en pantalla en lugar de cortarse.
+
 ## 1.1.0
 - Añadir un movimiento es más rápido: cambia entre Gasto, Ingreso y Transferir arriba, elige la cuenta y Hoy o Ayer con un toque, y Guardar queda sobre el teclado y se activa cuando el importe es válido.
 - Las transacciones se agrupan por día con el total de cada día. La búsqueda es un icono de la barra y cada filtro activo aparece como una etiqueta que puedes quitar.
