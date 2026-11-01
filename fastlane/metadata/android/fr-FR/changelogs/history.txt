@@ -1,3 +1,11 @@
+## 1.1.0
+- Ajouter une opération est plus rapide : passe de Dépense à Revenu ou Virement en haut, choisis le compte et Aujourd'hui ou Hier d'un toucher, et Enregistrer reste au-dessus du clavier et ne s'active que lorsque le montant est valide.
+- Les transactions sont regroupées par jour avec le total de chaque jour. La recherche est une icône de la barre et chaque filtre actif apparaît sous forme de pastille que tu peux retirer.
+- Un sélecteur de période (‹ octobre 2026 ›) remplace le menu de période sur l'accueil, les transactions, les budgets et les rapports.
+- Rapports : onglets et couleurs des graphiques plus clairs, et tu peux maintenir appuyée une part du graphique en anneau pour voir son montant.
+- Les cartes de budget montrent ce qui reste ou ce qui dépasse avec une barre de progression, les plus urgentes d'abord.
+- Plus et Réglages sont regroupés sous des titres, et Réglages a un champ de recherche.
+
 ## 1.0.0
 - Supprimer une transaction, une répartition ou un virement ne demande plus de confirmation : touche Annuler dans le message qui apparaît pour le récupérer.
 - Nouveau : une carte Pour commencer sur l'accueil te guide pour les premiers pas (ajouter une dépense, sauvegarder tes données, activer les rappels), et les écrans vides te disent maintenant quoi faire ensuite.

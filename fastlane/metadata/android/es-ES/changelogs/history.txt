@@ -1,3 +1,11 @@
+## 1.1.0
+- Añadir un movimiento es más rápido: cambia entre Gasto, Ingreso y Transferir arriba, elige la cuenta y Hoy o Ayer con un toque, y Guardar queda sobre el teclado y se activa cuando el importe es válido.
+- Las transacciones se agrupan por día con el total de cada día. La búsqueda es un icono de la barra y cada filtro activo aparece como una etiqueta que puedes quitar.
+- Un selector de periodo (‹ octubre de 2026 ›) sustituye al desplegable de periodo en Inicio, Transacciones, Presupuestos y Reportes.
+- Reportes: pestañas y colores de los gráficos más claros, y puedes mantener pulsada una porción del gráfico circular para ver su importe.
+- Las tarjetas de presupuesto muestran lo que queda o lo que te pasaste con una barra de progreso, las más urgentes primero.
+- Más y Configuración se agrupan bajo títulos, y Configuración tiene un cuadro de búsqueda.
+
 ## 1.0.0
 - Borrar una transacción, un gasto dividido o una transferencia ya no pide confirmación: toca Deshacer en el mensaje que aparece para recuperarlo.
 - Novedad: una tarjeta Primeros pasos en Inicio te guía en los primeros pasos (añadir un gasto, hacer una copia de seguridad, activar los recordatorios), y las pantallas vacías ahora te dicen qué hacer a continuación.

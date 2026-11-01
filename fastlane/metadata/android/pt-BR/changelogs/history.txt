@@ -1,3 +1,11 @@
+## 1.1.0
+- Adicionar um lançamento ficou mais rápido: alterne entre Despesa, Receita e Transferência no topo, escolha a conta e Hoje ou Ontem com um toque, e o Salvar fica acima do teclado e só liga quando o valor é válido.
+- As transações são agrupadas por dia com o total de cada dia. A busca é um ícone na barra e cada filtro ativo aparece como uma etiqueta que você pode remover.
+- Um seletor de período (‹ outubro de 2026 ›) substitui o menu de período em Início, Transações, Orçamentos e Relatórios.
+- Relatórios: abas e cores dos gráficos mais claras, e você pode manter pressionada uma fatia do gráfico de rosca para ver o valor.
+- Os cartões de orçamento mostram o que sobra ou o que passou com uma barra de progresso, os mais urgentes primeiro.
+- Mais e Configurações são agrupados sob títulos, e Configurações tem um campo de busca.
+
 ## 1.0.0
 - Apagar uma transação, uma divisão ou uma transferência não pede mais confirmação: toque em Desfazer na mensagem que aparece para recuperá-la.
 - Novidade: um cartão Primeiros passos na tela inicial guia você pelos primeiros passos (adicionar uma despesa, fazer um backup, ativar os lembretes), e as telas vazias agora dizem o que fazer a seguir.
