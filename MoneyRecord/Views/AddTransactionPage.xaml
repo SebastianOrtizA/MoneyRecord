@@ -28,9 +28,11 @@
                 <!-- The amount in the type's colour, with the account's currency symbol in front; the scan button beside it
                      reads a receipt photo's total and date -->
                 <Grid ColumnDefinitions="44,Auto,*,44" ColumnSpacing="4">
+                    <!-- The amount ignores font scale on purpose: 32 sp is large already and "Enter an amount" clips at 2.0 -->
                     <Label Grid.Column="1"
                            Text="{Binding AmountSymbol}"
                            FontSize="32"
+                           FontAutoScalingEnabled="False"
                            FontAttributes="Bold"
                            VerticalOptions="Center"
                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}">
@@ -45,6 +47,7 @@
                                            Text="{Binding Amount}"
                                            Placeholder="{Binding AmountPlaceholder}"
                                            FontSize="32"
+                                           FontAutoScalingEnabled="False"
                                            FontAttributes="Bold"
                                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"
                                            SemanticProperties.Description="{ext:Localize Amount}">
