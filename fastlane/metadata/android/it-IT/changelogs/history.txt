@@ -1,3 +1,11 @@
+## 1.1.0
+- Aggiungere un movimento è più veloce: passa tra Spesa, Entrata e Trasferisci in alto, scegli il conto e Oggi o Ieri con un tocco, e Salva resta sopra la tastiera e si attiva solo quando l'importo è valido.
+- I movimenti sono raggruppati per giorno con il totale di ogni giorno. La ricerca è un'icona nella barra e ogni filtro attivo compare come un chip che puoi rimuovere.
+- Un selettore di periodo (‹ ottobre 2026 ›) sostituisce il menu del periodo in Home, Movimenti, Budget e Report.
+- Report: schede e colori dei grafici più chiari, e puoi tenere premuta una fetta del grafico ad anello per vedere l'importo.
+- Le schede del budget mostrano quanto resta o quanto è oltre con una barra di avanzamento, le più urgenti per prime.
+- Altro e Impostazioni sono raggruppati sotto titoli, e Impostazioni ha un campo di ricerca.
+
 ## 1.0.0
 - Eliminare un movimento, una suddivisione o un trasferimento non chiede più conferma: tocca Annulla nel messaggio che compare per recuperarlo.
 - Novità: una scheda Per iniziare nella Home ti guida nei primi passi (aggiungere una spesa, fare un backup, attivare i promemoria), e le schermate vuote ora ti dicono cosa fare dopo.

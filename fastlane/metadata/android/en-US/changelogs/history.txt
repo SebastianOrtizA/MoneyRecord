@@ -1,3 +1,11 @@
+## 1.1.0
+- Adding an entry is faster: switch between Expense, Income and Transfer at the top, pick the account and Today or Yesterday with one tap, and Save stays above the keyboard and turns on once the amount is valid.
+- Transactions are grouped by day with each day's total. Search is an icon in the toolbar, and every active filter shows as a chip you can remove.
+- A period stepper (‹ October 2026 ›) replaces the period dropdown on Home, Transactions, Budgets and Reports.
+- Reports: clearer tabs and chart colours, and you can press and hold a donut slice to see its amount.
+- Budget cards show what is left or over with a progress bar, the most urgent first.
+- More and Settings are grouped under headings, and Settings has a search box.
+
 ## 1.0.0
 - Deleting a transaction, split or transfer no longer asks you to confirm: tap Undo in the message that appears to bring it back.
 - New: a Get started card on Home walks you through the first steps (add an expense, back up your data, turn on reminders), and empty screens now tell you what to do next.
