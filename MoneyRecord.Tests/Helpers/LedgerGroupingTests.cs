@@ -22,7 +22,7 @@ public class LedgerGroupingTests
     };
 
     [Fact]
-    public void Day_groups_hold_one_date_each_open_and_newest_first()
+    public void Day_groups_hold_one_date_each_closed_and_newest_first()
     {
         var groups = LedgerGrouping.Group([
             On(new DateTime(2026, 10, 29, 9, 0, 0), Expense(1, "Food", 1_000)),
@@ -30,7 +30,8 @@ public class LedgerGroupingTests
             On(new DateTime(2026, 10, 31, 8, 0, 0), Expense(3, "Rent", 500))], GroupingMode.Date);
 
         groups.Select(g => g.TransactionCount).Should().Equal(2, 1);
-        groups.Should().OnlyContain(g => g.IsExpanded);
+        groups.Should().OnlyContain(g => !g.IsExpanded);
+        groups.Select(g => g.Key).Should().Equal("d:2026-10-31", "d:2026-10-29");
         groups[0].GroupName.Should().Be(DateFormatter.Format(new DateTime(2026, 10, 31), DateStyle.Long));
     }
 
