@@ -1,3 +1,8 @@
+## 1.1.1
+- Transactions : le regroupement par jour, catégorie ou compte, et l'ordre de tri sont maintenant dans la feuille des filtres (le menu ⋮ a disparu).
+- Les groupes sont repliés au départ pour parcourir la liste plus facilement ; ils s'ouvrent pendant une recherche ou un filtre, et Tout développer les ouvre d'un coup.
+- Une longue plage de dates personnalisée tient maintenant à l'écran au lieu d'être coupée.
+
 ## 1.1.0
 - Ajouter une opération est plus rapide : passe de Dépense à Revenu ou Virement en haut, choisis le compte et Aujourd'hui ou Hier d'un toucher, et Enregistrer reste au-dessus du clavier et ne s'active que lorsque le montant est valide.
 - Les transactions sont regroupées par jour avec le total de chaque jour. La recherche est une icône de la barre et chaque filtre actif apparaît sous forme de pastille que tu peux retirer.

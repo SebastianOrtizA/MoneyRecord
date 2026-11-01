@@ -1,3 +1,8 @@
+## 1.1.1
+- Movimenti: il raggruppamento per giorno, categoria o conto e l'ordinamento ora sono nel foglio dei filtri (il menu ⋮ non c'è più).
+- I gruppi partono compressi per scorrere l'elenco più facilmente; si aprono mentre cerchi o filtri, e Espandi tutto li apre in un colpo solo.
+- Un intervallo di date personalizzato lungo ora entra nello schermo invece di essere tagliato.
+
 ## 1.1.0
 - Aggiungere un movimento è più veloce: passa tra Spesa, Entrata e Trasferisci in alto, scegli il conto e Oggi o Ieri con un tocco, e Salva resta sopra la tastiera e si attiva solo quando l'importo è valido.
 - I movimenti sono raggruppati per giorno con il totale di ogni giorno. La ricerca è un'icona nella barra e ogni filtro attivo compare come un chip che puoi rimuovere.
