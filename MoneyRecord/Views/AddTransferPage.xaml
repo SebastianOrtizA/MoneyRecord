@@ -15,7 +15,12 @@
     </Shell.BackButtonBehavior>
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+        <VerticalStackLayout Padding="20,12,20,20" Spacing="20">
+
+            <!-- A new transfer can be switched to an expense or an income -->
+            <controls:EntryTypeSwitch Selected="Transfer"
+                                      Command="{Binding SwitchTypeCommand}"
+                                      IsVisible="{Binding ShowsTypeSwitch}"/>
 
             <Label Text="{ext:Localize Date}" FontSize="16" FontAttributes="Bold"/>
             <DatePicker Date="{Binding SelectedDate}" 

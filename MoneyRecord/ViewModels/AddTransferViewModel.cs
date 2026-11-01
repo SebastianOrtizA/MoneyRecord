@@ -11,6 +11,7 @@ namespace MoneyRecord.ViewModels
     [QueryProperty(nameof(Transfer), "Transfer")]
     [QueryProperty(nameof(TransferIdString), "TransferId")]
     [QueryProperty(nameof(SourceAccountIdString), "SourceAccountId")]
+    [QueryProperty(nameof(AmountSeed), "Amount")]
     public partial class AddTransferViewModel : ObservableObject
     {
         private readonly IAccountRepository _accountRepository;
@@ -45,6 +46,27 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>The amount typed on the expense / income form when its type switch brought the user here.</summary>
+        public string? AmountSeed { get; set; }
+
+        /// <summary>The type switch is offered for a new transfer only (a saved one cannot change its type).</summary>
+        public bool ShowsTypeSwitch => !IsEditMode;
+
+        /// <summary>The type switch: Transfer stays here, Expense and Income swap this form for the add form.</summary>
+        [RelayCommand]
+        private async Task SwitchTypeAsync(string kind)
+        {
+            if (kind == "Transfer" || !Enum.TryParse<TransactionType>(kind, out var type))
+                return;
+
+            var parameters = new Dictionary<string, object> { { "TransactionType", type } };
+            if (!string.IsNullOrWhiteSpace(Amount))
+                parameters["Amount"] = Amount;
+            if (SelectedSourceAccount != null)
+                parameters["AccountId"] = SelectedSourceAccount.Id.ToString();
+            await _navigationService.ReplaceAsync(nameof(Views.AddTransactionPage), parameters);
+        }
+
         /// <summary>A new transfer from this account (the home-screen widget's button).</summary>
         public string? SourceAccountIdString { get; set; }
 
@@ -73,6 +95,7 @@ namespace MoneyRecord.ViewModels
         private string title = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowsTypeSwitch))]
         private bool isEditMode = false;
 
         [ObservableProperty]
@@ -184,6 +207,8 @@ namespace MoneyRecord.ViewModels
                 Description = AppResources.DefaultTransferDescription;
                 if (sourceAccountId != null)
                     SelectedSourceAccount = Accounts.FirstOrDefault(a => a.Id == sourceAccountId);
+                if (!string.IsNullOrWhiteSpace(AmountSeed))
+                    Amount = AmountSeed;
             }
 
             await UpdateSourceAccountBalanceAsync();

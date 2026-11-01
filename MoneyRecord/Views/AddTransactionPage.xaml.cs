@@ -11,6 +11,17 @@ namespace MoneyRecord.Views
             InitializeComponent();
             _viewModel = viewModel;
             BindingContext = _viewModel;
+            _viewModel.PickDateRequested += OnPickDateRequested;
+        }
+
+        // The "Pick date" chip: show the (invisible) date picker's dialog
+        private void OnPickDateRequested(object? sender, EventArgs e)
+        {
+#if ANDROID
+            (DateChooser.Handler?.PlatformView as Android.Views.View)?.PerformClick();
+#else
+            DateChooser.Focus();
+#endif
         }
 
         protected override void OnAppearing()

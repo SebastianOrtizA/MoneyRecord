@@ -20,5 +20,8 @@ namespace MoneyRecord.Services.Interfaces
         Task NavigateToKeepingBackAsync(string route);
 
         Task NavigateToAsync(string route, IDictionary<string, object> parameters);
+
+        /// <summary>Swaps the current pushed page for another one (the add form's type switch), so back skips the old page.</summary>
+        Task ReplaceAsync(string route, IDictionary<string, object> parameters);
     }
 }
