@@ -62,6 +62,31 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>
+        /// <see cref="RunAsync"/> for a tap on a chip or launcher shortcut: an entry without an amount asks for it first.
+        /// </summary>
+        public async Task<bool> RunWithPromptAsync(QuickEntryItem item, Func<Task> changed)
+        {
+            long? cents = null;
+            if (item.AsksAmount)
+            {
+                var typed = await dialogs.PromptAsync(item.Name, string.Format(AppResources.QuickEntryAmountPrompt, item.Name),
+                    AppResources.Save, AppResources.Cancel, numeric: true);
+                if (typed == null)
+                    return false;
+
+                var amount = Helpers.AmountParser.Parse(typed, item.CurrencyCode);
+                if (amount <= 0)
+                {
+                    await errors.HandleAsync(AppResources.PleaseEnterValidAmount);
+                    return false;
+                }
+                cents = Helpers.Money.ToCents(amount);
+            }
+
+            return await RunAsync(item, cents, changed);
+        }
+
         private async Task UndoAsync(int transactionId, LedgerEntryKind kind, Func<Task> changed)
         {
             try

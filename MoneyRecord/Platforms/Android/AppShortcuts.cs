@@ -4,6 +4,7 @@ using AndroidX.Core.Graphics.Drawable;
 using Microsoft.Extensions.Logging;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Platforms.Android
 {
@@ -14,11 +15,23 @@ namespace MoneyRecord.Platforms.Android
     /// </summary>
     public static class AppShortcuts
     {
-        public static void Publish(Context context)
+        public static async Task PublishAsync(Context context)
         {
             try
             {
-                var shortcuts = new List<ShortcutInfoCompat>
+                var services = IPlatformApplication.Current?.Services;
+                var quick = new List<ShortcutInfoCompat>();
+                // The launcher shows only a few (often 4): the three add forms stay, quick entries take what is left. Not
+                // while Hide balances is on - the label is only a name, but the menu is visible without unlocking the app
+                var room = ShortcutManagerCompat.GetMaxShortcutCountPerActivity(context) - 3;
+                if (room > 0 && services?.GetService<IPrivacySettings>() is { HideBalances: false } && services.GetService<IQuickEntryService>() is { } entries)
+                {
+                    foreach (var item in QuickEntryShortcuts.Top(await entries.GetAllAsync(), Math.Min(room, QuickEntryShortcuts.MaxCount)))
+                        quick.Add(Create(context, $"quick_{item.Id}", item.Name,
+                            item.Entry.Type == Models.TransactionType.Income ? Resource.Drawable.ic_widget_income : Resource.Drawable.ic_widget_expense, NotificationLaunch.QuickEntryRoute(item.Id)));
+                }
+
+                var shortcuts = new List<ShortcutInfoCompat>(quick)
                 {
                     Create(context, "add_expense", AppResources.Expense, Resource.Drawable.ic_widget_expense,
                         $"{BalanceWidget.AddTransactionRoute}?Type={Models.TransactionType.Expense}"),
