@@ -93,17 +93,23 @@ public sealed class PayeeServiceTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Last_category_is_the_latest_transaction_of_that_type()
+    public async Task Last_entry_is_the_latest_transaction_of_that_type()
     {
         var shop = await AddPayeeAsync("Shop");
         await AddAsync(shop, new DateTime(2026, 10, 1), categoryId: 3);
-        await AddAsync(shop, new DateTime(2026, 10, 5), categoryId: 4);
+        var latest = await AddAsync(shop, new DateTime(2026, 10, 5), categoryId: 4);
+        latest.Amount = 12.5m;
+        latest.AccountId = 7;
+        await Db.UpdateAsync(latest);
         await AddAsync(shop, new DateTime(2026, 10, 9), categoryId: 9, type: TransactionType.Income);
         await AddAsync(null, new DateTime(2026, 10, 10), categoryId: 6);
 
-        (await _sut.GetLastCategoryAsync(shop, TransactionType.Expense)).Should().Be(4);
-        (await _sut.GetLastCategoryAsync(shop, TransactionType.Income)).Should().Be(9);
-        (await _sut.GetLastCategoryAsync(await AddPayeeAsync("New"), TransactionType.Expense)).Should().BeNull();
+        var expense = await _sut.GetLastEntryAsync(shop, TransactionType.Expense);
+        expense!.CategoryId.Should().Be(4);
+        expense.AmountCents.Should().Be(1250);
+        expense.AccountId.Should().Be(7);
+        (await _sut.GetLastEntryAsync(shop, TransactionType.Income))!.CategoryId.Should().Be(9);
+        (await _sut.GetLastEntryAsync(await AddPayeeAsync("New"), TransactionType.Expense)).Should().BeNull();
     }
 
     [Fact]

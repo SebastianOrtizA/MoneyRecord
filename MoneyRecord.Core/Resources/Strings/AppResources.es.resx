@@ -926,6 +926,12 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="AddNew" xml:space="preserve">
     <value>Agregar</value>
   </data>
+  <data name="AddNewHint" xml:space="preserve">
+    <value>Toca dos veces y mantén para agregar un gasto directamente</value>
+  </data>
+  <data name="DuplicateButton" xml:space="preserve">
+    <value>Duplicar</value>
+  </data>
   <data name="SeeAll" xml:space="preserve">
     <value>Ver todo</value>
   </data>

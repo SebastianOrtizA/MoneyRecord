@@ -53,14 +53,14 @@ namespace MoneyRecord.Services
             return id;
         }
 
-        public async Task<int?> GetLastCategoryAsync(int payeeId, TransactionType type)
+        public async Task<EntryPrefill?> GetLastEntryAsync(int payeeId, TransactionType type)
         {
             var db = await _dbInitializer.GetConnectionAsync();
             var latest = await db.Table<Transaction>()
                 .Where(t => t.PayeeId == payeeId && t.Type == type)
                 .OrderByDescending(t => t.Date)
                 .FirstOrDefaultAsync();
-            return latest?.CategoryId;
+            return latest == null ? null : EntryPrefill.From(latest);
         }
 
         public Task RenameAsync(int payeeId, string name) =>
