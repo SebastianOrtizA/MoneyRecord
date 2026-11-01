@@ -11,7 +11,7 @@ namespace MoneyRecord.Helpers
         /// <summary>
         /// Category groups total their entries; account groups show the account's balance in its own currency
         /// (from <paramref name="balances"/>, 0 when it has none). Groups are keyed by ID (transfers, which have no
-        /// category, form one group) and sorted by name. Day groups hold one date each, open, with the day's net per currency
+        /// category, form one group) and sorted by name. Day groups hold one date each, with the day's net per currency
         /// (transfers move money between own accounts and are left out of it), newest first unless <paramref name="ascending"/>.
         /// </summary>
         public static List<TransactionGroup> Group(
@@ -29,7 +29,7 @@ namespace MoneyRecord.Helpers
                 GroupingMode.Category => entries
                     .Where(e => !string.IsNullOrEmpty(e.CategoryName))
                     .GroupBy(e => (e.CategoryId, e.CategoryName))
-                    .Select(g => CategoryGroup(g.Key.CategoryName, g.ToList())),
+                    .Select(g => CategoryGroup(g.Key.CategoryId, g.Key.CategoryName, g.ToList())),
                 GroupingMode.Account => entries
                     .Where(e => !string.IsNullOrEmpty(e.AccountName))
                     .GroupBy(e => (e.AccountId, e.AccountName))
@@ -56,19 +56,19 @@ namespace MoneyRecord.Helpers
                     : totals.Count > 0 && totals.All(t => t.Amount < 0) ? TransactionType.Expense
                     : TransactionType.Transfer;
 
-                return new TransactionGroup(DateFormatter.Format(day.Key, DateStyle.Long), DayIconCode, type, totals, items,
-                    totalsAreSigned: true, isExpanded: true);
+                return new TransactionGroup("d:" + day.Key.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), DateFormatter.Format(day.Key, DateStyle.Long), DayIconCode, type, totals, items,
+                    totalsAreSigned: true);
             }).ToList();
         }
 
         /// <summary>One category means one type: an income or expense category, or the transfers.</summary>
-        private static TransactionGroup CategoryGroup(string name, List<LedgerEntry> items)
+        private static TransactionGroup CategoryGroup(int? categoryId, string name, List<LedgerEntry> items)
         {
             // One total per currency (a transfer counts in its source currency)
             var totals = CurrencyAmount.Totals(items.Select(e => new CurrencyAmount(e.CurrencyCode, e.Amount)),
                 MoneyFormatter.BaseCurrency);
 
-            return new TransactionGroup(name, items[0].CategoryIconCode, items[0].Type, totals, items);
+            return new TransactionGroup($"c:{categoryId}", name, items[0].CategoryIconCode, items[0].Type, totals, items);
         }
 
         private static TransactionGroup AccountGroup(int? accountId, string name, List<LedgerEntry> items,
@@ -81,7 +81,7 @@ namespace MoneyRecord.Helpers
             var iconCode = accounts?.FirstOrDefault(a => a.Id == accountId)?.IconCode ?? IconHelper.DefaultAccountIconCode;
             var type = total >= 0 ? TransactionType.Income : TransactionType.Expense;
 
-            return new TransactionGroup(name, iconCode, type, [new CurrencyAmount(currencyCode, total)], items);
+            return new TransactionGroup($"a:{accountId}", name, iconCode, type, [new CurrencyAmount(currencyCode, total)], items);
         }
     }
 }
