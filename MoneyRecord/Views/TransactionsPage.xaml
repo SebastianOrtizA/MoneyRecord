@@ -48,6 +48,7 @@
                                 </VerticalStackLayout>
                             </Grid>
                         </SwipeItemView>
+                        <!-- TransferColor: the one hue Edit (income) and Delete (expense) don't use, for transfers as well -->
                         <SwipeItemView Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=DuplicateTransactionCommand}"
                                        CommandParameter="{Binding .}">
                             <Grid WidthRequest="80"

@@ -22,7 +22,7 @@ namespace MoneyRecord.Controls
                     view.LongClick += (_, e) =>
                     {
                         view.PerformHapticFeedback(global::Android.Views.FeedbackConstants.LongPress);
-                        _viewModel.AddExpenseNowCommand.Execute(null);
+                        _viewModel.AddExpenseCommand.Execute(null);
                         e.Handled = true;
                     };
                 }

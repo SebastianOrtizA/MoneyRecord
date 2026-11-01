@@ -437,13 +437,8 @@ namespace MoneyRecord.ViewModels
             if (entry == null)
                 return;
 
-            // A debt's money is edited on the Debts page, where a payment can't exceed what is left
-            if (IsDebtTransfer(entry))
-            {
-                await _navigationService.NavigateToAsync(nameof(DebtsPage));
-                await _dialogService.ToastAsync(AppResources.DebtEditOnDebtsPage);
+            if (await OpenDebtsInsteadAsync(entry))
                 return;
-            }
 
             if (entry.IsTransfer)
             {
@@ -459,24 +454,33 @@ namespace MoneyRecord.ViewModels
             }
         }
 
-        private bool IsDebtTransfer(LedgerEntry entry) =>
-            entry.IsTransfer && _accounts.Any(a => a.IsDebt && (a.Id == entry.AccountId || a.Id == entry.CounterpartAccountId));
+        /// <summary>
+        /// A debt's money is edited (and repeated) on the Debts page, where a payment can't exceed what is left: goes there
+        /// with a hint and returns true for such a transfer; false for any other entry.
+        /// </summary>
+        private async Task<bool> OpenDebtsInsteadAsync(LedgerEntry entry)
+        {
+            if (!entry.IsTransfer || !_accounts.Any(a => a.IsDebt && (a.Id == entry.AccountId || a.Id == entry.CounterpartAccountId)))
+                return false;
+
+            await _navigationService.NavigateToAsync(nameof(DebtsPage));
+            await _dialogService.ToastAsync(AppResources.DebtEditOnDebtsPage);
+            return true;
+        }
 
         /// <summary>
         /// "Add again": opens the add form with this entry's account, category, payee, tags, notes and amount, dated today. A
-        /// debt's transfers are made on the Debts page; a split duplicates the one row that was picked.
+        /// split duplicates the one row that was picked.
         /// </summary>
-        [RelayCommand(CanExecute = nameof(CanDuplicate))]
+        [RelayCommand]
         private async Task DuplicateTransactionAsync(LedgerEntry? entry)
         {
-            if (!CanDuplicate(entry))
+            if (entry == null || await OpenDebtsInsteadAsync(entry))
                 return;
 
-            await _navigationService.NavigateToAsync(entry!.IsTransfer ? nameof(AddTransferPage) : nameof(AddTransactionPage),
+            await _navigationService.NavigateToAsync(entry.IsTransfer ? nameof(AddTransferPage) : nameof(AddTransactionPage),
                 new Dictionary<string, object> { { "Duplicate", entry.SourceId.ToString() } });
         }
-
-        private bool CanDuplicate(LedgerEntry? entry) => entry != null && !IsDebtTransfer(entry);
 
         [RelayCommand]
         private Task DuplicateSelectedAsync()

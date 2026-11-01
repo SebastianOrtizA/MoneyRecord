@@ -28,10 +28,6 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private Task AddExpenseAsync() => AddTransactionAsync(TransactionType.Expense);
 
-        /// <summary>Long-press on the button: straight to a new expense, skipping the sheet.</summary>
-        [RelayCommand]
-        private Task AddExpenseNowAsync() => AddTransactionAsync(TransactionType.Expense);
-
         [RelayCommand]
         private Task AddIncomeAsync() => AddTransactionAsync(TransactionType.Income);
 
