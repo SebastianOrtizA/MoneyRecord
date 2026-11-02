@@ -1,4 +1,10 @@
 using Android.Content;
+using AColor = Android.Graphics.Color;
+using APaint = Android.Graphics.Paint;
+using ARect = Android.Graphics.Rect;
+using Bitmap = Android.Graphics.Bitmap;
+using Canvas = Android.Graphics.Canvas;
+using Typeface = Android.Graphics.Typeface;
 using AndroidX.Core.Content.PM;
 using AndroidX.Core.Graphics.Drawable;
 using Microsoft.Extensions.Logging;
@@ -28,7 +34,7 @@ namespace MoneyRecord.Platforms.Android
                 {
                     foreach (var item in QuickEntryShortcuts.Top(await entries.GetAllAsync(), Math.Min(room, QuickEntryShortcuts.MaxCount)))
                         quick.Add(Create(context, $"quick_{item.Id}", item.Name,
-                            Resource.Drawable.ic_shortcut_quick, NotificationLaunch.QuickEntryRoute(item.Id)));
+                            CategoryIcon(context, item.CategoryDisplayIcon), NotificationLaunch.QuickEntryRoute(item.Id)));
                 }
 
                 var shortcuts = new List<ShortcutInfoCompat>(quick)
@@ -50,7 +56,39 @@ namespace MoneyRecord.Platforms.Android
             }
         }
 
-        private static ShortcutInfoCompat Create(Context context, string id, string label, int icon, string route)
+        private static ShortcutInfoCompat Create(Context context, string id, string label, int icon, string route) =>
+            Create(context, id, label, IconCompat.CreateWithResource(context, icon), route);
+
+        /// <summary>The category's glyph (Material Design Icons font), white on the app's purple; the bolt when it can't be drawn.</summary>
+        private static IconCompat CategoryIcon(Context context, string glyph)
+        {
+            try
+            {
+                // An adaptive icon: the launcher crops the 108dp square to its own shape and shows the middle 66dp
+                const int size = 216;
+                var bitmap = Bitmap.CreateBitmap(size, size, Bitmap.Config.Argb8888!)!;
+                var canvas = new Canvas(bitmap);
+                canvas.DrawColor(AColor.ParseColor("#512BD4"));
+                using var paint = new APaint(global::Android.Graphics.PaintFlags.AntiAlias)
+                {
+                    Color = AColor.White,
+                    TextSize = 96,
+                    TextAlign = APaint.Align.Center,
+                };
+                paint.SetTypeface(Typeface.CreateFromAsset(context.Assets, "materialdesignicons-webfont.ttf"));
+                var bounds = new ARect();
+                paint.GetTextBounds(glyph, 0, glyph.Length, bounds);
+                canvas.DrawText(glyph, size / 2f, size / 2f - bounds.ExactCenterY(), paint);
+                return IconCompat.CreateWithAdaptiveBitmap(bitmap);
+            }
+            catch (Exception ex)
+            {
+                IPlatformApplication.Current?.Services?.GetService<ILogger<MainActivity>>()?.LogWarning(ex, "Could not draw a category shortcut icon");
+                return IconCompat.CreateWithResource(context, Resource.Drawable.ic_shortcut_quick);
+            }
+        }
+
+        private static ShortcutInfoCompat Create(Context context, string id, string label, IconCompat icon, string route)
         {
             var intent = new Intent(context, typeof(MainActivity))
                 .SetAction(Intent.ActionMain)
@@ -59,7 +97,7 @@ namespace MoneyRecord.Platforms.Android
             return new ShortcutInfoCompat.Builder(context, id)
                 .SetShortLabel(label)
                 .SetLongLabel(label)
-                .SetIcon(IconCompat.CreateWithResource(context, icon))
+                .SetIcon(icon)
                 .SetIntent(intent)
                 .Build();
         }
