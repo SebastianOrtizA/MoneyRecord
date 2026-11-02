@@ -28,16 +28,16 @@ namespace MoneyRecord.Platforms.Android
                 {
                     foreach (var item in QuickEntryShortcuts.Top(await entries.GetAllAsync(), Math.Min(room, QuickEntryShortcuts.MaxCount)))
                         quick.Add(Create(context, $"quick_{item.Id}", item.Name,
-                            item.Entry.Type == Models.TransactionType.Income ? Resource.Drawable.ic_widget_income : Resource.Drawable.ic_widget_expense, NotificationLaunch.QuickEntryRoute(item.Id)));
+                            Resource.Drawable.ic_shortcut_quick, NotificationLaunch.QuickEntryRoute(item.Id)));
                 }
 
                 var shortcuts = new List<ShortcutInfoCompat>(quick)
                 {
-                    Create(context, "add_expense", AppResources.Expense, Resource.Drawable.ic_widget_expense,
+                    Create(context, "add_expense", AppResources.Expense, Resource.Drawable.ic_shortcut_expense,
                         $"{BalanceWidget.AddTransactionRoute}?Type={Models.TransactionType.Expense}"),
-                    Create(context, "add_income", AppResources.Income, Resource.Drawable.ic_widget_income,
+                    Create(context, "add_income", AppResources.Income, Resource.Drawable.ic_shortcut_income,
                         $"{BalanceWidget.AddTransactionRoute}?Type={Models.TransactionType.Income}"),
-                    Create(context, "add_transfer", AppResources.Transfer, Resource.Drawable.ic_widget_transfer,
+                    Create(context, "add_transfer", AppResources.Transfer, Resource.Drawable.ic_shortcut_transfer,
                         BalanceWidget.AddTransferRoute),
                 };
                 ShortcutManagerCompat.SetDynamicShortcuts(context, shortcuts);
