@@ -31,6 +31,19 @@ namespace MoneyRecord.Tests.Services
         }
 
         [Fact]
+        public async Task A_quick_entry_route_runs_it_instead_of_opening_a_page()
+        {
+            var ran = new List<int>();
+            _launch.RunQuickEntryAsync = id => { ran.Add(id); return Task.CompletedTask; };
+            _launch.Request(NotificationLaunch.QuickEntryRoute(7));
+
+            await _launch.OpenPendingAsync();
+
+            ran.Should().Equal(7);
+            await _navigation.DidNotReceiveWithAnyArgs().NavigateToAsync(default!);
+        }
+
+        [Fact]
         public async Task Nothing_opens_without_a_request()
         {
             await _launch.OpenPendingAsync();

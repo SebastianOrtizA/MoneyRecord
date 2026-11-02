@@ -33,6 +33,7 @@ namespace MoneyRecord.ViewModels
         private readonly IDebtService _debts;
         private readonly IQuickEntryService _quickEntries;
         private readonly QuickEntryRunner _quickRunner;
+        private readonly IHomeScreenWidgets _widgets;
         private List<QuickEntryItem> _quickItems = [];
         private bool _askingCrashReports;
 
@@ -57,6 +58,8 @@ namespace MoneyRecord.ViewModels
             _privacy.HideBalances = value;
             OnPropertyChanged(nameof(ShowSpentLine));
             RebuildQuickChips();
+            // The launcher menu lists quick entries only while balances are shown
+            _ = _widgets.RefreshAsync();
         }
 
         /// <summary>The Home chips of the quick entries ("Coffee 3.50"; the name alone while balances are hidden).</summary>
@@ -74,25 +77,21 @@ namespace MoneyRecord.ViewModels
             if (chip == null)
                 return;
 
-            long? cents = null;
-            if (chip.Item.AsksAmount)
+            await _quickRunner.RunWithPromptAsync(chip.Item, () => LoadDataCommand.ExecuteAsync(null));
+        }
+
+        /// <summary>A launcher shortcut: the same as tapping the chip, even when the Home card is hidden.</summary>
+        private async Task RunQuickEntryByIdAsync(int id)
+        {
+            var item = (await _quickEntries.GetAllAsync()).FirstOrDefault(i => i.Id == id);
+            if (item != null)
+                await _quickRunner.RunWithPromptAsync(item, () => LoadDataCommand.ExecuteAsync(null));
+            else
             {
-                var typed = await _dialogService.PromptAsync(chip.Item.Name,
-                    string.Format(AppResources.QuickEntryAmountPrompt, chip.Item.Name), AppResources.Save, AppResources.Cancel,
-                    numeric: true);
-                if (typed == null)
-                    return;
-
-                var amount = AmountParser.Parse(typed, chip.Item.CurrencyCode);
-                if (amount <= 0)
-                {
-                    await _errorHandler.HandleAsync(AppResources.PleaseEnterValidAmount);
-                    return;
-                }
-                cents = Money.ToCents(amount);
+                // Deleted or changed since the menu was published: say so and drop it from the menu
+                await _dialogService.ToastAsync(AppResources.QuickEntryDeleted);
+                _ = _widgets.RefreshAsync();
             }
-
-            await _quickRunner.RunAsync(chip.Item, cents, () => LoadDataCommand.ExecuteAsync(null));
         }
 
         [RelayCommand]
@@ -257,8 +256,9 @@ namespace MoneyRecord.ViewModels
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
             IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew,
             IHomeLayoutSettings layoutSettings, IDebtService debts, IGetStartedService getStarted,
-            IQuickEntryService quickEntries, QuickEntryRunner quickRunner)
+            IQuickEntryService quickEntries, QuickEntryRunner quickRunner, IHomeScreenWidgets widgets)
         {
+            _widgets = widgets;
             _getStarted = getStarted;
             _quickEntries = quickEntries;
             _quickRunner = quickRunner;
@@ -278,6 +278,7 @@ namespace MoneyRecord.ViewModels
             _crashReports = crashReports;
             _dialogService = dialogService;
             _notificationLaunch = notificationLaunch;
+            _notificationLaunch.RunQuickEntryAsync = RunQuickEntryByIdAsync;
             _privacy = privacy;
             _databaseEncryption = databaseEncryption;
             HideBalances = privacy.HideBalances;

@@ -13,6 +13,14 @@ namespace MoneyRecord.Services
 
         public void Request(string route) => _pending = route;
 
+        /// <summary>Route of a launcher shortcut that saves a quick entry: <c>quickentry/{id}</c>.</summary>
+        public const string QuickEntryPrefix = "quickentry/";
+
+        public static string QuickEntryRoute(int id) => QuickEntryPrefix + id;
+
+        /// <summary>Saves the quick entry with this ID (set by Home, which also reloads); null = not ready, the shortcut does nothing.</summary>
+        public Func<int, Task>? RunQuickEntryAsync { get; set; }
+
         /// <summary>Opens the pending page, once; does nothing when there is none. A route that fails is logged, never thrown.</summary>
         public async Task OpenPendingAsync()
         {
@@ -24,6 +32,13 @@ namespace MoneyRecord.Services
             // Called from Home's OnAppearing and a main-thread callback: an exception would crash the app
             try
             {
+                if (route.StartsWith(QuickEntryPrefix, StringComparison.Ordinal))
+                {
+                    if (int.TryParse(route.AsSpan(QuickEntryPrefix.Length), out var id) && RunQuickEntryAsync is { } run)
+                        await run(id);
+                    return;
+                }
+
                 await navigation.NavigateToAsync(route);
             }
             catch (OperationCanceledException ex)
