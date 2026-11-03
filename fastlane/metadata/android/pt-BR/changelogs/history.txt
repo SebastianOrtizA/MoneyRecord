@@ -1,3 +1,11 @@
+## 1.2.0
+- Lançamentos rápidos: salve uma despesa ou receita repetida, como o seu café da manhã, com um toque em uma etiqueta no Início ou no formulário. Você sempre pode desfazer, e em Mais → Lançamentos rápidos dá para editá-los e reordená-los.
+- Um lançamento rápido pode deixar o valor vazio para perguntar a cada vez, e o app sugere um depois que você repete o mesmo lançamento algumas vezes.
+- Mantenha pressionado o ícone do app para adicionar uma Despesa, Receita ou Transferência na hora, além dos seus principais lançamentos rápidos.
+- Mantenha pressionado o botão de adicionar para começar uma despesa direto.
+- Duplique um lançamento pelos detalhes ou deslizando para adicioná-lo de novo com a data de hoje.
+- Ao escolher um beneficiário, a conta e o valor do último lançamento também são preenchidos.
+
 ## 1.1.1
 - Transações: agrupar por dia, categoria ou conta, e a ordem, agora ficam na folha de filtros (o menu ⋮ foi removido).
 - Os grupos começam recolhidos para facilitar a leitura da lista; abrem enquanto você busca ou filtra, e Expandir tudo abre todos de uma vez.

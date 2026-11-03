@@ -1,3 +1,11 @@
+## 1.2.0
+- Saisies rapides : enregistre d'un toucher une dépense ou un revenu qui revient, comme ton café du matin, depuis une pastille sur l'accueil ou sur le formulaire. Tu peux toujours annuler, et dans Plus → Saisies rapides tu peux les modifier et les réordonner.
+- Une saisie rapide peut laisser le montant vide pour le demander à chaque fois, et l'appli en propose une quand tu répètes plusieurs fois la même saisie.
+- Maintiens appuyée l'icône de l'appli pour ajouter tout de suite une Dépense, un Revenu ou un Virement, ainsi que tes principales saisies rapides.
+- Maintiens appuyé le bouton d'ajout pour commencer directement une dépense.
+- Duplique une opération depuis ses détails ou en glissant pour l'ajouter de nouveau à la date du jour.
+- Choisir un bénéficiaire remplit aussi le compte et le montant de la dernière opération.
+
 ## 1.1.1
 - Transactions : le regroupement par jour, catégorie ou compte, et l'ordre de tri sont maintenant dans la feuille des filtres (le menu ⋮ a disparu).
 - Les groupes sont repliés au départ pour parcourir la liste plus facilement ; ils s'ouvrent pendant une recherche ou un filtre, et Tout développer les ouvre d'un coup.

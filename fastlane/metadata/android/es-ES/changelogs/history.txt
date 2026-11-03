@@ -1,3 +1,11 @@
+## 1.2.0
+- Entradas rápidas: guarda un gasto o ingreso repetido, como tu café de la mañana, con un toque desde una etiqueta en Inicio o en el formulario. Siempre puedes deshacer, y en Más → Entradas rápidas puedes editarlas y ordenarlas.
+- Una entrada rápida puede dejar el importe vacío para preguntarlo cada vez, y la app sugiere una cuando repites la misma entrada varias veces.
+- Mantén pulsado el icono de la app para añadir un Gasto, Ingreso o Transferencia al instante, además de tus entradas rápidas principales.
+- Mantén pulsado el botón de añadir para empezar un gasto directamente.
+- Duplica un movimiento desde sus detalles o deslizando para añadirlo de nuevo con fecha de hoy.
+- Al elegir un beneficiario, ahora también se rellenan la cuenta y el importe del último movimiento.
+
 ## 1.1.1
 - Transacciones: agrupar por día, categoría o cuenta, y el orden, ahora están en la hoja de filtros (el menú ⋮ ya no existe).
 - Los grupos empiezan contraídos para recorrer la lista con más facilidad; se abren mientras buscas o filtras, y Expandir todo los abre de una vez.

@@ -1,3 +1,11 @@
+## 1.2.0
+- Quick entries: save a repeat expense or income, like your morning coffee, in one tap from a chip on Home or on the add form. Undo is always offered, and More → Quick entries lets you edit and reorder them.
+- A quick entry can leave the amount empty to ask each time, and the app suggests one after you repeat the same entry a few times.
+- Long-press the app icon to add an Expense, Income or Transfer straight away, plus your top quick entries.
+- Long-press the add button to start a new expense directly.
+- Duplicate an entry from its details or with a swipe to add it again dated today.
+- Choosing a payee now also fills in the account and the amount of the last entry.
+
 ## 1.1.1
 - Transactions: group by day, category or account, and sort order, now live in the filter sheet (the ⋮ menu is gone).
 - Groups start collapsed so the list is easier to scan; they open while you search or filter, and Expand all opens them at once.
