@@ -1,3 +1,11 @@
+## 1.2.0
+- Voci rapide: salva con un tocco una spesa o un'entrata ripetuta, come il caffè del mattino, da un chip nella Home o nel modulo. Puoi sempre annullare, e in Altro → Voci rapide puoi modificarle e riordinarle.
+- Una voce rapida può lasciare l'importo vuoto per chiederlo ogni volta, e l'app ne suggerisce una dopo che ripeti la stessa voce alcune volte.
+- Tieni premuta l'icona dell'app per aggiungere subito una Spesa, un'Entrata o un Trasferimento, oltre alle tue voci rapide principali.
+- Tieni premuto il pulsante di aggiunta per iniziare direttamente una spesa.
+- Duplica un movimento dai dettagli o con uno swipe per aggiungerlo di nuovo con la data di oggi.
+- Scegliendo un beneficiario si compilano anche il conto e l'importo dell'ultimo movimento.
+
 ## 1.1.1
 - Movimenti: il raggruppamento per giorno, categoria o conto e l'ordinamento ora sono nel foglio dei filtri (il menu ⋮ non c'è più).
 - I gruppi partono compressi per scorrere l'elenco più facilmente; si aprono mentre cerchi o filtri, e Espandi tutto li apre in un colpo solo.
