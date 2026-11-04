@@ -1,1 +1,1 @@
-Voci rapide: salva con un tocco una spesa o un'entrata ripetuta, come il caffè del mattino, da un chip nella Home o nel modulo, con Annulla. Tieni premuta l'icona dell'app per Spesa, Entrata, Trasferimento e le tue voci rapide principali, o il pulsante di aggiunta per iniziare una spesa. Duplica un movimento dai dettagli o con uno swipe. Scegliendo un beneficiario si compilano anche conto e importo.
+Il codice dell'app ora è ottimizzato oltre che ridotto, quindi occupa un po' meno spazio e usa meno memoria.
