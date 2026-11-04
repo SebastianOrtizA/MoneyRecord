@@ -1,3 +1,6 @@
+## 1.2.1
+- Le code de l'appli est désormais optimisé en plus d'être allégé : elle est un peu plus légère et consomme moins de mémoire.
+
 ## 1.2.0
 - Saisies rapides : enregistre d'un toucher une dépense ou un revenu qui revient, comme ton café du matin, depuis une pastille sur l'accueil ou sur le formulaire. Tu peux toujours annuler, et dans Plus → Saisies rapides tu peux les modifier et les réordonner.
 - Une saisie rapide peut laisser le montant vide pour le demander à chaque fois, et l'appli en propose une quand tu répètes plusieurs fois la même saisie.

@@ -1,3 +1,6 @@
+## 1.2.1
+- The app's code is now optimized as well as shrunk, so it is a little smaller and lighter on memory.
+
 ## 1.2.0
 - Quick entries: save a repeat expense or income, like your morning coffee, in one tap from a chip on Home or on the add form. Undo is always offered, and More → Quick entries lets you edit and reorder them.
 - A quick entry can leave the amount empty to ask each time, and the app suggests one after you repeat the same entry a few times.

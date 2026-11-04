@@ -1,1 +1,1 @@
-Entradas rápidas: guarda un gasto o ingreso repetido, como tu café de la mañana, con un toque desde una etiqueta en Inicio o en el formulario, con Deshacer. Mantén presionado el ícono de la app para Gasto, Ingreso, Transferencia y tus entradas rápidas principales, o el botón de agregar para empezar un gasto. Duplica un movimiento desde sus detalles o deslizando. Al elegir un beneficiario se completan también la cuenta y el monto.
+El código de la app ahora se optimiza además de reducirse, así que ocupa un poco menos y consume menos memoria.
