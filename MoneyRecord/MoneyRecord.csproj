@@ -46,19 +46,19 @@
 		<AndroidSigningKeyPass>$(KEY_PASSWORD)</AndroidSigningKeyPass>
 	</PropertyGroup>
 
-	<!-- Release code shrinking with R8: renames the Java code (Play's "DEX optimization" check wants obfuscation) and writes
-	     mapping.txt, which CI uploads to Play. The SDK's own proguard_xamarin.cfg starts with -dontobfuscate, which would
-	     switch renaming off for the whole run, so it is dropped from R8's input and its keep rules live in
-	     Platforms/Android/proguard.cfg instead. -->
+	<!-- Release code shrinking with R8: renames and optimizes the Java code (Play's "DEX optimization" check wants both) and
+	     writes mapping.txt, which CI uploads to Play. Two SDK files carry a global switch that turns a whole step off:
+	     proguard_xamarin.cfg starts with -dontobfuscate and proguard-android.txt with -dontoptimize. Both are dropped from
+	     R8's input and their keep rules live in Platforms/Android/proguard.cfg instead. -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidLinkTool>r8</AndroidLinkTool>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<ProguardConfiguration Include="Platforms\Android\proguard.cfg" />
 	</ItemGroup>
-	<Target Name="DropSdkDontObfuscate" AfterTargets="_CalculateProguardConfigurationFiles" Condition="'$(AndroidLinkTool)' == 'r8'">
+	<Target Name="ReplaceSdkProguardDefaults" AfterTargets="_CalculateProguardConfigurationFiles" Condition="'$(AndroidLinkTool)' == 'r8'">
 		<ItemGroup>
-			<_ProguardConfiguration Remove="@(_ProguardConfiguration)" Condition="'%(Filename)%(Extension)' == 'proguard_xamarin.cfg'" />
+			<_ProguardConfiguration Remove="@(_ProguardConfiguration)" Condition="'%(Filename)%(Extension)' == 'proguard_xamarin.cfg' Or '%(Filename)%(Extension)' == 'proguard-android.txt'" />
 			<_ProguardConfiguration Include="$(IntermediateOutputPath)proguard_mapping.cfg" />
 		</ItemGroup>
 		<!-- the SDK file also held -printmapping -->
