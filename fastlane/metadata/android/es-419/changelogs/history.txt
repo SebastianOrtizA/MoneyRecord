@@ -1,3 +1,6 @@
+## 1.2.1
+- El código de la app ahora se optimiza además de reducirse, así que ocupa un poco menos y consume menos memoria.
+
 ## 1.2.0
 - Entradas rápidas: guarda un gasto o ingreso repetido, como tu café de la mañana, con un toque desde una etiqueta en Inicio o en el formulario. Siempre puedes deshacer, y en Más → Entradas rápidas puedes editarlas y ordenarlas.
 - Una entrada rápida puede dejar el monto vacío para preguntarlo cada vez, y la app sugiere una cuando repites la misma entrada varias veces.

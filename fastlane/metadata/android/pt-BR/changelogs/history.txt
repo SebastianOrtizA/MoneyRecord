@@ -1,3 +1,6 @@
+## 1.2.1
+- O código do app agora é otimizado além de reduzido, então ele ocupa um pouco menos de espaço e usa menos memória.
+
 ## 1.2.0
 - Lançamentos rápidos: salve uma despesa ou receita repetida, como o seu café da manhã, com um toque em uma etiqueta no Início ou no formulário. Você sempre pode desfazer, e em Mais → Lançamentos rápidos dá para editá-los e reordená-los.
 - Um lançamento rápido pode deixar o valor vazio para perguntar a cada vez, e o app sugere um depois que você repete o mesmo lançamento algumas vezes.

@@ -1,3 +1,6 @@
+## 1.2.1
+- Il codice dell'app ora è ottimizzato oltre che ridotto, quindi occupa un po' meno spazio e usa meno memoria.
+
 ## 1.2.0
 - Voci rapide: salva con un tocco una spesa o un'entrata ripetuta, come il caffè del mattino, da un chip nella Home o nel modulo. Puoi sempre annullare, e in Altro → Voci rapide puoi modificarle e riordinarle.
 - Una voce rapida può lasciare l'importo vuoto per chiederlo ogni volta, e l'app ne suggerisce una dopo che ripeti la stessa voce alcune volte.
