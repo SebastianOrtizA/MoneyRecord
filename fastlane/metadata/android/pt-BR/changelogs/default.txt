@@ -1,1 +1,1 @@
-Lançamentos rápidos: salve uma despesa ou receita repetida, como o seu café da manhã, com um toque em uma etiqueta no Início ou no formulário, com Desfazer. Mantenha pressionado o ícone do app para Despesa, Receita, Transferência e seus principais lançamentos rápidos, ou o botão de adicionar para começar uma despesa. Duplique um lançamento pelos detalhes ou deslizando. Ao escolher um beneficiário, a conta e o valor também são preenchidos.
+O código do app agora é otimizado além de reduzido, então ele ocupa um pouco menos de espaço e usa menos memória.
