@@ -1,1 +1,1 @@
-Le code de l'appli est désormais optimisé en plus d'être allégé : elle est un peu plus légère et consomme moins de mémoire.
+Le code de l'appli est encore allégé : elle prend un peu moins de place et de mémoire.
