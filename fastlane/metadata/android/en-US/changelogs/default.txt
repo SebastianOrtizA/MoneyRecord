@@ -1,1 +1,1 @@
-The app's code is now optimized as well as shrunk, so it is a little smaller and lighter on memory.
+The app's code is trimmed further, so it takes a little less space and memory.
