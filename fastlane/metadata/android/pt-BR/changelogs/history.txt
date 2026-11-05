@@ -1,3 +1,6 @@
+## 1.2.2
+- O código do app foi reduzido ainda mais, então ele ocupa um pouco menos de espaço e de memória.
+
 ## 1.2.1
 - O código do app agora é otimizado além de reduzido, então ele ocupa um pouco menos de espaço e usa menos memória.
 
