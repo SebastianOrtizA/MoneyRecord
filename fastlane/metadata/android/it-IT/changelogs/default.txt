@@ -1,1 +1,1 @@
-Il codice dell'app ora è ottimizzato oltre che ridotto, quindi occupa un po' meno spazio e usa meno memoria.
+Il codice dell'app è stato ridotto ancora di più, quindi occupa un po' meno spazio e memoria.
