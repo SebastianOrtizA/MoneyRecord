@@ -38,6 +38,7 @@ public class DateFormatterTests
         DateFormatter.Format(Date, DateStyle.Long, culture).Should().Be("11 de octubre de 2026");
         DateFormatter.Format(Date, DateStyle.Medium, culture).Should().StartWith("11 de oct").And.EndWith("2026");
         DateFormatter.Format(Date, DateStyle.MonthDay, culture).Should().StartWith("11 de oct");
+        DateFormatter.Format(Date, DateStyle.MonthDayCompact, culture).Should().Be("11 oct");
         DateFormatter.Format(Date, DateStyle.Month, culture).Should().StartWith("oct");
         DateFormatter.Format(Date, DateStyle.MonthYear, culture).Should().StartWith("oct").And.EndWith("2026");
     }
