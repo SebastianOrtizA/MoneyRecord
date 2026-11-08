@@ -1,3 +1,6 @@
+## 1.3.1
+- Corregido: las fechas bajo el gráfico de Previsión ya no se superponen en español y portugués.
+
 ## 1.3.0
 - Nueva página Previsión (Más → Planificación → Previsión): mira cómo pueden evolucionar tus saldos en los próximos 30, 60 o 90 días según tus movimientos recurrentes, programados y los pagos de deudas. Son estimaciones, no promesas.
 - Inicio tiene una tarjeta de Previsión con el monto que puedes gastar con seguridad hasta tu próximo ingreso.

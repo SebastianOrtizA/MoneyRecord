@@ -1,1 +1,1 @@
-Nova página e cartão de Previsão: veja como seus saldos podem evoluir nos próximos 30, 60 ou 90 dias e quanto é seguro gastar até a sua próxima receita (estimativas). Aviso opcional de saldo baixo. Os orçamentos mostram quanto você pode gastar por dia, podem levar o que sobrou ao próximo período, e há um novo orçamento «Todos os gastos» e orçamentos sugeridos com base nos últimos 3 meses. Corrigido um atalho que abria com o bloqueio do app ativado.
+Corrigido: as datas abaixo do gráfico de Previsão se sobrepunham em espanhol e português.
