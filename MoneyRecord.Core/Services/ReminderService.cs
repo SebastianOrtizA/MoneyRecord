@@ -91,26 +91,26 @@ namespace MoneyRecord.Services
                 var limit = clock.GetLocalNow().DateTime.Date.AddDays(settings.LowBalanceDays);
                 var strict = (await accounts.GetOwnAsync()).Where(a => !a.AllowNegativeBalance).Select(a => a.Id).ToHashSet();
                 var forecast = await forecasts.GetForecastAsync(30);
-                var dip = forecast.Accounts
+                // Only the earliest dip is remembered: a later one on another account warns once this one recovers
+                var first = forecast.Accounts
                     .Where(a => strict.Contains(a.AccountId) && a.Series.FirstNegativeDate is { } d && d <= limit)
-                    .Select(a => (Account: a, Date: a.Series.FirstNegativeDate!.Value))
-                    .OrderBy(x => x.Date)
-                    .Cast<(AccountForecast Account, DateTime Date)?>()
+                    .OrderBy(a => a.Series.FirstNegativeDate)
                     .FirstOrDefault();
 
-                if (dip is not { } first)
+                if (first is null)
                 {
                     preferences.Set(LowBalanceNotifiedKey, DateTime.MinValue);
                     return;
                 }
 
-                if (preferences.Get(LowBalanceNotifiedKey, DateTime.MinValue) == first.Date)
+                var date = first.Series.FirstNegativeDate!.Value;
+                if (preferences.Get(LowBalanceNotifiedKey, DateTime.MinValue) == date)
                     return;
 
                 notifications.Show(new AppNotification(LowBalanceId, ReminderChannel.Budgets, AppResources.LowBalanceTitle,
-                    string.Format(AppResources.LowBalanceBody, first.Account.AccountName, DateFormatter.Format(first.Date, DateStyle.Medium)),
+                    string.Format(AppResources.LowBalanceBody, first.AccountName, DateFormatter.Format(date, DateStyle.Medium)),
                     ForecastRoute));
-                preferences.Set(LowBalanceNotifiedKey, first.Date);
+                preferences.Set(LowBalanceNotifiedKey, date);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
