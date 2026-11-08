@@ -119,7 +119,7 @@ namespace MoneyRecord.Charts
         [
             new Axis
             {
-                Labeler = value => value >= 0 && value < dates.Count ? DateFormatter.Format(dates[(int)value], DateStyle.MonthDay) : string.Empty,
+                Labeler = value => value >= 0 && value < dates.Count ? DateFormatter.Format(dates[(int)value], DateStyle.MonthDayCompact) : string.Empty,
                 LabelsPaint = ChartPalette.Paint(ChartPalette.AxisText),
                 TextSize = TextSize,
                 MinStep = dates.Count <= 31 ? 7 : 14,
