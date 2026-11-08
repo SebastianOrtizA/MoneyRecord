@@ -88,12 +88,13 @@ namespace MoneyRecord.ViewModels
 
         partial void OnSelectedAccountChanged(ForecastAccountOption? value)
         {
-            // Picking an account re-draws from the same forecast; only a reload of the options sets this to null
-            if (value != null && !_loadingOptions)
-                LoadCommand.Execute(null);
+            // Picking an account re-draws from the last forecast (no reload); filling the options does not count
+            if (value != null && !_loadingOptions && _last is { } last)
+                Show(last.Result, last.State, value.AccountId);
         }
 
         private bool _loadingOptions;
+        private (ForecastResult Result, ConversionState State)? _last;
 
         /// <summary>The page appeared: load, and follow the shared report currency until <see cref="Deactivate"/>.</summary>
         public Task InitializeAsync()
@@ -124,6 +125,7 @@ namespace MoneyRecord.ViewModels
                 var state = await _conversion.GetStateAsync();
                 cancellationToken.ThrowIfCancellationRequested();
 
+                _last = (result, state);
                 Show(result, state, SelectedAccount?.AccountId);
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)

@@ -121,13 +121,14 @@ public sealed class ForecastViewModelTests : IDisposable
         await _sut.InitializeAsync();
         _sut.HasAccountChoices.Should().BeTrue();
 
+        _forecast.ClearReceivedCalls();
         _sut.SelectedAccount = _sut.AccountOptions.Single(o => o.AccountId == 1);
-        await _sut.LoadCommand.ExecuteAsync(null);
 
         _sut.SelectedAccount!.AccountId.Should().Be(1);
         _sut.View!.GoesNegative.Should().BeTrue();
         _sut.View.Lowest.Value.Should().Be(-20m);
         _sut.Events.Should().ContainSingle();
+        await _forecast.DidNotReceiveWithAnyArgs().GetForecastAsync(default, default);
     }
 
     [Fact]

@@ -84,11 +84,11 @@ case "$cmd" in
     ;;
   go)
     # Known routes, blind (no screenshots). Each starts from a tab root. Edit coordinates here when the UI moves.
-    # Usage: go home|transactions|reports|budgets|more|accounts|categories|payees|quick-entries|transfers|recurring|goals|savings|debts|trips|parties|settings|add-expense|add-income|add-transfer
+    # Usage: go home|transactions|reports|budgets|more|accounts|categories|payees|quick-entries|transfers|recurring|forecast|goals|savings|debts|trips|parties|settings|add-expense|add-income|add-transfer
     d() { sleep "${GO_WAIT:-2}"; }
     case "$1" in
       home|transactions|reports|budgets|more) "$0" tab "$1"; d ;;
-      accounts|categories|payees|quick-entries|transfers|recurring|goals|savings|debts|trips|parties|settings)
+      accounts|categories|payees|quick-entries|transfers|recurring|forecast|goals|savings|debts|trips|parties|settings)
         # More has section headers (Money / Planning / Shared and travel / App), so the rows past Transfers don't fit one screen:
         # Accounts..Transfers are tapped with the page scrolled to the top, the rest with it scrolled to the bottom. The page keeps
         # its scroll position between visits, so each route scrolls to the end it needs first (both swipes are idempotent).
