@@ -162,8 +162,12 @@ namespace MoneyRecord.ViewModels
                     HasBudgets = Budgets.Any();
 
                     // Calculate totals
-                    TotalBudgeted = budgetProgressList.Sum(b => b.LimitAmount);
-                    TotalSpent = budgetProgressList.Sum(b => b.SpentAmount);
+                    // The overall budget already covers every category: adding the category ones would count the same money twice
+                    var totalled = budgetProgressList.FirstOrDefault(b => b.CategoryId == Budget.AllSpending) is { } overall
+                        ? [overall]
+                        : budgetProgressList;
+                    TotalBudgeted = totalled.Sum(b => b.LimitAmount);
+                    TotalSpent = totalled.Sum(b => b.SpentAmount);
                     TotalRemaining = TotalBudgeted - TotalSpent;
                 });
 
