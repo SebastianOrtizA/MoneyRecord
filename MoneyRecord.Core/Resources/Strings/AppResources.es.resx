@@ -3110,4 +3110,25 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SafeToSpendHint" xml:space="preserve">
     <value>Una estimación a partir de tus movimientos recurrentes y con fecha futura; no cuenta el ingreso que aún no ha llegado.</value>
   </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>Mínimo: {0} el {1}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>Saldo el {0}: {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} días</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>Lo que mueve el saldo</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>Nada programado en este periodo.</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>Aún no hay nada que prever</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>Añade una cuenta para ver hacia dónde va tu saldo.</value>
+  </data>
 </root>

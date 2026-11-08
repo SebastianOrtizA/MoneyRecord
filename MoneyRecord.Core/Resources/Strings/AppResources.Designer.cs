@@ -8711,5 +8711,68 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("SafeToSpendUntilSetting", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Looks up a localized string similar to Lowest: {0} on {1}.
+        /// </summary>
+        public static string ForecastLowestLine {
+            get {
+                return ResourceManager.GetString("ForecastLowestLine", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Balance on {0}: {1}.
+        /// </summary>
+        public static string ForecastEndLine {
+            get {
+                return ResourceManager.GetString("ForecastEndLine", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days.
+        /// </summary>
+        public static string ForecastDaysChip {
+            get {
+                return ResourceManager.GetString("ForecastDaysChip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to What moves the balance.
+        /// </summary>
+        public static string ForecastEventsHeader {
+            get {
+                return ResourceManager.GetString("ForecastEventsHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing scheduled in this period..
+        /// </summary>
+        public static string ForecastNoEvents {
+            get {
+                return ResourceManager.GetString("ForecastNoEvents", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing to forecast yet.
+        /// </summary>
+        public static string ForecastNoData {
+            get {
+                return ResourceManager.GetString("ForecastNoData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add an account to see where your balance is heading..
+        /// </summary>
+        public static string ForecastNoDataHint {
+            get {
+                return ResourceManager.GetString("ForecastNoDataHint", resourceCulture);
+            }
+        }
+
     }
 }

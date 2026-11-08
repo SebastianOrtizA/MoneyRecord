@@ -44,6 +44,7 @@ namespace MoneyRecord.ViewModels
             new(AppResources.GroupPlanning,
             [
                 new("\U000F0456", AppResources.RecurringTransactions, nameof(RecurringTransactionsPage)),
+                new("\U000F0127", AppResources.HomeCardForecast, nameof(ForecastPage)),
                 new("\U000F1007", AppResources.SavingsGoals, nameof(GoalsPage)),
                 new("\U000F0538", AppResources.SavingsChallenges, nameof(ChallengesPage)),
             ]),

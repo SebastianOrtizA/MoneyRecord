@@ -3061,4 +3061,25 @@
   <data name="SafeToSpendHint" xml:space="preserve">
     <value>Uma estimativa com base nas suas recorrências e lançamentos futuros; a receita que ainda não chegou não conta.</value>
   </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>Mínimo: {0} em {1}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>Saldo em {0}: {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} dias</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>O que move o saldo</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>Nada agendado neste período.</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>Ainda não há nada para prever</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>Adicione uma conta para ver para onde vai o seu saldo.</value>
+  </data>
 </root>

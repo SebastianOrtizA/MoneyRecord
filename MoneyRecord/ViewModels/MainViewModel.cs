@@ -488,6 +488,9 @@ namespace MoneyRecord.ViewModels
         private Task CustomizeHomeAsync() => _navigationService.NavigateToAsync(nameof(HomeLayoutPage));
 
         [RelayCommand]
+        private Task OpenForecastAsync() => _navigationService.NavigateToAsync(nameof(ForecastPage));
+
+        [RelayCommand]
         private Task OpenStartStepAsync(GetStartedRow? row) => row?.Step switch
         {
             null => Task.CompletedTask,

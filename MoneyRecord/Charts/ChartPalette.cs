@@ -30,6 +30,9 @@ namespace MoneyRecord.Charts
 
         public static Color Expense => Resource(IsDark ? "ExpenseColorDark" : "ExpenseColor");
 
+        /// <summary>The area below zero on the forecast: the expense colour, see-through, so the line and grid stay readable.</summary>
+        public static Color NegativeFill => Expense.WithAlpha(0.18f);
+
         /// <summary>The card surface behind the charts (<c>ChartCard</c>): the 2px gap between slices and bars is drawn in it.</summary>
         public static Color Surface => Resource(IsDark ? "CardBackgroundDark" : "CardBackground");
 

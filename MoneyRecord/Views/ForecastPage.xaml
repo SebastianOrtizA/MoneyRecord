@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Forecast: the balance day by day for 30 / 60 / 90 days, and the recurring, scheduled and debt events behind it -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             x:Class="MoneyRecord.Views.ForecastPage"
+             x:DataType="viewmodels:ForecastChartViewModel"
+             Title="{ext:Localize HomeCardForecast}">
+
+    <RefreshView IsRefreshing="{Binding IsLoading}"
+                 Command="{Binding LoadCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16,12" Spacing="16">
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                    <HorizontalStackLayout Spacing="8" BindableLayout.ItemsSource="{Binding DayChoices}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:ForecastDayChoice">
+                                <controls:FilterChip Text="{Binding Text}"
+                                                     IsActive="{Binding IsSelected}"
+                                                     Command="{Binding SelectDaysCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ForecastChartViewModel}}, x:DataType=viewmodels:ForecastChartViewModel}"
+                                                     CommandParameter="{Binding .}" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </HorizontalStackLayout>
+                </ScrollView>
+
+                <controls:CurrencyChips BindingContext="{Binding Period}" />
+
+                <Picker ItemsSource="{Binding AccountOptions}"
+                        SelectedItem="{Binding SelectedAccount}"
+                        ItemDisplayBinding="{Binding Name, x:DataType=models:ForecastAccountOption}"
+                        IsVisible="{Binding HasAccountChoices}" />
+
+                <controls:EmptyState IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}"
+                                     Icon="&#xF0127;"
+                                     Title="{ext:Localize ForecastNoData}"
+                                     Message="{ext:Localize ForecastNoDataHint}" />
+
+                <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
+                    <VerticalStackLayout Spacing="4">
+                        <!-- The words say what the red area shows, so colour is not the only signal -->
+                        <Label Text="{Binding LowestText}" Style="{StaticResource ReportHeadline}" FontSize="20" />
+                        <Label Text="{Binding EndText}" Style="{StaticResource ReportDelta}" />
+                        <Label Text="{Binding NotConvertedText}"
+                               Style="{StaticResource ReportDelta}"
+                               IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+                        <lvc:CartesianChart HeightRequest="240"
+                                            Margin="0,8,0,0"
+                                            Series="{Binding ForecastSeries}"
+                                            XAxes="{Binding DateAxis}"
+                                            YAxes="{Binding MoneyAxis}"
+                                            Sections="{Binding ForecastSections}"
+                                            LegendPosition="Hidden"
+                                            BackgroundColor="Transparent" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Spacing="4" IsVisible="{Binding HasData}">
+                    <Label Text="{ext:Localize ForecastEventsHeader}" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="{ext:Localize ForecastNoEvents}" Style="{StaticResource SecondaryLabel}"
+                           IsVisible="{Binding HasNoEvents}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Events}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="models:ForecastEventRow">
+                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" Padding="4,6">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding OpenEventCommand, Source={RelativeSource AncestorType={x:Type viewmodels:ForecastChartViewModel}}, x:DataType=viewmodels:ForecastChartViewModel}"
+                                                              CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <Label Text="{Binding Icon}"
+                                           FontFamily="MaterialDesignIcons"
+                                           FontSize="22"
+                                           VerticalOptions="Center"
+                                           TextColor="{AppThemeBinding Light=#1976D2, Dark=#64B5F6}" />
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                        <Label Text="{Binding Description}" FontSize="14" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding DetailText}" Style="{StaticResource SecondaryLabel}" FontSize="12" LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="2" Text="{Binding AmountText}" FontSize="15" FontAttributes="Bold"
+                                           VerticalOptions="Center" HorizontalTextAlignment="End"
+                                           TextColor="{Binding Type, Converter={StaticResource TransactionTypeToColorConverter}}" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

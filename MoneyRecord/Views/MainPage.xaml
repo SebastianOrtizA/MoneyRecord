@@ -735,6 +735,9 @@
 
             <!-- Forecast: safe to spend until the next income (or month end) and the first day the balance dips below zero (off by default) -->
             <Border Style="{StaticResource Card}" x:Name="ForecastCard" IsVisible="{Binding ShowForecast}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenForecastCommand}"/>
+                </Border.GestureRecognizers>
                 <VerticalStackLayout Spacing="8">
                     <Label Text="{ext:Localize HomeCardForecast}" FontSize="18" FontAttributes="Bold"/>
                     <Label Text="{Binding ForecastDipText}" IsVisible="{Binding ShowForecastDip}" FontSize="15" FontAttributes="Bold"
