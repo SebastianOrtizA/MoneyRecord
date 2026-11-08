@@ -177,4 +177,27 @@ public class BudgetProjectionHelperTests
 
         result.Should().Be(500m);
     }
+
+    [Fact]
+    public void DailyAllowance_SpreadsWhatIsLeftOverTheDaysIncludingToday()
+    {
+        var allowance = BudgetProjectionHelper.DailyAllowance(90m, new DateTime(2026, 5, 22), new DateTime(2026, 5, 31, 23, 59, 59));
+
+        allowance.Should().Be(new BudgetProjectionHelper.Allowance(9m, 10));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-5)]
+    public void DailyAllowance_IsNullWhenNothingIsLeft(int remaining)
+    {
+        BudgetProjectionHelper.DailyAllowance(remaining, new DateTime(2026, 5, 22), new DateTime(2026, 5, 31)).Should().BeNull();
+    }
+
+    [Fact]
+    public void DailyAllowance_IsNullOnTheLastDayOrAfterThePeriod()
+    {
+        BudgetProjectionHelper.DailyAllowance(50m, new DateTime(2026, 5, 31), new DateTime(2026, 5, 31, 23, 59, 59)).Should().BeNull();
+        BudgetProjectionHelper.DailyAllowance(50m, new DateTime(2026, 6, 2), new DateTime(2026, 5, 31)).Should().BeNull();
+    }
 }

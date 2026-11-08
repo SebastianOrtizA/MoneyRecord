@@ -3094,4 +3094,16 @@
   <data name="LowBalanceBody" xml:space="preserve">
     <value>{0} pode ficar abaixo de zero em {1}</value>
   </data>
+  <data name="BudgetCarriedOver" xml:space="preserve">
+    <value>Inclui {0} do período anterior</value>
+  </data>
+  <data name="BudgetPerDay" xml:space="preserve">
+    <value>{0} por dia durante {1} dias</value>
+  </data>
+  <data name="BudgetRollover" xml:space="preserve">
+    <value>Acumular o que sobrar</value>
+  </data>
+  <data name="BudgetRolloverHint" xml:space="preserve">
+    <value>O que você não gastar é somado ao limite do próximo período. O excesso não é transferido.</value>
+  </data>
 </root>

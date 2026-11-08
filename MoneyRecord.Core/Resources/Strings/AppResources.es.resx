@@ -3143,4 +3143,16 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="LowBalanceBody" xml:space="preserve">
     <value>{0} podría quedar por debajo de cero el {1}</value>
   </data>
+  <data name="BudgetCarriedOver" xml:space="preserve">
+    <value>Incluye {0} del periodo anterior</value>
+  </data>
+  <data name="BudgetPerDay" xml:space="preserve">
+    <value>{0} al día durante {1} días</value>
+  </data>
+  <data name="BudgetRollover" xml:space="preserve">
+    <value>Acumular lo que sobre</value>
+  </data>
+  <data name="BudgetRolloverHint" xml:space="preserve">
+    <value>Lo que no gastes se suma al límite del siguiente periodo. El exceso no se arrastra.</value>
+  </data>
 </root>

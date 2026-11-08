@@ -56,6 +56,10 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private BudgetPeriodItem selectedBudgetPeriod;
 
+        /// <summary>The sheet's "carry over what is left" switch.</summary>
+        [ObservableProperty]
+        private bool rolloverUnspent;
+
         [ObservableProperty]
         private decimal totalBudgeted;
 
@@ -180,6 +184,7 @@ namespace MoneyRecord.ViewModels
             SelectedCategory = AvailableCategories[0];
             SelectedBudgetPeriod = BudgetPeriods[1]; // Month
             BudgetAmount = string.Empty;
+            RolloverUnspent = false;
             IsFormOpen = true;
         }
 
@@ -192,6 +197,7 @@ namespace MoneyRecord.ViewModels
             EditingBudget = budget;
             SelectedBudgetPeriod = BudgetPeriods.First(p => p.Period == budget.Period);
             BudgetAmount = budget.OriginalLimitAmount.ToString();
+            RolloverUnspent = budget.RolloverEnabled;
             IsFormOpen = true;
         }
 
@@ -234,7 +240,7 @@ namespace MoneyRecord.ViewModels
             {
                 if (EditingBudget is { } editing)
                 {
-                    await _budgetRepository.UpdateLimitAsync(editing.BudgetId, amount, period);
+                    await _budgetRepository.UpdateLimitAsync(editing.BudgetId, amount, period, RolloverUnspent);
                 }
                 else
                 {
@@ -243,6 +249,7 @@ namespace MoneyRecord.ViewModels
                         CategoryId = SelectedCategory!.Id,
                         LimitAmount = amount,
                         Period = period,
+                        RolloverUnspent = RolloverUnspent,
                         CreatedDate = DateTime.Now,
                         IsActive = true
                     });
