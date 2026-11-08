@@ -3086,4 +3086,28 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="PleaseEnterQuickEntryName" xml:space="preserve">
     <value>Introduce un nombre para la entrada rápida.</value>
   </data>
+  <data name="HomeCardForecast" xml:space="preserve">
+    <value>Previsión</value>
+  </data>
+  <data name="SafeToSpendLine" xml:space="preserve">
+    <value>Puedes gastar {0}, unos {1} al día hasta el {2}</value>
+  </data>
+  <data name="SafeToSpendShort" xml:space="preserve">
+    <value>Faltan {0} hasta el {1}</value>
+  </data>
+  <data name="ForecastDipLine" xml:space="preserve">
+    <value>El saldo baja de cero el {0}</value>
+  </data>
+  <data name="SafeToSpendUntilSetting" xml:space="preserve">
+    <value>Puedes gastar hasta</value>
+  </data>
+  <data name="SafeToSpendNextIncome" xml:space="preserve">
+    <value>Próximo ingreso</value>
+  </data>
+  <data name="SafeToSpendEndOfMonth" xml:space="preserve">
+    <value>Fin de mes</value>
+  </data>
+  <data name="SafeToSpendHint" xml:space="preserve">
+    <value>Una estimación a partir de tus movimientos recurrentes y con fecha futura; no cuenta el ingreso que aún no ha llegado.</value>
+  </data>
 </root>

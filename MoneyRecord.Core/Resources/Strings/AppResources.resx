@@ -3089,4 +3089,28 @@
   <data name="PleaseEnterQuickEntryName" xml:space="preserve">
     <value>Please enter a name for the quick entry.</value>
   </data>
+  <data name="HomeCardForecast" xml:space="preserve">
+    <value>Forecast</value>
+  </data>
+  <data name="SafeToSpendLine" xml:space="preserve">
+    <value>Safe to spend {0}, about {1} a day until {2}</value>
+  </data>
+  <data name="SafeToSpendShort" xml:space="preserve">
+    <value>Short by {0} until {1}</value>
+  </data>
+  <data name="ForecastDipLine" xml:space="preserve">
+    <value>Balance dips below zero on {0}</value>
+  </data>
+  <data name="SafeToSpendUntilSetting" xml:space="preserve">
+    <value>Safe to spend until</value>
+  </data>
+  <data name="SafeToSpendNextIncome" xml:space="preserve">
+    <value>Next income</value>
+  </data>
+  <data name="SafeToSpendEndOfMonth" xml:space="preserve">
+    <value>End of month</value>
+  </data>
+  <data name="SafeToSpendHint" xml:space="preserve">
+    <value>An estimate from your recurring and future-dated entries; income that has not arrived is not counted.</value>
+  </data>
 </root>

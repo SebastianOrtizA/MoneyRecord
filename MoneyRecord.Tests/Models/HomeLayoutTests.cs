@@ -13,15 +13,15 @@ public class HomeLayoutTests
         var layout = HomeLayout.Parse(null);
 
         layout.Order.Should().Equal(HomeCard.Balance, HomeCard.GetStarted, HomeCard.QuickEntries, HomeCard.PeriodSummary,
-            HomeCard.Recent, HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Goals, HomeCard.Debts);
-        layout.Hidden.Should().BeEquivalentTo([HomeCard.Debts]);
+            HomeCard.Recent, HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Goals, HomeCard.Debts, HomeCard.Forecast);
+        layout.Hidden.Should().BeEquivalentTo([HomeCard.Debts, HomeCard.Forecast]);
     }
 
     [Fact]
     public void Serialize_and_parse_round_trip()
     {
         var layout = new HomeLayout([HomeCard.Goals, HomeCard.Balance, HomeCard.Recent, HomeCard.PeriodSummary,
-            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts, HomeCard.GetStarted, HomeCard.QuickEntries], new HashSet<HomeCard> { HomeCard.Budgets, HomeCard.Trip });
+            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts, HomeCard.GetStarted, HomeCard.QuickEntries, HomeCard.Forecast], new HashSet<HomeCard> { HomeCard.Budgets, HomeCard.Trip });
 
         var parsed = HomeLayout.Parse(layout.Serialize());
 
@@ -36,7 +36,7 @@ public class HomeLayoutTests
 
         layout.Order.Take(2).Should().Equal(HomeCard.Recent, HomeCard.Balance);
         layout.Order.Should().OnlyHaveUniqueItems().And.HaveCount(Enum.GetValues<HomeCard>().Length);
-        layout.Hidden.Should().BeEquivalentTo([HomeCard.Goals, HomeCard.Debts]);
+        layout.Hidden.Should().BeEquivalentTo([HomeCard.Goals, HomeCard.Debts, HomeCard.Forecast]);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class HomeLayoutTests
         var layout = HomeLayout.Parse("Goals,Balance;hidden=Goals");
 
         layout.Order.Should().Equal([HomeCard.Goals, HomeCard.Balance, HomeCard.PeriodSummary, HomeCard.Recent,
-            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts, HomeCard.GetStarted, HomeCard.QuickEntries]);
+            HomeCard.Upcoming, HomeCard.Budgets, HomeCard.Trip, HomeCard.Debts, HomeCard.GetStarted, HomeCard.QuickEntries, HomeCard.Forecast]);
         layout.IsShown(HomeCard.GetStarted).Should().BeTrue();
         layout.IsShown(HomeCard.Debts).Should().BeFalse();
         layout.IsShown(HomeCard.Trip).Should().BeTrue();

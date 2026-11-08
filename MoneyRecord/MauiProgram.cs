@@ -122,6 +122,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ICurrencyDisplaySettings, CurrencyDisplaySettings>();
             builder.Services.AddSingleton<IConversionService, ConversionService>();
             builder.Services.AddSingleton<IForecastService, ForecastService>();
+            builder.Services.AddSingleton<IPlanningSettings, PlanningSettings>();
+            builder.Services.AddSingleton<ISafeToSpendService, SafeToSpendService>();
             // A report asks the Transactions tab to open filtered
             builder.Services.AddSingleton<TransactionsDrillDown>();
 

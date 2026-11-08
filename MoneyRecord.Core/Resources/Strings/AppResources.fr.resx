@@ -3036,4 +3036,28 @@
   <data name="PleaseEnterQuickEntryName" xml:space="preserve">
     <value>Saisissez un nom pour la saisie rapide.</value>
   </data>
+  <data name="HomeCardForecast" xml:space="preserve">
+    <value>Prévision</value>
+  </data>
+  <data name="SafeToSpendLine" xml:space="preserve">
+    <value>À dépenser : {0}, environ {1} par jour jusqu'au {2}</value>
+  </data>
+  <data name="SafeToSpendShort" xml:space="preserve">
+    <value>Il manque {0} jusqu'au {1}</value>
+  </data>
+  <data name="ForecastDipLine" xml:space="preserve">
+    <value>Le solde passe sous zéro le {0}</value>
+  </data>
+  <data name="SafeToSpendUntilSetting" xml:space="preserve">
+    <value>À dépenser jusqu'à</value>
+  </data>
+  <data name="SafeToSpendNextIncome" xml:space="preserve">
+    <value>Prochain revenu</value>
+  </data>
+  <data name="SafeToSpendEndOfMonth" xml:space="preserve">
+    <value>Fin du mois</value>
+  </data>
+  <data name="SafeToSpendHint" xml:space="preserve">
+    <value>Une estimation à partir de vos opérations récurrentes et futures ; les revenus pas encore reçus ne sont pas comptés.</value>
+  </data>
 </root>

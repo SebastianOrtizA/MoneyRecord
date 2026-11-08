@@ -8639,5 +8639,77 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("PleaseEnterQuickEntryName", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Balance dips below zero on {0}.
+        /// </summary>
+        public static string ForecastDipLine {
+            get {
+                return ResourceManager.GetString("ForecastDipLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Forecast.
+        /// </summary>
+        public static string HomeCardForecast {
+            get {
+                return ResourceManager.GetString("HomeCardForecast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End of month.
+        /// </summary>
+        public static string SafeToSpendEndOfMonth {
+            get {
+                return ResourceManager.GetString("SafeToSpendEndOfMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An estimate from your recurring and future-dated entries; income that has not arrived is not counted..
+        /// </summary>
+        public static string SafeToSpendHint {
+            get {
+                return ResourceManager.GetString("SafeToSpendHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Safe to spend {0}, about {1} a day until {2}.
+        /// </summary>
+        public static string SafeToSpendLine {
+            get {
+                return ResourceManager.GetString("SafeToSpendLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next income.
+        /// </summary>
+        public static string SafeToSpendNextIncome {
+            get {
+                return ResourceManager.GetString("SafeToSpendNextIncome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Short by {0} until {1}.
+        /// </summary>
+        public static string SafeToSpendShort {
+            get {
+                return ResourceManager.GetString("SafeToSpendShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Safe to spend until.
+        /// </summary>
+        public static string SafeToSpendUntilSetting {
+            get {
+                return ResourceManager.GetString("SafeToSpendUntilSetting", resourceCulture);
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace MoneyRecord.Models
         private const string HiddenMarker = ";hidden=";
 
         /// <summary>Cards that start hidden (opt-in).</summary>
-        private static readonly HomeCard[] HiddenByDefault = [HomeCard.Debts];
+        private static readonly HomeCard[] HiddenByDefault = [HomeCard.Debts, HomeCard.Forecast];
 
         /// <summary>Every card in its declared order, Get started and Quick entries under Balance; the opt-in ones hidden.</summary>
         public static HomeLayout Default => new(

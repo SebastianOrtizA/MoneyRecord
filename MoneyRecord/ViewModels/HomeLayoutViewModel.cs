@@ -33,16 +33,36 @@ namespace MoneyRecord.ViewModels
     public partial class HomeLayoutViewModel : ObservableObject
     {
         private readonly IHomeLayoutSettings _settings;
+        private readonly IPlanningSettings _planning;
         private bool _loading;
 
         public ObservableCollection<HomeCardItem> Items { get; } = [];
 
-        public HomeLayoutViewModel(IHomeLayoutSettings settings)
+        /// <summary>How far the Forecast card's safe to spend looks (saved at every change).</summary>
+        public IReadOnlyList<SafeToSpendOption> SafeToSpendOptions { get; } = SafeToSpendOption.All();
+
+        [ObservableProperty]
+        private SafeToSpendOption? selectedSafeToSpend;
+
+        partial void OnSelectedSafeToSpendChanged(SafeToSpendOption? value)
         {
-            _settings = settings;
+            if (value != null && !_loading)
+                _planning.SafeToSpendUntil = value.Horizon;
         }
 
-        public void Initialize() => Load(_settings.Layout);
+        public HomeLayoutViewModel(IHomeLayoutSettings settings, IPlanningSettings planning)
+        {
+            _settings = settings;
+            _planning = planning;
+        }
+
+        public void Initialize()
+        {
+            Load(_settings.Layout);
+            _loading = true;
+            SelectedSafeToSpend = SafeToSpendOptions.First(o => o.Horizon == _planning.SafeToSpendUntil);
+            _loading = false;
+        }
 
         private void Load(HomeLayout layout)
         {
@@ -51,13 +71,19 @@ namespace MoneyRecord.ViewModels
             foreach (var card in layout.Order)
                 Items.Add(new HomeCardItem(card, TitleOf(card), layout.IsShown(card), Save));
             _loading = false;
+            OnPropertyChanged(nameof(ShowSafeToSpendSetting));
             RefreshMoves();
         }
+
+        /// <summary>The horizon picker matters only while the Forecast card is on.</summary>
+        public bool ShowSafeToSpendSetting => Items.Any(i => i.Card == HomeCard.Forecast && i.IsShown);
 
         private void Save()
         {
             if (_loading)
                 return;
+
+            OnPropertyChanged(nameof(ShowSafeToSpendSetting));
 
             _settings.Layout = new HomeLayout(Items.Select(i => i.Card).ToList(), Items.Where(i => !i.IsShown).Select(i => i.Card).ToHashSet());
         }
@@ -121,6 +147,7 @@ namespace MoneyRecord.ViewModels
             HomeCard.Debts => AppResources.Debts,
             HomeCard.GetStarted => AppResources.GetStartedTitle,
             HomeCard.QuickEntries => AppResources.QuickEntries,
+            HomeCard.Forecast => AppResources.HomeCardForecast,
             _ => card.ToString()
         };
     }
