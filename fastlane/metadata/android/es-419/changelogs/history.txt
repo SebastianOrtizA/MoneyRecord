@@ -1,3 +1,12 @@
+## 1.3.0
+- Nueva página Previsión (Más → Planificación → Previsión): mira cómo pueden evolucionar tus saldos en los próximos 30, 60 o 90 días según tus movimientos recurrentes, programados y los pagos de deudas. Son estimaciones, no promesas.
+- Inicio tiene una tarjeta de Previsión con el monto que puedes gastar con seguridad hasta tu próximo ingreso.
+- Aviso de saldo bajo: elige en Ajustes que te avisen con 7, 14 o 30 días de anticipación cuando se prevea que una cuenta quede en negativo.
+- Los presupuestos muestran cuánto puedes gastar todavía por día y pueden pasar lo que no gastaste al siguiente periodo.
+- Nuevo presupuesto «Todos los gastos»: un solo límite para todo lo que gastas, junto a tus presupuestos por categoría.
+- Sugerir presupuestos: obtén un límite mensual para cada categoría sin presupuesto, según tus últimos 3 meses, y marca los que quieras crear.
+- Corregido: un acceso directo del ícono abierto con el bloqueo de la app activado ahora espera a que lo desbloquees.
+
 ## 1.2.2
 - Se recorta aún más el código de la app, así que ocupa un poco menos de espacio y de memoria.
 

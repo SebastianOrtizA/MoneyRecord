@@ -1,3 +1,12 @@
+## 1.3.0
+- Nuova pagina Previsioni (Altro → Pianificazione → Previsioni): guarda come possono cambiare i tuoi saldi nei prossimi 30, 60 o 90 giorni in base ai movimenti ricorrenti, programmati e ai pagamenti dei debiti. Sono stime, non promesse.
+- La Home ha una scheda Previsioni con l'importo che puoi spendere in sicurezza fino al prossimo reddito.
+- Avviso di saldo basso: scegli nelle Impostazioni di essere avvisato 7, 14 o 30 giorni prima quando si prevede che un conto vada in negativo.
+- I budget mostrano quanto puoi ancora spendere al giorno e possono riportare ciò che non hai speso al periodo successivo.
+- Nuovo budget «Tutte le spese»: un solo limite per tutto ciò che spendi, accanto ai budget per categoria.
+- Suggerisci budget: ottieni un limite mensile per ogni categoria senza budget, in base agli ultimi 3 mesi, e spunta quelli da creare.
+- Corretto: una scorciatoia dell'icona aperta con il blocco dell'app attivo ora aspetta che tu lo sblocchi.
+
 ## 1.2.2
 - Il codice dell'app è stato ridotto ancora di più, quindi occupa un po' meno spazio e memoria.
 
