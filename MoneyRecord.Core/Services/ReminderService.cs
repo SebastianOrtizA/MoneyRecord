@@ -244,7 +244,7 @@ namespace MoneyRecord.Services
                         CategoryName = budget.CategoryId == Budget.AllSpending ? AppResources.AllSpending : names.GetValueOrDefault(budget.CategoryId, string.Empty),
                         LimitAmount = budget.LimitAmount + await rollover.CarryAsync(budget, now)
                     };
-                    progress.SetSpent(BudgetSpent.For(spentByCategory, budget.CategoryId));
+                    progress.SetSpent(BudgetSpent.For(spentByCategory, budget.CategoryId, MoneyFormatter.BaseCurrency));
                     NotifyBudget(budget, start, progress);
                 }
             }

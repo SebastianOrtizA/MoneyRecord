@@ -54,7 +54,7 @@ namespace MoneyRecord.Services
                     CarriedOverAmount = carry,
                 };
                 progress.LimitAmount += carry;
-                progress.SetSpent(BudgetSpent.For(spentByCategory, budget.CategoryId));
+                progress.SetSpent(BudgetSpent.For(spentByCategory, budget.CategoryId, MoneyFormatter.BaseCurrency));
                 // A range that has not started yet counts from its first day
                 progress.SetDailyAllowance(today > startDate ? today : startDate, endDate);
                 progressList.Add(progress);
@@ -63,10 +63,10 @@ namespace MoneyRecord.Services
             return progressList.OrderByDescending(b => b.ProgressPercentage).ToList();
         }
 
+        public const string AllSpendingIconCode = "F0584";
+
         /// <summary>The pseudo category the overall budget is listed under (not a stored row).</summary>
         public static Category AllSpendingCategory => new() { Id = Budget.AllSpending, Name = AppResources.AllSpending, IconCode = AllSpendingIconCode };
-
-        public const string AllSpendingIconCode = "F0584";
 
         public async Task<List<BudgetSuggestion>> GetSuggestionsAsync(DateTime today)
         {

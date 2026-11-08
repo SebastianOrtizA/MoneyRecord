@@ -1,5 +1,3 @@
-using MoneyRecord.Helpers;
-
 namespace MoneyRecord.Models
 {
     /// <summary>
@@ -11,9 +9,9 @@ namespace MoneyRecord.Models
         public static readonly BudgetSpent None = new(0, []);
 
         /// <summary>What a budget spent: the overall budget (<see cref="Budget.AllSpending"/>) takes every category, any other its own.</summary>
-        public static BudgetSpent For(IReadOnlyDictionary<int, BudgetSpent> byCategory, int categoryId) =>
+        public static BudgetSpent For(IReadOnlyDictionary<int, BudgetSpent> byCategory, int categoryId, string baseCurrencyCode) =>
             categoryId == Budget.AllSpending
-                ? Sum(byCategory.Values, MoneyFormatter.BaseCurrency)
+                ? Sum(byCategory.Values, baseCurrencyCode)
                 : byCategory.GetValueOrDefault(categoryId) ?? None;
 
         public static BudgetSpent Sum(IEnumerable<BudgetSpent> parts, string baseCurrencyCode)

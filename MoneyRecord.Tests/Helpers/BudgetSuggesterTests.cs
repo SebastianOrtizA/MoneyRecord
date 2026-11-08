@@ -52,12 +52,12 @@ public class BudgetSuggesterTests
             [2] = new(30m, [new CurrencyAmount("USD", 7m)])
         };
 
-        var spent = BudgetSpent.For(byCategory, Budget.AllSpending);
+        var spent = BudgetSpent.For(byCategory, Budget.AllSpending, "EUR");
 
         spent.Counted.Should().Be(50m);
         spent.Uncounted.Should().ContainSingle().Which.Should().Be(new CurrencyAmount("USD", 12m));
-        BudgetSpent.For(byCategory, 2).Counted.Should().Be(30m);
-        BudgetSpent.For(byCategory, 9).Should().Be(BudgetSpent.None);
+        BudgetSpent.For(byCategory, 2, "EUR").Counted.Should().Be(30m);
+        BudgetSpent.For(byCategory, 9, "EUR").Should().Be(BudgetSpent.None);
     }
 
     [Fact]

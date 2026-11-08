@@ -27,7 +27,7 @@ namespace MoneyRecord.Services
             {
                 if (!_spentByWindow.TryGetValue(start, out var byCategory))
                     _spentByWindow[start] = byCategory = await conversion.GetExpensesByCategoryAsync(start, end);
-                spent.Add(BudgetSpent.For(byCategory, budget.CategoryId).Counted);
+                spent.Add(BudgetSpent.For(byCategory, budget.CategoryId, MoneyFormatter.BaseCurrency).Counted);
             }
 
             return Carry(budget.LimitAmount, spent);

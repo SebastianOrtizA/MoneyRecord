@@ -255,17 +255,15 @@ namespace MoneyRecord.ViewModels
 
             try
             {
-                foreach (var suggestion in chosen)
+                var now = DateTime.Now;
+                await _budgetRepository.AddManyAsync(chosen.Select(suggestion => new Budget
                 {
-                    await _budgetRepository.SaveAsync(new Budget
-                    {
-                        CategoryId = suggestion.CategoryId,
-                        LimitAmount = suggestion.Amount,
-                        Period = BudgetPeriod.Month,
-                        CreatedDate = DateTime.Now,
-                        IsActive = true
-                    });
-                }
+                    CategoryId = suggestion.CategoryId,
+                    LimitAmount = suggestion.Amount,
+                    Period = BudgetPeriod.Month,
+                    CreatedDate = now,
+                    IsActive = true
+                }).ToList());
 
                 IsSuggestionsOpen = false;
                 await LoadBudgetsCommand.ExecuteAsync(null);
