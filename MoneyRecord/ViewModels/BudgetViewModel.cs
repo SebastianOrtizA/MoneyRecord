@@ -250,6 +250,7 @@ namespace MoneyRecord.ViewModels
                         LimitAmount = amount,
                         Period = period,
                         RolloverUnspent = RolloverUnspent,
+                        RolloverSince = RolloverUnspent ? DateTime.Now : null,
                         CreatedDate = DateTime.Now,
                         IsActive = true
                     });

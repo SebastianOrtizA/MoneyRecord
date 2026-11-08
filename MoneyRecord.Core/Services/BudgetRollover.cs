@@ -23,7 +23,7 @@ namespace MoneyRecord.Services
                 return 0;
 
             var spent = new List<decimal>();
-            foreach (var (start, end) in PreviousWindows(budget.Period, now, budget.CreatedDate))
+            foreach (var (start, end) in PreviousWindows(budget.Period, now, budget.RolloverSince ?? budget.CreatedDate))
             {
                 if (!_spentByWindow.TryGetValue(start, out var byCategory))
                     _spentByWindow[start] = byCategory = await conversion.GetExpensesByCategoryAsync(start, end);

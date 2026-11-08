@@ -19,6 +19,11 @@ namespace MoneyRecord.Services.Repositories
 
             budget.LimitAmount = limitAmount;
             budget.Period = period;
+            // The chain starts when it is switched on, so an old budget is not credited for periods before that
+            if (!rolloverUnspent)
+                budget.RolloverSince = null;
+            else if (!budget.RolloverUnspent)
+                budget.RolloverSince = DateTime.Now;
             budget.RolloverUnspent = rolloverUnspent;
             return await SaveAsync(budget);
         }

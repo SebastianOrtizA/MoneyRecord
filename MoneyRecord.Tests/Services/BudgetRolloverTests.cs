@@ -98,4 +98,19 @@ public class BudgetRolloverTests
 
         await conversion.Received(2).GetExpensesByCategoryAsync(Arg.Any<DateTime>(), Arg.Any<DateTime>());
     }
+
+    [Fact]
+    public async Task The_chain_starts_when_rollover_was_switched_on_not_when_the_budget_was_created()
+    {
+        var conversion = Substitute.For<IConversionService>();
+        conversion.GetExpensesByCategoryAsync(default, default).ReturnsForAnyArgs(new Dictionary<int, BudgetSpent>());
+        var budget = new Budget
+        {
+            CategoryId = 1, LimitAmount = 100m, RolloverUnspent = true,
+            CreatedDate = new DateTime(2026, 1, 1), RolloverSince = new DateTime(2026, 4, 20)
+        };
+
+        // April is the first period (nothing spent: 100 carried into May, which is the current one)
+        (await new BudgetRollover(conversion).CarryAsync(budget, Now)).Should().Be(100m);
+    }
 }

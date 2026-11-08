@@ -47,6 +47,9 @@ namespace MoneyRecord.Models
         /// Off by default; older databases and backups get that default.
         /// </summary>
         public bool RolloverUnspent { get; set; }
+
+        /// <summary>When rollover was switched on: the carry chain starts in that period, never in earlier ones. Null falls back to <see cref="CreatedDate"/>.</summary>
+        public DateTime? RolloverSince { get; set; }
     }
 
     /// <summary>How much of a budget is used: OnTrack < 60% <= Warning < 80% <= High <= 100% < Exceeded (strictly over).</summary>

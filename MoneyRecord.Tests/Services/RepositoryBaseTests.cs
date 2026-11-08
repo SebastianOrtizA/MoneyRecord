@@ -66,6 +66,24 @@ public sealed class RepositoryBaseTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Rollover_since_is_set_when_switched_on_kept_while_on_and_cleared_when_off()
+    {
+        var budgets = new BudgetRepository(_dbInitializer);
+        var budget = new Budget { CategoryId = 3, LimitAmount = 100m, IsActive = true };
+        await budgets.SaveAsync(budget);
+
+        await budgets.UpdateLimitAsync(budget.Id, 100m, BudgetPeriod.Month, true);
+        var since = (await budgets.GetByIdAsync(budget.Id))!.RolloverSince;
+        since.Should().NotBeNull();
+
+        await budgets.UpdateLimitAsync(budget.Id, 120m, BudgetPeriod.Month, true);
+        (await budgets.GetByIdAsync(budget.Id))!.RolloverSince.Should().Be(since);
+
+        await budgets.UpdateLimitAsync(budget.Id, 120m, BudgetPeriod.Month, false);
+        (await budgets.GetByIdAsync(budget.Id))!.RolloverSince.Should().BeNull();
+    }
+
+    [Fact]
     public async Task UpdateLimit_and_Deactivate_change_one_field_of_an_existing_row()
     {
         var budgets = new BudgetRepository(_dbInitializer);
@@ -80,6 +98,7 @@ public sealed class RepositoryBaseTests : IAsyncLifetime
         (await rules.DeactivateAsync(rule.Id)).Should().Be(1);
 
         var updated = (await budgets.GetByIdAsync(budget.Id))!;
+        updated.RolloverSince.Should().BeNull();
         updated.LimitAmount.Should().Be(60m);
         updated.Period.Should().Be(BudgetPeriod.Year);
         (await rules.GetActiveAsync()).Should().BeEmpty();
