@@ -63,7 +63,7 @@
             </VerticalStackLayout>
 
             <!-- Forecast card: how far safe to spend looks -->
-            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="0,8,0,0">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="0,8,0,0" IsVisible="{Binding ShowSafeToSpendSetting}">
                 <Label Text="{ext:Localize SafeToSpendUntilSetting}" FontSize="15" VerticalOptions="Center"/>
                 <Picker Grid.Column="1" WidthRequest="170"
                         ItemsSource="{Binding SafeToSpendOptions}"

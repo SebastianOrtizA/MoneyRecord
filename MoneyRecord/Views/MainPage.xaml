@@ -737,7 +737,6 @@
             <Border Style="{StaticResource Card}" x:Name="ForecastCard" IsVisible="{Binding ShowForecast}">
                 <VerticalStackLayout Spacing="8">
                     <Label Text="{ext:Localize HomeCardForecast}" FontSize="18" FontAttributes="Bold"/>
-                    <Label Text="{Binding SafeToSpendText}" FontSize="16"/>
                     <Label Text="{Binding ForecastDipText}" IsVisible="{Binding ShowForecastDip}" FontSize="15" FontAttributes="Bold"
                            TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"/>
                     <Label Text="{ext:Localize SafeToSpendHint}" Style="{StaticResource SecondaryLabel}"/>

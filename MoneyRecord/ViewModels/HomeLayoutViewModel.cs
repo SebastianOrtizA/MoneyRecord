@@ -71,13 +71,19 @@ namespace MoneyRecord.ViewModels
             foreach (var card in layout.Order)
                 Items.Add(new HomeCardItem(card, TitleOf(card), layout.IsShown(card), Save));
             _loading = false;
+            OnPropertyChanged(nameof(ShowSafeToSpendSetting));
             RefreshMoves();
         }
+
+        /// <summary>The horizon picker matters only while the Forecast card is on.</summary>
+        public bool ShowSafeToSpendSetting => Items.Any(i => i.Card == HomeCard.Forecast && i.IsShown);
 
         private void Save()
         {
             if (_loading)
                 return;
+
+            OnPropertyChanged(nameof(ShowSafeToSpendSetting));
 
             _settings.Layout = new HomeLayout(Items.Select(i => i.Card).ToList(), Items.Where(i => !i.IsShown).Select(i => i.Card).ToHashSet());
         }
