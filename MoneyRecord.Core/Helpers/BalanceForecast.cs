@@ -35,9 +35,9 @@ namespace MoneyRecord.Helpers
         /// <summary>The first day the balance is below zero; null when it never is.</summary>
         public DateTime? FirstNegativeDate => Points.FirstOrDefault(p => p.Cents < 0)?.Date;
 
-        /// <summary>The day-by-day sum of series over the same days (one currency's accounts).</summary>
+        /// <summary>The day-by-day sum of series over the same days (one currency's accounts); needs at least one.</summary>
         public static ForecastSeries Combine(IReadOnlyCollection<ForecastSeries> series) =>
-            new(series.First().Points.Select((p, i) => new ForecastPoint(p.Date, series.Sum(s => s.Points[i].Cents))).ToList());
+            series.Count == 0 ? throw new ArgumentException("At least one series is needed", nameof(series)) : new(series.First().Points.Select((p, i) => new ForecastPoint(p.Date, series.Sum(s => s.Points[i].Cents))).ToList());
     }
 
     /// <summary>
