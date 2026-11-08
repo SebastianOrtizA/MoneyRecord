@@ -3155,4 +3155,22 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="BudgetRolloverHint" xml:space="preserve">
     <value>Lo que no gastes se suma al límite del siguiente periodo. El exceso no se arrastra.</value>
   </data>
+  <data name="AllSpending" xml:space="preserve">
+    <value>Todos los gastos</value>
+  </data>
+  <data name="SuggestBudgets" xml:space="preserve">
+    <value>Sugerir presupuestos</value>
+  </data>
+  <data name="SuggestBudgetsHint" xml:space="preserve">
+    <value>Límites mensuales según tu gasto medio de los últimos 3 meses. Marca los que quieras crear.</value>
+  </data>
+  <data name="NoBudgetSuggestions" xml:space="preserve">
+    <value>Nada que sugerir todavía: las categorías sin presupuesto no tienen gastos en los últimos 3 meses.</value>
+  </data>
+  <data name="CreateBudgetsButton" xml:space="preserve">
+    <value>Crear presupuestos</value>
+  </data>
+  <data name="BudgetsCreated" xml:space="preserve">
+    <value>Presupuestos creados</value>
+  </data>
 </root>

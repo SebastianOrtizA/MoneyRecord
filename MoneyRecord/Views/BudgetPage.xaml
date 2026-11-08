@@ -57,6 +57,16 @@
                                        Style="{StaticResource BudgetTotalAmount}" />
                             </Grid>
                         </Border>
+                        <Button Text="{ext:Localize SuggestBudgets}"
+                                Command="{Binding SuggestBudgetsCommand}"
+                                HorizontalOptions="Start"
+                                MinimumHeightRequest="40"
+                                Padding="16,0"
+                                CornerRadius="20"
+                                BorderWidth="1"
+                                BackgroundColor="Transparent"
+                                BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
                     </VerticalStackLayout>
                 </CollectionView.Header>
 
@@ -255,6 +265,41 @@
                             BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
                             TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
                 </Grid>
+            </VerticalStackLayout>
+        </controls:BottomSheet>
+
+        <!-- Suggestions sheet: a monthly limit per category without a budget, from the last 3 months -->
+        <controls:BottomSheet IsOpen="{Binding IsSuggestionsOpen}" CloseCommand="{Binding CloseSuggestionsCommand}">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="{ext:Localize SuggestBudgets}" FontSize="18" FontAttributes="Bold" Margin="0,0,0,4" />
+                <Label Text="{ext:Localize SuggestBudgetsHint}" FontSize="12" Style="{StaticResource SecondaryLabel}"
+                       IsVisible="{Binding HasSuggestions}" />
+                <Label Text="{ext:Localize NoBudgetSuggestions}" FontSize="14" Style="{StaticResource SecondaryLabel}"
+                       IsVisible="{Binding HasSuggestions, Converter={StaticResource InvertedBoolConverter}}" />
+
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Suggestions}" Spacing="2">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:BudgetSuggestionItem">
+                            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="10" MinimumHeightRequest="44">
+                                <CheckBox IsChecked="{Binding IsSelected}" VerticalOptions="Center"
+                                          SemanticProperties.Description="{Binding Name}" />
+                                <Label Grid.Column="1" Text="{Binding DisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+                                <Label Grid.Column="2" Text="{Binding Name}" FontSize="16" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                <Label Grid.Column="3" Text="{Binding Amount, Converter={StaticResource MoneyConverter}}" FontSize="16" FontAttributes="Bold" VerticalOptions="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Button Text="{ext:Localize CreateBudgetsButton}"
+                        IsVisible="{Binding HasSuggestions}"
+                        Command="{Binding CreateSuggestedBudgetsCommand}"
+                        Margin="0,12,0,0"
+                        MinimumHeightRequest="44"
+                        CornerRadius="22"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                        TextColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource PrimaryDarkText}}" />
             </VerticalStackLayout>
         </controls:BottomSheet>
 

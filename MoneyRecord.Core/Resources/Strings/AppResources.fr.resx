@@ -3105,4 +3105,22 @@
   <data name="BudgetRolloverHint" xml:space="preserve">
     <value>Ce que vous ne dépensez pas s'ajoute à la limite de la période suivante. Les dépassements ne sont pas reportés.</value>
   </data>
+  <data name="AllSpending" xml:space="preserve">
+    <value>Toutes les dépenses</value>
+  </data>
+  <data name="SuggestBudgets" xml:space="preserve">
+    <value>Suggérer des budgets</value>
+  </data>
+  <data name="SuggestBudgetsHint" xml:space="preserve">
+    <value>Limites mensuelles basées sur votre dépense moyenne des 3 derniers mois. Cochez celles à créer.</value>
+  </data>
+  <data name="NoBudgetSuggestions" xml:space="preserve">
+    <value>Rien à suggérer pour l'instant : les catégories sans budget n'ont aucune dépense ces 3 derniers mois.</value>
+  </data>
+  <data name="CreateBudgetsButton" xml:space="preserve">
+    <value>Créer les budgets</value>
+  </data>
+  <data name="BudgetsCreated" xml:space="preserve">
+    <value>Budgets créés</value>
+  </data>
 </root>

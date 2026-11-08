@@ -1,5 +1,6 @@
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services
@@ -32,7 +33,8 @@ namespace MoneyRecord.Services
 
             foreach (var budget in budgets)
             {
-                if (!categories.TryGetValue(budget.CategoryId, out var category))
+                var category = budget.CategoryId == Budget.AllSpending ? AllSpendingCategory : categories.GetValueOrDefault(budget.CategoryId);
+                if (category == null)
                     continue;
 
                 // Rollover only where the shown period is the budget's own one: a month's leftover means nothing in a year or a custom range
@@ -52,13 +54,35 @@ namespace MoneyRecord.Services
                     CarriedOverAmount = carry,
                 };
                 progress.LimitAmount += carry;
-                progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? BudgetSpent.None);
+                progress.SetSpent(BudgetSpent.For(spentByCategory, budget.CategoryId, MoneyFormatter.BaseCurrency));
                 // A range that has not started yet counts from its first day
                 progress.SetDailyAllowance(today > startDate ? today : startDate, endDate);
                 progressList.Add(progress);
             }
 
             return progressList.OrderByDescending(b => b.ProgressPercentage).ToList();
+        }
+
+        public const string AllSpendingIconCode = "F0584";
+
+        /// <summary>The pseudo category the overall budget is listed under (not a stored row).</summary>
+        public static Category AllSpendingCategory => new() { Id = Budget.AllSpending, Name = AppResources.AllSpending, IconCode = AllSpendingIconCode };
+
+        public async Task<List<BudgetSuggestion>> GetSuggestionsAsync(DateTime today)
+        {
+            var budgeted = (await _budgetRepository.GetActiveBudgetsAsync()).Select(b => b.CategoryId).ToHashSet();
+            var candidates = (await _categoryRepository.GetByTypeAsync(CategoryType.Expense)).Where(c => !budgeted.Contains(c.Id)).ToList();
+            if (candidates.Count == 0)
+                return [];
+
+            var months = new List<IReadOnlyDictionary<int, BudgetSpent>>();
+            for (var back = 1; back <= BudgetSuggester.Months; back++)
+            {
+                var (start, end) = DateRangeHelper.GetBudgetWindow(BudgetPeriod.Month, new DateTime(today.Year, today.Month, 1).AddMonths(-back));
+                months.Add(await _conversion.GetExpensesByCategoryAsync(start, end));
+            }
+
+            return BudgetSuggester.Suggest(candidates, months);
         }
 
         /// <summary>Whether the shown period is the budget's own day, calendar month or calendar year.</summary>

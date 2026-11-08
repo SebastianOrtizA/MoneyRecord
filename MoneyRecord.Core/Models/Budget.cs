@@ -15,6 +15,9 @@ namespace MoneyRecord.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
+        /// <summary>The category ID of the overall budget: it limits all spending, whatever the category (one per database).</summary>
+        public const int AllSpending = 0;
+
         public int CategoryId { get; set; }
 
         /// <summary>

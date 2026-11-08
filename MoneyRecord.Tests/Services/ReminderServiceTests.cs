@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Time.Testing;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using NSubstitute;
@@ -227,6 +228,18 @@ public sealed class ReminderServiceTests : LanguageTestBase
             n.Route.Should().Be(ReminderService.BudgetsRoute);
         });
         _shown[1].Message.Should().Be($"{MoneyFormatter.Format(120m)} of {MoneyFormatter.Format(100m)}");
+    }
+
+    [Fact]
+    public async Task The_overall_budget_alerts_on_all_spending_across_categories()
+    {
+        _budgets.GetActiveBudgetsAsync().Returns([new Budget { Id = 5, CategoryId = Budget.AllSpending, LimitAmount = 100m }]);
+        _conversion.GetExpensesByCategoryAsync(Arg.Any<DateTime>(), Arg.Any<DateTime>())
+            .Returns(new Dictionary<int, BudgetSpent> { [7] = new(60m, []), [8] = new(50m, []) });
+
+        await _sut.CheckBudgetsAsync();
+
+        _shown.Should().ContainSingle().Which.Title.Should().Be(AppResources.AllSpending + ": over budget");
     }
 
     [Fact]

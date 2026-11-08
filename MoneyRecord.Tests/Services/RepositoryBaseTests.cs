@@ -66,6 +66,18 @@ public sealed class RepositoryBaseTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task AddMany_inserts_every_budget_with_its_own_id()
+    {
+        var budgets = new BudgetRepository(_dbInitializer);
+
+        await budgets.AddManyAsync([new Budget { CategoryId = 4, LimitAmount = 10m }, new Budget { CategoryId = 5, LimitAmount = 20m }]);
+
+        var all = await budgets.GetActiveBudgetsAsync();
+        all.Select(b => b.CategoryId).Should().Contain([4, 5]);
+        all.Where(b => b.CategoryId is 4 or 5).Select(b => b.Id).Should().OnlyHaveUniqueItems().And.NotContain(0);
+    }
+
+    [Fact]
     public async Task Rollover_since_is_set_when_switched_on_kept_while_on_and_cleared_when_off()
     {
         var budgets = new BudgetRepository(_dbInitializer);

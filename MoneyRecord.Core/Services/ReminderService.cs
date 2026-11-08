@@ -241,10 +241,10 @@ namespace MoneyRecord.Services
                 {
                     var progress = new BudgetProgress
                     {
-                        CategoryName = names.GetValueOrDefault(budget.CategoryId, string.Empty),
+                        CategoryName = budget.CategoryId == Budget.AllSpending ? AppResources.AllSpending : names.GetValueOrDefault(budget.CategoryId, string.Empty),
                         LimitAmount = budget.LimitAmount + await rollover.CarryAsync(budget, now)
                     };
-                    progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? BudgetSpent.None);
+                    progress.SetSpent(BudgetSpent.For(spentByCategory, budget.CategoryId, MoneyFormatter.BaseCurrency));
                     NotifyBudget(budget, start, progress);
                 }
             }
