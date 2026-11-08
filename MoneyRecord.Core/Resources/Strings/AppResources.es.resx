@@ -3131,4 +3131,16 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="ForecastNoDataHint" xml:space="preserve">
     <value>Añade una cuenta para ver hacia dónde va tu saldo.</value>
   </data>
+  <data name="LowBalanceReminders" xml:space="preserve">
+    <value>Aviso de saldo bajo</value>
+  </data>
+  <data name="LowBalanceWithinDays" xml:space="preserve">
+    <value>En {0} días</value>
+  </data>
+  <data name="LowBalanceTitle" xml:space="preserve">
+    <value>Saldo bajo a la vista</value>
+  </data>
+  <data name="LowBalanceBody" xml:space="preserve">
+    <value>{0} podría quedar por debajo de cero el {1}</value>
+  </data>
 </root>

@@ -9,11 +9,17 @@ namespace MoneyRecord.Services
         /// <summary>The choices Settings offers for <see cref="BillDaysBefore"/>.</summary>
         public static readonly IReadOnlyList<int> BillDayChoices = [BillsOff, 0, 1, 2, 3, 7];
 
+        public const int LowBalanceOff = -1;
+
+        /// <summary>The choices Settings offers for <see cref="LowBalanceDays"/>.</summary>
+        public static readonly IReadOnlyList<int> LowBalanceChoices = [LowBalanceOff, 7, 14, 30];
+
         private const string EnabledKey = "Reminders.Enabled";
         private const string BillDaysKey = "Reminders.BillDaysBefore";
         private const string BudgetAlertsKey = "Reminders.BudgetAlerts";
         private const string RecurringAddedKey = "Reminders.RecurringAdded";
         private const string OfferedKey = "Reminders.Offered";
+        private const string LowBalanceKey = "Reminders.LowBalanceDays";
 
         public bool Enabled
         {
@@ -37,6 +43,12 @@ namespace MoneyRecord.Services
         {
             get => preferences.Get(RecurringAddedKey, true);
             set => preferences.Set(RecurringAddedKey, value);
+        }
+
+        public int LowBalanceDays
+        {
+            get => preferences.Get(LowBalanceKey, LowBalanceOff);
+            set => preferences.Set(LowBalanceKey, value);
         }
 
         public bool Offered

@@ -248,6 +248,18 @@
                                         Title="{ext:Localize BillReminders}"/>
                             </Grid>
                             <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                <Label Text="{ext:Localize LowBalanceReminders}"
+                                       FontSize="15"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                                <Picker Grid.Column="1"
+                                        WidthRequest="170"
+                                        ItemsSource="{Binding LowBalanceOptions}"
+                                        ItemDisplayBinding="{Binding Name, x:DataType=models:LowBalanceOption}"
+                                        SelectedItem="{Binding SelectedLowBalance}"
+                                        Title="{ext:Localize LowBalanceReminders}"/>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                                 <Label Text="{ext:Localize BudgetAlerts}"
                                        FontSize="15"
                                        VerticalOptions="Center"

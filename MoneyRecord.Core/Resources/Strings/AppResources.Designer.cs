@@ -3132,6 +3132,42 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Low balance warning.
+        /// </summary>
+        public static string LowBalanceReminders {
+            get {
+                return ResourceManager.GetString("LowBalanceReminders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Within {0} days.
+        /// </summary>
+        public static string LowBalanceWithinDays {
+            get {
+                return ResourceManager.GetString("LowBalanceWithinDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low balance ahead.
+        /// </summary>
+        public static string LowBalanceTitle {
+            get {
+                return ResourceManager.GetString("LowBalanceTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} may go below zero on {1}.
+        /// </summary>
+        public static string LowBalanceBody {
+            get {
+                return ResourceManager.GetString("LowBalanceBody", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
         public static string BillRemindersOff {

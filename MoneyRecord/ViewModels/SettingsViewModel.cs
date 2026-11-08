@@ -173,6 +173,8 @@ namespace MoneyRecord.ViewModels
             SelectedTheme = Themes.First(t => t.Choice == _themeService.Current);
             SelectedBillReminder = BillReminderOptions.FirstOrDefault(o => o.DaysBefore == _reminderSettings.BillDaysBefore)
                 ?? BillReminderOptions[0];
+            SelectedLowBalance = LowBalanceOptions.FirstOrDefault(o => o.Days == _reminderSettings.LowBalanceDays)
+                ?? LowBalanceOptions[0];
             SelectedLockDelay = LockDelayOptions.FirstOrDefault(o => o.Minutes == _privacy.LockAfterMinutes)
                 ?? LockDelayOptions[0];
         }
@@ -199,6 +201,7 @@ namespace MoneyRecord.ViewModels
             Languages = LanguageOption.All();
             Themes = ThemeOption.All();
             BillReminderOptions = BillReminderOption.All();
+            LowBalanceOptions = LowBalanceOption.All();
             LockDelayOptions = LockDelayOption.All();
             AutoBackup.RefreshNames();
             SelectPickers();
@@ -265,6 +268,18 @@ namespace MoneyRecord.ViewModels
         {
             if (value != null)
                 _reminderSettings.BillDaysBefore = value.DaysBefore;
+        }
+
+        [ObservableProperty]
+        private IReadOnlyList<LowBalanceOption> lowBalanceOptions = LowBalanceOption.All();
+
+        [ObservableProperty]
+        private LowBalanceOption? selectedLowBalance;
+
+        partial void OnSelectedLowBalanceChanged(LowBalanceOption? value)
+        {
+            if (value != null)
+                _reminderSettings.LowBalanceDays = value.Days;
         }
 
         public bool BudgetAlertsEnabled
