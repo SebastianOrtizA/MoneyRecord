@@ -75,8 +75,8 @@ public sealed class RepositoryBaseTests : IAsyncLifetime
         var rule = new RecurringTransaction { Description = "Gym", IsActive = true };
         await rules.SaveAsync(rule);
 
-        (await budgets.UpdateLimitAsync(budget.Id, 60m, BudgetPeriod.Year)).Should().Be(1);
-        (await budgets.UpdateLimitAsync(999, 60m, BudgetPeriod.Year)).Should().Be(0);
+        (await budgets.UpdateLimitAsync(budget.Id, 60m, BudgetPeriod.Year, false)).Should().Be(1);
+        (await budgets.UpdateLimitAsync(999, 60m, BudgetPeriod.Year, false)).Should().Be(0);
         (await rules.DeactivateAsync(rule.Id)).Should().Be(1);
 
         var updated = (await budgets.GetByIdAsync(budget.Id))!;

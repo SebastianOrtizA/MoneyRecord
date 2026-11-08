@@ -11,7 +11,7 @@ namespace MoneyRecord.Services.Repositories
         public async Task<Budget?> GetByCategoryIdAsync(int categoryId) =>
             await (await TableAsync()).Where(b => b.CategoryId == categoryId && b.IsActive).FirstOrDefaultAsync();
 
-        public async Task<int> UpdateLimitAsync(int budgetId, decimal limitAmount, BudgetPeriod period, bool rolloverUnspent = false)
+        public async Task<int> UpdateLimitAsync(int budgetId, decimal limitAmount, BudgetPeriod period, bool rolloverUnspent)
         {
             var budget = await GetByIdAsync(budgetId);
             if (budget == null)

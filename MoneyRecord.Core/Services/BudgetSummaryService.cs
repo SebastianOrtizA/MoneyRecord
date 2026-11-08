@@ -53,7 +53,8 @@ namespace MoneyRecord.Services
                 };
                 progress.LimitAmount += carry;
                 progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? BudgetSpent.None);
-                progress.SetDailyAllowance(today, endDate);
+                // A range that has not started yet counts from its first day
+                progress.SetDailyAllowance(today > startDate ? today : startDate, endDate);
                 progressList.Add(progress);
             }
 
