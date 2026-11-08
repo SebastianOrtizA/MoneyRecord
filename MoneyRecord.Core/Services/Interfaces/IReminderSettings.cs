@@ -16,6 +16,9 @@ namespace MoneyRecord.Services.Interfaces
         int BillDaysBefore { get; set; }
 
         /// <summary>A budget reached 80% of its limit, or went over it.</summary>
+        /// <summary>Days ahead to warn when an account is forecast to go below zero; <see cref="ReminderSettings.LowBalanceOff"/> = never (default).</summary>
+        int LowBalanceDays { get; set; }
+
         bool BudgetAlerts { get; set; }
 
         /// <summary>The daily job added recurring transactions.</summary>

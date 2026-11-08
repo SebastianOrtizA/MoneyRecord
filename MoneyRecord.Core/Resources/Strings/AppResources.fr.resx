@@ -3081,4 +3081,16 @@
   <data name="ForecastNoDataHint" xml:space="preserve">
     <value>Ajoutez un compte pour voir où va votre solde.</value>
   </data>
+  <data name="LowBalanceReminders" xml:space="preserve">
+    <value>Alerte de solde bas</value>
+  </data>
+  <data name="LowBalanceWithinDays" xml:space="preserve">
+    <value>Dans les {0} jours</value>
+  </data>
+  <data name="LowBalanceTitle" xml:space="preserve">
+    <value>Solde bas à venir</value>
+  </data>
+  <data name="LowBalanceBody" xml:space="preserve">
+    <value>{0} pourrait passer sous zéro le {1}</value>
+  </data>
 </root>

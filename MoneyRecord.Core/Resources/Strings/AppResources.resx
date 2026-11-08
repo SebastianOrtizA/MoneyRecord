@@ -3134,4 +3134,16 @@
   <data name="ForecastNoDataHint" xml:space="preserve">
     <value>Add an account to see where your balance is heading.</value>
   </data>
+  <data name="LowBalanceReminders" xml:space="preserve">
+    <value>Low balance warning</value>
+  </data>
+  <data name="LowBalanceWithinDays" xml:space="preserve">
+    <value>Within {0} days</value>
+  </data>
+  <data name="LowBalanceTitle" xml:space="preserve">
+    <value>Low balance ahead</value>
+  </data>
+  <data name="LowBalanceBody" xml:space="preserve">
+    <value>{0} may go below zero on {1}</value>
+  </data>
 </root>

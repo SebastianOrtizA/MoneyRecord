@@ -16,6 +16,8 @@ namespace MoneyRecord.Services
         INotificationService notifications,
         IDialogService dialogs,
         IPreferencesService preferences,
+        IForecastService forecasts,
+        IAccountRepository accounts,
         TimeProvider clock,
         ILogger<ReminderService> logger) : IReminderService
     {
@@ -27,12 +29,14 @@ namespace MoneyRecord.Services
         public const int DebtDueIdBase = 300_000;
         public const int DebtPaidIdBase = 400_000;
         public const int PendingIdBase = 500_000;
+        public const int LowBalanceId = 600_000;
 
         // The app's routes (see AppShell); Core can't name the page types
         public const string UpcomingRoute = "RecurringTransactionsPage?Show=Upcoming";
         public const string TransactionsRoute = "//TransactionsPage";
         public const string BudgetsRoute = "//BudgetPage";
         public const string DebtsRoute = "DebtsPage";
+        public const string ForecastRoute = "ForecastPage";
 
         /// <summary>The add form on a variable schedule's occurrence (see AddTransactionViewModel).</summary>
         public static string PendingRoute(int recurringId, DateTime occurrence) =>
@@ -44,6 +48,7 @@ namespace MoneyRecord.Services
         private const string BudgetNotifiedKey = "Reminders.Budget.";
         private const string DebtDueNotifiedKey = "Reminders.DebtDue.";
         private const string PendingNotifiedKey = "Reminders.Pending.";
+        private const string LowBalanceNotifiedKey = "Reminders.LowBalance";
 
         private bool CanNotify => settings.Enabled && notifications.IsSupported && notifications.AreAllowed;
 
@@ -65,6 +70,52 @@ namespace MoneyRecord.Services
             if (CanNotify && settings.BillDaysBefore != ReminderSettings.BillsOff)
                 await NotifyDebtsDueAsync();
             await CheckBudgetsCoreAsync();
+            await CheckForecastAsync();
+        }
+
+        /// <summary>
+        /// Warns once per first-negative date when an account that cannot go negative is forecast to drop below zero within
+        /// the chosen days. The date is remembered and forgotten once the forecast recovers, so a later dip warns again.
+        /// Best-effort: a failure is logged, never thrown.
+        /// </summary>
+        private async Task CheckForecastAsync()
+        {
+            try
+            {
+                if (settings.LowBalanceDays == ReminderSettings.LowBalanceOff || !CanNotify)
+                {
+                    preferences.Set(LowBalanceNotifiedKey, DateTime.MinValue);
+                    return;
+                }
+
+                var limit = clock.GetLocalNow().DateTime.Date.AddDays(settings.LowBalanceDays);
+                var strict = (await accounts.GetOwnAsync()).Where(a => !a.AllowNegativeBalance).Select(a => a.Id).ToHashSet();
+                var forecast = await forecasts.GetForecastAsync(30);
+                var dip = forecast.Accounts
+                    .Where(a => strict.Contains(a.AccountId) && a.Series.FirstNegativeDate is { } d && d <= limit)
+                    .Select(a => (Account: a, Date: a.Series.FirstNegativeDate!.Value))
+                    .OrderBy(x => x.Date)
+                    .Cast<(AccountForecast Account, DateTime Date)?>()
+                    .FirstOrDefault();
+
+                if (dip is not { } first)
+                {
+                    preferences.Set(LowBalanceNotifiedKey, DateTime.MinValue);
+                    return;
+                }
+
+                if (preferences.Get(LowBalanceNotifiedKey, DateTime.MinValue) == first.Date)
+                    return;
+
+                notifications.Show(new AppNotification(LowBalanceId, ReminderChannel.Budgets, AppResources.LowBalanceTitle,
+                    string.Format(AppResources.LowBalanceBody, first.Account.AccountName, DateFormatter.Format(first.Date, DateStyle.Medium)),
+                    ForecastRoute));
+                preferences.Set(LowBalanceNotifiedKey, first.Date);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                logger.LogError(ex, "Checking the forecast for a low balance failed");
+            }
         }
 
         public async Task<RecurringRun> ProcessRecurringAsync()

@@ -27,6 +27,8 @@ public sealed class ReminderServiceTests : LanguageTestBase
     private readonly IConversionService _conversion = Substitute.For<IConversionService>();
     private readonly INotificationService _notifications = Substitute.For<INotificationService>();
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
+    private readonly IForecastService _forecasts = Substitute.For<IForecastService>();
+    private readonly IAccountRepository _accounts = Substitute.For<IAccountRepository>();
     private readonly FakePreferences _preferences = new();
     private readonly ReminderSettings _settings;
     private readonly List<AppNotification> _shown = [];
@@ -44,9 +46,11 @@ public sealed class ReminderServiceTests : LanguageTestBase
         _debts.GetAllAsync().Returns([]);
         _budgets.GetActiveBudgetsAsync().Returns([]);
         _categories.GetAllAsync().Returns([new Category { Id = 7, Name = "Food" }]);
+        _accounts.GetOwnAsync().Returns([new Account { Id = 1, Name = "Bank" }, new Account { Id = 2, Name = "Cash", AllowNegativeBalance = true }]);
+        _forecasts.GetForecastAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(Forecast());
 
         _sut = new ReminderService(_recurring, _debts, _budgets, _categories, _conversion, _settings, _notifications, _dialogs,
-            _preferences, _clock, Substitute.For<ILogger<ReminderService>>());
+            _preferences, _forecasts, _accounts, _clock, Substitute.For<ILogger<ReminderService>>());
     }
 
     private static UpcomingEntry Bill(int recurringId, int daysAway, string description = "Rent",
@@ -61,6 +65,18 @@ public sealed class ReminderServiceTests : LanguageTestBase
         AccountName = "Bank",
         CurrencyCode = "USD"
     };
+
+    private static ForecastResult Forecast(long bank = 100_00, long cash = 100_00, int bankDipDay = -1)
+    {
+        ForecastSeries Series(long cents, int dipDay) => new(Enumerable.Range(0, 31)
+            .Select(i => new ForecastPoint(Today.AddDays(i), dipDay >= 0 && i >= dipDay ? -50_00 : cents)).ToList());
+        return new ForecastResult(Today, 30,
+            [new AccountForecast(1, "Bank", "USD", Series(bank, bankDipDay)), new AccountForecast(2, "Cash", "USD", Series(cash, 5))],
+            [], null, [], []);
+    }
+
+    private void BankDipsOn(int day) =>
+        _forecasts.GetForecastAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(Forecast(bankDipDay: day));
 
     private void Spent(decimal food) =>
         _conversion.GetExpensesByCategoryAsync(Arg.Any<DateTime>(), Arg.Any<DateTime>())
@@ -377,6 +393,66 @@ public sealed class ReminderServiceTests : LanguageTestBase
 
         _shown.Should().BeEmpty();
     }
+
+    [Fact]
+    public async Task Low_balance_warning_is_off_by_default()
+    {
+        BankDipsOn(3);
+
+        await _sut.RunDailyAsync();
+
+        _shown.Should().NotContain(n => n.Id == ReminderService.LowBalanceId);
+    }
+
+    [Fact]
+    public async Task A_dip_inside_the_chosen_days_warns_once_and_opens_the_forecast()
+    {
+        _settings.LowBalanceDays = 7;
+        BankDipsOn(3);
+
+        await _sut.RunDailyAsync();
+        await _sut.RunDailyAsync();
+
+        var warning = _shown.Should().ContainSingle(n => n.Id == ReminderService.LowBalanceId).Subject;
+        warning.Route.Should().Be(ReminderService.ForecastRoute);
+        warning.Message.Should().Contain("Bank");
+    }
+
+    [Fact]
+    public async Task A_dip_beyond_the_chosen_days_does_not_warn()
+    {
+        _settings.LowBalanceDays = 7;
+        BankDipsOn(10);
+
+        await _sut.RunDailyAsync();
+
+        _shown.Should().NotContain(n => n.Id == ReminderService.LowBalanceId);
+    }
+
+    [Fact]
+    public async Task Accounts_that_allow_negative_balances_are_skipped()
+    {
+        _settings.LowBalanceDays = 7;
+
+        await _sut.RunDailyAsync();
+
+        _shown.Should().NotContain(n => n.Id == ReminderService.LowBalanceId);
+    }
+
+    [Fact]
+    public async Task A_later_dip_warns_again_after_the_forecast_recovers()
+    {
+        _settings.LowBalanceDays = 7;
+        BankDipsOn(3);
+        await _sut.RunDailyAsync();
+
+        _forecasts.GetForecastAsync(Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns(Forecast());
+        await _sut.RunDailyAsync();
+        BankDipsOn(3);
+        await _sut.RunDailyAsync();
+
+        _shown.Count(n => n.Id == ReminderService.LowBalanceId).Should().Be(2);
+    }
 }
 
 [Collection(LanguageCollection.Name)]
@@ -390,6 +466,12 @@ public sealed class BillReminderOptionTests : LanguageTestBase
     }
 
     [Fact]
+    public void The_low_balance_choices_are_named_in_the_current_language()
+    {
+        LowBalanceOption.All().Select(o => o.Name).Should().Equal("Off", "Within 7 days", "Within 14 days", "Within 30 days");
+    }
+
+    [Fact]
     public void Bill_reminders_default_to_one_day_before_and_reminders_start_off()
     {
         var settings = new ReminderSettings(new FakePreferences());
@@ -398,5 +480,6 @@ public sealed class BillReminderOptionTests : LanguageTestBase
         settings.BillDaysBefore.Should().Be(1);
         settings.BudgetAlerts.Should().BeTrue();
         settings.RecurringAdded.Should().BeTrue();
+        settings.LowBalanceDays.Should().Be(ReminderSettings.LowBalanceOff);
     }
 }
