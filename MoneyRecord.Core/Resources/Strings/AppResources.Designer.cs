@@ -8835,5 +8835,47 @@ namespace MoneyRecord.Resources.Strings {
         }
 
 
+        /// <summary>Looks up a localized string similar to All spending.</summary>
+        public static string AllSpending {
+            get {
+                return ResourceManager.GetString("AllSpending", resourceCulture);
+            }
+        }
+
+        /// <summary>Looks up a localized string similar to Suggest budgets.</summary>
+        public static string SuggestBudgets {
+            get {
+                return ResourceManager.GetString("SuggestBudgets", resourceCulture);
+            }
+        }
+
+        /// <summary>Looks up a localized string similar to Monthly limits based on your average spending over the last 3 months. Tick the ones to create..</summary>
+        public static string SuggestBudgetsHint {
+            get {
+                return ResourceManager.GetString("SuggestBudgetsHint", resourceCulture);
+            }
+        }
+
+        /// <summary>Looks up a localized string similar to Nothing to suggest yet: categories without a budget have no spending in the last 3 months..</summary>
+        public static string NoBudgetSuggestions {
+            get {
+                return ResourceManager.GetString("NoBudgetSuggestions", resourceCulture);
+            }
+        }
+
+        /// <summary>Looks up a localized string similar to Create budgets.</summary>
+        public static string CreateBudgetsButton {
+            get {
+                return ResourceManager.GetString("CreateBudgetsButton", resourceCulture);
+            }
+        }
+
+        /// <summary>Looks up a localized string similar to Budgets created.</summary>
+        public static string BudgetsCreated {
+            get {
+                return ResourceManager.GetString("BudgetsCreated", resourceCulture);
+            }
+        }
+
     }
 }

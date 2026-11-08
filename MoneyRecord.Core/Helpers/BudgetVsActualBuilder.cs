@@ -40,6 +40,10 @@ namespace MoneyRecord.Helpers
                     var month = firstMonth.AddMonths(i);
                     // A budget counts from the month it was created: before that there was no limit to compare with
                     var active = budgets.Where(b => b.CreatedDate < month.AddMonths(1)).ToList();
+                    // The overall budget already covers every category: counting the category ones too would add the same money twice
+                    if (active.FirstOrDefault(b => b.CategoryId == Budget.AllSpending) is { } overall)
+                        return new MonthBudget(month, MonthlyLimit(overall, month), spent.Where(kv => kv.Key.Month == month).Sum(kv => kv.Value));
+
                     return new MonthBudget(month,
                         active.Sum(b => MonthlyLimit(b, month)),
                         active.Select(b => b.CategoryId).Distinct().Sum(c => spent.GetValueOrDefault((month, c))));

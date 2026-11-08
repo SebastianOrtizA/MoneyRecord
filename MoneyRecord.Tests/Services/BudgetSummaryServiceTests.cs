@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
+using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using NSubstitute;
@@ -148,5 +149,45 @@ public class BudgetSummaryServiceTests
         });
 
         (await _sut.GetSummaryAsync(PeriodType.LastMonth)).Single().HasDailyAllowance.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task The_overall_budget_counts_every_category_under_All_spending()
+    {
+        _budgets.GetActiveBudgetsAsync().Returns(new List<Budget>
+        {
+            new() { Id = 10, CategoryId = Budget.AllSpending, LimitAmount = 200m, Period = BudgetPeriod.Month }
+        });
+        var (start, end) = DateRangeHelper.GetDateRange(PeriodType.CalendarMonth);
+        _conversion.GetExpensesByCategoryAsync(start, end).Returns(new Dictionary<int, BudgetSpent> { [1] = new(20m, []), [2] = new(120m, []) });
+
+        var progress = (await _sut.GetSummaryAsync(PeriodType.CalendarMonth)).Single();
+
+        progress.CategoryName.Should().Be(AppResources.AllSpending);
+        progress.CategoryId.Should().Be(Budget.AllSpending);
+        progress.SpentAmount.Should().Be(140m);
+        progress.LimitAmount.Should().Be(200m);
+    }
+
+    [Fact]
+    public async Task Suggestions_average_the_last_three_full_months_of_categories_without_a_budget()
+    {
+        _budgets.GetActiveBudgetsAsync().Returns(new List<Budget> { new() { Id = 10, CategoryId = 2, LimitAmount = 50m } });
+        _categories.GetByTypeAsync(CategoryType.Expense).Returns(new List<Category>
+        {
+            new() { Id = 1, Name = "Food", IconCode = "F0001" },
+            new() { Id = 2, Name = "Fun", IconCode = "F0002" }
+        });
+        var today = new DateTime(2026, 11, 7);
+        foreach (var month in new[] { 8, 9, 10 })
+        {
+            _conversion.GetExpensesByCategoryAsync(new DateTime(2026, month, 1), new DateTime(2026, month, 1).AddMonths(1).AddTicks(-1))
+                .Returns(new Dictionary<int, BudgetSpent> { [1] = new(100m * (month - 7), []), [2] = new(999m, []) });
+        }
+
+        var suggestions = await _sut.GetSuggestionsAsync(today);
+
+        // (100 + 200 + 300) / 3; Fun already has a budget
+        suggestions.Should().ContainSingle().Which.Should().Be(new BudgetSuggestion(1, "Food", "F0001", 200m));
     }
 }

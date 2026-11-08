@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Resources.Strings;
+using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using System.Collections.ObjectModel;
 
@@ -60,6 +61,16 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool rolloverUnspent;
 
+        /// <summary>The suggestions sheet is open.</summary>
+        [ObservableProperty]
+        private bool isSuggestionsOpen;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasSuggestions))]
+        private ObservableCollection<BudgetSuggestionItem> suggestions = new();
+
+        public bool HasSuggestions => Suggestions.Count > 0;
+
         [ObservableProperty]
         private decimal totalBudgeted;
 
@@ -114,9 +125,13 @@ namespace MoneyRecord.ViewModels
                 .ToHashSet();
 
             // Filter out categories that already have a budget
-            return expenseCategories
+            var available = expenseCategories
                 .Where(c => !existingBudgetCategoryIds.Contains(c.Id))
                 .ToList();
+            // "All spending": one overall limit next to the category ones, listed last so a new budget still starts on a category
+            if (!existingBudgetCategoryIds.Contains(Budget.AllSpending))
+                available.Add(BudgetSummaryService.AllSpendingCategory);
+            return available;
         }
 
         /// <summary>Each run cancels the one in progress, so an older period's results never overwrite a newer one's.</summary>
@@ -208,9 +223,70 @@ namespace MoneyRecord.ViewModels
             EditingBudget = null;
         }
 
+        /// <summary>Opens the sheet with a monthly limit proposed for each category without a budget, from the last 3 months.</summary>
+        [RelayCommand]
+        private async Task SuggestBudgetsAsync()
+        {
+            try
+            {
+                var found = await _budgetSummaryService.GetSuggestionsAsync(DateTime.Now);
+                Suggestions = new ObservableCollection<BudgetSuggestionItem>(found.Select(s => new BudgetSuggestionItem(s)));
+                IsSuggestionsOpen = true;
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToLoadReportData);
+            }
+        }
+
+        [RelayCommand]
+        private void CloseSuggestions() => IsSuggestionsOpen = false;
+
+        /// <summary>Creates a monthly budget for each ticked suggestion.</summary>
+        [RelayCommand]
+        private async Task CreateSuggestedBudgetsAsync()
+        {
+            var chosen = Suggestions.Where(s => s.IsSelected).Select(s => s.Suggestion).ToList();
+            if (chosen.Count == 0)
+            {
+                IsSuggestionsOpen = false;
+                return;
+            }
+
+            try
+            {
+                foreach (var suggestion in chosen)
+                {
+                    await _budgetRepository.SaveAsync(new Budget
+                    {
+                        CategoryId = suggestion.CategoryId,
+                        LimitAmount = suggestion.Amount,
+                        Period = BudgetPeriod.Month,
+                        CreatedDate = DateTime.Now,
+                        IsActive = true
+                    });
+                }
+
+                IsSuggestionsOpen = false;
+                await LoadBudgetsCommand.ExecuteAsync(null);
+                await _dialogService.ToastAsync(AppResources.BudgetsCreated);
+                await _reminders.OfferAsync();
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToSaveBudget);
+            }
+        }
+
         /// <summary>Closes the add/edit sheet; false when it wasn't open.</summary>
         public bool CloseTopOverlay()
         {
+            if (IsSuggestionsOpen)
+            {
+                CloseSuggestions();
+                return true;
+            }
+
             if (!IsFormOpen)
                 return false;
 

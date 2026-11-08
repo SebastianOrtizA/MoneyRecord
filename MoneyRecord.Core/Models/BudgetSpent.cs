@@ -1,3 +1,5 @@
+using MoneyRecord.Helpers;
+
 namespace MoneyRecord.Models
 {
     /// <summary>
@@ -7,6 +9,18 @@ namespace MoneyRecord.Models
     public sealed record BudgetSpent(decimal Counted, IReadOnlyList<CurrencyAmount> Uncounted)
     {
         public static readonly BudgetSpent None = new(0, []);
+
+        /// <summary>What a budget spent: the overall budget (<see cref="Budget.AllSpending"/>) takes every category, any other its own.</summary>
+        public static BudgetSpent For(IReadOnlyDictionary<int, BudgetSpent> byCategory, int categoryId) =>
+            categoryId == Budget.AllSpending
+                ? Sum(byCategory.Values, MoneyFormatter.BaseCurrency)
+                : byCategory.GetValueOrDefault(categoryId) ?? None;
+
+        public static BudgetSpent Sum(IEnumerable<BudgetSpent> parts, string baseCurrencyCode)
+        {
+            var list = parts.ToList();
+            return new BudgetSpent(list.Sum(p => p.Counted), CurrencyAmount.Totals(list.SelectMany(p => p.Uncounted), baseCurrencyCode));
+        }
 
         /// <summary>Without conversion: the base currency's amount counts, the others are listed.</summary>
         public static BudgetSpent FromCurrencies(IReadOnlyCollection<CurrencyAmount> spent, string baseCurrencyCode) =>
