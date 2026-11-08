@@ -270,7 +270,7 @@ defines `PLAY_STORE` and adds the Play Billing library for the Support screen's 
 is configured, so a published APK is never signed with the debug key.
 
 The tag build also uploads the `.aab` to Google Play's **open testing** track (`beta`; set the repository variable `PLAY_TRACK`
-for another track, e.g. `production`), with the release notes in
+for another track, e.g. `production` or a custom-named closed track), with the release notes in
 `fastlane/metadata/android/<locale>/changelogs/default.txt` (update them before tagging; 500 characters at most).
 Add the release as a new section on top of `history.txt` in the same folders too: the in-app "What's new" lists every version since the last one shown.
 Promoting it to production is done in Play Console. The upload uses the

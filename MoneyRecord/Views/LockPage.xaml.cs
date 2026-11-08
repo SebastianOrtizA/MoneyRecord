@@ -57,8 +57,10 @@ namespace MoneyRecord.Views
                 {
                     _appLock.Unlock();
                     await Navigation.PopModalAsync(animated: false);
-                    // A shortcut, widget button or notification that started the app waited for this unlock (never throws)
-                    await _launch.OpenPendingAsync();
+                    // A shortcut, widget button or notification that started the app waited for this unlock (never throws).
+                    // Not without a Shell (the first-run setup): Home's first visit opens it
+                    if (Shell.Current != null)
+                        await _launch.OpenPendingAsync();
                 }
             }
             finally

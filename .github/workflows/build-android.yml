@@ -236,7 +236,7 @@ jobs:
           generate_release_notes: true
 
   # A release-branch build also sends the .aab to Google Play's open testing track (beta; set the repository
-  # variable PLAY_TRACK for another track, e.g. production or a custom-named closed one); promoting it to production stays a manual
+  # variable PLAY_TRACK for another track, e.g. production or a custom-named closed track); promoting it to production stays a manual
   # step in Play Console. Needs the PLAY_SERVICE_ACCOUNT_JSON secret (a service account
   # invited in Play Console with release-to-testing permissions; README, Releases). Release notes come from
   # fastlane/metadata/android/<locale>/changelogs/default.txt (500 characters at most).

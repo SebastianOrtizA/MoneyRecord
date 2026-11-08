@@ -103,8 +103,12 @@ namespace MoneyRecord
                     SetContentHidden(window, false);
                     // Android hands a tapped notification, widget button or shortcut over before this decision (a cold start
                     // opens it from Home instead, and not without a Shell: the first-run setup)
-                    if (cameBack && Shell.Current != null)
-                        MainThread.BeginInvokeOnMainThread(async () => await _launch.OpenPendingAsync());
+                    if (cameBack)
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            if (Shell.Current != null)
+                                await _launch.OpenPendingAsync();
+                        });
                 }
             };
 
