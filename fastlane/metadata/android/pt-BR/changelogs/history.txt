@@ -1,3 +1,12 @@
+## 1.3.0
+- Nova página Previsão (Mais → Planejamento → Previsão): veja como seus saldos podem evoluir nos próximos 30, 60 ou 90 dias com base nos seus lançamentos recorrentes, agendados e nos pagamentos de dívidas. São estimativas, não promessas.
+- O Início tem um cartão de Previsão com o valor que é seguro gastar até a sua próxima receita.
+- Aviso de saldo baixo: escolha nas Configurações ser avisado com 7, 14 ou 30 dias de antecedência quando uma conta deve ficar negativa.
+- Os orçamentos mostram quanto você ainda pode gastar por dia e podem levar o que você não gastou para o próximo período.
+- Novo orçamento «Todos os gastos»: um único limite para tudo o que você gasta, ao lado dos orçamentos por categoria.
+- Sugerir orçamentos: receba um limite mensal para cada categoria sem orçamento, com base nos últimos 3 meses, e marque os que quer criar.
+- Corrigido: um atalho do ícone aberto com o bloqueio do app ativado agora espera você desbloquear.
+
 ## 1.2.2
 - O código do app foi reduzido ainda mais, então ele ocupa um pouco menos de espaço e de memória.
 

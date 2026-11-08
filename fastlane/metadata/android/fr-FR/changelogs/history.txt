@@ -1,3 +1,12 @@
+## 1.3.0
+- Nouvelle page Prévisions (Plus → Planification → Prévisions) : voyez comment vos soldes peuvent évoluer sur les 30, 60 ou 90 prochains jours d'après vos opérations récurrentes, programmées et les paiements de dettes. Ce sont des estimations, pas des promesses.
+- L'accueil a une carte Prévisions avec le montant que vous pouvez dépenser sans risque jusqu'à votre prochain revenu.
+- Alerte de solde bas : choisissez dans les Réglages d'être prévenu 7, 14 ou 30 jours à l'avance quand un compte risque de passer en négatif.
+- Les budgets indiquent combien vous pouvez encore dépenser par jour et peuvent reporter ce que vous n'avez pas dépensé sur la période suivante.
+- Nouveau budget « Toutes les dépenses » : une seule limite pour tout ce que vous dépensez, à côté de vos budgets par catégorie.
+- Suggérer des budgets : obtenez une limite mensuelle pour chaque catégorie sans budget, d'après vos 3 derniers mois, et cochez celles à créer.
+- Corrigé : un raccourci de l'icône ouvert alors que le verrouillage de l'appli est activé attend maintenant que vous la déverrouilliez.
+
 ## 1.2.2
 - Le code de l'appli est encore allégé : elle prend un peu moins de place et de mémoire.
 

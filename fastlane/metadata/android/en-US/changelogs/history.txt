@@ -1,3 +1,12 @@
+## 1.3.0
+- New Forecast page (More → Planning → Forecast): see how your balances may move over the next 30, 60 or 90 days from your recurring entries, scheduled entries and debt payments. These are estimates, not promises.
+- Home has a Forecast card with the amount that is safe to spend until your next income.
+- Low-balance warning: choose in Settings to be told 7, 14 or 30 days ahead when an account is expected to go negative.
+- Budgets show how much you can still spend per day, and can carry over what you did not spend into the next period.
+- New "All spending" budget: one limit for everything you spend, next to your category budgets.
+- Suggest budgets: get a monthly limit for each category without a budget, based on your last 3 months, and tick the ones to create.
+- Fixed: a launcher shortcut opened while the app lock is on now waits for you to unlock.
+
 ## 1.2.2
 - The app's code is trimmed further, so it takes a little less space and memory.
 
