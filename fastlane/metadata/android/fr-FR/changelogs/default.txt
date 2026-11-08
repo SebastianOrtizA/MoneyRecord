@@ -1,1 +1,1 @@
-Nouvelle page et carte Prévisions : voyez l'évolution de vos soldes sur 30, 60 ou 90 jours et combien dépenser sans risque jusqu'à votre prochain revenu (estimations). Alerte de solde bas en option. Les budgets montrent ce que vous pouvez dépenser par jour, peuvent reporter le reste, et il y a un budget « Toutes les dépenses » ainsi que des budgets suggérés d'après vos 3 derniers mois. Correction d'un raccourci qui s'ouvrait avec le verrouillage de l'appli activé.
+Correction : les dates sous le graphique des Prévisions se chevauchaient en espagnol et en portugais.

@@ -1,3 +1,6 @@
+## 1.3.1
+- Corretto: le date sotto il grafico delle Previsioni non si sovrappongono più in spagnolo e portoghese.
+
 ## 1.3.0
 - Nuova pagina Previsioni (Altro → Pianificazione → Previsioni): guarda come possono cambiare i tuoi saldi nei prossimi 30, 60 o 90 giorni in base ai movimenti ricorrenti, programmati e ai pagamenti dei debiti. Sono stime, non promesse.
 - La Home ha una scheda Previsioni con l'importo che puoi spendere in sicurezza fino al prossimo reddito.

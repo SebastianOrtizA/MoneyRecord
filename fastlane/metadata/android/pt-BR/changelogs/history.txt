@@ -1,3 +1,6 @@
+## 1.3.1
+- Corrigido: as datas abaixo do gráfico de Previsão não se sobrepõem mais em espanhol e português.
+
 ## 1.3.0
 - Nova página Previsão (Mais → Planejamento → Previsão): veja como seus saldos podem evoluir nos próximos 30, 60 ou 90 dias com base nos seus lançamentos recorrentes, agendados e nos pagamentos de dívidas. São estimativas, não promessas.
 - O Início tem um cartão de Previsão com o valor que é seguro gastar até a sua próxima receita.
