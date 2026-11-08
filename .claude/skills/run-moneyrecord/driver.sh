@@ -84,17 +84,25 @@ case "$cmd" in
     ;;
   go)
     # Known routes, blind (no screenshots). Each starts from a tab root. Edit coordinates here when the UI moves.
-    # Usage: go home|transactions|reports|budgets|more|accounts|categories|payees|recurring|goals|savings|debts|trips|parties|transfers|settings|add-expense|add-income|add-transfer
+    # Usage: go home|transactions|reports|budgets|more|accounts|categories|payees|quick-entries|transfers|recurring|goals|savings|debts|trips|parties|settings|add-expense|add-income|add-transfer
     d() { sleep "${GO_WAIT:-2}"; }
     case "$1" in
       home|transactions|reports|budgets|more) "$0" tab "$1"; d ;;
-      accounts|categories|payees|recurring|goals|savings|debts|trips|parties|transfers|settings)
-        # More rows, in the order shown: y = 374 + 139 * (row - 1)
+      accounts|categories|payees|quick-entries|transfers|recurring|goals|savings|debts|trips|parties|settings)
+        # More has section headers (Money / Planning / Shared and travel / App), so the rows past Transfers don't fit one screen:
+        # Accounts..Transfers are tapped with the page scrolled to the top, the rest with it scrolled to the bottom. The page keeps
+        # its scroll position between visits, so each route scrolls to the end it needs first (both swipes are idempotent).
+        scroll=0
         case "$1" in
-          accounts) y=374 ;; categories) y=513 ;; payees) y=652 ;; recurring) y=791 ;; goals) y=930 ;;
-          savings) y=1069 ;; debts) y=1208 ;; trips) y=1346 ;; parties) y=1485 ;; transfers) y=1624 ;; settings) y=1763 ;;
+          accounts) y=458 ;; categories) y=598 ;; payees) y=737 ;; quick-entries) y=876 ;; transfers) y=1015 ;;
+          recurring) y=1037; scroll=1 ;; goals) y=1176; scroll=1 ;; savings) y=1315; scroll=1 ;;
+          debts) y=1558; scroll=1 ;; trips) y=1697; scroll=1 ;; parties) y=1836; scroll=1 ;; settings) y=2078; scroll=1 ;;
         esac
-        "$0" tab more; d; adb shell input tap 300 "$y"; d ;;
+        "$0" tab more; d
+        if [ "$scroll" = 1 ]; then adb shell input swipe 540 1800 540 500 400
+        else adb shell input swipe 540 500 540 1800 400; fi
+        sleep 1
+        adb shell input tap 300 "$y"; d ;;
       add-expense)  adb shell input tap 959 2069; d; adb shell input tap 300 1621; d ;;
       add-income)   adb shell input tap 959 2069; d; adb shell input tap 300 1801; d ;;
       add-transfer) adb shell input tap 959 2069; d; adb shell input tap 300 1980; d ;;

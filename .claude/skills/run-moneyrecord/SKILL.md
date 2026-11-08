@@ -67,18 +67,21 @@ Screenshots go to `$TMPDIR/moneyrecord-shots/` (here `C:/devkitPro/msys2/tmp/mon
 | `crash [N]` | last N fatal/exception lines from logcat |
 | `stop` | kill the emulator |
 
-## Known paths (verified 2026-10-31, 1080x2400; keep this section and `go` in driver.sh in sync)
+## Known paths (verified 2026-11-08, 1080x2400; keep this section and `go` in driver.sh in sync)
 
 Scale for taps: full `shot` reads back at 900x2000, so ×1.2; `small` at width W, ×(1080/W) and add the crop's top offset.
 
 | route (`go X`) | taps | lands on (title) |
 |---|---|---|
 | `home` `transactions` `reports` `budgets` `more` | bottom tab y=2262, x = 108 / 323 / 539 / 755 / 971 | tab root |
-| `accounts` `categories` `payees` `recurring` `goals` `savings` `debts` `trips` `parties` `transfers` `settings` | More tab, then row at x=300, y = 374 + 139 × (row−1) in this order: 374 Accounts, 513 Categories, 652 Payees, 791 Recurring, 930 Goals, 1069 Savings challenge, 1208 Debts, 1346 Trips, 1485 Parties, 1624 Transfers, 1763 Settings | Manage Accounts, Categories, Payees, Recurring, Savings goals, Savings challenge, Debts, Trips, Parties, Transfers, Settings |
+| `accounts` `categories` `payees` `quick-entries` `transfers` | More tab, swipe the page to the top (540,500 → 540,1800), then tap x=300 at y = 458 Accounts, 598 Categories, 737 Payees, 876 Quick entries, 1015 Transfers | Manage Accounts, Categories, Payees, Quick entries, Transfers |
+| `recurring` `goals` `savings` `debts` `trips` `parties` `settings` | More tab, swipe the page to the bottom (540,1800 → 540,500), then tap x=300 at y = 1037 Recurring, 1176 Goals, 1315 Savings challenge, 1558 Debts, 1697 Trips, 1836 Parties, 2078 Settings | Recurring, Savings goals, Savings challenge, Debts, Trips, Parties, Settings |
 | `add-expense` `add-income` `add-transfer` | Add button (959,2069), then sheet item (300,1621) / (300,1801) / (300,1980) | Add Expense / Income / Transfer |
 
-A new More row shifts every row below it by 139: update both this table and `go`. First run of a fresh install shows the setup
-wizard: Skip is at the top right (982,230).
+More has section headers (Money / Planning / Shared and travel / App) and is a little taller than the screen, and it keeps its scroll
+position between visits: that is why every route swipes to the top or bottom first. A new More row or header shifts the rows below it
+(about 139 px per row): update both this table and `go`. First run of a fresh install shows the setup wizard: Skip is at the top
+right (982,230).
 
 Other known spots (device pixels):
 - Home: total balance card (540,504) opens Manage Accounts (a currency line, with several currencies, filters it); Recent "See all" is at the card's top right. Reports tab: Expenses / Incomes / Trends top tabs at y≈358.
@@ -120,6 +123,15 @@ dotnet test MoneyRecord.Tests/MoneyRecord.Tests.csproj    # 308 pass, ~2 s (plai
 - **`dotnet` isn't on the Bash tool's PATH** (it's the devkitPro msys bash). The driver calls `/c/Program Files/dotnet/dotnet.exe`; run `dotnet test` from PowerShell.
 - **`adb logcat -d -b crash,main` can hang.** The driver uses `-b crash -b main -t 3000` with a 20 s timeout.
 - After `locale es-ES`, a "keyboard language changed" toast covers the bottom of the screen for a few seconds.
+- **App lock / shortcut tests need a phone PIN.** `adb shell locksettings set-pin 1234` (undo: `locksettings clear --old 1234`), then turn on
+  Settings → Privacy and security → App lock. The unlock prompt (`mCurrentFocus=Window{… BiometricPrompt}`) blocks screenshots: **an all-black
+  capture means the prompt is up, not that the app died**. It can show a second or two late, so check `dumpsys window | grep mCurrentFocus`,
+  then `text 1234` + `key 66`. Cold-start a shortcut with
+  `MSYS_NO_PATHCONV=1 adb shell am start -a android.intent.action.MAIN -f 0x34000000 -n com.sebastianortiz.moneyrecord/crc64af84fe8abee7a2c9.MainActivity --es route "AddTransactionPage?Type=Expense"`
+  (routes `AddTransactionPage?Type=Expense|Income`, `AddTransferPage`) after `am force-stop`; a Debug cold start takes about 4 s before Home opens the
+  route, so wait ~8 s before judging the screen. Leave the lock and the PIN off afterwards.
+- **`go` from an Add form misses**: Add Expense / Income / Transfer hide the tab bar and open with the keypad up, so `back` first closes the keyboard.
+  Press `back` until Home (check with `title`) before using `go`.
 
 ## Troubleshooting
 
