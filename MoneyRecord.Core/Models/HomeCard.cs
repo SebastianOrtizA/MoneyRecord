@@ -16,6 +16,9 @@ namespace MoneyRecord.Models
         GetStarted,
 
         /// <summary>The chips of the user's quick entries; the card shows only once there is one.</summary>
-        QuickEntries
+        QuickEntries,
+
+        /// <summary>Safe to spend and the dip warning (opt-in).</summary>
+        Forecast
     }
 }

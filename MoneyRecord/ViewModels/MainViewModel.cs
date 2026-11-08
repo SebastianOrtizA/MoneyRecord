@@ -34,6 +34,7 @@ namespace MoneyRecord.ViewModels
         private readonly IQuickEntryService _quickEntries;
         private readonly QuickEntryRunner _quickRunner;
         private readonly IHomeScreenWidgets _widgets;
+        private readonly ISafeToSpendService _safeToSpend;
         private List<QuickEntryItem> _quickItems = [];
         private bool _askingCrashReports;
 
@@ -55,6 +56,7 @@ namespace MoneyRecord.ViewModels
 
         partial void OnHideBalancesChanged(bool value)
         {
+            OnPropertyChanged(nameof(ShowForecast));
             _privacy.HideBalances = value;
             OnPropertyChanged(nameof(ShowSpentLine));
             RebuildQuickChips();
@@ -215,7 +217,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>Which cards show and in what order (Settings → Home screen); read again on every load.</summary>
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowRecentEmpty), nameof(ShowStartChecklist), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals), nameof(ShowDebts), nameof(ShowQuickEntries))]
+        [NotifyPropertyChangedFor(nameof(ShowPeriodPicker), nameof(ShowPeriodSummary), nameof(ShowRecent), nameof(ShowRecentEmpty), nameof(ShowStartChecklist), nameof(ShowUpcoming), nameof(ShowBudgets), nameof(ShowTrip), nameof(ShowGoals), nameof(ShowDebts), nameof(ShowQuickEntries), nameof(ShowForecast))]
         private HomeLayout layout = HomeLayout.Default;
 
         // A card shows when it is enabled and has something to show
@@ -231,7 +233,29 @@ namespace MoneyRecord.ViewModels
         public bool ShowTrip => Layout.IsShown(HomeCard.Trip) && HasActiveTrip;
         public bool ShowGoals => Layout.IsShown(HomeCard.Goals) && HasGoals;
         public bool ShowDebts => Layout.IsShown(HomeCard.Debts) && HasDebts;
+        public bool ShowForecast => Layout.IsShown(HomeCard.Forecast) && !HideBalances && Forecast != null;
         public bool ShowQuickEntries => Layout.IsShown(HomeCard.QuickEntries) && QuickChips.Count > 0;
+
+        /// <summary>Safe to spend and the dip (Home card, off by default); null = no accounts or not loaded.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowForecast), nameof(SafeToSpendText), nameof(ForecastDipText), nameof(ShowForecastDip))]
+        private HomeForecast? forecast;
+
+        /// <summary>"Safe to spend $212, about $18 a day until Nov 14", or what is short when the committed money exceeds the balance.</summary>
+        public string SafeToSpendText => Forecast is not { } f ? string.Empty
+            : f.SafeToSpend.IsNegative
+                ? string.Format(AppResources.SafeToSpendShort, MoneyFormatter.Format(Money.FromCents(-f.SafeToSpend.TotalCents), f.CurrencyCode),
+                    DateFormatter.Format(f.SafeToSpend.Until, DateStyle.Medium))
+                : string.Format(AppResources.SafeToSpendLine, MoneyFormatter.Format(Money.FromCents(f.SafeToSpend.TotalCents), f.CurrencyCode),
+                    MoneyFormatter.Format(Money.FromCents(f.SafeToSpend.PerDayCents), f.CurrencyCode),
+                    DateFormatter.Format(f.SafeToSpend.Until, DateStyle.Medium));
+
+        /// <summary>"Balance dips below zero on Nov 9" when the 30-day forecast goes negative.</summary>
+        public string ForecastDipText => Forecast?.DipDate is { } date
+            ? string.Format(AppResources.ForecastDipLine, DateFormatter.Format(date, DateStyle.Medium))
+            : string.Empty;
+
+        public bool ShowForecastDip => ForecastDipText.Length > 0;
 
         /// <summary>The open debts, first by due date (Home card, off by default); the card shows once one is open.</summary>
         [ObservableProperty]
@@ -256,8 +280,9 @@ namespace MoneyRecord.ViewModels
             NotificationLaunch notificationLaunch, IPrivacySettings privacy, IDatabaseEncryption databaseEncryption,
             IConversionService conversion, IExchangeRateSettings rateSettings, ISavingsGoalService goals, ITripService trips, IWhatsNewService whatsNew,
             IHomeLayoutSettings layoutSettings, IDebtService debts, IGetStartedService getStarted,
-            IQuickEntryService quickEntries, QuickEntryRunner quickRunner, IHomeScreenWidgets widgets)
+            IQuickEntryService quickEntries, QuickEntryRunner quickRunner, IHomeScreenWidgets widgets, ISafeToSpendService safeToSpend)
         {
+            _safeToSpend = safeToSpend;
             _widgets = widgets;
             _getStarted = getStarted;
             _quickEntries = quickEntries;
@@ -365,11 +390,13 @@ namespace MoneyRecord.ViewModels
                 var startTask = IfShown(HomeCard.GetStarted, _getStarted.GetOpenAsync, null);
                 var goalsTask = IfShown(HomeCard.Goals, async () => await _goals.GetProgressAsync(await balancesTask), []);
                 var quickTask = IfShown(HomeCard.QuickEntries, _quickEntries.GetAllAsync, []);
-                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask, debtsTask, startTask, quickTask);
+                var forecastTask = IfShown(HomeCard.Forecast, () => _safeToSpend.GetAsync(cancellationToken), null);
+                await Task.WhenAll(balancesTask, totalsTask, stateTask, entriesTask, budgetsTask, upcomingTask, goalsTask, tripTask, debtsTask, startTask, quickTask, forecastTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 Layout = layout;
                 StartChecklist = await startTask;
+                Forecast = await forecastTask;
                 _quickItems = await quickTask;
                 RebuildQuickChips();
                 var balanceLines = CurrencyBalance.DisplayLines(

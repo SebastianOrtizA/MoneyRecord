@@ -124,6 +124,14 @@
                            TextColor="#FFFFFFDD"
                            HorizontalOptions="Center"
                            HorizontalTextAlignment="Center"/>
+                    <!-- Forecast card on: what is safe to spend, under the balance -->
+                    <Label Text="{Binding SafeToSpendText}"
+                           IsVisible="{Binding ShowForecast}"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFFEE"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center"/>
                 </VerticalStackLayout>
             </Border>
 
@@ -722,6 +730,17 @@
                             </DataTemplate>
                         </BindableLayout.ItemTemplate>
                     </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Forecast: safe to spend until the next income (or month end) and the first day the balance dips below zero (off by default) -->
+            <Border Style="{StaticResource Card}" x:Name="ForecastCard" IsVisible="{Binding ShowForecast}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{ext:Localize HomeCardForecast}" FontSize="18" FontAttributes="Bold"/>
+                    <Label Text="{Binding SafeToSpendText}" FontSize="16"/>
+                    <Label Text="{Binding ForecastDipText}" IsVisible="{Binding ShowForecastDip}" FontSize="15" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light={StaticResource ExpenseColor}, Dark={StaticResource ExpenseColorDark}}"/>
+                    <Label Text="{ext:Localize SafeToSpendHint}" Style="{StaticResource SecondaryLabel}"/>
                 </VerticalStackLayout>
             </Border>
 
