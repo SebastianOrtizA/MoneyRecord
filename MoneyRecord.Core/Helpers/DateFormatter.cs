@@ -11,6 +11,8 @@ namespace MoneyRecord.Helpers
         Medium,
         /// <summary>Oct 11 / 11 de oct</summary>
         MonthDay,
+        /// <summary>Oct 11 / 11 oct (MonthDay without the "de" joiner, for a crowded chart axis)</summary>
+        MonthDayCompact,
         /// <summary>Oct / oct (a month on a chart axis)</summary>
         Month,
         /// <summary>Oct 2026 / oct de 2026</summary>
@@ -61,6 +63,7 @@ namespace MoneyRecord.Helpers
                 DateStyle.Long => WithoutWeekday(format.LongDatePattern),
                 DateStyle.Medium => AbbreviateMonth(WithoutWeekday(format.LongDatePattern)),
                 DateStyle.Month => "MMM",
+                DateStyle.MonthDayCompact => JoinerRegex().Replace(AbbreviateMonth(format.MonthDayPattern), " ").Trim(),
                 DateStyle.MonthYear => AbbreviateMonth(format.YearMonthPattern),
                 _ => AbbreviateMonth(format.MonthDayPattern)
             };
@@ -72,6 +75,10 @@ namespace MoneyRecord.Helpers
 
         private static string AbbreviateMonth(string pattern) =>
             pattern.Replace("MMMM", "MMM", StringComparison.Ordinal);
+
+        // "d 'de' MMM" → "d MMM"
+        [GeneratedRegex(@"\s*'de'\s*")]
+        private static partial Regex JoinerRegex();
 
         [GeneratedRegex(@"\s*,?\s*dddd\s*,?\s*")]
         private static partial Regex WeekdayRegex();
