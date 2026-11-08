@@ -1,1 +1,1 @@
-New Forecast page and Home card: see how your balances may move over the next 30, 60 or 90 days and how much is safe to spend until your next income (estimates). Optional low-balance warning. Budgets now show what you can spend per day, can carry over what is left, and there is a new "All spending" budget plus suggested budgets from your last 3 months. Fixed a launcher shortcut opening while the app lock is on.
+Fixed the dates under the Forecast chart overlapping in Spanish and Portuguese.
