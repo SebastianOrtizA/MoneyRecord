@@ -57,7 +57,7 @@ jobs:
             if $pick && git push -q origin "HEAD:refs/heads/$work"; then
               body="Backport of #$PR (commit \`$SHA\`) onto \`$branch\`, opened by the Backport workflow.
 
-          \`$branch\` only takes changes through a pull request, so this is the step that builds it: if the top \`##\` section of the en-US \`history.txt\` there names a version without a tag, merging this publishes it (tag, GitHub Release, Play closed testing)."
+          \`$branch\` only takes changes through a pull request, so this is the step that builds it: if the top \`##\` section of the en-US \`history.txt\` there names a version without a tag, merging this publishes it (tag, GitHub Release, Play open testing)."
               if url=$(gh pr create --base "$branch" --head "$work" --title "Backport #$PR to $branch: $TITLE" --body "$body"); then
                 gh pr comment "$PR" --body "Backport to \`$branch\`: $url. Merging it builds the branch and publishes the next patch once its release notes are on it."
               else

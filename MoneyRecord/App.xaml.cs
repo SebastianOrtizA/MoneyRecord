@@ -19,12 +19,13 @@ namespace MoneyRecord
         private readonly IHomeScreenWidgets _widgets;
         private readonly IWhatsNewService _whatsNew;
         private readonly ITipJar _tipJar;
+        private readonly NotificationLaunch _launch;
         private readonly ILogger<App> _logger;
 
         public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
             IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
-            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, ILogger<App> logger)
+            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, NotificationLaunch launch, ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
@@ -41,6 +42,7 @@ namespace MoneyRecord
             _widgets = widgets;
             _whatsNew = whatsNew;
             _tipJar = tipJar;
+            _launch = launch;
             _logger = logger;
         }
 
@@ -90,10 +92,24 @@ namespace MoneyRecord
             // prompt would be cancelled. Every activation asks; only a return from the background can lock
             window.Activated += (s, e) =>
             {
+                var cameBack = _appLock.IsAway;
                 if (_appLock.LockOnResume())
+                {
+                    // The lock screen opens a page requested meanwhile once it is unlocked
                     ShowLock(window);
+                }
                 else
+                {
                     SetContentHidden(window, false);
+                    // Android hands a tapped notification, widget button or shortcut over before this decision (a cold start
+                    // opens it from Home instead, and not without a Shell: the first-run setup)
+                    if (cameBack)
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            if (Shell.Current != null)
+                                await _launch.OpenPendingAsync();
+                        });
+                }
             };
 
             return window;

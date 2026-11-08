@@ -25,6 +25,12 @@ namespace MoneyRecord.Services
             return IsLocked;
         }
 
+        /// <summary>
+        /// The app is in the background and has not come back yet: <see cref="LockOnResume"/> decides on that return whether
+        /// it locks, so nothing may open a page before it.
+        /// </summary>
+        public bool IsAway => _backgroundedAt != null;
+
         /// <summary>The app went to the background.</summary>
         public void Backgrounded() => _backgroundedAt ??= clock.GetUtcNow();
 

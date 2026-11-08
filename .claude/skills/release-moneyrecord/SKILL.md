@@ -1,10 +1,10 @@
 ---
 name: release-moneyrecord
-description: Prepare and publish a MoneyRecord release (release notes in six locales, PR, then the release branch that builds the APK/AAB and uploads to Google Play closed testing). Use when asked to release, cut a version, tag, write the release notes or the "What's new" text for a version.
+description: Prepare and publish a MoneyRecord release (release notes in six locales, PR, then the release branch that builds the APK/AAB and uploads to Google Play open testing). Use when asked to release, cut a version, tag, write the release notes or the "What's new" text for a version.
 ---
 
 A release = a **notes PR**, then a **release branch**. A build of a release branch publishes the GitHub Release and uploads the `.aab` to Play's
-closed testing track, so it is outward-facing: **ask the owner before cutting it or merging a backport**, even if they asked for the notes.
+open testing track, so it is outward-facing: **ask the owner before cutting it or merging a backport**, even if they asked for the notes.
 
 ## 1. Pick the version
 

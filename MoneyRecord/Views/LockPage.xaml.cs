@@ -12,13 +12,15 @@ namespace MoneyRecord.Views
     {
         private readonly AppLock _appLock;
         private readonly IDeviceLock _deviceLock;
+        private readonly NotificationLaunch _launch;
         private bool _asking;
 
-        public LockPage(AppLock appLock, IDeviceLock deviceLock)
+        public LockPage(AppLock appLock, IDeviceLock deviceLock, NotificationLaunch launch)
         {
             InitializeComponent();
             _appLock = appLock;
             _deviceLock = deviceLock;
+            _launch = launch;
         }
 
         protected override async void OnAppearing()
@@ -55,6 +57,10 @@ namespace MoneyRecord.Views
                 {
                     _appLock.Unlock();
                     await Navigation.PopModalAsync(animated: false);
+                    // A shortcut, widget button or notification that started the app waited for this unlock (never throws).
+                    // Not without a Shell (the first-run setup): Home's first visit opens it
+                    if (Shell.Current != null)
+                        await _launch.OpenPendingAsync();
                 }
             }
             finally

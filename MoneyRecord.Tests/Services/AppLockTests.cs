@@ -29,6 +29,18 @@ public sealed class AppLockTests
     }
 
     [Fact]
+    public void The_app_is_away_from_leaving_until_the_return_decides_the_lock()
+    {
+        _sut.IsAway.Should().BeFalse();
+
+        _sut.Backgrounded();
+        _sut.IsAway.Should().BeTrue();
+
+        _sut.LockOnResume();
+        _sut.IsAway.Should().BeFalse();
+    }
+
+    [Fact]
     public void The_app_locks_at_start_when_the_lock_is_on()
     {
         _sut.LockOnStart().Should().BeTrue();
