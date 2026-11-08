@@ -5,9 +5,11 @@ namespace MoneyRecord.Services
 {
     /// <summary>
     /// A tapped notification's page (singleton). Android hands it over when the app opens; it is opened at once when the
-    /// app is already running, otherwise when Home first appears (the Shell isn't ready before that).
+    /// app is already running, otherwise when Home first appears (the Shell isn't ready before that). Never while the app
+    /// lock screen is up or still to be decided: the page waits, and whoever settles that (the lock screen after the unlock,
+    /// the app on coming back unlocked) opens it.
     /// </summary>
-    public sealed class NotificationLaunch(INavigationService navigation, ILogger<NotificationLaunch> logger)
+    public sealed class NotificationLaunch(AppLock appLock, INavigationService navigation, ILogger<NotificationLaunch> logger)
     {
         private string? _pending;
 
@@ -21,9 +23,15 @@ namespace MoneyRecord.Services
         /// <summary>Saves the quick entry with this ID (set by Home, which also reloads); null = not ready, the shortcut does nothing.</summary>
         public Func<int, Task>? RunQuickEntryAsync { get; set; }
 
-        /// <summary>Opens the pending page, once; does nothing when there is none. A route that fails is logged, never thrown.</summary>
+        /// <summary>
+        /// Opens the pending page, once; does nothing when there is none, and keeps it while the app is locked or away (a
+        /// page opened under the lock screen leaves its modal stack broken). A route that fails is logged, never thrown.
+        /// </summary>
         public async Task OpenPendingAsync()
         {
+            if (appLock.IsLocked || appLock.IsAway)
+                return;
+
             var route = _pending;
             _pending = null;
             if (route == null)

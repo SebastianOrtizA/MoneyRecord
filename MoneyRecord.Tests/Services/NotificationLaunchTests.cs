@@ -1,5 +1,7 @@
 using AwesomeAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
+using MoneyRecord.Models;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using NSubstitute;
@@ -12,11 +14,102 @@ namespace MoneyRecord.Tests.Services
     {
         private readonly INavigationService _navigation = Substitute.For<INavigationService>();
         private readonly RecordingLogger _logger = new();
+        private readonly FakeTimeProvider _clock = new(new DateTimeOffset(2026, 3, 15, 9, 0, 0, TimeSpan.Zero));
+        private readonly PrivacySettings _settings = new(new FakePreferences()) { LockEnabled = true, LockAfterMinutes = 5 };
+        private readonly AppLock _appLock;
         private readonly NotificationLaunch _launch;
 
         public NotificationLaunchTests()
         {
-            _launch = new NotificationLaunch(_navigation, _logger);
+            var deviceLock = Substitute.For<IDeviceLock>();
+            deviceLock.IsAvailable.Returns(true);
+            _appLock = new AppLock(_settings, deviceLock, _clock);
+            _launch = new NotificationLaunch(_appLock, _navigation, _logger);
+        }
+
+        [Fact]
+        public async Task A_page_requested_at_a_locked_start_waits_for_the_unlock_and_opens_once()
+        {
+            _appLock.LockOnStart();
+            _launch.Request("AddTransactionPage?Type=Expense");
+
+            // Home appears under the lock screen: nothing may open yet
+            await _launch.OpenPendingAsync();
+            await _navigation.DidNotReceiveWithAnyArgs().NavigateToAsync(default!);
+
+            _appLock.Unlock();
+            await _launch.OpenPendingAsync();
+            await _launch.OpenPendingAsync();
+
+            await _navigation.Received(1).NavigateToAsync("AddTransactionPage?Type=Expense");
+        }
+
+        [Fact]
+        public async Task A_quick_entry_requested_at_a_locked_start_waits_for_the_unlock()
+        {
+            var ran = new List<int>();
+            _launch.RunQuickEntryAsync = id => { ran.Add(id); return Task.CompletedTask; };
+            _appLock.LockOnStart();
+            _launch.Request(NotificationLaunch.QuickEntryRoute(3));
+
+            await _launch.OpenPendingAsync();
+            ran.Should().BeEmpty();
+
+            _appLock.Unlock();
+            await _launch.OpenPendingAsync();
+
+            ran.Should().Equal(3);
+        }
+
+        [Fact]
+        public async Task A_page_requested_while_the_app_is_away_waits_for_the_return_to_decide_the_lock()
+        {
+            // Android delivers the new intent before the app comes back and knows whether it locks
+            _appLock.LockOnStart();
+            _appLock.Unlock();
+            _appLock.Backgrounded();
+            _clock.Advance(TimeSpan.FromMinutes(10));
+            _launch.Request("//BudgetPage");
+
+            await _launch.OpenPendingAsync();
+            await _navigation.DidNotReceiveWithAnyArgs().NavigateToAsync(default!);
+
+            // Back after the delay: the lock screen is up, the page still waits
+            _appLock.LockOnResume().Should().BeTrue();
+            await _launch.OpenPendingAsync();
+            await _navigation.DidNotReceiveWithAnyArgs().NavigateToAsync(default!);
+
+            _appLock.Unlock();
+            await _launch.OpenPendingAsync();
+
+            await _navigation.Received(1).NavigateToAsync("//BudgetPage");
+        }
+
+        [Fact]
+        public async Task A_page_requested_while_away_opens_on_a_return_that_does_not_lock()
+        {
+            _appLock.LockOnStart();
+            _appLock.Unlock();
+            _appLock.Backgrounded();
+            _clock.Advance(TimeSpan.FromMinutes(1));
+            _launch.Request("//BudgetPage");
+
+            _appLock.LockOnResume().Should().BeFalse();
+            await _launch.OpenPendingAsync();
+
+            await _navigation.Received(1).NavigateToAsync("//BudgetPage");
+        }
+
+        [Fact]
+        public async Task Without_the_app_lock_the_page_opens_at_once()
+        {
+            _settings.LockEnabled = false;
+            _appLock.LockOnStart();
+            _launch.Request("//BudgetPage");
+
+            await _launch.OpenPendingAsync();
+
+            await _navigation.Received(1).NavigateToAsync("//BudgetPage");
         }
 
         [Fact]
