@@ -8810,5 +8810,30 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        public static string BudgetCarriedOver {
+            get {
+                return ResourceManager.GetString("BudgetCarriedOver", resourceCulture);
+            }
+        }
+
+        public static string BudgetPerDay {
+            get {
+                return ResourceManager.GetString("BudgetPerDay", resourceCulture);
+            }
+        }
+
+        public static string BudgetRollover {
+            get {
+                return ResourceManager.GetString("BudgetRollover", resourceCulture);
+            }
+        }
+
+        public static string BudgetRolloverHint {
+            get {
+                return ResourceManager.GetString("BudgetRolloverHint", resourceCulture);
+            }
+        }
+
+
     }
 }

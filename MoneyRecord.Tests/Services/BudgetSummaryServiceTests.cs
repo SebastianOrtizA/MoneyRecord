@@ -99,4 +99,54 @@ public class BudgetSummaryServiceTests
         progress.HasUncounted.Should().BeTrue();
         progress.UncountedText.Should().Contain(MoneyFormatter.Format(500m, "ZZZ"));
     }
+
+    [Fact]
+    public async Task Rollover_adds_last_months_unspent_money_to_the_limit_only_in_the_budgets_own_period()
+    {
+        var now = DateTime.Now;
+        var lastMonth = new DateTime(now.Year, now.Month, 1).AddMonths(-1);
+        _budgets.GetActiveBudgetsAsync().Returns(new List<Budget>
+        {
+            new() { Id = 10, CategoryId = 1, LimitAmount = 100m, Period = BudgetPeriod.Month, RolloverUnspent = true, CreatedDate = lastMonth.AddDays(2) }
+        });
+        _conversion.GetExpensesByCategoryAsync(lastMonth, lastMonth.AddMonths(1).AddTicks(-1))
+            .Returns(new Dictionary<int, BudgetSpent> { [1] = new(60m, []) });
+
+        var month = (await _sut.GetSummaryAsync(PeriodType.CalendarMonth)).Single();
+        var year = (await _sut.GetSummaryAsync(PeriodType.CalendarYear)).Single();
+
+        month.CarriedOverAmount.Should().Be(40m);
+        month.LimitAmount.Should().Be(140m);
+        month.OriginalLimitAmount.Should().Be(100m);
+        month.RolloverEnabled.Should().BeTrue();
+        month.CarriedOverText.Should().Contain(MoneyFormatter.Format(40m));
+        year.CarriedOverAmount.Should().Be(0m);
+        year.LimitAmount.Should().Be(1200m);
+    }
+
+    [Fact]
+    public async Task A_budget_without_rollover_keeps_its_limit()
+    {
+        _budgets.GetActiveBudgetsAsync().Returns(new List<Budget>
+        {
+            new() { Id = 10, CategoryId = 1, LimitAmount = 100m, Period = BudgetPeriod.Month, CreatedDate = new DateTime(2020, 1, 1) }
+        });
+
+        var progress = (await _sut.GetSummaryAsync(PeriodType.CalendarMonth)).Single();
+
+        progress.LimitAmount.Should().Be(100m);
+        progress.HasCarriedOver.Should().BeFalse();
+        progress.CarriedOverText.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task Last_month_has_no_daily_allowance_because_it_is_over()
+    {
+        _budgets.GetActiveBudgetsAsync().Returns(new List<Budget>
+        {
+            new() { Id = 10, CategoryId = 1, LimitAmount = 100m, Period = BudgetPeriod.Month }
+        });
+
+        (await _sut.GetSummaryAsync(PeriodType.LastMonth)).Single().HasDailyAllowance.Should().BeFalse();
+    }
 }

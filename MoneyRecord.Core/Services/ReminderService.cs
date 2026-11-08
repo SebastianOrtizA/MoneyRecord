@@ -231,6 +231,7 @@ namespace MoneyRecord.Services
             var now = clock.GetLocalNow().DateTime;
 
             // Each budget in its own current day, month or year: one query per period
+            var rollover = new BudgetRollover(conversion);
             foreach (var period in active.GroupBy(b => b.Period))
             {
                 var (start, end) = DateRangeHelper.GetBudgetWindow(period.Key, now);
@@ -241,7 +242,7 @@ namespace MoneyRecord.Services
                     var progress = new BudgetProgress
                     {
                         CategoryName = names.GetValueOrDefault(budget.CategoryId, string.Empty),
-                        LimitAmount = budget.LimitAmount
+                        LimitAmount = budget.LimitAmount + await rollover.CarryAsync(budget, now)
                     };
                     progress.SetSpent(spentByCategory.GetValueOrDefault(budget.CategoryId) ?? BudgetSpent.None);
                     NotifyBudget(budget, start, progress);

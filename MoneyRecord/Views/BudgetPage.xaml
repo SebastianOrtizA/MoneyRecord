@@ -119,6 +119,16 @@
                                            TextColor="{Binding Level, Converter={StaticResource BudgetLevelToColorConverter}}" />
                                 </Grid>
 
+                                <!-- Rollover: why the limit is bigger than the budget; what can still be spent per day -->
+                                <Label Text="{Binding CarriedOverText}"
+                                       IsVisible="{Binding HasCarriedOver}"
+                                       FontSize="12"
+                                       Style="{StaticResource SecondaryLabel}" />
+                                <Label Text="{Binding DailyAllowanceText}"
+                                       IsVisible="{Binding HasDailyAllowance}"
+                                       FontSize="12"
+                                       Style="{StaticResource SecondaryLabel}" />
+
                                 <!-- Expenses in other currencies: listed, not counted against the limit (base currency) -->
                                 <Label Text="{Binding UncountedText}"
                                        IsVisible="{Binding HasUncounted}"
@@ -216,6 +226,13 @@
                             FontSize="16"
                             MinimumHeightRequest="44" />
                 </Grid>
+
+                <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+                    <Label Text="{ext:Localize BudgetRollover}" FontSize="16" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding RolloverUnspent}"
+                            SemanticProperties.Description="{ext:Localize BudgetRollover}" />
+                </Grid>
+                <Label Text="{ext:Localize BudgetRolloverHint}" FontSize="12" Style="{StaticResource SecondaryLabel}" />
 
                 <!-- Delete only when editing -->
                 <Grid ColumnDefinitions="Auto,*" Margin="0,12,0,0">

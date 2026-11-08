@@ -41,6 +41,15 @@ namespace MoneyRecord.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public bool IsActive { get; set; } = true;
+
+        /// <summary>
+        /// What is left unspent at the end of a period is added to the next period's limit (overspending is not carried).
+        /// Off by default; older databases and backups get that default.
+        /// </summary>
+        public bool RolloverUnspent { get; set; }
+
+        /// <summary>When rollover was switched on: the carry chain starts in that period, never in earlier ones. Null falls back to <see cref="CreatedDate"/>.</summary>
+        public DateTime? RolloverSince { get; set; }
     }
 
     /// <summary>How much of a budget is used: OnTrack < 60% <= Warning < 80% <= High <= 100% < Exceeded (strictly over).</summary>
@@ -58,6 +67,9 @@ namespace MoneyRecord.Models
     public partial class BudgetProgress : ObservableObject
     {
         public int BudgetId { get; set; }
+
+        /// <summary>The budget carries what is left over into the next period (the edit sheet's switch).</summary>
+        public bool RolloverEnabled { get; set; }
 
         public int CategoryId { get; set; }
 
@@ -139,6 +151,34 @@ namespace MoneyRecord.Models
         public string AccessibilityText => string.Join(", ", CategoryName, StatusText, UsedPercentText, StatusLine);
 
         public string DisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
+
+        /// <summary>"$12.00 a day for 9 days": what can still be spent per day until the shown period ends. Empty when it doesn't apply.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasDailyAllowance))]
+        private string dailyAllowanceText = string.Empty;
+
+        public bool HasDailyAllowance => !string.IsNullOrEmpty(DailyAllowanceText);
+
+        /// <summary>The unspent amount of earlier periods that is part of <see cref="LimitAmount"/> (rollover on).</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CarriedOverText), nameof(HasCarriedOver))]
+        private decimal carriedOverAmount;
+
+        public bool HasCarriedOver => CarriedOverAmount > 0;
+
+        /// <summary>"Includes $40.00 carried over": always shown with a carry, so a bigger limit is never a mystery.</summary>
+        public string CarriedOverText => HasCarriedOver
+            ? string.Format(AppResources.BudgetCarriedOver, MoneyFormatter.Format(CarriedOverAmount))
+            : string.Empty;
+
+        /// <summary>Sets <see cref="DailyAllowanceText"/> from what is left and the days until <paramref name="periodEnd"/> (today counts).</summary>
+        public void SetDailyAllowance(DateTime today, DateTime periodEnd)
+        {
+            var allowance = BudgetProjectionHelper.DailyAllowance(RemainingAmount, today, periodEnd);
+            DailyAllowanceText = allowance is { } a
+                ? string.Format(AppResources.BudgetPerDay, MoneyFormatter.Format(a.PerDay), a.Days)
+                : string.Empty;
+        }
 
         /// <summary>
         /// "Not counted: US$40.00" when part of the spending can't count against the (base currency) limit: other currencies

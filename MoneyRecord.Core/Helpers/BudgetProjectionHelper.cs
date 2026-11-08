@@ -42,6 +42,19 @@ namespace MoneyRecord.Helpers
             };
         }
 
+        /// <summary>What can be spent per day, and over how many days.</summary>
+        public readonly record struct Allowance(decimal PerDay, int Days);
+
+        /// <summary>
+        /// What is left spread over the days from <paramref name="today"/> to <paramref name="periodEnd"/> (both count). Null when
+        /// nothing is left, the period is over, or only today is left (then "what is left" says it all).
+        /// </summary>
+        public static Allowance? DailyAllowance(decimal remaining, DateTime today, DateTime periodEnd)
+        {
+            var days = (periodEnd.Date - today.Date).Days + 1;
+            return remaining > 0 && days > 1 ? new Allowance(remaining / days, days) : null;
+        }
+
         /// <summary>
         /// Calculates projection when budget period is set to Day
         /// </summary>

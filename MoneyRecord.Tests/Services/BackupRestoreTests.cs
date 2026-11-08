@@ -79,7 +79,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         zip.Entries.Select(e => e.FullName).Should().BeEquivalentTo("data.json", "receipts/receipt_1.jpg");
         using var reader = new StreamReader(zip.GetEntry("data.json")!.Open());
         var json = await reader.ReadToEndAsync();
-        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 9");
+        json.Should().Contain("\"ReceiptPhotoPath\": \"receipts/receipt_1.jpg\"").And.Contain("\"Version\": 10");
         json.Should().NotContain(_appData.Replace("\\", "\\\\"), "no device paths in a backup");
     }
 
@@ -111,7 +111,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         await Db.InsertAsync(bakery);
         await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 12.34m, PayeeId = bakery.Id, ConvertedAmount = 3.1m, ConvertedCurrencyCode = "EUR", CategoryId = food.Id, AccountId = bank.Id, ReceiptPhotoPath = WriteReceipt("receipt_1.jpg", "photo-1") });
         await Db.InsertAsync(new Transfer { Amount = 50m, DestinationAmount = 50m, SourceAccountId = cash.Id, DestinationAccountId = bank.Id });
-        await Db.InsertAsync(new Budget { CategoryId = food.Id, LimitAmount = 300m });
+        await Db.InsertAsync(new Budget { CategoryId = food.Id, LimitAmount = 300m, RolloverUnspent = true });
         await Db.InsertAsync(new RecurringTransaction { Description = "Rent", Amount = 500m, CategoryId = food.Id, AccountId = bank.Id, PayeeId = bakery.Id });
         var goal = new SavingsGoal { Name = "Trip", TargetAmount = 2000m, CurrencyCode = "USD", TargetDate = new DateTime(2027, 6, 1) };
         await Db.InsertAsync(goal);
@@ -174,6 +174,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         result.RecordCount.Should().Be(before.Count);
         var lunch = await Db.Table<Transaction>().FirstAsync(t => t.Description == "Lunch");
         (await Db.Table<Debt>().ToListAsync()).Should().ContainSingle().Which.AccountId.Should().Be(ledger.Id);
+        (await Db.Table<Budget>().ToListAsync()).Should().ContainSingle().Which.RolloverUnspent.Should().BeTrue();
         (await Db.Table<Transaction>().FirstAsync(t => t.DebtId != null)).DebtId.Should().Be(debt.Id);
         (await Db.Table<Trip>().ToListAsync()).Should().ContainSingle().Which.Budget.Should().Be(300m);
         (await Db.Table<Transaction>().FirstAsync(t => t.TripId != null)).TripCategoryId.Should().Be(tripCategory.Id);

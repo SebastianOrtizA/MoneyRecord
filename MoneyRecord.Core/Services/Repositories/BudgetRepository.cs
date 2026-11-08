@@ -11,7 +11,7 @@ namespace MoneyRecord.Services.Repositories
         public async Task<Budget?> GetByCategoryIdAsync(int categoryId) =>
             await (await TableAsync()).Where(b => b.CategoryId == categoryId && b.IsActive).FirstOrDefaultAsync();
 
-        public async Task<int> UpdateLimitAsync(int budgetId, decimal limitAmount, BudgetPeriod period)
+        public async Task<int> UpdateLimitAsync(int budgetId, decimal limitAmount, BudgetPeriod period, bool rolloverUnspent)
         {
             var budget = await GetByIdAsync(budgetId);
             if (budget == null)
@@ -19,6 +19,12 @@ namespace MoneyRecord.Services.Repositories
 
             budget.LimitAmount = limitAmount;
             budget.Period = period;
+            // The chain starts when it is switched on, so an old budget is not credited for periods before that
+            if (!rolloverUnspent)
+                budget.RolloverSince = null;
+            else if (!budget.RolloverUnspent)
+                budget.RolloverSince = DateTime.Now;
+            budget.RolloverUnspent = rolloverUnspent;
             return await SaveAsync(budget);
         }
     }
