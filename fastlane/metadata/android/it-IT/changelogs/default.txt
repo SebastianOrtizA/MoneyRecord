@@ -1,1 +1,1 @@
-Nuova pagina e scheda Previsioni: guarda come possono cambiare i tuoi saldi nei prossimi 30, 60 o 90 giorni e quanto puoi spendere in sicurezza fino al prossimo reddito (stime). Avviso facoltativo di saldo basso. I budget mostrano quanto puoi spendere al giorno, possono riportare ciò che avanza, e c'è un nuovo budget «Tutte le spese» con budget suggeriti in base agli ultimi 3 mesi. Corretta una scorciatoia che si apriva con il blocco dell'app attivo.
+Corretto: le date sotto il grafico delle Previsioni si sovrapponevano in spagnolo e portoghese.
