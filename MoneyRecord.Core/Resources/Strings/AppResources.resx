@@ -3113,4 +3113,25 @@
   <data name="SafeToSpendHint" xml:space="preserve">
     <value>An estimate from your recurring and future-dated entries; income that has not arrived is not counted.</value>
   </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>Lowest: {0} on {1}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>Balance on {0}: {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} days</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>What moves the balance</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>Nothing scheduled in this period.</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>Nothing to forecast yet</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>Add an account to see where your balance is heading.</value>
+  </data>
 </root>

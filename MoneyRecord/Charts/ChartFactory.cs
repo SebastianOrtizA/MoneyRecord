@@ -97,6 +97,51 @@ namespace MoneyRecord.Charts
                 return (ISeries)series;
             }).ToArray();
 
+        /// <summary>The forecast: one balance line over many days, so no point markers (the tooltip names the day).</summary>
+        public static ISeries[] Forecast(ForecastView view) =>
+        [
+            new LineSeries<double>
+            {
+                Name = view.CurrencyCode,
+                Values = view.Values.Select(v => (double)v).ToArray(),
+                Stroke = ChartPalette.Paint(ChartPalette.Slot(0), 2),
+                Fill = null,
+                GeometrySize = 0,
+                LineSmoothness = 0,
+                YToolTipLabelFormatter = point => DateFormatter.Format(view.Dates[point.Index], DateStyle.MonthDay)
+                    + ": " + (view.IsApproximate ? MoneyFormatter.ApproximateMark : string.Empty)
+                    + MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue, view.CurrencyCode)
+            }
+        ];
+
+        /// <summary>The forecast's day axis: a date label every week (30 days) or two (longer).</summary>
+        public static Axis[] DateAxis(IReadOnlyList<DateTime> dates) =>
+        [
+            new Axis
+            {
+                Labeler = value => value >= 0 && value < dates.Count ? DateFormatter.Format(dates[(int)value], DateStyle.MonthDay) : string.Empty,
+                LabelsPaint = ChartPalette.Paint(ChartPalette.AxisText),
+                TextSize = TextSize,
+                MinStep = dates.Count <= 31 ? 7 : 14,
+                ForceStepToMin = true
+            }
+        ];
+
+        /// <summary>
+        /// The forecast's sections (a chart property, not an axis one): a zero line, and (when the balance goes below it) the area
+        /// under zero shaded red, so "overdrawn" shows without reading the labels.
+        /// </summary>
+        public static RectangularSection[] ForecastSections(ForecastView view)
+        {
+            var sections = new List<RectangularSection>
+            {
+                new() { Yi = 0, Yj = 0, Stroke = ChartPalette.Paint(ChartPalette.AxisText, 1.5f) }
+            };
+            if (view.GoesNegative)
+                sections.Add(new RectangularSection { Yi = (double)view.Lowest.Value * 1.2, Yj = 0, Fill = ChartPalette.Paint(ChartPalette.NegativeFill) });
+            return sections.ToArray();
+        }
+
         /// <summary>The month axis: one label under every point or bar group, no grid lines.</summary>
         public static Axis[] LabelAxis(IEnumerable<string> labels) =>
         [

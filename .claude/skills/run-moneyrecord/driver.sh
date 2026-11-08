@@ -95,7 +95,7 @@ case "$cmd" in
         scroll=0
         case "$1" in
           accounts) y=458 ;; categories) y=598 ;; payees) y=737 ;; quick-entries) y=876 ;; transfers) y=1015 ;;
-          recurring) y=1037; scroll=1 ;; goals) y=1176; scroll=1 ;; savings) y=1315; scroll=1 ;;
+          recurring) y=898; scroll=1 ;; forecast) y=1037; scroll=1 ;; goals) y=1176; scroll=1 ;; savings) y=1315; scroll=1 ;;
           debts) y=1558; scroll=1 ;; trips) y=1697; scroll=1 ;; parties) y=1836; scroll=1 ;; settings) y=2078; scroll=1 ;;
         esac
         "$0" tab more; d

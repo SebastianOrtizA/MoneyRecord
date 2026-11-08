@@ -3060,4 +3060,25 @@
   <data name="SafeToSpendHint" xml:space="preserve">
     <value>Une estimation à partir de vos opérations récurrentes et futures ; les revenus pas encore reçus ne sont pas comptés.</value>
   </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>Minimum : {0} le {1}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>Solde le {0} : {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} jours</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>Ce qui fait bouger le solde</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>Rien de prévu sur cette période.</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>Rien à prévoir pour l'instant</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>Ajoutez un compte pour voir où va votre solde.</value>
+  </data>
 </root>
