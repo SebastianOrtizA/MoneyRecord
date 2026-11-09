@@ -51,6 +51,14 @@ public class LedgerFilterTests
     }
 
     [Fact]
+    public void Category_filter_matches_any_of_the_chosen_categories()
+    {
+        LedgerFilter.Apply(All, new TransactionFilter(CategoryIds: [10, 20])).Should().Equal(Lunch, Salary);
+        LedgerFilter.Apply(All, new TransactionFilter(CategoryIds: [])).Should().HaveCount(3);
+        new TransactionFilter(CategoryIds: []).IsActive.Should().BeFalse();
+    }
+
+    [Fact]
     public void Search_matches_the_payee()
     {
         var bakery = Lunch with { SourceId = 4, PayeeName = "Corner Bakery" };
@@ -76,7 +84,7 @@ public class LedgerFilterTests
     {
         var renamedFood = Lunch with { SourceId = 9, CategoryName = "Salary" };
 
-        LedgerFilter.Apply([Salary, renamedFood], new TransactionFilter(CategoryId: 20)).Should().Equal(Salary);
+        LedgerFilter.Apply([Salary, renamedFood], new TransactionFilter(CategoryIds: [20])).Should().Equal(Salary);
     }
 
     [Fact]

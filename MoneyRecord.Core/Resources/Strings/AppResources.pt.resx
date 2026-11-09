@@ -3124,4 +3124,28 @@
   <data name="BudgetsCreated" xml:space="preserve">
     <value>Orçamentos criados</value>
   </data>
+  <data name="CategoryTrend" xml:space="preserve">
+    <value>Tendência por categoria</value>
+  </data>
+  <data name="CategoryTrendHint" xml:space="preserve">
+    <value>Uma categoria, mês a mês</value>
+  </data>
+  <data name="DeltaVsAverage" xml:space="preserve">
+    <value>{0} em relação à média mensal</value>
+  </data>
+  <data name="MoreReports" xml:space="preserve">
+    <value>Mais relatórios</value>
+  </data>
+  <data name="NoCategoryTrendHint" xml:space="preserve">
+    <value>Nada nesta categoria nestes meses. Escolha outra categoria ou um período mais longo.</value>
+  </data>
+  <data name="TrendAverage" xml:space="preserve">
+    <value>Média mensal</value>
+  </data>
+  <data name="TrendHighest" xml:space="preserve">
+    <value>Mês mais alto</value>
+  </data>
+  <data name="TrendLowest" xml:space="preserve">
+    <value>Mês mais baixo</value>
+  </data>
 </root>

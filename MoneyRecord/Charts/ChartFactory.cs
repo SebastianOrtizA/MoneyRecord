@@ -142,6 +142,19 @@ namespace MoneyRecord.Charts
             return sections.ToArray();
         }
 
+        /// <summary>A flat line at the average over every month (no points; the tooltip names it).</summary>
+        public static ISeries AverageLine(string name, decimal average, int months, string currencyCode) =>
+            new LineSeries<double>
+            {
+                Name = name,
+                Values = Enumerable.Repeat((double)average, months).ToArray(),
+                Stroke = ChartPalette.Paint(ChartPalette.Budget, 2),
+                Fill = null,
+                GeometrySize = 0,
+                LineSmoothness = 0,
+                YToolTipLabelFormatter = point => name + ": " + MoneyFormatter.Format((decimal)point.Coordinate.PrimaryValue, currencyCode)
+            };
+
         /// <summary>The month axis: one label under every point or bar group, no grid lines.</summary>
         public static Axis[] LabelAxis(IEnumerable<string> labels) =>
         [

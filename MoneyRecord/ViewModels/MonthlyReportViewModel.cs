@@ -148,10 +148,10 @@ namespace MoneyRecord.ViewModels
         /// The Transactions tab for the tapped month (it becomes the shared period), filtered to <paramref name="type"/>
         /// (null = every entry).
         /// </summary>
-        protected void OpenMonth(int monthIndex, TransactionType? type)
+        protected void OpenMonth(int monthIndex, TransactionType? type, IReadOnlyList<int>? categoryIds = null)
         {
             Period.ShowMonth(FirstMonth.AddMonths(monthIndex));
-            _drillDown.Request(null, type);
+            _drillDown.Request(new DrillDownTarget(type, categoryIds));
             MainThread.BeginInvokeOnMainThread(async () =>
                 await _navigationService.NavigateToKeepingBackAsync($"//{nameof(TransactionsPage)}"));
         }

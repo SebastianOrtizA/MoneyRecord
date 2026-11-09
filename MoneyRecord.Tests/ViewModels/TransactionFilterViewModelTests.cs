@@ -63,7 +63,7 @@ public class TransactionFilterViewModelTests
     [Fact]
     public void Clear_resets_everything_with_one_change()
     {
-        _sut.SelectedCategory = new FilterOption(3, "Food");
+        _sut.SelectedCategories = [new FilterOption(3, "Food")];
         _sut.MinAmountText = "10";
         TypingPause();
         _changes = 0;
@@ -114,33 +114,33 @@ public class TransactionFilterViewModelTests
     [Fact]
     public async Task A_chip_shows_its_name_until_a_value_is_picked()
     {
-        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food" }]);
-        _sut.CategoryChipText.Should().Be(AppResources.FilterByCategory);
-        _sut.IsCategoryActive.Should().BeFalse();
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, AccountId = 5, AccountName = "Bank" }]);
+        _sut.AccountChipText.Should().Be(AppResources.FilterByAccount);
+        _sut.IsAccountActive.Should().BeFalse();
 
-        PickInList("Food");
-        await _sut.PickCategoryCommand.ExecuteAsync(null);
+        PickInList("Bank");
+        await _sut.PickAccountCommand.ExecuteAsync(null);
 
-        _sut.CategoryChipText.Should().Be("Food");
-        _sut.IsCategoryActive.Should().BeTrue();
-        _sut.ToFilter(ascending: false).CategoryId.Should().Be(5);
+        _sut.AccountChipText.Should().Be("Bank");
+        _sut.IsAccountActive.Should().BeTrue();
+        _sut.ToFilter(ascending: false).AccountId.Should().Be(5);
         _changes.Should().Be(1);
     }
 
     [Fact]
     public async Task A_pick_raises_Picked_but_cancelling_or_typing_an_amount_does_not()
     {
-        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food" }]);
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, AccountId = 5, AccountName = "Bank" }]);
         var picked = 0;
         _sut.Picked += () => picked++;
 
         PickInList(null);
-        await _sut.PickCategoryCommand.ExecuteAsync(null);
+        await _sut.PickAccountCommand.ExecuteAsync(null);
         _sut.MinAmountText = "10";
         picked.Should().Be(0);
 
-        PickInList("Food");
-        await _sut.PickCategoryCommand.ExecuteAsync(null);
+        PickInList("Bank");
+        await _sut.PickAccountCommand.ExecuteAsync(null);
         picked.Should().Be(1);
     }
 
@@ -225,7 +225,7 @@ public class TransactionFilterViewModelTests
 
         _sut.SearchText = "bread";
         _sut.SelectedTag = "work";   // raises Changed at once, and the chips follow
-        _sut.SelectedCategory = _sut.Categories[0];
+        _sut.SelectedCategories = [_sut.Categories[0]];
 
         _sut.ActiveChips.Select(c => c.Kind).Should().Equal(ActiveFilterKind.Search, ActiveFilterKind.Category, ActiveFilterKind.Tag);
         _sut.ActiveChips[0].Text.Should().Contain("bread");
@@ -237,7 +237,7 @@ public class TransactionFilterViewModelTests
     {
         _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food", Tags = "work" }]);
         _sut.SelectedTag = "work";
-        _sut.SelectedCategory = _sut.Categories[0];
+        _sut.SelectedCategories = [_sut.Categories[0]];
         _sut.MinAmountText = "10";
         TypingPause();
         _changes = 0;
@@ -250,7 +250,7 @@ public class TransactionFilterViewModelTests
 
         _sut.RemoveChipCommand.Execute(_sut.ActiveChips.Single(c => c.Kind == ActiveFilterKind.Tag));
         _sut.SelectedTag.Should().BeNull();
-        _sut.SelectedCategory.Should().NotBeNull();
+        _sut.SelectedCategories.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -261,19 +261,45 @@ public class TransactionFilterViewModelTests
         _sut.MinAmountText = "10";
         _changes = 0;
 
-        _sut.ShowOnly(TransactionType.Expense, 5);
+        _sut.ShowOnly(TransactionType.Expense, [5]);
 
         _changes.Should().Be(1);
         _sut.SelectedType!.Type.Should().Be(TransactionType.Expense);
-        _sut.SelectedCategory.Should().Be(new FilterOption(5, "Food"));
+        _sut.SelectedCategories.Should().Equal(new FilterOption(5, "Food"));
         _sut.SelectedTag.Should().BeNull();
         _sut.IsAmountActive.Should().BeFalse();
     }
 
     [Fact]
+    public void Ticking_categories_adds_and_removes_them_one_at_a_time_and_the_filter_matches_any()
+    {
+        _sut.SetOptions(
+        [
+            new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, CategoryId = 5, CategoryName = "Food" },
+            new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 2, CategoryId = 6, CategoryName = "Fun" }
+        ]);
+        _changes = 0;
+
+        _sut.ToggleCategoryCommand.Execute(_sut.CategoryChoices[0]);
+        _sut.ToggleCategoryCommand.Execute(_sut.CategoryChoices[1]);
+
+        _changes.Should().Be(2);
+        _sut.CategoryChoices.Select(c => c.IsSelected).Should().Equal(true, true);
+        _sut.ActiveChips.Select(c => c.Text).Should().Equal("Food", "Fun");
+        _sut.ActiveCount.Should().Be(1, "the categories count as one filter");
+        _sut.ToFilter(false).CategoryIds.Should().BeEquivalentTo([5, 6]);
+
+        _sut.RemoveChipCommand.Execute(_sut.ActiveChips[0]);
+        _sut.ToFilter(false).CategoryIds.Should().Equal(6);
+
+        _sut.ToggleCategoryCommand.Execute(_sut.CategoryChoices[1]);
+        _sut.ToFilter(false).CategoryIds.Should().BeNull();
+    }
+
+    [Fact]
     public void ShowOnly_ignores_a_category_without_entries()
     {
-        _sut.ShowOnly(TransactionType.Income, 42);
+        _sut.ShowOnly(TransactionType.Income, [42]);
 
         _sut.SelectedType!.Type.Should().Be(TransactionType.Income);
         _sut.IsCategoryActive.Should().BeFalse();

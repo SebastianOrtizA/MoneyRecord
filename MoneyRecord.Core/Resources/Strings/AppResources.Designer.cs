@@ -8877,5 +8877,78 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Category trend.
+        /// </summary>
+        public static string CategoryTrend {
+            get {
+                return ResourceManager.GetString("CategoryTrend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One category, month by month.
+        /// </summary>
+        public static string CategoryTrendHint {
+            get {
+                return ResourceManager.GetString("CategoryTrendHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} vs monthly average.
+        /// </summary>
+        public static string DeltaVsAverage {
+            get {
+                return ResourceManager.GetString("DeltaVsAverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More reports.
+        /// </summary>
+        public static string MoreReports {
+            get {
+                return ResourceManager.GetString("MoreReports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing in this category in these months. Pick another category or a longer period..
+        /// </summary>
+        public static string NoCategoryTrendHint {
+            get {
+                return ResourceManager.GetString("NoCategoryTrendHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monthly average.
+        /// </summary>
+        public static string TrendAverage {
+            get {
+                return ResourceManager.GetString("TrendAverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highest month.
+        /// </summary>
+        public static string TrendHighest {
+            get {
+                return ResourceManager.GetString("TrendHighest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lowest month.
+        /// </summary>
+        public static string TrendLowest {
+            get {
+                return ResourceManager.GetString("TrendLowest", resourceCulture);
+            }
+        }
+
     }
 }

@@ -29,6 +29,7 @@
         <CollectionView ItemsSource="{Binding Categories}">
             <CollectionView.Header>
                 <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
+                    <controls:MoreReportsLink />
                     <controls:PeriodStepper BindingContext="{Binding Period}" />
                     <controls:CurrencyChips BindingContext="{Binding Period}" />
 

@@ -19,10 +19,16 @@ namespace MoneyRecord.ViewModels
     }
 
     /// <summary>One filter that is on, shown as a chip that removes it.</summary>
-    public sealed record ActiveFilterChip(ActiveFilterKind Kind, string Text)
+    public sealed record ActiveFilterChip(ActiveFilterKind Kind, string Text, int? Id = null)
     {
         /// <summary>What a screen reader says for the chip: its cross removes the filter.</summary>
         public string Description => string.Format(AppResources.RemoveFilter, Text);
+    }
+
+    /// <summary>One category of the filter list, ticked or not.</summary>
+    public sealed record FilterChoice(FilterOption Option, bool IsSelected)
+    {
+        public string Name => Option.Name;
     }
 
     /// <summary>
@@ -46,8 +52,8 @@ namespace MoneyRecord.ViewModels
         private TypeFilterOption? selectedType;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(CategoryChipText), nameof(IsCategoryActive))]
-        private FilterOption? selectedCategory;
+        [NotifyPropertyChangedFor(nameof(IsCategoryActive))]
+        private List<FilterOption> selectedCategories = [];
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(AccountChipText), nameof(IsAccountActive))]
@@ -67,6 +73,10 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private List<FilterOption> categories = [];
+
+        /// <summary>The categories as a ticked list (several can be on at once).</summary>
+        [ObservableProperty]
+        private List<FilterChoice> categoryChoices = [];
 
         [ObservableProperty]
         private List<FilterOption> accounts = [];
@@ -100,9 +110,7 @@ namespace MoneyRecord.ViewModels
 
         public bool IsTypeActive => SelectedType?.Type != null;
 
-        public string CategoryChipText => SelectedCategory?.Name ?? AppResources.FilterByCategory;
-
-        public bool IsCategoryActive => SelectedCategory != null;
+        public bool IsCategoryActive => SelectedCategories.Count > 0;
 
         public string AccountChipText => SelectedAccount?.Name ?? AppResources.FilterByAccount;
 
@@ -137,8 +145,8 @@ namespace MoneyRecord.ViewModels
                 chips.Add(new(ActiveFilterKind.Search, $"“{SearchText.Trim()}”"));
             if (IsTypeActive)
                 chips.Add(new(ActiveFilterKind.Type, SelectedType!.Name));
-            if (IsCategoryActive)
-                chips.Add(new(ActiveFilterKind.Category, SelectedCategory!.Name));
+            foreach (var category in SelectedCategories)
+                chips.Add(new(ActiveFilterKind.Category, category.Name, category.Id));
             if (IsAccountActive)
                 chips.Add(new(ActiveFilterKind.Account, SelectedAccount!.Name));
             if (IsTagActive)
@@ -164,7 +172,8 @@ namespace MoneyRecord.ViewModels
                     SelectedType = Types[0];
                     break;
                 case ActiveFilterKind.Category:
-                    SelectedCategory = null;
+                    SelectedCategories = [.. SelectedCategories.Where(c => c.Id != chip.Id)];
+                    RefreshChoices();
                     break;
                 case ActiveFilterKind.Account:
                     SelectedAccount = null;
@@ -188,7 +197,7 @@ namespace MoneyRecord.ViewModels
         public TransactionFilter ToFilter(bool ascending) => new(
             SearchText,
             SelectedType?.Type,
-            SelectedCategory?.Id,
+            SelectedCategories.Count == 0 ? null : SelectedCategories.Select(c => c.Id).ToList(),
             SelectedAccount?.Id,
             ParseAmountLimit(MinAmountText),
             ParseAmountLimit(MaxAmountText),
@@ -199,6 +208,7 @@ namespace MoneyRecord.ViewModels
         public void SetOptions(IReadOnlyCollection<LedgerEntry> entries)
         {
             Categories = LedgerFilter.CategoryOptions(entries);
+            RefreshChoices();
             Accounts = LedgerFilter.AccountOptions(entries);
             Tags = LedgerFilter.TagOptions(entries);
         }
@@ -219,15 +229,21 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>A tick in the category list: that category joins or leaves the filter, and the list follows at once (the sheet stays open for more ticks).</summary>
         [RelayCommand]
-        private async Task PickCategoryAsync()
+        private void ToggleCategory(FilterChoice? choice)
         {
-            if (await PickAsync(AppResources.FilterByCategory, [AppResources.AllCategories, .. Categories.Select(c => c.Name)]) is int index)
-            {
-                SelectedCategory = index == 0 ? null : Categories[index - 1];
-                Picked?.Invoke();
-            }
+            if (choice == null)
+                return;
+
+            SelectedCategories = choice.IsSelected
+                ? [.. SelectedCategories.Where(c => c.Id != choice.Option.Id)]
+                : [.. SelectedCategories, choice.Option];
+            RefreshChoices();
         }
+
+        private void RefreshChoices() =>
+            CategoryChoices = [.. Categories.Select(c => new FilterChoice(c, SelectedCategories.Any(s => s.Id == c.Id)))];
 
         [RelayCommand]
         private async Task PickAccountAsync()
@@ -263,17 +279,18 @@ namespace MoneyRecord.ViewModels
         private void Clear() => ShowOnly(null, null);
 
         /// <summary>
-        /// Every other filter off, then only <paramref name="type"/> (null = all types) and <paramref name="categoryId"/>
-        /// (null = all; ignored when no entry has it): a report's drill-down. Call it after <see cref="SetOptions"/>.
+        /// Every other filter off, then only <paramref name="type"/> (null = all types) and <paramref name="categoryIds"/>
+        /// (null = all; those no entry has are ignored): a report's drill-down. Call it after <see cref="SetOptions"/>.
         /// </summary>
-        public void ShowOnly(TransactionType? type, int? categoryId)
+        public void ShowOnly(TransactionType? type, IReadOnlyCollection<int>? categoryIds)
         {
             _clearing = true;
             try
             {
                 SearchText = string.Empty;
                 SelectedType = Types.FirstOrDefault(t => t.Type == type) ?? Types[0];
-                SelectedCategory = Categories.FirstOrDefault(c => c.Id == categoryId);
+                SelectedCategories = [.. Categories.Where(c => categoryIds?.Contains(c.Id) == true)];
+                RefreshChoices();
                 SelectedAccount = null;
                 SelectedTag = null;
                 MinAmountText = string.Empty;
@@ -299,7 +316,7 @@ namespace MoneyRecord.ViewModels
 
         partial void OnSelectedTypeChanged(TypeFilterOption? value) => RaiseChanged();
 
-        partial void OnSelectedCategoryChanged(FilterOption? value) => RaiseChanged();
+        partial void OnSelectedCategoriesChanged(List<FilterOption> value) => RaiseChanged();
 
         partial void OnSelectedAccountChanged(FilterOption? value) => RaiseChanged();
 

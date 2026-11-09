@@ -24,24 +24,24 @@ namespace MoneyRecord.Models
         }
 
         /// <summary>Arrow and percentage in words, so the direction isn't carried by colour; empty when both are zero.</summary>
-        public string Text
-        {
-            get
-            {
-                if (Current == 0 && Previous == 0)
-                    return string.Empty;
-                if (Change is not { } change)
-                    return AppResources.DeltaNothingBefore;
-                if (change == 0)
-                    return AppResources.DeltaNoChange;
+        public string Text => TextVs(AppResources.DeltaVsPrevious);
 
-                var arrow = change > 0 ? "▲" : "▼";
-                // Past ten times the previous value the exact figure is noise ("▲ 2,000,000%")
-                var percent = Math.Abs(change) >= MaxShownChange
-                    ? ">" + MaxShownChange.ToString("P0", CultureInfo.CurrentCulture)
-                    : Math.Abs(change).ToString("P0", CultureInfo.CurrentCulture);
-                return string.Format(AppResources.DeltaVsPrevious, $"{arrow} {percent}");
-            }
+        /// <summary>Like <see cref="Text"/>, with another comparison in words (a format with the "{0}" change in it).</summary>
+        public string TextVs(string format)
+        {
+            if (Current == 0 && Previous == 0)
+                return string.Empty;
+            if (Change is not { } change)
+                return AppResources.DeltaNothingBefore;
+            if (change == 0)
+                return AppResources.DeltaNoChange;
+
+            var arrow = change > 0 ? "▲" : "▼";
+            // Past ten times the previous value the exact figure is noise ("▲ 2,000,000%")
+            var percent = Math.Abs(change) >= MaxShownChange
+                ? ">" + MaxShownChange.ToString("P0", CultureInfo.CurrentCulture)
+                : Math.Abs(change).ToString("P0", CultureInfo.CurrentCulture);
+            return string.Format(format, $"{arrow} {percent}");
         }
     }
 }

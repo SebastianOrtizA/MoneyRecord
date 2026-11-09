@@ -29,6 +29,8 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(ChallengePage), typeof(ChallengePage));
             Routing.RegisterRoute(nameof(DebtsPage), typeof(DebtsPage));
             Routing.RegisterRoute(nameof(ForecastPage), typeof(ForecastPage));
+            Routing.RegisterRoute(nameof(CategoryTrendPage), typeof(CategoryTrendPage));
+            Routing.RegisterRoute(nameof(ReportsHubPage), typeof(ReportsHubPage));
             Routing.RegisterRoute(nameof(TripsPage), typeof(TripsPage));
             Routing.RegisterRoute(nameof(TripPage), typeof(TripPage));
             Routing.RegisterRoute(nameof(TripCategoriesPage), typeof(TripCategoriesPage));
