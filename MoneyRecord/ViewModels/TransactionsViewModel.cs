@@ -254,7 +254,7 @@ namespace MoneyRecord.ViewModels
                 Filters.SetOptions(_entries);
                 // A report opened this tab for one category or type: show only that (ShowOnly applies the filters)
                 if (_drillDown.TryTake(out var target))
-                    Filters.ShowOnly(target.Type, target.CategoryIds, target.Payee);
+                    Filters.ShowOnly(target.Type, target.CategoryIds, target.Payee, target.Tag);
                 else
                     ApplyFilters();
             }

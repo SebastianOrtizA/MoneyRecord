@@ -3166,4 +3166,61 @@
   <data name="PayeeRowDetail" xml:space="preserve">
     <value>{0} × · média {1}</value>
   </data>
+  <data name="TagsHint" xml:space="preserve">
+    <value>Gastos e receitas por tag; renomeie ou mescle</value>
+  </data>
+  <data name="NoTagData" xml:space="preserve">
+    <value>Ainda não há tags</value>
+  </data>
+  <data name="NoTagDataHint" xml:space="preserve">
+    <value>Adicione tags às suas transações para vê-las aqui.</value>
+  </data>
+  <data name="NoTagRow" xml:space="preserve">
+    <value>(sem tag)</value>
+  </data>
+  <data name="TagNotUsedInPeriod" xml:space="preserve">
+    <value>Não usada neste período</value>
+  </data>
+  <data name="RenameTag" xml:space="preserve">
+    <value>Renomear tag</value>
+  </data>
+  <data name="RenameTagMessage" xml:space="preserve">
+    <value>Novo nome para "{0}"</value>
+  </data>
+  <data name="TagExistsTitle" xml:space="preserve">
+    <value>A tag já existe</value>
+  </data>
+  <data name="TagExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" já existe. Mesclar "{0}" nela?</value>
+  </data>
+  <data name="MergeTag" xml:space="preserve">
+    <value>Mesclar com outra tag</value>
+  </data>
+  <data name="MergeTagInto" xml:space="preserve">
+    <value>Mesclar "{0}" com</value>
+  </data>
+  <data name="DeleteTag" xml:space="preserve">
+    <value>Excluir tag</value>
+  </data>
+  <data name="DeleteTagConfirmation" xml:space="preserve">
+    <value>Remover "{0}" de {1}? As transações continuam.</value>
+  </data>
+  <data name="TagsMerged" xml:space="preserve">
+    <value>Tags mescladas</value>
+  </data>
+  <data name="TagRenamed" xml:space="preserve">
+    <value>Tag renomeada</value>
+  </data>
+  <data name="TagDeleted" xml:space="preserve">
+    <value>Tag excluída</value>
+  </data>
+  <data name="FailedToLoadTags" xml:space="preserve">
+    <value>Não foi possível carregar as tags</value>
+  </data>
+  <data name="FailedToSaveTag" xml:space="preserve">
+    <value>Não foi possível atualizar a tag</value>
+  </data>
+  <data name="SeeTagTransactions" xml:space="preserve">
+    <value>Ver transações</value>
+  </data>
 </root>

@@ -257,6 +257,7 @@ namespace MoneyRecord.Services.Repositories
 
             await db.CreateTableAsync<Category>();
             await db.CreateTableAsync<Transaction>();
+            await db.CreateTableAsync<TransactionTag>();
             await db.CreateTableAsync<Account>();
             await db.CreateTableAsync<Transfer>();
             await db.CreateTableAsync<Budget>();

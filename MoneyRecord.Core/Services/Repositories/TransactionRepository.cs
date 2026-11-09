@@ -14,6 +14,21 @@ namespace MoneyRecord.Services.Repositories
             "WHERE t.Type = ? AND t.Date >= ? AND t.Date <= ? " +
             "GROUP BY t.CategoryId, COALESCE(NULLIF(a.CurrencyCode, ''), ?)";
 
+        /// <summary>Saves the transaction and its tag rows (see <see cref="TransactionTag"/>).</summary>
+        public override async Task<int> SaveAsync(Transaction entity)
+        {
+            var db = await ConnectionAsync();
+            var result = 0;
+            // One transaction: a crash never leaves the tag rows out of step with the saved tags
+            await db.RunInTransactionAsync(connection =>
+            {
+                result = entity.Id != 0 ? connection.Update(entity) : connection.Insert(entity);
+                TransactionTags.Sync(connection, [entity]);
+            });
+            OnChanged();
+            return result;
+        }
+
         public async Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate) =>
             await (await TableAsync())
                 .Where(t => t.Date >= startDate && t.Date <= endDate)

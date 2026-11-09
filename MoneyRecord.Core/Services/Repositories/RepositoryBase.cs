@@ -26,7 +26,7 @@ namespace MoneyRecord.Services.Repositories
         public virtual async Task<T?> GetByIdAsync(int id) => await (await ConnectionAsync()).FindAsync<T>(id);
 
         /// <summary>Inserts a new row (ID 0, which then gets its ID) or updates an existing one.</summary>
-        public async Task<int> SaveAsync(T entity)
+        public virtual async Task<int> SaveAsync(T entity)
         {
             var db = await ConnectionAsync();
             var result = entity.Id != 0 ? await db.UpdateAsync(entity) : await db.InsertAsync(entity);

@@ -59,6 +59,7 @@ namespace MoneyRecord.Models
         /// <summary>Its <see cref="TripCategory"/> within the trip (Lodging, Flights...); null with no trip.</summary>
         public int? TripCategoryId { get; set; }
 
+        /// <summary>Comma-separated tags. Writes must go through <see cref="Services.Interfaces.ITransactionRepository.SaveAsync"/> or call <see cref="TransactionTags.Sync"/>, which keeps the <see cref="TransactionTag"/> index in step.</summary>
         public string? Tags { get; set; }
 
         public string? ReceiptPhotoPath { get; set; }

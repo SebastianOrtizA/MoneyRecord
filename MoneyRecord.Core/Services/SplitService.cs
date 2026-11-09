@@ -51,6 +51,7 @@ namespace MoneyRecord.Services
                     db.Delete<Transaction>(id);
                 foreach (var transaction in saved)
                     db.Insert(transaction);
+                TransactionTags.Sync(db, saved);
             });
             return saved;
         }
