@@ -376,6 +376,7 @@ namespace MoneyRecord.Services
             conn.DeleteAll<RecurringTransaction>();
             conn.DeleteAll<Budget>();
             conn.DeleteAll<Transfer>();
+            conn.DeleteAll<TransactionTag>();
             conn.DeleteAll<Transaction>();
             conn.DeleteAll<Account>();
             conn.DeleteAll<Category>();
@@ -404,6 +405,8 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.SavingsChallenges, c => c.Id)
                 + InsertKeepingIds(conn, backup.SavingsChallengeDays, d => d.Id)
                 + InsertKeepingIds(conn, backup.QuickEntries, q => q.Id);
+            // The tag index is rebuilt from the transactions' own tags, not stored in a backup
+            TransactionTags.RebuildAll(conn);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
             InsertKeepingIds(conn, backup.SavingsGoalPockets, l => l.Id);

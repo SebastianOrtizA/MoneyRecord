@@ -80,6 +80,7 @@ namespace MoneyRecord.Services
                 // sqlite-net only writes an AutoIncrement key with "OR REPLACE"; CanRestore saw that nothing has these IDs
                 foreach (var transaction in deleted.Transactions)
                     db.Insert(transaction, "OR REPLACE");
+                TransactionTags.Sync(db, deleted.Transactions);
                 if (deleted.Transfer != null)
                     db.Insert(deleted.Transfer, "OR REPLACE");
                 restored = true;

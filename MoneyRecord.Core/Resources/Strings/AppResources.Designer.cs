@@ -9004,5 +9004,177 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Spending and income by label; rename or merge them.
+        /// </summary>
+        public static string TagsHint {
+            get {
+                return ResourceManager.GetString("TagsHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No tags yet.
+        /// </summary>
+        public static string NoTagData {
+            get {
+                return ResourceManager.GetString("NoTagData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add tags to your transactions to see them here..
+        /// </summary>
+        public static string NoTagDataHint {
+            get {
+                return ResourceManager.GetString("NoTagDataHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to (no tag).
+        /// </summary>
+        public static string NoTagRow {
+            get {
+                return ResourceManager.GetString("NoTagRow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not used in this period.
+        /// </summary>
+        public static string TagNotUsedInPeriod {
+            get {
+                return ResourceManager.GetString("TagNotUsedInPeriod", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rename tag.
+        /// </summary>
+        public static string RenameTag {
+            get {
+                return ResourceManager.GetString("RenameTag", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to New name for "{0}".
+        /// </summary>
+        public static string RenameTagMessage {
+            get {
+                return ResourceManager.GetString("RenameTagMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tag already exists.
+        /// </summary>
+        public static string TagExistsTitle {
+            get {
+                return ResourceManager.GetString("TagExistsTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to "{1}" already exists. Merge "{0}" into it?.
+        /// </summary>
+        public static string TagExistsMergeMessage {
+            get {
+                return ResourceManager.GetString("TagExistsMergeMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Merge into another tag.
+        /// </summary>
+        public static string MergeTag {
+            get {
+                return ResourceManager.GetString("MergeTag", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Merge "{0}" into.
+        /// </summary>
+        public static string MergeTagInto {
+            get {
+                return ResourceManager.GetString("MergeTagInto", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete tag.
+        /// </summary>
+        public static string DeleteTag {
+            get {
+                return ResourceManager.GetString("DeleteTag", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove "{0}" from {1}? The transactions stay..
+        /// </summary>
+        public static string DeleteTagConfirmation {
+            get {
+                return ResourceManager.GetString("DeleteTagConfirmation", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tags merged.
+        /// </summary>
+        public static string TagsMerged {
+            get {
+                return ResourceManager.GetString("TagsMerged", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tag renamed.
+        /// </summary>
+        public static string TagRenamed {
+            get {
+                return ResourceManager.GetString("TagRenamed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tag deleted.
+        /// </summary>
+        public static string TagDeleted {
+            get {
+                return ResourceManager.GetString("TagDeleted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load tags.
+        /// </summary>
+        public static string FailedToLoadTags {
+            get {
+                return ResourceManager.GetString("FailedToLoadTags", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update the tag.
+        /// </summary>
+        public static string FailedToSaveTag {
+            get {
+                return ResourceManager.GetString("FailedToSaveTag", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to See transactions.
+        /// </summary>
+        public static string SeeTagTransactions {
+            get {
+                return ResourceManager.GetString("SeeTagTransactions", resourceCulture);
+            }
+        }
+
+
     }
 }

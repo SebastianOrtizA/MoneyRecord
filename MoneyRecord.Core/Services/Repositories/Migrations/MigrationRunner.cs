@@ -17,7 +17,8 @@ namespace MoneyRecord.Services.Repositories.Migrations
             new M001_Baseline(),
             new M002_MoneyAsCents(),
             new M003_AccountCurrencyCodes(),
-            new M004_TransferDestinationAmounts()
+            new M004_TransferDestinationAmounts(),
+            new M005_TransactionTags()
         ];
 
         private readonly IReadOnlyList<IMigration> _migrations;

@@ -14,6 +14,15 @@ namespace MoneyRecord.Services.Repositories
             "WHERE t.Type = ? AND t.Date >= ? AND t.Date <= ? " +
             "GROUP BY t.CategoryId, COALESCE(NULLIF(a.CurrencyCode, ''), ?)";
 
+        /// <summary>Saves the transaction and its tag rows (see <see cref="TransactionTag"/>).</summary>
+        public override async Task<int> SaveAsync(Transaction entity)
+        {
+            var result = await base.SaveAsync(entity);
+            var db = await ConnectionAsync();
+            await db.RunInTransactionAsync(connection => TransactionTags.Sync(connection, [entity]));
+            return result;
+        }
+
         public async Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate) =>
             await (await TableAsync())
                 .Where(t => t.Date >= startDate && t.Date <= endDate)

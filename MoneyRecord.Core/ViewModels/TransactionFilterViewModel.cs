@@ -298,7 +298,7 @@ namespace MoneyRecord.ViewModels
         /// Every other filter off, then only <paramref name="type"/> (null = all types) and <paramref name="categoryIds"/>
         /// (null = all; those no entry has are ignored): a report's drill-down. Call it after <see cref="SetOptions"/>.
         /// </summary>
-        public void ShowOnly(TransactionType? type, IReadOnlyCollection<int>? categoryIds, FilterOption? payee = null)
+        public void ShowOnly(TransactionType? type, IReadOnlyCollection<int>? categoryIds, FilterOption? payee = null, string? tag = null)
         {
             _clearing = true;
             try
@@ -309,7 +309,7 @@ namespace MoneyRecord.ViewModels
                 RefreshChoices();
                 SelectedAccount = null;
                 SelectedPayee = payee;
-                SelectedTag = null;
+                SelectedTag = tag;
                 MinAmountText = string.Empty;
                 MaxAmountText = string.Empty;
             }
