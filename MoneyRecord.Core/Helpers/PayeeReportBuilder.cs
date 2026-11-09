@@ -31,12 +31,12 @@ namespace MoneyRecord.Helpers
             if (total == 0)
                 return new PayeeReport(0, []);
 
-            PayeeAmount Row(IGrouping<int?, Transaction> g) => new(
-                g.Key,
-                g.Key == null ? noPayeeName : g.Select(t => t.PayeeName).FirstOrDefault(n => !string.IsNullOrEmpty(n)) ?? noPayeeName,
-                g.Sum(t => Math.Abs(t.Amount)),
-                g.Count(),
-                (double)(g.Sum(t => Math.Abs(t.Amount)) / total * 100));
+            PayeeAmount Row(IGrouping<int?, Transaction> g)
+            {
+                var amount = g.Sum(t => Math.Abs(t.Amount));
+                var name = g.Key == null ? noPayeeName : g.Select(t => t.PayeeName).FirstOrDefault(n => !string.IsNullOrEmpty(n)) ?? noPayeeName;
+                return new(g.Key, name, amount, g.Count(), (double)(amount / total * 100));
+            }
 
             var rows = matching.GroupBy(t => t.PayeeId).Select(Row).ToList();
             var named = rows.Where(r => r.PayeeId != null)

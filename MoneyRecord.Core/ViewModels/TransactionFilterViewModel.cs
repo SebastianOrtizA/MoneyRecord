@@ -62,6 +62,7 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>Set by a report's drill-down only (one payee's entries); there is no picker for it.</summary>
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsPayeeActive))]
         private FilterOption? selectedPayee;
 
         partial void OnSelectedPayeeChanged(FilterOption? value) => RaiseChanged();
@@ -90,8 +91,6 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private List<string> tags = [];
-
-        private List<FilterOption> _payees = [];
 
         public List<TypeFilterOption> Types { get; } =
         [
@@ -129,6 +128,8 @@ namespace MoneyRecord.ViewModels
 
         public bool IsTagActive => SelectedTag != null;
 
+        public bool IsPayeeActive => SelectedPayee != null;
+
         /// <summary>"10 – 50", "≥ 10" or "≤ 50" (plain numbers: the limits apply to every currency), else "Amount".</summary>
         public string AmountChipText => (ParseAmountLimit(MinAmountText), ParseAmountLimit(MaxAmountText)) switch
         {
@@ -158,8 +159,8 @@ namespace MoneyRecord.ViewModels
                 chips.Add(new(ActiveFilterKind.Category, category.Name, category.Id));
             if (IsAccountActive)
                 chips.Add(new(ActiveFilterKind.Account, SelectedAccount!.Name));
-            if (SelectedPayee != null)
-                chips.Add(new(ActiveFilterKind.Payee, SelectedPayee.Name));
+            if (IsPayeeActive)
+                chips.Add(new(ActiveFilterKind.Payee, SelectedPayee!.Name));
             if (IsTagActive)
                 chips.Add(new(ActiveFilterKind.Tag, SelectedTag!));
             if (IsAmountActive)
@@ -205,8 +206,8 @@ namespace MoneyRecord.ViewModels
             RaiseChanged();
         }
 
-        /// <summary>How many filters narrow the list (type, category, account, tag, amount); the search text is not counted.</summary>
-        public int ActiveCount => new[] { IsTypeActive, IsCategoryActive, IsAccountActive, IsTagActive, IsAmountActive, SelectedPayee != null }.Count(on => on);
+        /// <summary>How many filters narrow the list (type, category, account, tag, amount, payee); the search text is not counted.</summary>
+        public int ActiveCount => new[] { IsTypeActive, IsCategoryActive, IsAccountActive, IsTagActive, IsAmountActive, IsPayeeActive }.Count(on => on);
 
         public TransactionFilter ToFilter(bool ascending) => new(
             SearchText,
@@ -226,7 +227,6 @@ namespace MoneyRecord.ViewModels
             RefreshChoices();
             Accounts = LedgerFilter.AccountOptions(entries);
             Tags = LedgerFilter.TagOptions(entries);
-            _payees = LedgerFilter.PayeeOptions(entries);
         }
 
         /// <summary>Empty = no limit; otherwise read like amount entry (base currency).</summary>
@@ -298,7 +298,7 @@ namespace MoneyRecord.ViewModels
         /// Every other filter off, then only <paramref name="type"/> (null = all types) and <paramref name="categoryIds"/>
         /// (null = all; those no entry has are ignored): a report's drill-down. Call it after <see cref="SetOptions"/>.
         /// </summary>
-        public void ShowOnly(TransactionType? type, IReadOnlyCollection<int>? categoryIds, int? payeeId = null)
+        public void ShowOnly(TransactionType? type, IReadOnlyCollection<int>? categoryIds, FilterOption? payee = null)
         {
             _clearing = true;
             try
@@ -308,7 +308,7 @@ namespace MoneyRecord.ViewModels
                 SelectedCategories = [.. Categories.Where(c => categoryIds?.Contains(c.Id) == true)];
                 RefreshChoices();
                 SelectedAccount = null;
-                SelectedPayee = payeeId is int id ? _payees.FirstOrDefault(p => p.Id == id) : null;
+                SelectedPayee = payee;
                 SelectedTag = null;
                 MinAmountText = string.Empty;
                 MaxAmountText = string.Empty;

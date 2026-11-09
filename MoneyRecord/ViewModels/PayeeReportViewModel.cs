@@ -144,7 +144,7 @@ namespace MoneyRecord.ViewModels
             if (row?.PayeeId is not int id)
                 return Task.CompletedTask;
 
-            _drillDown.Request(new DrillDownTarget(Type, null, id));
+            _drillDown.Request(new DrillDownTarget(Type, null, new FilterOption(id, row.Name)));
             return _navigationService.NavigateToKeepingBackAsync($"//{nameof(TransactionsPage)}");
         }
     }

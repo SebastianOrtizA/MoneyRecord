@@ -61,10 +61,6 @@ namespace MoneyRecord.Helpers
                 .Where(e => e.CategoryId.HasValue)
                 .Select(e => new FilterOption(e.CategoryId!.Value, e.CategoryName)));
 
-        /// <summary>The payees used by the entries, by name.</summary>
-        public static List<FilterOption> PayeeOptions(IEnumerable<LedgerEntry> entries) =>
-            Distinct(entries.Where(e => e.PayeeId.HasValue).Select(e => new FilterOption(e.PayeeId!.Value, e.PayeeName)));
-
         /// <summary>The accounts used by the entries, transfer destinations included, by name.</summary>
         public static List<FilterOption> AccountOptions(IEnumerable<LedgerEntry> entries) =>
             Distinct(entries.SelectMany(AccountsOf));
