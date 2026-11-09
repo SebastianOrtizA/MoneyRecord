@@ -3200,4 +3200,22 @@
   <data name="TrendLowest" xml:space="preserve">
     <value>Lowest month</value>
   </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>Payee report</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>Who you spend with or earn from</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>No payee data</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>Add a payee to your transactions to see them here.</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(no payee)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} × · average {1}</value>
+  </data>
 </root>

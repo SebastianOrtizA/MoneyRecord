@@ -28,7 +28,8 @@ namespace MoneyRecord.ViewModels
 
         private static IReadOnlyList<HubReport> Build() =>
         [
-            new("\U000F0127", AppResources.CategoryTrend, AppResources.CategoryTrendHint, nameof(CategoryTrendPage))
+            new("\U000F0127", AppResources.CategoryTrend, AppResources.CategoryTrendHint, nameof(CategoryTrendPage)),
+            new("\U000F04DC", AppResources.PayeeReport, AppResources.PayeeReportHint, nameof(PayeeReportPage))
         ];
 
         [RelayCommand]

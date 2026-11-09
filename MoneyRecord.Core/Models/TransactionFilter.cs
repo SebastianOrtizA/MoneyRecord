@@ -12,12 +12,13 @@ namespace MoneyRecord.Models
         decimal? MinAmount = null,
         decimal? MaxAmount = null,
         bool Ascending = false,
-        string? Tag = null)
+        string? Tag = null,
+        int? PayeeId = null)
     {
         /// <summary>True when anything other than the sort order narrows the list.</summary>
         public bool IsActive =>
             !string.IsNullOrWhiteSpace(SearchText) || Type != null || CategoryIds is { Count: > 0 } || AccountId != null ||
-            MinAmount != null || MaxAmount != null || !string.IsNullOrWhiteSpace(Tag);
+            MinAmount != null || MaxAmount != null || !string.IsNullOrWhiteSpace(Tag) || PayeeId != null;
     }
 
     /// <summary>A category or account in a filter picker; <see cref="Name"/> is display only.</summary>

@@ -28,6 +28,9 @@ namespace MoneyRecord.Helpers
             if (filter.CategoryIds is { Count: > 0 } categoryIds)
                 filtered = filtered.Where(e => e.CategoryId is int id && categoryIds.Contains(id));
 
+            if (filter.PayeeId is int payeeId)
+                filtered = filtered.Where(e => e.PayeeId == payeeId);
+
             if (filter.AccountId is int accountId)
             {
                 // A whole transfer belongs to both accounts; a transfer half only to its own
