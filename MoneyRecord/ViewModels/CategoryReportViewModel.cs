@@ -224,7 +224,7 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private Task OpenTransactionsAsync(int? categoryId)
         {
-            _drillDown.Request(categoryId, TransactionType);
+            _drillDown.Request(new DrillDownTarget(TransactionType, categoryId is int id ? [id] : null));
             return _navigationService.NavigateToKeepingBackAsync($"//{nameof(TransactionsPage)}");
         }
     }

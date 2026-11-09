@@ -467,7 +467,7 @@
                     <Label Text="{ext:Localize FilterByCategory}" Style="{StaticResource SecondaryLabel}" Margin="0,8,0,0" />
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding Filters.CategoryChoices}">
                         <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="viewmodels:FilterChoice">
+                            <DataTemplate x:DataType="corevm:FilterChoice">
                                 <controls:OptionRow Text="{Binding Name}" IsSelected="{Binding IsSelected}"
                                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=Filters.ToggleCategoryCommand}"
                                                     CommandParameter="{Binding .}" />

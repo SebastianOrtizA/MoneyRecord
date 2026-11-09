@@ -15,9 +15,6 @@ namespace MoneyRecord.Services
 
         public void Request(DrillDownTarget target) => _pending = target;
 
-        public void Request(int? categoryId, TransactionType? type) =>
-            Request(new DrillDownTarget(type, categoryId is int id ? [id] : null));
-
         /// <summary>The pending request, cleared; false when there is none.</summary>
         public bool TryTake(out DrillDownTarget target)
         {

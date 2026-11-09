@@ -25,21 +25,17 @@ namespace MoneyRecord.ViewModels
         public string Description => string.Format(AppResources.RemoveFilter, Text);
     }
 
+    /// <summary>One category of the filter list, ticked or not.</summary>
+    public sealed record FilterChoice(FilterOption Option, bool IsSelected)
+    {
+        public string Name => Option.Name;
+    }
+
     /// <summary>
     /// The Transactions tab's search box and filters. <see cref="Changed"/> fires when the filter changes: typed text
     /// once the typing stops, picks and buttons at once. A pick list answers through <see cref="Picked"/>; every filter
     /// that is on is a chip in <see cref="ActiveChips"/>.
     /// </summary>
-    /// <summary>One category of the filter list, ticked or not.</summary>
-    public sealed class FilterChoice(FilterOption option, bool isSelected) : ObservableObject
-    {
-        public FilterOption Option { get; } = option;
-
-        public string Name => Option.Name;
-
-        public bool IsSelected { get; } = isSelected;
-    }
-
     public partial class TransactionFilterViewModel : ObservableObject
     {
         public static readonly TimeSpan DefaultTypingDelay = TimeSpan.FromMilliseconds(300);
@@ -244,7 +240,6 @@ namespace MoneyRecord.ViewModels
                 ? [.. SelectedCategories.Where(c => c.Id != choice.Option.Id)]
                 : [.. SelectedCategories, choice.Option];
             RefreshChoices();
-
         }
 
         private void RefreshChoices() =>

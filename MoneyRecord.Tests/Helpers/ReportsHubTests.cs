@@ -143,7 +143,7 @@ public class ReportsHubTests
         var drillDown = new TransactionsDrillDown();
         drillDown.TryTake(out _).Should().BeFalse();
 
-        drillDown.Request(5, TransactionType.Expense);
+        drillDown.Request(new DrillDownTarget(TransactionType.Expense, [5]));
 
         drillDown.TryTake(out var target).Should().BeTrue();
         (target.Type, target.CategoryIds).Should().BeEquivalentTo((TransactionType.Expense, new[] { 5 }));
