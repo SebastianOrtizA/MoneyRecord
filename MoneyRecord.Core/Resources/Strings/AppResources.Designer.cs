@@ -9176,5 +9176,42 @@ namespace MoneyRecord.Resources.Strings {
         }
 
 
+        public static string AccountReport {
+            get {
+                return ResourceManager.GetString("AccountReport", resourceCulture);
+            }
+        }
+
+        public static string AccountReportHint {
+            get {
+                return ResourceManager.GetString("AccountReportHint", resourceCulture);
+            }
+        }
+
+        public static string AccountReportRowDetail {
+            get {
+                return ResourceManager.GetString("AccountReportRowDetail", resourceCulture);
+            }
+        }
+
+        public static string AccountReportBalance {
+            get {
+                return ResourceManager.GetString("AccountReportBalance", resourceCulture);
+            }
+        }
+
+        public static string NoAccountData {
+            get {
+                return ResourceManager.GetString("NoAccountData", resourceCulture);
+            }
+        }
+
+        public static string NoAccountDataHint {
+            get {
+                return ResourceManager.GetString("NoAccountDataHint", resourceCulture);
+            }
+        }
+
+
     }
 }

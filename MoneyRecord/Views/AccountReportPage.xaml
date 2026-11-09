@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Account report: per account income, expenses, transfers, net and balance for the shared period, grouped by currency -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.AccountReportPage"
+             x:DataType="viewmodels:AccountReportViewModel"
+             Title="{ext:Localize AccountReport}">
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
+            <CollectionView ItemsSource="{Binding Groups}">
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="16,12,16,4">
+                        <controls:PeriodStepper BindingContext="{Binding Period}" />
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:AccountReportGroupItem">
+                        <Border Style="{StaticResource Card}" Margin="16,8">
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                    <Label Text="{Binding CurrencyCode}" FontSize="13" FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding NetText}" FontSize="17" FontAttributes="Bold" VerticalOptions="Center" />
+                                </Grid>
+                                <Label Text="{Binding DetailText}" FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                <BoxView HeightRequest="1" Color="{AppThemeBinding Light=#EEEEEE, Dark=#333333}" Margin="0,4" />
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Rows}" Spacing="10">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate x:DataType="viewmodels:AccountReportRowItem">
+                                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="2">
+                                                <Label Text="{Binding Name}" FontSize="15" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="1" Text="{Binding NetText}" FontSize="15" FontAttributes="Bold" />
+                                                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding DetailText}" FontSize="12"
+                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                                <Label Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding BalanceText}" FontSize="12"
+                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <controls:EmptyState Icon="&#xF0070;" Title="{ext:Localize NoAccountData}" Message="{ext:Localize NoAccountDataHint}" />
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <controls:PeriodSheet BindingContext="{Binding Period}" />
+    </Grid>
+</ContentPage>
