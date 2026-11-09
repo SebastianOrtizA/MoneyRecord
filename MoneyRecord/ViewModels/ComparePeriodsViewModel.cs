@@ -96,18 +96,31 @@ namespace MoneyRecord.ViewModels
             _currencyWatch = null;
         }
 
-        partial void OnStartAChanged(DateTime value) => DateChanged();
+        partial void OnStartAChanged(DateTime value) => DateChanged(() => { if (EndA < value) EndA = value; });
 
-        partial void OnEndAChanged(DateTime value) => DateChanged();
+        partial void OnEndAChanged(DateTime value) => DateChanged(() => { if (StartA > value) StartA = value; });
 
-        partial void OnStartBChanged(DateTime value) => DateChanged();
+        partial void OnStartBChanged(DateTime value) => DateChanged(() => { if (EndB < value) EndB = value; });
 
-        partial void OnEndBChanged(DateTime value) => DateChanged();
+        partial void OnEndBChanged(DateTime value) => DateChanged(() => { if (StartB > value) StartB = value; });
 
-        private void DateChanged()
+        /// <summary>A date changed: the other end of its range follows when it would cross (an end before the start finds nothing), then one load.</summary>
+        private void DateChanged(Action keepOrdered)
         {
-            if (!_applyingPreset)
-                LoadCommand.Execute(null);
+            if (_applyingPreset)
+                return;
+
+            _applyingPreset = true;
+            try
+            {
+                keepOrdered();
+            }
+            finally
+            {
+                _applyingPreset = false;
+            }
+
+            LoadCommand.Execute(null);
         }
 
         [RelayCommand]
@@ -165,10 +178,11 @@ namespace MoneyRecord.ViewModels
                 var state = await stateTask;
                 await MainThread.InvokeOnMainThreadAsync(() => Period.SetCurrencies(currencies, state));
                 var type = Type;
-                var shownA = await _conversion.ForReportAsync((await transactionsATask).Where(t => t.Type == type),
+                var shownATask = _conversion.ForReportAsync((await transactionsATask).Where(t => t.Type == type),
                     accounts, Period.IsConverted, Period.ReportCurrency);
-                var shownB = await _conversion.ForReportAsync((await transactionsBTask).Where(t => t.Type == type),
+                var shownBTask = _conversion.ForReportAsync((await transactionsBTask).Where(t => t.Type == type),
                     accounts, Period.IsConverted, Period.ReportCurrency);
+                var (shownA, shownB) = (await shownATask, await shownBTask);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var report = PeriodCompareBuilder.Build(shownA.Transactions, shownB.Transactions, type, AppResources.Unknown);

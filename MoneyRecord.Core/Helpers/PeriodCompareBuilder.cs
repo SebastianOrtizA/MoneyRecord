@@ -44,7 +44,11 @@ namespace MoneyRecord.Helpers
             TransactionType type) =>
             transactions.Where(t => t.Type == type)
                 .GroupBy(t => t.CategoryId)
-                .ToDictionary(g => g.Key, g => (g.First().CategoryName, g.First().CategoryIconCode, g.Sum(t => Math.Abs(t.Amount))));
+                .ToDictionary(g => g.Key, g =>
+                {
+                    var first = g.First();
+                    return (first.CategoryName, first.CategoryIconCode, g.Sum(t => Math.Abs(t.Amount)));
+                });
     }
 
     /// <summary>The ready-made pairs of periods (A, B) of the compare page.</summary>
