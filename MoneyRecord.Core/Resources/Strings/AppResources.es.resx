@@ -3197,4 +3197,22 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="TrendLowest" xml:space="preserve">
     <value>Mes más bajo</value>
   </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>Informe de beneficiarios</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>Con quién gastas o de quién cobras</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>Sin datos de beneficiarios</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>Añade un beneficiario a tus movimientos para verlos aquí.</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(sin beneficiario)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} × · media {1}</value>
+  </data>
 </root>

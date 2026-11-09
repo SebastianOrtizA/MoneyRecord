@@ -297,6 +297,22 @@ public class TransactionFilterViewModelTests
     }
 
     [Fact]
+    public void ShowOnly_can_filter_to_one_payee_and_its_chip_removes_it()
+    {
+        _sut.SetOptions([new LedgerEntry { Kind = LedgerEntryKind.Expense, SourceId = 1, PayeeId = 3, PayeeName = "Bakery" }]);
+
+        _sut.ShowOnly(TransactionType.Expense, null, 3);
+
+        _sut.ToFilter(false).PayeeId.Should().Be(3);
+        _sut.ActiveChips.Select(c => c.Kind).Should().Equal(ActiveFilterKind.Type, ActiveFilterKind.Payee);
+        _sut.ActiveChips[1].Text.Should().Be("Bakery");
+        _sut.ActiveCount.Should().Be(2);
+
+        _sut.RemoveChipCommand.Execute(_sut.ActiveChips.Single(c => c.Kind == ActiveFilterKind.Payee));
+        _sut.ToFilter(false).PayeeId.Should().BeNull();
+    }
+
+    [Fact]
     public void ShowOnly_ignores_a_category_without_entries()
     {
         _sut.ShowOnly(TransactionType.Income, [42]);

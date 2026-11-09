@@ -28,6 +28,9 @@ namespace MoneyRecord.Helpers
             if (filter.CategoryIds is { Count: > 0 } categoryIds)
                 filtered = filtered.Where(e => e.CategoryId is int id && categoryIds.Contains(id));
 
+            if (filter.PayeeId is int payeeId)
+                filtered = filtered.Where(e => e.PayeeId == payeeId);
+
             if (filter.AccountId is int accountId)
             {
                 // A whole transfer belongs to both accounts; a transfer half only to its own
@@ -57,6 +60,10 @@ namespace MoneyRecord.Helpers
             Distinct(entries
                 .Where(e => e.CategoryId.HasValue)
                 .Select(e => new FilterOption(e.CategoryId!.Value, e.CategoryName)));
+
+        /// <summary>The payees used by the entries, by name.</summary>
+        public static List<FilterOption> PayeeOptions(IEnumerable<LedgerEntry> entries) =>
+            Distinct(entries.Where(e => e.PayeeId.HasValue).Select(e => new FilterOption(e.PayeeId!.Value, e.PayeeName)));
 
         /// <summary>The accounts used by the entries, transfer destinations included, by name.</summary>
         public static List<FilterOption> AccountOptions(IEnumerable<LedgerEntry> entries) =>

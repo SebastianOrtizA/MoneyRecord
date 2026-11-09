@@ -3,7 +3,7 @@ using MoneyRecord.Models;
 namespace MoneyRecord.Services
 {
     /// <summary>What a report asks the Transactions tab to show: a type and some categories (null/empty = all).</summary>
-    public sealed record DrillDownTarget(TransactionType? Type, IReadOnlyList<int>? CategoryIds = null);
+    public sealed record DrillDownTarget(TransactionType? Type, IReadOnlyList<int>? CategoryIds = null, int? PayeeId = null);
 
     /// <summary>
     /// A report's request to open the Transactions tab filtered (singleton): the report sets it and navigates, and the

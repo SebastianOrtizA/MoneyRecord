@@ -8949,6 +8949,60 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("TrendLowest", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Payee report.
+        /// </summary>
+        public static string PayeeReport {
+            get {
+                return ResourceManager.GetString("PayeeReport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Who you spend with or earn from.
+        /// </summary>
+        public static string PayeeReportHint {
+            get {
+                return ResourceManager.GetString("PayeeReportHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No payee data.
+        /// </summary>
+        public static string NoPayeeData {
+            get {
+                return ResourceManager.GetString("NoPayeeData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add a payee to your transactions to see them here..
+        /// </summary>
+        public static string NoPayeeDataHint {
+            get {
+                return ResourceManager.GetString("NoPayeeDataHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (no payee).
+        /// </summary>
+        public static string NoPayeeRow {
+            get {
+                return ResourceManager.GetString("NoPayeeRow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} × · average {1}.
+        /// </summary>
+        public static string PayeeRowDetail {
+            get {
+                return ResourceManager.GetString("PayeeRowDetail", resourceCulture);
+            }
+        }
 
     }
 }

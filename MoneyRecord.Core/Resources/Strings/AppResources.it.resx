@@ -3146,4 +3146,22 @@
   <data name="TrendLowest" xml:space="preserve">
     <value>Mese più basso</value>
   </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>Report dei beneficiari</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>Con chi spendi o da chi incassi</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>Nessun dato sui beneficiari</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>Aggiungi un beneficiario alle tue operazioni per vederli qui.</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(senza beneficiario)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} × · media {1}</value>
+  </data>
 </root>

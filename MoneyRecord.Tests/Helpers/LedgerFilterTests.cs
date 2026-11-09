@@ -88,6 +88,15 @@ public class LedgerFilterTests
     }
 
     [Fact]
+    public void Payee_filter_matches_by_id_not_name()
+    {
+        var bakery = Lunch with { SourceId = 8, PayeeId = 4, PayeeName = "Bakery" };
+        var renamed = Lunch with { SourceId = 9, PayeeId = 5, PayeeName = "Bakery" };
+
+        LedgerFilter.Apply([bakery, renamed, Salary], new TransactionFilter(PayeeId: 4)).Should().Equal(bakery);
+    }
+
+    [Fact]
     public void Account_filter_includes_transfers_from_and_to_the_account()
     {
         LedgerFilter.Apply(All, new TransactionFilter(AccountId: 2)).Should().Equal(Savings, Salary);

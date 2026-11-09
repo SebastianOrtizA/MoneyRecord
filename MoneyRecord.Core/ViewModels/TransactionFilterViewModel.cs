@@ -15,6 +15,7 @@ namespace MoneyRecord.ViewModels
         Category,
         Account,
         Tag,
+        Payee,
         Amount
     }
 
@@ -59,6 +60,12 @@ namespace MoneyRecord.ViewModels
         [NotifyPropertyChangedFor(nameof(AccountChipText), nameof(IsAccountActive))]
         private FilterOption? selectedAccount;
 
+        /// <summary>Set by a report's drill-down only (one payee's entries); there is no picker for it.</summary>
+        [ObservableProperty]
+        private FilterOption? selectedPayee;
+
+        partial void OnSelectedPayeeChanged(FilterOption? value) => RaiseChanged();
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(TagChipText), nameof(IsTagActive))]
         private string? selectedTag;
@@ -83,6 +90,8 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private List<string> tags = [];
+
+        private List<FilterOption> _payees = [];
 
         public List<TypeFilterOption> Types { get; } =
         [
@@ -149,6 +158,8 @@ namespace MoneyRecord.ViewModels
                 chips.Add(new(ActiveFilterKind.Category, category.Name, category.Id));
             if (IsAccountActive)
                 chips.Add(new(ActiveFilterKind.Account, SelectedAccount!.Name));
+            if (SelectedPayee != null)
+                chips.Add(new(ActiveFilterKind.Payee, SelectedPayee.Name));
             if (IsTagActive)
                 chips.Add(new(ActiveFilterKind.Tag, SelectedTag!));
             if (IsAmountActive)
@@ -181,6 +192,9 @@ namespace MoneyRecord.ViewModels
                 case ActiveFilterKind.Tag:
                     SelectedTag = null;
                     break;
+                case ActiveFilterKind.Payee:
+                    SelectedPayee = null;
+                    break;
                 case ActiveFilterKind.Amount:
                     MinAmountText = string.Empty;
                     MaxAmountText = string.Empty;
@@ -192,7 +206,7 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>How many filters narrow the list (type, category, account, tag, amount); the search text is not counted.</summary>
-        public int ActiveCount => new[] { IsTypeActive, IsCategoryActive, IsAccountActive, IsTagActive, IsAmountActive }.Count(on => on);
+        public int ActiveCount => new[] { IsTypeActive, IsCategoryActive, IsAccountActive, IsTagActive, IsAmountActive, SelectedPayee != null }.Count(on => on);
 
         public TransactionFilter ToFilter(bool ascending) => new(
             SearchText,
@@ -202,7 +216,8 @@ namespace MoneyRecord.ViewModels
             ParseAmountLimit(MinAmountText),
             ParseAmountLimit(MaxAmountText),
             ascending,
-            SelectedTag);
+            SelectedTag,
+            SelectedPayee?.Id);
 
         /// <summary>The category, account and tag lists offer what the loaded entries use.</summary>
         public void SetOptions(IReadOnlyCollection<LedgerEntry> entries)
@@ -211,6 +226,7 @@ namespace MoneyRecord.ViewModels
             RefreshChoices();
             Accounts = LedgerFilter.AccountOptions(entries);
             Tags = LedgerFilter.TagOptions(entries);
+            _payees = LedgerFilter.PayeeOptions(entries);
         }
 
         /// <summary>Empty = no limit; otherwise read like amount entry (base currency).</summary>
@@ -282,7 +298,7 @@ namespace MoneyRecord.ViewModels
         /// Every other filter off, then only <paramref name="type"/> (null = all types) and <paramref name="categoryIds"/>
         /// (null = all; those no entry has are ignored): a report's drill-down. Call it after <see cref="SetOptions"/>.
         /// </summary>
-        public void ShowOnly(TransactionType? type, IReadOnlyCollection<int>? categoryIds)
+        public void ShowOnly(TransactionType? type, IReadOnlyCollection<int>? categoryIds, int? payeeId = null)
         {
             _clearing = true;
             try
@@ -292,6 +308,7 @@ namespace MoneyRecord.ViewModels
                 SelectedCategories = [.. Categories.Where(c => categoryIds?.Contains(c.Id) == true)];
                 RefreshChoices();
                 SelectedAccount = null;
+                SelectedPayee = payeeId is int id ? _payees.FirstOrDefault(p => p.Id == id) : null;
                 SelectedTag = null;
                 MinAmountText = string.Empty;
                 MaxAmountText = string.Empty;

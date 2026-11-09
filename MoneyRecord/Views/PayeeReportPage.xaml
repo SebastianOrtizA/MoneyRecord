@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Payee report: payees ranked by amount for the shared period; a row opens that payee's entries -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.PayeeReportPage"
+             x:DataType="viewmodels:PayeeReportViewModel"
+             Title="{ext:Localize PayeeReport}">
+
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
+            <CollectionView ItemsSource="{Binding Payees}">
+                <CollectionView.Header>
+                    <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
+                        <controls:PeriodStepper BindingContext="{Binding Period}" />
+                        <controls:CurrencyChips BindingContext="{Binding Period}" />
+
+                        <HorizontalStackLayout Spacing="8">
+                            <controls:FilterChip Text="{ext:Localize Expenses}" IsActive="{Binding IsIncome, Converter={StaticResource InvertedBoolConverter}}"
+                                                 Command="{Binding SetTypeCommand}" CommandParameter="{x:Boolean False}" />
+                            <controls:FilterChip Text="{ext:Localize Incomes}" IsActive="{Binding IsIncome}"
+                                                 Command="{Binding SetTypeCommand}" CommandParameter="{x:Boolean True}" />
+                        </HorizontalStackLayout>
+
+                        <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="{Binding TotalText}" Style="{StaticResource ReportHeadline}" />
+                                <Label Text="{Binding NotConvertedText}" Style="{StaticResource ReportDelta}"
+                                       IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="viewmodels:PayeeRow">
+                        <Grid Padding="16,10" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="10" RowSpacing="4">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:PayeeReportViewModel}}, Path=OpenPayeeCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
+                            <Label Text="{Binding Name}" FontSize="15" FontAttributes="Bold" LineBreakMode="TailTruncation" VerticalOptions="Center" />
+                            <Label Grid.Column="1" VerticalOptions="Center" HorizontalTextAlignment="End">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding AmountText}" FontSize="15" FontAttributes="Bold" />
+                                        <Span Text="  " />
+                                        <Span Text="{Binding PercentText}" FontSize="13"
+                                              TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding DetailText}" FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <ProgressBar Grid.Row="2" Grid.ColumnSpan="2" Progress="{Binding Share}"
+                                         ProgressColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                         BackgroundColor="{AppThemeBinding Light=#EEEEEE, Dark=#333333}" HeightRequest="4" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.EmptyView>
+                    <controls:EmptyState Icon="&#xF04DC;" Title="{ext:Localize NoPayeeData}" Message="{ext:Localize NoPayeeDataHint}" />
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+
+        <controls:PeriodSheet BindingContext="{Binding Period}" />
+    </Grid>
+</ContentPage>

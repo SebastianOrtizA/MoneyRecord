@@ -3148,4 +3148,22 @@
   <data name="TrendLowest" xml:space="preserve">
     <value>Mês mais baixo</value>
   </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>Relatório de favorecidos</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>Com quem você gasta ou de quem recebe</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>Sem dados de favorecidos</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>Adicione um favorecido às suas transações para vê-los aqui.</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(sem favorecido)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} × · média {1}</value>
+  </data>
 </root>
