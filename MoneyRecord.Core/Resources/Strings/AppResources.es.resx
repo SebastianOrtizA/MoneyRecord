@@ -3290,4 +3290,40 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="NoAccountDataHint" xml:space="preserve">
     <value>Añade una cuenta para ver cómo se mueve el dinero entre ellas.</value>
   </data>
+  <data name="CompareReport" xml:space="preserve">
+    <value>Comparar periodos</value>
+  </data>
+  <data name="CompareReportHint" xml:space="preserve">
+    <value>Dos periodos lado a lado, categoría por categoría</value>
+  </data>
+  <data name="ComparePeriodA" xml:space="preserve">
+    <value>Periodo</value>
+  </data>
+  <data name="ComparePeriodB" xml:space="preserve">
+    <value>Comparado con</value>
+  </data>
+  <data name="CompareDeltaVs" xml:space="preserve">
+    <value>{0} frente al otro periodo</value>
+  </data>
+  <data name="ComparePresetMonth" xml:space="preserve">
+    <value>Este mes y el anterior</value>
+  </data>
+  <data name="ComparePresetYear" xml:space="preserve">
+    <value>Este año y el anterior</value>
+  </data>
+  <data name="ComparePresetSameMonth" xml:space="preserve">
+    <value>Mismo mes del año pasado</value>
+  </data>
+  <data name="ComparePresetLast30" xml:space="preserve">
+    <value>Últimos 30 días y los anteriores</value>
+  </data>
+  <data name="NoCompareData" xml:space="preserve">
+    <value>Nada que comparar</value>
+  </data>
+  <data name="NoCompareDataHint" xml:space="preserve">
+    <value>No hay movimientos de este tipo en ninguno de los dos periodos.</value>
+  </data>
+  <data name="CompareRowAmounts" xml:space="preserve">
+    <value>{0} frente a {1}</value>
+  </data>
 </root>

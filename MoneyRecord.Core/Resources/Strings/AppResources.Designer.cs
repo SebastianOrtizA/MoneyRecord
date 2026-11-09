@@ -9213,5 +9213,78 @@ namespace MoneyRecord.Resources.Strings {
         }
 
 
+        public static string CompareReport {
+            get {
+                return ResourceManager.GetString("CompareReport", resourceCulture);
+            }
+        }
+
+        public static string CompareReportHint {
+            get {
+                return ResourceManager.GetString("CompareReportHint", resourceCulture);
+            }
+        }
+
+        public static string ComparePeriodA {
+            get {
+                return ResourceManager.GetString("ComparePeriodA", resourceCulture);
+            }
+        }
+
+        public static string ComparePeriodB {
+            get {
+                return ResourceManager.GetString("ComparePeriodB", resourceCulture);
+            }
+        }
+
+        public static string CompareDeltaVs {
+            get {
+                return ResourceManager.GetString("CompareDeltaVs", resourceCulture);
+            }
+        }
+
+        public static string ComparePresetMonth {
+            get {
+                return ResourceManager.GetString("ComparePresetMonth", resourceCulture);
+            }
+        }
+
+        public static string ComparePresetYear {
+            get {
+                return ResourceManager.GetString("ComparePresetYear", resourceCulture);
+            }
+        }
+
+        public static string ComparePresetSameMonth {
+            get {
+                return ResourceManager.GetString("ComparePresetSameMonth", resourceCulture);
+            }
+        }
+
+        public static string ComparePresetLast30 {
+            get {
+                return ResourceManager.GetString("ComparePresetLast30", resourceCulture);
+            }
+        }
+
+        public static string NoCompareData {
+            get {
+                return ResourceManager.GetString("NoCompareData", resourceCulture);
+            }
+        }
+
+        public static string NoCompareDataHint {
+            get {
+                return ResourceManager.GetString("NoCompareDataHint", resourceCulture);
+            }
+        }
+
+        public static string CompareRowAmounts {
+            get {
+                return ResourceManager.GetString("CompareRowAmounts", resourceCulture);
+            }
+        }
+
+
     }
 }
