@@ -9,7 +9,8 @@ using Xunit;
 
 namespace MoneyRecord.Tests.ViewModels;
 
-public sealed class QuickEntryRunnerTests
+[Collection(LanguageCollection.Name)]
+public sealed class QuickEntryRunnerTests : LanguageTestBase
 {
     private readonly IQuickEntryService _quickEntries = Substitute.For<IQuickEntryService>();
     private readonly IAccountRepository _accounts = Substitute.For<IAccountRepository>();

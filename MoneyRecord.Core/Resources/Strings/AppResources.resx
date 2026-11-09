@@ -3275,4 +3275,22 @@
   <data name="SeeTagTransactions" xml:space="preserve">
     <value>See transactions</value>
   </data>
+  <data name="AccountReport" xml:space="preserve">
+    <value>Account report</value>
+  </data>
+  <data name="AccountReportHint" xml:space="preserve">
+    <value>Income, expenses and transfers per account</value>
+  </data>
+  <data name="AccountReportRowDetail" xml:space="preserve">
+    <value>Income {0} · Expenses {1} · Transfers {2}</value>
+  </data>
+  <data name="AccountReportBalance" xml:space="preserve">
+    <value>Balance {0}</value>
+  </data>
+  <data name="NoAccountData" xml:space="preserve">
+    <value>No accounts yet</value>
+  </data>
+  <data name="NoAccountDataHint" xml:space="preserve">
+    <value>Add an account to see how money moves between them.</value>
+  </data>
 </root>

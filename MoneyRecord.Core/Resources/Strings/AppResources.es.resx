@@ -3272,4 +3272,22 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SeeTagTransactions" xml:space="preserve">
     <value>Ver transacciones</value>
   </data>
+  <data name="AccountReport" xml:space="preserve">
+    <value>Informe de cuentas</value>
+  </data>
+  <data name="AccountReportHint" xml:space="preserve">
+    <value>Ingresos, gastos y transferencias por cuenta</value>
+  </data>
+  <data name="AccountReportRowDetail" xml:space="preserve">
+    <value>Ingresos {0} · Gastos {1} · Transferencias {2}</value>
+  </data>
+  <data name="AccountReportBalance" xml:space="preserve">
+    <value>Saldo {0}</value>
+  </data>
+  <data name="NoAccountData" xml:space="preserve">
+    <value>Aún no hay cuentas</value>
+  </data>
+  <data name="NoAccountDataHint" xml:space="preserve">
+    <value>Añade una cuenta para ver cómo se mueve el dinero entre ellas.</value>
+  </data>
 </root>

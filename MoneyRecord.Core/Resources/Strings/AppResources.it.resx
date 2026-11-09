@@ -3221,4 +3221,22 @@
   <data name="SeeTagTransactions" xml:space="preserve">
     <value>Vedi transazioni</value>
   </data>
+  <data name="AccountReport" xml:space="preserve">
+    <value>Report dei conti</value>
+  </data>
+  <data name="AccountReportHint" xml:space="preserve">
+    <value>Entrate, spese e trasferimenti per conto</value>
+  </data>
+  <data name="AccountReportRowDetail" xml:space="preserve">
+    <value>Entrate {0} · Spese {1} · Trasferimenti {2}</value>
+  </data>
+  <data name="AccountReportBalance" xml:space="preserve">
+    <value>Saldo {0}</value>
+  </data>
+  <data name="NoAccountData" xml:space="preserve">
+    <value>Ancora nessun conto</value>
+  </data>
+  <data name="NoAccountDataHint" xml:space="preserve">
+    <value>Aggiungi un conto per vedere come si muove il denaro tra di essi.</value>
+  </data>
 </root>
