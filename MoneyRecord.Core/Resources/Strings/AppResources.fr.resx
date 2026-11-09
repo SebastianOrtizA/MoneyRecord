@@ -3240,4 +3240,40 @@
   <data name="NoAccountDataHint" xml:space="preserve">
     <value>Ajoutez un compte pour voir comment l’argent circule entre eux.</value>
   </data>
+  <data name="CompareReport" xml:space="preserve">
+    <value>Comparer des périodes</value>
+  </data>
+  <data name="CompareReportHint" xml:space="preserve">
+    <value>Deux périodes côte à côte, catégorie par catégorie</value>
+  </data>
+  <data name="ComparePeriodA" xml:space="preserve">
+    <value>Période</value>
+  </data>
+  <data name="ComparePeriodB" xml:space="preserve">
+    <value>Comparée à</value>
+  </data>
+  <data name="CompareDeltaVs" xml:space="preserve">
+    <value>{0} par rapport à l’autre période</value>
+  </data>
+  <data name="ComparePresetMonth" xml:space="preserve">
+    <value>Ce mois et le précédent</value>
+  </data>
+  <data name="ComparePresetYear" xml:space="preserve">
+    <value>Cette année et la précédente</value>
+  </data>
+  <data name="ComparePresetSameMonth" xml:space="preserve">
+    <value>Même mois l’an dernier</value>
+  </data>
+  <data name="ComparePresetLast30" xml:space="preserve">
+    <value>30 derniers jours et les 30 précédents</value>
+  </data>
+  <data name="NoCompareData" xml:space="preserve">
+    <value>Rien à comparer</value>
+  </data>
+  <data name="NoCompareDataHint" xml:space="preserve">
+    <value>Aucune opération de ce type dans les deux périodes.</value>
+  </data>
+  <data name="CompareRowAmounts" xml:space="preserve">
+    <value>{0} contre {1}</value>
+  </data>
 </root>

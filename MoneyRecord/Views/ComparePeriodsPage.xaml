@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Compare periods: period A against period B per category; presets or four free dates -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:helpers="clr-namespace:MoneyRecord.Helpers;assembly=MoneyRecord.Core"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.ComparePeriodsPage"
+             x:DataType="viewmodels:ComparePeriodsViewModel"
+             Title="{ext:Localize CompareReport}">
+
+    <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
+        <CollectionView ItemsSource="{Binding Rows}">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
+                    <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                        <HorizontalStackLayout Spacing="8">
+                            <controls:FilterChip Text="{ext:Localize ComparePresetMonth}" Command="{Binding PresetCommand}"
+                                                 CommandParameter="{x:Static helpers:ComparePreset.ThisMonthVsLast}" />
+                            <controls:FilterChip Text="{ext:Localize ComparePresetYear}" Command="{Binding PresetCommand}"
+                                                 CommandParameter="{x:Static helpers:ComparePreset.ThisYearVsLast}" />
+                            <controls:FilterChip Text="{ext:Localize ComparePresetSameMonth}" Command="{Binding PresetCommand}"
+                                                 CommandParameter="{x:Static helpers:ComparePreset.SameMonthLastYear}" />
+                            <controls:FilterChip Text="{ext:Localize ComparePresetLast30}" Command="{Binding PresetCommand}"
+                                                 CommandParameter="{x:Static helpers:ComparePreset.Last30Days}" />
+                        </HorizontalStackLayout>
+                    </ScrollView>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="4">
+                        <Label Grid.ColumnSpan="4" Text="{ext:Localize ComparePeriodA}" FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding StartA}" />
+                        <Label Grid.Row="1" Grid.Column="2" Text="–" VerticalOptions="Center" />
+                        <DatePicker Grid.Row="1" Grid.Column="3" Date="{Binding EndA}" />
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="4">
+                        <Label Grid.ColumnSpan="4" Text="{ext:Localize ComparePeriodB}" FontSize="13" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        <DatePicker Grid.Row="1" Grid.Column="1" Date="{Binding StartB}" />
+                        <Label Grid.Row="1" Grid.Column="2" Text="–" VerticalOptions="Center" />
+                        <DatePicker Grid.Row="1" Grid.Column="3" Date="{Binding EndB}" />
+                    </Grid>
+
+                    <controls:CurrencyChips BindingContext="{Binding Period}" />
+
+                    <HorizontalStackLayout Spacing="8">
+                        <controls:FilterChip Text="{ext:Localize Expenses}" IsActive="{Binding IsIncome, Converter={StaticResource InvertedBoolConverter}}"
+                                             Command="{Binding SetTypeCommand}" CommandParameter="{x:Boolean False}" />
+                        <controls:FilterChip Text="{ext:Localize Incomes}" IsActive="{Binding IsIncome}"
+                                             Command="{Binding SetTypeCommand}" CommandParameter="{x:Boolean True}" />
+                    </HorizontalStackLayout>
+
+                    <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="{Binding TotalsText}" Style="{StaticResource ReportHeadline}" />
+                            <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}"
+                                   TextColor="{Binding DeltaTone, Converter={StaticResource DeltaToneToColorConverter}}"
+                                   IsVisible="{Binding DeltaText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+                            <Label Text="{Binding NotConvertedText}" Style="{StaticResource ReportDelta}"
+                                   IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </CollectionView.Header>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewmodels:CompareRowItem">
+                    <Grid Padding="16,10" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="2">
+                        <Label Text="{Binding Name}" FontSize="15" FontAttributes="Bold" LineBreakMode="TailTruncation" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding DeltaText}" FontSize="14" FontAttributes="Bold" VerticalOptions="Center"
+                               TextColor="{Binding DeltaTone, Converter={StaticResource DeltaToneToColorConverter}}" />
+                        <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding AmountsText}" FontSize="12"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <controls:EmptyState Icon="&#xF0127;" Title="{ext:Localize NoCompareData}" Message="{ext:Localize NoCompareDataHint}" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>
