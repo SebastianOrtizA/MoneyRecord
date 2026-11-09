@@ -62,6 +62,19 @@ namespace MoneyRecord.ViewModels
             _periodWatch = null;
         }
 
+        private static string Detail(decimal income, decimal expense, decimal transfers, string code) =>
+            string.Format(AppResources.AccountReportRowDetail, MoneyFormatter.Format(income, code),
+                MoneyFormatter.Format(expense, code), MoneyFormatter.Format(transfers, code));
+
+        private static AccountReportGroupItem ToItem(AccountReportGroup group)
+        {
+            var code = group.CurrencyCode;
+            return new(code, MoneyFormatter.Format(group.Net, code), Detail(group.Income, group.Expense, group.Transfers, code),
+                [.. group.Rows.Select(r => new AccountReportRowItem(r.Name, MoneyFormatter.Format(r.Net, code),
+                    Detail(r.Income, r.Expense, r.Transfers, code),
+                    string.Format(AppResources.AccountReportBalance, MoneyFormatter.Format(r.Balance, code))))]);
+        }
+
         /// <summary>Each run cancels the one in progress, so an older period's results never overwrite a newer one's.</summary>
         [RelayCommand(AllowConcurrentExecutions = true)]
         private async Task LoadAsync(CancellationToken cancellationToken)
@@ -70,6 +83,8 @@ namespace MoneyRecord.ViewModels
             {
                 IsLoading = true;
                 var (start, end) = Period.Range;
+                // Net counts every entry dated in the period, future-dated ones included, while the balance counts only what is dated
+                // up to today (IBalanceService.CountedBefore): they differ while the period reaches past today
                 // The range's end is inclusive; the sums take an exclusive bound
                 var before = end.AddTicks(1);
                 var accountsTask = _accountRepository.GetOwnAsync();
@@ -85,15 +100,7 @@ namespace MoneyRecord.ViewModels
                 var report = AccountReportBuilder.Build(await accountsTask, MoneyFormatter.BaseCurrency,
                     await incomesTask, await expensesTask, await outgoingTask, await incomingTask, balances);
 
-                static string Detail(decimal income, decimal expense, decimal transfers, string code) =>
-                    string.Format(AppResources.AccountReportRowDetail, MoneyFormatter.Format(income, code),
-                        MoneyFormatter.Format(expense, code), MoneyFormatter.Format(transfers, code));
-
-                Groups = [.. report.Select(g => new AccountReportGroupItem(g.CurrencyCode,
-                    MoneyFormatter.Format(g.Net, g.CurrencyCode), Detail(g.Income, g.Expense, g.Transfers, g.CurrencyCode),
-                    [.. g.Rows.Select(r => new AccountReportRowItem(r.Name, MoneyFormatter.Format(r.Net, g.CurrencyCode),
-                        Detail(r.Income, r.Expense, r.Transfers, g.CurrencyCode),
-                        string.Format(AppResources.AccountReportBalance, MoneyFormatter.Format(r.Balance, g.CurrencyCode))))]))];
+                Groups = [.. report.Select(ToItem)];
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {

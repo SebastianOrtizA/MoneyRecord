@@ -41,4 +41,22 @@ public class AccountReportBuilderTests
 
         (row.Income, row.Expense, row.Net, row.Balance).Should().Be((0m, 0m, 0m, 0m));
     }
+
+    [Fact]
+    public void A_transfer_only_account_has_a_net_from_the_transfer()
+    {
+        var row = AccountReportBuilder.Build([Acc(1, "Savings")], "EUR", [], [], [], [Total(1, 40_00)],
+            new Dictionary<int, decimal>())[0].Rows[0];
+
+        (row.Income, row.Expense, row.Transfers, row.Net).Should().Be((0m, 0m, 40m, 40m));
+    }
+
+    [Fact]
+    public void The_base_code_is_matched_ignoring_case()
+    {
+        var groups = AccountReportBuilder.Build([Acc(1, "Bank", "eur"), Acc(2, "Cash", "USD")], "eur", [], [], [], [],
+            new Dictionary<int, decimal>());
+
+        groups.Select(g => g.CurrencyCode).Should().Equal("EUR", "USD");
+    }
 }
