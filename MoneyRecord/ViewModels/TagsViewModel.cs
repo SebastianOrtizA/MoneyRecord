@@ -205,6 +205,7 @@ namespace MoneyRecord.ViewModels
             var typed = await _dialogService.PromptAsync(AppResources.RenameTag,
                 string.Format(AppResources.RenameTagMessage, tag.Name), AppResources.Save, AppResources.Cancel, tag.Name);
             var name = TransactionTags.Normalize(typed);
+            // Ordinal on purpose: a case-only change ("food" to "Food") is a rename
             if (name.Length == 0 || name == tag.Name)
                 return;
 
