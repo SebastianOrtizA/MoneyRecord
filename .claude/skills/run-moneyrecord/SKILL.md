@@ -74,7 +74,7 @@ Scale for taps: full `shot` reads back at 900x2000, so ×1.2; `small` at width W
 | route (`go X`) | taps | lands on (title) |
 |---|---|---|
 | `home` `transactions` `reports` `budgets` `more` | bottom tab y=2262, x = 108 / 323 / 539 / 755 / 971 | tab root |
-| `accounts` `categories` `payees` `quick-entries` `transfers` | More tab, swipe the page to the top (540,500 → 540,1800), then tap x=300 at y = 458 Accounts, 598 Categories, 737 Payees, 876 Quick entries, 1015 Transfers | Manage Accounts, Categories, Payees, Quick entries, Transfers |
+| `accounts` `categories` `payees` `quick-entries` `transfers` `more-reports` | More tab, swipe the page to the top (540,500 → 540,1800), then tap x=300 at y = 458 Accounts, 598 Categories, 737 Payees, 876 Quick entries, 1015 Transfers, 1154 More reports (its Category trend row is at y=330) | Manage Accounts, Categories, Payees, Quick entries, Transfers |
 | `recurring` `forecast` `goals` `savings` `debts` `trips` `parties` `settings` | More tab, swipe the page to the bottom (540,1800 → 540,500), then tap x=300 at y = 898 Recurring, 1037 Forecast, 1176 Goals, 1315 Savings challenge, 1558 Debts, 1697 Trips, 1836 Parties, 2078 Settings | Recurring, Forecast, Savings goals, Savings challenge, Debts, Trips, Parties, Settings |
 | `add-expense` `add-income` `add-transfer` | Add button (959,2069), then sheet item (300,1621) / (300,1801) / (300,1980) | Add Expense / Income / Transfer |
 

@@ -141,13 +141,13 @@ public class ReportsHubTests
     public void Drill_down_is_taken_once()
     {
         var drillDown = new TransactionsDrillDown();
-        drillDown.TryTake(out _, out _).Should().BeFalse();
+        drillDown.TryTake(out _).Should().BeFalse();
 
         drillDown.Request(5, TransactionType.Expense);
 
-        drillDown.TryTake(out var category, out var type).Should().BeTrue();
-        (category, type).Should().Be((5, TransactionType.Expense));
-        drillDown.TryTake(out _, out _).Should().BeFalse();
+        drillDown.TryTake(out var target).Should().BeTrue();
+        (target.Type, target.CategoryIds).Should().BeEquivalentTo((TransactionType.Expense, new[] { 5 }));
+        drillDown.TryTake(out _).Should().BeFalse();
     }
 
     [Fact]

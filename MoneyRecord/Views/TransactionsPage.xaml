@@ -463,8 +463,17 @@
                     <Label Text="{ext:Localize Filters}" Style="{StaticResource SecondaryLabel}" Margin="0,8,0,0" />
                     <controls:FilterRow Title="{ext:Localize FilterByType}" Value="{Binding Filters.TypeChipText}"
                                         IsActive="{Binding Filters.IsTypeActive}" Command="{Binding Filters.PickTypeCommand}" />
-                    <controls:FilterRow Title="{ext:Localize FilterByCategory}" Value="{Binding Filters.CategoryChipText}"
-                                        IsActive="{Binding Filters.IsCategoryActive}" Command="{Binding Filters.PickCategoryCommand}" />
+                    <!-- Several categories can be on: a tick each -->
+                    <Label Text="{ext:Localize FilterByCategory}" Style="{StaticResource SecondaryLabel}" Margin="0,8,0,0" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Filters.CategoryChoices}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:FilterChoice">
+                                <controls:OptionRow Text="{Binding Name}" IsSelected="{Binding IsSelected}"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TransactionsViewModel}}, Path=Filters.ToggleCategoryCommand}"
+                                                    CommandParameter="{Binding .}" />
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                     <controls:FilterRow Title="{ext:Localize FilterByAccount}" Value="{Binding Filters.AccountChipText}"
                                         IsActive="{Binding Filters.IsAccountActive}" Command="{Binding Filters.PickAccountCommand}" />
                     <controls:FilterRow Title="{ext:Localize FilterByTag}" Value="{Binding Filters.TagChipText}"

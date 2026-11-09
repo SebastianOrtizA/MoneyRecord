@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Category trend: one category per month over the shared "last N months", the average as a line; a bar or row opens that month's entries -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:charts="clr-namespace:MoneyRecord.Charts"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             x:Class="MoneyRecord.Views.CategoryTrendPage"
+             x:DataType="viewmodels:CategoryTrendViewModel"
+             Title="{ext:Localize CategoryTrend}">
+
+    <RefreshView IsRefreshing="{Binding IsLoading}"
+                 Command="{Binding LoadCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16,12" Spacing="16">
+                <controls:MonthCountPicker BindingContext="{Binding Period}" />
+                <controls:CurrencyChips BindingContext="{Binding Period}" />
+
+                <HorizontalStackLayout Spacing="8">
+                    <controls:FilterChip Text="{ext:Localize Expenses}" IsActive="{Binding IsIncome, Converter={StaticResource InvertedBoolConverter}}"
+                                         Command="{Binding SetTypeCommand}" CommandParameter="{x:Boolean False}" />
+                    <controls:FilterChip Text="{ext:Localize Incomes}" IsActive="{Binding IsIncome}"
+                                         Command="{Binding SetTypeCommand}" CommandParameter="{x:Boolean True}" />
+                </HorizontalStackLayout>
+
+                <!-- The categories, the biggest of the window first -->
+                <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Choices}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:TrendCategoryChoice">
+                            <controls:FilterChip Text="{Binding Name}" IsActive="{Binding IsSelected}" Margin="0,0,8,8"
+                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategoryTrendViewModel}}, Path=SelectCategoryCommand}"
+                                                 CommandParameter="{Binding .}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+
+                <controls:EmptyState IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}"
+                                     Icon="&#xF0127;"
+                                     Title="{ext:Localize NoTrendsData}"
+                                     Message="{ext:Localize NoCategoryTrendHint}" />
+
+                <Border Style="{StaticResource ChartCard}" IsVisible="{Binding HasData}">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="{Binding CategoryName}" Style="{StaticResource ReportHeadlineLabel}" />
+                        <Label Text="{Binding HeadlineText}" Style="{StaticResource ReportHeadline}" />
+                        <Label Text="{Binding DeltaText}" Style="{StaticResource ReportDelta}"
+                               TextColor="{Binding DeltaTone, Converter={StaticResource DeltaToneToColorConverter}}" />
+                        <Label Text="{Binding NotConvertedText}" Style="{StaticResource ReportDelta}"
+                               IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+                        <lvc:CartesianChart HeightRequest="220"
+                                            Margin="0,8,0,0"
+                                            Series="{Binding TrendSeries}"
+                                            XAxes="{Binding MonthAxis}"
+                                            YAxes="{Binding MoneyAxis}"
+                                            LegendPosition="Hidden"
+                                            BackgroundColor="Transparent">
+                            <lvc:CartesianChart.Behaviors>
+                                <charts:ChartTapBehavior />
+                            </lvc:CartesianChart.Behaviors>
+                        </lvc:CartesianChart>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource Card}" IsVisible="{Binding HasData}">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{ext:Localize TrendAverage}" />
+                            <Label Grid.Column="1" Text="{Binding AverageText}" FontAttributes="Bold" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{ext:Localize TrendHighest}" />
+                            <Label Grid.Column="1" Text="{Binding HighestText}" FontAttributes="Bold" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{ext:Localize TrendLowest}" />
+                            <Label Grid.Column="1" Text="{Binding LowestText}" FontAttributes="Bold" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Newest month first -->
+                <Border Style="{StaticResource Card}" IsVisible="{Binding HasData}">
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding MonthRows}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="viewmodels:TrendMonthRow">
+                                <Grid ColumnDefinitions="*,Auto" MinimumHeightRequest="44" ColumnSpacing="12">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategoryTrendViewModel}}, Path=OpenMonthRowCommand}"
+                                                              CommandParameter="{Binding .}" />
+                                    </Grid.GestureRecognizers>
+                                    <Label Text="{Binding Label}" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="{Binding AmountText}" VerticalOptions="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

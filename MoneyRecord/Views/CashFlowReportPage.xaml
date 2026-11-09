@@ -24,6 +24,7 @@
                  Command="{Binding LoadCommand}">
         <ScrollView>
             <VerticalStackLayout Padding="16,12" Spacing="16">
+                <controls:MoreReportsLink />
                 <controls:MonthCountPicker BindingContext="{Binding Period}" />
                 <controls:CurrencyChips BindingContext="{Binding Period}" />
 

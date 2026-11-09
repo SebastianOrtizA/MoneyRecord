@@ -3173,4 +3173,28 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="BudgetsCreated" xml:space="preserve">
     <value>Presupuestos creados</value>
   </data>
+  <data name="CategoryTrend" xml:space="preserve">
+    <value>Tendencia por categoría</value>
+  </data>
+  <data name="CategoryTrendHint" xml:space="preserve">
+    <value>Una categoría, mes a mes</value>
+  </data>
+  <data name="DeltaVsAverage" xml:space="preserve">
+    <value>{0} frente a la media mensual</value>
+  </data>
+  <data name="MoreReports" xml:space="preserve">
+    <value>Más informes</value>
+  </data>
+  <data name="NoCategoryTrendHint" xml:space="preserve">
+    <value>Nada en esta categoría en estos meses. Elige otra categoría o un periodo más largo.</value>
+  </data>
+  <data name="TrendAverage" xml:space="preserve">
+    <value>Media mensual</value>
+  </data>
+  <data name="TrendHighest" xml:space="preserve">
+    <value>Mes más alto</value>
+  </data>
+  <data name="TrendLowest" xml:space="preserve">
+    <value>Mes más bajo</value>
+  </data>
 </root>

@@ -253,8 +253,8 @@ namespace MoneyRecord.ViewModels
                 _accounts = await accountsTask;
                 Filters.SetOptions(_entries);
                 // A report opened this tab for one category or type: show only that (ShowOnly applies the filters)
-                if (_drillDown.TryTake(out var categoryId, out var type))
-                    Filters.ShowOnly(type, categoryId);
+                if (_drillDown.TryTake(out var target))
+                    Filters.ShowOnly(target.Type, target.CategoryIds);
                 else
                     ApplyFilters();
             }

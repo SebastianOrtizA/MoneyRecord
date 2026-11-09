@@ -211,6 +211,8 @@ namespace MoneyRecord
             builder.Services.AddTransient<ChallengeViewModel>();
             builder.Services.AddTransient<DebtsViewModel>();
             builder.Services.AddTransient<ForecastChartViewModel>();
+            builder.Services.AddTransient<CategoryTrendViewModel>();
+            builder.Services.AddTransient<ReportsHubViewModel>();
             builder.Services.AddTransient<TripsViewModel>();
             builder.Services.AddTransient<TripViewModel>();
             builder.Services.AddTransient<TripCategoriesViewModel>();
@@ -248,6 +250,8 @@ namespace MoneyRecord
             builder.Services.AddTransient<ChallengePage>();
             builder.Services.AddTransient<DebtsPage>();
             builder.Services.AddTransient<ForecastPage>();
+            builder.Services.AddTransient<CategoryTrendPage>();
+            builder.Services.AddTransient<ReportsHubPage>();
             builder.Services.AddTransient<TripsPage>();
             builder.Services.AddTransient<TripPage>();
             builder.Services.AddTransient<TripCategoriesPage>();

@@ -25,8 +25,8 @@ namespace MoneyRecord.Helpers
             if (filter.Type is TransactionType type)
                 filtered = filtered.Where(e => e.Type == type);
 
-            if (filter.CategoryId is int categoryId)
-                filtered = filtered.Where(e => e.CategoryId == categoryId);
+            if (filter.CategoryIds is { Count: > 0 } categoryIds)
+                filtered = filtered.Where(e => e.CategoryId is int id && categoryIds.Contains(id));
 
             if (filter.AccountId is int accountId)
             {
