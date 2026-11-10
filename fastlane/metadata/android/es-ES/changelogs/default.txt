@@ -1,1 +1,1 @@
-Corregido: las fechas bajo el gráfico de Previsión se solapaban en español y portugués.
+Nuevos informes en Más → Más informes (tendencia por categoría, beneficiarios, etiquetas, cuentas, comparar periodos y resumen del año), varias categorías en el filtro de Transacciones y filtros guardados que se aplican con un toque.

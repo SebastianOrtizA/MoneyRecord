@@ -1,3 +1,14 @@
+## 1.4.0
+- Nouveau centre de rapports (Plus → Plus de rapports) : Tendance par catégorie, Rapport des bénéficiaires, Étiquettes, Rapport des comptes, Comparer des périodes et Bilan de l'année.
+- Tendance par catégorie montre l'évolution mois par mois des dépenses des catégories choisies.
+- Le rapport des bénéficiaires classe où va votre argent par bénéficiaire ; touchez une ligne pour voir ses transactions.
+- Les étiquettes ont leur propre page : voyez ce que chacune totalise, renommez-les, fusionnez-les ou supprimez-les.
+- Le rapport des comptes montre revenus, dépenses et virements par compte.
+- Comparer des périodes place deux périodes côte à côte, catégorie par catégorie, avec l'écart.
+- Le bilan de l'année résume votre année et peut être partagé en texte ou en PDF.
+- Le filtre des Transactions accepte désormais plusieurs catégories à la fois.
+- Filtres enregistrés : enregistrez sous un nom les filtres que vous utilisez souvent et appliquez-les d'un geste depuis la page Transactions.
+
 ## 1.3.1
 - Correction : les dates sous le graphique des Prévisions ne se chevauchent plus en espagnol et en portugais.
 

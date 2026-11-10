@@ -1,3 +1,14 @@
+## 1.4.0
+- Nova central de relatórios (Mais → Mais relatórios): Tendência por categoria, Relatório de favorecidos, Tags, Relatório de contas, Comparar períodos e Resumo do ano.
+- Tendência por categoria mostra como o gasto das categorias escolhidas evolui mês a mês.
+- O relatório de favorecidos ordena para onde vai seu dinheiro por favorecido; toque em uma linha para ver as transações.
+- As tags têm uma página própria: veja quanto cada uma soma e renomeie, una ou exclua tags.
+- O relatório de contas mostra receitas, despesas e transferências por conta.
+- Comparar períodos coloca dois períodos lado a lado, categoria por categoria, com a diferença.
+- O resumo do ano reúne o seu ano e pode ser compartilhado como texto ou PDF.
+- O filtro de Transações agora aceita várias categorias ao mesmo tempo.
+- Filtros salvos: salve com um nome os filtros que você mais usa e aplique com um toque na página de Transações.
+
 ## 1.3.1
 - Corrigido: as datas abaixo do gráfico de Previsão não se sobrepõem mais em espanhol e português.
 

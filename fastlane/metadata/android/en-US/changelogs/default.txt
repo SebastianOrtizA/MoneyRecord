@@ -1,1 +1,1 @@
-Fixed the dates under the Forecast chart overlapping in Spanish and Portuguese.
+New reports under More → More reports (category trend, payees, tags, accounts, compare periods, year in review), several categories in the Transactions filter, and saved filters you can apply with one tap.

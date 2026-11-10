@@ -1,3 +1,14 @@
+## 1.4.0
+- New reports hub (More → More reports): Category trend, Payee report, Tags, Account report, Compare periods and Year in review.
+- Category trend shows how spending in the categories you pick moves month by month.
+- Payee report ranks where your money goes by payee; tap a row to see its transactions.
+- Tags has its own page: see what each tag adds up to, rename, merge or delete tags.
+- Account report shows income, expenses and transfers per account.
+- Compare periods puts two periods side by side, category by category, with the change.
+- Year in review summarises your year and can be shared as text or PDF.
+- The Transactions filter now takes several categories at once.
+- Saved filters: save the filters you use often under a name and apply them with one tap from the Transactions page.
+
 ## 1.3.1
 - Fixed: the dates under the Forecast chart no longer overlap in Spanish and Portuguese.
 

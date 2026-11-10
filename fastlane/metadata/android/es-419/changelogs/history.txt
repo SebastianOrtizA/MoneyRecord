@@ -1,3 +1,14 @@
+## 1.4.0
+- Nuevo centro de informes (Más → Más informes): Tendencia por categoría, Informe de beneficiarios, Etiquetas, Informe de cuentas, Comparar periodos y Resumen del año.
+- Tendencia por categoría muestra cómo evoluciona mes a mes el gasto de las categorías que elijas.
+- El informe de beneficiarios ordena adónde va tu dinero por beneficiario; toca una fila para ver sus movimientos.
+- Las etiquetas tienen su propia página: mira cuánto suma cada una y renómbralas, combínalas o elimínalas.
+- El informe de cuentas muestra ingresos, gastos y transferencias por cuenta.
+- Comparar periodos pone dos periodos lado a lado, categoría por categoría, con la diferencia.
+- El resumen del año recoge tu año y se puede compartir como texto o PDF.
+- El filtro de Transacciones ahora admite varias categorías a la vez.
+- Filtros guardados: guarda con un nombre los filtros que más usas y aplícalos con un toque desde la página de Transacciones.
+
 ## 1.3.1
 - Corregido: las fechas bajo el gráfico de Previsión ya no se superponen en español y portugués.
 
