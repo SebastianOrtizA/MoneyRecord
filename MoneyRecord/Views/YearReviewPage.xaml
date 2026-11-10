@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Year in review: one calendar year as section cards; Share writes a PDF or text summary -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels"
+             xmlns:helpers="clr-namespace:MoneyRecord.Helpers;assembly=MoneyRecord.Core"
+             xmlns:controls="clr-namespace:MoneyRecord.Controls"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.YearReviewPage"
+             x:DataType="viewmodels:YearReviewViewModel"
+             Title="{ext:Localize YearReview}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{ext:Localize ShareReport}"
+                     IconImageSource="{StaticResource ExportIcon}"
+                     Command="{Binding ShareCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <RefreshView IsRefreshing="{Binding IsLoading}" Command="{Binding LoadCommand}">
+        <CollectionView ItemsSource="{Binding Sections}">
+            <CollectionView.Header>
+                <VerticalStackLayout Spacing="12" Padding="16,12,16,4">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Button Text="‹" Command="{Binding PreviousYearCommand}" FontSize="22" Padding="14,0"
+                                BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=#512BD4, Dark=#AC99EA}"
+                                SemanticProperties.Description="{ext:Localize PreviousPeriod}" />
+                        <Label Grid.Column="1" Text="{Binding Year}" FontSize="20" FontAttributes="Bold"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Button Grid.Column="2" Text="›" Command="{Binding NextYearCommand}" FontSize="22" Padding="14,0"
+                                BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=#512BD4, Dark=#AC99EA}"
+                                SemanticProperties.Description="{ext:Localize NextPeriod}" />
+                    </Grid>
+                    <controls:CurrencyChips BindingContext="{Binding Period}" />
+                    <Label Text="{Binding NotConvertedText}" FontSize="12"
+                           TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                           IsVisible="{Binding NotConvertedText, Converter={StaticResource IsStringNotNullOrEmptyConverter}}" />
+                </VerticalStackLayout>
+            </CollectionView.Header>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="helpers:YearReviewSection">
+                    <Border Style="{StaticResource Card}" Margin="16,8">
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="{Binding Title}" FontSize="13" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Lines}" Spacing="8">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate x:DataType="helpers:YearReviewLine">
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                            <Label Text="{Binding Label}" FontSize="15" LineBreakMode="TailTruncation" />
+                                            <Label Grid.Column="1" Text="{Binding Value}" FontSize="15" FontAttributes="Bold"
+                                                   HorizontalTextAlignment="End" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.EmptyView>
+                <controls:EmptyState Icon="&#xF00ED;" Title="{ext:Localize NoYearData}" Message="{ext:Localize NoYearDataHint}" />
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

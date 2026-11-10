@@ -215,6 +215,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<CategoryTrendViewModel>();
             builder.Services.AddTransient<AccountReportViewModel>();
             builder.Services.AddTransient<ComparePeriodsViewModel>();
+            builder.Services.AddTransient<YearReviewViewModel>();
             builder.Services.AddTransient<PayeeReportViewModel>();
             builder.Services.AddTransient<TagsViewModel>();
             builder.Services.AddTransient<ReportsHubViewModel>();
@@ -259,6 +260,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<PayeeReportPage>();
             builder.Services.AddTransient<AccountReportPage>();
             builder.Services.AddTransient<ComparePeriodsPage>();
+            builder.Services.AddTransient<YearReviewPage>();
             builder.Services.AddTransient<TagsPage>();
             builder.Services.AddTransient<ReportsHubPage>();
             builder.Services.AddTransient<TripsPage>();

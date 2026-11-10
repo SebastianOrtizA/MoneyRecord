@@ -3329,4 +3329,79 @@
   <data name="CompareRowAmounts" xml:space="preserve">
     <value>{0} vs {1}</value>
   </data>
+  <data name="YearReview" xml:space="preserve">
+    <value>Year in review</value>
+  </data>
+  <data name="YearReviewHint" xml:space="preserve">
+    <value>Your year in numbers: totals, top categories, highest and lowest spending months</value>
+  </data>
+  <data name="YearReviewTitle" xml:space="preserve">
+    <value>{0} in review</value>
+  </data>
+  <data name="YearOverview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="YearIncome" xml:space="preserve">
+    <value>Income</value>
+  </data>
+  <data name="YearExpenses" xml:space="preserve">
+    <value>Expenses</value>
+  </data>
+  <data name="YearNet" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="YearSavingsRate" xml:space="preserve">
+    <value>Savings rate</value>
+  </data>
+  <data name="YearMonths" xml:space="preserve">
+    <value>Months</value>
+  </data>
+  <data name="YearHighestMonth" xml:space="preserve">
+    <value>Highest spending</value>
+  </data>
+  <data name="YearLowestMonth" xml:space="preserve">
+    <value>Lowest spending</value>
+  </data>
+  <data name="YearTopCategories" xml:space="preserve">
+    <value>Top categories</value>
+  </data>
+  <data name="YearTopPayees" xml:space="preserve">
+    <value>Top payees</value>
+  </data>
+  <data name="YearBiggestExpense" xml:space="preserve">
+    <value>Biggest expense</value>
+  </data>
+  <data name="YearHabits" xml:space="preserve">
+    <value>Habits</value>
+  </data>
+  <data name="YearNoSpendDays" xml:space="preserve">
+    <value>No-spend days</value>
+  </data>
+  <data name="YearOfDays" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="YearTopTag" xml:space="preserve">
+    <value>Most used tag</value>
+  </data>
+  <data name="YearTagUses" xml:space="preserve">
+    <value>{0} ({1}×)</value>
+  </data>
+  <data name="NoYearData" xml:space="preserve">
+    <value>Nothing to review yet</value>
+  </data>
+  <data name="NoYearDataHint" xml:space="preserve">
+    <value>Add transactions from this year and its review appears here.</value>
+  </data>
+  <data name="YearShareTitle" xml:space="preserve">
+    <value>Share your year</value>
+  </data>
+  <data name="YearShareAsPdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="YearShareAsText" xml:space="preserve">
+    <value>Text summary</value>
+  </data>
+  <data name="YearShareNoAmounts" xml:space="preserve">
+    <value>{0} without amounts</value>
+  </data>
 </root>

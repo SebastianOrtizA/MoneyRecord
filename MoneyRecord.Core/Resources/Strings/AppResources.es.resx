@@ -3326,4 +3326,79 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="CompareRowAmounts" xml:space="preserve">
     <value>{0} frente a {1}</value>
   </data>
+  <data name="YearReview" xml:space="preserve">
+    <value>Resumen del año</value>
+  </data>
+  <data name="YearReviewHint" xml:space="preserve">
+    <value>Tu año en cifras: totales, categorías principales, meses de mayor y menor gasto</value>
+  </data>
+  <data name="YearReviewTitle" xml:space="preserve">
+    <value>Resumen de {0}</value>
+  </data>
+  <data name="YearOverview" xml:space="preserve">
+    <value>Resumen</value>
+  </data>
+  <data name="YearIncome" xml:space="preserve">
+    <value>Ingresos</value>
+  </data>
+  <data name="YearExpenses" xml:space="preserve">
+    <value>Gastos</value>
+  </data>
+  <data name="YearNet" xml:space="preserve">
+    <value>Neto</value>
+  </data>
+  <data name="YearSavingsRate" xml:space="preserve">
+    <value>Tasa de ahorro</value>
+  </data>
+  <data name="YearMonths" xml:space="preserve">
+    <value>Meses</value>
+  </data>
+  <data name="YearHighestMonth" xml:space="preserve">
+    <value>Mayor gasto</value>
+  </data>
+  <data name="YearLowestMonth" xml:space="preserve">
+    <value>Menor gasto</value>
+  </data>
+  <data name="YearTopCategories" xml:space="preserve">
+    <value>Categorías principales</value>
+  </data>
+  <data name="YearTopPayees" xml:space="preserve">
+    <value>Beneficiarios principales</value>
+  </data>
+  <data name="YearBiggestExpense" xml:space="preserve">
+    <value>Mayor gasto individual</value>
+  </data>
+  <data name="YearHabits" xml:space="preserve">
+    <value>Hábitos</value>
+  </data>
+  <data name="YearNoSpendDays" xml:space="preserve">
+    <value>Días sin gastos</value>
+  </data>
+  <data name="YearOfDays" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="YearTopTag" xml:space="preserve">
+    <value>Etiqueta más usada</value>
+  </data>
+  <data name="YearTagUses" xml:space="preserve">
+    <value>{0} ({1}×)</value>
+  </data>
+  <data name="NoYearData" xml:space="preserve">
+    <value>Aún no hay nada que repasar</value>
+  </data>
+  <data name="NoYearDataHint" xml:space="preserve">
+    <value>Añade movimientos de este año y su resumen aparecerá aquí.</value>
+  </data>
+  <data name="YearShareTitle" xml:space="preserve">
+    <value>Comparte tu año</value>
+  </data>
+  <data name="YearShareAsPdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="YearShareAsText" xml:space="preserve">
+    <value>Resumen en texto</value>
+  </data>
+  <data name="YearShareNoAmounts" xml:space="preserve">
+    <value>{0} sin importes</value>
+  </data>
 </root>

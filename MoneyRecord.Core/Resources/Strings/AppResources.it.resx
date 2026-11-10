@@ -3275,4 +3275,79 @@
   <data name="CompareRowAmounts" xml:space="preserve">
     <value>{0} contro {1}</value>
   </data>
+  <data name="YearReview" xml:space="preserve">
+    <value>Riepilogo dell'anno</value>
+  </data>
+  <data name="YearReviewHint" xml:space="preserve">
+    <value>Il tuo anno in cifre: totali, categorie principali, mesi di maggiore e minore spesa</value>
+  </data>
+  <data name="YearReviewTitle" xml:space="preserve">
+    <value>Riepilogo {0}</value>
+  </data>
+  <data name="YearOverview" xml:space="preserve">
+    <value>Panoramica</value>
+  </data>
+  <data name="YearIncome" xml:space="preserve">
+    <value>Entrate</value>
+  </data>
+  <data name="YearExpenses" xml:space="preserve">
+    <value>Uscite</value>
+  </data>
+  <data name="YearNet" xml:space="preserve">
+    <value>Netto</value>
+  </data>
+  <data name="YearSavingsRate" xml:space="preserve">
+    <value>Tasso di risparmio</value>
+  </data>
+  <data name="YearMonths" xml:space="preserve">
+    <value>Mesi</value>
+  </data>
+  <data name="YearHighestMonth" xml:space="preserve">
+    <value>Spesa più alta</value>
+  </data>
+  <data name="YearLowestMonth" xml:space="preserve">
+    <value>Spesa più bassa</value>
+  </data>
+  <data name="YearTopCategories" xml:space="preserve">
+    <value>Categorie principali</value>
+  </data>
+  <data name="YearTopPayees" xml:space="preserve">
+    <value>Beneficiari principali</value>
+  </data>
+  <data name="YearBiggestExpense" xml:space="preserve">
+    <value>Spesa più grande</value>
+  </data>
+  <data name="YearHabits" xml:space="preserve">
+    <value>Abitudini</value>
+  </data>
+  <data name="YearNoSpendDays" xml:space="preserve">
+    <value>Giorni senza spese</value>
+  </data>
+  <data name="YearOfDays" xml:space="preserve">
+    <value>{0} su {1}</value>
+  </data>
+  <data name="YearTopTag" xml:space="preserve">
+    <value>Tag più usato</value>
+  </data>
+  <data name="YearTagUses" xml:space="preserve">
+    <value>{0} ({1}×)</value>
+  </data>
+  <data name="NoYearData" xml:space="preserve">
+    <value>Ancora niente da rivedere</value>
+  </data>
+  <data name="NoYearDataHint" xml:space="preserve">
+    <value>Aggiungi movimenti di quest'anno e il riepilogo apparirà qui.</value>
+  </data>
+  <data name="YearShareTitle" xml:space="preserve">
+    <value>Condividi il tuo anno</value>
+  </data>
+  <data name="YearShareAsPdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="YearShareAsText" xml:space="preserve">
+    <value>Riepilogo testuale</value>
+  </data>
+  <data name="YearShareNoAmounts" xml:space="preserve">
+    <value>{0} senza importi</value>
+  </data>
 </root>
