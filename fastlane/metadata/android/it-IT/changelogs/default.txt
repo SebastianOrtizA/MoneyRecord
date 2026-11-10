@@ -1,1 +1,1 @@
-Corretto: le date sotto il grafico delle Previsioni si sovrapponevano in spagnolo e portoghese.
+Nuovi report in Altro → Altri report (andamento per categoria, beneficiari, tag, conti, confronta periodi, riepilogo dell'anno), più categorie nel filtro delle Transazioni e filtri salvati da applicare con un tocco.

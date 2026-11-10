@@ -1,1 +1,1 @@
-Corrigido: as datas abaixo do gráfico de Previsão se sobrepunham em espanhol e português.
+Novos relatórios em Mais → Mais relatórios (tendência por categoria, favorecidos, tags, contas, comparar períodos e resumo do ano), várias categorias no filtro de Transações e filtros salvos que se aplicam com um toque.

@@ -1,1 +1,1 @@
-Correction : les dates sous le graphique des Prévisions se chevauchaient en espagnol et en portugais.
+Nouveaux rapports dans Plus → Plus de rapports (tendance par catégorie, bénéficiaires, étiquettes, comptes, comparer des périodes, bilan de l'année), plusieurs catégories dans le filtre des Transactions et filtres enregistrés applicables d'un geste.
