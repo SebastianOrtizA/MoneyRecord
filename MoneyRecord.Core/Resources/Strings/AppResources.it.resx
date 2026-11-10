@@ -3350,4 +3350,28 @@
   <data name="YearShareNoAmounts" xml:space="preserve">
     <value>{0} senza importi</value>
   </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>Filtri salvati</value>
+  </data>
+  <data name="SaveThisFilter" xml:space="preserve">
+    <value>Salva questo filtro</value>
+  </data>
+  <data name="SavedFilterNameHint" xml:space="preserve">
+    <value>Dagli un nome per riapplicarlo con un tocco.</value>
+  </data>
+  <data name="SavedFilterLimit" xml:space="preserve">
+    <value>Puoi salvare fino a 20 filtri. Eliminane uno per salvarne un altro.</value>
+  </data>
+  <data name="SavedFilterSaved" xml:space="preserve">
+    <value>Filtro salvato</value>
+  </data>
+  <data name="SavedFilterNameTaken" xml:space="preserve">
+    <value>Esiste già un filtro salvato con questo nome.</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Rinomina</value>
+  </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>Applica</value>
+  </data>
 </root>

@@ -9512,5 +9512,77 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Saved filters.
+        /// </summary>
+        public static string SavedFilters {
+            get {
+                return ResourceManager.GetString("SavedFilters", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Save this filter.
+        /// </summary>
+        public static string SaveThisFilter {
+            get {
+                return ResourceManager.GetString("SaveThisFilter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Name it to apply it again with one tap..
+        /// </summary>
+        public static string SavedFilterNameHint {
+            get {
+                return ResourceManager.GetString("SavedFilterNameHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to You can keep up to 20 saved filters. Delete one to save another..
+        /// </summary>
+        public static string SavedFilterLimit {
+            get {
+                return ResourceManager.GetString("SavedFilterLimit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Filter saved.
+        /// </summary>
+        public static string SavedFilterSaved {
+            get {
+                return ResourceManager.GetString("SavedFilterSaved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A saved filter already has that name..
+        /// </summary>
+        public static string SavedFilterNameTaken {
+            get {
+                return ResourceManager.GetString("SavedFilterNameTaken", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string Rename {
+            get {
+                return ResourceManager.GetString("Rename", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string ApplyFilter {
+            get {
+                return ResourceManager.GetString("ApplyFilter", resourceCulture);
+            }
+        }
+
     }
 }

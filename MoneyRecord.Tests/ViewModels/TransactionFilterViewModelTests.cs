@@ -61,6 +61,38 @@ public class TransactionFilterViewModelTests
     }
 
     [Fact]
+    public void A_saved_filter_applies_with_one_change_and_reads_back_the_same()
+    {
+        _sut.SetOptions([]); // the period has no entries: the saved category and account still narrow the list
+        var saved = new SavedFilter("Food in cash", "pizza", TransactionType.Expense, [new FilterOption(3, "Food")],
+            new FilterOption(2, "Cash"), 5m, 40m, "trip", new FilterOption(9, "Bakery"));
+
+        _sut.Apply(saved);
+
+        _changes.Should().Be(1);
+        var filter = _sut.ToFilter(ascending: false);
+        filter.CategoryIds.Should().Equal(3);
+        filter.AccountId.Should().Be(2);
+        filter.PayeeId.Should().Be(9);
+        saved.Matches(filter).Should().BeTrue();
+        _sut.ToSaved("Food in cash").Should().BeEquivalentTo(saved);
+    }
+
+    [Fact]
+    public void Applying_a_saved_filter_replaces_the_filters_that_were_on()
+    {
+        _sut.SelectedTag = "gift";
+        _sut.SelectedCategories = [new FilterOption(1, "Other")];
+
+        _sut.Apply(new SavedFilter("Incomes", Type: TransactionType.Income));
+
+        var filter = _sut.ToFilter(ascending: false);
+        filter.Type.Should().Be(TransactionType.Income);
+        filter.Tag.Should().BeNull();
+        filter.CategoryIds.Should().BeNull();
+    }
+
+    [Fact]
     public void Clear_resets_everything_with_one_change()
     {
         _sut.SelectedCategories = [new FilterOption(3, "Food")];
