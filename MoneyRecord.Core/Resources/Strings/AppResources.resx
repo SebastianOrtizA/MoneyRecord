@@ -3404,4 +3404,31 @@
   <data name="YearShareNoAmounts" xml:space="preserve">
     <value>{0} without amounts</value>
   </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>Saved filters</value>
+  </data>
+  <data name="SaveThisFilter" xml:space="preserve">
+    <value>Save this filter</value>
+  </data>
+  <data name="SavedFilterNameHint" xml:space="preserve">
+    <value>Name it to apply it again with one tap.</value>
+  </data>
+  <data name="SavedFilterLimit" xml:space="preserve">
+    <value>You can keep up to 20 saved filters. Delete one to save another.</value>
+  </data>
+  <data name="SavedFilterSaved" xml:space="preserve">
+    <value>Filter saved</value>
+  </data>
+  <data name="SavedFilterNameTaken" xml:space="preserve">
+    <value>A saved filter already has that name.</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Part of this filter was deleted (a category, account or payee) and was left out.</value>
+  </data>
 </root>

@@ -3401,4 +3401,31 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="YearShareNoAmounts" xml:space="preserve">
     <value>{0} sin importes</value>
   </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>Filtros guardados</value>
+  </data>
+  <data name="SaveThisFilter" xml:space="preserve">
+    <value>Guardar este filtro</value>
+  </data>
+  <data name="SavedFilterNameHint" xml:space="preserve">
+    <value>Ponle un nombre para aplicarlo de nuevo con un toque.</value>
+  </data>
+  <data name="SavedFilterLimit" xml:space="preserve">
+    <value>Puedes guardar hasta 20 filtros. Elimina uno para guardar otro.</value>
+  </data>
+  <data name="SavedFilterSaved" xml:space="preserve">
+    <value>Filtro guardado</value>
+  </data>
+  <data name="SavedFilterNameTaken" xml:space="preserve">
+    <value>Ya hay un filtro guardado con ese nombre.</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Renombrar</value>
+  </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>Aplicar</value>
+  </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Una parte de este filtro se eliminó (categoría, cuenta o beneficiario) y se omitió.</value>
+  </data>
 </root>

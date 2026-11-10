@@ -321,6 +321,48 @@ namespace MoneyRecord.ViewModels
             RaiseChanged();
         }
 
+        /// <summary>The filters that are on now, as a preset called <paramref name="name"/>.</summary>
+        public SavedFilter ToSaved(string name) => new(
+            name.Trim(),
+            string.IsNullOrWhiteSpace(SearchText) ? null : SearchText.Trim(),
+            SelectedType?.Type,
+            SelectedCategories.Count == 0 ? null : [.. SelectedCategories],
+            SelectedAccount,
+            ParseAmountLimit(MinAmountText),
+            ParseAmountLimit(MaxAmountText),
+            SelectedTag,
+            SelectedPayee);
+
+        /// <summary>
+        /// Every filter set as in <paramref name="saved"/>, and the list follows at once. A category or account keeps its saved
+        /// ID (named from the loaded options when they have it): one the period has no entries for still narrows the list.
+        /// </summary>
+        public void Apply(SavedFilter saved)
+        {
+            _clearing = true;
+            try
+            {
+                SearchText = saved.SearchText ?? string.Empty;
+                SelectedType = Types.FirstOrDefault(t => t.Type == saved.Type) ?? Types[0];
+                SelectedCategories = [.. (saved.Categories ?? []).Select(c => Categories.FirstOrDefault(o => o.Id == c.Id) ?? c)];
+                RefreshChoices();
+                SelectedAccount = saved.Account == null ? null : Accounts.FirstOrDefault(a => a.Id == saved.Account.Id) ?? saved.Account;
+                SelectedPayee = saved.Payee;
+                SelectedTag = saved.Tag;
+                MinAmountText = saved.MinAmount is { } min ? FormatForEdit(min) : string.Empty;
+                MaxAmountText = saved.MaxAmount is { } max ? FormatForEdit(max) : string.Empty;
+            }
+            finally
+            {
+                _clearing = false;
+            }
+
+            RaiseChanged();
+        }
+
+        /// <summary>The text <see cref="ParseAmountLimit"/> reads back to the same number.</summary>
+        private static string FormatForEdit(decimal value) => value.ToString("0.##", CultureInfo.CurrentCulture);
+
         /// <summary>The keyboard's search key: no need to wait for the pause.</summary>
         [RelayCommand]
         private void Search() => RaiseChanged();

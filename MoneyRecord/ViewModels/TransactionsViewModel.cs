@@ -18,6 +18,9 @@ namespace MoneyRecord.ViewModels
         private readonly IBalanceService _balanceService;
         private readonly ILedgerService _ledgerService;
         private readonly ITransactionsViewSettings _viewSettings;
+        private readonly ISavedFiltersStore _savedFiltersStore;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IPayeeRepository _payeeRepository;
         private readonly ISwipeHintSettings _swipeHint;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
@@ -181,8 +184,13 @@ namespace MoneyRecord.ViewModels
 
         public TransactionsViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
             IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService,
-            TransactionsDrillDown drillDown, ITripService trips, ISwipeHintSettings swipeHint, ITransactionsViewSettings viewSettings)
+            TransactionsDrillDown drillDown, ITripService trips, ISwipeHintSettings swipeHint, ITransactionsViewSettings viewSettings,
+            ISavedFiltersStore savedFiltersStore, ICategoryRepository categoryRepository, IPayeeRepository payeeRepository)
         {
+            _categoryRepository = categoryRepository;
+            _payeeRepository = payeeRepository;
+            _savedFiltersStore = savedFiltersStore;
+            _savedFilterList = savedFiltersStore.Load();
             _swipeHint = swipeHint;
             _viewSettings = viewSettings;
             currentGroupingMode = viewSettings.Grouping;
@@ -274,6 +282,111 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>The saved filters, the one the list is filtered by marked (the chip row and the filter sheet).</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasSavedFilters))]
+        private IReadOnlyList<SavedFilterChoice> savedFilterChoices = [];
+
+        public bool HasSavedFilters => SavedFilterChoices.Count > 0;
+
+        private List<SavedFilter> _savedFilterList = [];
+
+        private void RefreshSavedFilters(TransactionFilter current) =>
+            SavedFilterChoices = [.. _savedFilterList.Select(f => new SavedFilterChoice(f, current.IsActive && f.Matches(current)))];
+
+        /// <summary>A saved filter's chip: its filters replace the current ones; the chip in use, tapped again, switches them off.</summary>
+        [RelayCommand]
+        private async Task ApplySavedFilterAsync(SavedFilterChoice? choice)
+        {
+            if (choice == null)
+                return;
+
+            if (choice.IsActive)
+            {
+                Filters.ClearCommand.Execute(null);
+                return;
+            }
+
+            await UseSavedFilterAsync(choice.Filter);
+        }
+
+        /// <summary>Applies the preset without the categories, account or payee deleted since; says so when something went.</summary>
+        private async Task UseSavedFilterAsync(SavedFilter filter)
+        {
+            var categories = (await _categoryRepository.GetAllAsync()).Select(c => c.Id).ToHashSet();
+            var accounts = (await _accountRepository.GetAllAsync()).Select(a => a.Id).ToHashSet();
+            var payees = (await _payeeRepository.GetAllAsync()).Select(p => p.Id).ToHashSet();
+            var pruned = filter.Pruned(categories, accounts, payees, out var dropped);
+            Filters.Apply(pruned);
+            if (dropped)
+                await _dialogService.ToastAsync(AppResources.SavedFilterItemsGone);
+        }
+
+        /// <summary>The filter sheet's "Save this filter": asks for a name; a name in use is replaced.</summary>
+        [RelayCommand]
+        private async Task SaveCurrentFilterAsync()
+        {
+            var name = await _dialogService.PromptAsync(AppResources.SaveThisFilter, AppResources.SavedFilterNameHint,
+                AppResources.Save, AppResources.Cancel);
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+
+            var saved = Filters.ToSaved(name);
+            if (!SavedFilters.TryAdd(_savedFilterList, saved))
+            {
+                await _dialogService.AlertAsync(AppResources.SavedFilters, AppResources.SavedFilterLimit);
+                return;
+            }
+
+            _savedFiltersStore.Save(_savedFilterList);
+            RefreshSavedFilters(Filters.ToFilter(IsAscending));
+            await _dialogService.ToastAsync(AppResources.SavedFilterSaved);
+        }
+
+        /// <summary>A saved filter's row in the sheet: Rename or Delete.</summary>
+        [RelayCommand]
+        private async Task ManageSavedFilterAsync(SavedFilterChoice? choice)
+        {
+            if (choice == null)
+                return;
+
+            // By position, not by the localized text
+            List<string> labels = [AppResources.ApplyFilter, AppResources.Rename, AppResources.Delete];
+            var answer = await _dialogService.ActionSheetAsync(choice.Name, AppResources.Cancel, labels);
+            var picked = answer == null ? -1 : labels.IndexOf(answer);
+            if (picked == 0)
+            {
+                CloseFilter();
+                await UseSavedFilterAsync(choice.Filter);
+                return;
+            }
+
+            if (picked == 2)
+            {
+                _savedFilterList.Remove(choice.Filter);
+            }
+            else if (picked == 1)
+            {
+                var name = await _dialogService.PromptAsync(AppResources.Rename, AppResources.SavedFilterNameHint,
+                    AppResources.Save, AppResources.Cancel, choice.Name);
+                if (string.IsNullOrWhiteSpace(name))
+                    return;
+
+                if (!SavedFilters.TryRename(_savedFilterList, choice.Filter, name.Trim()))
+                {
+                    await _dialogService.AlertAsync(AppResources.SavedFilters, AppResources.SavedFilterNameTaken);
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
+
+            _savedFiltersStore.Save(_savedFilterList);
+            RefreshSavedFilters(Filters.ToFilter(IsAscending));
+        }
+
         private void ApplyFilters()
         {
             // Only the account view lists a transfer under both of its accounts
@@ -281,6 +394,7 @@ namespace MoneyRecord.ViewModels
             var filter = Filters.ToFilter(IsAscending);
             var filtered = LedgerFilter.Apply(entries, filter);
 
+            RefreshSavedFilters(filter);
             HasActiveFilters = filter.IsActive;
             OnPropertyChanged(nameof(ActiveFilterCount));
             OnPropertyChanged(nameof(HasActiveFilterCount));
