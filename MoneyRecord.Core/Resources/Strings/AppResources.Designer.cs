@@ -9286,5 +9286,231 @@ namespace MoneyRecord.Resources.Strings {
         }
 
 
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Year in review.
+        /// </summary>
+        public static string YearReview {
+            get {
+                return ResourceManager.GetString("YearReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your year in numbers: totals, top categories, highest and lowest spending months.
+        /// </summary>
+        public static string YearReviewHint {
+            get {
+                return ResourceManager.GetString("YearReviewHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} in review.
+        /// </summary>
+        public static string YearReviewTitle {
+            get {
+                return ResourceManager.GetString("YearReviewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Overview.
+        /// </summary>
+        public static string YearOverview {
+            get {
+                return ResourceManager.GetString("YearOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Income.
+        /// </summary>
+        public static string YearIncome {
+            get {
+                return ResourceManager.GetString("YearIncome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expenses.
+        /// </summary>
+        public static string YearExpenses {
+            get {
+                return ResourceManager.GetString("YearExpenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Net.
+        /// </summary>
+        public static string YearNet {
+            get {
+                return ResourceManager.GetString("YearNet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Savings rate.
+        /// </summary>
+        public static string YearSavingsRate {
+            get {
+                return ResourceManager.GetString("YearSavingsRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Months.
+        /// </summary>
+        public static string YearMonths {
+            get {
+                return ResourceManager.GetString("YearMonths", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Highest spending.
+        /// </summary>
+        public static string YearHighestMonth {
+            get {
+                return ResourceManager.GetString("YearHighestMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lowest spending.
+        /// </summary>
+        public static string YearLowestMonth {
+            get {
+                return ResourceManager.GetString("YearLowestMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top categories.
+        /// </summary>
+        public static string YearTopCategories {
+            get {
+                return ResourceManager.GetString("YearTopCategories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Top payees.
+        /// </summary>
+        public static string YearTopPayees {
+            get {
+                return ResourceManager.GetString("YearTopPayees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Biggest expense.
+        /// </summary>
+        public static string YearBiggestExpense {
+            get {
+                return ResourceManager.GetString("YearBiggestExpense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Habits.
+        /// </summary>
+        public static string YearHabits {
+            get {
+                return ResourceManager.GetString("YearHabits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No-spend days.
+        /// </summary>
+        public static string YearNoSpendDays {
+            get {
+                return ResourceManager.GetString("YearNoSpendDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} days.
+        /// </summary>
+        public static string YearOfDays {
+            get {
+                return ResourceManager.GetString("YearOfDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most used tag.
+        /// </summary>
+        public static string YearTopTag {
+            get {
+                return ResourceManager.GetString("YearTopTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}×).
+        /// </summary>
+        public static string YearTagUses {
+            get {
+                return ResourceManager.GetString("YearTagUses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing to review yet.
+        /// </summary>
+        public static string NoYearData {
+            get {
+                return ResourceManager.GetString("NoYearData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add transactions from this year and its review appears here..
+        /// </summary>
+        public static string NoYearDataHint {
+            get {
+                return ResourceManager.GetString("NoYearDataHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Share your year.
+        /// </summary>
+        public static string YearShareTitle {
+            get {
+                return ResourceManager.GetString("YearShareTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PDF.
+        /// </summary>
+        public static string YearShareAsPdf {
+            get {
+                return ResourceManager.GetString("YearShareAsPdf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text summary.
+        /// </summary>
+        public static string YearShareAsText {
+            get {
+                return ResourceManager.GetString("YearShareAsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} without amounts.
+        /// </summary>
+        public static string YearShareNoAmounts {
+            get {
+                return ResourceManager.GetString("YearShareNoAmounts", resourceCulture);
+            }
+        }
+
     }
 }

@@ -32,7 +32,8 @@ namespace MoneyRecord.ViewModels
             new("\U000F04DC", AppResources.PayeeReport, AppResources.PayeeReportHint, nameof(PayeeReportPage)),
             new("\U000F04F9", AppResources.Tags, AppResources.TagsHint, nameof(TagsPage)),
             new("\U000F0070", AppResources.AccountReport, AppResources.AccountReportHint, nameof(AccountReportPage)),
-            new("\U000F1492", AppResources.CompareReport, AppResources.CompareReportHint, nameof(ComparePeriodsPage))
+            new("\U000F1492", AppResources.CompareReport, AppResources.CompareReportHint, nameof(ComparePeriodsPage)),
+            new("\U000F00ED", AppResources.YearReview, AppResources.YearReviewHint, nameof(YearReviewPage))
         ];
 
         [RelayCommand]
