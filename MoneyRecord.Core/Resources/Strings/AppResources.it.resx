@@ -3374,4 +3374,7 @@
   <data name="ApplyFilter" xml:space="preserve">
     <value>Applica</value>
   </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Una parte di questo filtro è stata eliminata (categoria, conto o beneficiario) ed è stata ignorata.</value>
+  </data>
 </root>

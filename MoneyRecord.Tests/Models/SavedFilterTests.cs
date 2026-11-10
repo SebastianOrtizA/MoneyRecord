@@ -57,6 +57,24 @@ public class SavedFilterTests
     }
 
     [Fact]
+    public void Pruned_drops_what_no_longer_exists_and_says_so()
+    {
+        var saved = Full();
+
+        var kept = saved.Pruned(new HashSet<int> { 3, 7 }, new HashSet<int> { 2 }, new HashSet<int> { 9 }, out var droppedNone);
+        var pruned = saved.Pruned(new HashSet<int> { 7 }, new HashSet<int>(), new HashSet<int> { 9 }, out var dropped);
+        var noCategories = saved.Pruned(new HashSet<int>(), new HashSet<int> { 2 }, new HashSet<int> { 9 }, out _);
+
+        droppedNone.Should().BeFalse();
+        kept.Should().BeEquivalentTo(saved);
+        dropped.Should().BeTrue();
+        pruned.Categories.Should().ContainSingle().Which.Id.Should().Be(7);
+        pruned.Account.Should().BeNull();
+        pruned.Payee!.Id.Should().Be(9);
+        noCategories.Categories.Should().BeNull();
+    }
+
+    [Fact]
     public void Rename_refuses_a_name_in_use_by_another_preset()
     {
         var a = new SavedFilter("A");

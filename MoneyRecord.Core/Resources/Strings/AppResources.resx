@@ -3428,4 +3428,7 @@
   <data name="ApplyFilter" xml:space="preserve">
     <value>Apply</value>
   </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Part of this filter was deleted (a category, account or payee) and was left out.</value>
+  </data>
 </root>

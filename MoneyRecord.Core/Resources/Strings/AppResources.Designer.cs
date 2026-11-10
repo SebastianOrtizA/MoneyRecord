@@ -9584,5 +9584,14 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Part of this filter was deleted (a category, account or payee) and was left out..
+        /// </summary>
+        public static string SavedFilterItemsGone {
+            get {
+                return ResourceManager.GetString("SavedFilterItemsGone", resourceCulture);
+            }
+        }
+
     }
 }

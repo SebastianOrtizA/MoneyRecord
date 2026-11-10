@@ -3425,4 +3425,7 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="ApplyFilter" xml:space="preserve">
     <value>Aplicar</value>
   </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Una parte de este filtro se eliminó (categoría, cuenta o beneficiario) y se omitió.</value>
+  </data>
 </root>

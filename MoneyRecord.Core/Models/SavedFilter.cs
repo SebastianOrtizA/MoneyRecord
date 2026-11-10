@@ -32,6 +32,19 @@ namespace MoneyRecord.Models
             Tag,
             Payee?.Id);
 
+        /// <summary>
+        /// The preset without the categories, account and payee that no longer exist (the given IDs are the ones that do);
+        /// <paramref name="dropped"/> is true when something went.
+        /// </summary>
+        public SavedFilter Pruned(IReadOnlySet<int> categoryIds, IReadOnlySet<int> accountIds, IReadOnlySet<int> payeeIds, out bool dropped)
+        {
+            var categories = Categories?.Where(c => categoryIds.Contains(c.Id)).ToList();
+            var account = Account is { } a && accountIds.Contains(a.Id) ? a : null;
+            var payee = Payee is { } p && payeeIds.Contains(p.Id) ? p : null;
+            dropped = categories?.Count != Categories?.Count || (account == null) != (Account == null) || (payee == null) != (Payee == null);
+            return this with { Categories = categories is { Count: > 0 } ? categories : null, Account = account, Payee = payee };
+        }
+
         /// <summary>True when <paramref name="filter"/> narrows the list exactly as this preset does (the sort order is not compared).</summary>
         public bool Matches(TransactionFilter filter) =>
             string.Equals(SearchText?.Trim() ?? string.Empty, filter.SearchText?.Trim() ?? string.Empty, StringComparison.OrdinalIgnoreCase) &&
@@ -102,6 +115,6 @@ namespace MoneyRecord.Models
             return true;
         }
 
-        private static bool SameName(string a, string b) => string.Equals(a.Trim(), b.Trim(), StringComparison.CurrentCultureIgnoreCase);
+        private static bool SameName(string a, string b) => string.Equals(a.Trim(), b.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -19,6 +19,8 @@ namespace MoneyRecord.ViewModels
         private readonly ILedgerService _ledgerService;
         private readonly ITransactionsViewSettings _viewSettings;
         private readonly ISavedFiltersStore _savedFiltersStore;
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly IPayeeRepository _payeeRepository;
         private readonly ISwipeHintSettings _swipeHint;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
@@ -183,8 +185,10 @@ namespace MoneyRecord.ViewModels
         public TransactionsViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
             IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService,
             TransactionsDrillDown drillDown, ITripService trips, ISwipeHintSettings swipeHint, ITransactionsViewSettings viewSettings,
-            ISavedFiltersStore savedFiltersStore)
+            ISavedFiltersStore savedFiltersStore, ICategoryRepository categoryRepository, IPayeeRepository payeeRepository)
         {
+            _categoryRepository = categoryRepository;
+            _payeeRepository = payeeRepository;
             _savedFiltersStore = savedFiltersStore;
             _savedFilterList = savedFiltersStore.Load();
             _swipeHint = swipeHint;
@@ -290,12 +294,32 @@ namespace MoneyRecord.ViewModels
         private void RefreshSavedFilters(TransactionFilter current) =>
             SavedFilterChoices = [.. _savedFilterList.Select(f => new SavedFilterChoice(f, current.IsActive && f.Matches(current)))];
 
-        /// <summary>A saved filter's chip: its filters replace the current ones.</summary>
+        /// <summary>A saved filter's chip: its filters replace the current ones; the chip in use, tapped again, switches them off.</summary>
         [RelayCommand]
-        private void ApplySavedFilter(SavedFilterChoice? choice)
+        private async Task ApplySavedFilterAsync(SavedFilterChoice? choice)
         {
-            if (choice != null)
-                Filters.Apply(choice.Filter);
+            if (choice == null)
+                return;
+
+            if (choice.IsActive)
+            {
+                Filters.ClearCommand.Execute(null);
+                return;
+            }
+
+            await UseSavedFilterAsync(choice.Filter);
+        }
+
+        /// <summary>Applies the preset without the categories, account or payee deleted since; says so when something went.</summary>
+        private async Task UseSavedFilterAsync(SavedFilter filter)
+        {
+            var categories = (await _categoryRepository.GetAllAsync()).Select(c => c.Id).ToHashSet();
+            var accounts = (await _accountRepository.GetAllAsync()).Select(a => a.Id).ToHashSet();
+            var payees = (await _payeeRepository.GetAllAsync()).Select(p => p.Id).ToHashSet();
+            var pruned = filter.Pruned(categories, accounts, payees, out var dropped);
+            Filters.Apply(pruned);
+            if (dropped)
+                await _dialogService.ToastAsync(AppResources.SavedFilterItemsGone);
         }
 
         /// <summary>The filter sheet's "Save this filter": asks for a name; a name in use is replaced.</summary>
@@ -326,20 +350,22 @@ namespace MoneyRecord.ViewModels
             if (choice == null)
                 return;
 
-            var answer = await _dialogService.ActionSheetAsync(choice.Name, AppResources.Cancel,
-                [AppResources.ApplyFilter, AppResources.Rename, AppResources.Delete]);
-            if (answer == AppResources.ApplyFilter)
+            // By position, not by the localized text
+            List<string> labels = [AppResources.ApplyFilter, AppResources.Rename, AppResources.Delete];
+            var answer = await _dialogService.ActionSheetAsync(choice.Name, AppResources.Cancel, labels);
+            var picked = answer == null ? -1 : labels.IndexOf(answer);
+            if (picked == 0)
             {
                 CloseFilter();
-                Filters.Apply(choice.Filter);
+                await UseSavedFilterAsync(choice.Filter);
                 return;
             }
 
-            if (answer == AppResources.Delete)
+            if (picked == 2)
             {
                 _savedFilterList.Remove(choice.Filter);
             }
-            else if (answer == AppResources.Rename)
+            else if (picked == 1)
             {
                 var name = await _dialogService.PromptAsync(AppResources.Rename, AppResources.SavedFilterNameHint,
                     AppResources.Save, AppResources.Cancel, choice.Name);
