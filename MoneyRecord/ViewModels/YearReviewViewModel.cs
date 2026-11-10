@@ -111,9 +111,9 @@ namespace MoneyRecord.ViewModels
             try
             {
                 IsLoading = true;
-                var year = Year;
-                var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(new DateTime(year, 1, 1),
-                    new DateTime(year, 12, 31).AddDays(1).AddTicks(-1));
+                var selectedYear = Year;
+                var transactionsTask = _enrichmentService.GetEnrichedTransactionsAsync(new DateTime(selectedYear, 1, 1),
+                    new DateTime(selectedYear, 12, 31).AddDays(1).AddTicks(-1));
                 var accountsTask = _accountRepository.GetAllAsync();
                 var categoriesTask = _categoryRepository.GetByTypeAsync(CategoryType.Expense);
                 var stateTask = _conversion.GetStateAsync();
@@ -132,7 +132,7 @@ namespace MoneyRecord.ViewModels
                 var firstDates = await firstDatesTask;
                 var firstYear = firstDates.Count == 0 ? Today.Year : firstDates.Values.Min().Year;
                 var categoryIds = (await categoriesTask).Select(c => c.Id);
-                var review = YearReviewBuilder.Build(year, shown.Transactions, categoryIds, shown.CurrencyCode,
+                var review = YearReviewBuilder.Build(selectedYear, shown.Transactions, categoryIds, shown.CurrencyCode,
                     shown.IsApproximate, AppResources.Unknown, Today);
 
                 _review = review;
@@ -173,34 +173,32 @@ namespace MoneyRecord.ViewModels
             {
                 var pdf = AppResources.YearShareAsPdf;
                 var text = AppResources.YearShareAsText;
-                var options = new List<string>();
+                var choices = new List<(string Label, bool Pdf, bool Amounts)>();
                 if (!_privacy.HideBalances)
-                    options.AddRange([pdf, text]);
-                options.AddRange([string.Format(AppResources.YearShareNoAmounts, pdf),
-                    string.Format(AppResources.YearShareNoAmounts, text)]);
+                    choices.AddRange([(pdf, true, true), (text, false, true)]);
+                choices.AddRange([(string.Format(AppResources.YearShareNoAmounts, pdf), true, false),
+                    (string.Format(AppResources.YearShareNoAmounts, text), false, false)]);
 
-                var choice = await _dialogs.ActionSheetAsync(AppResources.YearShareTitle, AppResources.Cancel, options);
-                var index = choice == null ? -1 : options.IndexOf(choice);
-                if (index < 0)
+                var choice = await _dialogs.ActionSheetAsync(AppResources.YearShareTitle, AppResources.Cancel,
+                    [.. choices.Select(c => c.Label)]);
+                var pick = choices.FirstOrDefault(c => c.Label == choice);
+                if (pick.Label == null)
                     return;
 
-                // The last two options are the ones without amounts
-                var withoutAmounts = index >= options.Count - 2;
-                var isPdf = options[index] == pdf || options[index] == string.Format(AppResources.YearShareNoAmounts, pdf);
-
+                var (isPdf, withAmounts) = (pick.Pdf, pick.Amounts);
                 if (isPdf)
                 {
                     var path = _sharer.NewCacheFile("MoneyRecord_Year", ".pdf");
                     await Task.Run(() =>
                     {
                         using var file = File.Create(path);
-                        YearReviewPdf.Write(review, !withoutAmounts, file);
+                        YearReviewPdf.Write(review, withAmounts, file);
                     });
                     await _sharer.ShareAsync(path, AppResources.YearShareTitle);
                 }
                 else
                 {
-                    await _sharer.ShareTextAsync(YearReviewSections.ToText(review, !withoutAmounts), AppResources.YearShareTitle);
+                    await _sharer.ShareTextAsync(YearReviewSections.ToText(review, withAmounts), AppResources.YearShareTitle);
                 }
             }
             catch (Exception ex)

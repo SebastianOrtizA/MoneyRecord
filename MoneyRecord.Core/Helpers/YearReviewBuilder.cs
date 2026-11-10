@@ -60,9 +60,16 @@ namespace MoneyRecord.Helpers
             var payees = PayeeReportBuilder.Build(expenses, TransactionType.Expense, noPayeeName)
                 .Payees.Where(p => p.PayeeId != null).Take(TopCount).ToList();
 
-            var months = expenses
-                .GroupBy(t => t.Date.Month)
-                .Select(g => new MonthSpending(g.Key, g.Sum(t => Math.Abs(t.Amount))))
+            // A new install has no days before its first entry, and the running year none after today
+            var first = inYear.Min(t => t.Date.Date);
+            var last = new DateTime(year, 12, 31);
+            if (today.Date < last)
+                last = today.Date;
+
+            // Every month from the first entry to year end or today counts, a month without spending as 0
+            var spentByMonth = expenses.GroupBy(t => t.Date.Month).ToDictionary(g => g.Key, g => g.Sum(t => Math.Abs(t.Amount)));
+            var months = Enumerable.Range(first.Month, Math.Max(0, last.Month - first.Month + 1))
+                .Select(m => new MonthSpending(m, spentByMonth.GetValueOrDefault(m)))
                 .ToList();
             // One month is no comparison
             var highest = months.Count > 1 ? months.OrderByDescending(m => m.Amount).ThenBy(m => m.Month).First() : null;
@@ -78,11 +85,6 @@ namespace MoneyRecord.Helpers
                 .ThenBy(x => x.Name, StringComparer.CurrentCultureIgnoreCase)
                 .FirstOrDefault();
 
-            // A new install has no days before its first entry, and the running year none after today
-            var first = inYear.Min(t => t.Date.Date);
-            var last = new DateTime(year, 12, 31);
-            if (today.Date < last)
-                last = today.Date;
             var spendDays = expenses.Select(t => t.Date.Date).Distinct().Count(d => d <= last);
             var counted = last >= first ? (last - first).Days + 1 : 0;
 

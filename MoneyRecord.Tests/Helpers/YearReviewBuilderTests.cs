@@ -45,13 +45,23 @@ public class YearReviewBuilderTests
     [Fact]
     public void Highest_and_lowest_spending_months_need_two_months()
     {
-        var one = Build([Entry(3, 1, 10), Entry(3, 2, 20)]);
+        var one = Build([Entry(3, 1, 10), Entry(3, 2, 20)], new DateTime(2026, 3, 31));
         one.HighestMonth.Should().BeNull();
         one.LowestMonth.Should().BeNull();
 
-        var two = Build([Entry(3, 1, 10), Entry(5, 2, 50), Entry(5, 3, 5), Entry(8, 1, 25)]);
+        var two = Build([Entry(3, 1, 10), Entry(5, 2, 50), Entry(5, 3, 5), Entry(8, 1, 25)], new DateTime(2026, 8, 31));
         two.HighestMonth.Should().Be(new MonthSpending(5, 55m));
-        two.LowestMonth.Should().Be(new MonthSpending(3, 10m));
+        two.LowestMonth.Should().Be(new MonthSpending(4, 0m));
+    }
+
+    [Fact]
+    public void A_month_without_spending_counts_as_the_lowest()
+    {
+        // March has no expense: it is the lowest, not February
+        var review = Build([Entry(1, 5, 30), Entry(2, 5, 10), Entry(4, 5, 20)], new DateTime(2026, 4, 30));
+
+        review.LowestMonth.Should().Be(new MonthSpending(3, 0m));
+        review.HighestMonth.Should().Be(new MonthSpending(1, 30m));
     }
 
     [Fact]

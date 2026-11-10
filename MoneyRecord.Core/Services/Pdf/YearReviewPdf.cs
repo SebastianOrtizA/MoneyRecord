@@ -54,10 +54,10 @@ namespace MoneyRecord.Services.Pdf
             section.PageSetup.LeftMargin = section.PageSetup.RightMargin = Margin;
             var width = pageWidth - Margin * 2;
 
-            var heard = section.AddParagraph(PdfFonts.Printable(title));
-            heard.Format.Font.Size = 24;
-            heard.Format.Font.Bold = true;
-            heard.Format.Font.Color = Primary;
+            var titleParagraph = section.AddParagraph(PdfFonts.Printable(title));
+            titleParagraph.Format.Font.Size = 24;
+            titleParagraph.Format.Font.Bold = true;
+            titleParagraph.Format.Font.Color = Primary;
 
             if (review.IsApproximate && includeAmounts)
             {
