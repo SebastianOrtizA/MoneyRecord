@@ -1,3 +1,7 @@
+## 1.4.3
+- Las monedas ahora muestran el símbolo que se usa localmente, como KSh para el chelín keniano, en lugar del código.
+- Corregido: cambiar la moneda de una cuenta existente no hacía nada y cerraba el formulario.
+
 ## 1.4.2
 - Ya están todas las monedas: la lista tiene las 159 monedas ISO, ordenadas por código, en lugar de 25.
 - Al elegir una moneda se abre una lista con un cuadro de búsqueda: escribe un código, un nombre o un símbolo.
