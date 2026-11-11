@@ -1,3 +1,6 @@
+## 1.4.1
+- Tendance par catégorie choisit désormais la catégorie dans une liste qui montre le total de chacune, au lieu d'un mur de pastilles quand vous avez beaucoup de catégories.
+
 ## 1.4.0
 - Nouveau centre de rapports (Plus → Plus de rapports) : Tendance par catégorie, Rapport des bénéficiaires, Étiquettes, Rapport des comptes, Comparer des périodes et Bilan de l'année.
 - Tendance par catégorie montre l'évolution mois par mois des dépenses des catégories choisies.
