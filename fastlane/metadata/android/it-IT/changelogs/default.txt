@@ -1,1 +1,1 @@
-Andamento per categoria: scegli la categoria da un elenco, così un lungo elenco di categorie non riempie più lo schermo.
+Ora sono disponibili tutte le valute, ordinate per codice, e scegliendone una c'è una casella di ricerca: scrivi un codice, un nome o un simbolo.

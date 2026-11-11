@@ -1,3 +1,7 @@
+## 1.4.2
+- Every currency is now available: the list has all 159 ISO currencies, sorted by code, instead of 25.
+- Picking a currency opens a list with a search box: type a code, a name or a symbol.
+
 ## 1.4.1
 - Category trend now picks the category from a list that shows each one's total, instead of a wall of chips when you have many categories.
 
