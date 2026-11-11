@@ -1,3 +1,7 @@
+## 1.4.2
+- Ya están todas las monedas: la lista tiene las 159 monedas ISO, ordenadas por código, en lugar de 25.
+- Al elegir una moneda se abre una lista con un cuadro de búsqueda: escribe un código, un nombre o un símbolo.
+
 ## 1.4.1
 - Tendencia por categoría ahora elige la categoría desde una lista que muestra el total de cada una, en lugar de un muro de chips cuando tienes muchas categorías.
 

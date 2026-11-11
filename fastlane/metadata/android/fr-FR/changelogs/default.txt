@@ -1,1 +1,1 @@
-Tendance par catégorie : choisissez la catégorie dans une liste, pour qu'une longue liste de catégories ne remplisse plus l'écran.
+Toutes les devises sont désormais disponibles, triées par code, et leur choix offre une zone de recherche : saisissez un code, un nom ou un symbole.
