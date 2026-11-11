@@ -1,1 +1,1 @@
-Nouveaux rapports dans Plus → Plus de rapports (tendance par catégorie, bénéficiaires, étiquettes, comptes, comparer des périodes, bilan de l'année), plusieurs catégories dans le filtre des Transactions et filtres enregistrés applicables d'un geste.
+Tendance par catégorie : choisissez la catégorie dans une liste, pour qu'une longue liste de catégories ne remplisse plus l'écran.

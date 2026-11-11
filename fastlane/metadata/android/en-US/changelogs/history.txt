@@ -1,3 +1,6 @@
+## 1.4.1
+- Category trend now picks the category from a list that shows each one's total, instead of a wall of chips when you have many categories.
+
 ## 1.4.0
 - New reports hub (More → More reports): Category trend, Payee report, Tags, Account report, Compare periods and Year in review.
 - Category trend shows how spending in the categories you pick moves month by month.

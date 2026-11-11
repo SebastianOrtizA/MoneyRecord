@@ -1,3 +1,6 @@
+## 1.4.1
+- Tendencia por categoría ahora elige la categoría desde una lista que muestra el total de cada una, en lugar de un muro de chips cuando tienes muchas categorías.
+
 ## 1.4.0
 - Nuevo centro de informes (Más → Más informes): Tendencia por categoría, Informe de beneficiarios, Etiquetas, Informe de cuentas, Comparar periodos y Resumen del año.
 - Tendencia por categoría muestra cómo evoluciona mes a mes el gasto de las categorías que elijas.
