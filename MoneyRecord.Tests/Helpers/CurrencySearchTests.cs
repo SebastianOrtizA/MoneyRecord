@@ -49,4 +49,11 @@ public class CurrencySearchTests
     {
         CurrencySearch.Filter(All, "zzz").Should().BeEmpty();
     }
+
+    [Fact]
+    public void A_currency_shows_its_symbol_unless_it_is_the_code()
+    {
+        All[2].ToString().Should().Be("EUR (€) - Euro");
+        All[4].ToString().Should().Be("STN - São Tomé and Príncipe Dobra");
+    }
 }

@@ -235,10 +235,12 @@ namespace MoneyRecord.Services
         /// (the three-decimal dinars and rials stay at 2: storage is always in cents).
         /// Storage is always in cents (see <see cref="Money"/>).
         /// </summary>
-        public static int GetMinorUnits(string? code) => code?.ToUpperInvariant() switch
+        public static int GetMinorUnits(string? code) => code != null && _wholeUnitCodes.Contains(code) ? 0 : 2;
+
+        /// <summary>The currencies without a minor unit (ISO 4217 exponent 0).</summary>
+        private static readonly HashSet<string> _wholeUnitCodes = new(StringComparer.OrdinalIgnoreCase)
         {
-            "JPY" or "CLP" or "KRW" or "BIF" or "DJF" or "GNF" or "ISK" or "KMF" or "PYG" or "RWF" or "UGX" or "VND" or "VUV" or "XAF" or "XOF" or "XPF" => 0,
-            _ => 2
+            "BIF", "CLP", "DJF", "GNF", "ISK", "JPY", "KMF", "KRW", "PYG", "RWF", "UGX", "VND", "VUV", "XAF", "XOF", "XPF"
         };
 
         /// <summary>
