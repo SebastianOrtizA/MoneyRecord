@@ -38,15 +38,19 @@ namespace MoneyRecord.Controls
 
         private void ShowSelection() => ValueLabel.Text = SelectedItem?.ToString() ?? AppResources.SelectCurrency;
 
-        private bool _isOpen;
+        /// <summary>
+        /// A currency list is open. The page under it gets OnDisappearing, which must not close the sheet the picker belongs
+        /// to (the account form), or the pick would land on a form that is gone.
+        /// </summary>
+        public static bool IsPicking { get; private set; }
 
         private async void OnTapped(object? sender, TappedEventArgs e)
         {
             // A quick double tap must not stack two lists
-            if (ItemsSource == null || _isOpen)
+            if (ItemsSource == null || IsPicking)
                 return;
 
-            _isOpen = true;
+            IsPicking = true;
             try
             {
                 var page = new CurrencyPickerPage(ItemsSource);
@@ -57,7 +61,7 @@ namespace MoneyRecord.Controls
             }
             finally
             {
-                _isOpen = false;
+                IsPicking = false;
             }
         }
     }
