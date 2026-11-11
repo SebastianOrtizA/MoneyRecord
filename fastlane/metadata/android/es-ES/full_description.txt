@@ -1,4 +1,4 @@
-MoneyRecord es una app sencilla y privada para llevar tus cuentas. Registra lo que gastas y ganas, mira a dónde va tu dinero, cumple tu presupuesto y ahorra para tus metas. Tus datos se quedan en tu teléfono: sin registro, sin anuncios.
+MoneyRecord es una app sencilla, gratuita y privada para llevar tus cuentas. Registra lo que gastas y ganas, mira a dónde va tu dinero, cumple tu presupuesto y ahorra para tus metas. Tus datos se quedan en tu teléfono: sin registro, sin anuncios.
 
 <b>Registro rápido</b>
 • Añade un gasto, un ingreso o una transferencia en pocos toques: primero el importe, luego la categoría en una cuadrícula que pone primero las que más usas.
