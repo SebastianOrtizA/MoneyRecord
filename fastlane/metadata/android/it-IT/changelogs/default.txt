@@ -1,1 +1,1 @@
-Nuovi report in Altro → Altri report (andamento per categoria, beneficiari, tag, conti, confronta periodi, riepilogo dell'anno), più categorie nel filtro delle Transazioni e filtri salvati da applicare con un tocco.
+Andamento per categoria: scegli la categoria da un elenco, così un lungo elenco di categorie non riempie più lo schermo.

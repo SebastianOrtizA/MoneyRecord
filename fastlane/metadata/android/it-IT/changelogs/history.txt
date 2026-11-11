@@ -1,3 +1,6 @@
+## 1.4.1
+- Andamento per categoria ora sceglie la categoria da un elenco che mostra il totale di ciascuna, invece di un muro di chip quando hai molte categorie.
+
 ## 1.4.0
 - Nuovo hub dei report (Altro → Altri report): Andamento per categoria, Report dei beneficiari, Tag, Report dei conti, Confronta periodi e Riepilogo dell'anno.
 - Andamento per categoria mostra come cambia mese per mese la spesa delle categorie scelte.

@@ -1,1 +1,1 @@
-New reports under More → More reports (category trend, payees, tags, accounts, compare periods, year in review), several categories in the Transactions filter, and saved filters you can apply with one tap.
+Category trend: choose the category from a list, so a long category list no longer fills the screen.
