@@ -1,3 +1,6 @@
+## 1.4.1
+- Tendência por categoria agora escolhe a categoria em uma lista que mostra o total de cada uma, em vez de uma parede de chips quando você tem muitas categorias.
+
 ## 1.4.0
 - Nova central de relatórios (Mais → Mais relatórios): Tendência por categoria, Relatório de favorecidos, Tags, Relatório de contas, Comparar períodos e Resumo do ano.
 - Tendência por categoria mostra como o gasto das categorias escolhidas evolui mês a mês.

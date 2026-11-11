@@ -1,1 +1,1 @@
-Novos relatórios em Mais → Mais relatórios (tendência por categoria, favorecidos, tags, contas, comparar períodos e resumo do ano), várias categorias no filtro de Transações e filtros salvos que se aplicam com um toque.
+Tendência por categoria: escolha a categoria em uma lista, para que uma lista longa de categorias não ocupe a tela.
