@@ -10,8 +10,8 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.ViewModels
 {
-    /// <summary>A category chip of the trend report.</summary>
-    public sealed record TrendCategoryChoice(int Id, string Name, bool IsSelected);
+    /// <summary>A category of the trend report's picker: its icon, its total in the window and whether it is the one shown.</summary>
+    public sealed record TrendCategoryChoice(int Id, string Name, string DisplayIcon, string AmountText, bool IsSelected);
 
     /// <summary>A month of the trend report's list.</summary>
     public sealed record TrendMonthRow(int Index, string Label, string AmountText);
@@ -40,6 +40,12 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private string categoryName = string.Empty;
+
+        [ObservableProperty]
+        private string selectedIcon = string.Empty;
+
+        [ObservableProperty]
+        private bool isPickerOpen;
 
         [ObservableProperty]
         private string averageText = string.Empty;
@@ -81,8 +87,10 @@ namespace MoneyRecord.ViewModels
                 .ToList();
             var selected = categories.FirstOrDefault(c => c.Id == _categoryId) ?? categories.FirstOrDefault();
             _categoryId = selected?.Id;
-            Choices = [.. categories.Select(c => new TrendCategoryChoice(c.Id, c.Name, c.Id == selected?.Id))];
+            Choices = [.. categories.Select(c => new TrendCategoryChoice(c.Id, c.Name, c.DisplayIcon,
+                shown.FormatAmount(totals.GetValueOrDefault(c.Id)), c.Id == selected?.Id))];
             CategoryName = selected?.Name ?? string.Empty;
+            SelectedIcon = selected?.DisplayIcon ?? string.Empty;
 
             var trend = CategoryTrendBuilder.Build(transactions, type, selected?.Id ?? 0, firstMonth, months);
             HasData = trend.HasData;
@@ -118,8 +126,25 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
+        private void OpenPicker() => IsPickerOpen = Choices.Count > 0;
+
+        [RelayCommand]
+        private void ClosePicker() => IsPickerOpen = false;
+
+        /// <summary>Back closes the picker first; false when it was not open.</summary>
+        public bool TryClosePicker()
+        {
+            if (!IsPickerOpen)
+                return false;
+
+            IsPickerOpen = false;
+            return true;
+        }
+
+        [RelayCommand]
         private void SelectCategory(TrendCategoryChoice? choice)
         {
+            IsPickerOpen = false;
             if (choice == null || choice.Id == _categoryId)
                 return;
 
