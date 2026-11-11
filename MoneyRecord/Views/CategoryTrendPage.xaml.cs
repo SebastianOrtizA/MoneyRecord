@@ -1,8 +1,9 @@
+using MoneyRecord.Controls;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
 {
-    public partial class CategoryTrendPage : ContentPage
+    public partial class CategoryTrendPage : ContentPage, IOverlayHost
     {
         private readonly CategoryTrendViewModel _viewModel;
 
@@ -23,6 +24,9 @@ namespace MoneyRecord.Views
         {
             base.OnDisappearing();
             _viewModel.Deactivate();
+            _viewModel.TryClosePicker();
         }
+
+        public bool TryCloseOverlay() => _viewModel.TryClosePicker();
     }
 }
