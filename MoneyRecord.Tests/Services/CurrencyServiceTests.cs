@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using NSubstitute;
 using MoneyRecord.Services;
 using System.Globalization;
 using Xunit;
@@ -26,10 +27,17 @@ public class CurrencyServiceTests
     }
 
     [Fact]
-    public void GetCurrencyCode_UnsupportedCurrency_FallsBackToUsd()
+    public void GetCurrencyCode_CoversCurrenciesOutsideTheCommonOnes()
     {
-        // Thai baht is not in the supported currency list
-        CurrencyService.GetCurrencyCode(new CultureInfo("th-TH")).Should().Be("USD");
+        CurrencyService.GetCurrencyCode(new CultureInfo("th-TH")).Should().Be("THB");
+    }
+
+    [Fact]
+    public void TheListIsSortedByCode_WithoutDuplicates()
+    {
+        var codes = new CurrencyService(Substitute.For<IPreferencesService>()).GetAvailableCurrencies().Select(c => c.Code).ToList();
+
+        codes.Should().BeInAscendingOrder(StringComparer.Ordinal).And.OnlyHaveUniqueItems().And.Contain(["USD", "THB", "VND"]);
     }
 
     [Fact]

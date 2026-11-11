@@ -77,11 +77,8 @@
                             MinimumHeightRequest="44" />
 
                     <Label Text="{ext:Localize BaseCurrency}" FontSize="14" Margin="0,8,0,0" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
-                    <Picker ItemsSource="{Binding Currencies}"
-                            SelectedItem="{Binding BaseCurrency}"
-                            Title="{ext:Localize SelectCurrency}"
-                            FontSize="16"
-                            MinimumHeightRequest="44" />
+                    <controls:CurrencyPicker ItemsSource="{Binding Currencies}"
+                                             SelectedItem="{Binding BaseCurrency}" />
                     <Label Text="{ext:Localize BaseCurrencyDescription}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
                 </VerticalStackLayout>
 

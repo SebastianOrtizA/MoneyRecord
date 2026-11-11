@@ -7,7 +7,8 @@ namespace MoneyRecord.Services
 {
     public class CurrencyService : ICurrencyService
     {
-        private static readonly List<Currency> _currencies = new()
+        /// <summary>Every ISO 4217 currency in use, sorted by code (the pickers show the code first).</summary>
+        private static readonly List<Currency> _currencies = new List<Currency>
         {
             new() { Code = "USD", Symbol = "$", Name = "US Dollar" },
             new() { Code = "EUR", Symbol = "€", Name = "Euro" },
@@ -34,7 +35,136 @@ namespace MoneyRecord.Services
             new() { Code = "NZD", Symbol = "$", Name = "New Zealand Dollar" },
             new() { Code = "SGD", Symbol = "$", Name = "Singapore Dollar" },
             new() { Code = "HKD", Symbol = "$", Name = "Hong Kong Dollar" },
-        };
+            new() { Code = "AED", Symbol = "AED", Name = "UAE Dirham" },
+            new() { Code = "AFN", Symbol = "AFN", Name = "Afghan Afghani" },
+            new() { Code = "ALL", Symbol = "ALL", Name = "Albanian Lek" },
+            new() { Code = "AMD", Symbol = "AMD", Name = "Armenian Dram" },
+            new() { Code = "ANG", Symbol = "ANG", Name = "Netherlands Antillean Guilder" },
+            new() { Code = "AOA", Symbol = "AOA", Name = "Angolan Kwanza" },
+            new() { Code = "AWG", Symbol = "AWG", Name = "Aruban Florin" },
+            new() { Code = "AZN", Symbol = "AZN", Name = "Azerbaijani Manat" },
+            new() { Code = "BAM", Symbol = "BAM", Name = "Bosnia-Herzegovina Convertible Mark" },
+            new() { Code = "BBD", Symbol = "BBD", Name = "Barbadian Dollar" },
+            new() { Code = "BDT", Symbol = "BDT", Name = "Bangladeshi Taka" },
+            new() { Code = "BGN", Symbol = "BGN", Name = "Bulgarian Lev" },
+            new() { Code = "BHD", Symbol = "BHD", Name = "Bahraini Dinar" },
+            new() { Code = "BIF", Symbol = "BIF", Name = "Burundian Franc" },
+            new() { Code = "BMD", Symbol = "BMD", Name = "Bermudian Dollar" },
+            new() { Code = "BND", Symbol = "BND", Name = "Brunei Dollar" },
+            new() { Code = "BOB", Symbol = "Bs", Name = "Bolivian Boliviano" },
+            new() { Code = "BSD", Symbol = "BSD", Name = "Bahamian Dollar" },
+            new() { Code = "BTN", Symbol = "BTN", Name = "Bhutanese Ngultrum" },
+            new() { Code = "BWP", Symbol = "BWP", Name = "Botswana Pula" },
+            new() { Code = "BYN", Symbol = "BYN", Name = "Belarusian Ruble" },
+            new() { Code = "BZD", Symbol = "BZD", Name = "Belize Dollar" },
+            new() { Code = "CDF", Symbol = "CDF", Name = "Congolese Franc" },
+            new() { Code = "CRC", Symbol = "₡", Name = "Costa Rican Colón" },
+            new() { Code = "CUP", Symbol = "CUP", Name = "Cuban Peso" },
+            new() { Code = "CVE", Symbol = "CVE", Name = "Cape Verdean Escudo" },
+            new() { Code = "CZK", Symbol = "Kč", Name = "Czech Koruna" },
+            new() { Code = "DJF", Symbol = "DJF", Name = "Djiboutian Franc" },
+            new() { Code = "DOP", Symbol = "RD$", Name = "Dominican Peso" },
+            new() { Code = "DZD", Symbol = "DZD", Name = "Algerian Dinar" },
+            new() { Code = "EGP", Symbol = "EGP", Name = "Egyptian Pound" },
+            new() { Code = "ERN", Symbol = "ERN", Name = "Eritrean Nakfa" },
+            new() { Code = "ETB", Symbol = "ETB", Name = "Ethiopian Birr" },
+            new() { Code = "FJD", Symbol = "FJD", Name = "Fijian Dollar" },
+            new() { Code = "FKP", Symbol = "FKP", Name = "Falkland Islands Pound" },
+            new() { Code = "GEL", Symbol = "GEL", Name = "Georgian Lari" },
+            new() { Code = "GHS", Symbol = "GHS", Name = "Ghanaian Cedi" },
+            new() { Code = "GIP", Symbol = "GIP", Name = "Gibraltar Pound" },
+            new() { Code = "GMD", Symbol = "GMD", Name = "Gambian Dalasi" },
+            new() { Code = "GNF", Symbol = "GNF", Name = "Guinean Franc" },
+            new() { Code = "GTQ", Symbol = "Q", Name = "Guatemalan Quetzal" },
+            new() { Code = "GYD", Symbol = "GYD", Name = "Guyanese Dollar" },
+            new() { Code = "HNL", Symbol = "L", Name = "Honduran Lempira" },
+            new() { Code = "HTG", Symbol = "HTG", Name = "Haitian Gourde" },
+            new() { Code = "HUF", Symbol = "Ft", Name = "Hungarian Forint" },
+            new() { Code = "IDR", Symbol = "Rp", Name = "Indonesian Rupiah" },
+            new() { Code = "ILS", Symbol = "₪", Name = "Israeli New Shekel" },
+            new() { Code = "IQD", Symbol = "IQD", Name = "Iraqi Dinar" },
+            new() { Code = "IRR", Symbol = "IRR", Name = "Iranian Rial" },
+            new() { Code = "ISK", Symbol = "ISK", Name = "Icelandic Króna" },
+            new() { Code = "JMD", Symbol = "JMD", Name = "Jamaican Dollar" },
+            new() { Code = "JOD", Symbol = "JOD", Name = "Jordanian Dinar" },
+            new() { Code = "KES", Symbol = "KES", Name = "Kenyan Shilling" },
+            new() { Code = "KGS", Symbol = "KGS", Name = "Kyrgyzstani Som" },
+            new() { Code = "KHR", Symbol = "KHR", Name = "Cambodian Riel" },
+            new() { Code = "KMF", Symbol = "KMF", Name = "Comorian Franc" },
+            new() { Code = "KPW", Symbol = "KPW", Name = "North Korean Won" },
+            new() { Code = "KWD", Symbol = "KWD", Name = "Kuwaiti Dinar" },
+            new() { Code = "KYD", Symbol = "KYD", Name = "Cayman Islands Dollar" },
+            new() { Code = "KZT", Symbol = "₸", Name = "Kazakhstani Tenge" },
+            new() { Code = "LAK", Symbol = "LAK", Name = "Laotian Kip" },
+            new() { Code = "LBP", Symbol = "LBP", Name = "Lebanese Pound" },
+            new() { Code = "LKR", Symbol = "LKR", Name = "Sri Lankan Rupee" },
+            new() { Code = "LRD", Symbol = "LRD", Name = "Liberian Dollar" },
+            new() { Code = "LSL", Symbol = "LSL", Name = "Lesotho Loti" },
+            new() { Code = "LYD", Symbol = "LYD", Name = "Libyan Dinar" },
+            new() { Code = "MAD", Symbol = "MAD", Name = "Moroccan Dirham" },
+            new() { Code = "MDL", Symbol = "MDL", Name = "Moldovan Leu" },
+            new() { Code = "MGA", Symbol = "MGA", Name = "Malagasy Ariary" },
+            new() { Code = "MKD", Symbol = "MKD", Name = "Macedonian Denar" },
+            new() { Code = "MMK", Symbol = "MMK", Name = "Myanmar Kyat" },
+            new() { Code = "MNT", Symbol = "MNT", Name = "Mongolian Tugrik" },
+            new() { Code = "MOP", Symbol = "MOP", Name = "Macanese Pataca" },
+            new() { Code = "MRU", Symbol = "MRU", Name = "Mauritanian Ouguiya" },
+            new() { Code = "MUR", Symbol = "MUR", Name = "Mauritian Rupee" },
+            new() { Code = "MVR", Symbol = "MVR", Name = "Maldivian Rufiyaa" },
+            new() { Code = "MWK", Symbol = "MWK", Name = "Malawian Kwacha" },
+            new() { Code = "MYR", Symbol = "RM", Name = "Malaysian Ringgit" },
+            new() { Code = "MZN", Symbol = "MZN", Name = "Mozambican Metical" },
+            new() { Code = "NAD", Symbol = "NAD", Name = "Namibian Dollar" },
+            new() { Code = "NGN", Symbol = "₦", Name = "Nigerian Naira" },
+            new() { Code = "NIO", Symbol = "C$", Name = "Nicaraguan Córdoba" },
+            new() { Code = "NPR", Symbol = "NPR", Name = "Nepalese Rupee" },
+            new() { Code = "OMR", Symbol = "OMR", Name = "Omani Rial" },
+            new() { Code = "PAB", Symbol = "B/.", Name = "Panamanian Balboa" },
+            new() { Code = "PGK", Symbol = "PGK", Name = "Papua New Guinean Kina" },
+            new() { Code = "PHP", Symbol = "₱", Name = "Philippine Peso" },
+            new() { Code = "PKR", Symbol = "PKR", Name = "Pakistani Rupee" },
+            new() { Code = "PYG", Symbol = "₲", Name = "Paraguayan Guarani" },
+            new() { Code = "QAR", Symbol = "QAR", Name = "Qatari Riyal" },
+            new() { Code = "RON", Symbol = "lei", Name = "Romanian Leu" },
+            new() { Code = "RSD", Symbol = "RSD", Name = "Serbian Dinar" },
+            new() { Code = "RUB", Symbol = "₽", Name = "Russian Ruble" },
+            new() { Code = "RWF", Symbol = "RWF", Name = "Rwandan Franc" },
+            new() { Code = "SAR", Symbol = "SAR", Name = "Saudi Riyal" },
+            new() { Code = "SBD", Symbol = "SBD", Name = "Solomon Islands Dollar" },
+            new() { Code = "SCR", Symbol = "SCR", Name = "Seychellois Rupee" },
+            new() { Code = "SDG", Symbol = "SDG", Name = "Sudanese Pound" },
+            new() { Code = "SHP", Symbol = "SHP", Name = "Saint Helena Pound" },
+            new() { Code = "SLE", Symbol = "SLE", Name = "Sierra Leonean Leone" },
+            new() { Code = "SOS", Symbol = "SOS", Name = "Somali Shilling" },
+            new() { Code = "SRD", Symbol = "SRD", Name = "Surinamese Dollar" },
+            new() { Code = "SSP", Symbol = "SSP", Name = "South Sudanese Pound" },
+            new() { Code = "STN", Symbol = "STN", Name = "São Tomé and Príncipe Dobra" },
+            new() { Code = "SYP", Symbol = "SYP", Name = "Syrian Pound" },
+            new() { Code = "SZL", Symbol = "SZL", Name = "Swazi Lilangeni" },
+            new() { Code = "THB", Symbol = "฿", Name = "Thai Baht" },
+            new() { Code = "TJS", Symbol = "TJS", Name = "Tajikistani Somoni" },
+            new() { Code = "TMT", Symbol = "TMT", Name = "Turkmenistani Manat" },
+            new() { Code = "TND", Symbol = "TND", Name = "Tunisian Dinar" },
+            new() { Code = "TOP", Symbol = "TOP", Name = "Tongan Paʻanga" },
+            new() { Code = "TTD", Symbol = "TTD", Name = "Trinidad and Tobago Dollar" },
+            new() { Code = "TWD", Symbol = "NT$", Name = "New Taiwan Dollar" },
+            new() { Code = "TZS", Symbol = "TZS", Name = "Tanzanian Shilling" },
+            new() { Code = "UAH", Symbol = "₴", Name = "Ukrainian Hryvnia" },
+            new() { Code = "UGX", Symbol = "UGX", Name = "Ugandan Shilling" },
+            new() { Code = "UYU", Symbol = "$U", Name = "Uruguayan Peso" },
+            new() { Code = "UZS", Symbol = "UZS", Name = "Uzbekistani Som" },
+            new() { Code = "VES", Symbol = "VES", Name = "Venezuelan Bolívar" },
+            new() { Code = "VND", Symbol = "₫", Name = "Vietnamese Dong" },
+            new() { Code = "VUV", Symbol = "VUV", Name = "Vanuatu Vatu" },
+            new() { Code = "WST", Symbol = "WST", Name = "Samoan Tala" },
+            new() { Code = "XAF", Symbol = "XAF", Name = "Central African CFA Franc" },
+            new() { Code = "XCD", Symbol = "XCD", Name = "East Caribbean Dollar" },
+            new() { Code = "XOF", Symbol = "XOF", Name = "West African CFA Franc" },
+            new() { Code = "XPF", Symbol = "XPF", Name = "CFP Franc" },
+            new() { Code = "YER", Symbol = "YER", Name = "Yemeni Rial" },
+            new() { Code = "ZMW", Symbol = "ZMW", Name = "Zambian Kwacha" },
+            new() { Code = "ZWG", Symbol = "ZWG", Name = "Zimbabwe Gold" },
+        }.OrderBy(c => c.Code, StringComparer.Ordinal).ToList();
 
         private static readonly Dictionary<string, Currency> _currencyMap =
             _currencies.ToDictionary(c => c.Code, StringComparer.OrdinalIgnoreCase);
@@ -101,13 +231,16 @@ namespace MoneyRecord.Services
         public static bool HasSharedSymbol(string code) => _sharedSymbols.Contains(GetSymbol(code));
 
         /// <summary>
-        /// Decimal places shown and accepted for a currency: 0 for JPY, CLP and KRW, otherwise 2.
+        /// Decimal places shown and accepted for a currency: 0 for JPY, CLP, KRW and the other whole-unit currencies, otherwise 2
+        /// (the three-decimal dinars and rials stay at 2: storage is always in cents).
         /// Storage is always in cents (see <see cref="Money"/>).
         /// </summary>
-        public static int GetMinorUnits(string? code) => code?.ToUpperInvariant() switch
+        public static int GetMinorUnits(string? code) => code != null && _wholeUnitCodes.Contains(code) ? 0 : 2;
+
+        /// <summary>The currencies without a minor unit (ISO 4217 exponent 0).</summary>
+        private static readonly HashSet<string> _wholeUnitCodes = new(StringComparer.OrdinalIgnoreCase)
         {
-            "JPY" or "CLP" or "KRW" => 0,
-            _ => 2
+            "BIF", "CLP", "DJF", "GNF", "ISK", "JPY", "KMF", "KRW", "PYG", "RWF", "UGX", "VND", "VUV", "XAF", "XOF", "XPF"
         };
 
         /// <summary>

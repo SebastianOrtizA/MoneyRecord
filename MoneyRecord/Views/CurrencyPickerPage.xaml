@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Picks a currency from a long list, with a search box (the CurrencyPicker control opens it as a modal page) -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:models="clr-namespace:MoneyRecord.Models;assembly=MoneyRecord.Core"
+             x:Class="MoneyRecord.Views.CurrencyPickerPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16,16,16,0" RowSpacing="8">
+        <Grid ColumnDefinitions="*,Auto">
+            <Label Text="{ext:Localize SelectCurrency}" FontSize="20" FontAttributes="Bold" VerticalOptions="Center" />
+            <Button Grid.Column="1" Text="{ext:Localize Cancel}" Clicked="OnCancelClicked" BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" />
+        </Grid>
+
+        <SearchBar x:Name="SearchBox" Grid.Row="1"
+                   Placeholder="{ext:Localize SearchCurrencies}"
+                   TextChanged="OnSearchChanged"
+                   FontSize="14"
+                   HeightRequest="44"
+                   BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}" />
+
+        <CollectionView x:Name="Results" Grid.Row="2" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Currency">
+                    <Grid ColumnDefinitions="64,*" ColumnSpacing="8" MinimumHeightRequest="52">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCurrencyTapped" />
+                        </Grid.GestureRecognizers>
+                        <Label Text="{Binding Code}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="{Binding Name}" FontSize="15" LineBreakMode="TailTruncation" />
+                            <Label Text="{Binding Symbol}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
