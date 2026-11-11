@@ -1,1 +1,1 @@
-Toutes les devises sont désormais disponibles, triées par code, et leur choix offre une zone de recherche : saisissez un code, un nom ou un symbole.
+Les devises affichent désormais leur symbole local (KSh pour le shilling kényan, Rs, Tk et plus) et changer la devise d'un compte fonctionne de nouveau.
