@@ -22,6 +22,8 @@ public class CurrencyFormattingTests : IDisposable
     [InlineData("JPY", 0)]
     [InlineData("clp", 0)]
     [InlineData("KRW", 0)]
+    [InlineData("vnd", 0)]
+    [InlineData("KWD", 2)]
     [InlineData("USD", 2)]
     [InlineData("COP", 2)]
     public void GetMinorUnits(string code, int expected)

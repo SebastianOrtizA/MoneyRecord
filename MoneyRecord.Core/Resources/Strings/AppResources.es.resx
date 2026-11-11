@@ -2945,6 +2945,9 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SearchCategories" xml:space="preserve">
     <value>Buscar categorías</value>
   </data>
+  <data name="SearchCurrencies" xml:space="preserve">
+    <value>Buscar monedas</value>
+  </data>
   <data name="SearchAccounts" xml:space="preserve">
     <value>Buscar cuentas</value>
   </data>

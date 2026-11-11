@@ -2948,6 +2948,9 @@
   <data name="SearchCategories" xml:space="preserve">
     <value>Search categories</value>
   </data>
+  <data name="SearchCurrencies" xml:space="preserve">
+    <value>Search currencies</value>
+  </data>
   <data name="SearchAccounts" xml:space="preserve">
     <value>Search accounts</value>
   </data>

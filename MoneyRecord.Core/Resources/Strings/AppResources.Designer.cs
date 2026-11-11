@@ -8388,6 +8388,15 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("SearchCategories", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search currencies.
+        /// </summary>
+        public static string SearchCurrencies {
+            get {
+                return ResourceManager.GetString("SearchCurrencies", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Search accounts.
