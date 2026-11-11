@@ -1,3 +1,7 @@
+## 1.4.2
+- Toutes les devises sont désormais disponibles : la liste contient les 159 devises ISO, triées par code, au lieu de 25.
+- Choisir une devise ouvre une liste avec une zone de recherche : saisissez un code, un nom ou un symbole.
+
 ## 1.4.1
 - Tendance par catégorie choisit désormais la catégorie dans une liste qui montre le total de chacune, au lieu d'un mur de pastilles quand vous avez beaucoup de catégories.
 

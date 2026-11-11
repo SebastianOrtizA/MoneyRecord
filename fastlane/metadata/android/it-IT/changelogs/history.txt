@@ -1,3 +1,7 @@
+## 1.4.2
+- Ora sono disponibili tutte le valute: l'elenco ha tutte le 159 valute ISO, ordinate per codice, invece di 25.
+- Scegliendo una valuta si apre un elenco con una casella di ricerca: scrivi un codice, un nome o un simbolo.
+
 ## 1.4.1
 - Andamento per categoria ora sceglie la categoria da un elenco che mostra il totale di ciascuna, invece di un muro di chip quando hai molte categorie.
 

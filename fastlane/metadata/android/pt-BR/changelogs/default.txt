@@ -1,1 +1,1 @@
-Tendência por categoria: escolha a categoria em uma lista, para que uma lista longa de categorias não ocupe a tela.
+Agora todas as moedas estão disponíveis, ordenadas por código, e ao escolher uma há uma caixa de busca: digite um código, um nome ou um símbolo.
