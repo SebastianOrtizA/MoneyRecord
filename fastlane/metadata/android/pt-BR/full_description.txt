@@ -1,4 +1,4 @@
-O MoneyRecord é um controle financeiro simples e privado. Registre o que você gasta e ganha, veja para onde vai seu dinheiro, siga seu orçamento e economize para suas metas. Seus dados ficam no seu celular: sem cadastro, sem anúncios.
+O MoneyRecord é um controle financeiro simples, gratuito e privado. Registre o que você gasta e ganha, veja para onde vai seu dinheiro, siga seu orçamento e economize para suas metas. Seus dados ficam no seu celular: sem cadastro, sem anúncios.
 
 <b>Lançamento rápido</b>
 • Adicione uma despesa, receita ou transferência em poucos toques: primeiro o valor, depois a categoria numa grade que mostra as mais recentes primeiro.
