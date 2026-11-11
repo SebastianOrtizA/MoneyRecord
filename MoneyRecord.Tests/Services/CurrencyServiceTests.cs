@@ -56,4 +56,26 @@ public class CurrencyServiceTests
             CultureInfo.CurrentCulture = original;
         }
     }
+
+    [Theory]
+    [InlineData("KES", "KSh")]
+    [InlineData("UGX", "USh")]
+    [InlineData("EGP", "E£")]
+    [InlineData("AED", "AED")]
+    public void A_currency_shows_its_local_symbol_or_else_its_code(string code, string symbol)
+    {
+        CurrencyService.GetSymbol(code).Should().Be(symbol);
+    }
+
+    [Theory]
+    [InlineData("GBP")]
+    [InlineData("EUR")]
+    [InlineData("INR")]
+    [InlineData("KES")]
+    [InlineData("BRL")]
+    public void A_major_currency_symbol_is_not_taken_by_a_minor_one(string code)
+    {
+        // A shared symbol makes the app add the code after every amount outside the base currency
+        CurrencyService.HasSharedSymbol(code).Should().BeFalse();
+    }
 }
