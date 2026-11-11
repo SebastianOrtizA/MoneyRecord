@@ -88,6 +88,7 @@ Other known spots (device pixels):
 - Add Expense / Income form: the amount is focused with the keypad open (type, then `back` to close it); category grid
   row 1 at y=760 (x = 175 / 420 / 663 / 907), row 2 at y=980; Save is pinned at (540,2242); "More details" (540,1698)
   opens description, tags, receipt and recurrence.
+- Category trend (More reports, row y=330): the category selector row is at (540,700) and opens a bottom sheet; its rows start at y≈740, step ~126 px.
 - Alert OK button: about (906, alert bottom − 70).
 
 `uiautomator dump` returns nothing useful for MAUI views, so a screen can only be read from an image: follow the screenshot policy above.
