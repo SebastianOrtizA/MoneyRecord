@@ -11,6 +11,7 @@
              x:DataType="viewmodels:CategoryTrendViewModel"
              Title="{ext:Localize CategoryTrend}">
 
+    <Grid>
     <RefreshView IsRefreshing="{Binding IsLoading}"
                  Command="{Binding LoadCommand}">
         <ScrollView>
@@ -25,16 +26,21 @@
                                          Command="{Binding SetTypeCommand}" CommandParameter="{x:Boolean True}" />
                 </HorizontalStackLayout>
 
-                <!-- The categories, the biggest of the window first -->
-                <FlexLayout Wrap="Wrap" BindableLayout.ItemsSource="{Binding Choices}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="viewmodels:TrendCategoryChoice">
-                            <controls:FilterChip Text="{Binding Name}" IsActive="{Binding IsSelected}" Margin="0,0,8,8"
-                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategoryTrendViewModel}}, Path=SelectCategoryCommand}"
-                                                 CommandParameter="{Binding .}" />
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </FlexLayout>
+                <!-- The category shown; tapping opens the list of all of them -->
+                <Border Style="{StaticResource Card}" Padding="14,10"
+                        SemanticProperties.Description="{ext:Localize SelectCategory}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenPickerCommand}" />
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12" MinimumHeightRequest="36">
+                        <Label Text="{Binding SelectedIcon}" FontFamily="MaterialDesignIcons" FontSize="24" VerticalOptions="Center" />
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                            <Label Text="{ext:Localize Category}" FontSize="12" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                            <Label Text="{Binding CategoryName}" FontSize="16" FontAttributes="Bold" LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+                        <Label Grid.Column="2" Text="&#xF0140;" FontFamily="MaterialDesignIcons" FontSize="24" VerticalOptions="Center" />
+                    </Grid>
+                </Border>
 
                 <controls:EmptyState IsVisible="{Binding HasData, Converter={StaticResource InvertedBoolConverter}}"
                                      Icon="&#xF0127;"
@@ -100,4 +106,34 @@
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>
+
+    <!-- Every category of the type, the biggest of the window first -->
+    <controls:BottomSheet Scroll="{x:Reference PickerScroll}"
+                          IsOpen="{Binding IsPickerOpen}"
+                          CloseCommand="{Binding ClosePickerCommand}">
+        <Grid RowDefinitions="Auto,Auto" RowSpacing="12">
+            <Label Text="{ext:Localize SelectCategory}" FontSize="18" FontAttributes="Bold" />
+            <ScrollView Grid.Row="1" x:Name="PickerScroll">
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Choices}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:TrendCategoryChoice">
+                            <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12" MinimumHeightRequest="48">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:CategoryTrendViewModel}}, Path=SelectCategoryCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Grid.GestureRecognizers>
+                                <Label Text="{Binding DisplayIcon}" FontFamily="MaterialDesignIcons" FontSize="24" VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding Name}" VerticalOptions="Center" LineBreakMode="TailTruncation" />
+                                <Label Grid.Column="2" Text="{Binding AmountText}" VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                <Label Grid.Column="3" Text="&#xF012C;" FontFamily="MaterialDesignIcons" FontSize="20" VerticalOptions="Center"
+                                       IsVisible="{Binding IsSelected}" />
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </controls:BottomSheet>
+    </Grid>
 </ContentPage>
