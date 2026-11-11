@@ -23,7 +23,9 @@ namespace MoneyRecord.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            _viewModel.CloseAll();
+            // The currency list covers this page; the form it was opened from stays
+            if (!CurrencyPicker.IsPicking)
+                _viewModel.CloseAll();
         }
 
         public bool TryCloseOverlay() => _viewModel.CloseTopOverlay();
