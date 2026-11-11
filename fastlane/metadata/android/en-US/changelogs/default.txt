@@ -1,1 +1,1 @@
-Every currency is now available, sorted by code, and picking one has a search box: type a code, a name or a symbol.
+Currencies now show their local symbol (KSh for the Kenyan shilling, Rs, Tk and more), and changing an account's currency works again.

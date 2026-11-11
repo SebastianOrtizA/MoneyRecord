@@ -1,3 +1,7 @@
+## 1.4.3
+- Les devises affichent désormais le symbole utilisé localement, comme KSh pour le shilling kényan, au lieu du code.
+- Corrigé : changer la devise d'un compte existant ne faisait rien et fermait le formulaire.
+
 ## 1.4.2
 - Toutes les devises sont désormais disponibles : la liste contient les 159 devises ISO, triées par code, au lieu de 25.
 - Choisir une devise ouvre une liste avec une zone de recherche : saisissez un code, un nom ou un symbole.

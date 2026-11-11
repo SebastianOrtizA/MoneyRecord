@@ -1,1 +1,1 @@
-Agora todas as moedas estão disponíveis, ordenadas por código, e ao escolher uma há uma caixa de busca: digite um código, um nome ou um símbolo.
+As moedas agora mostram seu símbolo local (KSh para o xelim queniano, Rs, Tk e mais) e voltou a funcionar alterar a moeda de uma conta.
