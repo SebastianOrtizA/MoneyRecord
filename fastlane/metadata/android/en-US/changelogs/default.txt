@@ -1,1 +1,1 @@
-Category trend: choose the category from a list, so a long category list no longer fills the screen.
+Every currency is now available, sorted by code, and picking one has a search box: type a code, a name or a symbol.
