@@ -121,11 +121,7 @@
                                        TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
                             </VerticalStackLayout>
                         </Grid>
-                        <Picker ItemsSource="{Binding AvailableCurrencies}"
-                                SelectedItem="{Binding BaseCurrency}"
-                                Title="{ext:Localize SelectCurrency}"
-                                FontSize="16"
-                                MinimumHeightRequest="44"/>
+                        <controls:CurrencyPicker ItemsSource="{Binding AvailableCurrencies}" SelectedItem="{Binding BaseCurrency}" />
 
                         <!-- Show cents: one switch per currency in use that has cents -->
                         <VerticalStackLayout Spacing="8"

@@ -222,12 +222,9 @@
                                     <behaviors:CurrencyMaskBehavior ShowCurrencySymbol="True" CurrencyCode="{Binding FormCurrency.Code}" AllowNegativeValues="{Binding FormAllowNegativeBalance}" />
                                 </controls:DecimalEntry.Behaviors>
                             </controls:DecimalEntry>
-                            <Picker Grid.Row="1" Grid.Column="1"
-                                    ItemsSource="{Binding AvailableCurrencies}"
-                                    SelectedItem="{Binding FormCurrency}"
-                                    Title="{ext:Localize SelectCurrency}"
-                                    FontSize="16"
-                                    MinimumHeightRequest="44" />
+                            <controls:CurrencyPicker Grid.Row="1" Grid.Column="1"
+                                                     ItemsSource="{Binding AvailableCurrencies}"
+                                                     SelectedItem="{Binding FormCurrency}" />
                         </Grid>
 
                         <HorizontalStackLayout Spacing="8">
