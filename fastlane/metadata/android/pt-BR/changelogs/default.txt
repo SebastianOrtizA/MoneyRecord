@@ -1,1 +1,1 @@
-As moedas agora mostram seu símbolo local (KSh para o xelim queniano, Rs, Tk e mais) e voltou a funcionar alterar a moeda de uma conta.
+Excluir uma conta em outra moeda agora converte suas transações: informe a taxa de câmbio ou o valor final.
