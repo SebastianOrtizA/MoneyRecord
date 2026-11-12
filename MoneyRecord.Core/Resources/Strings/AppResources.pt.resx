@@ -733,8 +733,29 @@
   <data name="BaseCurrencyDescription" xml:space="preserve">
     <value>Totais e relatórios aparecem nesta moeda. Saldos em outras moedas ficam separados, nunca somados.</value>
   </data>
-  <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
-    <value>'{0}' usa {1}, mas a conta padrão '{2}' usa {3}. As transações e regras recorrentes dela não podem ser movidas para lá sem mudar o que valem: exclua-as primeiro.</value>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>Converter antes de excluir</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>'{0}' está em {1} e a conta padrão '{2}' em {3}. Suas transações e regras recorrentes passam para '{2}', então os valores são convertidos. Informe a taxa ou o valor final: cada um preenche o outro.</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>Taxa de câmbio</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>Total líquido das transações: {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>Equivale em {0}</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>As transações somam zero, então só a taxa pode ser informada.</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>Isso não pode ser desfeito.</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>Converter e excluir</value>
   </data>
   <data name="SearchTransactions" xml:space="preserve">
     <value>Buscar transações...</value>

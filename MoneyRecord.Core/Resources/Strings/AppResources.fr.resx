@@ -732,8 +732,29 @@
   <data name="BaseCurrencyDescription" xml:space="preserve">
     <value>Les totaux et rapports sont affichés dans cette devise. Les soldes dans d'autres devises sont listés à part, jamais additionnés.</value>
   </data>
-  <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
-    <value>'{0}' utilise {1}, mais le compte par défaut '{2}' utilise {3}. Ses transactions et règles récurrentes ne peuvent pas y être déplacées sans changer leur valeur : supprime-les d'abord.</value>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>Convertir avant de supprimer</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>'{0}' est en {1} et le compte par défaut '{2}' en {3}. Ses transactions et ses règles récurrentes passent dans '{2}', leurs montants sont donc convertis. Indiquez le taux ou le montant final : chacun remplit l'autre.</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>Taux de change</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>Total net de ses transactions : {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>Équivaut à, en {0}</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>Ses transactions s'additionnent à zéro : seul le taux peut être saisi.</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>Cette action est irréversible.</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>Convertir et supprimer</value>
   </data>
   <data name="SearchTransactions" xml:space="preserve">
     <value>Rechercher des transactions...</value>
