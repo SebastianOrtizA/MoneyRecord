@@ -1,6 +1,14 @@
 namespace MoneyRecord.Services.Interfaces
 {
     /// <summary>
+    /// What the conversion question shows when an account is deleted into the default account of another currency: the
+    /// two accounts and currencies, how much moves, the net total of the transactions in the old currency and a rate to
+    /// start from (the downloaded one, when there is one).
+    /// </summary>
+    public sealed record AccountConversionRequest(string AccountName, string DefaultAccountName, string FromCurrency,
+        string ToCurrency, int Transactions, int RecurringRules, long NetCents, decimal? SuggestedRate);
+
+    /// <summary>
     /// Alerts, questions and toasts, so ViewModels never touch <c>Shell.Current</c> and tests can answer them.
     /// </summary>
     public interface IDialogService
@@ -20,6 +28,12 @@ namespace MoneyRecord.Services.Interfaces
         /// the user cancels.
         /// </summary>
         Task<string?> PasswordAsync(string title, string message, bool confirm = false);
+
+        /// <summary>
+        /// Asks for the rate that converts an account's amounts into the default account's currency, as a rate or as the
+        /// final amount the two are linked by; null when the user cancels. Confirming it is also confirming the delete.
+        /// </summary>
+        Task<decimal?> ConvertAccountAsync(AccountConversionRequest request);
 
         /// <summary>Lets the user pick one of <paramref name="options"/>; null when the user cancels.</summary>
         Task<string?> ActionSheetAsync(string title, string cancel, IReadOnlyList<string> options);

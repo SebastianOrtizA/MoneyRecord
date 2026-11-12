@@ -26,7 +26,33 @@ namespace MoneyRecord.Services
                 await db.Table<RecurringTransaction>().CountAsync(r => r.AccountId == accountId));
         }
 
-        public async Task DeleteAsync(int accountId)
+        public async Task<AccountMove?> GetMoveAsync(int accountId)
+        {
+            var db = await _dbInitializer.GetConnectionAsync();
+            var account = await db.FindAsync<Account>(accountId);
+            var defaultAccount = await _accountRepository.GetDefaultAsync();
+            if (account == null || defaultAccount == null)
+                return null;
+
+            var transactions = await db.Table<Transaction>().Where(t => t.AccountId == accountId).ToListAsync();
+            return new AccountMove(
+                transactions.Count,
+                await db.Table<RecurringTransaction>().CountAsync(r => r.AccountId == accountId),
+                transactions.Sum(NetCents),
+                defaultAccount.Name,
+                MoneyFormatter.ResolveCurrencyCode(account.CurrencyCode),
+                MoneyFormatter.ResolveCurrencyCode(defaultAccount.CurrencyCode));
+        }
+
+        /// <summary>What a transaction adds to the account: income up, expense down (a transfer row counts nothing).</summary>
+        private static long NetCents(Transaction t) => t.Type switch
+        {
+            TransactionType.Income => t.AmountCents,
+            TransactionType.Expense => -t.AmountCents,
+            _ => 0
+        };
+
+        public async Task DeleteAsync(int accountId, decimal? rate = null)
         {
             try
             {
@@ -47,12 +73,17 @@ namespace MoneyRecord.Services
                     var defaultAccount = db.Table<Account>().FirstOrDefault(a => a.IsDefault)
                         ?? throw new InvalidOperationException("There is no default account to move transactions to.");
 
-                    // Moving amounts into another currency would silently change what they are worth
+                    // Moving amounts into another currency would silently change what they are worth: only at a rate
                     var inUse = db.Table<Transaction>().Count(t => t.AccountId == accountId) > 0
                         || db.Table<RecurringTransaction>().Count(r => r.AccountId == accountId) > 0;
                     if (inUse && !HaveSameCurrency(account, defaultAccount))
-                        throw new InvalidOperationException(
-                            $"Account {accountId} ({account.CurrencyCode}) has transactions; the default account is in {defaultAccount.CurrencyCode}.");
+                    {
+                        if (rate is not > 0)
+                            throw new InvalidOperationException(
+                                $"Account {accountId} ({account.CurrencyCode}) has transactions; the default account is in {defaultAccount.CurrencyCode} and no rate was given.");
+
+                        ConvertAmounts(db, accountId, rate.Value);
+                    }
 
                     db.Execute("UPDATE \"Transaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
                     db.Execute("UPDATE \"RecurringTransaction\" SET AccountId = ? WHERE AccountId = ?", defaultAccount.Id, accountId);
@@ -72,6 +103,31 @@ namespace MoneyRecord.Services
             {
                 _accountRepository.InvalidateCache();
             }
+        }
+
+        /// <summary>
+        /// The account's transactions and recurring rules in the other currency: every amount times the rate. A
+        /// transaction's own conversion (the "Amount in USD" of a statement) was for the old currency, so it is cleared.
+        /// </summary>
+        private static void ConvertAmounts(SQLite.SQLiteConnection db, int accountId, decimal rate)
+        {
+            var transactions = db.Table<Transaction>().Where(t => t.AccountId == accountId).ToList();
+            foreach (var t in transactions)
+            {
+                t.AmountCents = AccountMoveRate.Convert(t.AmountCents, rate);
+                t.ConvertedAmountCents = null;
+                t.ConvertedCurrencyCode = null;
+            }
+            db.UpdateAll(transactions);
+
+            var rules = db.Table<RecurringTransaction>().Where(r => r.AccountId == accountId).ToList();
+            foreach (var r in rules)
+            {
+                r.AmountCents = AccountMoveRate.Convert(r.AmountCents, rate);
+                r.InterestCents = AccountMoveRate.Convert(r.InterestCents, rate);
+                r.LastAmountCents = AccountMoveRate.Convert(r.LastAmountCents, rate);
+            }
+            db.UpdateAll(rules);
         }
 
         /// <summary>Same currency, counting an empty currency code as the base currency.</summary>

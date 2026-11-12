@@ -771,8 +771,29 @@
   <data name="BaseCurrencyDescription" xml:space="preserve">
     <value>Totals and reports are shown in this currency. Balances in other currencies are listed separately, never added together.</value>
   </data>
-  <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
-    <value>'{0}' uses {1}, but the default account '{2}' uses {3}. Its transactions and recurring rules can't be moved there without changing what they are worth: delete them first.</value>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>Convert before deleting</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>'{0}' is in {1} and the default account '{2}' in {3}. Its transactions and recurring rules move to '{2}', so their amounts are converted. Enter the rate or the final amount: each fills in the other.</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>Exchange rate</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>Net total of its transactions: {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>Worth in {0}</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>Its transactions add up to zero, so only the rate can be entered.</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>This can't be undone.</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>Convert and delete</value>
   </data>
 
   <!-- Search & Filters -->
