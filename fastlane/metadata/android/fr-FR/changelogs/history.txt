@@ -1,3 +1,6 @@
+## 1.4.4
+- Supprimer un compte dans une autre devise que celle du compte par défaut ne s'arrête plus sur une erreur : indiquez le taux de change ou le montant final, et ses transactions et règles récurrentes sont converties.
+
 ## 1.4.3
 - Les devises affichent désormais le symbole utilisé localement, comme KSh pour le shilling kényan, au lieu du code.
 - Corrigé : changer la devise d'un compte existant ne faisait rien et fermait le formulaire.
