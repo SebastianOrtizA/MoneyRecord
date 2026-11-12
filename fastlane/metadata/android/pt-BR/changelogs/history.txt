@@ -1,3 +1,6 @@
+## 1.4.4
+- Excluir uma conta em outra moeda que não a da conta padrão não para mais com um erro: informe a taxa de câmbio ou o valor final e suas transações e regras recorrentes são convertidas.
+
 ## 1.4.3
 - As moedas agora mostram o símbolo usado localmente, como KSh para o xelim queniano, em vez do código.
 - Corrigido: alterar a moeda de uma conta existente não fazia nada e fechava o formulário.

@@ -1,1 +1,1 @@
-Currencies now show their local symbol (KSh for the Kenyan shilling, Rs, Tk and more), and changing an account's currency works again.
+Deleting an account in another currency now converts its transactions: enter the exchange rate or the final amount.

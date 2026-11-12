@@ -1,1 +1,1 @@
-Le valute ora mostrano il loro simbolo locale (KSh per lo scellino keniano, Rs, Tk e altri) e cambiare la valuta di un conto funziona di nuovo.
+Eliminare un conto in un'altra valuta ora ne converte le transazioni: inserisci il tasso di cambio o l'importo finale.

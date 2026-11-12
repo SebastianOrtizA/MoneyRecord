@@ -1,1 +1,1 @@
-Les devises affichent désormais leur symbole local (KSh pour le shilling kényan, Rs, Tk et plus) et changer la devise d'un compte fonctionne de nouveau.
+Supprimer un compte dans une autre devise convertit désormais ses transactions : indiquez le taux de change ou le montant final.
