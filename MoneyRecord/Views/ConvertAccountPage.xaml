@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Asked when an account is deleted into the default account of another currency (IDialogService.ConvertAccountAsync):
+     the rate and the final amount are linked, typing one fills the other -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.ConvertAccountPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource OffBlack}}">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="14" Padding="24,48,24,24">
+            <Label Text="{ext:Localize ConvertAccountTitle}" FontSize="22" FontAttributes="Bold" SemanticProperties.HeadingLevel="Level1" />
+            <Label x:Name="MessageLabel" FontSize="15" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+            <Label x:Name="NetLabel" FontSize="15" FontAttributes="Bold" />
+
+            <Label x:Name="RateCaption" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                <Label x:Name="RateFromLabel" VerticalOptions="Center" FontSize="16" />
+                <Entry x:Name="RateEntry" Grid.Column="1" Keyboard="Numeric" TextChanged="OnRateChanged"
+                       SemanticProperties.Description="{ext:Localize ConvertAccountRate}" />
+                <Label x:Name="RateToLabel" Grid.Column="2" VerticalOptions="Center" FontSize="16" />
+            </Grid>
+
+            <VerticalStackLayout x:Name="FinalBox" Spacing="4">
+                <Label x:Name="FinalCaption" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                <Entry x:Name="FinalEntry" Keyboard="Numeric" TextChanged="OnFinalChanged"
+                       SemanticProperties.Description="{ext:Localize ConvertAccountFinal}" />
+            </VerticalStackLayout>
+            <Label x:Name="NoNetLabel" IsVisible="False" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"
+                   Text="{ext:Localize ConvertAccountNoNet}" />
+
+            <Label Text="{ext:Localize ConvertAccountWarning}" FontSize="14"
+                   TextColor="{AppThemeBinding Light=#D32F2F, Dark=#EF5350}" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                <Button Text="{ext:Localize Cancel}" Clicked="OnCancelClicked" MinimumHeightRequest="48" CornerRadius="10"
+                        BackgroundColor="{AppThemeBinding Light=#EEEEEE, Dark=#333333}"
+                        TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}" />
+                <Button x:Name="ConfirmButton" Grid.Column="1" Text="{ext:Localize ConvertAccountAction}" Clicked="OnConfirmClicked"
+                        MinimumHeightRequest="48" CornerRadius="10" IsEnabled="False" BackgroundColor="#D32F2F" TextColor="White" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

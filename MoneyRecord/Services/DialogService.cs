@@ -48,6 +48,17 @@ namespace MoneyRecord.Services
             return await page.Result;
         }
 
+        public async Task<decimal?> ConvertAccountAsync(AccountConversionRequest request)
+        {
+            var page = await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                var created = new Views.ConvertAccountPage(request);
+                await CurrentPage.Navigation.PushModalAsync(created, animated: false);
+                return created;
+            });
+            return await page.Result;
+        }
+
         public async Task<string?> ActionSheetAsync(string title, string cancel, IReadOnlyList<string> options)
         {
             var choice = await MainThread.InvokeOnMainThreadAsync(() =>

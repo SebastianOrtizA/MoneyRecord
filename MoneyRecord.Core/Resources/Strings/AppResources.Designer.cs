@@ -1952,9 +1952,51 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
-        public static string AccountCurrencyDiffersFromDefault {
+        public static string ConvertAccountTitle {
             get {
-                return ResourceManager.GetString("AccountCurrencyDiffersFromDefault", resourceCulture);
+                return ResourceManager.GetString("ConvertAccountTitle", resourceCulture);
+            }
+        }
+
+        public static string ConvertAccountMessage {
+            get {
+                return ResourceManager.GetString("ConvertAccountMessage", resourceCulture);
+            }
+        }
+
+        public static string ConvertAccountRate {
+            get {
+                return ResourceManager.GetString("ConvertAccountRate", resourceCulture);
+            }
+        }
+
+        public static string ConvertAccountNet {
+            get {
+                return ResourceManager.GetString("ConvertAccountNet", resourceCulture);
+            }
+        }
+
+        public static string ConvertAccountFinal {
+            get {
+                return ResourceManager.GetString("ConvertAccountFinal", resourceCulture);
+            }
+        }
+
+        public static string ConvertAccountNoNet {
+            get {
+                return ResourceManager.GetString("ConvertAccountNoNet", resourceCulture);
+            }
+        }
+
+        public static string ConvertAccountWarning {
+            get {
+                return ResourceManager.GetString("ConvertAccountWarning", resourceCulture);
+            }
+        }
+
+        public static string ConvertAccountAction {
+            get {
+                return ResourceManager.GetString("ConvertAccountAction", resourceCulture);
             }
         }
 

@@ -731,8 +731,29 @@
   <data name="BaseCurrencyDescription" xml:space="preserve">
     <value>Totali e report sono mostrati in questa valuta. I saldi in altre valute sono elencati a parte, mai sommati.</value>
   </data>
-  <data name="AccountCurrencyDiffersFromDefault" xml:space="preserve">
-    <value>'{0}' usa {1}, ma il conto predefinito '{2}' usa {3}. I suoi movimenti e le sue regole ricorrenti non si possono spostare lì senza cambiarne il valore: eliminali prima.</value>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>Converti prima di eliminare</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>'{0}' è in {1} e il conto predefinito '{2}' in {3}. Le sue transazioni e regole ricorrenti passano a '{2}', quindi gli importi vengono convertiti. Inserisci il cambio o l'importo finale: ognuno compila l'altro.</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>Tasso di cambio</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>Totale netto delle sue transazioni: {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>Vale, in {0}</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>Le sue transazioni sommano zero, quindi si può inserire solo il cambio.</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>Non si può annullare.</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>Converti ed elimina</value>
   </data>
   <data name="SearchTransactions" xml:space="preserve">
     <value>Cerca movimenti...</value>

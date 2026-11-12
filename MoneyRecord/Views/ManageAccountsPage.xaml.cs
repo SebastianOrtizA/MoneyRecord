@@ -23,8 +23,8 @@ namespace MoneyRecord.Views
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            // The currency list covers this page; the form it was opened from stays
-            if (!CurrencyPicker.IsPicking)
+            // The currency list or the conversion question covers this page; the form they were opened from stays
+            if (!CurrencyPicker.IsPicking && !_viewModel.IsAskingConversion)
                 _viewModel.CloseAll();
         }
 
