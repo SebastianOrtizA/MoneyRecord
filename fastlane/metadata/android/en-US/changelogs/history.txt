@@ -1,3 +1,6 @@
+## 1.4.4
+- Deleting an account in another currency than the default account no longer stops with an error: enter the exchange rate or the final amount, and its transactions and recurring rules are converted.
+
 ## 1.4.3
 - Currencies now show the symbol used locally, like KSh for the Kenyan shilling, instead of the code.
 - Fixed: changing the currency of an existing account did nothing and closed the form.

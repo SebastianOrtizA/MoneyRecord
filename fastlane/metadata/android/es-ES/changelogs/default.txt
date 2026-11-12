@@ -1,1 +1,1 @@
-Las monedas ahora muestran su símbolo local (KSh para el chelín keniano, Rs, Tk y más) y vuelve a funcionar cambiar la moneda de una cuenta.
+Eliminar una cuenta en otra moneda ahora convierte sus transacciones: indique la tasa de cambio o el importe final.

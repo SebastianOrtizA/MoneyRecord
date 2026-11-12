@@ -1,3 +1,6 @@
+## 1.4.4
+- Eliminare un conto in una valuta diversa da quella del conto predefinito non si ferma più con un errore: inserisci il tasso di cambio o l'importo finale e le sue transazioni e regole ricorrenti vengono convertite.
+
 ## 1.4.3
 - Le valute ora mostrano il simbolo usato localmente, come KSh per lo scellino keniano, invece del codice.
 - Corretto: cambiare la valuta di un conto esistente non faceva nulla e chiudeva il modulo.
