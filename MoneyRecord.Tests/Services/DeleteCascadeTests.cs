@@ -97,6 +97,92 @@ public sealed class DeleteCascadeTests : IAsyncLifetime
         (await Db.Table<Transaction>().FirstAsync()).AccountId.Should().Be(euros.Id);
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData(0.0)]
+    [InlineData(-2.0)]
+    public async Task DeleteAccount_OtherCurrencyWithoutAPositiveRate_IsRefusedAndChangesNothing(double? rate)
+    {
+        var cash = await DefaultAccountAsync();
+        var euros = await AddAccountAsync("Euros", OtherCurrencyThan(cash));
+        await Db.InsertAsync(new Transaction { Description = "Croissant", Amount = 3m, AccountId = euros.Id });
+
+        var act = () => _accountService.DeleteAsync(euros.Id, rate == null ? null : (decimal)rate);
+
+        await act.Should().ThrowAsync<InvalidOperationException>();
+        (await Db.FindAsync<Account>(euros.Id)).Should().NotBeNull();
+        (await Db.Table<Transaction>().FirstAsync()).AmountCents.Should().Be(300);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_OtherCurrencyWithARate_ConvertsWhatMovesToTheDefaultAccount()
+    {
+        var cash = await DefaultAccountAsync();
+        var euros = await AddAccountAsync("Euros", OtherCurrencyThan(cash));
+        await Db.InsertAsync(new Transaction { Description = "Salary", Amount = 10m, Type = TransactionType.Income, AccountId = euros.Id });
+        await Db.InsertAsync(new Transaction
+        {
+            Description = "Croissant", Amount = 3m, Type = TransactionType.Expense, AccountId = euros.Id,
+            ConvertedAmountCents = 333, ConvertedCurrencyCode = "ZZZ"
+        });
+        await Db.InsertAsync(new RecurringTransaction
+        {
+            Description = "Rent", AmountCents = 500, InterestCents = 50, LastAmountCents = 20, AccountId = euros.Id
+        });
+
+        await _accountService.DeleteAsync(euros.Id, 2.5m);
+
+        (await Db.FindAsync<Account>(euros.Id)).Should().BeNull();
+        var transactions = await Db.Table<Transaction>().OrderBy(t => t.Id).ToListAsync();
+        transactions.Select(t => t.AmountCents).Should().Equal(2500, 750);
+        transactions.Select(t => t.AccountId).Should().OnlyContain(id => id == cash.Id);
+        transactions.Should().OnlyContain(t => t.ConvertedAmountCents == null && t.ConvertedCurrencyCode == null);
+        var rule = await Db.Table<RecurringTransaction>().FirstAsync();
+        (rule.AmountCents, rule.InterestCents, rule.LastAmountCents).Should().Be((1250, 125, 50));
+        rule.AccountId.Should().Be(cash.Id);
+    }
+
+    [Fact]
+    public async Task DeleteAccount_SameCurrencyIgnoresARate()
+    {
+        var cash = await DefaultAccountAsync();
+        var bank = await AddAccountAsync("Bank");
+        await Db.InsertAsync(new Transaction { Description = "Lunch", Amount = 10m, AccountId = bank.Id });
+
+        await _accountService.DeleteAsync(bank.Id, 3m);
+
+        (await Db.Table<Transaction>().FirstAsync()).AmountCents.Should().Be(1000);
+    }
+
+    [Fact]
+    public async Task GetMove_TotalsTheNetAndSaysWhenARateIsNeeded()
+    {
+        var cash = await DefaultAccountAsync();
+        var euros = await AddAccountAsync("Euros", OtherCurrencyThan(cash));
+        await Db.InsertAsync(new Transaction { Amount = 10m, Type = TransactionType.Income, AccountId = euros.Id });
+        await Db.InsertAsync(new Transaction { Amount = 3m, Type = TransactionType.Expense, AccountId = euros.Id });
+        await Db.InsertAsync(new RecurringTransaction { AccountId = euros.Id });
+
+        var move = await _accountService.GetMoveAsync(euros.Id);
+
+        move.Should().NotBeNull();
+        (move!.Transactions, move.RecurringRules, move.NetCents).Should().Be((2, 1, 700));
+        move.DefaultAccountName.Should().Be(cash.Name);
+        move.NeedsRate.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task GetMove_NeedsNoRateInTheSameCurrencyOrWhenNothingMoves()
+    {
+        var cash = await DefaultAccountAsync();
+        var bank = await AddAccountAsync("Bank");
+        await Db.InsertAsync(new Transaction { Amount = 10m, AccountId = bank.Id });
+        var euros = await AddAccountAsync("Euros", OtherCurrencyThan(cash));
+
+        (await _accountService.GetMoveAsync(bank.Id))!.NeedsRate.Should().BeFalse();
+        (await _accountService.GetMoveAsync(euros.Id))!.NeedsRate.Should().BeFalse();
+    }
+
     [Fact]
     public async Task DeleteAccount_OtherCurrencyUnused_IsDeleted()
     {

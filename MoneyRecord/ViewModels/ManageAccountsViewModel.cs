@@ -310,39 +310,42 @@ namespace MoneyRecord.ViewModels
                     return;
                 }
 
-                string message;
-                if (usage.Transactions > 0 || usage.RecurringRules > 0)
+                // Moving amounts into another currency needs a rate: the conversion question is also the confirmation
+                decimal? rate = null;
+                var move = await _accountService.GetMoveAsync(account.Id);
+                if (move is { NeedsRate: true })
                 {
-                    var defaultAccount = await _accountRepository.GetDefaultAsync();
-                    if (defaultAccount != null && !AccountService.HaveSameCurrency(account, defaultAccount))
-                    {
-                        await _errorHandler.HandleAsync(string.Format(AppResources.AccountCurrencyDiffersFromDefault,
-                            account.Name, MoneyFormatter.ResolveCurrencyCode(account.CurrencyCode),
-                            defaultAccount.Name, MoneyFormatter.ResolveCurrencyCode(defaultAccount.CurrencyCode)));
+                    rate = await AskConversionAsync(account, move);
+                    if (rate == null)
                         return;
-                    }
-
-                    message = string.Format(AppResources.DeleteAccountWithTransactions,
-                        account.Name, usage.Transactions, usage.RecurringRules, defaultAccount?.Name);
                 }
                 else
                 {
-                    message = string.Format(AppResources.DeleteAccountNoTransactions, account.Name);
+                    string message;
+                    if (usage.Transactions > 0 || usage.RecurringRules > 0)
+                    {
+                        message = string.Format(AppResources.DeleteAccountWithTransactions,
+                            account.Name, usage.Transactions, usage.RecurringRules, move?.DefaultAccountName);
+                    }
+                    else
+                    {
+                        message = string.Format(AppResources.DeleteAccountNoTransactions, account.Name);
+                    }
+
+                    if (Groups.SelectMany(g => g).FirstOrDefault(i => i.Account.Id == account.Id) is { HasPockets: true })
+                        message += " " + AppResources.DeleteAccountPockets;
+
+                    var confirm = await _dialogService.ConfirmAsync(
+                        AppResources.ConfirmDelete,
+                        message,
+                        AppResources.YesDelete,
+                        AppResources.Cancel);
+
+                    if (!confirm)
+                        return;
                 }
 
-                if (Groups.SelectMany(g => g).FirstOrDefault(i => i.Account.Id == account.Id) is { HasPockets: true })
-                    message += " " + AppResources.DeleteAccountPockets;
-
-                var confirm = await _dialogService.ConfirmAsync(
-                    AppResources.ConfirmDelete,
-                    message,
-                    AppResources.YesDelete,
-                    AppResources.Cancel);
-
-                if (!confirm)
-                    return;
-
-                await _accountService.DeleteAsync(account.Id);
+                await _accountService.DeleteAsync(account.Id, rate);
                 CloseForm();
                 await LoadAccountsCommand.ExecuteAsync(null);
             }
@@ -356,6 +359,32 @@ namespace MoneyRecord.ViewModels
             catch (Exception ex)
             {
                 await _errorHandler.HandleAsync(ex, AppResources.FailedToDeleteAccount);
+            }
+        }
+
+        /// <summary>
+        /// The conversion question is open over the page: the page going away for it must not close the account sheet,
+        /// so cancelling returns to it.
+        /// </summary>
+        public bool IsAskingConversion { get; private set; }
+
+        /// <summary>The rate for moving the account's amounts into the default account's currency; null when cancelled.</summary>
+        private async Task<decimal?> AskConversionAsync(Account account, AccountMove move)
+        {
+            // Start from the downloaded rate when there is one
+            var converter = await _exchangeRates.GetConverterAsync();
+            var suggested = converter.Rate(move.FromCurrency, move.ToCurrency, DateTime.Today);
+
+            IsAskingConversion = true;
+            try
+            {
+                return await _dialogService.ConvertAccountAsync(new AccountConversionRequest(
+                    account.Name, move.DefaultAccountName, move.FromCurrency, move.ToCurrency,
+                    move.Transactions, move.RecurringRules, move.NetCents, suggested));
+            }
+            finally
+            {
+                IsAskingConversion = false;
             }
         }
 
