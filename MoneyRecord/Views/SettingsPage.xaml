@@ -569,6 +569,31 @@
                                     SelectedItem="{Binding SelectedLockDelay}"
                                     Title="{ext:Localize LockAfter}"/>
                         </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" IsVisible="{Binding AppPin.ShowMethodPicker}">
+                            <Label Text="{ext:Localize UnlockWith}" FontSize="15" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Picker Grid.Column="1" WidthRequest="170"
+                                    ItemsSource="{Binding AppPin.MethodOptions}"
+                                    ItemDisplayBinding="{Binding Name, x:DataType=models:LockMethodOption}"
+                                    SelectedItem="{Binding AppPin.SelectedMethod}"
+                                    Title="{ext:Localize UnlockWith}"/>
+                        </Grid>
+
+                        <!-- The app PIN: for phones without a screen lock, or as a second way in -->
+                        <VerticalStackLayout Spacing="8" IsVisible="{Binding AppPin.IsSupported}">
+                            <Label Text="{ext:Localize AppPin}" FontSize="15" FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Label Text="{ext:Localize AppPinDescription}" FontSize="13"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                            <HorizontalStackLayout Spacing="12">
+                                <Button Text="{Binding AppPin.SetPinText}" Command="{Binding AppPin.SetPinCommand}"/>
+                                <Button Text="{ext:Localize RemovePin}" Command="{Binding AppPin.RemovePinCommand}" IsVisible="{Binding AppPin.HasPin}"
+                                        BackgroundColor="Transparent" BorderWidth="1"
+                                        BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                        TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
                     </VerticalStackLayout>
                 </Border>
                 </VerticalStackLayout>

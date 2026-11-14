@@ -49,7 +49,8 @@ namespace MoneyRecord.ViewModels
             ICrashReportConsent crashReports, IReminderService reminders, IReminderSettings reminderSettings,
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
             IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
-            AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword, CurrencyCentsViewModel cents)
+            AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword, CurrencyCentsViewModel cents,
+            AppPinViewModel appPin)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -72,6 +73,9 @@ namespace MoneyRecord.ViewModels
             _exchangeRateSettings = exchangeRateSettings;
             AutoBackup = autoBackup;
             BackupPassword = backupPassword;
+            AppPin = appPin;
+            // Removing the PIN can switch the lock off, and the switch must follow
+            AppPin.Changed += () => OnPropertyChanged(nameof(AppLockEnabled));
             Cents = cents;
             AvailableCurrencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
@@ -83,6 +87,8 @@ namespace MoneyRecord.ViewModels
 
         /// <summary>The backup password switch, and restoring a protected backup.</summary>
         public BackupPasswordViewModel BackupPassword { get; }
+
+        public AppPinViewModel AppPin { get; }
 
         /// <summary>The Show cents switches, one per currency in use.</summary>
         public CurrencyCentsViewModel Cents { get; }
@@ -117,6 +123,7 @@ namespace MoneyRecord.ViewModels
             // The folder may be unreachable now, or the daily job made a backup
             AutoBackup.RefreshCommand.Execute(null);
             BackupPassword.RefreshCommand.Execute(null);
+            AppPin.Refresh();
             // Accounts in a new currency may have been added meanwhile
             Cents.RefreshCommand.Execute(null);
         }
@@ -204,6 +211,7 @@ namespace MoneyRecord.ViewModels
             LowBalanceOptions = LowBalanceOption.All();
             LockDelayOptions = LockDelayOption.All();
             AutoBackup.RefreshNames();
+            AppPin.Refresh();
             SelectPickers();
         }
 
@@ -303,7 +311,7 @@ namespace MoneyRecord.ViewModels
         }
 
         /// <summary>Platforms with the app lock (Android) show its card.</summary>
-        public bool AppLockSupported => _deviceLock.IsSupported;
+        public bool AppLockSupported => _deviceLock.IsSupported || AppPin.IsSupported;
 
         public bool AppLockEnabled
         {
@@ -327,16 +335,38 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task TurnOnAppLockAsync()
         {
-            if (!_deviceLock.IsAvailable)
+            var method = _privacy.LockMethod;
+            if (_deviceLock.IsAvailable && method != LockMethod.Pin)
+            {
+                // Needs the phone's lock once first, so the user is sure to get past the lock screen
+                if (await _deviceLock.AuthenticateAsync(AppResources.TurnOnAppLock, AppResources.UnlockSubtitle))
+                    EnableAppLock();
+            }
+            else if (AppPin.HasPin)
+            {
+                // The phone lost its screen lock since the PIN was set: the PIN is the way in now
+                _privacy.LockMethod = LockMethod.Pin;
+                AppPin.Refresh();
+                EnableAppLock();
+            }
+            else if (AppPin.IsSupported)
+            {
+                // No phone lock to ask for: the app's own PIN is the way in
+                await _dialogService.AlertAsync(AppResources.NoScreenLockTitle, AppResources.NoScreenLockPinHint);
+                if (await AppPin.SetUpAsync())
+                    EnableAppLock();
+            }
+            else
             {
                 await _dialogService.AlertAsync(AppResources.NoScreenLockTitle, AppResources.NoScreenLockMessage);
             }
-            else if (await _deviceLock.AuthenticateAsync(AppResources.TurnOnAppLock, AppResources.UnlockSubtitle))
-            {
-                _privacy.LockEnabled = true;
-                _deviceLock.HideContentInRecents(true);
-            }
             OnPropertyChanged(nameof(AppLockEnabled));
+        }
+
+        private void EnableAppLock()
+        {
+            _privacy.LockEnabled = true;
+            _deviceLock.HideContentInRecents(true);
         }
 
         [ObservableProperty]

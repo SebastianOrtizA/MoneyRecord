@@ -160,6 +160,19 @@ namespace MoneyRecord
             builder.Services.AddTransient<BackupPasswordViewModel>();
             builder.Services.AddTransient<CurrencyCentsViewModel>();
 
+            // The app PIN (hash + lockout in secure storage): Android only for now, like the app lock
+#if ANDROID
+            builder.Services.AddSingleton<IPinStore, SecurePinStore>();
+#else
+            builder.Services.AddSingleton<IPinStore, NoPinStore>();
+#endif
+            builder.Services.AddSingleton<PinService>();
+            builder.Services.AddTransient<AppPinViewModel>();
+            builder.Services.AddTransient<LockViewModel>();
+            builder.Services.AddTransient<PinSetupViewModel>();
+            builder.Services.AddTransient<PinSetupPage>();
+            builder.Services.AddTransient<Func<PinSetupPage>>(services => () => services.GetRequiredService<PinSetupPage>());
+
             // App lock (the phone's own lock) and hidden balances
             builder.Services.AddSingleton<IPrivacySettings, PrivacySettings>();
             builder.Services.AddSingleton<IHomeLayoutSettings, HomeLayoutSettings>();

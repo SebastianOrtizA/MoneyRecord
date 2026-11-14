@@ -13,6 +13,8 @@ namespace MoneyRecord.Services
         private const string LockEnabledKey = "Privacy.LockEnabled";
         private const string LockAfterKey = "Privacy.LockAfterMinutes";
         private const string HideBalancesKey = "Privacy.HideBalances";
+        private const string LockMethodKey = "Privacy.LockMethod";
+        private const string HasPinKey = "Privacy.HasPin";
 
         public bool LockEnabled
         {
@@ -24,6 +26,18 @@ namespace MoneyRecord.Services
         {
             get => preferences.Get(LockAfterKey, LockDelays[0]);
             set => preferences.Set(LockAfterKey, value);
+        }
+
+        public Models.LockMethod LockMethod
+        {
+            get => Enum.TryParse<Models.LockMethod>(preferences.Get(LockMethodKey, nameof(Models.LockMethod.DeviceLock)), out var method) ? method : Models.LockMethod.DeviceLock;
+            set => preferences.Set(LockMethodKey, value.ToString());
+        }
+
+        public bool HasPin
+        {
+            get => preferences.Get(HasPinKey, false);
+            set => preferences.Set(HasPinKey, value);
         }
 
         public bool HideBalances

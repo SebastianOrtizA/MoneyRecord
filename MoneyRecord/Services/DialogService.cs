@@ -9,7 +9,7 @@ namespace MoneyRecord.Services
     /// <summary>
     /// <see cref="IDialogService"/> on top of the page dialogs and the CommunityToolkit toast.
     /// </summary>
-    public sealed class DialogService(ILogger<DialogService> logger) : IDialogService
+    public sealed class DialogService(ILogger<DialogService> logger, Func<Views.PinSetupPage> createPinSetupPage) : IDialogService
     {
         private static readonly TimeSpan UndoWindow = TimeSpan.FromSeconds(6);
 
@@ -42,6 +42,17 @@ namespace MoneyRecord.Services
             var page = await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 var created = new Views.PasswordPage(title, message, confirm);
+                await CurrentPage.Navigation.PushModalAsync(created, animated: false);
+                return created;
+            });
+            return await page.Result;
+        }
+
+        public async Task<bool> SetPinAsync()
+        {
+            var page = await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                var created = createPinSetupPage();
                 await CurrentPage.Navigation.PushModalAsync(created, animated: false);
                 return created;
             });

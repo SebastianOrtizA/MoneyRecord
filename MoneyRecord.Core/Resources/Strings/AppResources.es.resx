@@ -3488,4 +3488,82 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="FailedToExportSpreadsheet" xml:space="preserve">
     <value>Error al exportar la hoja de cálculo</value>
   </data>
+  <data name="PinSubtitle" xml:space="preserve">
+    <value>Introduce tu PIN</value>
+  </data>
+  <data name="PinWrongTries" xml:space="preserve">
+    <value>PIN incorrecto. Te quedan {0} intentos antes de una espera.</value>
+  </data>
+  <data name="PinLockedOut" xml:space="preserve">
+    <value>Demasiados intentos fallidos. Vuelve a intentarlo en {0}.</value>
+  </data>
+  <data name="UsePhoneLock" xml:space="preserve">
+    <value>Usar el bloqueo del teléfono</value>
+  </data>
+  <data name="PinSetTitle" xml:space="preserve">
+    <value>Elige un PIN</value>
+  </data>
+  <data name="PinRepeatTitle" xml:space="preserve">
+    <value>Repite el PIN</value>
+  </data>
+  <data name="PinSetMessage" xml:space="preserve">
+    <value>De 4 a 8 dígitos. Un PIN olvidado no se puede recuperar: tendrías que borrar los datos de la app y restaurar una copia de seguridad.</value>
+  </data>
+  <data name="PinMismatch" xml:space="preserve">
+    <value>Los PIN no coinciden. Elígelo de nuevo.</value>
+  </data>
+  <data name="PinLength" xml:space="preserve">
+    <value>Usa de 4 a 8 dígitos.</value>
+  </data>
+  <data name="PinRepeated" xml:space="preserve">
+    <value>No uses un solo dígito repetido.</value>
+  </data>
+  <data name="PinBackspace" xml:space="preserve">
+    <value>Borrar el último dígito</value>
+  </data>
+  <data name="PinDigitsTyped" xml:space="preserve">
+    <value>{0} dígitos introducidos</value>
+  </data>
+  <data name="AppPin" xml:space="preserve">
+    <value>PIN de la app</value>
+  </data>
+  <data name="AppPinDescription" xml:space="preserve">
+    <value>Abre MoneyRecord con un PIN propio, con una espera tras demasiados intentos fallidos</value>
+  </data>
+  <data name="SetPin" xml:space="preserve">
+    <value>Definir PIN</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Cambiar PIN</value>
+  </data>
+  <data name="RemovePin" xml:space="preserve">
+    <value>Quitar PIN</value>
+  </data>
+  <data name="RemovePinMessage" xml:space="preserve">
+    <value>MoneyRecord dejará de abrirse con un PIN.</value>
+  </data>
+  <data name="PinSaved" xml:space="preserve">
+    <value>PIN guardado</value>
+  </data>
+  <data name="PinRemoved" xml:space="preserve">
+    <value>PIN eliminado</value>
+  </data>
+  <data name="UnlockWith" xml:space="preserve">
+    <value>Desbloquear con</value>
+  </data>
+  <data name="LockMethodDevice" xml:space="preserve">
+    <value>Bloqueo del teléfono</value>
+  </data>
+  <data name="LockMethodPin" xml:space="preserve">
+    <value>PIN de la app</value>
+  </data>
+  <data name="LockMethodBoth" xml:space="preserve">
+    <value>Bloqueo del teléfono o PIN</value>
+  </data>
+  <data name="NoScreenLockPinHint" xml:space="preserve">
+    <value>Tu teléfono no tiene bloqueo de pantalla. Define un PIN de la app para usar el bloqueo.</value>
+  </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>No se pudo leer tu PIN y se ha quitado. Usa el bloqueo del teléfono.</value>
+  </data>
 </root>
