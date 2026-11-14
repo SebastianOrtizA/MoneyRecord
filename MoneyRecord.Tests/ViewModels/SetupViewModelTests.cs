@@ -15,6 +15,7 @@ public class SetupViewModelTests
     private readonly ICategoryRepository _categories = Substitute.For<ICategoryRepository>();
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
     private readonly IPrivacySettings _privacy = Substitute.For<IPrivacySettings>();
+    private readonly IBackupNudge _nudge = Substitute.For<IBackupNudge>();
     private readonly SetupViewModel _sut;
     private SetupChoices? _applied;
 
@@ -22,7 +23,7 @@ public class SetupViewModelTests
     {
         _setup.ApplyAsync(Arg.Do<SetupChoices>(c => _applied = c)).Returns(Task.CompletedTask);
         _sut = new SetupViewModel(_setup, new CurrencyService(new FakePreferences()), _categories, new FakePreferences(),
-            LocalizationService.Instance, _dialogs, Substitute.For<IErrorHandler>(), _privacy, Substitute.For<IBackupNudge>());
+            LocalizationService.Instance, _dialogs, Substitute.For<IErrorHandler>(), _privacy, _nudge);
     }
 
     private async Task FinishAsync()
@@ -30,6 +31,19 @@ public class SetupViewModelTests
         while (!_sut.IsLastStep)
             await _sut.NextCommand.ExecuteAsync(null);
         await _sut.NextCommand.ExecuteAsync(null);
+    }
+
+    [Fact]
+    public async Task Finishing_offers_the_backup_password_before_completing()
+    {
+        var order = new List<string>();
+        _nudge.OfferAsync().Returns(Task.CompletedTask).AndDoes(_ => order.Add("offer"));
+        _sut.Completed += (_, _) => order.Add("completed");
+        await _sut.InitializeAsync(isFirstRun: true);
+
+        await FinishAsync();
+
+        order.Should().Equal("offer", "completed");
     }
 
     [Fact]

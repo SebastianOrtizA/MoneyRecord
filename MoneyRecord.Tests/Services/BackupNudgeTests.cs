@@ -18,9 +18,8 @@ public sealed class BackupNudgeTests : LanguageTestBase
 
     public BackupNudgeTests()
     {
-        var password = new BackupPasswordViewModel(_store, Substitute.For<IDataExportService>(),
-            new AutoBackupSettings(new FakePreferences()), _dialogs);
-        _sut = new BackupNudge(_store, _privacy, _dialogs, password, NullLogger<BackupNudge>.Instance);
+        var prompt = new BackupPasswordPrompt(_store, new AutoBackupSettings(new FakePreferences()), _dialogs);
+        _sut = new BackupNudge(_store, _privacy, _dialogs, prompt, NullLogger<BackupNudge>.Instance);
     }
 
     private void Answer(bool accept) =>
@@ -48,6 +47,18 @@ public sealed class BackupNudgeTests : LanguageTestBase
 
         await _dialogs.Received(1).ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>());
         _store.Password.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task WithoutAPasswordStore_DoesNotAskOrMarkItShown()
+    {
+        var store = Substitute.For<IBackupPasswordStore>();
+        var sut = new BackupNudge(store, _privacy, _dialogs, Substitute.For<IBackupPasswordPrompt>(), NullLogger<BackupNudge>.Instance);
+
+        await sut.OfferAsync();
+
+        await _dialogs.DidNotReceive().ConfirmAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>());
+        _privacy.BackupNudgeShown.Should().BeFalse();
     }
 
     [Fact]

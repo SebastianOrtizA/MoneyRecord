@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using MoneyRecord.Resources.Strings;
 using MoneyRecord.Services.Interfaces;
-using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Services
 {
@@ -9,7 +8,7 @@ namespace MoneyRecord.Services
         IBackupPasswordStore store,
         IPrivacySettings privacy,
         IDialogService dialogs,
-        BackupPasswordViewModel password,
+        IBackupPasswordPrompt prompt,
         ILogger<BackupNudge> logger) : IBackupNudge
     {
         public async Task OfferAsync()
@@ -26,7 +25,7 @@ namespace MoneyRecord.Services
                 privacy.BackupNudgeShown = true;
                 if (await dialogs.ConfirmAsync(AppResources.BackupNudgeTitle, AppResources.BackupNudgeMessage,
                         AppResources.BackupNudgeSet, AppResources.BackupNudgeLater))
-                    await password.SetPasswordCommand.ExecuteAsync(null);
+                    await prompt.SetAsync();
             }
             catch (Exception ex)
             {
