@@ -3,7 +3,7 @@ using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services
 {
-    public sealed class AppPaths(string appDataDirectory) : IAppPaths
+    public sealed class AppPaths(string appDataDirectory, string? cacheDirectory = null) : IAppPaths
     {
         public const string DatabaseFileName = "moneyrecord.db3";
 
@@ -17,6 +17,8 @@ namespace MoneyRecord.Services
         public string EncryptedDatabasePath => Path.Combine(appDataDirectory, EncryptedDatabaseFileName);
 
         public string ReceiptsFolder => Path.Combine(appDataDirectory, ReceiptFiles.FolderName);
+
+        public string ReceiptViewFolder => Path.Combine(cacheDirectory ?? Path.GetTempPath(), "receipts-view");
 
         public string BackupsFolder => Path.Combine(appDataDirectory, BackupsFolderName);
 

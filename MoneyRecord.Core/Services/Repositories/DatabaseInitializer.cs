@@ -29,6 +29,7 @@ namespace MoneyRecord.Services.Repositories
         private readonly string _plainPath;
         private readonly string _encryptedPath;
         private readonly IDatabaseKeyStore _keyStore;
+        private readonly IReceiptStore? _receipts;
         private readonly SemaphoreSlim _initLock = new(1, 1);
         private SQLiteAsyncConnection? _database;
         private bool _unreadableNotice;
@@ -36,11 +37,13 @@ namespace MoneyRecord.Services.Repositories
         static DatabaseInitializer() => SqliteSetup.Init();
 
         /// <param name="keyStore">None (the tests that don't encrypt): the database can't be encrypted.</param>
-        public DatabaseInitializer(IAppPaths paths, IDatabaseKeyStore? keyStore = null)
+        /// <param name="receipts">Encrypted and decrypted along with the database; none (most tests): the receipt files are left alone.</param>
+        public DatabaseInitializer(IAppPaths paths, IDatabaseKeyStore? keyStore = null, IReceiptStore? receipts = null)
         {
             _plainPath = paths.DatabasePath;
             _encryptedPath = paths.EncryptedDatabasePath;
             _keyStore = keyStore ?? NoDatabaseKeyStore.Instance;
+            _receipts = receipts;
         }
 
         /// <summary>The open connection, initializing the database on the first call.</summary>
@@ -69,6 +72,21 @@ namespace MoneyRecord.Services.Repositories
             }
         }
 
+        /// <summary>A switch that stopped before every receipt was encrypted finishes here (a folder with none to do costs a listing).</summary>
+        private async Task FinishReceiptsAsync()
+        {
+            if (_receipts == null)
+                return;
+            try
+            {
+                await _receipts.EncryptAllAsync();
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.Cryptography.CryptographicException)
+            {
+                // Plain and encrypted files are both read; the next start tries again
+            }
+        }
+
         private async Task<SQLiteAsyncConnection> OpenAsync()
         {
             if (File.Exists(_encryptedPath))
@@ -78,6 +96,7 @@ namespace MoneyRecord.Services.Repositories
                 {
                     // A switch that stopped after the encrypted file was complete: the plain one is a leftover
                     DeleteFile(_plainPath);
+                    await FinishReceiptsAsync();
                     return new SQLiteAsyncConnection(ConnectionString(_encryptedPath, key));
                 }
 
@@ -126,6 +145,8 @@ namespace MoneyRecord.Services.Repositories
             File.Move(temp, _encryptedPath, overwrite: true);
             DeleteFile(_plainPath);
             DeleteMigrationCopies(_plainPath); // older plain copies of the data
+            if (_receipts != null)
+                await _receipts.EncryptAllAsync();
         });
 
         public Task DecryptAsync() => SwitchFileAsync(async () =>
@@ -137,6 +158,18 @@ namespace MoneyRecord.Services.Repositories
                 ?? throw new InvalidOperationException("The database key is missing.");
             var temp = _plainPath + TempSuffix;
             await Task.Run(() => Rekey(_encryptedPath, temp, fromKey: key, toKey: null));
+
+            // Before the swap: a failure here leaves the encrypted database and its key in place, so the switch can simply be run again
+            try
+            {
+                if (_receipts != null)
+                    await _receipts.DecryptAllAsync();
+            }
+            catch
+            {
+                DeleteFile(temp);
+                throw;
+            }
 
             File.Move(temp, _plainPath, overwrite: true);
             DeleteFile(_encryptedPath);

@@ -423,7 +423,7 @@
                                                               CommandParameter="{Binding .}" />
                                     </Border.GestureRecognizers>
                                     <Grid>
-                                        <Image Source="{Binding Path}" Aspect="AspectFill" IsVisible="{Binding IsPhoto}" />
+                                        <Image Source="{Binding Path, Converter={StaticResource ReceiptImageConverter}}" Aspect="AspectFill" IsVisible="{Binding IsPhoto}" />
                                         <VerticalStackLayout IsVisible="{Binding IsPdf}" VerticalOptions="Center" Spacing="4" Padding="8">
                                             <Label Text="&#xF0226;" FontFamily="MaterialDesignIcons" FontSize="48"
                                                    HorizontalOptions="Center" TextColor="#D32F2F" />
@@ -565,7 +565,7 @@
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding CloseReceiptCommand}" />
             </Grid.GestureRecognizers>
-            <Image Source="{Binding OpenedPhotoPath}" Aspect="AspectFit" />
+            <Image Source="{Binding OpenedPhotoPath, Converter={StaticResource ReceiptImageConverter}}" Aspect="AspectFit" />
         </Grid>
     </Grid>
 

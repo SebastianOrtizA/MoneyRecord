@@ -33,7 +33,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         Db = await _dbInitializer.GetConnectionAsync();
         _accountRepository = new AccountRepository(_dbInitializer);
         _categoryRepository = new CategoryRepository(_dbInitializer);
-        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData), _history);
+        _service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer), new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData), _history, new ReceiptStore(new AppPaths(_appData)));
     }
 
     public async Task DisposeAsync()
@@ -59,7 +59,7 @@ public sealed class BackupRestoreTests : IAsyncLifetime
         await _service.ExportBackupAsync(backupPath);
         var history = new BackupHistory(new FakePreferences(), TimeProvider.System);
         var service = new DataExportService(_dbInitializer, _accountRepository, _categoryRepository, new TransactionRepository(_dbInitializer),
-            new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData), history);
+            new TransferRepository(_dbInitializer), new PayeeRepository(_dbInitializer), new AppPaths(_appData), history, new ReceiptStore(new AppPaths(_appData)));
 
         var result = await service.RestoreAsync(backupPath);
 

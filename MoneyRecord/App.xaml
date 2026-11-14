@@ -17,6 +17,7 @@
             <converters:BoolToExpandIconConverter x:Key="BoolToExpandIconConverter" />
             <converters:BalanceToColorConverter x:Key="BalanceToColorConverter" />
             <converters:MoneyConverter x:Key="MoneyConverter" />
+            <converters:ReceiptImageConverter x:Key="ReceiptImageConverter" />
             <converters:SignedMoneyConverter x:Key="SignedMoneyConverter" />
             <converters:CurrencyMoneyConverter x:Key="CurrencyMoneyConverter" />
             <converters:TransactionAmountConverter x:Key="TransactionAmountConverter" />

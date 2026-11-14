@@ -24,7 +24,7 @@ namespace MoneyRecord
             var preferences = new PreferencesService();
             LocalizationService.Instance.LoadLanguage(preferences);
             CurrencyService.LoadSettings(preferences);
-            var paths = new AppPaths(FileSystem.AppDataDirectory);
+            var paths = new AppPaths(FileSystem.AppDataDirectory, FileSystem.CacheDirectory);
             var sentryDsn = SentryDsn();
             var crashReports = new CrashReportConsent(preferences, TimeProvider.System, isAvailable: sentryDsn != null);
 
@@ -73,6 +73,8 @@ namespace MoneyRecord
 #else
             builder.Services.AddSingleton<IDatabaseKeyStore>(NoDatabaseKeyStore.Instance);
 #endif
+            // Receipt files, encrypted along with the database (its key)
+            builder.Services.AddSingleton<IReceiptStore>(sp => new ReceiptStore(sp.GetRequiredService<IAppPaths>(), sp.GetRequiredService<IDatabaseKeyStore>()));
 
             // Register Repositories (Interface Segregation)
             builder.Services.AddSingleton<ICategoryRepository, CategoryRepository>();

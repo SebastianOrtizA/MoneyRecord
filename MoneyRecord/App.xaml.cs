@@ -21,12 +21,13 @@ namespace MoneyRecord
         private readonly IWhatsNewService _whatsNew;
         private readonly ITipJar _tipJar;
         private readonly NotificationLaunch _launch;
+        private readonly IReceiptStore _receipts;
         private readonly ILogger<App> _logger;
 
         public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
             IPrivacySettings privacy, IScreenProtection screen, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
-            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, NotificationLaunch launch, ILogger<App> logger)
+            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, NotificationLaunch launch, IReceiptStore receipts, ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
@@ -45,6 +46,9 @@ namespace MoneyRecord
             _whatsNew = whatsNew;
             _tipJar = tipJar;
             _launch = launch;
+            _receipts = receipts;
+            // Decrypted copies handed to a PDF viewer last time
+            receipts.ClearViewFolder();
             _logger = logger;
         }
 
@@ -135,6 +139,7 @@ namespace MoneyRecord
         /// </summary>
         private void ShowLock(Window window) => MainThread.BeginInvokeOnMainThread(async () =>
         {
+            _receipts.ClearViewFolder(); // nothing decrypted stays behind a lock
             try
             {
                 var navigation = window.Page?.Navigation;

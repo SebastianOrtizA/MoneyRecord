@@ -36,13 +36,14 @@ namespace MoneyRecord.Services
         private readonly IPayeeRepository _payeeRepository;
         private readonly IAppPaths _paths;
         private readonly IBackupHistory _backupHistory;
+        private readonly IReceiptStore _receipts;
 
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths, IBackupHistory backupHistory)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths, IBackupHistory backupHistory, IReceiptStore receipts)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
@@ -52,6 +53,7 @@ namespace MoneyRecord.Services
             _payeeRepository = payeeRepository;
             _paths = paths;
             _backupHistory = backupHistory;
+            _receipts = receipts;
         }
 
         public string BackupsFolder => _paths.BackupsFolder;
@@ -162,7 +164,7 @@ namespace MoneyRecord.Services
         /// </summary>
         private string? AddReceipt(ZipOutputStream zip, string? path, HashSet<string> added)
         {
-            if (!ReceiptFiles.IsInFolder(path, ReceiptsFolder) || !File.Exists(path))
+            if (!ReceiptFiles.IsInFolder(path, ReceiptsFolder) || !ReceiptFiles.Exists(path!))
                 return null;
 
             var entryName = $"{ReceiptFiles.FolderName}/{Path.GetFileName(path)}";
@@ -171,7 +173,9 @@ namespace MoneyRecord.Services
                 // Photos are already compressed: no CPU spent deflating them again
                 PutEntry(zip, entryName, output =>
                 {
-                    using var photo = File.OpenRead(path!);
+                    // Decrypted: the zip is the portable format (its own password is the backup password)
+                    // Runs inside Task.Run (WriteZip), never on the UI thread, so blocking here is safe
+                    using var photo = _receipts.OpenReadAsync(path!).GetAwaiter().GetResult();
                     photo.CopyTo(output);
                 }, compress: false);
             }
@@ -215,9 +219,11 @@ namespace MoneyRecord.Services
                 try
                 {
                     await Task.Run(() => ReplaceReceipts(hasReceipts ? staging : null, backup));
+                    if (_receipts.IsEncrypting)
+                        await _receipts.EncryptAllAsync(); // the unpacked photos come in plain
                     PruneSnapshots();
                 }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or CryptographicException)
                 {
                     // Some photos may be missing; the snapshot still has the old ones and allows undo
                 }
@@ -346,7 +352,7 @@ namespace MoneyRecord.Services
             foreach (var transaction in backup.Transactions)
             {
                 var name = Path.GetFileName(transaction.ReceiptPhotoPath);
-                transaction.ReceiptPhotoPath = !string.IsNullOrWhiteSpace(name) && File.Exists(Path.Combine(availableReceipts, name))
+                transaction.ReceiptPhotoPath = !string.IsNullOrWhiteSpace(name) && ReceiptFiles.Exists(Path.Combine(availableReceipts, name))
                     ? Path.Combine(ReceiptsFolder, name)
                     : null;
             }
@@ -354,7 +360,7 @@ namespace MoneyRecord.Services
             foreach (var attachment in backup.Attachments)
             {
                 var name = Path.GetFileName(attachment.Path);
-                attachment.Path = !string.IsNullOrWhiteSpace(name) && File.Exists(Path.Combine(availableReceipts, name))
+                attachment.Path = !string.IsNullOrWhiteSpace(name) && ReceiptFiles.Exists(Path.Combine(availableReceipts, name))
                     ? Path.Combine(ReceiptsFolder, name)
                     : string.Empty;
             }
@@ -460,8 +466,8 @@ namespace MoneyRecord.Services
         private void ReplaceReceipts(string? staging, BackupData backup)
         {
             var referenced = backup.Transactions
-                .Select(t => Path.GetFileName(t.ReceiptPhotoPath))
-                .Concat(backup.Attachments.Select(a => Path.GetFileName(a.Path)))
+                .Select(t => ReceiptFiles.LogicalName(Path.GetFileName(t.ReceiptPhotoPath)))
+                .Concat(backup.Attachments.Select(a => ReceiptFiles.LogicalName(Path.GetFileName(a.Path))))
                 .Where(name => !string.IsNullOrEmpty(name))
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -474,7 +480,7 @@ namespace MoneyRecord.Services
 
             foreach (var file in Directory.GetFiles(ReceiptsFolder))
             {
-                if (!referenced.Contains(Path.GetFileName(file)))
+                if (!referenced.Contains(ReceiptFiles.LogicalName(Path.GetFileName(file))))
                     ReceiptFiles.Delete(file, ReceiptsFolder);
             }
         }
