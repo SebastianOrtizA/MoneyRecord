@@ -136,19 +136,19 @@ namespace MoneyRecord.Services
             var to = rows.Max(r => r.Date).AddDays(1);
             var connection = await database.GetConnectionAsync();
             var entries = await connection.Table<Transaction>()
-                .Where(t => t.AccountId == accountId && t.Date >= from && t.Date < to)
+                .Where(t => t.AccountId == accountId && t.Date >= from && t.Date < to && t.Type != TransactionType.Transfer)
                 .ToListAsync();
-            entries = entries.Where(t => t.Type != TransactionType.Transfer).ToList();
-
+            
             // An entry imported with a bank ID is found by it, wherever it is dated now (the user may have moved it)
             var ids = rows.Select(r => r.ExternalId).OfType<string>().Distinct().ToList();
             var knownIds = new HashSet<string>();
+            // Banks reuse IDs across files: an ID counts only with the same type and amount
             foreach (var chunk in ids.Chunk(400))
             {
                 var found = await connection.QueryAsync<IdOnly>(
-                    $"SELECT ExternalId FROM \"Transaction\" WHERE AccountId = ? AND ExternalId IN ({string.Join(',', chunk.Select(_ => "?"))})",
+                    $"SELECT ExternalId, Type, AmountCents FROM \"Transaction\" WHERE AccountId = ? AND ExternalId IN ({string.Join(',', chunk.Select(_ => "?"))})",
                     [accountId, .. chunk]);
-                knownIds.UnionWith(found.Select(f => f.ExternalId));
+                knownIds.UnionWith(found.Select(f => IdKey(f.ExternalId, f.Type, Math.Abs(f.AmountCents))));
             }
 
             return new Recorded(knownIds, Count(entries), Count(entries.Where(t => t.ExternalId == null)));
@@ -187,9 +187,15 @@ namespace MoneyRecord.Services
             public string DuplicateKey => StatementImportService.DuplicateKey(Date, Type, Cents, Description);
         }
 
+        private static string IdKey(string id, TransactionType type, long cents) => $"{id}|{type}|{cents}";
+
         private sealed class IdOnly
         {
             public string ExternalId { get; set; } = string.Empty;
+
+            public TransactionType Type { get; set; }
+
+            public long AmountCents { get; set; }
         }
 
         /// <summary>
@@ -199,10 +205,17 @@ namespace MoneyRecord.Services
         /// </summary>
         private sealed class Recorded(HashSet<string> ids, Dictionary<string, int> all, Dictionary<string, int> withoutId)
         {
+            private readonly HashSet<string> seen = [];
+
             public bool IsRecorded(ParsedRow row)
             {
-                if (row.ExternalId != null && ids.Contains(row.ExternalId))
-                    return true;
+                if (row.ExternalId != null)
+                {
+                    var key = IdKey(row.ExternalId, row.Type, row.Cents);
+                    // Recorded already, or the same ID again earlier in this file
+                    if (ids.Contains(key) || !seen.Add(key))
+                        return true;
+                }
 
                 var counts = row.ExternalId == null ? all : withoutId;
                 if (!counts.TryGetValue(row.DuplicateKey, out var count) || count == 0)

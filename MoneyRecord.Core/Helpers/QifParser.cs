@@ -73,7 +73,9 @@ namespace MoneyRecord.Helpers
         }
 
         /// <summary>The layouts that read the file's dates, the likeliest first (empty when none does).</summary>
-        public List<StatementDate> DateFormats => StatementDate.Detect(_records.Select(r => NormalizeDate(r.Date)));
+        public List<StatementDate> DateFormats => _formats ??= StatementDate.Detect(_records.Select(r => NormalizeDate(r.Date)));
+
+        private List<StatementDate>? _formats;
 
         public ParsedStatement ToStatement(StatementDate format)
         {

@@ -60,7 +60,6 @@ public sealed class OfxQifParserTests
     public void A_file_without_movements_is_empty()
     {
         OfxParser.Parse("<OFX><BANKTRANLIST></BANKTRANLIST></OFX>").Entries.Should().BeEmpty();
-        OfxParser.LooksLikeOfx("Date,Amount").Should().BeFalse();
     }
 
     private const string Qif =

@@ -23,8 +23,6 @@ namespace MoneyRecord.Helpers
             return Parse(Decode(buffer.ToArray()));
         }
 
-        public static bool LooksLikeOfx(string text) => text.Contains("<OFX", StringComparison.OrdinalIgnoreCase);
-
         public static ParsedStatement Parse(string text)
         {
             var entries = new List<StatementEntry>();
@@ -64,6 +62,7 @@ namespace MoneyRecord.Helpers
                 {
                     current.TryAdd(name, value);
                 }
+                // The first CURDEF is the file's currency (a file mixing currencies is checked against it only)
                 else if (name == "CURDEF" && currency == null && value.Length == 3)
                 {
                     currency = value.ToUpperInvariant();

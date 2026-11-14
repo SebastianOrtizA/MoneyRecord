@@ -243,13 +243,13 @@ namespace MoneyRecord.ViewModels
         /// <summary>An OFX / QFX / QIF file: its movements go straight to the preview, no columns to choose.</summary>
         private async Task OpenStatementFileAsync(string fileName, Stream stream, bool isQif)
         {
-            var (statement, qif) = await Task.Run(() =>
+            var (statement, qif, formats) = await Task.Run(() =>
             {
                 if (!isQif)
-                    return (OfxParser.Read(stream), (QifParser?)null);
+                    return (OfxParser.Read(stream), (QifParser?)null, (List<StatementDate>)[]);
                 var qif = QifParser.Read(stream);
                 var formats = qif.DateFormats;
-                return (formats.Count == 0 ? new ParsedStatement([]) : qif.ToStatement(formats[0]), qif);
+                return (formats.Count == 0 ? new ParsedStatement([]) : qif.ToStatement(formats[0]), qif, formats);
             });
             if (statement.Entries.Count == 0)
             {
@@ -268,7 +268,7 @@ namespace MoneyRecord.ViewModels
             {
                 ShowsMapping = false;
                 IsQif = isQif;
-                DateFormats = qif?.DateFormats ?? [];
+                DateFormats = formats;
                 SelectedDateFormat = DateFormats.FirstOrDefault();
             }
             finally

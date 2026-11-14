@@ -194,4 +194,16 @@ public sealed class StatementImportServiceTests : IAsyncLifetime
         rows.Single().Problem.Should().Be(ImportProblem.Currency);
         rows.Single().IsIncluded.Should().BeFalse();
     }
+
+    [Fact]
+    public async Task A_reused_bank_id_with_another_amount_is_a_new_row_and_the_same_id_twice_in_a_file_counts_once()
+    {
+        await _sut.ImportAsync(_bank, await _sut.PreviewAsync(Ofx(("1", "2026-09-01", "Rent", -500m)), _bank, _food, _salary));
+
+        var rows = await _sut.PreviewAsync(Ofx(("1", "2026-10-01", "Gym", -30m), ("1", "2026-10-01", "Gym", -30m),
+            ("1", "2026-09-01", "Rent", -500m)), _bank, _food, _salary);
+
+        // Same ID as the rent but another amount: new; its twin in the file: duplicate; the rent itself: recorded
+        rows.Select(r => r.IsDuplicate).Should().Equal(false, true, true);
+    }
 }
