@@ -16,9 +16,9 @@ namespace MoneyRecord.Platforms.Windows
 
         public bool IsSupported => true;
 
-        private string? Path => preferences.Get(FolderPathKey, string.Empty) is { Length: > 0 } path ? path : null;
+        private string? FolderPath => preferences.Get(FolderPathKey, string.Empty) is { Length: > 0 } path ? path : null;
 
-        public string? Name => Path is { } path && Directory.Exists(path) ? new DirectoryInfo(path).Name : null;
+        public string? Name => FolderPath is { } path && Directory.Exists(path) ? new DirectoryInfo(path).Name : null;
 
         public async Task<bool> PickAsync()
         {
@@ -30,11 +30,13 @@ namespace MoneyRecord.Platforms.Windows
         }
 
         public IReadOnlyList<string> ListFiles() =>
-            Directory.EnumerateFiles(RequirePath()).Select(System.IO.Path.GetFileName).OfType<string>().ToList();
+            Directory.EnumerateFiles(RequirePath()).Select(Path.GetFileName).OfType<string>()
+                // A leftover of a crashed copy is not a backup
+                .Where(name => !name.EndsWith(".part", StringComparison.OrdinalIgnoreCase)).ToList();
 
         public void Write(string fileName, string sourcePath)
         {
-            var target = System.IO.Path.Combine(RequirePath(), System.IO.Path.GetFileName(fileName));
+            var target = Path.Combine(RequirePath(), Path.GetFileName(fileName));
             // No half-written backup left in the folder: copied under another name, then renamed
             var partial = target + ".part";
             try
@@ -57,9 +59,9 @@ namespace MoneyRecord.Platforms.Windows
         }
 
         public void Delete(string fileName) =>
-            File.Delete(System.IO.Path.Combine(RequirePath(), System.IO.Path.GetFileName(fileName)));
+            File.Delete(Path.Combine(RequirePath(), Path.GetFileName(fileName)));
 
         private string RequirePath() =>
-            Path is { } path && Directory.Exists(path) ? path : throw new IOException("No backup folder is chosen");
+            FolderPath is { } path && Directory.Exists(path) ? path : throw new IOException("No backup folder is chosen");
     }
 }

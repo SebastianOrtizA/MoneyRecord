@@ -30,22 +30,28 @@ namespace MoneyRecord.Platforms.Windows
             var first = true;
             do
             {
-                try
-                {
-                    await reminders.RunDailyAsync();
-                    // The start already asks for the rates (App.xaml.cs): later ticks only
-                    if (!first)
-                        await exchangeRates.UpdateIfDueAsync();
-                    // After the recurring transactions, so the backup has them (best-effort, logs its own failures)
-                    await autoBackup.RunIfDueAsync();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "The periodic job failed");
-                }
+                // Each step on its own: a failing one never keeps the backup from running
+                await Step(reminders.RunDailyAsync, "daily", logger);
+                // The start already asks for the rates (App.xaml.cs): later ticks only
+                if (!first)
+                    await Step(exchangeRates.UpdateIfDueAsync, "rates", logger);
+                // After the recurring transactions, so the backup has them (best-effort, logs its own failures)
+                await Step(autoBackup.RunIfDueAsync, "backup", logger);
                 first = false;
             }
             while (await timer.WaitForNextTickAsync());
+        }
+
+        private static async Task Step(Func<Task> step, string name, ILogger logger)
+        {
+            try
+            {
+                await step();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "The periodic job step {Step} failed", name);
+            }
         }
     }
 }

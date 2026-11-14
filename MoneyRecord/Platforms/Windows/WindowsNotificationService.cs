@@ -58,7 +58,7 @@ namespace MoneyRecord.Platforms.Windows
 
         public bool IsSupported => _registered.Value;
 
-        public bool AreAllowed => _registered.Value &&AppNotificationManager.Default.Setting == AppNotificationSetting.Enabled;
+        public bool AreAllowed => _registered.Value && AppNotificationManager.Default.Setting == AppNotificationSetting.Enabled;
 
         // Windows asks nothing: the user turns the app's notifications off in the system settings
         public Task<bool> RequestPermissionAsync() => Task.FromResult(AreAllowed);
