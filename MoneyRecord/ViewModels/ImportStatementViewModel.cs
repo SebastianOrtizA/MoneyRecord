@@ -32,6 +32,9 @@ namespace MoneyRecord.ViewModels
         private CsvTable? _table;
         private StatementGuess? _guess;
         private StatementMapping? _mapping;
+        // An OFX or QIF file's movements (no column mapping); a QIF is kept to be read again when its date order changes
+        private ParsedStatement? _statement;
+        private QifParser? _qif;
         // Set while a file's guess fills the pickers, so each picker doesn't start its own preview
         private bool _applyingGuess;
 
@@ -54,6 +57,15 @@ namespace MoneyRecord.ViewModels
 
         [ObservableProperty]
         private bool hasFile;
+
+        /// <summary>A CSV file's columns are chosen on the screen; an OFX or QIF file has none.</summary>
+        [ObservableProperty]
+        private bool showsMapping = true;
+
+        /// <summary>A QIF file whose dates fit day-first and month-first: the one thing to choose.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowsQifDate))]
+        private bool isQif;
 
         [ObservableProperty]
         private string fileSummary = string.Empty;
@@ -126,7 +138,13 @@ namespace MoneyRecord.ViewModels
         /// <summary>Only a file whose dates fit both day-first and month-first needs the format picker.</summary>
         public bool HasDateChoice => DateFormats.Count > 1;
 
-        partial void OnDateFormatsChanged(IReadOnlyList<StatementDate> value) => OnPropertyChanged(nameof(HasDateChoice));
+        public bool ShowsQifDate => IsQif && HasDateChoice;
+
+        partial void OnDateFormatsChanged(IReadOnlyList<StatementDate> value)
+        {
+            OnPropertyChanged(nameof(HasDateChoice));
+            OnPropertyChanged(nameof(ShowsQifDate));
+        }
 
         public async Task InitializeAsync()
         {
@@ -168,11 +186,11 @@ namespace MoneyRecord.ViewModels
                     PickerTitle = AppResources.ImportChooseFile,
                     FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                     {
-                        { DevicePlatform.Android, ["text/csv", "text/comma-separated-values", "application/csv",
-                            "text/tab-separated-values", "text/plain", "application/vnd.ms-excel"] },
-                        { DevicePlatform.WinUI, [".csv", ".txt"] },
-                        { DevicePlatform.iOS, ["public.comma-separated-values-text", "public.plain-text"] },
-                        { DevicePlatform.MacCatalyst, ["public.comma-separated-values-text", "public.plain-text"] },
+                        // Android has no type for .ofx or .qif (they arrive as octet-stream): any file, told apart by its name
+                        { DevicePlatform.Android, ["*/*"] },
+                        { DevicePlatform.WinUI, [".csv", ".txt", ".ofx", ".qfx", ".qif"] },
+                        { DevicePlatform.iOS, ["public.data"] },
+                        { DevicePlatform.MacCatalyst, ["public.data"] },
                     })
                 });
                 if (file == null)
@@ -180,6 +198,13 @@ namespace MoneyRecord.ViewModels
 
                 IsBusy = true;
                 await using var stream = await file.OpenReadAsync();
+                var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+                if (extension is ".ofx" or ".qfx" or ".qif")
+                {
+                    await OpenStatementFileAsync(file.FileName, stream, isQif: extension == ".qif");
+                    return;
+                }
+
                 // Reading and guessing try every layout on every value: all of it off the UI thread, once
                 var (table, guess) = await Task.Run(() =>
                 {
@@ -194,6 +219,10 @@ namespace MoneyRecord.ViewModels
                 }
 
                 _table = table;
+                _statement = null;
+                _qif = null;
+                ShowsMapping = true;
+                IsQif = false;
                 // A bank's file seen before starts from the choices of its last import
                 var saved = _mappingStore.Find(table, guess);
                 var savedAccount = Accounts.FirstOrDefault(a => a.Id == saved?.AccountId);
@@ -209,6 +238,47 @@ namespace MoneyRecord.ViewModels
                 IsBusy = false;
                 await _errorHandler.HandleAsync(ex, AppResources.ImportFailedToRead);
             }
+        }
+
+        /// <summary>An OFX / QFX / QIF file: its movements go straight to the preview, no columns to choose.</summary>
+        private async Task OpenStatementFileAsync(string fileName, Stream stream, bool isQif)
+        {
+            var (statement, qif, formats) = await Task.Run(() =>
+            {
+                if (!isQif)
+                    return (OfxParser.Read(stream), (QifParser?)null, (List<StatementDate>)[]);
+                var qif = QifParser.Read(stream);
+                var formats = qif.DateFormats;
+                return (formats.Count == 0 ? new ParsedStatement([]) : qif.ToStatement(formats[0]), qif, formats);
+            });
+            if (statement.Entries.Count == 0)
+            {
+                IsBusy = false;
+                await _dialogService.AlertAsync(AppResources.ImportFailedToRead, AppResources.ImportNoTable);
+                return;
+            }
+
+            _table = null;
+            _mapping = null;
+            _guess = null;
+            _statement = statement;
+            _qif = qif;
+            _applyingGuess = true;
+            try
+            {
+                ShowsMapping = false;
+                IsQif = isQif;
+                DateFormats = formats;
+                SelectedDateFormat = DateFormats.FirstOrDefault();
+            }
+            finally
+            {
+                _applyingGuess = false;
+            }
+            UsesSavedMapping = false;
+            FileSummary = $"{fileName} · {Plurals.Rows(statement.Entries.Count)}";
+            HasFile = true;
+            LoadPreviewCommand.Execute(null);
         }
 
         private void ApplyGuess(CsvTable table, StatementGuess guess, StatementMapping mapping, Account? account)
@@ -253,8 +323,19 @@ namespace MoneyRecord.ViewModels
         partial void OnSelectedAmountColumnChanged(ColumnOption? value) =>
             Update(m => value == null ? m : m.WithAmountColumn(_table!, value.Index));
 
-        partial void OnSelectedDateFormatChanged(StatementDate? value) =>
+        partial void OnSelectedDateFormatChanged(StatementDate? value)
+        {
+            if (_qif != null)
+            {
+                if (!_applyingGuess && value != null)
+                {
+                    _statement = _qif.ToStatement(value);
+                    Reload();
+                }
+                return;
+            }
             Update(m => value == null ? m : m with { DateFormat = value });
+        }
 
         partial void OnPositiveIsExpenseChanged(bool value) => Update(m => m with { PositiveIsExpense = value });
 
@@ -303,14 +384,16 @@ namespace MoneyRecord.ViewModels
         [RelayCommand(AllowConcurrentExecutions = true)]
         private async Task LoadPreviewAsync(CancellationToken cancellationToken)
         {
-            if (_table == null || SelectedAccount == null || _mapping is not { } mapping)
+            if (SelectedAccount == null || _table == null && _statement == null)
                 return;
 
             try
             {
                 IsBusy = true;
-                var rows = await _importService.PreviewAsync(_table, mapping, SelectedAccount,
-                    SelectedExpenseCategory, SelectedIncomeCategory);
+                var rows = _statement != null
+                    ? await _importService.PreviewAsync(_statement, SelectedAccount, SelectedExpenseCategory, SelectedIncomeCategory)
+                    : await _importService.PreviewAsync(_table!, _mapping!, SelectedAccount,
+                        SelectedExpenseCategory, SelectedIncomeCategory);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 foreach (var row in Rows)
@@ -394,7 +477,8 @@ namespace MoneyRecord.ViewModels
             // The next file from this bank starts with these choices; a failure here must not cost the Undo dialog
             try
             {
-                _mappingStore.Remember(_table!, _mapping!, account.Id);
+                if (_table != null && _mapping != null)
+                    _mappingStore.Remember(_table, _mapping, account.Id);
             }
             catch (Exception ex)
             {

@@ -3,7 +3,7 @@ using MoneyRecord.Models;
 
 namespace MoneyRecord.Services.Interfaces
 {
-    /// <summary>Bank statement (CSV) import into one account: preview, import, undo.</summary>
+    /// <summary>Bank statement (CSV, OFX, QIF) import into one account: preview, import, undo.</summary>
     public interface IStatementImportService
     {
         /// <summary>
@@ -14,6 +14,9 @@ namespace MoneyRecord.Services.Interfaces
         /// </summary>
         Task<List<ImportRow>> PreviewAsync(CsvTable table, StatementMapping mapping, Account account,
             Category? expenseCategory, Category? incomeCategory);
+
+        /// <summary>The same for an OFX or QIF file: a file in another currency than the account is all problems; a row with a bank ID is a duplicate when that ID is already recorded.</summary>
+        Task<List<ImportRow>> PreviewAsync(ParsedStatement statement, Account account, Category? expenseCategory, Category? incomeCategory);
 
         /// <summary>Adds the included rows that can be imported, in one database transaction; returns the new IDs.</summary>
         Task<List<int>> ImportAsync(Account account, IEnumerable<ImportRow> rows);

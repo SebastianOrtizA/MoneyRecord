@@ -65,6 +65,8 @@ most, and doesn't log your amounts or descriptions. They leave the device only w
   diagnostics when you scan a receipt.
 - **Notifications (Android 13 and newer):** asked when you turn reminders on, to remind you of bills and budgets.
   Reminders are created on the device; nothing is sent anywhere.
+- **No access to other apps' notifications or SMS:** the app never asks for it and cannot read your bank's messages.
+  Bank data comes in only from statement files (CSV, OFX, QIF) you pick yourself, and is read on the device.
 - **Biometrics / screen lock:** used only when you turn the app lock on. Android checks your fingerprint, face or
   screen lock; the app only learns whether it passed and stores nothing.
 

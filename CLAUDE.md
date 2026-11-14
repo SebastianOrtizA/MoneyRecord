@@ -55,7 +55,7 @@ Services and repositories Singleton; pages and ViewModels Transient (except Main
 - Multi-row changes go through `DatabaseInitializer.RunInTransactionAsync`.
 - Totals are summed by SQLite (`SUM … GROUP BY`), never by loading every row; only reports load their period's rows.
 - Balances count entries dated up to today (`IBalanceService.CountedBefore`); future-dated entries are listed and in period totals but in no balance before their date.
-- Backups: `.zip` with `data.json` (format v8, rows keep IDs) + `receipts/`; restore snapshots go to `Backups/`.
+- Backups: `.zip` with `data.json` (format v11, rows keep IDs) + `receipts/`; restore snapshots go to `Backups/`.
 
 ### Localization
 - `.resx` with `ResXFileCodeGenerator`. XAML: `{ext:Localize Key}`. Code: `AppResources.Key` or `LocalizationService.Instance.GetString(key)`.

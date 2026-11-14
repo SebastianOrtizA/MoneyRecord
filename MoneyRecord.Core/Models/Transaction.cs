@@ -64,6 +64,10 @@ namespace MoneyRecord.Models
 
         public string? ReceiptPhotoPath { get; set; }
 
+        /// <summary>The bank's own ID of an imported entry (OFX FITID); a later import of the same file skips it. Null = typed in or from a CSV.</summary>
+        [Indexed(Name = "IX_Transaction_ExternalId")]
+        public string? ExternalId { get; set; }
+
         /// <summary>
         /// The user's own conversion (the "Amount in USD" a bank statement shows), in <see cref="ConvertedCurrencyCode"/>;
         /// null = convert with the downloaded rate. Stored as <see cref="ConvertedAmountCents"/>.
