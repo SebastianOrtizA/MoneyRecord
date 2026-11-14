@@ -20,5 +20,8 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>Screenshots, screen recordings and the recent apps card show nothing of the app (the lock screen is always hidden).</summary>
         bool BlockScreenshots { get; set; }
+
+        /// <summary>The one-time "protect your backups with a password" offer was already shown.</summary>
+        bool BackupNudgeShown { get; set; }
     }
 }

@@ -3530,4 +3530,19 @@
   <data name="SetupHideBalances" xml:space="preserve">
     <value>Nascondi i saldi nella Home finché non tocchi</value>
   </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Proteggi i tuoi backup con una password</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>I backup contengono tutti i tuoi dati e sono file non cifrati. Imposta una password così solo tu puoi aprirli. Potrai cambiarla poi in Impostazioni → Backup e ripristino.</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Imposta password</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Non ora</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (non cifrato)</value>
+  </data>
 </root>

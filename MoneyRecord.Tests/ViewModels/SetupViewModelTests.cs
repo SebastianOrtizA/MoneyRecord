@@ -22,7 +22,7 @@ public class SetupViewModelTests
     {
         _setup.ApplyAsync(Arg.Do<SetupChoices>(c => _applied = c)).Returns(Task.CompletedTask);
         _sut = new SetupViewModel(_setup, new CurrencyService(new FakePreferences()), _categories, new FakePreferences(),
-            LocalizationService.Instance, _dialogs, Substitute.For<IErrorHandler>(), _privacy);
+            LocalizationService.Instance, _dialogs, Substitute.For<IErrorHandler>(), _privacy, Substitute.For<IBackupNudge>());
     }
 
     private async Task FinishAsync()

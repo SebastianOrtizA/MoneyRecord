@@ -3532,4 +3532,19 @@
   <data name="SetupHideBalances" xml:space="preserve">
     <value>Ocultar saldos no Início até tocar</value>
   </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Proteja seus backups com uma senha</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>Os backups guardam todos os seus dados e são arquivos sem criptografia. Defina uma senha para que só você possa abri-los. Você pode alterá-la depois em Configurações → Backup e restauração.</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Definir senha</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Agora não</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (sem criptografia)</value>
+  </data>
 </root>

@@ -18,8 +18,9 @@ public sealed class AutoBackupViewModelTests : LanguageTestBase
     private readonly FakeBackupFolder _folder = new() { Name = null };
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
     private readonly IErrorHandler _errors = Substitute.For<IErrorHandler>();
+    private readonly IBackupNudge _nudge = Substitute.For<IBackupNudge>();
 
-    private AutoBackupViewModel CreateSut() => new(_service, _settings, _folder, _dialogs, _errors);
+    private AutoBackupViewModel CreateSut() => new(_service, _settings, _folder, _dialogs, _errors, _nudge);
 
     [Fact]
     public async Task TurningOn_WithoutAFolder_PicksOne_ThenBacksUpAtOnce()
@@ -82,6 +83,16 @@ public sealed class AutoBackupViewModelTests : LanguageTestBase
         sut.Status.Should().Be("The app can't reach the folder any more. Choose it again.");
         sut.FolderText.Should().Be("Not chosen");
         sut.CanBackUpNow.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task BackUpNow_Success_OffersTheBackupPassword()
+    {
+        var sut = CreateSut();
+
+        await sut.BackUpNowCommand.ExecuteAsync(null);
+
+        await _nudge.Received(1).OfferAsync();
     }
 
     [Fact]

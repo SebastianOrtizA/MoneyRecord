@@ -3581,4 +3581,19 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SetupHideBalances" xml:space="preserve">
     <value>Ocultar saldos en Inicio hasta tocarlos</value>
   </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Protege tus copias con una contraseña</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>Las copias guardan todos tus datos y son archivos sin cifrar. Pon una contraseña para que solo tú puedas abrirlas. Puedes cambiarla luego en Configuración → Copia de Seguridad y Restauración.</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Poner contraseña</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Ahora no</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (sin cifrar)</value>
+  </data>
 </root>

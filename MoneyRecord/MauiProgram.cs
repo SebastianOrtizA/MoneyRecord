@@ -160,6 +160,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IBackupPasswordStore, NoBackupPasswordStore>();
 #endif
             builder.Services.AddTransient<BackupPasswordViewModel>();
+            builder.Services.AddTransient<IBackupNudge, BackupNudge>();
             builder.Services.AddTransient<CurrencyCentsViewModel>();
 
             // The app PIN (hash + lockout in secure storage): Android only for now, like the app lock
