@@ -6038,6 +6038,18 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
         
+        public static string ImportPresetNote {
+            get {
+                return ResourceManager.GetString("ImportPresetNote", resourceCulture);
+            }
+        }
+        
+        public static string ImportCreateCategories {
+            get {
+                return ResourceManager.GetString("ImportCreateCategories", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Flights.
         /// </summary>

@@ -25,7 +25,8 @@ public sealed class StatementImportServiceTests : IAsyncLifetime
         _database = new DatabaseInitializer(new AppPaths(_appData));
         Db = await _database.GetConnectionAsync();
         var categories = new CategoryRepository(_database);
-        _sut = new StatementImportService(_database, categories);
+        _sut = new StatementImportService(_database, categories,
+            new PayeeService(_database, new AccountRepository(_database)));
 
         _bank = new Account { Name = "Bank", CurrencyCode = "EUR" };
         await new AccountRepository(_database).SaveAsync(_bank);
@@ -205,5 +206,71 @@ public sealed class StatementImportServiceTests : IAsyncLifetime
 
         // Same ID as the rent but another amount: new; its twin in the file: duplicate; the rent itself: recorded
         rows.Select(r => r.IsDuplicate).Should().Equal(false, true, true);
+    }
+
+    private const string Ynab =
+        "\"Account\",\"Flag\",\"Date\",\"Payee\",\"Category Group/Category\",\"Category Group\",\"Category\",\"Memo\",\"Outflow\",\"Inflow\",\"Cleared\"\n" +
+        "\"Checking\",\"\",\"10/05/2026\",\"Corner Cafe\",\"Food: Food test\",\"Food\",\"Food test\",\"\",\"$3.50\",\"$0.00\",\"Cleared\"\n" +
+        "\"Checking\",\"\",\"10/06/2026\",\"Acme Inc\",\"Income: Salary test\",\"Income\",\"Salary test\",\"\",\"$0.00\",\"$1,500.00\",\"Cleared\"\n" +
+        "\"Checking\",\"\",\"10/07/2026\",\"Gym\",\"Health: Fitness\",\"Health\",\"Fitness\",\"\",\"$30.00\",\"$0.00\",\"Cleared\"\n";
+
+    private Task<List<ImportRow>> PreviewPresetAsync(string csv, bool createMissing = false)
+    {
+        var table = CsvTable.Parse(csv);
+        var preset = StatementPresets.Detect(table, StatementMapping.Guess(table)!);
+        return _sut.PreviewAsync(table, preset!.Mapping, _bank, _food, _salary, createMissing);
+    }
+
+    [Fact]
+    public async Task A_YNAB_export_reads_outflow_and_inflow_categories_and_payees()
+    {
+        var rows = await PreviewPresetAsync(Ynab);
+
+        rows.Select(r => (r.Type, r.AmountCents)).Should().Equal(
+            (TransactionType.Expense, 350L), (TransactionType.Income, 150000L), (TransactionType.Expense, 3000L));
+        rows.Select(r => r.Date).Should().Equal(new DateTime(2026, 10, 5), new DateTime(2026, 10, 6), new DateTime(2026, 10, 7));
+        rows[0].Category!.Id.Should().Be(_food.Id);
+        rows[1].Category!.Id.Should().Be(_salary.Id);
+        rows.Select(r => r.PayeeName).Should().Equal("Corner Cafe", "Acme Inc", "Gym");
+        // "Fitness" doesn't exist: the default category, not a guess
+        rows[2].Category.Should().BeSameAs(_food);
+    }
+
+    [Fact]
+    public async Task Missing_categories_are_created_on_import_only_when_asked_and_payees_are_saved()
+    {
+        var rows = await PreviewPresetAsync(Ynab, createMissing: true);
+        rows[2].Category!.Name.Should().Be("Fitness");
+        rows[2].Category!.Id.Should().Be(0);
+
+        await _sut.ImportAsync(_bank, rows);
+
+        var fitness = (await Db.Table<Category>().ToListAsync()).Single(c => c.Name == "Fitness");
+        var gym = (await Db.Table<Transaction>().ToListAsync()).Single(t => t.Description == "Gym");
+        gym.CategoryId.Should().Be(fitness.Id);
+        gym.PayeeId.Should().NotBeNull();
+        (await Db.Table<Payee>().ToListAsync()).Select(p => p.Name).Should().BeEquivalentTo("Corner Cafe", "Acme Inc", "Gym");
+    }
+
+    [Fact]
+    public async Task A_Mint_export_signs_the_amount_by_its_transaction_type()
+    {
+        var csv =
+            "\"Date\",\"Description\",\"Original Description\",\"Amount\",\"Transaction Type\",\"Category\",\"Account Name\",\"Labels\",\"Notes\"\n" +
+            "\"10/05/2026\",\"Cafe\",\"CAFE 123\",\"3.50\",\"debit\",\"food test\",\"Checking\",\"\",\"\"\n" +
+            "\"10/06/2026\",\"Acme\",\"ACME PAYROLL\",\"1500.00\",\"credit\",\"Salary test\",\"Checking\",\"\",\"\"\n";
+
+        var rows = await PreviewPresetAsync(csv);
+
+        rows.Select(r => (r.Type, r.AmountCents, r.Category!.Id)).Should().Equal(
+            (TransactionType.Expense, 350L, _food.Id), (TransactionType.Income, 150000L, _salary.Id));
+    }
+
+    [Fact]
+    public void Other_files_are_not_presets()
+    {
+        var table = CsvTable.Parse("Date,Description,Amount\n2026-10-01,Coffee,-3.50\n2026-10-02,Salary,1500\n");
+
+        StatementPresets.Detect(table, StatementMapping.Guess(table)!).Should().BeNull();
     }
 }

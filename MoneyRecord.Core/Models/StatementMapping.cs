@@ -7,6 +7,8 @@ namespace MoneyRecord.Models
     /// <summary>
     /// Which columns of a <see cref="CsvTable"/> hold the date, the description and the signed amount, and how to read them.
     /// <see cref="Guess"/> picks them from the header names (English / Spanish) or, failing that, from the values.
+    /// Only a <see cref="StatementPresets"/> match sets the optional columns: category, payee, a separate inflow column (then
+    /// <see cref="AmountColumn"/> is the outflow) or a type column ("debit" / "credit") next to an unsigned amount.
     /// </summary>
     public sealed record StatementMapping(
         int DateColumn,
@@ -14,7 +16,11 @@ namespace MoneyRecord.Models
         int DescriptionColumn,
         int AmountColumn,
         char DecimalSeparator,
-        bool PositiveIsExpense = false)
+        bool PositiveIsExpense = false,
+        int? CategoryColumn = null,
+        int? PayeeColumn = null,
+        int? InflowColumn = null,
+        int? TypeColumn = null)
     {
         private static readonly string[] DateNames = ["date", "fecha", "posted", "booking", "valor fecha", "dia"];
         private static readonly string[] DescriptionNames = ["description", "descripcion", "concepto", "detalle", "details",

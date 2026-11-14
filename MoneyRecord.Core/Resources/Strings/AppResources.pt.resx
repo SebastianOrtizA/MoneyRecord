@@ -1468,6 +1468,12 @@
   <data name="ImportSavedMapping" xml:space="preserve">
     <value>Mesmas colunas e conta da sua última importação de um arquivo deste banco.</value>
   </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>Reconhecido um arquivo do {0}: colunas, sinais e categorias são lidos automaticamente.</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>Criar as categorias que ainda não existem</value>
+  </data>
   <data name="AutoBackups" xml:space="preserve">
     <value>Backups automáticos</value>
   </data>

@@ -35,6 +35,7 @@ namespace MoneyRecord.ViewModels
         // An OFX or QIF file's movements (no column mapping); a QIF is kept to be read again when its date order changes
         private ParsedStatement? _statement;
         private QifParser? _qif;
+        private StatementPreset? _preset;
         // Set while a file's guess fills the pickers, so each picker doesn't start its own preview
         private bool _applyingGuess;
 
@@ -135,6 +136,25 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool usesSavedMapping;
 
+        /// <summary>The file is another app's export (YNAB, Mint): its columns are read by the preset, with no pickers.</summary>
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasPreset))]
+        [NotifyPropertyChangedFor(nameof(PresetNote))]
+        private string presetName = string.Empty;
+
+        /// <summary>The file names a category per row: offer to create the ones the app lacks.</summary>
+        [ObservableProperty]
+        private bool hasCategoryColumn;
+
+        [ObservableProperty]
+        private bool createMissingCategories;
+
+        public bool HasPreset => PresetName.Length > 0;
+
+        public string PresetNote => string.Format(AppResources.ImportPresetNote, PresetName);
+
+        partial void OnCreateMissingCategoriesChanged(bool value) => Reload();
+
         /// <summary>Only a file whose dates fit both day-first and month-first needs the format picker.</summary>
         public bool HasDateChoice => DateFormats.Count > 1;
 
@@ -221,14 +241,29 @@ namespace MoneyRecord.ViewModels
                 _table = table;
                 _statement = null;
                 _qif = null;
-                ShowsMapping = true;
                 IsQif = false;
-                // A bank's file seen before starts from the choices of its last import
-                var saved = _mappingStore.Find(table, guess);
-                var savedAccount = Accounts.FirstOrDefault(a => a.Id == saved?.AccountId);
-                ApplyGuess(table, guess, saved?.Mapping ?? guess.Mapping, savedAccount);
-                // The note promises the columns and the account: not for a deleted account or a header-less file (no account)
-                UsesSavedMapping = savedAccount != null;
+                var preset = StatementPresets.Detect(table, guess);
+                _preset = preset;
+                PresetName = preset?.Name ?? string.Empty;
+                HasCategoryColumn = preset?.Mapping.CategoryColumn != null;
+                if (preset != null)
+                {
+                    // Another app's export reads by its own columns: nothing to pick, nothing to remember
+                    _guess = guess;
+                    _mapping = preset.Mapping;
+                    ShowsMapping = false;
+                    UsesSavedMapping = false;
+                }
+                else
+                {
+                    ShowsMapping = true;
+                    // A bank's file seen before starts from the choices of its last import
+                    var saved = _mappingStore.Find(table, guess);
+                    var savedAccount = Accounts.FirstOrDefault(a => a.Id == saved?.AccountId);
+                    ApplyGuess(table, guess, saved?.Mapping ?? guess.Mapping, savedAccount);
+                    // The note promises the columns and the account: not for a deleted account or a header-less file (no account)
+                    UsesSavedMapping = savedAccount != null;
+                }
                 FileSummary = $"{file.FileName} · {Plurals.Rows(table.Rows.Count)}";
                 HasFile = true;
                 LoadPreviewCommand.Execute(null);
@@ -261,6 +296,9 @@ namespace MoneyRecord.ViewModels
             _table = null;
             _mapping = null;
             _guess = null;
+            _preset = null;
+            PresetName = string.Empty;
+            HasCategoryColumn = false;
             _statement = statement;
             _qif = qif;
             _applyingGuess = true;
@@ -393,7 +431,7 @@ namespace MoneyRecord.ViewModels
                 var rows = _statement != null
                     ? await _importService.PreviewAsync(_statement, SelectedAccount, SelectedExpenseCategory, SelectedIncomeCategory)
                     : await _importService.PreviewAsync(_table!, _mapping!, SelectedAccount,
-                        SelectedExpenseCategory, SelectedIncomeCategory);
+                        SelectedExpenseCategory, SelectedIncomeCategory, CreateMissingCategories);
                 cancellationToken.ThrowIfCancellationRequested();
 
                 foreach (var row in Rows)
@@ -477,7 +515,7 @@ namespace MoneyRecord.ViewModels
             // The next file from this bank starts with these choices; a failure here must not cost the Undo dialog
             try
             {
-                if (_table != null && _mapping != null)
+                if (_table != null && _mapping != null && _preset == null)
                     _mappingStore.Remember(_table, _mapping, account.Id);
             }
             catch (Exception ex)

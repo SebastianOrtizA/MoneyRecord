@@ -42,6 +42,9 @@ namespace MoneyRecord.Models
         /// <summary>The account already has this entry (same bank ID, else same day, type, amount and description).</summary>
         public string? ExternalId { get; init; }
 
+        /// <summary>The payee the file names (normalised); empty for none.</summary>
+        public string PayeeName { get; init; } = string.Empty;
+
         public bool IsDuplicate { get; init; }
 
         /// <summary>
