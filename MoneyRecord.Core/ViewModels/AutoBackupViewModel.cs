@@ -19,16 +19,18 @@ namespace MoneyRecord.ViewModels
         private readonly IBackupFolder _folder;
         private readonly IDialogService _dialogs;
         private readonly IErrorHandler _errors;
+        private readonly IBackupNudge _nudge;
         private bool _folderChecked;
 
         public AutoBackupViewModel(IAutoBackupService service, IAutoBackupSettings settings, IBackupFolder folder,
-            IDialogService dialogs, IErrorHandler errors)
+            IDialogService dialogs, IErrorHandler errors, IBackupNudge nudge)
         {
             _service = service;
             _settings = settings;
             _folder = folder;
             _dialogs = dialogs;
             _errors = errors;
+            _nudge = nudge;
             RefreshNames();
             status = StatusText();
         }
@@ -162,6 +164,7 @@ namespace MoneyRecord.ViewModels
             {
                 await RunAsync(_service.BackUpNowAsync);
                 await _dialogs.ToastAsync(AppResources.BackupCreatedSuccessfully);
+                await _nudge.OfferAsync();
             }
             catch (Exception ex)
             {

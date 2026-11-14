@@ -20,7 +20,7 @@ public sealed class BackupPasswordViewModelTests : LanguageTestBase
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
     private readonly BackupPasswordViewModel _sut;
 
-    public BackupPasswordViewModelTests() => _sut = new BackupPasswordViewModel(_store, _export, _autoBackup, _dialogs);
+    public BackupPasswordViewModelTests() => _sut = new BackupPasswordViewModel(_store, _export, new BackupPasswordPrompt(_store, _autoBackup, _dialogs), _dialogs, _autoBackup);
 
     [Fact]
     public async Task TurningOn_SavesTheConfirmedPassword_AndTheNextAutomaticBackupUsesIt()

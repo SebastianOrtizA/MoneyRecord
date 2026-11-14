@@ -66,7 +66,7 @@ public sealed class ReportExportViewModelTests : IDisposable
 
         var path = Path.Combine(_folder, "MoneyRecord_Report.pdf");
         await _reports.Received(1).WritePdfAsync(Arg.Any<PeriodReport>(), path);
-        await _sharer.Received(1).ShareAsync(path, AppResources.ShareReport);
+        await _sharer.Received(1).ShareAsync(path, string.Format(AppResources.ShareNotEncrypted, AppResources.ShareReport));
         _sut.IsExporting.Should().BeFalse();
     }
 

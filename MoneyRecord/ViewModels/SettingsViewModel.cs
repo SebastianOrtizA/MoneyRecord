@@ -21,6 +21,7 @@ namespace MoneyRecord.ViewModels
         private readonly LocalizationService _localization;
         private readonly IAppPaths _paths;
         private readonly IFileSharer _sharer;
+        private readonly IBackupNudge _backupNudge;
         private readonly ICrashReportConsent _crashReports;
         private readonly IReminderService _reminders;
         private readonly IReminderSettings _reminderSettings;
@@ -51,7 +52,7 @@ namespace MoneyRecord.ViewModels
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
             IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
             AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword, CurrencyCentsViewModel cents,
-            AppPinViewModel appPin, IScreenProtection screenProtection)
+            AppPinViewModel appPin, IScreenProtection screenProtection, IBackupNudge backupNudge)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -63,6 +64,7 @@ namespace MoneyRecord.ViewModels
             _localization = localization;
             _paths = paths;
             _sharer = sharer;
+            _backupNudge = backupNudge;
             _crashReports = crashReports;
             _reminders = reminders;
             _reminderSettings = reminderSettings;
@@ -479,6 +481,7 @@ namespace MoneyRecord.ViewModels
                 await _dataExportService.ExportBackupAsync(filePath, await BackupPassword.GetPasswordAsync());
 
                 await _dialogService.ToastAsync(AppResources.BackupCreatedSuccessfully);
+                await _backupNudge.OfferAsync();
             }
             catch (Exception ex)
             {
@@ -501,6 +504,7 @@ namespace MoneyRecord.ViewModels
                 await _dataExportService.ExportBackupAsync(filePath, await BackupPassword.GetPasswordAsync());
 
                 await _sharer.ShareAsync(filePath, AppResources.ShareBackup);
+                await _backupNudge.OfferAsync();
             }
             catch (Exception ex)
             {
@@ -552,7 +556,7 @@ namespace MoneyRecord.ViewModels
                 var filePath = _sharer.NewCacheFile("MoneyRecord_Transactions", ".csv");
                 await File.WriteAllTextAsync(filePath, csv);
 
-                await _sharer.ShareAsync(filePath, AppResources.ShareTransactions);
+                await _sharer.ShareAsync(filePath, string.Format(AppResources.ShareNotEncrypted, AppResources.ShareTransactions));
 
                 await _dialogService.ToastAsync(AppResources.CsvExportedSuccessfully);
             }
@@ -576,7 +580,7 @@ namespace MoneyRecord.ViewModels
                 var filePath = _sharer.NewCacheFile("MoneyRecord_Transactions", ".xlsx");
                 await _dataExportService.ExportXlsxAsync(filePath);
 
-                await _sharer.ShareAsync(filePath, AppResources.ShareTransactions);
+                await _sharer.ShareAsync(filePath, string.Format(AppResources.ShareNotEncrypted, AppResources.ShareTransactions));
             }
             catch (Exception ex)
             {

@@ -12,8 +12,9 @@ namespace MoneyRecord.ViewModels
     public partial class BackupPasswordViewModel(
         IBackupPasswordStore store,
         IDataExportService export,
-        IAutoBackupSettings autoBackup,
-        IDialogService dialogs) : ObservableObject
+        IBackupPasswordPrompt prompt,
+        IDialogService dialogs,
+        IAutoBackupSettings autoBackup) : ObservableObject
     {
         private bool _isProtected;
 
@@ -53,16 +54,8 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task SetPasswordAsync()
         {
-            var password = await dialogs.PasswordAsync(AppResources.BackupPasswordTitle, AppResources.BackupPasswordMessage,
-                confirm: true);
-            if (!string.IsNullOrEmpty(password))
-            {
-                await store.SetAsync(password);
+            if (await prompt.SetAsync())
                 _isProtected = true;
-                // The next automatic backup is made with it, even if the data didn't change
-                autoBackup.LastFingerprint = null;
-                await dialogs.ToastAsync(AppResources.BackupPasswordSaved);
-            }
             OnPropertyChanged(nameof(IsProtected));
         }
 

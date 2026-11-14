@@ -66,10 +66,11 @@ namespace MoneyRecord.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IErrorHandler _errorHandler;
         private readonly IPrivacySettings _privacy;
+        private readonly IBackupNudge _backupNudge;
 
         public SetupViewModel(ISetupService setupService, ICurrencyService currencyService,
             ICategoryRepository categoryRepository, IPreferencesService preferences, LocalizationService localization,
-            IDialogService dialogService, IErrorHandler errorHandler, IPrivacySettings privacy)
+            IDialogService dialogService, IErrorHandler errorHandler, IPrivacySettings privacy, IBackupNudge backupNudge)
         {
             _setupService = setupService;
             _currencyService = currencyService;
@@ -79,6 +80,7 @@ namespace MoneyRecord.ViewModels
             _dialogService = dialogService;
             _errorHandler = errorHandler;
             _privacy = privacy;
+            _backupNudge = backupNudge;
             hideBalances = privacy.HideBalances;
 
             Currencies = currencyService.GetAvailableCurrencies();
@@ -271,6 +273,9 @@ namespace MoneyRecord.ViewModels
 
             if (IsPrivacyStep)
                 _privacy.HideBalances = HideBalances;
+
+            // Last thing before the app opens: backups are plain files until a password is set
+            await _backupNudge.OfferAsync();
 
             Completed?.Invoke(this, EventArgs.Empty);
         }

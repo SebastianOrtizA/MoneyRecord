@@ -3531,4 +3531,19 @@
   <data name="SetupHideBalances" xml:space="preserve">
     <value>Masquer les soldes sur l'Accueil jusqu'au toucher</value>
   </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Protège tes sauvegardes par un mot de passe</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>Les sauvegardes contiennent toutes tes données et sont des fichiers non chiffrés. Définis un mot de passe pour être seul à pouvoir les ouvrir. Tu pourras le changer plus tard dans Réglages → Sauvegarde et restauration.</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Définir un mot de passe</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Pas maintenant</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (non chiffré)</value>
+  </data>
 </root>

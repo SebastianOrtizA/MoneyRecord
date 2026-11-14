@@ -3584,4 +3584,19 @@
   <data name="SetupHideBalances" xml:space="preserve">
     <value>Hide balances on Home until tapped</value>
   </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Protect your backups with a password</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>Backups hold all your data and are saved as plain files. Set a password so only you can open them. You can change it later in Settings → Backup &amp; Restore.</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Set password</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Not now</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (not encrypted)</value>
+  </data>
 </root>

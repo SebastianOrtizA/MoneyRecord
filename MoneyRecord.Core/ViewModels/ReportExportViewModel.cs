@@ -77,7 +77,7 @@ namespace MoneyRecord.ViewModels
                     await File.WriteAllTextAsync(path, await data.ExportCsvAsync(request.Start, request.End));
                 }
 
-                await sharer.ShareAsync(path, AppResources.ShareReport);
+                await sharer.ShareAsync(path, string.Format(AppResources.ShareNotEncrypted, AppResources.ShareReport));
             }
             catch (Exception ex)
             {

@@ -10015,5 +10015,50 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("SetupHideBalances", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string like BackupNudgeTitle.
+        /// </summary>
+        public static string BackupNudgeTitle {
+            get {
+                return ResourceManager.GetString("BackupNudgeTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like BackupNudgeMessage.
+        /// </summary>
+        public static string BackupNudgeMessage {
+            get {
+                return ResourceManager.GetString("BackupNudgeMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like BackupNudgeSet.
+        /// </summary>
+        public static string BackupNudgeSet {
+            get {
+                return ResourceManager.GetString("BackupNudgeSet", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like BackupNudgeLater.
+        /// </summary>
+        public static string BackupNudgeLater {
+            get {
+                return ResourceManager.GetString("BackupNudgeLater", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like ShareNotEncrypted.
+        /// </summary>
+        public static string ShareNotEncrypted {
+            get {
+                return ResourceManager.GetString("ShareNotEncrypted", resourceCulture);
+            }
+        }
     }
 }
