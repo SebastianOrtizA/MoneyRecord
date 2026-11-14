@@ -75,6 +75,26 @@
                             </Grid>
                         </Border>
 
+                        <!-- Another app's export (YNAB, Mint): columns, signs and categories are read for you -->
+                        <Border Padding="10,8"
+                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10"
+                                IsVisible="{Binding HasPreset}"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource PrimaryTint}, Dark={StaticResource PrimaryTintDark}}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Label Text="&#xF02DA;"
+                                       FontFamily="MaterialDesignIcons"
+                                       FontSize="16"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding PresetNote}"
+                                       FontSize="13"
+                                       VerticalOptions="Center"
+                                       TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                            </Grid>
+                        </Border>
+
                         <Label Text="{ext:Localize Account}" FontSize="14" FontAttributes="Bold"/>
                         <Picker ItemsSource="{Binding Accounts}"
                                 SelectedItem="{Binding SelectedAccount}"
@@ -125,6 +145,12 @@
                               IsVisible="{Binding ShowsMapping}">
                             <Label Text="{ext:Localize ImportPositiveIsExpense}" FontSize="14" VerticalOptions="Center"/>
                             <Switch Grid.Column="1" IsToggled="{Binding PositiveIsExpense}" VerticalOptions="Center"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12"
+                              IsVisible="{Binding HasCategoryColumn}">
+                            <Label Text="{ext:Localize ImportCreateCategories}" FontSize="14" VerticalOptions="Center"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding CreateMissingCategories}" VerticalOptions="Center"/>
                         </Grid>
 
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto" RowSpacing="4">

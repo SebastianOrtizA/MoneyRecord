@@ -172,7 +172,8 @@ Your data stays on the device in every version; see [PRIVACY.md](PRIVACY.md).
   is saved to an automatic snapshot first (the last 5 are kept) and the "Restore complete" dialog offers **Undo**.
 - **CSV export** of all transactions, and **import** of a bank statement (CSV, OFX/QFX or QIF) into one account: pick the columns, check a
   preview that marks duplicates and suggests categories learned from your history, and undo the import if needed. The
-  columns are remembered per statement layout.
+  columns are remembered per statement layout. Exports from YNAB and Mint are recognised by their header (inflow/outflow,
+  categories and payees included; missing categories can be created).
 - **App lock** (Android, opt-in): fingerprint, face or the phone's screen lock when the app opens and after 1, 5, 15
   or 60 minutes in the background. The app stores no PIN or biometric data; on Android 13+ the recent apps screen
   doesn't show its content while the lock is on.

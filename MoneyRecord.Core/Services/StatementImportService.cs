@@ -6,22 +6,24 @@ using System.Text;
 
 namespace MoneyRecord.Services
 {
-    public sealed class StatementImportService(DatabaseInitializer database, ICategoryRepository categoryRepository)
+    public sealed class StatementImportService(DatabaseInitializer database, ICategoryRepository categoryRepository,
+        IPayeeService payeeService)
         : IStatementImportService
     {
         public async Task<List<ImportRow>> PreviewAsync(CsvTable table, StatementMapping mapping, Account account,
-            Category? expenseCategory, Category? incomeCategory) =>
+            Category? expenseCategory, Category? incomeCategory, bool createMissingCategories = false) =>
             await PreviewAsync(new ParsedStatement(table.Rows.Select((row, i) => ToEntry(row, i + 1, mapping)).ToList()),
-                account, expenseCategory, incomeCategory);
+                account, expenseCategory, incomeCategory, createMissingCategories);
 
         public async Task<List<ImportRow>> PreviewAsync(ParsedStatement statement, Account account,
-            Category? expenseCategory, Category? incomeCategory)
+            Category? expenseCategory, Category? incomeCategory, bool createMissingCategories = false)
         {
             // A file that names its currency must match the account's
             var otherCurrency = statement.CurrencyCode != null
                 && !MoneyFormatter.SameCurrency(statement.CurrencyCode, account.CurrencyCode);
             var parsed = statement.Entries.Select(e => Parse(e, otherCurrency)).ToList();
             var learned = await LearnedCategoriesAsync();
+            var named = await NamedCategoriesAsync(statement.Entries, createMissingCategories);
             var readable = parsed.Where(p => p.Problem == ImportProblem.None).ToList();
             var recorded = await RecordedEntriesAsync(account.Id, readable);
 
@@ -34,7 +36,9 @@ namespace MoneyRecord.Services
                 }
 
                 var duplicate = recorded.IsRecorded(p);
-                var category = learned.GetValueOrDefault((p.Type, CategoryKey(p.Description)));
+                // A category the file names beats the one learned from earlier entries
+                var fromFile = named(p.Type, p.CategoryName);
+                var category = fromFile ?? learned.GetValueOrDefault((p.Type, CategoryKey(p.Description)));
                 return new ImportRow
                 {
                     Line = p.Line,
@@ -44,8 +48,9 @@ namespace MoneyRecord.Services
                     Type = p.Type,
                     CurrencyCode = account.CurrencyCode,
                     ExternalId = p.ExternalId,
+                    PayeeName = PayeeNames.Normalize(p.PayeeName),
                     IsDuplicate = duplicate,
-                    IsLearned = category != null,
+                    IsLearned = fromFile == null && category != null,
                     IsIncluded = !duplicate,
                     Category = category ?? (p.Type == TransactionType.Expense ? expenseCategory : incomeCategory),
                 };
@@ -54,10 +59,20 @@ namespace MoneyRecord.Services
 
         public async Task<List<int>> ImportAsync(Account account, IEnumerable<ImportRow> rows)
         {
-            var entries = rows
-                .Where(r => r.IsIncluded && r.CanImport && r.Category != null)
+            var included = rows.Where(r => r.IsIncluded && r.CanImport && r.Category != null).ToList();
+
+            // Categories the file named that the app doesn't have yet (Id 0, one object per name) are created first
+            foreach (var created in included.Select(r => r.Category!).Where(c => c.Id == 0).Distinct())
+                await categoryRepository.SaveAsync(created);
+
+            var payees = new Dictionary<string, int?>(StringComparer.InvariantCultureIgnoreCase);
+            foreach (var name in included.Select(r => r.PayeeName).Where(n => n.Length > 0).Distinct(StringComparer.InvariantCultureIgnoreCase))
+                payees[name] = await payeeService.ResolveAsync(name);
+
+            var entries = included
                 .Select(r => new Transaction
                 {
+                    PayeeId = r.PayeeName.Length > 0 ? payees[r.PayeeName] : null,
                     Date = r.Date,
                     Description = r.Description,
                     AmountCents = r.AmountCents,
@@ -84,10 +99,65 @@ namespace MoneyRecord.Services
         {
             var description = row[mapping.DescriptionColumn].Trim();
             DateTime? date = mapping.DateFormat.TryParse(row[mapping.DateColumn], out var d) ? d : null;
-            decimal? amount = StatementAmount.TryParse(row[mapping.AmountColumn], mapping.DecimalSeparator, out var a)
-                ? (mapping.PositiveIsExpense ? -a : a)
-                : null;
-            return new StatementEntry(line, date, description, amount);
+            var amount = ReadAmount(row, mapping);
+            return new StatementEntry(line, date, description, amount,
+                CategoryName: mapping.CategoryColumn is { } c ? row[c].Trim() : null,
+                PayeeName: mapping.PayeeColumn is { } p ? row[p].Trim() : null);
+        }
+
+        private static decimal? ReadAmount(string[] row, StatementMapping mapping)
+        {
+            if (mapping.InflowColumn is { } inflow)
+            {
+                // Two columns, one of them empty per row: money in minus money out
+                var money = (In: ReadOptional(row[inflow], mapping), Out: ReadOptional(row[mapping.AmountColumn], mapping));
+                return money.In is { } i && money.Out is { } o ? i - o : null;
+            }
+            if (!StatementAmount.TryParse(row[mapping.AmountColumn], mapping.DecimalSeparator, out var a))
+                return null;
+            if (mapping.TypeColumn is { } typeColumn)
+            {
+                // An unsigned amount plus "debit" / "credit"; any other word can't be told
+                var type = StatementMapping.Normalize(row[typeColumn]);
+                return type == "credit" ? Math.Abs(a) : type == "debit" ? -Math.Abs(a) : null;
+            }
+            return mapping.PositiveIsExpense ? -a : a;
+        }
+
+        // An empty cell is 0; text that isn't an amount is null
+        private static decimal? ReadOptional(string text, StatementMapping mapping) =>
+            string.IsNullOrWhiteSpace(text) ? 0m
+            : StatementAmount.TryParse(text, mapping.DecimalSeparator, out var value) ? value : null;
+
+        /// <summary>
+        /// The category a file names, found among the app's by name of the row's type (ignoring case and accents); a name the app
+        /// lacks becomes one new category per type and name when <paramref name="createMissing"/> (Id 0 until imported); null
+        /// for no name or no match.
+        /// </summary>
+        private async Task<Func<TransactionType, string?, Category?>> NamedCategoriesAsync(IReadOnlyList<StatementEntry> entries, bool createMissing)
+        {
+            if (!entries.Any(e => !string.IsNullOrWhiteSpace(e.CategoryName)))
+                return (_, _) => null;
+            var existing = (await categoryRepository.GetAllAsync())
+                .Where(c => !c.IsTravel && !c.IsDebtInterest)
+                .GroupBy(c => (c.Type, StatementMapping.Normalize(c.Name)))
+                .ToDictionary(g => g.Key, g => g.First());
+            var created = new Dictionary<(CategoryType, string), Category>();
+
+            return (type, name) =>
+            {
+                if (string.IsNullOrWhiteSpace(name))
+                    return null;
+                var categoryType = type == TransactionType.Expense ? CategoryType.Expense : CategoryType.Income;
+                var key = (categoryType, StatementMapping.Normalize(name));
+                if (existing.TryGetValue(key, out var found))
+                    return found;
+                if (!createMissing)
+                    return null;
+                if (!created.TryGetValue(key, out var category))
+                    created[key] = category = new Category { Name = PayeeNames.Normalize(name), Type = categoryType };
+                return category;
+            };
         }
 
         private static ParsedRow Parse(StatementEntry entry, bool otherCurrency)
@@ -105,7 +175,8 @@ namespace MoneyRecord.Services
                 return new ParsedRow(entry.Line, date, description, 0, default, null, ImportProblem.Currency);
 
             return new ParsedRow(entry.Line, date, description, cents,
-                amount < 0 ? TransactionType.Expense : TransactionType.Income, entry.ExternalId, ImportProblem.None);
+                amount < 0 ? TransactionType.Expense : TransactionType.Income, entry.ExternalId, ImportProblem.None,
+                entry.CategoryName, entry.PayeeName);
         }
 
         /// <summary>Per type and <see cref="CategoryKey"/>, the category of the latest entry (that still exists).</summary>
@@ -182,7 +253,7 @@ namespace MoneyRecord.Services
         }
 
         private sealed record ParsedRow(int Line, DateTime Date, string Description, long Cents, TransactionType Type,
-            string? ExternalId, ImportProblem Problem)
+            string? ExternalId, ImportProblem Problem, string? CategoryName = null, string? PayeeName = null)
         {
             public string DuplicateKey => StatementImportService.DuplicateKey(Date, Type, Cents, Description);
         }

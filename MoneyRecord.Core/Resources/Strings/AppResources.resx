@@ -1519,6 +1519,12 @@
   <data name="ImportSavedMapping" xml:space="preserve">
     <value>Same columns and account as your last import of this bank's file.</value>
   </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>Recognised a {0} export: columns, signs and categories are read for you.</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>Create categories that don't exist yet</value>
+  </data>
   <data name="AutoBackups" xml:space="preserve">
     <value>Automatic backups</value>
   </data>

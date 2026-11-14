@@ -1517,6 +1517,12 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="ImportSavedMapping" xml:space="preserve">
     <value>Mismas columnas y cuenta que en tu última importación de un archivo de este banco.</value>
   </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>Reconocido un archivo de {0}: columnas, signos y categorías se leen solos.</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>Crear las categorías que aún no existen</value>
+  </data>
   <data name="AutoBackups" xml:space="preserve">
     <value>Copias automáticas</value>
   </data>

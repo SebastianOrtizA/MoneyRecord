@@ -1467,6 +1467,12 @@
   <data name="ImportSavedMapping" xml:space="preserve">
     <value>Mêmes colonnes et même compte que ton dernier import d'un fichier de cette banque.</value>
   </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>Export {0} reconnu : les colonnes, les signes et les catégories sont lus automatiquement.</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>Créer les catégories qui n'existent pas encore</value>
+  </data>
   <data name="AutoBackups" xml:space="preserve">
     <value>Sauvegardes automatiques</value>
   </data>
