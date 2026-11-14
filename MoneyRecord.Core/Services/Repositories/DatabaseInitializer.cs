@@ -159,12 +159,21 @@ namespace MoneyRecord.Services.Repositories
             var temp = _plainPath + TempSuffix;
             await Task.Run(() => Rekey(_encryptedPath, temp, fromKey: key, toKey: null));
 
+            // Before the swap: a failure here leaves the encrypted database and its key in place, so the switch can simply be run again
+            try
+            {
+                if (_receipts != null)
+                    await _receipts.DecryptAllAsync();
+            }
+            catch
+            {
+                DeleteFile(temp);
+                throw;
+            }
+
             File.Move(temp, _plainPath, overwrite: true);
             DeleteFile(_encryptedPath);
             DeleteMigrationCopies(_encryptedPath); // unreadable once the key is gone
-            // Before the key goes: the receipts need it
-            if (_receipts != null)
-                await _receipts.DecryptAllAsync();
             _keyStore.Remove();
         });
 

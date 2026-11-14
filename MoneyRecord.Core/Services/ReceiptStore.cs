@@ -35,16 +35,17 @@ namespace MoneyRecord.Services
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
             using var buffer = new MemoryStream();
             await source.CopyToAsync(buffer);
+            var bytes = buffer.ToArray();
 
             // A file of the other kind with the same name (a re-save) must not outlive the new one
             if (IsEncrypting && await GetKeyAsync() is { } key)
             {
-                await WriteAtomicAsync(path + ReceiptFiles.EncryptedSuffix, Encrypt(buffer.ToArray(), key));
+                await WriteAtomicAsync(path + ReceiptFiles.EncryptedSuffix, Encrypt(bytes, key));
                 TryDelete(path);
             }
             else
             {
-                await WriteAtomicAsync(path, buffer.ToArray());
+                await WriteAtomicAsync(path, bytes);
                 TryDelete(path + ReceiptFiles.EncryptedSuffix);
             }
         }
@@ -128,7 +129,10 @@ namespace MoneyRecord.Services
                 }
                 catch (CryptographicException)
                 {
-                    continue; // damaged: unreadable either way, and one bad file must not keep the switch from finishing
+                    // Damaged: unreadable now and after the key is gone. Removed, so the receipt shows as missing, not as broken,
+                    // and one bad file does not keep the switch from finishing
+                    TryDelete(file);
+                    continue;
                 }
                 await WriteAtomicAsync(file[..^ReceiptFiles.EncryptedSuffix.Length], plain);
                 TryDelete(file);

@@ -32,7 +32,7 @@ public sealed class TransactionAttachmentTests : IAsyncLifetime
         var accounts = new AccountRepository(_database);
         var categories = new CategoryRepository(_database);
         _export = new DataExportService(_database, accounts, categories, _transactions, new TransferRepository(_database),
-            new PayeeRepository(_database), _paths, new BackupHistory(new FakePreferences(), TimeProvider.System));
+            new PayeeRepository(_database), _paths, new BackupHistory(new FakePreferences(), TimeProvider.System), new ReceiptStore(_paths));
         _ledger = new LedgerService(Substitute.For<ITransactionEnrichmentService>(), _database, _paths);
     }
 

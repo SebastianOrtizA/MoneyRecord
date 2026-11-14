@@ -43,7 +43,7 @@ namespace MoneyRecord.Services
             WriteIndented = true
         };
 
-        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths, IBackupHistory backupHistory, IReceiptStore? receipts = null)
+        public DataExportService(DatabaseInitializer dbInitializer, IAccountRepository accountRepository, ICategoryRepository categoryRepository, ITransactionRepository transactionRepository, ITransferRepository transferRepository, IPayeeRepository payeeRepository, IAppPaths paths, IBackupHistory backupHistory, IReceiptStore receipts)
         {
             _dbInitializer = dbInitializer;
             _accountRepository = accountRepository;
@@ -53,7 +53,7 @@ namespace MoneyRecord.Services
             _payeeRepository = payeeRepository;
             _paths = paths;
             _backupHistory = backupHistory;
-            _receipts = receipts ?? new ReceiptStore(paths);
+            _receipts = receipts;
         }
 
         public string BackupsFolder => _paths.BackupsFolder;
@@ -174,6 +174,7 @@ namespace MoneyRecord.Services
                 PutEntry(zip, entryName, output =>
                 {
                     // Decrypted: the zip is the portable format (its own password is the backup password)
+                    // Runs inside Task.Run (WriteZip), never on the UI thread, so blocking here is safe
                     using var photo = _receipts.OpenReadAsync(path!).GetAwaiter().GetResult();
                     photo.CopyTo(output);
                 }, compress: false);

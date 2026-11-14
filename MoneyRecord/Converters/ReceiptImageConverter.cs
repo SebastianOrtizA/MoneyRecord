@@ -14,10 +14,8 @@ namespace MoneyRecord.Converters
             if (value is not string { Length: > 0 } path)
                 return null;
 
-            var store = IPlatformApplication.Current?.Services.GetService<IReceiptStore>();
-            if (store == null)
-                return ImageSource.FromFile(path);
-
+            // A converter can't take constructor injection
+            var store = IPlatformApplication.Current!.Services.GetRequiredService<IReceiptStore>();
             return new StreamImageSource { Stream = _ => store.OpenReadAsync(path) };
         }
 

@@ -41,6 +41,7 @@ namespace MoneyRecord.Helpers
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
                 {
+                    // Best effort: a file in use is left
                 }
             }
             return deleted;

@@ -225,6 +225,43 @@ public sealed class ReceiptStoreTests : IDisposable
     }
 
     [Fact]
+    public async Task A_damaged_encrypted_file_is_removed_when_decrypting_and_the_rest_still_come_back()
+    {
+        TurnOnDatabaseEncryption();
+        await SaveAsync("good.jpg");
+        await SaveAsync("bad.jpg");
+        var bytes = File.ReadAllBytes(PathOf("bad.jpg.enc"));
+        bytes[^1] ^= 1;
+        File.WriteAllBytes(PathOf("bad.jpg.enc"), bytes);
+
+        await _sut.DecryptAllAsync();
+
+        Directory.GetFiles(_paths.ReceiptsFolder).Select(Path.GetFileName).Should().BeEquivalentTo("good.jpg");
+    }
+
+    [Fact]
+    public async Task A_failed_receipt_decryption_leaves_the_database_encrypted_so_turning_off_can_be_repeated()
+    {
+        var receipts = new ThrowingOnceStore(_sut);
+        var db = new DatabaseInitializer(_paths, _keyStore, receipts);
+        await db.EncryptAsync();
+        await SaveAsync("a.jpg");
+
+        var turnOff = () => db.DecryptAsync();
+        await turnOff.Should().ThrowAsync<IOException>();
+
+        File.Exists(_paths.EncryptedDatabasePath).Should().BeTrue();
+        _keyStore.Key.Should().NotBeNull();
+        (await ReadAsync(_sut, PathOf("a.jpg"))).Should().Equal(Photo);
+
+        await db.DecryptAsync();
+
+        File.ReadAllBytes(PathOf("a.jpg")).Should().Equal(Photo);
+        File.Exists(_paths.EncryptedDatabasePath).Should().BeFalse();
+        await (await db.GetConnectionAsync()).CloseAsync();
+    }
+
+    [Fact]
     public async Task Starting_with_an_encrypted_database_finishes_an_interrupted_switch()
     {
         var first = new DatabaseInitializer(_paths, _keyStore, _sut);
@@ -271,6 +308,27 @@ public sealed class ReceiptStoreTests : IDisposable
         File.Exists(PathOf("r.jpg.enc")).Should().BeTrue();
         (await ReadAsync(_sut, PathOf("r.jpg"))).Should().Equal(Photo);
         await connection.CloseAsync();
+    }
+
+    /// <summary>A store whose first DecryptAll fails like a disk error would.</summary>
+    private sealed class ThrowingOnceStore(IReceiptStore inner) : IReceiptStore
+    {
+        private bool _thrown;
+
+        public bool IsEncrypting => inner.IsEncrypting;
+        public Task SaveAsync(string path, Stream source) => inner.SaveAsync(path, source);
+        public Task<Stream> OpenReadAsync(string path) => inner.OpenReadAsync(path);
+        public Task<string> GetReadablePathAsync(string path) => inner.GetReadablePathAsync(path);
+        public void ClearViewFolder() => inner.ClearViewFolder();
+        public Task EncryptAllAsync() => inner.EncryptAllAsync();
+
+        public Task DecryptAllAsync()
+        {
+            if (_thrown)
+                return inner.DecryptAllAsync();
+            _thrown = true;
+            throw new IOException("disk error");
+        }
     }
 
     private sealed class KeyStore : IDatabaseKeyStore
