@@ -14,7 +14,8 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>Asks for the phone's lock; true when the user passed it, false when cancelled or unavailable.</summary>
         Task<bool> AuthenticateAsync(string title, string subtitle);
 
-        /// <summary>Hides the app's content in the recent apps screen (while the lock is on).</summary>
+        /// <summary>Hides the app's content in the recent apps screen (while the lock is on). Lighter than
+        /// <see cref="IScreenProtection"/>: recents only (screenshots still work), follows the app lock, not the Block screenshots switch.</summary>
         void HideContentInRecents(bool hide);
     }
 }

@@ -598,6 +598,32 @@
                 </Border>
                 </VerticalStackLayout>
 
+                <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize BlockScreenshots}">
+                <!-- Screenshots and recent apps (Android) -->
+                <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding ScreenProtectionSupported}">
+                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                        <Label Grid.Column="0"
+                               Text="&#xF0209;"
+                               FontFamily="MaterialDesignIcons"
+                               FontSize="28"
+                               VerticalOptions="Center"
+                               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"/>
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{ext:Localize BlockScreenshots}"
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Label Text="{ext:Localize BlockScreenshotsDescription}"
+                                   FontSize="13"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}"/>
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="2"
+                                IsToggled="{Binding BlockScreenshots}"
+                                VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+                </VerticalStackLayout>
+
                 <VerticalStackLayout controls:SettingsSearch.Title="{ext:Localize EncryptDatabase}">
                 <!-- Database encryption (opt-in), where the key can be kept (Android) -->
                 <Border Margin="0,0,0,16" Style="{StaticResource Card}" IsVisible="{Binding EncryptionSupported}">

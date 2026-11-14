@@ -51,12 +51,12 @@ namespace MoneyRecord.ViewModels
     }
 
     /// <summary>
-    /// The setup assistant: language and base currency → starting accounts → default categories. On the first run it
+    /// The setup assistant: language and base currency → starting accounts → default categories → privacy (hide balances). On the first run it
     /// replaces the seeded Cash account and categories; reopened from Settings it only adds.
     /// </summary>
     public partial class SetupViewModel : ObservableObject
     {
-        public const int StepCount = 3;
+        public const int StepCount = 4;
 
         private readonly ISetupService _setupService;
         private readonly ICurrencyService _currencyService;
@@ -65,10 +65,11 @@ namespace MoneyRecord.ViewModels
         private readonly LocalizationService _localization;
         private readonly IDialogService _dialogService;
         private readonly IErrorHandler _errorHandler;
+        private readonly IPrivacySettings _privacy;
 
         public SetupViewModel(ISetupService setupService, ICurrencyService currencyService,
             ICategoryRepository categoryRepository, IPreferencesService preferences, LocalizationService localization,
-            IDialogService dialogService, IErrorHandler errorHandler)
+            IDialogService dialogService, IErrorHandler errorHandler, IPrivacySettings privacy)
         {
             _setupService = setupService;
             _currencyService = currencyService;
@@ -77,6 +78,8 @@ namespace MoneyRecord.ViewModels
             _localization = localization;
             _dialogService = dialogService;
             _errorHandler = errorHandler;
+            _privacy = privacy;
+            hideBalances = privacy.HideBalances;
 
             Currencies = currencyService.GetAvailableCurrencies();
             baseCurrency = currencyService.GetCurrency(currencyService.GetBaseCurrencyCode());
@@ -91,7 +94,7 @@ namespace MoneyRecord.ViewModels
         public bool IsFirstRun { get; private set; }
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsLanguageStep), nameof(IsAccountsStep), nameof(IsCategoriesStep),
+        [NotifyPropertyChangedFor(nameof(IsLanguageStep), nameof(IsAccountsStep), nameof(IsCategoriesStep), nameof(IsPrivacyStep),
             nameof(IsLastStep), nameof(CanGoBack), nameof(StepText), nameof(NextText), nameof(Progress))]
         private int step = 1;
 
@@ -100,6 +103,7 @@ namespace MoneyRecord.ViewModels
         public bool IsLanguageStep => Step == 1;
         public bool IsAccountsStep => Step == 2;
         public bool IsCategoriesStep => Step == 3;
+        public bool IsPrivacyStep => Step == 4;
         public bool IsLastStep => Step == StepCount;
         public bool CanGoBack => Step > 1;
         public string StepText => string.Format(AppResources.SetupStepOf, Step, StepCount);
@@ -128,6 +132,10 @@ namespace MoneyRecord.ViewModels
 
         public IReadOnlyList<SetupCategoryOption> ExpenseCategories { get; private set; } = [];
         public IReadOnlyList<SetupCategoryOption> IncomeCategories { get; private set; } = [];
+
+        /// <summary>The last step: Home starts with the balances hidden until tapped. Saved only when that step was reached.</summary>
+        [ObservableProperty]
+        private bool hideBalances;
 
         [ObservableProperty]
         private bool isSaving;
@@ -260,6 +268,9 @@ namespace MoneyRecord.ViewModels
             {
                 IsSaving = false;
             }
+
+            if (IsPrivacyStep)
+                _privacy.HideBalances = HideBalances;
 
             Completed?.Invoke(this, EventArgs.Empty);
         }

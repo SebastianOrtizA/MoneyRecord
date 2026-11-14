@@ -9971,5 +9971,49 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string like BlockScreenshots.
+        /// </summary>
+        public static string BlockScreenshots {
+            get {
+                return ResourceManager.GetString("BlockScreenshots", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like BlockScreenshotsDescription.
+        /// </summary>
+        public static string BlockScreenshotsDescription {
+            get {
+                return ResourceManager.GetString("BlockScreenshotsDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SetupPrivacyTitle.
+        /// </summary>
+        public static string SetupPrivacyTitle {
+            get {
+                return ResourceManager.GetString("SetupPrivacyTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SetupPrivacyDescription.
+        /// </summary>
+        public static string SetupPrivacyDescription {
+            get {
+                return ResourceManager.GetString("SetupPrivacyDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SetupHideBalances.
+        /// </summary>
+        public static string SetupHideBalances {
+            get {
+                return ResourceManager.GetString("SetupHideBalances", resourceCulture);
+            }
+        }
     }
 }

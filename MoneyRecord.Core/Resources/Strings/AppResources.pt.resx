@@ -3517,4 +3517,19 @@
   <data name="PinLost" xml:space="preserve">
     <value>Não foi possível ler seu PIN e ele foi removido. Use o bloqueio do celular.</value>
   </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Bloquear capturas de tela</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Oculta o app nas capturas de tela, nas gravações de tela e na tela de apps recentes.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Privacidade</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Escolha como o Início mostra o seu dinheiro. Você pode mudar isso depois em Configurações.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Ocultar saldos no Início até tocar</value>
+  </data>
 </root>

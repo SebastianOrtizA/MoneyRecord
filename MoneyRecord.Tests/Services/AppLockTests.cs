@@ -112,6 +112,64 @@ public sealed class AppLockTests
     }
 
     [Fact]
+    public void The_lock_waits_for_the_phone_lock_to_come_back_and_works_again_then()
+    {
+        _sut.LockOnStart();
+        _sut.Unlock();
+
+        _deviceLock.IsAvailable.Returns(false);
+        _sut.CanLock.Should().BeFalse();
+        AwayFor(TimeSpan.FromHours(1)).Should().BeFalse();
+
+        _deviceLock.IsAvailable.Returns(true);
+        _sut.CanLock.Should().BeTrue();
+        AwayFor(TimeSpan.FromMinutes(5)).Should().BeTrue();
+    }
+
+    [Fact]
+    public void Turning_the_lock_on_while_the_app_is_away_locks_on_the_return_after_the_delay()
+    {
+        _settings.LockEnabled = false;
+        _sut.LockOnStart().Should().BeFalse();
+
+        _sut.Backgrounded();
+        _settings.LockEnabled = true;
+        _clock.Advance(TimeSpan.FromMinutes(6));
+
+        _sut.LockOnResume().Should().BeTrue();
+    }
+
+    [Fact]
+    public void One_second_short_of_the_delay_does_not_lock()
+    {
+        _sut.LockOnStart();
+        _sut.Unlock();
+
+        AwayFor(TimeSpan.FromMinutes(5) - TimeSpan.FromSeconds(1)).Should().BeFalse();
+    }
+
+    [Fact]
+    public void A_process_that_died_while_locked_starts_locked_again()
+    {
+        _sut.LockOnStart();
+
+        var restarted = new AppLock(_settings, _deviceLock, _clock);
+
+        restarted.LockOnStart().Should().BeTrue();
+    }
+
+    [Fact]
+    public void Screenshots_are_allowed_until_asked_otherwise()
+    {
+        var settings = new PrivacySettings(new FakePreferences());
+        settings.BlockScreenshots.Should().BeFalse();
+
+        settings.BlockScreenshots = true;
+
+        settings.BlockScreenshots.Should().BeTrue();
+    }
+
+    [Fact]
     public void Defaults_are_lock_off_after_one_minute_and_balances_shown()
     {
         var settings = new PrivacySettings(new FakePreferences());

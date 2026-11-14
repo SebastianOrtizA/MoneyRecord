@@ -182,6 +182,11 @@ namespace MoneyRecord
 #else
             builder.Services.AddSingleton<IDeviceLock, NoDeviceLock>();
 #endif
+#if ANDROID
+            builder.Services.AddSingleton<IScreenProtection, Platforms.Android.AndroidScreenProtection>();
+#else
+            builder.Services.AddSingleton<IScreenProtection, NoScreenProtection>();
+#endif
 
             // The home-screen widget (Android: Platforms/Android/BalanceWidgetProvider), redrawn when the app goes to the
             // background and after the daily job

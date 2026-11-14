@@ -148,6 +148,20 @@
                     <VerticalStackLayout BindableLayout.ItemsSource="{Binding IncomeCategories}"
                                          BindableLayout.ItemTemplate="{StaticResource CategoryOptionTemplate}" />
                 </VerticalStackLayout>
+
+                <!-- 4. Privacy -->
+                <VerticalStackLayout Spacing="12" IsVisible="{Binding IsPrivacyStep}">
+                    <Label Text="{ext:Localize SetupPrivacyTitle}" FontSize="24" FontAttributes="Bold" />
+                    <Label Text="{ext:Localize SetupPrivacyDescription}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    <Border Style="{StaticResource Card}">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <Label Text="{ext:Localize SetupHideBalances}" FontSize="16" VerticalOptions="Center"
+                                   TextColor="{AppThemeBinding Light=#333333, Dark=#FFFFFF}"/>
+                            <Switch Grid.Column="1" IsToggled="{Binding HideBalances}" VerticalOptions="Center"
+                                    SemanticProperties.Description="{ext:Localize SetupHideBalances}"/>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
 
