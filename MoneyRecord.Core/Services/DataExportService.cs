@@ -553,6 +553,7 @@ namespace MoneyRecord.Services
 
         // ---- XLSX ----
 
+        // Sheet names and headers stay in English on purpose (like the CSV header): the file is data, stable across languages.
         public async Task ExportXlsxAsync(string destinationPath, DateTime? startDate = null, DateTime? endDate = null)
         {
             var (start, end) = (startDate ?? DateTime.MinValue, endDate ?? DateTime.MaxValue);
