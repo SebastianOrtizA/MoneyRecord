@@ -1,3 +1,9 @@
+## 1.5.0
+- Import bank statements in OFX/QFX and QIF files, not only CSV: entries you already imported are skipped.
+- Import exports from YNAB and Mint: the columns are filled in for you.
+- Attach several photos and PDFs to one transaction and open them from it.
+- Export your transactions as an Excel workbook (.xlsx) from Settings or from the Reports tab.
+
 ## 1.4.4
 - Deleting an account in another currency than the default account no longer stops with an error: enter the exchange rate or the final amount, and its transactions and recurring rules are converted.
 

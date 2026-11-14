@@ -1,1 +1,1 @@
-Supprimer un compte dans une autre devise convertit désormais ses transactions : indiquez le taux de change ou le montant final.
+Importez des relevés bancaires aux formats OFX/QFX et QIF, pas seulement CSV : les opérations déjà importées sont ignorées. Importez les exports de YNAB et Mint : les colonnes sont remplies pour vous. Joignez plusieurs photos et PDF à une transaction et ouvrez-les depuis celle-ci. Exportez vos transactions en classeur Excel (.xlsx) depuis les Réglages ou l'onglet Rapports.

@@ -1,3 +1,9 @@
+## 1.5.0
+- Importa estratti conto in file OFX/QFX e QIF, non solo CSV: i movimenti già importati vengono saltati.
+- Importa le esportazioni di YNAB e Mint: le colonne vengono compilate per te.
+- Allega più foto e PDF a una transazione e aprili da lì.
+- Esporta le tue transazioni come cartella di lavoro Excel (.xlsx) da Impostazioni o dalla scheda Report.
+
 ## 1.4.4
 - Eliminare un conto in una valuta diversa da quella del conto predefinito non si ferma più con un errore: inserisci il tasso di cambio o l'importo finale e le sue transazioni e regole ricorrenti vengono convertite.
 

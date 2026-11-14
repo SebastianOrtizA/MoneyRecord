@@ -1,1 +1,1 @@
-Excluir uma conta em outra moeda agora converte suas transações: informe a taxa de câmbio ou o valor final.
+Importe extratos bancários em arquivos OFX/QFX e QIF, não só CSV: lançamentos já importados são ignorados. Importe exportações do YNAB e do Mint: as colunas são preenchidas para você. Anexe várias fotos e PDFs a uma transação e abra-os por ela. Exporte suas transações como planilha do Excel (.xlsx) em Configurações ou na aba Relatórios.
