@@ -27,7 +27,7 @@ Android is the product: it sets the schedule and gets every feature first. Deskt
 | Platform | Status | Notes |
 |---|---|---|
 | Android 7.0+ | Supported, released (Play, GitHub APK) | Everything below works here |
-| Windows 10/11 | Desktop build, in progress (Stage 25.4b) | Encrypted database, backup password, app PIN and Windows Hello lock, screen capture protection, folder backup, reminders (while the app is open), receipt scan (system OCR). No widget; desktop polish and the release zip are still to come |
+| Windows 10/11 | Desktop build: portable zip on GitHub Releases (unzip, run `MoneyRecord.exe`; unsigned, so SmartScreen warns once) | Encrypted database, backup password, app PIN and Windows Hello lock, screen capture protection, folder backup, reminders (while the app is open), receipt scan (system OCR). Alt+Left or Esc goes back, minimum window size. No widget. Data lives in `%LOCALAPPDATA%\<user>\com.sebastianortiz.moneyrecord\Data` |
 | Linux | Under study (Stage 25.4c) | MAUI has no Linux target; until a spike says go, build from source is not offered |
 | iOS, Mac Catalyst | Community, best-effort | Build from source; no app lock, no store publishing, no widget, no notifications |
 

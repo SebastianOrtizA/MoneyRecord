@@ -70,6 +70,7 @@ namespace MoneyRecord
             window.Created += (s, e) =>
             {
 #if WINDOWS
+                Platforms.Windows.WindowsDesktop.Configure(window);
                 // No background job on Windows: the same steps run now and every hour while the app is open
                 Platforms.Windows.WindowsDailyJob.Start(_reminders, _exchangeRates, _autoBackup, _logger);
 #else

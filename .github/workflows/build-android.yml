@@ -210,10 +210,50 @@ jobs:
             publish/play/mapping.txt
           if-no-files-found: error
 
+  # The Windows desktop build: a portable zip (unzip and run MoneyRecord.exe, no installer, no store), unsigned, so
+  # SmartScreen warns on first run. Built on every run like the Android one, attached to the release when it publishes.
+  build-windows:
+    name: Build Windows portable zip
+    runs-on: windows-latest
+    needs: build-android
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install MAUI workloads
+        run: dotnet workload install maui-windows
+
+      # Same version name as the Android build of this run (empty off a release branch: the csproj's version)
+      - name: Build Windows (Release)
+        shell: pwsh
+        env:
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          VERSION: ${{ needs.build-android.outputs.version }}
+        run: |
+          $props = @()
+          if ($env:VERSION) { $props += "-p:ApplicationDisplayVersion=$env:VERSION" }
+          dotnet publish MoneyRecord/MoneyRecord.csproj -f net10.0-windows10.0.19041.0 -c Release -r win-x64 --self-contained `
+            -p:WindowsAppSDKSelfContained=true -p:UseMonoRuntime=false -o publish/windows @props
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          $name = if ($env:VERSION) { $env:VERSION } else { 'dev' }
+          New-Item -ItemType Directory -Force release | Out-Null
+          Compress-Archive -Path publish/windows/* -DestinationPath "release/MoneyRecord-$name-win-x64.zip"
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MoneyRecord-Windows
+          path: release/*.zip
+          if-no-files-found: error
+
   release:
     name: Create GitHub Release
     runs-on: windows-latest
-    needs: build-android
+    needs: [build-android, build-windows]
     if: needs.build-android.outputs.publish == 'true'
     permissions:
       contents: write
@@ -224,6 +264,12 @@ jobs:
           name: MoneyRecord-Android
           path: release
 
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: MoneyRecord-Windows
+          path: release/windows
+
       # The v<version> tag is created here, on the release branch's commit: tags exist for release branches only
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -233,6 +279,7 @@ jobs:
           files: |
             release/direct/*.apk
             release/play/*.aab
+            release/windows/*.zip
           generate_release_notes: true
 
   # A release-branch build also sends the .aab to Google Play's open testing track (beta; set the repository
