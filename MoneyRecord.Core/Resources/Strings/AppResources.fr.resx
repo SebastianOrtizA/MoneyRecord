@@ -3411,4 +3411,22 @@
   <data name="SavedFilterItemsGone" xml:space="preserve">
     <value>Une partie de ce filtre a été supprimée (catégorie, compte ou bénéficiaire) et a été ignorée.</value>
   </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>Joindre un PDF</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>Retirer la pièce jointe</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>Le fichier est trop volumineux (10 Mo maximum)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>Impossible de joindre le fichier</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>Impossible d’ouvrir le fichier</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>Pièces jointes</value>
+  </data>
 </root>

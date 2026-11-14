@@ -3464,4 +3464,22 @@
   <data name="SavedFilterItemsGone" xml:space="preserve">
     <value>Part of this filter was deleted (a category, account or payee) and was left out.</value>
   </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>Attach PDF</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>Remove attachment</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>The file is too large (10 MB maximum)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>Failed to attach the file</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>Failed to open the file</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
 </root>

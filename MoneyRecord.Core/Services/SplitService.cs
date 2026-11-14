@@ -35,6 +35,7 @@ namespace MoneyRecord.Services
                 PayeeId = template.PayeeId,
                 Tags = template.Tags,
                 ReceiptPhotoPath = template.ReceiptPhotoPath,
+                PendingAttachments = template.PendingAttachments,
                 ConvertedAmountCents = converted?[i],
                 ConvertedCurrencyCode = converted == null ? null : template.ConvertedCurrencyCode,
                 SplitId = splitId,
@@ -52,6 +53,7 @@ namespace MoneyRecord.Services
                 foreach (var transaction in saved)
                     db.Insert(transaction);
                 TransactionTags.Sync(db, saved);
+                TransactionAttachments.Sync(db, saved);
             });
             return saved;
         }

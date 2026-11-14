@@ -3461,4 +3461,22 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SavedFilterItemsGone" xml:space="preserve">
     <value>Una parte de este filtro se eliminó (categoría, cuenta o beneficiario) y se omitió.</value>
   </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>Adjuntar PDF</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>Quitar adjunto</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>El archivo es demasiado grande (máximo 10 MB)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>No se pudo adjuntar el archivo</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>No se pudo abrir el archivo</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>Adjuntos</value>
+  </data>
 </root>

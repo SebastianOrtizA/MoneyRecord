@@ -42,6 +42,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITripService _trips;
         private readonly IQuickEntryService _quickEntries;
         private readonly IReceiptScanner _receiptScanner;
+        private readonly IFileOpener _fileOpener;
         private readonly TimeProvider _clock;
         private readonly ILogger<AddTransactionViewModel> _logger;
 
@@ -471,10 +472,10 @@ namespace MoneyRecord.ViewModels
         private string convertedRateText = string.Empty;
 
         [ObservableProperty]
-        private string? receiptPhotoPath;
-
-        [ObservableProperty]
         private bool hasReceipt;
+
+        /// <summary>The files attached to the entry (photos and PDFs), as shown in the form.</summary>
+        public ObservableCollection<TransactionAttachment> Attachments { get; } = [];
 
         private readonly ReceiptDraft _receipt;
 
@@ -496,7 +497,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, IRecurringTransactionService recurringService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, IQuickEntryService quickEntries, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, IRecurringTransactionService recurringService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, IFileOpener fileOpener, IQuickEntryService quickEntries, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -519,6 +520,7 @@ namespace MoneyRecord.ViewModels
             _pocketCover = pocketCover;
             _trips = trips;
             _receiptScanner = receiptScanner;
+            _fileOpener = fileOpener;
             _clock = clock;
             SplitParts.CollectionChanged += (_, _) =>
             {
@@ -609,7 +611,7 @@ namespace MoneyRecord.ViewModels
                     && MoneyFormatter.SameCurrency(p.ConvertedCurrencyCode, BaseCurrencyCode))
                 ? Money.FromCents(_editedParts.Sum(p => p.ConvertedAmountCents!.Value)).ToString()
                 : string.Empty;
-            IsMoreDetailsOpen = Description.Length > 0 || Transaction?.HasTags == true || Transaction?.HasReceipt == true
+            IsMoreDetailsOpen = Description.Length > 0 || Transaction?.HasTags == true || HasReceipt
                 || ConvertedAmount.Length > 0;
 
             foreach (var part in _editedParts)
@@ -719,7 +721,7 @@ namespace MoneyRecord.ViewModels
                 SelectedDate = Transaction.Date;
                 Description = Transaction.Description;
                 TagsText = Transaction.Tags ?? string.Empty;
-                _receipt.Load(Transaction.ReceiptPhotoPath);
+                _receipt.Load(await _transactionRepository.GetAttachmentsAsync(Transaction.Id));
                 ShowReceipt();
 
                 Title = TransactionType == TransactionType.Income ? AppResources.EditIncome : AppResources.EditExpense;
@@ -730,7 +732,7 @@ namespace MoneyRecord.ViewModels
                 Description = EntryDescription.ForEditing(Transaction.Description, SelectedCategory?.Name);
 
                 // Open the details when they hold something beyond the defaults
-                IsMoreDetailsOpen = Description.Length > 0 || Transaction.HasTags || Transaction.HasReceipt
+                IsMoreDetailsOpen = Description.Length > 0 || Transaction.HasTags || HasReceipt
                     || (Transaction.ConvertedAmount != null && MoneyFormatter.SameCurrency(Transaction.ConvertedCurrencyCode, BaseCurrencyCode));
                 
                 // Select the current account
@@ -1256,7 +1258,7 @@ namespace MoneyRecord.ViewModels
                 Transaction.AccountId = accountId;
                 Transaction.PayeeId = payeeId;
                 Transaction.Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim();
-                Transaction.ReceiptPhotoPath = ReceiptPhotoPath;
+                Transaction.PendingAttachments = _receipt.Items.ToList();
                 Transaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
 
                 await _transactionRepository.SaveAsync(Transaction);
@@ -1281,7 +1283,7 @@ namespace MoneyRecord.ViewModels
                     AccountId = accountId,
                     PayeeId = payeeId,
                     Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim(),
-                    ReceiptPhotoPath = ReceiptPhotoPath
+                    PendingAttachments = _receipt.Items.ToList()
                 };
                 newTransaction.SetConversion(convertedValue, SelectedAccount.CurrencyCode, BaseCurrencyCode);
 
@@ -1408,7 +1410,7 @@ namespace MoneyRecord.ViewModels
                 AccountId = accountId,
                 PayeeId = payeeId,
                 Tags = string.IsNullOrWhiteSpace(TagsText) ? null : TagsText.Trim(),
-                ReceiptPhotoPath = ReceiptPhotoPath,
+                PendingAttachments = _receipt.Items.ToList(),
                 SplitId = _editedParts.FirstOrDefault()?.SplitId
             };
             template.SetConversion(convertedValue, SelectedAccount?.CurrencyCode, BaseCurrencyCode);
@@ -1482,7 +1484,10 @@ namespace MoneyRecord.ViewModels
             using (var fileStream = File.Create(filePath))
                 await stream.CopyToAsync(fileStream);
 
-            _receipt.Set(filePath);
+            _receipt.Add(new TransactionAttachment
+            {
+                Path = filePath, Name = photo.FileName, Kind = AttachmentKind.Photo, AddedDate = DateTime.Now
+            });
             ShowReceipt();
             return filePath;
         }
@@ -1524,7 +1529,7 @@ namespace MoneyRecord.ViewModels
             }
 
             // Another photo (or none) since: this reading no longer applies
-            if (_receipt.Path != path)
+            if (_receipt.Items.All(i => i.Path != path))
                 return;
 
             var currency = SelectedAccount?.CurrencyCode;
@@ -1551,11 +1556,75 @@ namespace MoneyRecord.ViewModels
                 await _dialogService.ToastAsync(AppResources.ReceiptNotRead);
         }
 
+        /// <summary>Attaches a PDF (an invoice) picked with the file picker; it is copied into the receipts folder.</summary>
         [RelayCommand]
-        private void RemovePhoto()
+        private async Task AttachFileAsync()
         {
-            _receipt.Remove();
+            try
+            {
+                var file = await FilePicker.Default.PickAsync(new PickOptions
+                {
+                    PickerTitle = AppResources.AttachFile,
+                    FileTypes = FilePickerFileType.Pdf
+                });
+                if (file == null)
+                    return;
+
+                var receiptsDir = _paths.ReceiptsFolder;
+                Directory.CreateDirectory(receiptsDir);
+                var filePath = Path.Combine(receiptsDir, $"file_{DateTime.Now:yyyyMMdd_HHmmss_fff}.pdf");
+
+                await using (var stream = await file.OpenReadAsync())
+                {
+                    if (stream.CanSeek && stream.Length > MaxAttachmentBytes)
+                    {
+                        await _errorHandler.HandleAsync(AppResources.FileTooLarge);
+                        return;
+                    }
+
+                    await using var fileStream = File.Create(filePath);
+                    await stream.CopyToAsync(fileStream);
+                    if (fileStream.Length > MaxAttachmentBytes)
+                    {
+                        fileStream.Close();
+                        File.Delete(filePath);
+                        await _errorHandler.HandleAsync(AppResources.FileTooLarge);
+                        return;
+                    }
+                }
+
+                _receipt.Add(new TransactionAttachment
+                {
+                    Path = filePath, Name = file.FileName, Kind = AttachmentKind.Pdf, AddedDate = DateTime.Now
+                });
+                ShowReceipt();
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToAttachFile);
+            }
+        }
+
+        private const long MaxAttachmentBytes = 10 * 1024 * 1024;
+
+        [RelayCommand]
+        private void RemoveAttachment(TransactionAttachment attachment)
+        {
+            _receipt.Remove(attachment);
             ShowReceipt();
+        }
+
+        [RelayCommand]
+        private async Task OpenAttachmentAsync(TransactionAttachment attachment)
+        {
+            try
+            {
+                await _fileOpener.OpenAsync(attachment.Path, attachment.DisplayName);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToOpenFile);
+            }
         }
 
         /// <summary>
@@ -1569,8 +1638,10 @@ namespace MoneyRecord.ViewModels
 
         private void ShowReceipt()
         {
-            ReceiptPhotoPath = _receipt.Path;
-            HasReceipt = !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
+            Attachments.Clear();
+            foreach (var item in _receipt.Items)
+                Attachments.Add(item);
+            HasReceipt = Attachments.Count > 0;
         }
 
         [RelayCommand]

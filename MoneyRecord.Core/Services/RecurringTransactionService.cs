@@ -79,6 +79,7 @@ namespace MoneyRecord.Services
                         if (entry.Date.Date != recurring.NextOccurrence.Date)
                             throw new InvalidOperationException($"{entry.Date:d} is not the next occurrence of recurring transaction {recurringId}");
                         db.Insert(entry);
+                        TransactionAttachments.Sync(db, [entry]);
                         recurring.LastAmountCents = Math.Abs(entry.AmountCents);
                     }
 

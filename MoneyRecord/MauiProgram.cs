@@ -99,6 +99,7 @@ namespace MoneyRecord
             builder.Services.AddSingleton<ISavedFiltersStore, SavedFiltersStore>();
             builder.Services.AddSingleton<IReportExportService, ReportExportService>();
             builder.Services.AddSingleton<IFileSharer, FileSharer>();
+            builder.Services.AddSingleton<IFileOpener, FileOpener>();
             builder.Services.AddSingleton<IStatementImportService, StatementImportService>();
             builder.Services.AddSingleton<IStatementMappingStore, StatementMappingStore>();
             builder.Services.AddSingleton<IAccountService, AccountService>();

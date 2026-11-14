@@ -28,7 +28,10 @@ namespace MoneyRecord.Services
             var transfersTask = _enrichmentService.GetEnrichedTransfersAsync(startDate, endDate);
             await Task.WhenAll(transactionsTask, transfersTask);
 
-            return (await transactionsTask).Select(FromTransaction)
+            var transactions = await transactionsTask;
+            var attachments = await LoadAttachmentsAsync(transactions);
+
+            return transactions.Select(t => FromTransaction(t, attachments.GetValueOrDefault(t.Id) ?? []))
                 .Concat((await transfersTask).Select(FromTransfer))
                 .ToList();
         }
@@ -48,11 +51,22 @@ namespace MoneyRecord.Services
                 if (rows.Count == 0)
                     return;
 
+                var attachments = TransactionAttachments.Load(db, rows.Select(r => r.Id).ToList());
                 foreach (var row in rows)
                     db.Delete<Transaction>(row.Id);
-                deleted = new DeletedEntry(rows, null);
+                deleted = new DeletedEntry(rows, null, attachments.Values.SelectMany(a => a).ToList());
+                foreach (var attachment in attachments.Values.SelectMany(a => a))
+                    db.Delete<TransactionAttachment>(attachment.Id);
             });
             return deleted;
+        }
+
+        private async Task<Dictionary<int, List<TransactionAttachment>>> LoadAttachmentsAsync(IReadOnlyCollection<Transaction> transactions)
+        {
+            var result = new Dictionary<int, List<TransactionAttachment>>();
+            var ids = transactions.Select(t => t.Id).ToList();
+            await _database.RunInTransactionAsync(db => result = TransactionAttachments.Load(db, ids));
+            return result;
         }
 
         public async Task<DeletedEntry?> DeleteTransferAsync(int transferId)
@@ -81,6 +95,8 @@ namespace MoneyRecord.Services
                 foreach (var transaction in deleted.Transactions)
                     db.Insert(transaction, "OR REPLACE");
                 TransactionTags.Sync(db, deleted.Transactions);
+                foreach (var attachment in deleted.Attachments ?? [])
+                    db.Insert(attachment, "OR REPLACE");
                 if (deleted.Transfer != null)
                     db.Insert(deleted.Transfer, "OR REPLACE");
                 restored = true;
@@ -114,7 +130,7 @@ namespace MoneyRecord.Services
                     && db.Find<Account>(transfer.DestinationAccountId) != null);
         }
 
-        private static LedgerEntry FromTransaction(Transaction t) => new()
+        private static LedgerEntry FromTransaction(Transaction t, IReadOnlyList<TransactionAttachment> attachments) => new()
         {
             Kind = t.Type == TransactionType.Income ? LedgerEntryKind.Income : LedgerEntryKind.Expense,
             SourceId = t.Id,
@@ -134,7 +150,8 @@ namespace MoneyRecord.Services
             TripId = t.TripId,
             TripCategoryId = t.TripCategoryId,
             Tags = t.Tags,
-            ReceiptPhotoPath = t.ReceiptPhotoPath
+            ReceiptPhotoPath = t.ReceiptPhotoPath,
+            Attachments = attachments
         };
 
         private static LedgerEntry FromTransfer(Transfer t) => new()
