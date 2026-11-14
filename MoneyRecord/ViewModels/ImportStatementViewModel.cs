@@ -140,6 +140,7 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPreset))]
         [NotifyPropertyChangedFor(nameof(PresetNote))]
+        [NotifyPropertyChangedFor(nameof(ShowsQifDate))]
         private string presetName = string.Empty;
 
         /// <summary>The file names a category per row: offer to create the ones the app lacks.</summary>
@@ -158,7 +159,7 @@ namespace MoneyRecord.ViewModels
         /// <summary>Only a file whose dates fit both day-first and month-first needs the format picker.</summary>
         public bool HasDateChoice => DateFormats.Count > 1;
 
-        public bool ShowsQifDate => IsQif && HasDateChoice;
+        public bool ShowsQifDate => (IsQif || HasPreset) && HasDateChoice;
 
         partial void OnDateFormatsChanged(IReadOnlyList<StatementDate> value)
         {
@@ -253,6 +254,17 @@ namespace MoneyRecord.ViewModels
                     _mapping = preset.Mapping;
                     ShowsMapping = false;
                     UsesSavedMapping = false;
+                    // Dates that fit day-first and month-first stay choosable: the one thing a preset can't know
+                    _applyingGuess = true;
+                    try
+                    {
+                        DateFormats = guess.DateFormats[preset.Mapping.DateColumn];
+                        SelectedDateFormat = preset.Mapping.DateFormat;
+                    }
+                    finally
+                    {
+                        _applyingGuess = false;
+                    }
                 }
                 else
                 {

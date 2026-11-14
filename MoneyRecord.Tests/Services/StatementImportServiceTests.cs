@@ -273,4 +273,17 @@ public sealed class StatementImportServiceTests : IAsyncLifetime
 
         StatementPresets.Detect(table, StatementMapping.Guess(table)!).Should().BeNull();
     }
+
+    [Fact]
+    public async Task A_YNAB_row_with_no_outflow_and_no_inflow_is_a_zero_problem_and_a_Mint_type_must_be_debit_or_credit()
+    {
+        var empty = Ynab.Replace("\"$3.50\",\"$0.00\"", "\"\",\"\"");
+        (await PreviewPresetAsync(empty))[0].Problem.Should().Be(ImportProblem.ZeroAmount);
+
+        var mint =
+            "\"Date\",\"Description\",\"Original Description\",\"Amount\",\"Transaction Type\",\"Category\"\n" +
+            "\"10/05/2026\",\"Visa\",\"VISA\",\"3.50\",\"credit card payment\",\"food test\"\n" +
+            "\"10/06/2026\",\"Cafe\",\"CAFE\",\"2.00\",\"debit\",\"food test\"\n";
+        (await PreviewPresetAsync(mint)).Select(r => r.Problem).Should().Equal(ImportProblem.Amount, ImportProblem.None);
+    }
 }

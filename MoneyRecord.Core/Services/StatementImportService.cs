@@ -23,7 +23,7 @@ namespace MoneyRecord.Services
                 && !MoneyFormatter.SameCurrency(statement.CurrencyCode, account.CurrencyCode);
             var parsed = statement.Entries.Select(e => Parse(e, otherCurrency)).ToList();
             var learned = await LearnedCategoriesAsync();
-            var named = await NamedCategoriesAsync(createMissingCategories);
+            var named = await NamedCategoriesAsync(statement.Entries, createMissingCategories);
             var readable = parsed.Where(p => p.Problem == ImportProblem.None).ToList();
             var recorded = await RecordedEntriesAsync(account.Id, readable);
 
@@ -119,9 +119,7 @@ namespace MoneyRecord.Services
             {
                 // An unsigned amount plus "debit" / "credit"; any other word can't be told
                 var type = StatementMapping.Normalize(row[typeColumn]);
-                return type.Contains("credit") || type.Contains("income") || type.Contains("deposit") ? Math.Abs(a)
-                    : type.Contains("debit") || type.Contains("expense") || type.Contains("withdrawal") ? -Math.Abs(a)
-                    : null;
+                return type == "credit" ? Math.Abs(a) : type == "debit" ? -Math.Abs(a) : null;
             }
             return mapping.PositiveIsExpense ? -a : a;
         }
@@ -136,8 +134,10 @@ namespace MoneyRecord.Services
         /// lacks becomes one new category per type and name when <paramref name="createMissing"/> (Id 0 until imported); null
         /// for no name or no match.
         /// </summary>
-        private async Task<Func<TransactionType, string?, Category?>> NamedCategoriesAsync(bool createMissing)
+        private async Task<Func<TransactionType, string?, Category?>> NamedCategoriesAsync(IReadOnlyList<StatementEntry> entries, bool createMissing)
         {
+            if (!entries.Any(e => !string.IsNullOrWhiteSpace(e.CategoryName)))
+                return (_, _) => null;
             var existing = (await categoryRepository.GetAllAsync())
                 .Where(c => !c.IsTravel && !c.IsDebtInterest)
                 .GroupBy(c => (c.Type, StatementMapping.Normalize(c.Name)))
