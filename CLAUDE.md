@@ -1,6 +1,6 @@
 # MoneyRecord
 
-.NET 10 MAUI personal finance app (incomes, expenses, transfers, budgets, accounts). Android is the primary target (APK); iOS, macCatalyst and Windows are maintained. License: AGPL-3.0. Solution: `MoneyRecord.slnx`.
+.NET 10 MAUI personal finance app (incomes, expenses, transfers, budgets, accounts). Android is the supported product (APK); Windows is a desktop build that follows it; iOS and macCatalyst are community, best-effort (build from source, no lock, no store). New features land on Android first; platform code goes behind a Core interface with a `No*` fallback (see `CONTRIBUTING.md`). License: AGPL-3.0. Solution: `MoneyRecord.slnx`.
 
 ## Build & Run
 
