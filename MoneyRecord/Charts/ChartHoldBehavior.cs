@@ -18,7 +18,7 @@ namespace MoneyRecord.Charts
             nameof(Command), typeof(ICommand), typeof(ChartHoldBehavior));
 
         private IChartView? _chart;
-        private readonly Debouncer _afterRelease = new(TimeSpan.FromSeconds(1));
+        private readonly MoneyRecord.Helpers.Debouncer _afterRelease = new(TimeSpan.FromSeconds(1));
 
         /// <summary>Runs with the held <see cref="ISeries"/>, or null when nothing is held.</summary>
         public ICommand? Command

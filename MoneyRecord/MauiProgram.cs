@@ -70,6 +70,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IDatabaseEncryption>(sp => sp.GetRequiredService<DatabaseInitializer>());
 #if ANDROID
             builder.Services.AddSingleton<IDatabaseKeyStore, SecureDatabaseKeyStore>();
+#elif WINDOWS
+            builder.Services.AddSingleton<IDatabaseKeyStore, Platforms.Windows.WindowsDatabaseKeyStore>();
 #else
             builder.Services.AddSingleton<IDatabaseKeyStore>(NoDatabaseKeyStore.Instance);
 #endif
@@ -156,6 +158,8 @@ namespace MoneyRecord
             // The backup password (manual and automatic backups), in secure storage: Android only, like the database key
 #if ANDROID
             builder.Services.AddSingleton<IBackupPasswordStore, SecureBackupPasswordStore>();
+#elif WINDOWS
+            builder.Services.AddSingleton<IBackupPasswordStore, Platforms.Windows.WindowsBackupPasswordStore>();
 #else
             builder.Services.AddSingleton<IBackupPasswordStore, NoBackupPasswordStore>();
 #endif
@@ -167,6 +171,8 @@ namespace MoneyRecord
             // The app PIN (hash + lockout in secure storage): Android only for now, like the app lock
 #if ANDROID
             builder.Services.AddSingleton<IPinStore, SecurePinStore>();
+#elif WINDOWS
+            builder.Services.AddSingleton<IPinStore, Platforms.Windows.WindowsPinStore>();
 #else
             builder.Services.AddSingleton<IPinStore, NoPinStore>();
 #endif
@@ -183,11 +189,15 @@ namespace MoneyRecord
             builder.Services.AddSingleton<AppLock>();
 #if ANDROID
             builder.Services.AddSingleton<IDeviceLock, Platforms.Android.AndroidDeviceLock>();
+#elif WINDOWS
+            builder.Services.AddSingleton<IDeviceLock, Platforms.Windows.WindowsDeviceLock>();
 #else
             builder.Services.AddSingleton<IDeviceLock, NoDeviceLock>();
 #endif
 #if ANDROID
             builder.Services.AddSingleton<IScreenProtection, Platforms.Android.AndroidScreenProtection>();
+#elif WINDOWS
+            builder.Services.AddSingleton<IScreenProtection, Platforms.Windows.WindowsScreenProtection>();
 #else
             builder.Services.AddSingleton<IScreenProtection, NoScreenProtection>();
 #endif

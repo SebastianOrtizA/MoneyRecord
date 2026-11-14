@@ -127,6 +127,11 @@
 		<PackageReference Include="Xamarin.Google.MLKit.TextRecognition" Version="116.0.1.4" />
 	</ItemGroup>
 
+	<!-- Windows only: DPAPI for the database key, backup password and PIN (SecureStorage needs a packaged app) -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.0" />
+	</ItemGroup>
+
 	<!-- Distribution: "Direct" (default: the GitHub Releases APK, F-Droid) has no Support screen; "Play"
 	     (-p:Distribution=Play, the .aab CI sends to Google Play) sells tips through Play Billing, which Play requires
 	     for payments to the developer and F-Droid refuses (proprietary). PLAY_STORE switches the code, and only this build
