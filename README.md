@@ -4,8 +4,8 @@
 [![Google Play](https://img.shields.io/badge/Google%20Play-get%20it-512BD4?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.sebastianortiz.moneyrecord)
 
 A .NET 10 MAUI app for tracking incomes, expenses and transfers across multiple accounts and currencies, with
-budgets, recurring transactions, reports and full backups. Android is the primary target; iOS, macOS (Mac Catalyst)
-and Windows are maintained too. All data stays on the device.
+budgets, recurring transactions, reports and full backups. Android is the supported product; Windows is a desktop build
+that follows it (see [Platforms](#platforms)). All data stays on the device.
 
 <p align="center">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1_home.png" width="190" alt="Home">
@@ -19,6 +19,21 @@ and Windows are maintained too. All data stays on the device.
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/7_trip.png" width="190" alt="Trip">
   <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8_goals.png" width="190" alt="Savings goals">
 </p>
+
+## Platforms
+
+Android is the product: it sets the schedule and gets every feature first. Desktop and Apple builds never hold up an Android release.
+
+| Platform | Status | Notes |
+|---|---|---|
+| Android 7.0+ | Supported, released (Play, GitHub APK) | Everything below works here |
+| Windows 10/11 | Desktop build, in progress (Stage 25.4b) | Builds from source today; no encrypted database, backup password, lock, notifications, folder backup, receipt scan or widget yet |
+| Linux | Under study (Stage 25.4c) | MAUI has no Linux target; until a spike says go, build from source is not offered |
+| iOS, Mac Catalyst | Community, best-effort | Build from source; no app lock, no store publishing, no widget, no notifications |
+
+Features that need the platform (app lock, database key store, backup password store, notifications, receipt scan, home-screen
+widget, backup folder, screen protection) hide their switch when the platform does not support them. Everything else (accounts,
+transactions, budgets, reports, import/export, backup and restore) is shared code, and the backup `.zip` is identical on every platform.
 
 ## Install
 
@@ -307,7 +322,7 @@ To sign a local Release build, put the file at `MoneyRecord/moneyrecord.keystore
 `KEY_PASSWORD` in the environment.
 
 ## Technology stack
-- **.NET 10 / .NET MAUI** (Android, iOS, Mac Catalyst, Windows)
+- **.NET 10 / .NET MAUI** (Android first; Windows desktop; iOS and Mac Catalyst best-effort)
 - **CommunityToolkit.Mvvm** (MVVM source generators) and **CommunityToolkit.Maui** (toasts, behaviours)
 - **sqlite-net-pcl** + **SQLite3 Multiple Ciphers** (local, optionally encrypted database)
 - **LiveCharts** (charts), **PDFsharp-MigraDoc** (PDF reports), **CsvHelper**, **SharpZipLib** (AES-256 backups)
