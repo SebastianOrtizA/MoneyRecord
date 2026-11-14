@@ -116,6 +116,7 @@ namespace MoneyRecord.Services
                 SavingsGoalPockets = conn.Table<SavingsGoalPocket>().ToList(),
                 SavingsChallenges = conn.Table<SavingsChallenge>().ToList(),
                 SavingsChallengeDays = conn.Table<SavingsChallengeDay>().ToList(),
+                Attachments = conn.Query<TransactionAttachment>("SELECT * FROM \"TransactionAttachment\" WHERE TransactionId IN (SELECT Id FROM \"Transaction\") ORDER BY Id"),
                 QuickEntries = conn.Table<QuickEntry>().ToList()
             });
             return backup;
@@ -141,6 +142,9 @@ namespace MoneyRecord.Services
                     var added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var transaction in backup.Transactions)
                         transaction.ReceiptPhotoPath = AddReceipt(zip, transaction.ReceiptPhotoPath, added);
+                    foreach (var attachment in backup.Attachments)
+                        attachment.Path = AddReceipt(zip, attachment.Path, added) ?? string.Empty;
+                    backup.Attachments.RemoveAll(a => a.Path.Length == 0);
 
                     PutEntry(zip, DataEntryName, output => JsonSerializer.Serialize(output, backup, JsonOptions));
                 }
@@ -322,6 +326,7 @@ namespace MoneyRecord.Services
             EnsureUniqueIds(backup.SavingsChallenges, c => c.Id);
             EnsureUniqueIds(backup.SavingsChallengeDays, d => d.Id);
             EnsureUniqueIds(backup.QuickEntries, q => q.Id);
+            EnsureUniqueIds(backup.Attachments, a => a.Id);
             return backup;
         }
 
@@ -345,6 +350,15 @@ namespace MoneyRecord.Services
                     ? Path.Combine(ReceiptsFolder, name)
                     : null;
             }
+
+            foreach (var attachment in backup.Attachments)
+            {
+                var name = Path.GetFileName(attachment.Path);
+                attachment.Path = !string.IsNullOrWhiteSpace(name) && File.Exists(Path.Combine(availableReceipts, name))
+                    ? Path.Combine(ReceiptsFolder, name)
+                    : string.Empty;
+            }
+            backup.Attachments.RemoveAll(a => a.Path.Length == 0);
         }
 
         /// <summary>
@@ -376,6 +390,7 @@ namespace MoneyRecord.Services
             conn.DeleteAll<RecurringTransaction>();
             conn.DeleteAll<Budget>();
             conn.DeleteAll<Transfer>();
+            conn.DeleteAll<TransactionAttachment>();
             conn.DeleteAll<TransactionTag>();
             conn.DeleteAll<Transaction>();
             conn.DeleteAll<Account>();
@@ -407,6 +422,11 @@ namespace MoneyRecord.Services
                 + InsertKeepingIds(conn, backup.QuickEntries, q => q.Id);
             // The tag index is rebuilt from the transactions' own tags, not stored in a backup
             TransactionTags.RebuildAll(conn);
+            // Attachments of transactions that exist; a backup from before attachments has only the photo paths
+            var transactionIds = backup.Transactions.Select(t => t.Id).ToHashSet();
+            InsertKeepingIds(conn, backup.Attachments.Where(a => transactionIds.Contains(a.TransactionId)).ToList(), a => a.Id);
+            TransactionAttachments.FillFromReceipts(conn);
+            TransactionAttachments.RefreshPrimaryPhotos(conn);
             // Links, not items of their own
             InsertKeepingIds(conn, backup.SavingsGoalAccounts, l => l.Id);
             InsertKeepingIds(conn, backup.SavingsGoalPockets, l => l.Id);
@@ -441,6 +461,7 @@ namespace MoneyRecord.Services
         {
             var referenced = backup.Transactions
                 .Select(t => Path.GetFileName(t.ReceiptPhotoPath))
+                .Concat(backup.Attachments.Select(a => Path.GetFileName(a.Path)))
                 .Where(name => !string.IsNullOrEmpty(name))
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -569,5 +590,7 @@ namespace MoneyRecord.Services
         public List<SavingsChallenge> SavingsChallenges { get; set; } = [];
         public List<SavingsChallengeDay> SavingsChallengeDays { get; set; } = [];
         public List<QuickEntry> QuickEntries { get; set; } = [];
+
+        public List<TransactionAttachment> Attachments { get; set; } = [];
     }
 }

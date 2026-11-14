@@ -3412,4 +3412,22 @@
   <data name="SavedFilterItemsGone" xml:space="preserve">
     <value>Uma parte deste filtro foi excluída (categoria, conta ou beneficiário) e foi ignorada.</value>
   </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>Anexar PDF</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>Remover anexo</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>O arquivo é grande demais (máximo de 10 MB)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>Não foi possível anexar o arquivo</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>Não foi possível abrir o arquivo</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>Anexos</value>
+  </data>
 </root>

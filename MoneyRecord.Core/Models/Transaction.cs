@@ -1,4 +1,5 @@
 using MoneyRecord.Helpers;
+using System.Text.Json.Serialization;
 using SQLite;
 
 namespace MoneyRecord.Models
@@ -63,6 +64,10 @@ namespace MoneyRecord.Models
         public string? Tags { get; set; }
 
         public string? ReceiptPhotoPath { get; set; }
+
+        /// <summary>The attachments to store with the next save (the first photo becomes <see cref="ReceiptPhotoPath"/>); null = leave them as they are. Never read from the database: see <see cref="Services.Interfaces.ITransactionRepository.GetAttachmentsAsync"/>.</summary>
+        [Ignore, JsonIgnore]
+        public List<TransactionAttachment>? PendingAttachments { get; set; }
 
         /// <summary>The bank's own ID of an imported entry (OFX FITID); a later import of the same file skips it. Null = typed in or from a CSV.</summary>
         [Indexed(Name = "IX_Transaction_ExternalId")]

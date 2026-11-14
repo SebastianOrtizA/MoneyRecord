@@ -25,6 +25,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly IErrorHandler _errorHandler;
+        private readonly IFileOpener _fileOpener;
         private readonly IDialogService _dialogService;
         private readonly INavigationService _navigationService;
         private readonly TransactionsDrillDown _drillDown;
@@ -185,8 +186,9 @@ namespace MoneyRecord.ViewModels
         public TransactionsViewModel(PeriodViewModel period, IBalanceService balanceService, ILedgerService ledgerService, ITransactionRepository transactionRepository,
             IAccountRepository accountRepository, IErrorHandler errorHandler, IDialogService dialogService, INavigationService navigationService,
             TransactionsDrillDown drillDown, ITripService trips, ISwipeHintSettings swipeHint, ITransactionsViewSettings viewSettings,
-            ISavedFiltersStore savedFiltersStore, ICategoryRepository categoryRepository, IPayeeRepository payeeRepository)
+            ISavedFiltersStore savedFiltersStore, ICategoryRepository categoryRepository, IPayeeRepository payeeRepository, IFileOpener fileOpener)
         {
+            _fileOpener = fileOpener;
             _categoryRepository = categoryRepository;
             _payeeRepository = payeeRepository;
             _savedFiltersStore = savedFiltersStore;
@@ -485,8 +487,30 @@ namespace MoneyRecord.ViewModels
             SelectedEntry = null;
         }
 
+        /// <summary>The photo shown full screen.</summary>
+        [ObservableProperty]
+        private string? openedPhotoPath;
+
+        /// <summary>A photo opens full screen here; a PDF in the phone's PDF viewer.</summary>
         [RelayCommand]
-        private void OpenReceipt() => IsReceiptOpen = SelectedEntry?.HasReceipt == true;
+        private async Task OpenAttachmentAsync(TransactionAttachment attachment)
+        {
+            if (attachment.IsPhoto)
+            {
+                OpenedPhotoPath = attachment.Path;
+                IsReceiptOpen = true;
+                return;
+            }
+
+            try
+            {
+                await _fileOpener.OpenAsync(attachment.Path, attachment.DisplayName);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToOpenFile);
+            }
+        }
 
         [RelayCommand]
         private void CloseReceipt() => IsReceiptOpen = false;

@@ -5748,6 +5748,60 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attach PDF
+        /// </summary>
+        public static string AttachFile {
+            get {
+                return ResourceManager.GetString("AttachFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove attachment
+        /// </summary>
+        public static string RemoveAttachment {
+            get {
+                return ResourceManager.GetString("RemoveAttachment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file is too large (10 MB maximum)
+        /// </summary>
+        public static string FileTooLarge {
+            get {
+                return ResourceManager.GetString("FileTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to attach the file
+        /// </summary>
+        public static string FailedToAttachFile {
+            get {
+                return ResourceManager.GetString("FailedToAttachFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to open the file
+        /// </summary>
+        public static string FailedToOpenFile {
+            get {
+                return ResourceManager.GetString("FailedToOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attachments
+        /// </summary>
+        public static string AttachmentsLabel {
+            get {
+                return ResourceManager.GetString("AttachmentsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reading the receipt….
         /// </summary>
         public static string ReadingReceipt {

@@ -1,5 +1,6 @@
 using AwesomeAssertions;
 using MoneyRecord.Helpers;
+using MoneyRecord.Models;
 using Xunit;
 
 namespace MoneyRecord.Tests.Helpers;
@@ -18,80 +19,94 @@ public sealed class ReceiptDraftTests : IDisposable
     public void Dispose() => Directory.Delete(_receipts, recursive: true);
 
     [Fact]
-    public void Cancel_DeletesTheUnsavedPhoto_KeepsTheSavedOne()
+    public void Cancel_DeletesTheUnsavedFiles_KeepsTheSavedOnes()
     {
-        var saved = Photo("saved.jpg");
-        var taken = Photo("taken.jpg");
-        _draft.Load(saved);
-        _draft.Set(taken);
+        var saved = File("saved.jpg");
+        var taken = File("taken.jpg");
+        _draft.Load([saved]);
+        _draft.Add(taken);
 
         _draft.Discard();
 
-        _draft.Path.Should().Be(saved);
-        File.Exists(saved).Should().BeTrue();
-        File.Exists(taken).Should().BeFalse();
+        _draft.Items.Should().Equal(saved);
+        System.IO.File.Exists(saved.Path).Should().BeTrue();
+        System.IO.File.Exists(taken.Path).Should().BeFalse();
     }
 
     [Fact]
-    public void Replace_BeforeSaving_DeletesTheEarlierUnsavedPhoto()
+    public void Several_files_can_be_added_and_all_are_kept_on_save()
     {
-        var first = Photo("first.jpg");
-        var second = Photo("second.jpg");
+        var photo = File("a.jpg");
+        var pdf = File("invoice.pdf");
         _draft.Load(null);
-        _draft.Set(first);
-
-        _draft.Set(second);
-
-        File.Exists(first).Should().BeFalse();
-        File.Exists(second).Should().BeTrue();
-    }
-
-    [Fact]
-    public void Remove_DeletesTheSavedReceiptOnlyOnSave()
-    {
-        var saved = Photo("saved.jpg");
-        _draft.Load(saved);
-
-        _draft.Remove();
-        File.Exists(saved).Should().BeTrue("the change isn't saved yet");
-
-        _draft.Commit();
-        _draft.Path.Should().BeNull();
-        File.Exists(saved).Should().BeFalse();
-    }
-
-    [Fact]
-    public void ReplaceAndSave_DeletesTheOldReceipt_KeepsTheNewOne()
-    {
-        var saved = Photo("saved.jpg");
-        var taken = Photo("taken.jpg");
-        _draft.Load(saved);
-        _draft.Set(taken);
+        _draft.Add(photo);
+        _draft.Add(pdf);
 
         _draft.Commit();
         _draft.Discard(); // leaving the page after saving
 
-        File.Exists(saved).Should().BeFalse();
-        File.Exists(taken).Should().BeTrue();
-        _draft.Path.Should().Be(taken);
+        _draft.Items.Should().Equal(photo, pdf);
+        System.IO.File.Exists(photo.Path).Should().BeTrue();
+        System.IO.File.Exists(pdf.Path).Should().BeTrue();
     }
 
     [Fact]
-    public void Load_DiscardsAnUnsavedPhotoFromBefore()
+    public void Removing_an_unsaved_file_deletes_it_at_once()
     {
-        var taken = Photo("taken.jpg");
+        var taken = File("taken.jpg");
         _draft.Load(null);
-        _draft.Set(taken);
+        _draft.Add(taken);
 
-        _draft.Load(null);
+        _draft.Remove(taken);
 
-        File.Exists(taken).Should().BeFalse();
+        _draft.Items.Should().BeEmpty();
+        System.IO.File.Exists(taken.Path).Should().BeFalse();
     }
 
-    private string Photo(string name)
+    [Fact]
+    public void Removing_a_saved_file_deletes_it_only_on_save()
+    {
+        var saved = File("saved.jpg");
+        var other = File("other.pdf");
+        _draft.Load([saved, other]);
+
+        _draft.Remove(saved);
+        System.IO.File.Exists(saved.Path).Should().BeTrue("the change isn't saved yet");
+
+        _draft.Commit();
+        _draft.Items.Should().Equal(other);
+        System.IO.File.Exists(saved.Path).Should().BeFalse();
+        System.IO.File.Exists(other.Path).Should().BeTrue();
+    }
+
+    [Fact]
+    public void Removing_a_saved_file_and_cancelling_brings_it_back()
+    {
+        var saved = File("saved.jpg");
+        _draft.Load([saved]);
+        _draft.Remove(saved);
+
+        _draft.Discard();
+
+        _draft.Items.Should().Equal(saved);
+    }
+
+    [Fact]
+    public void Load_DiscardsAnUnsavedFileFromBefore()
+    {
+        var taken = File("taken.jpg");
+        _draft.Load(null);
+        _draft.Add(taken);
+
+        _draft.Load(null);
+
+        System.IO.File.Exists(taken.Path).Should().BeFalse();
+    }
+
+    private TransactionAttachment File(string name)
     {
         var path = Path.Combine(_receipts, name);
-        File.WriteAllText(path, name);
-        return path;
+        System.IO.File.WriteAllText(path, name);
+        return new TransactionAttachment { Path = path, Name = name, Kind = TransactionAttachments.KindOf(name) };
     }
 }

@@ -84,6 +84,9 @@ namespace MoneyRecord.Models
 
         public string? ReceiptPhotoPath { get; init; }
 
+        /// <summary>Every file attached (photos and PDFs), in the order added; empty for a transfer.</summary>
+        public IReadOnlyList<TransactionAttachment> Attachments { get; init; } = [];
+
         public decimal Amount => Money.FromCents(AmountCents);
 
         /// <summary>Negative for expenses and money leaving an account; a whole transfer is shown as positive.</summary>
@@ -139,7 +142,9 @@ namespace MoneyRecord.Models
             ? []
             : Tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        public bool HasReceipt => !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
+        public bool HasReceipt => Attachments.Count > 0 || !string.IsNullOrWhiteSpace(ReceiptPhotoPath);
+
+        public int AttachmentCount => Attachments.Count;
 
         public string CategoryDisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
 

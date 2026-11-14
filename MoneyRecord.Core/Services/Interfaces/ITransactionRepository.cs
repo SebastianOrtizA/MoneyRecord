@@ -10,6 +10,9 @@ namespace MoneyRecord.Services.Interfaces
     {
         Task<List<Transaction>> GetByDateRangeAsync(DateTime startDate, DateTime endDate);
 
+        /// <summary>The files attached to a transaction, in the order they were added.</summary>
+        Task<List<TransactionAttachment>> GetAttachmentsAsync(int transactionId);
+
         /// <summary>Whether there is any transaction at all.</summary>
         Task<bool> AnyAsync();
 

@@ -24,6 +24,7 @@ namespace MoneyRecord.Services.Repositories
             {
                 result = entity.Id != 0 ? connection.Update(entity) : connection.Insert(entity);
                 TransactionTags.Sync(connection, [entity]);
+                TransactionAttachments.Sync(connection, [entity]);
             });
             OnChanged();
             return result;
@@ -33,6 +34,9 @@ namespace MoneyRecord.Services.Repositories
             await (await TableAsync())
                 .Where(t => t.Date >= startDate && t.Date <= endDate)
                 .ToListAsync();
+
+        public async Task<List<TransactionAttachment>> GetAttachmentsAsync(int transactionId) =>
+            await (await ConnectionAsync()).Table<TransactionAttachment>().Where(a => a.TransactionId == transactionId).OrderBy(a => a.Id).ToListAsync();
 
         public async Task<bool> AnyAsync() => await (await TableAsync()).CountAsync() > 0;
 
