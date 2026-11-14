@@ -35,8 +35,9 @@ namespace MoneyRecord.Platforms.Windows
                     string.IsNullOrEmpty(subtitle) ? title : subtitle);
                 return result == UserConsentVerificationResult.Verified;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Serilog.Log.Warning(ex, "Windows Hello verification failed");
                 return false;
             }
         }

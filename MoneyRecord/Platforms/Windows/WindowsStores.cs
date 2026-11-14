@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Platforms.Windows
@@ -30,8 +29,7 @@ namespace MoneyRecord.Platforms.Windows
     }
 
     /// <summary>
-    /// The PIN hash and lockout state under DPAPI (<see cref="WindowsSecretStore"/>). An unreadable value (moved to another
-    /// user or PC) counts as missing, so PinService drops the PIN instead of crashing the lock screen.
+    /// The PIN hash and lockout state under DPAPI (<see cref="WindowsSecretStore"/>).
     /// </summary>
     public sealed class WindowsPinStore : IPinStore
     {
@@ -50,16 +48,8 @@ namespace MoneyRecord.Platforms.Windows
 
         private static async Task<string?> GetAsync(string key)
         {
-            try
-            {
-                var value = await WindowsSecretStore.GetAsync(key);
-                return string.IsNullOrEmpty(value) ? null : value;
-            }
-            catch (CryptographicException)
-            {
-                WindowsSecretStore.Remove(key);
-                return null;
-            }
+            var value = await WindowsSecretStore.GetAsync(key);
+            return string.IsNullOrEmpty(value) ? null : value;
         }
     }
 }

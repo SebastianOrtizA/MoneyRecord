@@ -28,7 +28,7 @@ namespace MoneyRecord.Models
                 "https://github.com/dotnet/maui", "dotnet.txt", ["Microsoft.Maui.Controls"]),
             new(".NET Runtime and Microsoft.Extensions", "MIT + bundled notices", ".NET Foundation and Contributors",
                 "https://github.com/dotnet/runtime", "dotnet-runtime.txt",
-                ["Microsoft.Extensions.Logging.Abstractions", "Microsoft.Extensions.Logging.Debug", "System.Security.Cryptography.Pkcs"]),
+                ["Microsoft.Extensions.Logging.Abstractions", "Microsoft.Extensions.Logging.Debug", "System.Security.Cryptography.Pkcs", "System.Security.Cryptography.ProtectedData"]),
             new(".NET for Android", "MIT + bundled notices", ".NET Foundation and Contributors",
                 "https://github.com/dotnet/android", "dotnet-android.txt", []),
             new("Android libraries (AndroidX, Material Components, Kotlin, Guava, Tink, Gson, …)", "Apache-2.0",

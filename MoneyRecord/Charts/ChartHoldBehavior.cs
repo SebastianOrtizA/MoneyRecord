@@ -2,6 +2,8 @@ using LiveChartsCore;
 using LiveChartsCore.Kernel;
 using LiveChartsCore.Kernel.Sketches;
 using MoneyRecord.Helpers;
+// Sentry (Windows build) also has a Debouncer
+using Debouncer = MoneyRecord.Helpers.Debouncer;
 using System.Windows.Input;
 
 namespace MoneyRecord.Charts
@@ -18,7 +20,7 @@ namespace MoneyRecord.Charts
             nameof(Command), typeof(ICommand), typeof(ChartHoldBehavior));
 
         private IChartView? _chart;
-        private readonly MoneyRecord.Helpers.Debouncer _afterRelease = new(TimeSpan.FromSeconds(1));
+        private readonly Debouncer _afterRelease = new(TimeSpan.FromSeconds(1));
 
         /// <summary>Runs with the held <see cref="ISeries"/>, or null when nothing is held.</summary>
         public ICommand? Command

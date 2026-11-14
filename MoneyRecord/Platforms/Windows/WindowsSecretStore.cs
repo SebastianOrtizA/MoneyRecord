@@ -16,14 +16,22 @@ namespace MoneyRecord.Platforms.Windows
 
         private static string FilePath(string name) => Path.Combine(FolderPath, name + ".bin");
 
-        /// <summary>The secret, null when never set. Throws CryptographicException when it can't be decrypted (other user, other PC).</summary>
+        /// <summary>The secret, null when never set. Null too when it can't be decrypted (other user, other PC).</summary>
         public static Task<string?> GetAsync(string name)
         {
             var path = FilePath(name);
             if (!File.Exists(path))
                 return Task.FromResult<string?>(null);
-            var plain = ProtectedData.Unprotect(File.ReadAllBytes(path), Entropy, DataProtectionScope.CurrentUser);
-            return Task.FromResult<string?>(Encoding.UTF8.GetString(plain));
+            try
+            {
+                var plain = ProtectedData.Unprotect(File.ReadAllBytes(path), Entropy, DataProtectionScope.CurrentUser);
+                return Task.FromResult<string?>(Encoding.UTF8.GetString(plain));
+            }
+            catch (CryptographicException)
+            {
+                // A profile copied to another user or PC: gone for good, like a missing value (SetAsync overwrites the file)
+                return Task.FromResult<string?>(null);
+            }
         }
 
         /// <summary>Saves the secret (through a temp file, so a crash can't leave half of it); null or empty removes it.</summary>
