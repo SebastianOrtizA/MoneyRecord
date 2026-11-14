@@ -170,7 +170,7 @@ Your data stays on the device in every version; see [PRIVACY.md](PRIVACY.md).
   changed.
 - **Restore** from a local or picked backup (also older `.json` backups). The restore is all-or-nothing; the current data
   is saved to an automatic snapshot first (the last 5 are kept) and the "Restore complete" dialog offers **Undo**.
-- **CSV export** of all transactions, and **import** of a bank statement (CSV, OFX/QFX or QIF) into one account: pick the columns, check a
+- **CSV and Excel (.xlsx) export** of all transactions, and **import** of a bank statement (CSV, OFX/QFX or QIF) into one account: pick the columns, check a
   preview that marks duplicates and suggests categories learned from your history, and undo the import if needed. The
   columns are remembered per statement layout. Exports from YNAB and Mint are recognised by their header (inflow/outflow,
   categories and payees included; missing categories can be created).

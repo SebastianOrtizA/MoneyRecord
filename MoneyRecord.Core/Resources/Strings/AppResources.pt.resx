@@ -3430,4 +3430,13 @@
   <data name="AttachmentsLabel" xml:space="preserve">
     <value>Anexos</value>
   </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>Exportar transações (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>Transações (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Não foi possível exportar a planilha</value>
+  </data>
 </root>

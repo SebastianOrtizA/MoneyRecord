@@ -97,6 +97,18 @@ public sealed class ReportExportViewModelTests : IDisposable
         await _sharer.Received(1).ShareAsync(Arg.Any<string>(), Arg.Any<string>());
     }
 
+    [Fact]
+    public async Task The_spreadsheet_has_the_requested_range()
+    {
+        Choose(AppResources.ExportPeriodXlsx);
+        var request = _sut.Request(wholeMonths: true);
+
+        await _sut.ExportCommand.ExecuteAsync(ReportExportViewModel.Months);
+
+        await _data.Received(1).ExportXlsxAsync(Path.Combine(_folder, "MoneyRecord_Transactions.xlsx"), request.Start, request.End);
+        await _sharer.Received(1).ShareAsync(Arg.Any<string>(), Arg.Any<string>());
+    }
+
     [Theory]
     [InlineData(null)]
     [InlineData("Cancel")]

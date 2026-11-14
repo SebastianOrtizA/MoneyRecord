@@ -3428,4 +3428,13 @@
   <data name="AttachmentsLabel" xml:space="preserve">
     <value>Allegati</value>
   </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>Esporta movimenti (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>Movimenti (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Impossibile esportare il foglio di calcolo</value>
+  </data>
 </root>

@@ -364,6 +364,15 @@
                                 MinimumHeightRequest="48"
                                 CornerRadius="10"/>
 
+                        <Button Text="{ext:Localize ExportTransactionsXlsx}"
+                                Command="{Binding ExportXlsxCommand}"
+                                IsEnabled="{Binding IsExporting, Converter={StaticResource InvertedBoolConverter}}"
+                                BackgroundColor="{AppThemeBinding Light=#2E7D32, Dark=#66BB6A}"
+                                TextColor="White"
+                                FontSize="15"
+                                MinimumHeightRequest="48"
+                                CornerRadius="10"/>
+
                         <!-- Bank statement (CSV) into one account; not a restore, nothing is replaced -->
                         <Button Text="{ext:Localize ImportStatement}"
                                 Command="{Binding OpenImportCommand}"

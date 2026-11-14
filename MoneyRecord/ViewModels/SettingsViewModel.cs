@@ -519,6 +519,28 @@ namespace MoneyRecord.ViewModels
         }
 
         [RelayCommand]
+        private async Task ExportXlsxAsync()
+        {
+            try
+            {
+                IsExporting = true;
+
+                var filePath = _sharer.NewCacheFile("MoneyRecord_Transactions", ".xlsx");
+                await _dataExportService.ExportXlsxAsync(filePath);
+
+                await _sharer.ShareAsync(filePath, AppResources.ShareTransactions);
+            }
+            catch (Exception ex)
+            {
+                await _errorHandler.HandleAsync(ex, AppResources.FailedToExportSpreadsheet);
+            }
+            finally
+            {
+                IsExporting = false;
+            }
+        }
+
+        [RelayCommand]
         private async Task RestoreAsync()
         {
             string? pickedCopy = null;

@@ -1886,6 +1886,24 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        public static string ExportTransactionsXlsx {
+            get {
+                return ResourceManager.GetString("ExportTransactionsXlsx", resourceCulture);
+            }
+        }
+
+        public static string ExportPeriodXlsx {
+            get {
+                return ResourceManager.GetString("ExportPeriodXlsx", resourceCulture);
+            }
+        }
+
+        public static string FailedToExportSpreadsheet {
+            get {
+                return ResourceManager.GetString("FailedToExportSpreadsheet", resourceCulture);
+            }
+        }
+
         public static string BackupCreatedSuccessfully {
             get {
                 return ResourceManager.GetString("BackupCreatedSuccessfully", resourceCulture);
