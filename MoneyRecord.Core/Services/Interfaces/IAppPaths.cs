@@ -14,6 +14,9 @@ namespace MoneyRecord.Services.Interfaces
         /// <summary>Receipt photos.</summary>
         string ReceiptsFolder { get; }
 
+        /// <summary>Decrypted copies of receipts for apps that need a file (a PDF viewer, the text reader); emptied at start and when the app locks.</summary>
+        string ReceiptViewFolder { get; }
+
         /// <summary>Snapshots taken before a restore.</summary>
         string BackupsFolder { get; }
 

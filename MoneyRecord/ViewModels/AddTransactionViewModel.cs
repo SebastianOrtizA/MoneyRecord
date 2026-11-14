@@ -42,6 +42,7 @@ namespace MoneyRecord.ViewModels
         private readonly ITripService _trips;
         private readonly IQuickEntryService _quickEntries;
         private readonly IReceiptScanner _receiptScanner;
+        private readonly IReceiptStore _receiptStore;
         private readonly IFileOpener _fileOpener;
         private readonly TimeProvider _clock;
         private readonly ILogger<AddTransactionViewModel> _logger;
@@ -497,7 +498,7 @@ namespace MoneyRecord.ViewModels
                 UseSpecificDay = false;
         }
 
-        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, IRecurringTransactionService recurringService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, IFileOpener fileOpener, IQuickEntryService quickEntries, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
+        public AddTransactionViewModel(IAccountRepository accountRepository, ICategoryRepository categoryRepository, IBalanceService balanceService, ITransactionRepository transactionRepository, IBudgetRepository budgetRepository, IRecurringTransactionRepository recurringTransactionRepository, IRecurringTransactionService recurringService, INavigationService navigationService, IErrorHandler errorHandler, IDialogService dialogService, IAppPaths paths, IEntryDefaultsService entryDefaults, IReminderService reminders, IExchangeRateService exchangeRates, IConversionService conversion, IPayeeService payeeService, ISplitService splitService, PocketCoverPrompt pocketCover, ITripService trips, IReceiptScanner receiptScanner, IFileOpener fileOpener, IReceiptStore receiptStore, IQuickEntryService quickEntries, TimeProvider clock, ILogger<AddTransactionViewModel> logger)
         {
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
@@ -520,6 +521,7 @@ namespace MoneyRecord.ViewModels
             _pocketCover = pocketCover;
             _trips = trips;
             _receiptScanner = receiptScanner;
+            _receiptStore = receiptStore;
             _fileOpener = fileOpener;
             _clock = clock;
             SplitParts.CollectionChanged += (_, _) =>
@@ -1480,9 +1482,8 @@ namespace MoneyRecord.ViewModels
             var fileName = $"receipt_{DateTime.Now:yyyyMMdd_HHmmss_fff}{Path.GetExtension(photo.FileName)}";
             var filePath = Path.Combine(receiptsDir, fileName);
 
-            using (var stream = await photo.OpenReadAsync())
-            using (var fileStream = File.Create(filePath))
-                await stream.CopyToAsync(fileStream);
+            await using (var stream = await photo.OpenReadAsync())
+                await _receiptStore.SaveAsync(filePath, stream);
 
             _receipt.Add(new TransactionAttachment
             {
@@ -1582,15 +1583,22 @@ namespace MoneyRecord.ViewModels
                         return;
                     }
 
-                    await using var fileStream = File.Create(filePath);
-                    await stream.CopyToAsync(fileStream);
-                    if (fileStream.Length > MaxAttachmentBytes)
+                    // Read at most one byte over the limit: a stream that can't say its length is cut short, not stored
+                    using var buffer = new MemoryStream();
+                    var limited = new byte[81920];
+                    int read;
+                    while ((read = await stream.ReadAsync(limited)) > 0)
                     {
-                        fileStream.Close();
-                        File.Delete(filePath);
-                        await _errorHandler.HandleAsync(AppResources.FileTooLarge);
-                        return;
+                        buffer.Write(limited, 0, read);
+                        if (buffer.Length > MaxAttachmentBytes)
+                        {
+                            await _errorHandler.HandleAsync(AppResources.FileTooLarge);
+                            return;
+                        }
                     }
+
+                    buffer.Position = 0;
+                    await _receiptStore.SaveAsync(filePath, buffer);
                 }
 
                 _receipt.Add(new TransactionAttachment

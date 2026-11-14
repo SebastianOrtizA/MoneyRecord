@@ -7,6 +7,17 @@ namespace MoneyRecord.Helpers
     {
         public const string FolderName = "receipts";
 
+        /// <summary>Suffix of a receipt file while it is encrypted (see <see cref="Services.Interfaces.IReceiptStore"/>): "receipt_x.jpg.enc".</summary>
+        public const string EncryptedSuffix = ".enc";
+
+        /// <summary>The name a receipt goes by in the database and in backups, without the encrypted suffix.</summary>
+        public static string LogicalName(string? fileName) =>
+            fileName == null ? string.Empty
+            : fileName.EndsWith(EncryptedSuffix, StringComparison.OrdinalIgnoreCase) ? fileName[..^EncryptedSuffix.Length] : fileName;
+
+        /// <summary>True when the receipt is in the folder as a plain file or as its encrypted twin.</summary>
+        public static bool Exists(string path) => File.Exists(path) || File.Exists(path + EncryptedSuffix);
+
         /// <summary>
         /// Deletes a receipt photo. Best effort: a missing file or an I/O error is not an error.
         /// Deletes the file only when it is inside <paramref name="receiptsFolder"/>, so a stray path
@@ -14,18 +25,25 @@ namespace MoneyRecord.Helpers
         /// </summary>
         public static bool Delete(string? path, string receiptsFolder)
         {
-            if (!IsInFolder(path, receiptsFolder) || !File.Exists(path))
+            if (!IsInFolder(path, receiptsFolder))
                 return false;
 
-            try
+            // The plain file and its encrypted twin: whichever exist
+            var deleted = false;
+            foreach (var file in new[] { path!, path + EncryptedSuffix })
             {
-                File.Delete(path!);
-                return true;
+                if (!File.Exists(file))
+                    continue;
+                try
+                {
+                    File.Delete(file);
+                    deleted = true;
+                }
+                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                {
+                }
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-            {
-                return false;
-            }
+            return deleted;
         }
 
         /// <summary>
