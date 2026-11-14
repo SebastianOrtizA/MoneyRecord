@@ -10,16 +10,16 @@ All testable logic lives in `MoneyRecord.Core` (plain `net10.0`). Anything that 
 registered for the other platforms in `MauiProgram.cs`. When a feature cannot work on a platform, its UI hides through the
 interface's `IsSupported` (or equivalent) instead of failing.
 
-| Interface | Purpose | Android | Fallback |
-|---|---|---|---|
-| `IDeviceLock` | Biometric / screen-lock unlock | BiometricPrompt | `NoDeviceLock` |
-| `IDatabaseKeyStore` | Key for the encrypted database | SecureStorage | `NoDatabaseKeyStore` |
-| `IBackupPasswordStore` | Backup zip password | SecureStorage | `NoBackupPasswordStore` |
-| `INotificationService` | Reminders and alerts | Notifications + WorkManager | `NoNotificationService` |
-| `IReceiptScanner` | Receipt OCR | ML Kit | `NoReceiptScanner` |
-| `IHomeScreenWidgets` | Home-screen widget refresh | App widget | `NoHomeScreenWidgets` |
-| `IBackupFolder` | Automatic backup destination | Storage Access Framework | `NoBackupFolder` |
-| `IScreenProtection` | Hide content in recents / screenshots | `FLAG_SECURE` | `NoScreenProtection` |
+| Interface | Purpose | Android | Windows | Fallback |
+|---|---|---|---|---|
+| `IDeviceLock` | Biometric / screen-lock unlock | BiometricPrompt | Windows Hello | `NoDeviceLock` |
+| `IDatabaseKeyStore` | Key for the encrypted database | SecureStorage | DPAPI | `NoDatabaseKeyStore` |
+| `IBackupPasswordStore` | Backup zip password | SecureStorage | DPAPI | `NoBackupPasswordStore` |
+| `INotificationService` | Reminders and alerts | Notifications + WorkManager | Toasts + hourly timer while open | `NoNotificationService` |
+| `IReceiptScanner` | Receipt OCR | ML Kit | Windows.Media.Ocr | `NoReceiptScanner` |
+| `IHomeScreenWidgets` | Home-screen widget refresh | App widget | none | `NoHomeScreenWidgets` |
+| `IBackupFolder` | Automatic backup destination | Storage Access Framework | Plain folder path | `NoBackupFolder` |
+| `IScreenProtection` | Hide content in recents / screenshots | `FLAG_SECURE` | `SetWindowDisplayAffinity` | `NoScreenProtection` |
 
 ## Before a pull request
 

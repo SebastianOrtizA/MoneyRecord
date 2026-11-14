@@ -27,7 +27,7 @@ Android is the product: it sets the schedule and gets every feature first. Deskt
 | Platform | Status | Notes |
 |---|---|---|
 | Android 7.0+ | Supported, released (Play, GitHub APK) | Everything below works here |
-| Windows 10/11 | Desktop build, in progress (Stage 25.4b) | Builds from source today; no encrypted database, backup password, lock, notifications, folder backup, receipt scan or widget yet |
+| Windows 10/11 | Desktop build, in progress (Stage 25.4b) | Encrypted database, backup password, app PIN and Windows Hello lock, screen capture protection, folder backup, reminders (while the app is open), receipt scan (system OCR). No widget; desktop polish and the release zip are still to come |
 | Linux | Under study (Stage 25.4c) | MAUI has no Linux target; until a spike says go, build from source is not offered |
 | iOS, Mac Catalyst | Community, best-effort | Build from source; no app lock, no store publishing, no widget, no notifications |
 
