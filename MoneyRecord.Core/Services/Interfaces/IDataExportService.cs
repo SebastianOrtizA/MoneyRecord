@@ -13,6 +13,12 @@ namespace MoneyRecord.Services.Interfaces
         Task<string> ExportCsvAsync(DateTime? startDate = null, DateTime? endDate = null);
 
         /// <summary>
+        /// The same entries as <see cref="ExportCsvAsync"/> as an .xlsx workbook at <paramref name="destinationPath"/> (typed date and
+        /// number cells) plus sheets for the accounts, categories and budgets.
+        /// </summary>
+        Task ExportXlsxAsync(string destinationPath, DateTime? startDate = null, DateTime? endDate = null);
+
+        /// <summary>
         /// Writes a full backup to <paramref name="destinationPath"/>: a .zip with data.json and the receipt photos.
         /// With a <paramref name="password"/> its entries are AES-256 encrypted. Returns the fingerprint of the data it
         /// holds (see <see cref="GetFingerprintAsync"/>).

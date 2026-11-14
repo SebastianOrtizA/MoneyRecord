@@ -3479,4 +3479,13 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="AttachmentsLabel" xml:space="preserve">
     <value>Adjuntos</value>
   </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>Exportar Transacciones (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>Transacciones (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Error al exportar la hoja de cálculo</value>
+  </data>
 </root>

@@ -551,6 +551,64 @@ namespace MoneyRecord.Services
             return sb.ToString();
         }
 
+        // ---- XLSX ----
+
+        // Sheet names and headers stay in English on purpose (like the CSV header): the file is data, stable across languages.
+        public async Task ExportXlsxAsync(string destinationPath, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            var (start, end) = (startDate ?? DateTime.MinValue, endDate ?? DateTime.MaxValue);
+            var allTime = startDate == null && endDate == null;
+            var transactions = allTime ? await _transactionRepository.GetAllAsync() : await _transactionRepository.GetByDateRangeAsync(start, end);
+            var transfers = allTime ? await _transferRepository.GetAllAsync() : await _transferRepository.GetByDateRangeAsync(start, end);
+            var categoryList = await _categoryRepository.GetAllAsync();
+            var categories = categoryList.ToDictionary(c => c.Id, c => c.Name);
+            var accountList = await _accountRepository.GetAllAsync();
+            var accounts = accountList.ToDictionary(a => a.Id);
+            var payees = (await _payeeRepository.GetAllAsync()).ToDictionary(p => p.Id, p => p.Name);
+            var db = await _dbInitializer.GetConnectionAsync();
+            var trips = (await db.Table<Trip>().ToListAsync()).ToDictionary(t => t.Id, t => t.Name);
+            var budgets = await db.Table<Budget>().ToListAsync();
+            var attachmentCounts = (await db.Table<TransactionAttachment>().ToListAsync())
+                .GroupBy(a => a.TransactionId).ToDictionary(g => g.Key, g => g.Count());
+
+            string AccountName(int? id) => id is int accountId && accounts.TryGetValue(accountId, out var account) ? account.Name : string.Empty;
+            string Currency(int? id) => MoneyFormatter.ResolveCurrencyCode(
+                id is int accountId && accounts.TryGetValue(accountId, out var account) ? account.CurrencyCode : null);
+
+            var transactionRows = transactions.OrderByDescending(t => t.Date).Select(t => new object?[]
+            {
+                t.Date, t.Description, Math.Abs(t.Amount), Currency(t.AccountId), t.Type.ToString(),
+                categories.GetValueOrDefault(t.CategoryId, string.Empty), AccountName(t.AccountId),
+                t.PayeeId is int payeeId ? payees.GetValueOrDefault(payeeId, string.Empty) : string.Empty,
+                string.Join(", ", t.TagList), attachmentCounts.GetValueOrDefault(t.Id),
+                t.SplitId, t.TripId is int tripId ? trips.GetValueOrDefault(tripId, string.Empty) : string.Empty
+            }).ToList();
+
+            var transferRows = transfers.OrderByDescending(t => t.Date).Select(t => new object?[]
+            {
+                t.Date, t.Description, AccountName(t.SourceAccountId), Math.Abs(t.Amount), Currency(t.SourceAccountId),
+                AccountName(t.DestinationAccountId), Math.Abs(t.DestinationAmount), Currency(t.DestinationAccountId)
+            }).ToList();
+
+            var sheets = new List<XlsxSheet>
+            {
+                new("Transactions", ["Date", "Description", "Amount", "Currency", "Type", "Category", "Account", "Payee", "Tags", "Attachments", "SplitId", "Trip"], transactionRows),
+                new("Transfers", ["Date", "Description", "From", "Amount", "Currency", "To", "ToAmount", "ToCurrency"], transferRows),
+                new("Accounts", ["Name", "Currency", "InitialBalance", "Hidden"],
+                    accountList.Select(a => new object?[] { a.Name, Currency(a.Id), a.InitialBalance, a.IsDebt ? "Yes" : "No" }).ToList()),
+                new("Categories", ["Name", "Type"], categoryList.Select(c => new object?[] { c.Name, c.Type.ToString() }).ToList()),
+                new("Budgets", ["Category", "Limit", "Period", "Active"],
+                    budgets.Select(b => new object?[]
+                    {
+                        b.CategoryId == Budget.AllSpending ? "All spending" : categories.GetValueOrDefault(b.CategoryId, string.Empty),
+                        b.LimitAmount, b.Period.ToString(), b.IsActive ? "Yes" : "No"
+                    }).ToList())
+            };
+
+            await using var file = File.Create(destinationPath);
+            XlsxWriter.Write(file, sheets);
+        }
+
         private static string CsvEscape(string value)
         {
             if (string.IsNullOrEmpty(value)) return "";

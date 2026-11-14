@@ -3429,4 +3429,13 @@
   <data name="AttachmentsLabel" xml:space="preserve">
     <value>Pièces jointes</value>
   </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>Exporter les transactions (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>Transactions (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Impossible d'exporter le tableur</value>
+  </data>
 </root>

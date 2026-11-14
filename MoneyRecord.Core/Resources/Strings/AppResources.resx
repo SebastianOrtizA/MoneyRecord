@@ -3482,4 +3482,13 @@
   <data name="AttachmentsLabel" xml:space="preserve">
     <value>Attachments</value>
   </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>Export Transactions (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>Transactions (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Failed to export the spreadsheet</value>
+  </data>
 </root>

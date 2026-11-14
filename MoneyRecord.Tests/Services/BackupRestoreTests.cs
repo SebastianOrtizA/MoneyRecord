@@ -1,4 +1,5 @@
 using AwesomeAssertions;
+using System.Xml.Linq;
 using MoneyRecord.Helpers;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
@@ -247,6 +248,34 @@ public sealed class BackupRestoreTests : IAsyncLifetime
             .Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
 
         lines.Skip(1).Should().ContainSingle().Which.Should().StartWith("2026-09-30,September,");
+    }
+
+    [Fact]
+    public async Task Xlsx_HasTheSheets_TypedCells_AndOnlyThePeriod()
+    {
+        var euros = new Account { Name = "Euros", CurrencyCode = "EUR" };
+        await Db.InsertAsync(euros);
+        var food = (await _categoryRepository.GetAllAsync()).First(c => c.Type == CategoryType.Expense);
+        var dinner = new Transaction { Description = "=Dinner", Amount = 20m, Type = TransactionType.Expense, CategoryId = food.Id, AccountId = euros.Id, Date = new DateTime(2026, 10, 3), Tags = "trip" };
+        await Db.InsertAsync(dinner);
+        await Db.InsertAsync(new TransactionAttachment { TransactionId = dinner.Id, Path = "a.jpg" });
+        await Db.InsertAsync(new Transaction { Description = "Old", Amount = 1m, Date = new DateTime(2026, 8, 1) });
+        await Db.InsertAsync(new Transfer { Amount = 100m, DestinationAmount = 92.5m, SourceAccountId = euros.Id, DestinationAccountId = euros.Id, Date = new DateTime(2026, 10, 4) });
+        var path = Path.Combine(_appData, "out", "export.xlsx");
+
+        await _service.ExportXlsxAsync(path, new DateTime(2026, 10, 1), new DateTime(2026, 10, 31));
+
+        using var zip = System.IO.Compression.ZipFile.OpenRead(path);
+        XNamespace ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+        XDocument Load(string name) { using var s = zip.GetEntry(name)!.Open(); return XDocument.Load(s); }
+        Load("xl/workbook.xml").Descendants(ns + "sheet").Select(s => (string?)s.Attribute("name"))
+            .Should().Equal("Transactions", "Transfers", "Accounts", "Categories", "Budgets");
+        var rows = Load("xl/worksheets/sheet1.xml").Descendants(ns + "row").Skip(1).ToList();
+        rows.Should().ContainSingle();
+        var texts = rows[0].Elements(ns + "c").Select(c => c.Element(ns + "is")?.Value ?? c.Element(ns + "v")!.Value).ToList();
+        texts.Should().StartWith(new[] { new DateTime(2026, 10, 3).ToOADate().ToString("0"), "=Dinner", "20" });
+        texts.Should().Contain(new[] { "EUR", "Expense", food.Name, "Euros", "trip", "1" });
+        Load("xl/worksheets/sheet2.xml").Descendants(ns + "row").Skip(1).Should().ContainSingle();
     }
 
     [Fact]

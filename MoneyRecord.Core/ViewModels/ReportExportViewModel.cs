@@ -8,7 +8,7 @@ using MoneyRecord.Services.Interfaces;
 namespace MoneyRecord.ViewModels
 {
     /// <summary>
-    /// The Reports tabs' Export button: a PDF report or a CSV of the transactions for what the tab shows, then the share
+    /// The Reports tabs' Export button: a PDF report, or a CSV or Excel file of the transactions for what the tab shows, then the share
     /// sheet. Spending / Income show the shared period; Trends, Cash flow and Net worth the last
     /// <see cref="PeriodViewModel.MonthCount"/> months (pass <see cref="Months"/>). Amounts by category follow the reports'
     /// currency choice.
@@ -54,9 +54,10 @@ namespace MoneyRecord.ViewModels
                 var request = Request(window == Months);
                 var choice = await dialogs.ActionSheetAsync(
                     string.Format(AppResources.ExportReportFor, DateFormatter.FormatRange(request.Start, request.End)),
-                    AppResources.Cancel, [AppResources.ExportPdfReport, AppResources.ExportPeriodCsv]);
+                    AppResources.Cancel, [AppResources.ExportPdfReport, AppResources.ExportPeriodCsv, AppResources.ExportPeriodXlsx]);
                 var pdf = choice == AppResources.ExportPdfReport;
-                if (!pdf && choice != AppResources.ExportPeriodCsv)
+                var xlsx = choice == AppResources.ExportPeriodXlsx;
+                if (!pdf && !xlsx && choice != AppResources.ExportPeriodCsv)
                     return;
 
                 string path;
@@ -64,6 +65,11 @@ namespace MoneyRecord.ViewModels
                 {
                     path = sharer.NewCacheFile("MoneyRecord_Report", ".pdf");
                     await reports.WritePdfAsync(await reports.BuildAsync(request), path);
+                }
+                else if (xlsx)
+                {
+                    path = sharer.NewCacheFile("MoneyRecord_Transactions", ".xlsx");
+                    await data.ExportXlsxAsync(path, request.Start, request.End);
                 }
                 else
                 {
