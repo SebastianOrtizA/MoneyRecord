@@ -170,7 +170,7 @@ Your data stays on the device in every version; see [PRIVACY.md](PRIVACY.md).
   changed.
 - **Restore** from a local or picked backup (also older `.json` backups). The restore is all-or-nothing; the current data
   is saved to an automatic snapshot first (the last 5 are kept) and the "Restore complete" dialog offers **Undo**.
-- **CSV export** of all transactions, and **CSV import** of a bank statement into one account: pick the columns, check a
+- **CSV export** of all transactions, and **import** of a bank statement (CSV, OFX/QFX or QIF) into one account: pick the columns, check a
   preview that marks duplicates and suggests categories learned from your history, and undo the import if needed. The
   columns are remembered per statement layout.
 - **App lock** (Android, opt-in): fingerprint, face or the phone's screen lock when the app opens and after 1, 5, 15
@@ -235,6 +235,7 @@ https://sebastianortiza.github.io/MoneyRecord/privacy.
   is also declared, because the camera capture needs it there. Picking a photo or a backup file uses the system pickers,
   which need no permission. Notifications (Android 13 and newer), only when you turn reminders on. Biometrics, only
   when you turn the app lock on (Android checks it; the app only learns whether it passed).
+  MoneyRecord cannot read your notifications or SMS: bank data comes in only from statement files you pick.
 - **Logs:** errors and basic app info (version, device OS) are written to log files on the device (the last 7 days,
   at most 10 MB in all). They hold technical details such as error messages (the app doesn't log your amounts or
   descriptions), and leave the device only when you use

@@ -81,7 +81,17 @@
                                 ItemDisplayBinding="{Binding Name}"
                                 Title="{ext:Localize SelectAccount}"/>
 
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4">
+                        <!-- A QIF file's dates may be day-first or month-first: the only choice for OFX / QIF files -->
+                        <VerticalStackLayout Spacing="4" IsVisible="{Binding ShowsQifDate}">
+                            <Label Text="{ext:Localize ImportDateFormat}" FontSize="14" FontAttributes="Bold"/>
+                            <Picker ItemsSource="{Binding DateFormats}"
+                                    SelectedItem="{Binding SelectedDateFormat}"
+                                    ItemDisplayBinding="{Binding Pattern}"
+                                    Title="{ext:Localize ImportDateFormat}"/>
+                        </VerticalStackLayout>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="4"
+                              IsVisible="{Binding ShowsMapping}">
                             <Label Text="{ext:Localize ImportDateColumn}" FontSize="14" FontAttributes="Bold"/>
                             <Picker Grid.Row="1"
                                     ItemsSource="{Binding DateColumns}"
@@ -111,7 +121,8 @@
                                     Title="{ext:Localize ImportDateFormat}"/>
                         </Grid>
 
-                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12"
+                              IsVisible="{Binding ShowsMapping}">
                             <Label Text="{ext:Localize ImportPositiveIsExpense}" FontSize="14" VerticalOptions="Center"/>
                             <Switch Grid.Column="1" IsToggled="{Binding PositiveIsExpense}" VerticalOptions="Center"/>
                         </Grid>

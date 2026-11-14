@@ -4074,6 +4074,15 @@ namespace MoneyRecord.Resources.Strings {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to In another currency.
+        /// </summary>
+        public static string ImportProblemCurrency {
+            get {
+                return ResourceManager.GetString("ImportProblemCurrency", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Import {0} transaction.
         /// </summary>
         public static string ImportButtonOne {

@@ -152,4 +152,46 @@ public sealed class StatementImportServiceTests : IAsyncLifetime
 
         (await Db.Table<Transaction>().CountAsync(t => t.AccountId == _bank.Id)).Should().Be(0);
     }
+
+    private static ParsedStatement Ofx(params (string Id, string Date, string Text, decimal Amount)[] rows) =>
+        new(rows.Select((r, i) => new StatementEntry(i + 1, DateTime.Parse(r.Date), r.Text, r.Amount, r.Id)).ToList(), "EUR");
+
+    [Fact]
+    public async Task A_row_with_a_bank_id_is_a_duplicate_once_that_id_is_recorded()
+    {
+        var statement = Ofx(("A1", "2026-10-01", "Coffee", -3.5m), ("A2", "2026-10-01", "Coffee", -3.5m));
+        var first = await _sut.PreviewAsync(statement, _bank, _food, _salary);
+        first.Should().OnlyContain(r => !r.IsDuplicate);
+        await _sut.ImportAsync(_bank, first);
+
+        (await Db.Table<Transaction>().ToListAsync()).Select(t => t.ExternalId).Should().BeEquivalentTo(["A1", "A2"]);
+
+        // The same file again; and a third equal coffee with a new ID is new, not matched to the imported ones
+        var again = await _sut.PreviewAsync(Ofx(("A1", "2026-10-01", "Coffee", -3.5m), ("A2", "2026-10-01", "Coffee", -3.5m),
+            ("A3", "2026-10-01", "Coffee", -3.5m)), _bank, _food, _salary);
+        again.Select(r => r.IsDuplicate).Should().Equal(true, true, false);
+    }
+
+    [Fact]
+    public async Task A_row_with_a_bank_id_also_matches_an_entry_typed_in_by_hand()
+    {
+        await Db.InsertAsync(new Transaction { Date = new(2026, 10, 1), Description = "Coffee", CategoryId = _food.Id,
+            Type = TransactionType.Expense, AccountId = _bank.Id, AmountCents = 350 });
+
+        var rows = await _sut.PreviewAsync(Ofx(("B1", "2026-10-01", "coffee", -3.5m), ("B2", "2026-10-01", "coffee", -3.5m)),
+            _bank, _food, _salary);
+
+        rows.Select(r => r.IsDuplicate).Should().Equal(true, false);
+    }
+
+    [Fact]
+    public async Task A_file_in_another_currency_than_the_account_is_all_problems()
+    {
+        var statement = Ofx(("C1", "2026-10-01", "Coffee", -3.5m)) with { CurrencyCode = "USD" };
+
+        var rows = await _sut.PreviewAsync(statement, _bank, _food, _salary);
+
+        rows.Single().Problem.Should().Be(ImportProblem.Currency);
+        rows.Single().IsIncluded.Should().BeFalse();
+    }
 }

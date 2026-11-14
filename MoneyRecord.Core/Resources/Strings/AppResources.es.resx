@@ -1425,16 +1425,16 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
     <value>Importar extracto bancario</value>
   </data>
   <data name="ImportStatementDescription" xml:space="preserve">
-    <value>Añade a una cuenta los movimientos de un archivo CSV de la web de tu banco.</value>
+    <value>Añade a una cuenta los movimientos de un archivo CSV, OFX o QIF de la web de tu banco.</value>
   </data>
   <data name="ImportChooseFile" xml:space="preserve">
-    <value>Elegir un archivo CSV</value>
+    <value>Elegir un archivo de extracto</value>
   </data>
   <data name="ImportChooseAnotherFile" xml:space="preserve">
     <value>Elegir otro archivo</value>
   </data>
   <data name="ImportIntro" xml:space="preserve">
-    <value>Exporta tus movimientos en CSV desde la web de tu banco y elige aquí el archivo. Revisas cada fila antes de que se añada nada.</value>
+    <value>Exporta tus movimientos desde la web de tu banco en OFX, QIF o CSV y elige aquí el archivo. Revisas cada fila antes de que se añada nada.</value>
   </data>
   <data name="ImportRowsOne" xml:space="preserve">
     <value>{0} fila</value>
@@ -1443,7 +1443,7 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
     <value>{0} filas</value>
   </data>
   <data name="ImportNoTable" xml:space="preserve">
-    <value>No se encontró en este archivo una tabla con una columna de fecha y otra de importe.</value>
+    <value>No se encontraron en este archivo movimientos con fecha e importe.</value>
   </data>
   <data name="ImportFailedToRead" xml:space="preserve">
     <value>No se pudo leer el archivo</value>
@@ -1486,6 +1486,9 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   </data>
   <data name="ImportProblemZero" xml:space="preserve">
     <value>Importe cero</value>
+  </data>
+  <data name="ImportProblemCurrency" xml:space="preserve">
+    <value>En otra moneda</value>
   </data>
   <data name="ImportButtonOne" xml:space="preserve">
     <value>Importar {0} transacción</value>

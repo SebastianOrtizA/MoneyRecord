@@ -1427,16 +1427,16 @@
     <value>Import bank statement</value>
   </data>
   <data name="ImportStatementDescription" xml:space="preserve">
-    <value>Add the movements of a CSV file from your bank's website to one account.</value>
+    <value>Add the movements of a CSV, OFX or QIF file from your bank's website to one account.</value>
   </data>
   <data name="ImportChooseFile" xml:space="preserve">
-    <value>Choose a CSV file</value>
+    <value>Choose a statement file</value>
   </data>
   <data name="ImportChooseAnotherFile" xml:space="preserve">
     <value>Choose another file</value>
   </data>
   <data name="ImportIntro" xml:space="preserve">
-    <value>Export your movements as CSV from your bank's website, then pick the file here. You check every row before anything is added.</value>
+    <value>Export your movements from your bank's website as OFX, QIF or CSV, then pick the file here. You check every row before anything is added.</value>
   </data>
   <data name="ImportRowsOne" xml:space="preserve">
     <value>{0} row</value>
@@ -1445,7 +1445,7 @@
     <value>{0} rows</value>
   </data>
   <data name="ImportNoTable" xml:space="preserve">
-    <value>No table with a date column and an amount column was found in this file.</value>
+    <value>No movements with a date and an amount were found in this file.</value>
   </data>
   <data name="ImportFailedToRead" xml:space="preserve">
     <value>Couldn't read the file</value>
@@ -1488,6 +1488,9 @@
   </data>
   <data name="ImportProblemZero" xml:space="preserve">
     <value>Zero amount</value>
+  </data>
+  <data name="ImportProblemCurrency" xml:space="preserve">
+    <value>In another currency</value>
   </data>
   <data name="ImportButtonOne" xml:space="preserve">
     <value>Import {0} transaction</value>

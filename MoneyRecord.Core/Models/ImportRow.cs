@@ -11,6 +11,8 @@ namespace MoneyRecord.Models
         Date,
         Amount,
         ZeroAmount,
+        /// <summary>The file is in another currency than the account.</summary>
+        Currency,
     }
 
     /// <summary>
@@ -37,7 +39,9 @@ namespace MoneyRecord.Models
 
         public ImportProblem Problem { get; init; }
 
-        /// <summary>The account already has an entry with the same day, type, amount and description.</summary>
+        /// <summary>The account already has this entry (same bank ID, else same day, type, amount and description).</summary>
+        public string? ExternalId { get; init; }
+
         public bool IsDuplicate { get; init; }
 
         /// <summary>
@@ -62,6 +66,7 @@ namespace MoneyRecord.Models
             ImportProblem.Date => AppResources.ImportProblemDate,
             ImportProblem.Amount => AppResources.ImportProblemAmount,
             ImportProblem.ZeroAmount => AppResources.ImportProblemZero,
+            ImportProblem.Currency => AppResources.ImportProblemCurrency,
             _ => IsDuplicate ? AppResources.ImportAlreadyRecorded : string.Empty,
         };
 

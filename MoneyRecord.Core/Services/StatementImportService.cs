@@ -10,11 +10,20 @@ namespace MoneyRecord.Services
         : IStatementImportService
     {
         public async Task<List<ImportRow>> PreviewAsync(CsvTable table, StatementMapping mapping, Account account,
+            Category? expenseCategory, Category? incomeCategory) =>
+            await PreviewAsync(new ParsedStatement(table.Rows.Select((row, i) => ToEntry(row, i + 1, mapping)).ToList()),
+                account, expenseCategory, incomeCategory);
+
+        public async Task<List<ImportRow>> PreviewAsync(ParsedStatement statement, Account account,
             Category? expenseCategory, Category? incomeCategory)
         {
-            var parsed = table.Rows.Select((row, i) => Parse(row, i + 1, mapping)).ToList();
+            // A file that names its currency must match the account's
+            var otherCurrency = statement.CurrencyCode != null
+                && !MoneyFormatter.SameCurrency(statement.CurrencyCode, account.CurrencyCode);
+            var parsed = statement.Entries.Select(e => Parse(e, otherCurrency)).ToList();
             var learned = await LearnedCategoriesAsync();
-            var recorded = await RecordedEntriesAsync(account.Id, parsed.Where(p => p.Problem == ImportProblem.None).ToList());
+            var readable = parsed.Where(p => p.Problem == ImportProblem.None).ToList();
+            var recorded = await RecordedEntriesAsync(account.Id, readable);
 
             return parsed.Select(p =>
             {
@@ -24,10 +33,7 @@ namespace MoneyRecord.Services
                         CurrencyCode = account.CurrencyCode };
                 }
 
-                var duplicate = recorded.TryGetValue(p.DuplicateKey, out var count) && count > 0;
-                if (duplicate)
-                    recorded[p.DuplicateKey] = count - 1;
-
+                var duplicate = recorded.IsRecorded(p);
                 var category = learned.GetValueOrDefault((p.Type, CategoryKey(p.Description)));
                 return new ImportRow
                 {
@@ -37,6 +43,7 @@ namespace MoneyRecord.Services
                     AmountCents = p.Cents,
                     Type = p.Type,
                     CurrencyCode = account.CurrencyCode,
+                    ExternalId = p.ExternalId,
                     IsDuplicate = duplicate,
                     IsLearned = category != null,
                     IsIncluded = !duplicate,
@@ -57,6 +64,7 @@ namespace MoneyRecord.Services
                     Type = r.Type,
                     CategoryId = r.Category!.Id,
                     AccountId = account.Id,
+                    ExternalId = r.ExternalId,
                 })
                 .ToList();
 
@@ -71,22 +79,33 @@ namespace MoneyRecord.Services
                     db.Delete<Transaction>(id);
             });
 
-        private static ParsedRow Parse(string[] row, int line, StatementMapping mapping)
+        /// <summary>A CSV row as an entry: the amount's sign says expense or income (flipped when positive is an expense).</summary>
+        private static StatementEntry ToEntry(string[] row, int line, StatementMapping mapping)
         {
             var description = row[mapping.DescriptionColumn].Trim();
-            if (!mapping.DateFormat.TryParse(row[mapping.DateColumn], out var date))
-                return new ParsedRow(line, default, description, 0, default, ImportProblem.Date);
-            if (!StatementAmount.TryParse(row[mapping.AmountColumn], mapping.DecimalSeparator, out var amount)
-                || !Money.IsInRange(amount))
-                return new ParsedRow(line, date, description, 0, default, ImportProblem.Amount);
+            DateTime? date = mapping.DateFormat.TryParse(row[mapping.DateColumn], out var d) ? d : null;
+            decimal? amount = StatementAmount.TryParse(row[mapping.AmountColumn], mapping.DecimalSeparator, out var a)
+                ? (mapping.PositiveIsExpense ? -a : a)
+                : null;
+            return new StatementEntry(line, date, description, amount);
+        }
+
+        private static ParsedRow Parse(StatementEntry entry, bool otherCurrency)
+        {
+            var description = entry.Description;
+            if (entry.Date is not { } date)
+                return new ParsedRow(entry.Line, default, description, 0, default, null, ImportProblem.Date);
+            if (entry.Amount is not { } amount || !Money.IsInRange(amount))
+                return new ParsedRow(entry.Line, date, description, 0, default, null, ImportProblem.Amount);
 
             var cents = Money.ToCents(Math.Abs(amount));
             if (cents == 0)
-                return new ParsedRow(line, date, description, 0, default, ImportProblem.ZeroAmount);
+                return new ParsedRow(entry.Line, date, description, 0, default, null, ImportProblem.ZeroAmount);
+            if (otherCurrency)
+                return new ParsedRow(entry.Line, date, description, 0, default, null, ImportProblem.Currency);
 
-            var isExpense = amount < 0 != mapping.PositiveIsExpense;
-            return new ParsedRow(line, date, description, cents, isExpense ? TransactionType.Expense : TransactionType.Income,
-                ImportProblem.None);
+            return new ParsedRow(entry.Line, date, description, cents,
+                amount < 0 ? TransactionType.Expense : TransactionType.Income, entry.ExternalId, ImportProblem.None);
         }
 
         /// <summary>Per type and <see cref="CategoryKey"/>, the category of the latest entry (that still exists).</summary>
@@ -107,21 +126,35 @@ namespace MoneyRecord.Services
             return learned;
         }
 
-        /// <summary>How many entries the account has per <see cref="ParsedRow.DuplicateKey"/> in the rows' date range.</summary>
-        private async Task<Dictionary<string, int>> RecordedEntriesAsync(int accountId, List<ParsedRow> rows)
+        /// <summary>The account's entries in the rows' date range: by the bank's ID, and counted per <see cref="ParsedRow.DuplicateKey"/>.</summary>
+        private async Task<Recorded> RecordedEntriesAsync(int accountId, List<ParsedRow> rows)
         {
             if (rows.Count == 0)
-                return [];
+                return new Recorded([], [], []);
 
             var from = rows.Min(r => r.Date);
             var to = rows.Max(r => r.Date).AddDays(1);
-            var entries = await (await database.GetConnectionAsync()).Table<Transaction>()
+            var connection = await database.GetConnectionAsync();
+            var entries = await connection.Table<Transaction>()
                 .Where(t => t.AccountId == accountId && t.Date >= from && t.Date < to)
                 .ToListAsync();
+            entries = entries.Where(t => t.Type != TransactionType.Transfer).ToList();
 
-            return entries
-                .Where(t => t.Type != TransactionType.Transfer)
-                // A split payment is one statement row: its parts count once, with their total and the first part's text
+            // An entry imported with a bank ID is found by it, wherever it is dated now (the user may have moved it)
+            var ids = rows.Select(r => r.ExternalId).OfType<string>().Distinct().ToList();
+            var knownIds = new HashSet<string>();
+            foreach (var chunk in ids.Chunk(400))
+            {
+                var found = await connection.QueryAsync<IdOnly>(
+                    $"SELECT ExternalId FROM \"Transaction\" WHERE AccountId = ? AND ExternalId IN ({string.Join(',', chunk.Select(_ => "?"))})",
+                    [accountId, .. chunk]);
+                knownIds.UnionWith(found.Select(f => f.ExternalId));
+            }
+
+            return new Recorded(knownIds, Count(entries), Count(entries.Where(t => t.ExternalId == null)));
+
+            // A split payment is one statement row: its parts count once, with their total and the first part's text
+            static Dictionary<string, int> Count(IEnumerable<Transaction> entries) => entries
                 .GroupBy(t => t.SplitId ?? $"#{t.Id}")
                 .Select(payment => DuplicateKey(payment.First().Date, payment.First().Type,
                     payment.Sum(t => Math.Abs(t.AmountCents)), payment.OrderBy(t => t.Id).First().Description))
@@ -149,9 +182,34 @@ namespace MoneyRecord.Services
         }
 
         private sealed record ParsedRow(int Line, DateTime Date, string Description, long Cents, TransactionType Type,
-            ImportProblem Problem)
+            string? ExternalId, ImportProblem Problem)
         {
             public string DuplicateKey => StatementImportService.DuplicateKey(Date, Type, Cents, Description);
+        }
+
+        private sealed class IdOnly
+        {
+            public string ExternalId { get; set; } = string.Empty;
+        }
+
+        /// <summary>
+        /// What the account already has. A row with a bank ID is a duplicate when that ID is recorded, else when an entry
+        /// without an ID (typed in, or from a CSV) matches its day, type, amount and text; a row without one matches any entry.
+        /// Each recorded entry is used up by one row ("two equal coffees in the file and one recorded" = one duplicate).
+        /// </summary>
+        private sealed class Recorded(HashSet<string> ids, Dictionary<string, int> all, Dictionary<string, int> withoutId)
+        {
+            public bool IsRecorded(ParsedRow row)
+            {
+                if (row.ExternalId != null && ids.Contains(row.ExternalId))
+                    return true;
+
+                var counts = row.ExternalId == null ? all : withoutId;
+                if (!counts.TryGetValue(row.DuplicateKey, out var count) || count == 0)
+                    return false;
+                counts[row.DuplicateKey] = count - 1;
+                return true;
+            }
         }
 
         private sealed class DescriptionCategory

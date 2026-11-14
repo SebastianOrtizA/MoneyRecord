@@ -1374,16 +1374,16 @@
     <value>Importa estratto conto</value>
   </data>
   <data name="ImportStatementDescription" xml:space="preserve">
-    <value>Aggiungi a un conto i movimenti di un file CSV scaricato dal sito della tua banca.</value>
+    <value>Aggiungi a un conto i movimenti di un file CSV, OFX o QIF scaricato dal sito della tua banca.</value>
   </data>
   <data name="ImportChooseFile" xml:space="preserve">
-    <value>Scegli un file CSV</value>
+    <value>Scegli un file di estratto conto</value>
   </data>
   <data name="ImportChooseAnotherFile" xml:space="preserve">
     <value>Scegli un altro file</value>
   </data>
   <data name="ImportIntro" xml:space="preserve">
-    <value>Esporta i tuoi movimenti in CSV dal sito della tua banca, poi scegli qui il file. Controlli ogni riga prima che venga aggiunto qualcosa.</value>
+    <value>Esporta i tuoi movimenti dal sito della tua banca in OFX, QIF o CSV, poi scegli qui il file. Controlli ogni riga prima che venga aggiunto qualcosa.</value>
   </data>
   <data name="ImportRowsOne" xml:space="preserve">
     <value>{0} riga</value>
@@ -1392,7 +1392,7 @@
     <value>{0} righe</value>
   </data>
   <data name="ImportNoTable" xml:space="preserve">
-    <value>In questo file non è stata trovata nessuna tabella con una colonna di date e una di importi.</value>
+    <value>In questo file non sono stati trovati movimenti con data e importo.</value>
   </data>
   <data name="ImportFailedToRead" xml:space="preserve">
     <value>Impossibile leggere il file</value>
@@ -1435,6 +1435,9 @@
   </data>
   <data name="ImportProblemZero" xml:space="preserve">
     <value>Importo zero</value>
+  </data>
+  <data name="ImportProblemCurrency" xml:space="preserve">
+    <value>In un'altra valuta</value>
   </data>
   <data name="ImportButtonOne" xml:space="preserve">
     <value>Importa {0} movimento</value>
