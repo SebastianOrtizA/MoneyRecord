@@ -146,8 +146,6 @@ namespace MoneyRecord.Models
 
         public int AttachmentCount => Attachments.Count;
 
-        public IReadOnlyList<TransactionAttachment> Photos => Attachments.Where(a => a.Kind == AttachmentKind.Photo).ToList();
-
         public string CategoryDisplayIcon => IconHelper.GetCategoryDisplayIcon(CategoryIconCode);
 
         public string AccountDisplayIcon => IconHelper.GetAccountDisplayIcon(AccountIconCode);

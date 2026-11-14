@@ -51,9 +51,16 @@ namespace MoneyRecord.Helpers
         /// <summary>The attachments of these transactions, by transaction ID, in the order they were added.</summary>
         public static Dictionary<int, List<TransactionAttachment>> Load(SQLiteConnection db, IReadOnlyCollection<int> transactionIds)
         {
-            var wanted = transactionIds.ToHashSet();
-            return db.Table<TransactionAttachment>().OrderBy(a => a.Id).ToList()
-                .Where(a => wanted.Contains(a.TransactionId))
+            // Chunked under SQLite's limit on variables; only the asked-for transactions are read
+            var rows = new List<TransactionAttachment>();
+            foreach (var chunk in transactionIds.Distinct().Chunk(500))
+            {
+                rows.AddRange(db.Query<TransactionAttachment>(
+                    $"SELECT * FROM \"TransactionAttachment\" WHERE TransactionId IN ({string.Join(",", chunk.Select(_ => "?"))}) ORDER BY Id",
+                    chunk.Cast<object>().ToArray()));
+            }
+
+            return rows
                 .GroupBy(a => a.TransactionId)
                 .ToDictionary(g => g.Key, g => g.ToList());
         }
@@ -61,9 +68,8 @@ namespace MoneyRecord.Helpers
         /// <summary>Points <see cref="Transaction.ReceiptPhotoPath"/> of every transaction that has attachments at its first photo (a restore may have dropped a missing file).</summary>
         public static void RefreshPrimaryPhotos(SQLiteConnection db)
         {
-            var attachments = db.Table<TransactionAttachment>().OrderBy(a => a.Id).ToList().GroupBy(a => a.TransactionId);
-            foreach (var group in attachments)
-                db.Execute("UPDATE \"Transaction\" SET ReceiptPhotoPath = ? WHERE Id = ?", PrimaryPhoto(group), group.Key);
+            db.Execute("UPDATE \"Transaction\" SET ReceiptPhotoPath = (SELECT a.Path FROM \"TransactionAttachment\" a WHERE a.TransactionId = \"Transaction\".Id AND a.Kind = 0 ORDER BY a.Id LIMIT 1) " +
+                "WHERE Id IN (SELECT TransactionId FROM \"TransactionAttachment\")");
         }
 
         /// <summary>One photo row for each transaction that has a <see cref="Transaction.ReceiptPhotoPath"/> but no rows yet (a migration, an old backup).</summary>
