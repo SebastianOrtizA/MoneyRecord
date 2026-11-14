@@ -2,6 +2,8 @@ using LiveChartsCore;
 using LiveChartsCore.Kernel;
 using LiveChartsCore.Kernel.Sketches;
 using MoneyRecord.Helpers;
+// Sentry (Windows build) also has a Debouncer
+using Debouncer = MoneyRecord.Helpers.Debouncer;
 using System.Windows.Input;
 
 namespace MoneyRecord.Charts
