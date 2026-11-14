@@ -69,7 +69,12 @@ namespace MoneyRecord
 
             window.Created += (s, e) =>
             {
+#if WINDOWS
+                // No background job on Windows: the same steps run now and every hour while the app is open
+                Platforms.Windows.WindowsDailyJob.Start(_reminders, _exchangeRates, _autoBackup, _logger);
+#else
                 _ = ProcessRecurringThenBackUpAsync();
+#endif
                 // Opt-in, once a day, best-effort: nothing waits for it
                 _ = _exchangeRates.UpdateIfDueAsync();
                 // A tip whose payment settled after the app closed (Play build; nothing elsewhere): best-effort, logs its own failures

@@ -142,6 +142,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IWhatsNewService, WhatsNewService>();
 #if ANDROID
             builder.Services.AddSingleton<INotificationService, Platforms.Android.AndroidNotificationService>();
+#elif WINDOWS
+            builder.Services.AddSingleton<INotificationService, Platforms.Windows.WindowsNotificationService>();
 #else
             builder.Services.AddSingleton<INotificationService, NoNotificationService>();
 #endif
@@ -151,6 +153,8 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IAutoBackupService, AutoBackupService>();
 #if ANDROID
             builder.Services.AddSingleton<IBackupFolder, Platforms.Android.AndroidBackupFolder>();
+#elif WINDOWS
+            builder.Services.AddSingleton<IBackupFolder, Platforms.Windows.WindowsBackupFolder>();
 #else
             builder.Services.AddSingleton<IBackupFolder, NoBackupFolder>();
 #endif
@@ -214,6 +218,8 @@ namespace MoneyRecord
             // Receipt photos: the total and date read on the phone (Android: ML Kit)
 #if ANDROID
             builder.Services.AddSingleton<IReceiptScanner, Platforms.Android.AndroidReceiptScanner>();
+#elif WINDOWS
+            builder.Services.AddSingleton<IReceiptScanner, Platforms.Windows.WindowsReceiptScanner>();
 #else
             builder.Services.AddSingleton<IReceiptScanner, NoReceiptScanner>();
 #endif
