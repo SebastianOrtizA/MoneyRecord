@@ -3566,4 +3566,19 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="PinLost" xml:space="preserve">
     <value>No se pudo leer tu PIN y se ha quitado. Usa el bloqueo del teléfono.</value>
   </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Bloquear capturas de pantalla</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Oculta la app en las capturas, las grabaciones de pantalla y la pantalla de apps recientes.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Privacidad</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Elige cómo muestra Inicio tu dinero. Puedes cambiarlo luego en Configuración.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Ocultar saldos en Inicio hasta tocarlos</value>
+  </data>
 </root>

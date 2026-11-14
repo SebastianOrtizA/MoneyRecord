@@ -3516,4 +3516,19 @@
   <data name="PinLost" xml:space="preserve">
     <value>Votre code PIN est illisible et a été supprimé. Utilisez le verrouillage du téléphone.</value>
   </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Bloquer les captures d'écran</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Masque l'appli dans les captures d'écran, les enregistrements d'écran et l'écran des applis récentes.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Confidentialité</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Choisis comment l'Accueil affiche ton argent. Tu pourras le changer plus tard dans Réglages.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Masquer les soldes sur l'Accueil jusqu'au toucher</value>
+  </data>
 </root>

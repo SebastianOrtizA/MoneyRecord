@@ -15,6 +15,7 @@ namespace MoneyRecord.Services
         private const string HideBalancesKey = "Privacy.HideBalances";
         private const string LockMethodKey = "Privacy.LockMethod";
         private const string HasPinKey = "Privacy.HasPin";
+        private const string BlockScreenshotsKey = "Privacy.BlockScreenshots";
 
         public bool LockEnabled
         {
@@ -38,6 +39,12 @@ namespace MoneyRecord.Services
         {
             get => preferences.Get(HasPinKey, false);
             set => preferences.Set(HasPinKey, value);
+        }
+
+        public bool BlockScreenshots
+        {
+            get => preferences.Get(BlockScreenshotsKey, false);
+            set => preferences.Set(BlockScreenshotsKey, value);
         }
 
         public bool HideBalances

@@ -14,6 +14,7 @@ public class SetupViewModelTests
     private readonly ISetupService _setup = Substitute.For<ISetupService>();
     private readonly ICategoryRepository _categories = Substitute.For<ICategoryRepository>();
     private readonly IDialogService _dialogs = Substitute.For<IDialogService>();
+    private readonly IPrivacySettings _privacy = Substitute.For<IPrivacySettings>();
     private readonly SetupViewModel _sut;
     private SetupChoices? _applied;
 
@@ -21,7 +22,7 @@ public class SetupViewModelTests
     {
         _setup.ApplyAsync(Arg.Do<SetupChoices>(c => _applied = c)).Returns(Task.CompletedTask);
         _sut = new SetupViewModel(_setup, new CurrencyService(new FakePreferences()), _categories, new FakePreferences(),
-            LocalizationService.Instance, _dialogs, Substitute.For<IErrorHandler>());
+            LocalizationService.Instance, _dialogs, Substitute.For<IErrorHandler>(), _privacy);
     }
 
     private async Task FinishAsync()
@@ -46,6 +47,28 @@ public class SetupViewModelTests
         _applied!.ReplaceStartingData.Should().BeTrue();
         _applied.Accounts.Should().Equal(new SetupAccount(AppResources.DefaultAccountCash, 250m, Account.CashIconCode));
         _applied.Categories.Should().BeEquivalentTo(DefaultCategory.All);
+    }
+
+    [Fact]
+    public async Task Balances_start_hidden_when_the_privacy_step_asked_for_it()
+    {
+        await _sut.InitializeAsync(isFirstRun: true);
+        _sut.HideBalances = true;
+
+        await FinishAsync();
+
+        _privacy.HideBalances.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task Skipping_before_the_privacy_step_leaves_the_setting_alone()
+    {
+        await _sut.InitializeAsync(isFirstRun: true);
+        _sut.HideBalances = true;
+
+        await _sut.SkipCommand.ExecuteAsync(null);
+
+        _privacy.DidNotReceive().HideBalances = Arg.Any<bool>();
     }
 
     [Fact]

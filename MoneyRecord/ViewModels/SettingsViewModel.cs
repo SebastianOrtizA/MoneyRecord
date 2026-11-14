@@ -27,6 +27,7 @@ namespace MoneyRecord.ViewModels
         private readonly INotificationService _notifications;
         private readonly IPrivacySettings _privacy;
         private readonly IDeviceLock _deviceLock;
+        private readonly IScreenProtection _screenProtection;
         private readonly IDatabaseEncryption _encryption;
         private readonly IExchangeRateService _exchangeRates;
         private readonly IExchangeRateSettings _exchangeRateSettings;
@@ -50,7 +51,7 @@ namespace MoneyRecord.ViewModels
             INotificationService notifications, IPrivacySettings privacy, IDeviceLock deviceLock,
             IDatabaseEncryption encryption, IExchangeRateService exchangeRates, IExchangeRateSettings exchangeRateSettings,
             AutoBackupViewModel autoBackup, BackupPasswordViewModel backupPassword, CurrencyCentsViewModel cents,
-            AppPinViewModel appPin)
+            AppPinViewModel appPin, IScreenProtection screenProtection)
         {
             _dataExportService = dataExportService;
             _errorHandler = errorHandler;
@@ -68,6 +69,7 @@ namespace MoneyRecord.ViewModels
             _notifications = notifications;
             _privacy = privacy;
             _deviceLock = deviceLock;
+            _screenProtection = screenProtection;
             _encryption = encryption;
             _exchangeRates = exchangeRates;
             _exchangeRateSettings = exchangeRateSettings;
@@ -328,6 +330,22 @@ namespace MoneyRecord.ViewModels
                 }
                 _privacy.LockEnabled = false;
                 _deviceLock.HideContentInRecents(false);
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>Platforms that can keep the window out of screenshots (Android) show the switch.</summary>
+        public bool ScreenProtectionSupported => _screenProtection.IsSupported;
+
+        public bool BlockScreenshots
+        {
+            get => _privacy.BlockScreenshots;
+            set
+            {
+                if (value == _privacy.BlockScreenshots)
+                    return;
+                _privacy.BlockScreenshots = value;
+                _screenProtection.SetSecure(value);
                 OnPropertyChanged();
             }
         }

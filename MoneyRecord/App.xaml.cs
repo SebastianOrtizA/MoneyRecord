@@ -15,6 +15,7 @@ namespace MoneyRecord
         private readonly AppLock _appLock;
         private readonly IDeviceLock _deviceLock;
         private readonly IPrivacySettings _privacy;
+        private readonly IScreenProtection _screen;
         private readonly Func<LockPage> _createLockPage;
         private readonly IHomeScreenWidgets _widgets;
         private readonly IWhatsNewService _whatsNew;
@@ -24,7 +25,7 @@ namespace MoneyRecord
 
         public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
-            IPrivacySettings privacy, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
+            IPrivacySettings privacy, IScreenProtection screen, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
             IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, NotificationLaunch launch, ILogger<App> logger)
         {
             InitializeComponent();
@@ -38,6 +39,7 @@ namespace MoneyRecord
             _appLock = appLock;
             _deviceLock = deviceLock;
             _privacy = privacy;
+            _screen = screen;
             _createLockPage = createLockPage;
             _widgets = widgets;
             _whatsNew = whatsNew;
@@ -73,6 +75,7 @@ namespace MoneyRecord
                 Platforms.Android.DailyReminderWorker.Schedule(Android.App.Application.Context);
 #endif
                 _deviceLock.HideContentInRecents(_privacy.LockEnabled);
+                ApplyScreenProtection();
                 if (lockOnStart)
                     ShowLock(window);
             };
@@ -93,7 +96,9 @@ namespace MoneyRecord
             window.Activated += (s, e) =>
             {
                 var cameBack = _appLock.IsAway;
-                if (_appLock.LockOnResume())
+                var locks = _appLock.LockOnResume();
+                ApplyScreenProtection();
+                if (locks)
                 {
                     // The lock screen opens a page requested meanwhile once it is unlocked
                     ShowLock(window);
@@ -114,6 +119,9 @@ namespace MoneyRecord
 
             return window;
         }
+
+        /// <summary>The lock screen is always hidden from screenshots; the rest follows the setting. Also after the activity was recreated.</summary>
+        private void ApplyScreenProtection() => _screen.SetSecure(_privacy.BlockScreenshots || _appLock.IsLocked);
 
         private static void SetContentHidden(Window window, bool hidden)
         {

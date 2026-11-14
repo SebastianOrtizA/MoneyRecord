@@ -3515,4 +3515,19 @@
   <data name="PinLost" xml:space="preserve">
     <value>Il PIN non è leggibile ed è stato rimosso. Usa il blocco del telefono.</value>
   </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Blocca gli screenshot</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Nasconde l'app negli screenshot, nelle registrazioni dello schermo e nella schermata delle app recenti.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Scegli come la Home mostra i tuoi soldi. Puoi cambiarlo più tardi in Impostazioni.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Nascondi i saldi nella Home finché non tocchi</value>
+  </data>
 </root>

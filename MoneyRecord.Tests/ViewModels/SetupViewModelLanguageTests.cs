@@ -23,7 +23,7 @@ public sealed class SetupViewModelLanguageTests : LanguageTestBase
     {
         _sut = new SetupViewModel(Substitute.For<ISetupService>(), new CurrencyService(new FakePreferences()),
             Substitute.For<ICategoryRepository>(), _preferences, LocalizationService.Instance,
-            Substitute.For<IDialogService>(), Substitute.For<IErrorHandler>());
+            Substitute.For<IDialogService>(), Substitute.For<IErrorHandler>(), Substitute.For<IPrivacySettings>());
     }
 
     private static string InSpanish(string key) => AppResources.ResourceManager.GetString(key, Spanish)!;

@@ -1,4 +1,5 @@
 using MoneyRecord.Services;
+using MoneyRecord.Services.Interfaces;
 using MoneyRecord.ViewModels;
 
 namespace MoneyRecord.Views
@@ -11,14 +12,18 @@ namespace MoneyRecord.Views
     {
         private readonly LockViewModel _viewModel;
         private readonly NotificationLaunch _launch;
+        private readonly IScreenProtection _screen;
+        private readonly IPrivacySettings _privacy;
         private readonly IDispatcherTimer _timer;
         private bool _closing;
 
-        public LockPage(LockViewModel viewModel, NotificationLaunch launch)
+        public LockPage(LockViewModel viewModel, NotificationLaunch launch, IScreenProtection screen, IPrivacySettings privacy)
         {
             InitializeComponent();
             _viewModel = viewModel;
             _launch = launch;
+            _screen = screen;
+            _privacy = privacy;
             BindingContext = viewModel;
             viewModel.Unlocked += OnUnlocked;
             // Counts the lockout wait down
@@ -30,6 +35,8 @@ namespace MoneyRecord.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            // Never in a screenshot, whatever the setting says
+            _screen.SetSecure(true);
             _timer.Start();
             await _viewModel.InitializeAsync();
         }
@@ -59,6 +66,7 @@ namespace MoneyRecord.Views
             _closing = true;
             _viewModel.Unlocked -= OnUnlocked;
             await Navigation.PopModalAsync(animated: false);
+            _screen.SetSecure(_privacy.BlockScreenshots);
             // A shortcut, widget button or notification that started the app waited for this unlock (never throws).
             // Not without a Shell (the first-run setup): Home's first visit opens it
             if (Shell.Current != null)

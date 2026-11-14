@@ -3569,4 +3569,19 @@
   <data name="PinLost" xml:space="preserve">
     <value>Your PIN could not be read and was removed. Use your phone lock.</value>
   </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Block screenshots</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Hides the app in screenshots, screen recordings and the recent apps screen.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Choose how Home shows your money. You can change this later in Settings.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Hide balances on Home until tapped</value>
+  </data>
 </root>

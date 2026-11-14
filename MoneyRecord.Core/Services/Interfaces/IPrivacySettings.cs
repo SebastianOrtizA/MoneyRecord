@@ -17,5 +17,8 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>An app PIN is set (its hash is in <see cref="IPinStore"/>); a flag so the lock can decide without secure storage.</summary>
         bool HasPin { get; set; }
+
+        /// <summary>Screenshots, screen recordings and the recent apps card show nothing of the app (the lock screen is always hidden).</summary>
+        bool BlockScreenshots { get; set; }
     }
 }
