@@ -29,6 +29,9 @@ namespace MoneyRecord.Services.Interfaces
         /// </summary>
         Task<string?> PasswordAsync(string title, string message, bool confirm = false);
 
+        /// <summary>Asks for a new app PIN on the PIN pad (typed twice) and saves it; false when the user cancels.</summary>
+        Task<bool> SetPinAsync();
+
         /// <summary>
         /// Asks for the rate that converts an account's amounts into the default account's currency, as a rate or as the
         /// final amount the two are linked by; null when the user cancels. Confirming it is also confirming the delete.

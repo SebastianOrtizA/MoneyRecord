@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- The PIN pad: the typed digits as dots, and 0-9 + delete + OK keys. Its BindingContext is a PinEntryViewModel (lock screen, PIN setup) -->
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             xmlns:vm="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             x:Class="MoneyRecord.Controls.PinPad"
+             x:DataType="vm:PinEntryViewModel">
+    <ContentView.Resources>
+        <Style x:Key="PinKey" TargetType="Button">
+            <Setter Property="WidthRequest" Value="72"/>
+            <Setter Property="HeightRequest" Value="72"/>
+            <Setter Property="CornerRadius" Value="36"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="26"/>
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#EFEFF4, Dark=#2C2C34}"/>
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=#222222, Dark=#FFFFFF}"/>
+            <Setter Property="Command" Value="{Binding PressDigitCommand}"/>
+            <Setter Property="IsEnabled" Value="{Binding IsEntryEnabled}"/>
+        </Style>
+    </ContentView.Resources>
+
+    <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
+        <Label Text="{Binding Dots}"
+               FontSize="26"
+               HorizontalTextAlignment="Center"
+               MinimumHeightRequest="36"
+               TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+               SemanticProperties.Description="{Binding DigitCountText}"/>
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="20">
+            <Button Grid.Row="0" Grid.Column="0" Text="1" CommandParameter="1" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="0" Grid.Column="1" Text="2" CommandParameter="2" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="0" Grid.Column="2" Text="3" CommandParameter="3" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="1" Grid.Column="0" Text="4" CommandParameter="4" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="1" Grid.Column="1" Text="5" CommandParameter="5" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="1" Grid.Column="2" Text="6" CommandParameter="6" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="2" Grid.Column="0" Text="7" CommandParameter="7" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="2" Grid.Column="1" Text="8" CommandParameter="8" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="2" Grid.Column="2" Text="9" CommandParameter="9" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="3" Grid.Column="0"
+                    Text="&#xF006E;"
+                    FontFamily="MaterialDesignIcons"
+                    Style="{StaticResource PinKey}"
+                    Command="{Binding BackspaceCommand}"
+                    IsEnabled="True"
+                    SemanticProperties.Description="{ext:Localize PinBackspace}"/>
+            <Button Grid.Row="3" Grid.Column="1" Text="0" CommandParameter="0" Style="{StaticResource PinKey}"/>
+            <Button Grid.Row="3" Grid.Column="2"
+                    Text="&#xF012C;"
+                    FontFamily="MaterialDesignIcons"
+                    Style="{StaticResource PinKey}"
+                    Command="{Binding SubmitCommand}"
+                    IsEnabled="{Binding CanSubmit}"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                    TextColor="White"
+                    SemanticProperties.Description="{ext:Localize OK}"/>
+        </Grid>
+    </VerticalStackLayout>
+</ContentView>

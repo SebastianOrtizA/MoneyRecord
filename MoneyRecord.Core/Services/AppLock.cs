@@ -1,3 +1,4 @@
+using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 
 namespace MoneyRecord.Services
@@ -11,10 +12,16 @@ namespace MoneyRecord.Services
         private DateTimeOffset? _backgroundedAt;
 
         /// <summary>
-        /// The app lock is on and works. Never without a lock the phone can ask for: removing the screen lock while the app
-        /// lock is on must not lock the user out (the lock works again once the phone has one).
+        /// The app lock is on and works: the phone's lock (or the PIN, by the chosen method) can be asked for. Never without
+        /// one: removing the screen lock while the app lock is on must not lock the user out (the lock works again once the
+        /// phone has one).
         /// </summary>
-        public bool CanLock => settings.LockEnabled && deviceLock.IsAvailable;
+        public bool CanLock => settings.LockEnabled && settings.LockMethod switch
+        {
+            LockMethod.Pin => settings.HasPin,
+            LockMethod.DeviceLockOrPin => settings.HasPin || deviceLock.IsAvailable,
+            _ => deviceLock.IsAvailable
+        };
 
         public bool IsLocked { get; private set; }
 

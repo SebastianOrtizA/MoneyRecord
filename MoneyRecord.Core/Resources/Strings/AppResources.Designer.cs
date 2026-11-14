@@ -9737,5 +9737,230 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Enter your PIN.
+        /// </summary>
+        public static string PinSubtitle {
+            get {
+                return ResourceManager.GetString("PinSubtitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Wrong PIN. {0} tries left before a wait..
+        /// </summary>
+        public static string PinWrongTries {
+            get {
+                return ResourceManager.GetString("PinWrongTries", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Too many wrong tries. Try again in {0}..
+        /// </summary>
+        public static string PinLockedOut {
+            get {
+                return ResourceManager.GetString("PinLockedOut", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use phone lock.
+        /// </summary>
+        public static string UsePhoneLock {
+            get {
+                return ResourceManager.GetString("UsePhoneLock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a PIN.
+        /// </summary>
+        public static string PinSetTitle {
+            get {
+                return ResourceManager.GetString("PinSetTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Repeat the PIN.
+        /// </summary>
+        public static string PinRepeatTitle {
+            get {
+                return ResourceManager.GetString("PinRepeatTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 4 to 8 digits. A forgotten PIN can't be recovered: you would have to clear the app's data and restore a backup..
+        /// </summary>
+        public static string PinSetMessage {
+            get {
+                return ResourceManager.GetString("PinSetMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The PINs didn't match. Choose it again..
+        /// </summary>
+        public static string PinMismatch {
+            get {
+                return ResourceManager.GetString("PinMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use 4 to 8 digits..
+        /// </summary>
+        public static string PinLength {
+            get {
+                return ResourceManager.GetString("PinLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Don't use one digit repeated..
+        /// </summary>
+        public static string PinRepeated {
+            get {
+                return ResourceManager.GetString("PinRepeated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Delete the last digit.
+        /// </summary>
+        public static string PinBackspace {
+            get {
+                return ResourceManager.GetString("PinBackspace", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} digits typed.
+        /// </summary>
+        public static string PinDigitsTyped {
+            get {
+                return ResourceManager.GetString("PinDigitsTyped", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to App PIN.
+        /// </summary>
+        public static string AppPin {
+            get {
+                return ResourceManager.GetString("AppPin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Open MoneyRecord with a PIN of its own, with a wait after too many wrong tries.
+        /// </summary>
+        public static string AppPinDescription {
+            get {
+                return ResourceManager.GetString("AppPinDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Set PIN.
+        /// </summary>
+        public static string SetPin {
+            get {
+                return ResourceManager.GetString("SetPin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Change PIN.
+        /// </summary>
+        public static string ChangePin {
+            get {
+                return ResourceManager.GetString("ChangePin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove PIN.
+        /// </summary>
+        public static string RemovePin {
+            get {
+                return ResourceManager.GetString("RemovePin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MoneyRecord will no longer open with a PIN..
+        /// </summary>
+        public static string RemovePinMessage {
+            get {
+                return ResourceManager.GetString("RemovePinMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PIN saved.
+        /// </summary>
+        public static string PinSaved {
+            get {
+                return ResourceManager.GetString("PinSaved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PIN removed.
+        /// </summary>
+        public static string PinRemoved {
+            get {
+                return ResourceManager.GetString("PinRemoved", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unlock with.
+        /// </summary>
+        public static string UnlockWith {
+            get {
+                return ResourceManager.GetString("UnlockWith", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Phone lock.
+        /// </summary>
+        public static string LockMethodDevice {
+            get {
+                return ResourceManager.GetString("LockMethodDevice", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to App PIN.
+        /// </summary>
+        public static string LockMethodPin {
+            get {
+                return ResourceManager.GetString("LockMethodPin", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Phone lock or PIN.
+        /// </summary>
+        public static string LockMethodBoth {
+            get {
+                return ResourceManager.GetString("LockMethodBoth", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Your phone has no screen lock. Set an app PIN to use the app lock..
+        /// </summary>
+        public static string NoScreenLockPinHint {
+            get {
+                return ResourceManager.GetString("NoScreenLockPinHint", resourceCulture);
+            }
+        }
+
     }
 }

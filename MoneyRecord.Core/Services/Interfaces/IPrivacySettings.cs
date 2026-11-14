@@ -11,5 +11,11 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>Home shows "••••••" instead of the balance and the period totals.</summary>
         bool HideBalances { get; set; }
+
+        /// <summary>What opens the lock screen: the phone's lock, the app PIN, or either.</summary>
+        Models.LockMethod LockMethod { get; set; }
+
+        /// <summary>An app PIN is set (its hash is in <see cref="IPinStore"/>); a flag so the lock can decide without secure storage.</summary>
+        bool HasPin { get; set; }
     }
 }
