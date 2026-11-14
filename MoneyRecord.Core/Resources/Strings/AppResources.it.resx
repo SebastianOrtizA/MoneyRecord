@@ -3512,4 +3512,7 @@
   <data name="NoScreenLockPinHint" xml:space="preserve">
     <value>Il telefono non ha un blocco schermo. Imposta un PIN dell'app per usare il blocco.</value>
   </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>Il PIN non è leggibile ed è stato rimosso. Usa il blocco del telefono.</value>
+  </data>
 </root>

@@ -3514,4 +3514,7 @@
   <data name="NoScreenLockPinHint" xml:space="preserve">
     <value>Seu celular não tem bloqueio de tela. Defina um PIN do app para usar o bloqueio.</value>
   </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>Não foi possível ler seu PIN e ele foi removido. Use o bloqueio do celular.</value>
+  </data>
 </root>

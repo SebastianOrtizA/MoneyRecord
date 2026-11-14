@@ -24,8 +24,18 @@ namespace MoneyRecord.Services
 
         private static async Task<string?> GetAsync(string key)
         {
-            var value = await SecureStorage.Default.GetAsync(key);
-            return string.IsNullOrEmpty(value) ? null : value;
+            try
+            {
+                var value = await SecureStorage.Default.GetAsync(key);
+                return string.IsNullOrEmpty(value) ? null : value;
+            }
+            catch (Exception)
+            {
+                // The keystore key was invalidated (OS update, screen-lock change): the value is unreadable for good, so
+                // it counts as missing and PinService drops the PIN instead of crashing the lock screen
+                SecureStorage.Default.Remove(key);
+                return null;
+            }
         }
 
         private static Task SetAsync(string key, string? value)

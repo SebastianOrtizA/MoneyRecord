@@ -47,6 +47,9 @@ namespace MoneyRecord.ViewModels
         /// <summary>Shows the lock screen: resumes a lockout that is still running, and asks for the phone's lock when it is the way in.</summary>
         public async Task InitializeAsync()
         {
+            var lost = !await pins.EnsureHashAsync();
+            if (lost)
+                PinLost();
             if (ShowPad)
                 SetLockedUntil(await pins.LockedUntilAsync());
             if (CanUseDeviceLock)
@@ -89,6 +92,11 @@ namespace MoneyRecord.ViewModels
                     case PinResult.Correct:
                         Unlock();
                         return;
+                    case PinResult.Lost:
+                        PinLost();
+                        if (!ShowPad && !CanUseDeviceLock)
+                            Unlock();
+                        return;
                     case PinResult.LockedOut:
                         SetLockedUntil(check.LockedUntil);
                         return;
@@ -121,6 +129,17 @@ namespace MoneyRecord.ViewModels
             Message = _lockedUntil is { } end ? string.Format(AppResources.PinLockedOut, FormatWait(end - clock.GetUtcNow())) : string.Empty;
             if (was != IsLockedOut)
                 NotifyEntryChanged();
+        }
+
+        /// <summary>The PIN was dropped (see <see cref="PinService.EnsureHashAsync"/>): back to the phone lock, or no lock at all.</summary>
+        private void PinLost()
+        {
+            if (!deviceLock.IsAvailable)
+                settings.LockEnabled = false;
+            OnPropertyChanged(nameof(ShowPad));
+            OnPropertyChanged(nameof(CanUseDeviceLock));
+            OnPropertyChanged(nameof(Subtitle));
+            Message = AppResources.PinLost;
         }
 
         private void NotifyEntryChanged()

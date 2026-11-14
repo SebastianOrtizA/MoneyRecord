@@ -3513,4 +3513,7 @@
   <data name="NoScreenLockPinHint" xml:space="preserve">
     <value>Votre téléphone n'a pas de verrouillage d'écran. Définissez un code PIN de l'app pour utiliser le verrouillage.</value>
   </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>Votre code PIN est illisible et a été supprimé. Utilisez le verrouillage du téléphone.</value>
+  </data>
 </root>

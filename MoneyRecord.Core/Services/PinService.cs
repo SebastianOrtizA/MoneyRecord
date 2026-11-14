@@ -8,7 +8,10 @@ namespace MoneyRecord.Services
     {
         Correct,
         Wrong,
-        LockedOut
+        LockedOut,
+
+        /// <summary>A PIN was set but its hash is gone (the keystore key was invalidated): the PIN was removed.</summary>
+        Lost
     }
 
     /// <param name="TriesLeft">Free tries left after a wrong one (zero once the waits start).</param>
@@ -17,7 +20,8 @@ namespace MoneyRecord.Services
 
     /// <summary>
     /// The app PIN: set, remove, and check with the lockout. The wrong-try counter and the "locked until" time are kept in
-    /// the same secure store as the hash, so a restart (or a cleared preferences file) does not reset them.
+    /// the same secure store as the hash, so a restart (or a cleared preferences file) does not reset them. The wait
+    /// follows the device clock, so setting the clock forward skips it: a speed bump for guessing, not a hard guarantee.
     /// </summary>
     public sealed class PinService(IPinStore store, IPrivacySettings settings, TimeProvider clock)
     {
@@ -45,6 +49,18 @@ namespace MoneyRecord.Services
                 settings.LockMethod = LockMethod.DeviceLock;
         }
 
+        /// <summary>
+        /// False when a PIN is set but the secure store no longer has its hash (an OS update or a screen-lock change can
+        /// invalidate the keystore key): the PIN is removed, so the user is not locked out of the app for good.
+        /// </summary>
+        public async Task<bool> EnsureHashAsync()
+        {
+            if (!HasPin || await store.GetHashAsync() != null)
+                return true;
+            await RemoveAsync();
+            return false;
+        }
+
         /// <summary>The time the pad opens again, or null when it is open.</summary>
         public async Task<DateTimeOffset?> LockedUntilAsync()
         {
@@ -54,6 +70,9 @@ namespace MoneyRecord.Services
 
         public async Task<PinCheck> VerifyAsync(string pin)
         {
+            if (!await EnsureHashAsync())
+                return new PinCheck(PinResult.Lost);
+
             var (failures, until) = Parse(await store.GetLockoutAsync());
             var now = clock.GetUtcNow();
             if (until > now)

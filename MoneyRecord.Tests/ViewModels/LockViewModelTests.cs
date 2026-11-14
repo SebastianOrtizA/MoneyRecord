@@ -108,6 +108,36 @@ public sealed class LockViewModelTests : LanguageTestBase
     }
 
     [Fact]
+    public async Task A_lost_PIN_with_no_phone_lock_opens_the_app_and_turns_the_lock_off()
+    {
+        _hash = null;
+        _deviceLock.IsAvailable.Returns(false);
+        var closed = false;
+        _sut.Unlocked += () => closed = true;
+
+        await _sut.InitializeAsync();
+
+        closed.Should().BeTrue();
+        _appLock.IsLocked.Should().BeFalse();
+        _settings.LockEnabled.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task A_lost_PIN_with_a_phone_lock_falls_back_to_it()
+    {
+        _hash = null;
+        _deviceLock.IsAvailable.Returns(true);
+        _deviceLock.AuthenticateAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(false);
+
+        await _sut.InitializeAsync();
+
+        _sut.ShowPad.Should().BeFalse();
+        _sut.CanUseDeviceLock.Should().BeTrue();
+        _sut.Message.Should().NotBeEmpty();
+        _appLock.IsLocked.Should().BeTrue();
+    }
+
+    [Fact]
     public async Task Too_short_a_PIN_is_not_submitted()
     {
         Type("48");

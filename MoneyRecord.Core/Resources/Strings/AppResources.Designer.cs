@@ -9962,5 +9962,14 @@ namespace MoneyRecord.Resources.Strings {
             }
         }
 
+        /// <summary>
+        ///   Looks up a localized string similar to Your PIN could not be read and was removed. Use your phone lock..
+        /// </summary>
+        public static string PinLost {
+            get {
+                return ResourceManager.GetString("PinLost", resourceCulture);
+            }
+        }
+
     }
 }

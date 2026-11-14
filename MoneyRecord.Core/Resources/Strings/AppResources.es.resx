@@ -3563,4 +3563,7 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="NoScreenLockPinHint" xml:space="preserve">
     <value>Tu teléfono no tiene bloqueo de pantalla. Define un PIN de la app para usar el bloqueo.</value>
   </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>No se pudo leer tu PIN y se ha quitado. Usa el bloqueo del teléfono.</value>
+  </data>
 </root>

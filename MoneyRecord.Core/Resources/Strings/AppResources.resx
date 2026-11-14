@@ -3566,4 +3566,7 @@
   <data name="NoScreenLockPinHint" xml:space="preserve">
     <value>Your phone has no screen lock. Set an app PIN to use the app lock.</value>
   </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>Your PIN could not be read and was removed. Use your phone lock.</value>
+  </data>
 </root>

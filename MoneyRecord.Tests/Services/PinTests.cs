@@ -190,6 +190,25 @@ public sealed class PinServiceTests
         _settings.LockMethod.Should().Be(LockMethod.DeviceLock);
     }
 
+    [Fact]
+    public async Task A_PIN_whose_hash_is_gone_is_dropped_instead_of_locking_the_user_out()
+    {
+        await _sut.SetAsync("4821");
+        await _store.SetHashAsync(null);
+        _settings.LockMethod = LockMethod.Pin;
+
+        (await _sut.VerifyAsync("4821")).Result.Should().Be(PinResult.Lost);
+
+        _sut.HasPin.Should().BeFalse();
+        _settings.LockMethod.Should().Be(LockMethod.DeviceLock);
+    }
+
+    [Fact]
+    public async Task Without_a_PIN_set_there_is_nothing_to_lose()
+    {
+        (await _sut.EnsureHashAsync()).Should().BeTrue();
+    }
+
     private sealed class MemoryPinStore : IPinStore
     {
         public string? Hash { get; private set; }
