@@ -1,3 +1,9 @@
+## 1.5.0
+- Importe extratos bancários em arquivos OFX/QFX e QIF, não só CSV: lançamentos já importados são ignorados.
+- Importe exportações do YNAB e do Mint: as colunas são preenchidas para você.
+- Anexe várias fotos e PDFs a uma transação e abra-os por ela.
+- Exporte suas transações como planilha do Excel (.xlsx) em Configurações ou na aba Relatórios.
+
 ## 1.4.4
 - Excluir uma conta em outra moeda que não a da conta padrão não para mais com um erro: informe a taxa de câmbio ou o valor final e suas transações e regras recorrentes são convertidas.
 
