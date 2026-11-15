@@ -588,7 +588,7 @@ public sealed class SyncEngineTests : IAsyncLifetime
         var onB = (await b.Db.Table<TransactionAttachment>().ToListAsync()).Should().ContainSingle().Subject;
         onB.ContentHash.Should().Be("abc123");
         onB.SizeBytes.Should().Be(42);
-        onB.Path.Should().BeNullOrEmpty("the file is not on this device");
+        onB.Path.Should().BeEmpty("the file is not on this device (empty, not NULL)");
         (await b.Db.Table<Transaction>().ToListAsync()).Single(t => t.AmountCents == 500).ReceiptPhotoPath.Should().BeNullOrEmpty();
         (await a.Db.Table<TransactionAttachment>().ToListAsync()).Single().Path.Should().Be("/a/receipts/x.jpg");
         (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());

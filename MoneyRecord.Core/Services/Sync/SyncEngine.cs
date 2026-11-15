@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Repositories;
@@ -316,7 +317,7 @@ namespace MoneyRecord.Services.Sync
                 return gid;
             }
 
-            /// <summary>Local IDs of foreign keys to global ids.</summary>
+            /// <summary>Local IDs of foreign keys to global ids, and without the columns that only mean something on this device (also used for a revived row's kept values, which therefore lose their local path: it is not on this device any more).</summary>
             private Dictionary<string, JsonElement> ToWire(string table, Dictionary<string, JsonElement> fields)
             {
                 foreach (var (column, parent) in SyncSchema.ForeignKeys[table])
@@ -475,6 +476,8 @@ namespace MoneyRecord.Services.Sync
                     return;
                 }
 
+                // Raw deletes: the children's SyncMeta stays live until their own tombstones arrive (the device that deleted the parent sends them), then
+                // they converge. Their receipt files are not touched here; the blob stage owns files.
                 foreach (var (child, parent) in SyncSchema.CascadeChildren.Where(c => c.Value == meta.TableName))
                 {
                     foreach (var (childTable, column) in SyncSchema.ReferencesTo(parent).Where(r => r.Table == child))
@@ -501,8 +504,7 @@ namespace MoneyRecord.Services.Sync
             private bool IsUsed(string table, int localId) =>
                 SyncSchema.ReferencesTo(table)
                     .Where(r => !SyncSchema.CascadeChildren.TryGetValue(r.Table, out var parent) || parent != table)
-                    .Any(r =>
-                    db.ExecuteScalar<int>($"SELECT COUNT(*) FROM \"{r.Table}\" WHERE \"{r.Column}\" = ?", localId) > 0);
+                    .Any(r => db.ExecuteScalar<int>($"SELECT COUNT(*) FROM \"{r.Table}\" WHERE \"{r.Column}\" = ?", localId) > 0);
 
             private void Touch(SyncMeta meta)
             {
@@ -544,6 +546,16 @@ namespace MoneyRecord.Services.Sync
                     return hintLocalId;
                 }
 
+                // A column of this device that is not text-or-null (the model says an empty string): a new row starts with the empty value, not NULL
+                if (SyncSchema.LocalOnlyColumns.TryGetValue(table, out var localOnly))
+                {
+                    foreach (var name in localOnly.Where(n => !columns.Contains(n) && IsNonNullString(mapping.Columns.First(c => c.Name == n))))
+                    {
+                        columns.Add(name);
+                        values.Add("");
+                    }
+                }
+
                 if (hintLocalId > 0)
                 {
                     columns.Add(pk); // a row that comes back keeps its old ID, so what refers to it still finds it
@@ -552,6 +564,11 @@ namespace MoneyRecord.Services.Sync
                 db.Execute($"INSERT INTO \"{table}\" ({string.Join(", ", columns.Select(c => $"\"{c}\""))}) VALUES ({string.Join(", ", columns.Select(_ => "?"))})", [.. values]);
                 return hintLocalId > 0 ? hintLocalId : db.ExecuteScalar<int>("SELECT last_insert_rowid()");
             }
+
+            private static readonly NullabilityInfoContext Nullability = new();
+
+            private static bool IsNonNullString(TableMapping.Column column) =>
+                column.ColumnType == typeof(string) && Nullability.Create(column.PropertyInfo).WriteState == NullabilityState.NotNull;
 
             private static object? ToSql(JsonElement value) => value.ValueKind switch
             {
