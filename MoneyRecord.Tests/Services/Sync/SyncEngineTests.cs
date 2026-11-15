@@ -542,6 +542,37 @@ public sealed class SyncEngineTests : IAsyncLifetime
         (await c.DescribeAsync()).Should().Be(await a.DescribeAsync());
     }
 
+    [Fact]
+    public async Task TheSameOccurrenceCreatedOnTwoDevices_EndsUpAsOneTransactionOnBoth()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        var account = await a.AddAccountAsync("Cash 2");
+        var category = await a.AddCategoryAsync("Gym");
+        var schedule = new RecurringTransaction { AmountCents = 2550, Description = "Gym", CategoryId = category, AccountId = account, Frequency = RecurrenceFrequency.Monthly, StartDate = new DateTime(2026, 11, 1), NextOccurrence = new DateTime(2026, 12, 1) };
+        await a.Db.InsertAsync(schedule);
+        await SyncAllAsync(a, b);
+        var gid = await a.Db.ExecuteScalarAsync<string>("SELECT GlobalId FROM SyncMeta WHERE TableName = 'RecurringTransaction' AND LocalId = ?", schedule.Id);
+
+        // Both create November's occurrence while offline (and the one device also a different month)
+        foreach (var device in new[] { a, b })
+        {
+            var accountHere = await device.IdOfAsync("Account", "Cash 2");
+            var categoryHere = await device.IdOfAsync("Category", "Gym");
+            await device.Db.InsertAsync(new Transaction { CategoryId = categoryHere, AccountId = accountHere, AmountCents = 2550, Type = TransactionType.Expense, Date = new DateTime(2026, 11, 1), OccurrenceKey = $"{gid}:20261101" });
+        }
+        await b.Db.InsertAsync(new Transaction { CategoryId = await b.IdOfAsync("Category", "Gym"), AccountId = await b.IdOfAsync("Account", "Cash 2"), AmountCents = 2550, Type = TransactionType.Expense, Date = new DateTime(2026, 12, 1), OccurrenceKey = $"{gid}:20261201" });
+
+        await SyncAllAsync(a, b);
+
+        foreach (var device in new[] { a, b })
+        {
+            var rows = await device.Db.Table<Transaction>().Where(t => t.OccurrenceKey != null).ToListAsync();
+            rows.Select(t => t.OccurrenceKey).Should().BeEquivalentTo([$"{gid}:20261101", $"{gid}:20261201"]);
+        }
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
+    }
+
     /// <summary>A store that cannot list, like the link to another device.</summary>
     private sealed class NoListStore(ISyncStore inner) : ISyncStore
     {

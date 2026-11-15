@@ -78,6 +78,7 @@ namespace MoneyRecord.Services
                     {
                         if (entry.Date.Date != recurring.NextOccurrence.Date)
                             throw new InvalidOperationException($"{entry.Date:d} is not the next occurrence of recurring transaction {recurringId}");
+                        entry.OccurrenceKey = RecurringOccurrences.KeyFor(db, recurringId, recurring.NextOccurrence);
                         db.Insert(entry);
                         TransactionAttachments.Sync(db, [entry]);
                         recurring.LastAmountCents = Math.Abs(entry.AmountCents);
@@ -156,7 +157,8 @@ namespace MoneyRecord.Services
                                 CategoryId = recurring.CategoryId,
                                 Type = recurring.TransactionType,
                                 AccountId = recurring.AccountId,
-                                PayeeId = recurring.PayeeId
+                                PayeeId = recurring.PayeeId,
+                                OccurrenceKey = RecurringOccurrences.KeyFor(db, recurring.Id, recurring.NextOccurrence)
                             });
                             createdHere++;
                             Advance(recurring);

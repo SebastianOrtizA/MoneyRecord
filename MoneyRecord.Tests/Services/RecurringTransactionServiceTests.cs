@@ -342,4 +342,20 @@ public sealed class RecurringTransactionServiceTests : IAsyncLifetime
         saved.LastProcessedDate.Should().Be(new DateTime(2026, 3, 16));
         saved.NextOccurrence.Should().Be(new DateTime(2026, 4, 16));
     }
+
+    [Fact]
+    public async Task Occurrences_carry_a_key_from_the_schedules_sync_id_only_when_sync_is_on()
+    {
+        var gym = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 2, 15));
+        (await _sut.ProcessDueTransactionsAsync()).Created.Should().Be(2);
+        (await TransactionsAsync()).Should().OnlyContain(t => t.OccurrenceKey == null);
+
+        await Db.ExecuteAsync("DELETE FROM \"Transaction\"");
+        var again = await AddAsync(RecurrenceFrequency.Monthly, new DateTime(2026, 3, 1));
+        await Db.ExecuteAsync("INSERT INTO SyncMeta (GlobalId, TableName, LocalId, Clock, DeviceId, Deleted, Dirty) VALUES ('gid-1', 'RecurringTransaction', ?, 1, 'd', 0, 0)", again.Id);
+        await Db.ExecuteAsync("UPDATE RecurringTransaction SET IsActive = 0 WHERE Id = ?", gym.Id);
+
+        await _sut.ProcessDueTransactionsAsync();
+        (await TransactionsAsync()).Should().ContainSingle().Which.OccurrenceKey.Should().Be("gid-1:20260301");
+    }
 }

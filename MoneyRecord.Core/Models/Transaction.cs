@@ -49,6 +49,13 @@ namespace MoneyRecord.Models
         [Indexed(Name = "IX_Transaction_SplitId")]
         public string? SplitId { get; set; }
 
+        /// <summary>
+        /// Which occurrence of which schedule created this (the schedule's sync id and the date, see <see cref="Helpers.RecurringOccurrences"/>):
+        /// two devices that both create the same due occurrence before they sync end up with one. Null = not made by a schedule, or sync is off.
+        /// </summary>
+        [Indexed(Name = "IX_Transaction_OccurrenceKey")]
+        public string? OccurrenceKey { get; set; }
+
         /// <summary>The <see cref="Debt"/> whose interest this is (a payment's interest part); null = not interest on a debt.</summary>
         [Indexed(Name = "IX_Transaction_DebtId")]
         public int? DebtId { get; set; }
