@@ -72,8 +72,17 @@ namespace MoneyRecord.Services.Sync
                 {
                     long next = 0;
                     await Run(s => next = s.PeerSeq(device) + 1);
-                    if (await store.ReadAsync(device, next) is not { } data)
-                        continue;
+                    var data = await store.ReadAsync(device, next);
+                    if (data == null)
+                    {
+                        // A hole: the device compacted (its files before a base file are gone). Only a base file may be jumped to;
+                        // any other file after a hole means the missing one is merely late, so wait for it
+                        var last = await store.LastSeqAsync(device);
+                        while (data == null && ++next <= last)
+                            data = await store.ReadAsync(device, next);
+                        if (data == null || !Decode(Name(device, next), data).IsBase)
+                            continue;
+                    }
 
                     var batch = Decode(Name(device, next), data);
                     var done = false;
@@ -84,6 +93,8 @@ namespace MoneyRecord.Services.Sync
                             return; // waits for a row another device has not delivered yet
                         s.ApplyBatch(batch);
                         s.SetPeerSeq(device, next);
+                        if (batch.IsBase)
+                            s.SetBase(device, next);
                         done = true;
                     });
                     if (done)
@@ -95,6 +106,59 @@ namespace MoneyRecord.Services.Sync
             }
             while (progress);
             return applied;
+        }
+
+        // ---- Compaction ----
+
+        /// <summary>Own files since the last base file after which a new one is written (about a month of daily syncs with changes).</summary>
+        public const int CompactEvery = 50;
+
+        /// <summary>
+        /// When this device has written <see cref="CompactEvery"/> files since its last base file, writes a new base file: its full state,
+        /// numbered like a change file. A device that is behind jumps to it, so every older file of this device can go
+        /// (<see cref="PruneAsync"/>); this is what keeps a shared folder from growing a file per sync forever. Call it after
+        /// <see cref="ExportAsync"/>. Returns whether a base file was written.
+        /// </summary>
+        public async Task<bool> CompactAsync(ISyncStore store, int every = CompactEvery)
+        {
+            await state.MaterializeAsync();
+            var device = "";
+            long seq = 0, baseSeq = 0;
+            await Run(s => { device = s.Device; seq = s.PeerSeq(device); baseSeq = s.BaseSeq(device); });
+            if (seq - baseSeq < every)
+                return false;
+
+            var batch = default(SyncBatch);
+            await Run(s => batch = s.Base(seq + 1));
+            await store.WriteAsync(device, batch!.Seq, Encode(Name(device, batch.Seq), batch));
+            await Run(s => s.SetBase(device, batch.Seq));
+            return true;
+        }
+
+        /// <summary>Deletes, in a store that can, the files that a base file already replaces (of every device whose base this device applied).</summary>
+        public async Task<int> PruneAsync(ISyncStore store)
+        {
+            if (store is not IPrunableSyncStore prunable)
+                return 0;
+            var bases = new Dictionary<string, long>();
+            await Run(s =>
+            {
+                foreach (var device in s.Devices())
+                    bases[device.DeviceId] = device.BaseSeq;
+            });
+
+            var deleted = 0;
+            foreach (var (device, baseSeq) in bases.Where(b => b.Value > 0))
+            {
+                // Highest first: a delete that fails half way leaves the lowest files, which a device behind still applies in order and then
+                // reaches the hole before the base; deleting upwards could leave non-base files in front of it (a stuck reader)
+                foreach (var seq in (await prunable.SeqsAsync(device)).Where(n => n < baseSeq).OrderByDescending(n => n))
+                {
+                    await prunable.DeleteAsync(device, seq);
+                    deleted++;
+                }
+            }
+            return deleted;
         }
 
         // ---- Snapshots (a new device, "replace my data") ----
@@ -177,7 +241,14 @@ namespace MoneyRecord.Services.Sync
             public long PeerSeq(string device) => db.Find<SyncPeerState>(device)?.LastSeq ?? 0;
 
             public void SetPeerSeq(string device, long seq) =>
-                db.InsertOrReplace(new SyncPeerState { DeviceId = device, LastSeq = seq });
+                db.InsertOrReplace(new SyncPeerState { DeviceId = device, LastSeq = seq, BaseSeq = BaseSeq(device) });
+
+            public List<SyncPeerState> Devices() => db.Table<SyncPeerState>().ToList();
+
+            public long BaseSeq(string device) => db.Find<SyncPeerState>(device)?.BaseSeq ?? 0;
+
+            public void SetBase(string device, long seq) =>
+                db.InsertOrReplace(new SyncPeerState { DeviceId = device, LastSeq = Math.Max(PeerSeq(device), seq), BaseSeq = seq });
 
             // ---- Reading rows ----
 
@@ -460,6 +531,10 @@ namespace MoneyRecord.Services.Sync
             }
 
             // ---- Snapshots ----
+
+            /// <summary>The full state as a numbered base file of this device: it replaces all this device's older files.</summary>
+            public SyncBatch Base(long seq) =>
+                Snapshot() with { Seq = seq, PeerSeqs = null, IsBase = true };
 
             public SyncBatch Snapshot()
             {

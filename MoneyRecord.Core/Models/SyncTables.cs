@@ -59,6 +59,9 @@ namespace MoneyRecord.Models
         public string DeviceId { get; set; } = string.Empty;
 
         public long LastSeq { get; set; }
+
+        /// <summary>The base file (a full state, see compaction) of this device that was applied; its older files are no longer needed. 0 = none.</summary>
+        public long BaseSeq { get; set; }
     }
 
     /// <summary>The single row (Id 1) with this database's sync settings.</summary>

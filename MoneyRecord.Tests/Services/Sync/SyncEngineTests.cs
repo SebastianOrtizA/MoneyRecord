@@ -470,4 +470,127 @@ public sealed class SyncEngineTests : IAsyncLifetime
             (await d.CollectAsync()).Should().Be(0, "nothing is left to send");
         }
     }
+
+    private async Task<List<long>> SeqsOfAsync(SyncTestDevice owner, ISyncStore store) =>
+        (await ((IPrunableSyncStore)store).SeqsAsync(owner.DeviceId)).ToList();
+
+    [Fact]
+    public async Task Compaction_KeepsFolderSmall_AndALaggingDeviceJumpsToTheBaseFile()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        await SyncAllAsync(a, b);
+
+        // A syncs many times while B is away
+        for (var i = 0; i < 12; i++)
+        {
+            await a.AddPayeeAsync($"Payee {i}");
+            await a.SyncThroughAsync(Shared, compactEvery: 5);
+        }
+
+        var kept = await SeqsOfAsync(a, Shared);
+        kept.Should().HaveCountLessThan(8, "files before the last base file are deleted");
+        (await SeqsOfAsync(a, a.Store)).Should().Equal(kept);
+
+        await b.SyncThroughAsync(Shared, compactEvery: 5);
+        await SyncAllAsync(a, b);
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
+        (await b.Db.Table<Payee>().ToListAsync()).Should().HaveCount(12);
+        (await b.DanglingReferencesAsync()).Should().Be(0);
+    }
+
+    [Fact]
+    public async Task Compaction_DeletesAndEditsAfterTheBase_StillArrive()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        var doomed = await a.AddPayeeAsync("Doomed");
+        await SyncAllAsync(a, b);
+        for (var i = 0; i < 6; i++)
+        {
+            await a.AddPayeeAsync($"Payee {i}");
+            await a.SyncThroughAsync(Shared, compactEvery: 3);
+        }
+        await a.DeleteAsync("Payee", doomed);
+        await a.SyncThroughAsync(Shared, compactEvery: 3);
+
+        await SyncAllAsync(a, b);
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
+        (await b.Db.Table<Payee>().ToListAsync()).Should().NotContain(p => p.Name == "Doomed");
+    }
+
+    [Fact]
+    public async Task Compaction_ThreeDevices_ConvergeAfterManyRounds()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        var c = await PairedWithAsync(a);
+        for (var round = 0; round < 10; round++)
+        {
+            await a.AddPayeeAsync($"A{round}");
+            if (round % 2 == 0) await b.AddPayeeAsync($"B{round}");
+            if (round % 3 == 0) await c.AddPayeeAsync($"C{round}");
+            await a.SyncThroughAsync(Shared, compactEvery: 2);
+            if (round % 4 != 3) await b.SyncThroughAsync(Shared, compactEvery: 2); // B and C skip some rounds
+            if (round % 3 == 0) await c.SyncThroughAsync(Shared, compactEvery: 2);
+        }
+
+        for (var i = 0; i < 6; i++)
+            foreach (var d in new[] { a, b, c })
+                await d.SyncThroughAsync(Shared, compactEvery: 2);
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
+        (await c.DescribeAsync()).Should().Be(await a.DescribeAsync());
+    }
+
+    /// <summary>A store that cannot list, like the link to another device.</summary>
+    private sealed class NoListStore(ISyncStore inner) : ISyncStore
+    {
+        public Task<IReadOnlyList<string>> DevicesAsync() => inner.DevicesAsync();
+        public Task<long> LastSeqAsync(string deviceId) => inner.LastSeqAsync(deviceId);
+        public Task<byte[]?> ReadAsync(string deviceId, long seq) => inner.ReadAsync(deviceId, seq);
+        public Task WriteAsync(string deviceId, long seq, byte[] data) => inner.WriteAsync(deviceId, seq, data);
+    }
+
+    [Fact]
+    public async Task AFileAfterAHole_ThatIsNotABaseFile_WaitsForTheMissingOne()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        for (var i = 1; i <= 3; i++)
+        {
+            await a.AddPayeeAsync($"File {i}");
+            await a.Engine.ExportAsync(a.Store);
+        }
+        var seqs = await SeqsOfAsync(a, a.Store);
+        await SyncStores.CopyMissingAsync(a.Store, b.Store);
+        await b.Store.DeleteAsync(a.DeviceId, seqs[1]); // the second file is late
+
+        await b.Engine.ApplyAsync(b.Store);
+        var names = (await b.Db.Table<Payee>().ToListAsync()).Select(p => p.Name).ToList();
+        names.Should().Contain("File 1").And.NotContain("File 3");
+
+        var late = await a.Store.ReadAsync(a.DeviceId, seqs[1]);
+        await b.Store.WriteAsync(a.DeviceId, seqs[1], late!);
+        await b.Engine.ApplyAsync(b.Store);
+        (await b.Db.Table<Payee>().ToListAsync()).Select(p => p.Name).Should().Contain("File 3");
+    }
+
+    [Fact]
+    public async Task CopyingFromALinkThatCannotList_StopsAtTheHoleOfACompactedDevice()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        for (var i = 0; i < 8; i++)
+        {
+            await a.AddPayeeAsync($"Payee {i}");
+            await a.SyncThroughAsync(Shared, compactEvery: 3);
+        }
+        var kept = await SeqsOfAsync(a, a.Store);
+        kept.Min().Should().BeGreaterThan(1);
+
+        var copied = await SyncStores.CopyMissingAsync(new NoListStore(a.Store), b.Store);
+        copied.Should().Be(kept.Count, "only the files that exist are fetched, down to the hole");
+        await b.Engine.ApplyAsync(b.Store);
+        (await b.Db.Table<Payee>().ToListAsync()).Should().HaveCount(8);
+    }
 }
