@@ -3653,4 +3653,10 @@
   <data name="SyncFailed" xml:space="preserve">
     <value>सिंक नहीं हो पाया। फिर कोशिश करें।</value>
   </data>
+  <data name="SyncRemoveTitle" xml:space="preserve">
+    <value>इस डिवाइस को हटाएँ?</value>
+  </data>
+  <data name="SyncRemoveMessage" xml:space="preserve">
+    <value>{0} और यह डिवाइस अब सिंक नहीं करेंगे। फिर से सिंक करने के लिए उन्हें नए कोड से दोबारा जोड़ें।</value>
+  </data>
 </root>

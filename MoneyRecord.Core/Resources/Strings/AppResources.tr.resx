@@ -3653,4 +3653,10 @@
   <data name="SyncFailed" xml:space="preserve">
     <value>Eşitleme çalışmadı. Tekrar dene.</value>
   </data>
+  <data name="SyncRemoveTitle" xml:space="preserve">
+    <value>Bu cihaz kaldırılsın mı?</value>
+  </data>
+  <data name="SyncRemoveMessage" xml:space="preserve">
+    <value>{0} ile bu cihaz artık eşitlenmeyecek. Yeniden eşitlemek için ikisini yeni bir kodla tekrar bağla.</value>
+  </data>
 </root>

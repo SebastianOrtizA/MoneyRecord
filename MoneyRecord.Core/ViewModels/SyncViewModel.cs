@@ -14,7 +14,7 @@ namespace MoneyRecord.ViewModels
     /// <summary>
     /// More → Sync: turning sync on at the computer, the code it shows, connecting a phone with that code, Sync now, and the devices.
     /// </summary>
-    public partial class SyncViewModel(ISyncService sync, IDialogService dialogs, IErrorHandler errors, IClipboardService clipboard) : ObservableObject
+    public partial class SyncViewModel(ISyncService sync, IDialogService dialogs, IErrorHandler errors, IClipboardService clipboard, TimeProvider? time = null) : ObservableObject
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ShowNotAvailable), nameof(ShowTurnOn), nameof(ShowConnect))]
@@ -133,7 +133,7 @@ namespace MoneyRecord.ViewModels
             {
                 var code = await sync.CreatePairingCodeAsync();
                 CodeText = code.Text;
-                CodeHint = string.Format(AppResources.SyncCodeHint, Math.Max(1, (int)Math.Round((code.Expires - DateTimeOffset.UtcNow).TotalMinutes)));
+                CodeHint = string.Format(AppResources.SyncCodeHint, Math.Max(1, (int)Math.Round((code.Expires - (time ?? TimeProvider.System).GetUtcNow()).TotalMinutes)));
             }
             catch (Exception ex)
             {
@@ -214,8 +214,17 @@ namespace MoneyRecord.ViewModels
         [RelayCommand]
         private async Task RemovePeerAsync(SyncPeerRow peer)
         {
-            await sync.RemovePeerAsync(peer.DeviceId);
-            await InitializeAsync();
+            if (!await dialogs.ConfirmAsync(AppResources.SyncRemoveTitle, string.Format(AppResources.SyncRemoveMessage, peer.Name), AppResources.SyncRemoveDevice, AppResources.Cancel))
+                return;
+            try
+            {
+                await sync.RemovePeerAsync(peer.DeviceId);
+                await InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                await errors.HandleAsync(ex, AppResources.SyncFailed);
+            }
         }
 
         private static string MessageOf(SyncOutcome outcome) => outcome switch

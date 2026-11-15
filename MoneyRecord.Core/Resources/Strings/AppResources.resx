@@ -3707,4 +3707,10 @@
   <data name="SyncFailed" xml:space="preserve">
     <value>Sync did not work. Try again.</value>
   </data>
+  <data name="SyncRemoveTitle" xml:space="preserve">
+    <value>Remove this device?</value>
+  </data>
+  <data name="SyncRemoveMessage" xml:space="preserve">
+    <value>{0} and this device will stop syncing. To sync again, connect them again with a new code.</value>
+  </data>
 </root>

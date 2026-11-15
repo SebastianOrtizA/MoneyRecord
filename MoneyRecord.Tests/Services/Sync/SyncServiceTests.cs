@@ -19,7 +19,14 @@ public sealed class SyncServiceTests : IAsyncLifetime
         private string? _json;
         public bool IsSupported => supported;
         public Task<string?> GetAsync() => Task.FromResult(_json);
-        public Task SetAsync(string? json) { _json = json; return Task.CompletedTask; }
+        public bool Fail { get; set; }
+        public Task SetAsync(string? json)
+        {
+            if (Fail && json != null)
+                throw new IOException("the keystore is not available");
+            _json = json;
+            return Task.CompletedTask;
+        }
     }
 
     private sealed class Platform(bool canListen, string name) : ISyncPlatform
@@ -140,6 +147,56 @@ public sealed class SyncServiceTests : IAsyncLifetime
         (await phone.Service.GetStatusAsync()).Peers.Single().LastSync.Should().NotBeNull();
     }
 
+    [Fact]
+    public async Task TheComputer_ListsThePhoneThatPaired_AndRemovingItLocksItOut()
+    {
+        var pc = await NewDeviceAsync(true, "My PC");
+        var phone = await NewDeviceAsync(false, "My Phone");
+        await pc.Service.EnableAsync();
+        await phone.Service.PairAsync((await pc.Service.CreatePairingCodeAsync()).Text);
+        await phone.Service.SyncNowAsync(); // signs in once
+
+        var status = await pc.Service.GetStatusAsync();
+        var listed = status.Peers.Should().ContainSingle().Which;
+        listed.Name.Should().Be("My Phone");
+        listed.LastSync.Should().NotBeNull("the computer saw it sign in");
+
+        await pc.Service.RemovePeerAsync(listed.DeviceId);
+
+        (await phone.Service.SyncNowAsync()).Should().Be(SyncOutcome.NotRecognised);
+        (await pc.Service.GetStatusAsync()).Peers.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task APhone_CanForgetTheComputer()
+    {
+        var pc = await NewDeviceAsync(true, "My PC");
+        var phone = await NewDeviceAsync(false, "My Phone");
+        await pc.Service.EnableAsync();
+        await phone.Service.PairAsync((await pc.Service.CreatePairingCodeAsync()).Text);
+
+        await phone.Service.RemovePeerAsync((await phone.Service.GetStatusAsync()).Peers.Single().DeviceId);
+
+        (await phone.Service.GetStatusAsync()).Peers.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task IfSecureStorageFails_PairingReplacesNothing_AndLeavesSyncOff()
+    {
+        var pc = await NewDeviceAsync(true, "My PC");
+        var phone = await NewDeviceAsync(false, "My Phone");
+        await phone.Db.InsertAsync(new Category { Name = "Test Mine", Type = CategoryType.Expense });
+        await pc.Service.EnableAsync();
+        phone.Secrets.Fail = true;
+
+        var code = (await pc.Service.CreatePairingCodeAsync()).Text;
+        var act = () => phone.Service.PairAsync(code);
+
+        await act.Should().ThrowAsync<IOException>();
+        (await NamesAsync(phone, "Category")).Should().Contain("Test Mine");
+        (await phone.State.IsEnabledAsync()).Should().BeFalse();
+        (await phone.Service.GetStatusAsync()).Enabled.Should().BeFalse();
+    }
     [Fact]
     public async Task AComputerThatIsNotListening_IsReportedAsUnreachable()
     {

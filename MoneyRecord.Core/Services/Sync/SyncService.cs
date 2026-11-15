@@ -16,7 +16,7 @@ namespace MoneyRecord.Services.Sync
         /// <summary>No device answered (off, another network, a firewall).</summary>
         Unreachable,
 
-        /// <summary>The other device does not know this one, or the code expired or was used.</summary>
+        /// <summary>The other device does not know this one (removed there), or the code expired or was used.</summary>
         NotRecognised,
 
         /// <summary>Something answered, but it is not the device in the code.</summary>
@@ -48,6 +48,10 @@ namespace MoneyRecord.Services.Sync
 
         Task<SyncOutcome> SyncNowAsync();
 
+        /// <summary>
+        /// Takes a device off the list. At the listening side it can no longer sign in (it is locked out at once); at the other side
+        /// this device stops syncing with it. The shared key stays: to cut a device off from the files it already has, turn sync off and on.
+        /// </summary>
         Task RemovePeerAsync(string deviceId);
 
         /// <summary>Stops syncing and forgets the key and the devices (the data stays).</summary>
@@ -69,10 +73,17 @@ namespace MoneyRecord.Services.Sync
         Func<IReadOnlyList<string>>? localAddresses = null) : ISyncService
     {
         private const int PreferredPort = 48731;
+        private const int MaxNameLength = 64;
         private static readonly TimeSpan CodeLifetime = TimeSpan.FromMinutes(5);
 
         private readonly TimeProvider _time = time ?? TimeProvider.System;
+
+        /// <summary>One long operation at a time: turning on, pairing, syncing, applying, turning off.</summary>
         private readonly SemaphoreSlim _busy = new(1, 1);
+
+        /// <summary>Short changes to the profile (the list of devices); never held across the network.</summary>
+        private readonly SemaphoreSlim _profileGate = new(1, 1);
+
         private SyncProfile? _profile;
         private LanSyncServer? _server;
 
@@ -92,8 +103,23 @@ namespace MoneyRecord.Services.Sync
 
         private async Task SaveAsync(SyncProfile? profile)
         {
-            _profile = profile;
             await secrets.SetAsync(profile == null ? null : JsonSerializer.Serialize(profile));
+            _profile = profile;
+        }
+
+        /// <summary>Changes the saved profile under the gate (the list of devices is touched by sign-ins as well as by the user).</summary>
+        private async Task UpdateProfileAsync(Func<SyncProfile, bool> change)
+        {
+            await _profileGate.WaitAsync();
+            try
+            {
+                if (await LoadAsync() is { } profile && change(profile))
+                    await SaveAsync(profile);
+            }
+            finally
+            {
+                _profileGate.Release();
+            }
         }
 
         private SyncEngine EngineOf(SyncProfile profile) =>
@@ -108,8 +134,46 @@ namespace MoneyRecord.Services.Sync
         public async Task<SyncStatus> GetStatusAsync()
         {
             var profile = await LoadAsync();
+            IReadOnlyList<SyncPeer> peers = profile == null ? []
+                : profile.Certificate != null
+                    ? [.. profile.Devices.Select(d => new SyncPeer(d.DeviceId, d.Name, [], 0, "", d.LastSeen))]
+                    : [.. profile.Peers];
             return new SyncStatus(secrets.IsSupported, profile != null, platform.CanListen, _server != null,
-                profile?.DeviceName ?? platform.DeviceName, profile?.Peers ?? []);
+                profile?.DeviceName ?? platform.DeviceName, peers);
+        }
+
+        // ---- The devices that paired with this one (the listening side) ----
+
+        private sealed class Registry(SyncService service) : ILanDeviceRegistry
+        {
+            public async Task<byte[]?> SecretOfAsync(string deviceId) =>
+                await service.LoadAsync() is { } profile && profile.Devices.FirstOrDefault(d => d.DeviceId == deviceId) is { } device
+                    ? Convert.FromBase64String(device.AuthSecret)
+                    : null;
+
+            public async Task<byte[]> RegisterAsync(string deviceId, string name)
+            {
+                var secret = RandomNumberGenerator.GetBytes(32);
+                name = name.Trim();
+                name = name.Length == 0 ? "Device" : name[..Math.Min(name.Length, MaxNameLength)];
+                await service.UpdateProfileAsync(profile =>
+                {
+                    profile.Devices.RemoveAll(d => d.DeviceId == deviceId); // paired again: the old secret is gone
+                    profile.Devices.Add(new SyncDevice(deviceId, name, Convert.ToBase64String(secret), service._time.GetUtcNow()));
+                    return true;
+                });
+                return secret;
+            }
+
+            public Task SeenAsync(string deviceId) =>
+                service.UpdateProfileAsync(profile =>
+                {
+                    var index = profile.Devices.FindIndex(d => d.DeviceId == deviceId);
+                    if (index < 0)
+                        return false;
+                    profile.Devices[index] = profile.Devices[index] with { LastSeen = service._time.GetUtcNow() };
+                    return true;
+                });
         }
 
         // ---- Turning on ----
@@ -118,19 +182,28 @@ namespace MoneyRecord.Services.Sync
         {
             if (!secrets.IsSupported || !platform.CanListen)
                 throw new InvalidOperationException("This device cannot listen for others.");
-            if (await LoadAsync() != null)
-                return;
 
-            var (_, pfx) = LanCertificate.Create();
-            var profile = new SyncProfile
+            await _busy.WaitAsync();
+            try
             {
-                Key = Convert.ToBase64String(SyncCrypto.NewKey()),
-                Certificate = Convert.ToBase64String(pfx),
-                DeviceName = platform.DeviceName
-            };
-            await syncState.EnableAsync();
-            await SaveAsync(profile);
-            await StartListeningAsync(profile);
+                if (await LoadAsync() != null)
+                    return;
+
+                var (_, pfx) = LanCertificate.Create();
+                var profile = new SyncProfile
+                {
+                    Key = Convert.ToBase64String(SyncCrypto.NewKey()),
+                    Certificate = Convert.ToBase64String(pfx),
+                    DeviceName = platform.DeviceName
+                };
+                await syncState.EnableAsync();
+                await SaveAsync(profile);
+                await StartListeningAsync(profile);
+            }
+            finally
+            {
+                _busy.Release();
+            }
         }
 
         public async Task ResumeAsync()
@@ -145,7 +218,7 @@ namespace MoneyRecord.Services.Sync
                 return;
             var engine = EngineOf(profile);
             var server = new LanSyncServer(LanCertificate.Load(Convert.FromBase64String(profile.Certificate)), Convert.FromBase64String(profile.Key),
-                await syncState.GetDeviceIdAsync(), profile.DeviceName, Store, engine.CreateSnapshotAsync, _time);
+                await syncState.GetDeviceIdAsync(), profile.DeviceName, Store, engine.CreateSnapshotAsync, new Registry(this), _time);
             server.StoreChanged += () => _ = ApplyIncomingAsync();
             try
             {
@@ -183,7 +256,7 @@ namespace MoneyRecord.Services.Sync
                 try
                 {
                     var deviceId = await syncState.GetDeviceIdAsync();
-                    var (session, key) = await LanSyncSession.PairAsync(info, deviceId);
+                    var (session, key, authSecret) = await LanSyncSession.PairAsync(info, deviceId, platform.DeviceName);
                     byte[] snapshot;
                     await using (session)
                         snapshot = await session.SnapshotAsync();
@@ -191,28 +264,44 @@ namespace MoneyRecord.Services.Sync
                     var profile = new SyncProfile
                     {
                         Key = Convert.ToBase64String(key),
+                        AuthSecret = Convert.ToBase64String(authSecret),
                         DeviceName = platform.DeviceName,
                         Peers = [new SyncPeer(info.DeviceId, info.DeviceName, info.Addresses, info.Port, info.Fingerprint, _time.GetUtcNow())]
                     };
+                    // The profile first: if secure storage fails nothing has been replaced. The data swap is one transaction, so if
+                    // it fails nothing is lost either, and the profile is taken back.
+                    await SaveAsync(profile);
                     await EngineOf(profile).ApplySnapshotAsync(snapshot, replaceLocalData: true);
                     InvalidateCaches();
-                    await SaveAsync(profile);
                     return SyncOutcome.Done;
                 }
                 catch (LanSyncException ex)
                 {
-                    await syncState.DisableAsync();
+                    await AbandonPairingAsync();
                     return OutcomeOf(ex);
                 }
                 catch
                 {
-                    await syncState.DisableAsync();
+                    await AbandonPairingAsync();
                     throw;
                 }
             }
             finally
             {
                 _busy.Release();
+            }
+        }
+
+        private async Task AbandonPairingAsync()
+        {
+            await syncState.DisableAsync();
+            try
+            {
+                await SaveAsync(null);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                _profile = null; // storage that could not even be cleared: nothing more to do here
             }
         }
 
@@ -238,33 +327,56 @@ namespace MoneyRecord.Services.Sync
                 var store = Store;
                 var deviceId = await syncState.GetDeviceIdAsync();
                 var outcome = SyncOutcome.Done;
-                await engine.ExportAsync(store);
-
-                foreach (var peer in profile.Peers.ToList())
-                {
-                    try
-                    {
-                        await using var session = await LanSyncSession.ConnectAsync(peer.Addresses, peer.Port, peer.Fingerprint, deviceId, Convert.FromBase64String(profile.Key));
-                        await SyncStores.CopyMissingAsync(store, session);
-                        await SyncStores.CopyMissingAsync(session, store);
-                        profile.Peers[profile.Peers.IndexOf(peer)] = peer with { LastSync = _time.GetUtcNow() };
-                    }
-                    catch (LanSyncException ex)
-                    {
-                        outcome = OutcomeOf(ex);
-                    }
-                }
-
+                var reached = new List<string>();
                 try
                 {
-                    await engine.ApplyAsync(store);
+                    await engine.ExportAsync(store);
+
+                    // A copy of the list: a device removed meanwhile is simply not updated at the end
+                    foreach (var peer in profile.Peers.ToList())
+                    {
+                        try
+                        {
+                            await using var session = await LanSyncSession.ConnectAsync(peer.Addresses, peer.Port, peer.Fingerprint, deviceId,
+                                Convert.FromBase64String(profile.AuthSecret));
+                            await SyncStores.CopyMissingAsync(store, session);
+                            await SyncStores.CopyMissingAsync(session, store);
+                            reached.Add(peer.DeviceId);
+                        }
+                        catch (LanSyncException ex)
+                        {
+                            outcome = OutcomeOf(ex);
+                        }
+                    }
+
+                    try
+                    {
+                        await engine.ApplyAsync(store);
+                    }
+                    catch (SyncVersionException)
+                    {
+                        outcome = SyncOutcome.VersionMismatch;
+                    }
                 }
-                catch (SyncVersionException)
+                finally
                 {
-                    outcome = SyncOutcome.VersionMismatch;
+                    // What was reached is remembered even when a later step failed
+                    InvalidateCaches();
+                    await UpdateProfileAsync(current =>
+                    {
+                        var changed = false;
+                        foreach (var id in reached)
+                        {
+                            var index = current.Peers.FindIndex(p => p.DeviceId == id);
+                            if (index >= 0)
+                            {
+                                current.Peers[index] = current.Peers[index] with { LastSync = _time.GetUtcNow() };
+                                changed = true;
+                            }
+                        }
+                        return changed;
+                    });
                 }
-                InvalidateCaches();
-                await SaveAsync(profile);
                 return outcome;
             }
             finally
@@ -299,14 +411,8 @@ namespace MoneyRecord.Services.Sync
 
         // ---- Turning off ----
 
-        public async Task RemovePeerAsync(string deviceId)
-        {
-            if (await LoadAsync() is { } profile)
-            {
-                profile.Peers.RemoveAll(p => p.DeviceId == deviceId);
-                await SaveAsync(profile);
-            }
-        }
+        public Task RemovePeerAsync(string deviceId) =>
+            UpdateProfileAsync(profile => profile.Devices.RemoveAll(d => d.DeviceId == deviceId) + profile.Peers.RemoveAll(p => p.DeviceId == deviceId) > 0);
 
         public async Task DisableAsync()
         {

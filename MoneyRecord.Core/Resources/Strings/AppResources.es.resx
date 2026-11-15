@@ -3704,4 +3704,10 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SyncFailed" xml:space="preserve">
     <value>La sincronización falló. Inténtalo de nuevo.</value>
   </data>
+  <data name="SyncRemoveTitle" xml:space="preserve">
+    <value>¿Quitar este dispositivo?</value>
+  </data>
+  <data name="SyncRemoveMessage" xml:space="preserve">
+    <value>{0} y este dispositivo dejarán de sincronizarse. Para volver a sincronizar, conéctalos de nuevo con un código nuevo.</value>
+  </data>
 </root>

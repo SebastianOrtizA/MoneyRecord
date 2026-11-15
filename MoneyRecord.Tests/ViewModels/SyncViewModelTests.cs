@@ -134,4 +134,21 @@ public sealed class SyncViewModelTests
         await vm.TurnOffCommand.ExecuteAsync(null);
         await _sync.Received().DisableAsync();
     }
+
+    [Fact]
+    public async Task RemovingADevice_AsksFirst()
+    {
+        Status(enabled: true, canListen: true, listening: true);
+        var vm = Create();
+        await vm.InitializeAsync();
+        var row = new SyncPeerRow("p1", "Ana's phone", "");
+        _dialogs.ConfirmAsync(default!, default!, default!, default!).ReturnsForAnyArgs(false);
+
+        await vm.RemovePeerCommand.ExecuteAsync(row);
+        await _sync.DidNotReceiveWithAnyArgs().RemovePeerAsync(default!);
+
+        _dialogs.ConfirmAsync(default!, default!, default!, default!).ReturnsForAnyArgs(true);
+        await vm.RemovePeerCommand.ExecuteAsync(row);
+        await _sync.Received(1).RemovePeerAsync("p1");
+    }
 }

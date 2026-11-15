@@ -10384,5 +10384,23 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("SyncFailed", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncRemoveTitle.
+        /// </summary>
+        public static string SyncRemoveTitle {
+            get {
+                return ResourceManager.GetString("SyncRemoveTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncRemoveMessage.
+        /// </summary>
+        public static string SyncRemoveMessage {
+            get {
+                return ResourceManager.GetString("SyncRemoveMessage", resourceCulture);
+            }
+        }
     }
 }

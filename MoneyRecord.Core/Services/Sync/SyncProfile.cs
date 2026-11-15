@@ -3,21 +3,32 @@ namespace MoneyRecord.Services.Sync
     /// <summary>A device this one syncs with, and how to reach it (the addresses it showed when they were paired).</summary>
     public sealed record SyncPeer(string DeviceId, string Name, string[] Addresses, int Port, string Fingerprint, DateTimeOffset? LastSync = null);
 
+    /// <summary>A device that paired with this one (the listening side): its own secret for signing in, which removing it deletes.</summary>
+    public sealed record SyncDevice(string DeviceId, string Name, string AuthSecret, DateTimeOffset PairedAt, DateTimeOffset? LastSeen = null);
+
     /// <summary>
-    /// Everything sync keeps in secure storage (never in a backup): the key every device of the group shares, the certificate this
-    /// device listens with (if it can), and the devices it connects to.
+    /// Everything sync keeps in secure storage (never in a backup): the key every device of the group shares, this device's own
+    /// secret for signing in, the certificate it listens with (if it can), the devices it connects to, and the devices that paired
+    /// with it.
     /// </summary>
     public sealed class SyncProfile
     {
-        /// <summary>The 256-bit sync key, base64.</summary>
+        /// <summary>The 256-bit sync key (it encrypts the change files), base64.</summary>
         public string Key { get; set; } = "";
+
+        /// <summary>This device's own secret for signing in to the device it paired with, base64; empty on the listening side.</summary>
+        public string AuthSecret { get; set; } = "";
 
         /// <summary>The PFX of the certificate this device listens with, base64; null on a device that never listens.</summary>
         public string? Certificate { get; set; }
 
         public string DeviceName { get; set; } = "";
 
+        /// <summary>The devices this one connects to (a phone: the computer).</summary>
         public List<SyncPeer> Peers { get; set; } = [];
+
+        /// <summary>The devices that paired with this one (the computer: its phones).</summary>
+        public List<SyncDevice> Devices { get; set; } = [];
     }
 
     /// <summary>Where <see cref="SyncProfile"/> is kept: Android secure storage, Windows DPAPI; none elsewhere (sync is not offered).</summary>

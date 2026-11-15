@@ -50,23 +50,32 @@ namespace MoneyRecord.Services.Sync.Lan
 
         public string PeerDeviceId { get; }
 
-        /// <summary>Connects to a device this one is already paired with (the sync key proves it).</summary>
+        /// <summary>Connects to a device this one is already paired with (the secret it was given when it paired proves it).</summary>
         public static async Task<LanSyncSession> ConnectAsync(IEnumerable<string> addresses, int port, string fingerprint,
-            string deviceId, byte[] syncKey, CancellationToken cancellation = default)
+            string deviceId, byte[] authSecret, CancellationToken cancellation = default)
         {
-            var (session, _) = await OpenAsync(addresses, port, fingerprint, deviceId, nonce => ("auth", LanSyncServer.Mac(syncKey, "auth", nonce, deviceId)), cancellation);
+            var (session, _) = await OpenAsync(addresses, port, fingerprint, deviceId, null, nonce => ("auth", LanSyncServer.Mac(authSecret, "auth", nonce, deviceId)), cancellation);
             return session;
         }
 
-        /// <summary>Pairs with the device that showed the code: returns the connection and the sync key it handed over.</summary>
-        public static async Task<(LanSyncSession Session, byte[] SyncKey)> PairAsync(LanPairingInfo info, string deviceId, CancellationToken cancellation = default)
+        /// <summary>
+        /// Pairs with the device that showed the code: returns the connection, the sync key all devices share, and this device's own
+        /// secret for signing in later (the other device can revoke it).
+        /// </summary>
+        public static async Task<(LanSyncSession Session, byte[] SyncKey, byte[] AuthSecret)> PairAsync(LanPairingInfo info, string deviceId,
+            string deviceName, CancellationToken cancellation = default)
         {
             var secret = Convert.FromBase64String(info.Secret);
-            var (session, key) = await OpenAsync(info.Addresses, info.Port, info.Fingerprint, deviceId, nonce => ("pair", LanSyncServer.Mac(secret, "pair", nonce, deviceId)), cancellation);
-            return (session, key ?? throw new LanSyncException(LanFailure.Rejected, "No key was handed over."));
+            var (session, handover) = await OpenAsync(info.Addresses, info.Port, info.Fingerprint, deviceId, deviceName,
+                nonce => ("pair", LanSyncServer.Mac(secret, "pair", nonce, deviceId)), cancellation);
+            if (handover is not { Length: 64 })
+            {
+                await session.DisposeAsync();
+                throw new LanSyncException(LanFailure.Rejected, "No key was handed over.");
+            }
+            return (session, handover[..32], handover[32..]);
         }
-
-        private static async Task<(LanSyncSession, byte[]?)> OpenAsync(IEnumerable<string> addresses, int port, string fingerprint, string deviceId,
+        private static async Task<(LanSyncSession, byte[]?)> OpenAsync(IEnumerable<string> addresses, int port, string fingerprint, string deviceId, string? deviceName,
             Func<byte[], (string Op, byte[] Mac)> credentials, CancellationToken cancellation)
         {
             Exception? last = null;
@@ -97,7 +106,7 @@ namespace MoneyRecord.Services.Sync.Lan
                         throw new LanSyncException(hello["error"] == "version" ? LanFailure.VersionMismatch : LanFailure.Rejected, "The device refused the connection.");
 
                     var (op, mac) = credentials(Convert.FromBase64String(hello["nonce"]));
-                    await LanFrames.WriteAsync(tls, LanMessage.Of(op, ("device", deviceId), ("mac", Convert.ToBase64String(mac))), step.Token);
+                    await LanFrames.WriteAsync(tls, LanMessage.Of(op, ("device", deviceId), ("name", deviceName ?? ""), ("mac", Convert.ToBase64String(mac))), step.Token);
                     var accepted = await LanFrames.ReadAsync(tls, step.Token);
                     if (!accepted.Ok)
                         throw new LanSyncException(LanFailure.Rejected, "The device does not know this one.");

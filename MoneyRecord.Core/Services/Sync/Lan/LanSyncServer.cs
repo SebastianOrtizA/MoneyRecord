@@ -10,13 +10,14 @@ namespace MoneyRecord.Services.Sync.Lan
 {
     /// <summary>
     /// The listening side of the local-network link (the Windows app while it is open). Speaks TLS with a self-signed certificate
-    /// that the pairing code pins. A device proves it belongs with an HMAC of a fresh challenge made with the sync key; a new device
-    /// proves it saw the QR code with an HMAC made with the one-time secret in it, and is then given the sync key. After that it
+    /// that the pairing code pins. A paired device proves itself with an HMAC of a fresh challenge made with its own secret (kept in the
+    /// <see cref="ILanDeviceRegistry"/>, so removing it locks it out); a new device proves it saw the QR code with an HMAC made with
+    /// the one-time secret in it, and is then given the sync key and its own secret. After that it
     /// can list, read and write change files in the device's local store, and read a snapshot.
     /// </summary>
     public sealed class LanSyncServer(
         X509Certificate2 certificate, byte[] syncKey, string deviceId, string deviceName, ISyncStore store,
-        Func<Task<byte[]>> createSnapshot, TimeProvider? time = null) : IAsyncDisposable
+        Func<Task<byte[]>> createSnapshot, ILanDeviceRegistry registry, TimeProvider? time = null) : IAsyncDisposable
     {
         public const int Protocol = 1;
         private const int MaxConnections = 16;
@@ -117,12 +118,13 @@ namespace MoneyRecord.Services.Sync.Lan
 
                 var credentials = await LanFrames.ReadAsync(tls, ct, PreAuthHeaderSize, maxBody: 0);
                 var peer = credentials["device"];
-                if (!TryAuthenticate(credentials, nonce, peer, out var newKey))
+                var (accepted, handover) = await AuthenticateAsync(credentials, nonce, peer);
+                if (!accepted)
                 {
                     await LanFrames.WriteAsync(tls, Reply("error", "auth"), ct);
                     return;
                 }
-                await LanFrames.WriteAsync(tls, new LanMessage(new() { ["ok"] = "1" }, newKey ? syncKey : null), ct);
+                await LanFrames.WriteAsync(tls, new LanMessage(new() { ["ok"] = "1" }, handover), ct);
 
                 while (true)
                 {
@@ -142,33 +144,40 @@ namespace MoneyRecord.Services.Sync.Lan
 
         private static LanMessage Reply(string key, string value) => new(new() { ["ok"] = "0", [key] = value });
 
-        /// <summary>True when the client is a paired device (HMAC with the sync key) or holds a valid pairing offer (then <paramref name="newKey"/>).</summary>
-        private bool TryAuthenticate(LanMessage credentials, byte[] nonce, string peer, out bool newKey)
+        /// <summary>
+        /// Accepts a paired device (HMAC with its own secret), or a new one that holds a valid pairing offer: it is registered, and
+        /// <c>Handover</c> is the sync key followed by its own secret.
+        /// </summary>
+        private async Task<(bool Accepted, byte[]? Handover)> AuthenticateAsync(LanMessage credentials, byte[] nonce, string peer)
         {
-            newKey = false;
             byte[] given;
             try { given = Convert.FromBase64String(credentials["mac"]); }
-            catch (FormatException) { return false; }
+            catch (FormatException) { return (false, null); }
 
-            if (peer.Length == 0)
-                return false;
+            if (!IsDeviceName(peer))
+                return (false, null);
             if (credentials["op"] == "auth")
-                return CryptographicOperations.FixedTimeEquals(Mac(syncKey, "auth", nonce, peer), given);
+            {
+                var secret = await registry.SecretOfAsync(peer);
+                if (secret == null || !CryptographicOperations.FixedTimeEquals(Mac(secret, "auth", nonce, peer), given))
+                    return (false, null);
+                await registry.SeenAsync(peer);
+                return (true, null);
+            }
 
             if (credentials["op"] != "pair")
-                return false;
+                return (false, null);
             lock (_offers)
             {
                 _offers.RemoveAll(o => o.Expires < _time.GetUtcNow());
                 var offer = _offers.FirstOrDefault(o => CryptographicOperations.FixedTimeEquals(Mac(o.Secret, "pair", nonce, peer), given));
                 if (offer.Secret == null)
-                    return false;
+                    return (false, null);
                 _offers.Remove(offer); // good once
             }
-            newKey = true;
-            return true;
+            var own = await registry.RegisterAsync(peer, credentials["name"]);
+            return (true, [.. syncKey, .. own]);
         }
-
         /// <summary>HMAC over the operation, the challenge and the device id, each length-prefixed (a MAC made for pairing is no use for signing in, and the parts cannot run into each other).</summary>
         internal static byte[] Mac(byte[] key, string op, byte[] nonce, string device)
         {

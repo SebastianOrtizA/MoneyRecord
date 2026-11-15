@@ -3653,4 +3653,10 @@
   <data name="SyncFailed" xml:space="preserve">
     <value>La sincronizzazione non è riuscita. Riprova.</value>
   </data>
+  <data name="SyncRemoveTitle" xml:space="preserve">
+    <value>Rimuovere questo dispositivo?</value>
+  </data>
+  <data name="SyncRemoveMessage" xml:space="preserve">
+    <value>{0} e questo dispositivo smetteranno di sincronizzarsi. Per sincronizzare di nuovo, collegali ancora con un nuovo codice.</value>
+  </data>
 </root>

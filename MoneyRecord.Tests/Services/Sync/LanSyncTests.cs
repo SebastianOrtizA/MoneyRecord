@@ -17,6 +17,7 @@ public sealed class LanSyncTests : IAsyncLifetime
     private readonly byte[] _key = SyncCrypto.NewKey();
     private readonly FakeTimeProvider _time = new(new DateTimeOffset(2026, 11, 14, 12, 0, 0, TimeSpan.Zero));
     private readonly List<IAsyncDisposable> _disposables = [];
+    private readonly MemoryRegistry _registry = new();
     private SyncTestDevice _a = null!;
     private LanSyncServer _server = null!;
 
@@ -25,7 +26,7 @@ public sealed class LanSyncTests : IAsyncLifetime
         _a = await SyncTestDevice.CreateAsync(_key, TimeProvider.System);
         _disposables.Add(_a);
         var (certificate, _) = LanCertificate.Create();
-        _server = new LanSyncServer(certificate, _key, _a.DeviceId, "Test PC", _a.Store, _a.Engine.CreateSnapshotAsync, _time);
+        _server = new LanSyncServer(certificate, _key, _a.DeviceId, "Test PC", _a.Store, _a.Engine.CreateSnapshotAsync, _registry, _time);
         _server.Start();
         _disposables.Add(_server);
     }
@@ -53,7 +54,7 @@ public sealed class LanSyncTests : IAsyncLifetime
     [Fact]
     public async Task ScanningTheCode_HandsOverTheSyncKey()
     {
-        var (session, key) = await LanSyncSession.PairAsync(Offer(), "phone", default);
+        var (session, key, _) = await LanSyncSession.PairAsync(Offer(), "phone", "Phone", default);
         await using var _ = session;
 
         key.Should().Equal(_key);
@@ -64,10 +65,10 @@ public sealed class LanSyncTests : IAsyncLifetime
     public async Task ACode_WorksOnce()
     {
         var info = Offer();
-        var (first, _) = await LanSyncSession.PairAsync(info, "phone", default);
+        var (first, _, _) = await LanSyncSession.PairAsync(info, "phone", "Phone", default);
         await first.DisposeAsync();
 
-        var again = () => LanSyncSession.PairAsync(info, "another-phone", default);
+        var again = () => LanSyncSession.PairAsync(info, "another-phone", "Phone", default);
 
         (await again.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
     }
@@ -78,7 +79,7 @@ public sealed class LanSyncTests : IAsyncLifetime
         var info = Offer(TimeSpan.FromMinutes(5));
         _time.Advance(TimeSpan.FromMinutes(6));
 
-        var act = () => LanSyncSession.PairAsync(info, "phone", default);
+        var act = () => LanSyncSession.PairAsync(info, "phone", "Phone", default);
 
         (await act.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
     }
@@ -88,7 +89,7 @@ public sealed class LanSyncTests : IAsyncLifetime
     {
         var info = Offer() with { Secret = Convert.ToBase64String(new byte[16]) };
 
-        var act = () => LanSyncSession.PairAsync(info, "phone", default);
+        var act = () => LanSyncSession.PairAsync(info, "phone", "Phone", default);
 
         (await act.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
     }
@@ -98,7 +99,7 @@ public sealed class LanSyncTests : IAsyncLifetime
     {
         var info = Offer() with { Fingerprint = new string('A', 64) };
 
-        var act = () => LanSyncSession.PairAsync(info, "phone", default);
+        var act = () => LanSyncSession.PairAsync(info, "phone", "Phone", default);
 
         (await act.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.CertificateMismatch);
     }
@@ -107,16 +108,43 @@ public sealed class LanSyncTests : IAsyncLifetime
     public async Task APairedDevice_ConnectsWithTheKey_AnotherKeyIsRefused()
     {
         var info = Offer();
-        var (first, key) = await LanSyncSession.PairAsync(info, "phone", default);
+        var (first, _, secret) = await LanSyncSession.PairAsync(info, "phone", "Phone", default);
         await first.DisposeAsync();
 
-        await using (var session = await LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, "phone", key))
+        await using (var session = await LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, "phone", secret))
             session.PeerDeviceId.Should().Be(_a.DeviceId);
 
         var wrong = () => LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, "phone", SyncCrypto.NewKey());
         (await wrong.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
     }
 
+    [Fact]
+    public async Task APairedDevice_IsRegisteredWithItsName_AndRemovingItLocksItOutAtOnce()
+    {
+        var info = Offer();
+        var (first, _, secret) = await LanSyncSession.PairAsync(info, "phone", "Ana Phone", default);
+        await first.DisposeAsync();
+        _registry.Devices["phone"].Name.Should().Be("Ana Phone");
+
+        await using (await LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, "phone", secret)) { }
+        _registry.Seen.Should().Contain("phone");
+
+        _registry.Devices.Remove("phone");
+        var again = () => LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, "phone", secret);
+        (await again.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
+    }
+
+    [Fact]
+    public async Task TheSharedKeyAlone_DoesNotSignADeviceIn()
+    {
+        var info = Offer();
+        var (first, _, _) = await LanSyncSession.PairAsync(info, "phone", "Phone", default);
+        await first.DisposeAsync();
+
+        var withTheKey = () => LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, "phone", _key);
+
+        (await withTheKey.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
+    }
     [Fact]
     public async Task NobodyListening_IsReportedAsUnreachable()
     {
@@ -132,7 +160,7 @@ public sealed class LanSyncTests : IAsyncLifetime
     public async Task AFileNamedLikeAPath_IsNotWrittenOutsideTheStore()
     {
         var info = Offer();
-        var (session, _) = await LanSyncSession.PairAsync(info, "phone", default);
+        var (session, _, _) = await LanSyncSession.PairAsync(info, "phone", "Phone", default);
         await using var _ = session;
 
         var act = () => session.WriteAsync("../evil", 1, [1, 2, 3]);
@@ -150,7 +178,7 @@ public sealed class LanSyncTests : IAsyncLifetime
 
         // Pairing: scan, take the other device's data
         var info = Offer();
-        var (pairing, key) = await LanSyncSession.PairAsync(info, b.DeviceId, default);
+        var (pairing, key, secret) = await LanSyncSession.PairAsync(info, b.DeviceId, "Phone", default);
         await b.Engine.ApplySnapshotAsync(await pairing.SnapshotAsync(), replaceLocalData: true);
         await pairing.DisposeAsync();
         key.Should().Equal(_key);
@@ -163,7 +191,7 @@ public sealed class LanSyncTests : IAsyncLifetime
         await _a.Engine.ExportAsync(_a.Store);
         await b.Engine.ExportAsync(b.Store);
 
-        await using (var session = await LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, b.DeviceId, key))
+        await using (var session = await LanSyncSession.ConnectAsync(Loopback, info.Port, info.Fingerprint, b.DeviceId, secret))
         {
             await SyncStores.CopyMissingAsync(b.Store, session);
             await SyncStores.CopyMissingAsync(session, b.Store);
@@ -179,7 +207,7 @@ public sealed class LanSyncTests : IAsyncLifetime
     [Fact]
     public async Task GetWithAPathLikeName_IsRefused()
     {
-        var (session, _) = await LanSyncSession.PairAsync(Offer(), "phone", default);
+        var (session, _, _) = await LanSyncSession.PairAsync(Offer(), "phone", "Phone", default);
         await using var _ = session;
 
         var act = () => session.ReadAsync("..", 1);
@@ -207,25 +235,25 @@ public sealed class LanSyncTests : IAsyncLifetime
             (await tls.ReadAsync(new byte[16], timeout.Token)).Should().Be(0, "the server closes the connection");
         }
 
-        await using var session = (await LanSyncSession.PairAsync(info, "phone", default)).Session; // and still serves others
+        await using var session = (await LanSyncSession.PairAsync(info, "phone", "Phone", default)).Session; // and still serves others
     }
 
     [Fact]
     public async Task AnotherMachineAtTheFirstAddress_DoesNotStopTheNextAddressFromBeingTried()
     {
         var (certificate, _) = LanCertificate.Create();
-        await using var real = new LanSyncServer(certificate, _key, _a.DeviceId, "Real PC", _a.Store, _a.Engine.CreateSnapshotAsync);
+        await using var real = new LanSyncServer(certificate, _key, _a.DeviceId, "Real PC", _a.Store, _a.Engine.CreateSnapshotAsync, _registry);
         var port = real.Start(0, IPAddress.Loopback);
         var (otherCertificate, _) = LanCertificate.Create();
-        await using var impostor = new LanSyncServer(otherCertificate, _key, "someoneelse", "Other PC", _a.Store, _a.Engine.CreateSnapshotAsync);
+        await using var impostor = new LanSyncServer(otherCertificate, _key, "someoneelse", "Other PC", _a.Store, _a.Engine.CreateSnapshotAsync, _registry);
         impostor.Start(port, IPAddress.Parse("127.0.0.2"));
 
         var info = real.CreatePairingOffer(["127.0.0.2", "127.0.0.1"], TimeSpan.FromMinutes(5));
-        var (session, key) = await LanSyncSession.PairAsync(info, "phone", default);
+        var (session, key, _) = await LanSyncSession.PairAsync(info, "phone", "Phone", default);
         await session.DisposeAsync();
         key.Should().Equal(_key);
 
-        var onlyImpostor = () => LanSyncSession.PairAsync(info with { Addresses = ["127.0.0.2"] }, "phone", default);
+        var onlyImpostor = () => LanSyncSession.PairAsync(info with { Addresses = ["127.0.0.2"] }, "phone", "Phone", default);
         (await onlyImpostor.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.CertificateMismatch);
     }
 
@@ -252,4 +280,25 @@ public sealed class LanSyncTests : IAsyncLifetime
 
         await act.Should().ThrowAsync<InvalidDataException>();
     }
-}
+
+    /// <summary>The devices the test server has paired with, in memory.</summary>
+    internal sealed class MemoryRegistry : ILanDeviceRegistry
+    {
+        public Dictionary<string, (string Name, byte[] Secret)> Devices { get; } = [];
+        public List<string> Seen { get; } = [];
+
+        public Task<byte[]?> SecretOfAsync(string deviceId) => Task.FromResult(Devices.TryGetValue(deviceId, out var d) ? d.Secret : null);
+
+        public Task<byte[]> RegisterAsync(string deviceId, string name)
+        {
+            var secret = System.Security.Cryptography.RandomNumberGenerator.GetBytes(32);
+            Devices[deviceId] = (name, secret);
+            return Task.FromResult(secret);
+        }
+
+        public Task SeenAsync(string deviceId)
+        {
+            Seen.Add(deviceId);
+            return Task.CompletedTask;
+        }
+    }}
