@@ -55,9 +55,9 @@ internal sealed class SyncTestDevice : IAsyncDisposable
         await Engine.CompactAsync(Store, compactEvery);
         await SyncStores.CopyMissingAsync(Store, shared);
         await SyncStores.CopyMissingAsync(shared, Store);
-        await Engine.PruneAsync(shared);
         var applied = await Engine.ApplyAsync(Store);
         await Engine.PruneAsync(Store);
+        await Engine.PruneAsync(shared);
         return sent + applied;
     }
 

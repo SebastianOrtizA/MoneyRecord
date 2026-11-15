@@ -80,20 +80,35 @@ namespace MoneyRecord.Services.Sync
                 }
                 else
                 {
-                    // A link to another device cannot list: its files after the last one here, holes (compacted away) skipped
+                    // A link to another device cannot list, and every probe is a request: walk down from its last file and stop at the first
+                    // hole (compacted away: the device keeps its files without gaps from its base on), so the cost is the files that exist
                     var last = await from.LastSeqAsync(device);
-                    candidates = Enumerable.Range(0, (int)Math.Max(0, last - have)).Select(i => have + 1 + i);
+                    var present = to is IPrunableSyncStore target ? (await target.SeqsAsync(device)).ToHashSet() : null;
+                    candidates = DescendingFiles(last, present != null ? 1 : have + 1, present);
                 }
 
                 foreach (var seq in candidates)
                 {
                     if (await from.ReadAsync(device, seq) is not { } data)
-                        continue;
+                    {
+                        if (from is IPrunableSyncStore)
+                            continue;
+                        break; // the hole of the walk down: nothing below it is there
+                    }
                     await to.WriteAsync(device, seq, data);
                     copied++;
                 }
             }
             return copied;
+        }
+
+        private static IEnumerable<long> DescendingFiles(long last, long lowest, HashSet<long>? skip)
+        {
+            for (var seq = last; seq >= lowest; seq--)
+            {
+                if (skip == null || !skip.Contains(seq))
+                    yield return seq;
+            }
         }
     }
 }

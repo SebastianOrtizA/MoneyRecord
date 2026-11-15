@@ -410,6 +410,7 @@ namespace MoneyRecord.Services.Sync
                     // The shared folder (away from home, or the computer is off): the same copy, with the folder as the other store
                     // (Open() too is inside the try: resolving a saved folder is where a revoked permission shows. Platform stores throw their own
                     // exception types, so anything but a cancellation counts as "the folder is not available".)
+                    ISyncStore? openedFolder = null;
                     if (sharedFolder != null)
                     {
                         try
@@ -418,8 +419,7 @@ namespace MoneyRecord.Services.Sync
                             {
                                 await SyncStores.CopyMissingAsync(store, shared);
                                 await SyncStores.CopyMissingAsync(shared, store);
-                                // Files that a base file replaces are deleted in the folder too, or it would grow a file per sync for ever
-                                await engine.PruneAsync(shared);
+                                openedFolder = shared;
                                 // The computer not answering is no problem when the folder did the work (with several computers the
                                 // last one's outcome wins, as before)
                                 if (outcome == SyncOutcome.Unreachable)
@@ -437,6 +437,10 @@ namespace MoneyRecord.Services.Sync
                     {
                         await engine.ApplyAsync(store);
                         await engine.PruneAsync(store);
+                        // Files that a base file replaces are deleted in the folder too, or it would grow a file per sync for ever. After the
+                        // apply, so a base applied in this run counts at once (the local copies are gone: they would be copied back next run)
+                        if (openedFolder != null)
+                            await TryPruneFolderAsync(engine, openedFolder);
                     }
                     catch (SyncVersionException)
                     {
@@ -485,6 +489,18 @@ namespace MoneyRecord.Services.Sync
         {
             sharedFolder?.Clear();
             return Task.CompletedTask;
+        }
+
+        /// <summary>Housekeeping of the shared folder: a failure here (a provider that refuses a delete) never fails the sync, the next run tries again.</summary>
+        private static async Task TryPruneFolderAsync(SyncEngine engine, ISyncStore folder)
+        {
+            try
+            {
+                await engine.PruneAsync(folder);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+            }
         }
 
         /// <summary>Another device wrote change files into this device's store (it is listening): apply them.</summary>

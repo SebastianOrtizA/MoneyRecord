@@ -150,7 +150,9 @@ namespace MoneyRecord.Services.Sync
             var deleted = 0;
             foreach (var (device, baseSeq) in bases.Where(b => b.Value > 0))
             {
-                foreach (var seq in (await prunable.SeqsAsync(device)).Where(n => n < baseSeq))
+                // Highest first: a delete that fails half way leaves the lowest files, which a device behind still applies in order and then
+                // reaches the hole before the base; deleting upwards could leave non-base files in front of it (a stuck reader)
+                foreach (var seq in (await prunable.SeqsAsync(device)).Where(n => n < baseSeq).OrderByDescending(n => n))
                 {
                     await prunable.DeleteAsync(device, seq);
                     deleted++;
