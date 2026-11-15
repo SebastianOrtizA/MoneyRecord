@@ -1,6 +1,7 @@
 using System.Globalization;
 using Android.Content;
 using Android.Provider;
+using Microsoft.Extensions.Logging;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Sync;
 using Application = Android.App.Application;
@@ -14,7 +15,7 @@ namespace MoneyRecord.Platforms.Android
     /// <c>&lt;chosen folder&gt;/MoneyRecordSync/&lt;device&gt;/&lt;seq&gt;.chg</c>. The user can take the permission back or delete the
     /// folder: then <see cref="Name"/> is null and <see cref="Open"/> throws (the sync reports "folder unavailable").
     /// </summary>
-    public sealed class AndroidSyncFolder(IPreferencesService preferences) : ISyncFolder
+    public sealed class AndroidSyncFolder(IPreferencesService preferences, ILogger<AndroidSyncFolder> logger) : ISyncFolder
     {
         private const string FolderUriKey = "Sync.FolderUri";
         private const string RootName = "MoneyRecordSync";
@@ -38,8 +39,9 @@ namespace MoneyRecord.Platforms.Android
                         [DocumentsContract.Document.ColumnDisplayName], null, null, null);
                     return cursor?.MoveToFirst() == true ? cursor.GetString(0) : null;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    logger.LogWarning(ex, "The sync folder can't be reached");
                     return null; // deleted, or its provider app was uninstalled
                 }
             }
@@ -132,12 +134,21 @@ namespace MoneyRecord.Platforms.Android
             private string? Root(bool create) =>
                 _rootId ??= Folder(DocumentsContract.GetTreeDocumentId(tree)!, RootName, create);
 
-            public Task<IReadOnlyList<string>> DevicesAsync() =>
-                Task.FromResult<IReadOnlyList<string>>(Root(create: false) is { } root
-                    ? List(root).Where(e => e.IsDirectory).Select(e => e.Name).ToList()
-                    : []);
+            // The provider calls block (Drive and Nextcloud can take seconds): off the caller's thread, which may be the UI's
+            public Task<IReadOnlyList<string>> DevicesAsync() => Task.Run(Devices);
 
-            public Task<long> LastSeqAsync(string deviceId)
+            public Task<long> LastSeqAsync(string deviceId) => Task.Run(() => LastSeq(deviceId));
+
+            public Task<byte[]?> ReadAsync(string deviceId, long seq) => Task.Run(() => Read(deviceId, seq));
+
+            public Task WriteAsync(string deviceId, long seq, byte[] data) => Task.Run(() => Write(deviceId, seq, data));
+
+            private IReadOnlyList<string> Devices() =>
+                Root(create: false) is { } root
+                    ? List(root).Where(e => e.IsDirectory).Select(e => e.Name).ToList()
+                    : [];
+
+            private long LastSeq(string deviceId)
             {
                 long last = 0;
                 if (Root(create: false) is { } root && Folder(root, deviceId, create: false) is { } device)
@@ -151,35 +162,36 @@ namespace MoneyRecord.Platforms.Android
                             last = Math.Max(last, n);
                     }
                 }
-                return Task.FromResult(last);
+                return last;
             }
 
             private static string NameOf(long seq) => $"{seq:D8}{Extension}";
 
-            public Task<byte[]?> ReadAsync(string deviceId, long seq)
+            private byte[]? Read(string deviceId, long seq)
             {
                 if (Root(create: false) is not { } root || Folder(root, deviceId, create: false) is not { } device
                     || List(device).FirstOrDefault(e => !e.IsDirectory && e.Name == NameOf(seq)) is not { } file)
-                    return Task.FromResult<byte[]?>(null);
+                    return null;
                 using var input = Resolver.OpenInputStream(DocumentUri(tree, file.Id)) ?? throw new IOException("The sync folder can't read a file");
                 using var memory = new MemoryStream();
                 input.CopyTo(memory);
-                return Task.FromResult<byte[]?>(memory.ToArray());
+                return memory.ToArray();
             }
 
-            public Task WriteAsync(string deviceId, long seq, byte[] data)
+            private void Write(string deviceId, long seq, byte[] data)
             {
                 var root = Root(create: true)!;
                 var device = Folder(root, deviceId, create: true)!;
-                var existing = List(device).FirstOrDefault(e => !e.IsDirectory && e.Name == NameOf(seq));
+                // The file is already there: the same content again (a file is never changed once written), nothing to do. Replacing it
+                // (delete, then rename) could lose it if the rename failed.
+                if (List(device).Any(e => !e.IsDirectory && e.Name == NameOf(seq)))
+                    return;
                 var temp = DocumentsContract.CreateDocument(Resolver, DocumentUri(tree, device), "application/octet-stream", NameOf(seq) + TempSuffix)
                     ?? throw new IOException("The sync folder refused a new file");
                 try
                 {
                     using (var output = Resolver.OpenOutputStream(temp, "w") ?? throw new IOException("The sync folder can't write a file"))
                         output.Write(data, 0, data.Length);
-                    if (existing != null)
-                        DocumentsContract.DeleteDocument(Resolver, DocumentUri(tree, existing.Id)); // the same content again: replaced
                     if (DocumentsContract.RenameDocument(Resolver, temp, NameOf(seq)) == null)
                         throw new IOException("The sync folder can't rename a file");
                 }
@@ -196,7 +208,6 @@ namespace MoneyRecord.Platforms.Android
                     throw;
                 }
                 _listings.Remove(device);
-                return Task.CompletedTask;
             }
         }
     }
