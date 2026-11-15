@@ -17,7 +17,7 @@ namespace MoneyRecord.Services.Sync.Lan
     /// </summary>
     public sealed class LanSyncServer(
         X509Certificate2 certificate, byte[] syncKey, string deviceId, string deviceName, ISyncStore store,
-        Func<Task<byte[]>> createSnapshot, ILanDeviceRegistry registry, TimeProvider? time = null) : IAsyncDisposable
+        Func<Task<byte[]>> createSnapshot, ILanDeviceRegistry registry, TimeProvider? time = null, IBlobStore? blobs = null) : IAsyncDisposable
     {
         public const int Protocol = 1;
         private const int MaxConnections = 16;
@@ -222,8 +222,40 @@ namespace MoneyRecord.Services.Sync.Lan
                 }
                 case "snapshot":
                     return new LanMessage(new() { ["ok"] = "1" }, await createSnapshot());
+                case "blob-has" or "blob-get" or "blob-put":
+                    return await ServeBlobAsync(request);
                 default:
                     return Reply("error", "op");
+            }
+        }
+
+        /// <summary>Receipt blobs (sealed, so this device holds nothing it can read): present, read, write. The name is a hash, never a path.</summary>
+        private async Task<LanMessage> ServeBlobAsync(LanMessage request)
+        {
+            if (blobs == null)
+                return Reply("error", "op");
+            var hash = request["hash"];
+            if (!SyncBlobs.IsHash(hash))
+                return Reply("error", "bad");
+
+            switch (request["op"])
+            {
+                case "blob-has":
+                    return new LanMessage(new() { ["ok"] = "1", ["found"] = await blobs.HasAsync(hash) ? "1" : "0" });
+                case "blob-get":
+                {
+                    var data = await blobs.ReadBlobAsync(hash);
+                    return new LanMessage(new() { ["ok"] = "1", ["found"] = data == null ? "0" : "1" }, data);
+                }
+                default:
+                {
+                    if (request.Body == null || request.Body.Length > SyncBlobs.MaxSealedBytes || SyncBlobs.Open(syncKey, hash, request.Body) == null)
+                        return Reply("error", "bad");
+                    await _storeLock.WaitAsync(_stop.Token);
+                    try { await blobs.WriteBlobAsync(hash, request.Body); }
+                    finally { _storeLock.Release(); }
+                    return new LanMessage(new() { ["ok"] = "1" });
+                }
             }
         }
 
