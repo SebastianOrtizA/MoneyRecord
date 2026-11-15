@@ -3661,4 +3661,10 @@
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} dan perangkat ini tidak akan lagi menyinkronkan. Untuk menyinkronkan lagi, hubungkan keduanya lagi dengan kode baru.</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>Pindai kode QR</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>Pemindaian tidak tersedia di ponsel ini. Gunakan Hubungkan ke perangkat lalu ketik kodenya.</value>
+  </data>
 </root>

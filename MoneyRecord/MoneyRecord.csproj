@@ -132,6 +132,8 @@
 		<PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0.30" />
 		<!-- Receipt OCR: ML Kit text recognition with the model bundled in the APK (on the phone, no Play Services needed) -->
 		<PackageReference Include="Xamarin.Google.MLKit.TextRecognition" Version="116.0.1.4" />
+		<!-- Sync pairing: Google's code scanner (QR) through Play services; no camera permission, typed code stays the fallback -->
+		<PackageReference Include="Xamarin.GooglePlayServices.Code.Scanner" Version="116.1.0.8" />
 	</ItemGroup>
 
 	<!-- Windows only: DPAPI for the database key, backup password and PIN (SecureStorage needs a packaged app) -->

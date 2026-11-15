@@ -3660,4 +3660,10 @@
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} et cet appareil ne seront plus synchronisés. Pour resynchroniser, reconnecte-les avec un nouveau code.</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>Scanner le code QR</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>Le scan n'est pas disponible sur ce téléphone. Utilisez « Se connecter à un appareil » et saisissez le code.</value>
+  </data>
 </root>

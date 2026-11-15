@@ -237,6 +237,13 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IReceiptScanner, NoReceiptScanner>();
 #endif
 
+            // Sync pairing: scan the QR the computer shows (Android: Google's code scanner)
+#if ANDROID
+            builder.Services.AddSingleton<IQrScanner, Platforms.Android.AndroidQrScanner>();
+#else
+            builder.Services.AddSingleton<IQrScanner, NoQrScanner>();
+#endif
+
             // Support: tips through Play Billing in the Google Play build (-p:Distribution=Play); no Support screen elsewhere
 #if PLAY_STORE
             builder.Services.AddSingleton<ITipJar, Platforms.Android.PlayTipJar>();

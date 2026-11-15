@@ -3713,4 +3713,10 @@
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} and this device will stop syncing. To sync again, connect them again with a new code.</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>Scan the QR code</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>Scanning isn't available on this phone. Use Connect to a device and type the code instead.</value>
+  </data>
 </root>

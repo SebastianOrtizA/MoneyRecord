@@ -3659,4 +3659,10 @@
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} और यह डिवाइस अब सिंक नहीं करेंगे। फिर से सिंक करने के लिए उन्हें नए कोड से दोबारा जोड़ें।</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>QR कोड स्कैन करें</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>इस फ़ोन पर स्कैन उपलब्ध नहीं है। «डिवाइस से जुड़ें» चुनकर कोड टाइप करें।</value>
+  </data>
 </root>

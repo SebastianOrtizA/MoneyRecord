@@ -15,7 +15,9 @@ public sealed class SyncViewModelTests
     private readonly IErrorHandler _errors = Substitute.For<IErrorHandler>();
     private readonly IClipboardService _clipboard = Substitute.For<IClipboardService>();
 
-    private SyncViewModel Create() => new(_sync, _dialogs, _errors, _clipboard);
+    private readonly IQrScanner _scanner = Substitute.For<IQrScanner>();
+
+    private SyncViewModel Create() => new(_sync, _dialogs, _errors, _clipboard, _scanner);
 
     private void Status(bool enabled, bool canListen, bool listening = false, params SyncPeer[] peers) =>
         _sync.GetStatusAsync().Returns(new SyncStatus(true, enabled, canListen, listening, "My device", peers));
@@ -82,6 +84,26 @@ public sealed class SyncViewModelTests
         _sync.PairAsync("moneyrecord-sync:1:abc").Returns(SyncOutcome.Done);
         await vm.ConnectCommand.ExecuteAsync(null);
         await _sync.Received(1).PairAsync("moneyrecord-sync:1:abc");
+    }
+
+    [Fact]
+    public async Task Scan_PairsWithTheScannedCode_AfterConfirming_AndDoesNothingWhenCancelled()
+    {
+        Status(enabled: false, canListen: false);
+        _scanner.IsSupported.Returns(true);
+        _dialogs.ConfirmAsync(default!, default!, default!, default!).ReturnsForAnyArgs(true);
+        _sync.PairAsync("moneyrecord-sync:1:qr").Returns(SyncOutcome.Done);
+        var vm = Create();
+        await vm.InitializeAsync();
+        vm.CanScan.Should().BeTrue();
+
+        _scanner.ScanAsync().Returns((string?)null);
+        await vm.ScanCodeCommand.ExecuteAsync(null);
+        await _sync.DidNotReceiveWithAnyArgs().PairAsync(default!);
+
+        _scanner.ScanAsync().Returns("moneyrecord-sync:1:qr");
+        await vm.ScanCodeCommand.ExecuteAsync(null);
+        await _sync.Received(1).PairAsync("moneyrecord-sync:1:qr");
     }
 
     [Theory]
