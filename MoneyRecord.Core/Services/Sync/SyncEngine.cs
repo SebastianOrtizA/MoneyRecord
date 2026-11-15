@@ -273,6 +273,8 @@ namespace MoneyRecord.Services.Sync
                 var removed = 0;
                 foreach (var group in rows.GroupBy(r => r.OccurrenceKey))
                 {
+                    // Raw deletes, not LedgerService.DeleteAsync: a transaction a schedule just made has no receipt; one the user added a receipt file
+                    // to and then lost to the lowest id leaves that file on disk (the usual orphan, no data is lost)
                     foreach (var extra in group.OrderBy(r => r.GlobalId, StringComparer.Ordinal).Skip(1))
                     {
                         db.Execute("DELETE FROM \"TransactionTag\" WHERE TransactionId = ?", extra.LocalId);
