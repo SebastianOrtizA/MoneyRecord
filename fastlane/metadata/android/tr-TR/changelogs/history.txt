@@ -1,3 +1,11 @@
+## 1.6.0
+- Uygulamayı kendi PIN'iyle kilitle; çok fazla hatalı denemeden sonra bekleme süresi uygulanır, istersen telefon kilidiyle birlikte kullan.
+- Ekran görüntülerini engelleyen ve uygulamayı son uygulamalarda gizleyen yeni bir seçenek.
+- Fiş fotoğrafları ve ekler artık veritabanınla birlikte şifreleniyor.
+- Yedeklerini parolayla korumak için bir hatırlatma; şifrelenmemiş dışa aktarmalar bu şekilde işaretlenir.
+- Windows için MoneyRecord: yedek klasörü, bildirimler ve fiş taramasıyla taşınabilir masaüstü sürümü.
+- Yeni diller: Almanca, Türkçe, Endonezce, Rusça ve Hintçe.
+
 ## 1.5.0
 - Banka ekstrelerini artık yalnızca CSV değil, OFX/QFX ve QIF dosyalarından da içe aktar: daha önce aktardığın kayıtlar atlanır.
 - YNAB ve Mint dışa aktarımlarını içe aktar: sütunlar senin için doldurulur.

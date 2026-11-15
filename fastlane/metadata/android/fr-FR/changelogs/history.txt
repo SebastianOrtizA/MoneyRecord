@@ -1,3 +1,11 @@
+## 1.6.0
+- Verrouille l'appli avec son propre code PIN, avec une attente après trop d'essais ratés, ou utilise-le avec le verrouillage du téléphone.
+- Nouvelle option pour bloquer les captures d'écran et masquer l'appli dans les applis récentes.
+- Les photos de reçus et les pièces jointes sont désormais chiffrées avec ta base de données.
+- Un rappel pour protéger tes sauvegardes par mot de passe, et les exports non chiffrés sont signalés comme tels.
+- MoneyRecord pour Windows : une version de bureau portable avec dossier de sauvegarde, notifications et lecture des reçus.
+- Nouvelles langues : allemand, turc, indonésien, russe et hindi.
+
 ## 1.5.0
 - Importez des relevés bancaires aux formats OFX/QFX et QIF, pas seulement CSV : les opérations déjà importées sont ignorées.
 - Importez les exports de YNAB et Mint : les colonnes sont remplies pour vous.

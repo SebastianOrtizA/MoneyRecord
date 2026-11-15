@@ -1,3 +1,11 @@
+## 1.6.0
+- Kunci aplikasi dengan PIN sendiri, dengan jeda setelah terlalu banyak percobaan salah, atau gunakan bersama kunci ponsel.
+- Opsi baru untuk memblokir tangkapan layar dan menyembunyikan aplikasi di aplikasi terbaru.
+- Foto struk dan lampiran kini dienkripsi bersama basis datamu.
+- Pengingat untuk melindungi cadangan dengan kata sandi, dan ekspor tanpa enkripsi diberi tanda.
+- MoneyRecord untuk Windows: versi desktop portabel dengan folder cadangan, notifikasi, dan pemindaian struk.
+- Bahasa baru: Jerman, Turki, Indonesia, Rusia, dan Hindi.
+
 ## 1.5.0
 - Impor mutasi bank dari file OFX/QFX dan QIF, bukan hanya CSV: catatan yang sudah pernah diimpor dilewati.
 - Impor ekspor dari YNAB dan Mint: kolomnya terisi otomatis.

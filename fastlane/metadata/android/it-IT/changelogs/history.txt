@@ -1,3 +1,11 @@
+## 1.6.0
+- Blocca l'app con un PIN tutto suo, con un'attesa dopo troppi tentativi sbagliati, oppure usalo insieme al blocco del telefono.
+- Nuova opzione per bloccare gli screenshot e nascondere l'app tra le app recenti.
+- Le foto delle ricevute e gli allegati ora sono cifrati insieme al tuo database.
+- Un promemoria per proteggere i backup con una password, e le esportazioni non cifrate sono contrassegnate come tali.
+- MoneyRecord per Windows: una versione desktop portatile con cartella di backup, notifiche e scansione delle ricevute.
+- Nuove lingue: tedesco, turco, indonesiano, russo e hindi.
+
 ## 1.5.0
 - Importa estratti conto in file OFX/QFX e QIF, non solo CSV: i movimenti già importati vengono saltati.
 - Importa le esportazioni di YNAB e Mint: le colonne vengono compilate per te.

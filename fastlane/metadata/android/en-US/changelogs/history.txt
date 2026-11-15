@@ -1,3 +1,11 @@
+## 1.6.0
+- Lock the app with its own PIN, with a wait after too many wrong tries, or use it together with the phone's lock.
+- New option to block screenshots and hide the app in recent apps.
+- Receipt photos and attachments are now encrypted together with your database.
+- A reminder to protect your backups with a password, and plain exports are marked as not encrypted.
+- MoneyRecord for Windows: a portable desktop version with backup folder, notifications and receipt scanning.
+- New languages: German, Turkish, Indonesian, Russian and Hindi.
+
 ## 1.5.0
 - Import bank statements in OFX/QFX and QIF files, not only CSV: entries you already imported are skipped.
 - Import exports from YNAB and Mint: the columns are filled in for you.
