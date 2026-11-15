@@ -1,3 +1,5 @@
+using MoneyRecord.Resources.Strings;
+using System.Globalization;
 using AwesomeAssertions;
 using MoneyRecord.Services.Pdf;
 using Xunit;
@@ -13,6 +15,40 @@ public class PdfFontsTests
         PdfFonts.CanShow('ñ').Should().BeTrue();
         PdfFonts.CanShow('€').Should().BeTrue();
         PdfFonts.CanShow('▲').Should().BeFalse();
+    }
+
+    [Fact]
+    public void A_script_the_font_lacks_gets_English_labels_while_the_pdf_is_built_and_is_restored_after()
+    {
+        var before = (CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture, AppResources.Culture);
+        try
+        {
+            var hindi = new CultureInfo("hi-IN");
+            CultureInfo.CurrentCulture = hindi;
+            CultureInfo.CurrentUICulture = hindi;
+            AppResources.Culture = hindi;
+
+            using (PdfFonts.LatinScope())
+            {
+                CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Should().Be("en");
+                CultureInfo.CurrentCulture.Name.Should().Be("en-IN");
+                AppResources.Culture!.TwoLetterISOLanguageName.Should().Be("en");
+            }
+
+            CultureInfo.CurrentUICulture.Name.Should().Be("hi-IN");
+            AppResources.Culture!.Name.Should().Be("hi-IN");
+
+            // Latin and Cyrillic languages are drawn by the font itself: no change
+            CultureInfo.CurrentUICulture = new CultureInfo("ru-RU");
+            using (PdfFonts.LatinScope())
+                CultureInfo.CurrentUICulture.Name.Should().Be("ru-RU");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = before.CurrentCulture;
+            CultureInfo.CurrentUICulture = before.CurrentUICulture;
+            AppResources.Culture = before.Culture;
+        }
     }
 
     [Theory]

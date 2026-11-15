@@ -155,6 +155,7 @@ public sealed class ReceiptReaderTests
     [InlineData("tr-TR", "Ara Toplam 20,00", "KDV 2,00", "TOPLAM 22,00", "Nakit 50,00", "Para Üstü 28,00", "14 Ekim 2026")]
     [InlineData("id-ID", "Subtotal 20,00", "PPN 2,00", "TOTAL 22,00", "Tunai 50,00", "Kembalian 28,00", "14 Oktober 2026")]
     [InlineData("ru-RU", "Подитог 20,00", "НДС 2,00", "ИТОГО 22,00", "Наличные 50,00", "Сдача 28,00", "14 октября 2026")]
+    [InlineData("hi-IN", "उप-योग 20,00", "जीएसटी 2,00", "कुल 22,00", "नकद 50,00", "शेष 28,00", "14 अक्तूबर 2026")]
     [InlineData("ru-RU", "Всего товаров 3,00", "НДС 2,00", "ИТОГО 22,00", "Наличные 50,00", "Сдача 28,00", "14 октября 2026")]
     [InlineData("id-ID", "Jumlah barang 3,00", "PPN 2,00", "TOTAL 22,00", "Tunai 50,00", "Kembalian 28,00", "14 Oktober 2026")]
     [InlineData("tr-TR", "İNDİRİM 3,00", "KDV DAHİL 2,00", "TOPLAM 22,00", "Nakit 50,00", "Para Üstü 28,00", "14 Ekim 2026")]

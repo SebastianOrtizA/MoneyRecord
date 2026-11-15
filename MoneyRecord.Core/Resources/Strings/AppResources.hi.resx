@@ -1,0 +1,3548 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>मनी रिकॉर्ड</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>रद्द करें</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>सहेजें</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>हटाएं</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>बदलें</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>ठीक है</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>गड़बड़ी</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>पक्का करें</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>हाँ</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>नहीं</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>होम</value>
+  </data>
+  <data name="Transfers" xml:space="preserve">
+    <value>ट्रांसफ़र</value>
+  </data>
+  <data name="ManageAccounts" xml:space="preserve">
+    <value>खाते संभालें</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>खाते</value>
+  </data>
+  <data name="IncomeCategories" xml:space="preserve">
+    <value>आय की श्रेणियां</value>
+  </data>
+  <data name="ExpenseCategories" xml:space="preserve">
+    <value>खर्च की श्रेणियां</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>सारांश</value>
+  </data>
+  <data name="SelectPeriod" xml:space="preserve">
+    <value>अवधि चुनें</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>से:</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>तक:</value>
+  </data>
+  <data name="TotalBalance" xml:space="preserve">
+    <value>कुल बैलेंस</value>
+  </data>
+  <data name="Incomes" xml:space="preserve">
+    <value>आय</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>खर्च</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>आय</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>ट्रांसफ़र</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>खर्च</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>लेन-देन</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>बदलें</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>हटाएं</value>
+  </data>
+  <data name="CalendarMonth" xml:space="preserve">
+    <value>कैलेंडर महीना</value>
+  </data>
+  <data name="CalendarYear" xml:space="preserve">
+    <value>कैलेंडर वर्ष</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>आज</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>पिछला हफ़्ता</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>पिछला महीना</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>पिछला साल</value>
+  </data>
+  <data name="CustomPeriod" xml:space="preserve">
+    <value>अपनी अवधि</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>सूची</value>
+  </data>
+  <data name="GroupByCategory" xml:space="preserve">
+    <value>श्रेणी के अनुसार</value>
+  </data>
+  <data name="GroupByAccount" xml:space="preserve">
+    <value>खाते के अनुसार</value>
+  </data>
+  <data name="Ungrouped" xml:space="preserve">
+    <value>बिना समूह</value>
+  </data>
+  <data name="Grouped" xml:space="preserve">
+    <value>समूह में</value>
+  </data>
+  <data name="SortOldestFirst" xml:space="preserve">
+    <value>सबसे पुराना पहले</value>
+  </data>
+  <data name="SortNewestFirst" xml:space="preserve">
+    <value>सबसे नया पहले</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>क्रम</value>
+  </data>
+  <data name="AddTransaction" xml:space="preserve">
+    <value>लेन-देन जोड़ें</value>
+  </data>
+  <data name="AddIncome" xml:space="preserve">
+    <value>आय जोड़ें</value>
+  </data>
+  <data name="AddExpense" xml:space="preserve">
+    <value>खर्च जोड़ें</value>
+  </data>
+  <data name="EditIncome" xml:space="preserve">
+    <value>आय बदलें</value>
+  </data>
+  <data name="EditExpense" xml:space="preserve">
+    <value>खर्च बदलें</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>तारीख़</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>विवरण</value>
+  </data>
+  <data name="EnterDescription" xml:space="preserve">
+    <value>विवरण लिखें</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>रकम</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>खाता</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>खाता चुनें</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>श्रेणी</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>श्रेणी चुनें</value>
+  </data>
+  <data name="NewTransfer" xml:space="preserve">
+    <value>नया ट्रांसफ़र</value>
+  </data>
+  <data name="EditTransfer" xml:space="preserve">
+    <value>ट्रांसफ़र बदलें</value>
+  </data>
+  <data name="NoTransfers" xml:space="preserve">
+    <value>अभी कोई ट्रांसफ़र नहीं</value>
+  </data>
+  <data name="TransferBetweenAccounts" xml:space="preserve">
+    <value>अपने खातों के बीच पैसे भेजें</value>
+  </data>
+  <data name="FromAccount" xml:space="preserve">
+    <value>किस खाते से *</value>
+  </data>
+  <data name="ToAccount" xml:space="preserve">
+    <value>किस खाते में *</value>
+  </data>
+  <data name="SelectSourceAccount" xml:space="preserve">
+    <value>भेजने वाला खाता चुनें</value>
+  </data>
+  <data name="SelectDestinationAccount" xml:space="preserve">
+    <value>पाने वाला खाता चुनें</value>
+  </data>
+  <data name="TransferButton" xml:space="preserve">
+    <value>ट्रांसफ़र करें</value>
+  </data>
+  <data name="TransferDescription" xml:space="preserve">
+    <value>विवरण</value>
+  </data>
+  <data name="TransferOptional" xml:space="preserve">
+    <value>ट्रांसफ़र (वैकल्पिक)</value>
+  </data>
+  <data name="FromLabel" xml:space="preserve">
+    <value>से:</value>
+  </data>
+  <data name="ToLabel" xml:space="preserve">
+    <value>तक:</value>
+  </data>
+  <data name="AddNewAccount" xml:space="preserve">
+    <value>नया खाता जोड़ें</value>
+  </data>
+  <data name="EditAccount" xml:space="preserve">
+    <value>खाता बदलें</value>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>खाते का नाम</value>
+  </data>
+  <data name="AccountNamePlaceholder" xml:space="preserve">
+    <value>जैसे बैंक खाता, नकद, क्रेडिट कार्ड</value>
+  </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>शुरुआती बैलेंस</value>
+  </data>
+  <data name="SelectIcon" xml:space="preserve">
+    <value>आइकन चुनें</value>
+  </data>
+  <data name="AddAccountButton" xml:space="preserve">
+    <value>खाता जोड़ें</value>
+  </data>
+  <data name="UpdateAccount" xml:space="preserve">
+    <value>खाता अपडेट करें</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>बदलाव रद्द करें</value>
+  </data>
+  <data name="NoAccounts" xml:space="preserve">
+    <value>अभी कोई खाता नहीं। पहला खाता जोड़ने के लिए + दबाएं।</value>
+  </data>
+  <data name="AllowNegativeBalance" xml:space="preserve">
+    <value>नेगेटिव बैलेंस की अनुमति</value>
+  </data>
+  <data name="InsufficientAccountBalance" xml:space="preserve">
+    <value>इस खर्च से बैलेंस नेगेटिव हो जाएगा। खाता &apos;{0}&apos; में नेगेटिव बैलेंस की अनुमति नहीं है।</value>
+  </data>
+  <data name="NegativeBalanceNotAllowed" xml:space="preserve">
+    <value>शुरुआती बैलेंस नेगेटिव नहीं हो सकता। नेगेटिव रकम के लिए &apos;नेगेटिव बैलेंस की अनुमति&apos; चालू करें।</value>
+  </data>
+  <data name="AddNewCategory" xml:space="preserve">
+    <value>नई श्रेणी जोड़ें</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>श्रेणी बदलें</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>श्रेणी का नाम</value>
+  </data>
+  <data name="AddCategoryButton" xml:space="preserve">
+    <value>श्रेणी जोड़ें</value>
+  </data>
+  <data name="UpdateCategory" xml:space="preserve">
+    <value>श्रेणी अपडेट करें</value>
+  </data>
+  <data name="YourCategories" xml:space="preserve">
+    <value>आपकी श्रेणियां</value>
+  </data>
+  <data name="NoCategories" xml:space="preserve">
+    <value>अभी कोई श्रेणी नहीं। ऊपर से पहली श्रेणी जोड़ें।</value>
+  </data>
+  <data name="TotalExpenses" xml:space="preserve">
+    <value>कुल खर्च</value>
+  </data>
+  <data name="TotalIncome" xml:space="preserve">
+    <value>कुल आय</value>
+  </data>
+  <data name="CategoryBreakdown" xml:space="preserve">
+    <value>श्रेणी के अनुसार ब्योरा</value>
+  </data>
+  <data name="NoExpenseData" xml:space="preserve">
+    <value>इस अवधि का कोई खर्च नहीं</value>
+  </data>
+  <data name="NoIncomeData" xml:space="preserve">
+    <value>इस अवधि की कोई आय नहीं</value>
+  </data>
+  <data name="AddExpensesToStart" xml:space="preserve">
+    <value>खर्च का ब्योरा देखने के लिए कुछ खर्च जोड़ें</value>
+  </data>
+  <data name="AddIncomeToStart" xml:space="preserve">
+    <value>कमाई का ब्योरा देखने के लिए कुछ आय जोड़ें</value>
+  </data>
+  <data name="NoExpenseDataFound" xml:space="preserve">
+    <value>कोई खर्च नहीं मिला</value>
+  </data>
+  <data name="NoIncomeDataFound" xml:space="preserve">
+    <value>कोई आय नहीं मिली</value>
+  </data>
+  <data name="AddExpenseTransactionsToSee" xml:space="preserve">
+    <value>खर्च का विश्लेषण देखने के लिए कुछ खर्च जोड़ें</value>
+  </data>
+  <data name="AddIncomeTransactionsToSee" xml:space="preserve">
+    <value>कमाई का विश्लेषण देखने के लिए कुछ आय जोड़ें</value>
+  </data>
+  <data name="PleaseEnterValidAmount" xml:space="preserve">
+    <value>सही रकम डालें</value>
+  </data>
+  <data name="PleaseSelectAccount" xml:space="preserve">
+    <value>कोई खाता चुनें</value>
+  </data>
+  <data name="PleaseSelectCategory" xml:space="preserve">
+    <value>कोई श्रेणी चुनें</value>
+  </data>
+  <data name="PleaseEnterCategoryName" xml:space="preserve">
+    <value>श्रेणी का नाम लिखें</value>
+  </data>
+  <data name="PleaseEnterAccountName" xml:space="preserve">
+    <value>खाते का नाम लिखें</value>
+  </data>
+  <data name="PleaseSelectSourceAccount" xml:space="preserve">
+    <value>भेजने वाला खाता चुनें</value>
+  </data>
+  <data name="PleaseSelectDestinationAccount" xml:space="preserve">
+    <value>पाने वाला खाता चुनें</value>
+  </data>
+  <data name="SourceDestinationMustBeDifferent" xml:space="preserve">
+    <value>भेजने और पाने वाले खाते अलग-अलग होने चाहिए</value>
+  </data>
+  <data name="InsufficientFunds" xml:space="preserve">
+    <value>भेजने वाले खाते में पैसे कम हैं</value>
+  </data>
+  <data name="DeleteTransaction" xml:space="preserve">
+    <value>लेन-देन हटाएं</value>
+  </data>
+  <data name="DeleteTransactionConfirm" xml:space="preserve">
+    <value>क्या आप यह लेन-देन हटाना चाहते हैं?</value>
+  </data>
+  <data name="DeleteTransfer" xml:space="preserve">
+    <value>ट्रांसफ़र हटाएं</value>
+  </data>
+  <data name="DeleteTransferConfirm" xml:space="preserve">
+    <value>क्या आप यह ट्रांसफ़र हटाना चाहते हैं?</value>
+  </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>श्रेणी हटाएं</value>
+  </data>
+  <data name="DeleteCategoryConfirm" xml:space="preserve">
+    <value>क्या आप यह श्रेणी हटाना चाहते हैं?</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>खाता हटाएं</value>
+  </data>
+  <data name="DeleteAccountConfirm" xml:space="preserve">
+    <value>क्या आप यह खाता हटाना चाहते हैं?</value>
+  </data>
+  <data name="CannotDelete" xml:space="preserve">
+    <value>हटाया नहीं जा सकता</value>
+  </data>
+  <data name="LastCategoryCannotDelete" xml:space="preserve">
+    <value>इस तरह की यह आखिरी श्रेणी है। इसमें लेन-देन होने पर इसे हटाया नहीं जा सकता। पहले कोई दूसरी श्रेणी बनाएं।</value>
+  </data>
+  <data name="CategoryHasTransactions" xml:space="preserve">
+    <value>&apos;{0}&apos; के लिए नई श्रेणी चुनें:</value>
+  </data>
+  <data name="AvailableBalance" xml:space="preserve">
+    <value>उपलब्ध: {0}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>वापस</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>श्रेणियां</value>
+  </data>
+  <data name="NoCategoriesYet" xml:space="preserve">
+    <value>अभी कोई श्रेणी नहीं</value>
+  </data>
+  <data name="DefaultAccountCash" xml:space="preserve">
+    <value>नकद</value>
+  </data>
+  <data name="DefaultCategorySalary" xml:space="preserve">
+    <value>वेतन</value>
+  </data>
+  <data name="DefaultCategoryFreelance" xml:space="preserve">
+    <value>फ़्रीलांस</value>
+  </data>
+  <data name="DefaultCategoryInvestment" xml:space="preserve">
+    <value>निवेश</value>
+  </data>
+  <data name="DefaultCategoryOtherIncome" xml:space="preserve">
+    <value>अन्य आय</value>
+  </data>
+  <data name="DefaultCategoryFood" xml:space="preserve">
+    <value>खाना</value>
+  </data>
+  <data name="DefaultCategoryTransportation" xml:space="preserve">
+    <value>आना-जाना</value>
+  </data>
+  <data name="DefaultCategoryEntertainment" xml:space="preserve">
+    <value>मनोरंजन</value>
+  </data>
+  <data name="DefaultCategoryUtilities" xml:space="preserve">
+    <value>बिल</value>
+  </data>
+  <data name="DefaultCategoryShopping" xml:space="preserve">
+    <value>शॉपिंग</value>
+  </data>
+  <data name="DefaultCategoryHome" xml:space="preserve">
+    <value>घर</value>
+  </data>
+  <data name="DefaultCategoryOtherExpense" xml:space="preserve">
+    <value>अन्य खर्च</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>सफल</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>हटाना पक्का करें</value>
+  </data>
+  <data name="YesDelete" xml:space="preserve">
+    <value>हाँ, हटाएं</value>
+  </data>
+  <data name="FailedToLoadAccountBalances" xml:space="preserve">
+    <value>खातों का बैलेंस लोड नहीं हो सका</value>
+  </data>
+  <data name="FailedToLoadReportData" xml:space="preserve">
+    <value>रिपोर्ट का डेटा लोड नहीं हो सका</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>कुल</value>
+  </data>
+  <data name="CannotDeleteDefaultAccount" xml:space="preserve">
+    <value>डिफ़ॉल्ट नकद खाता हटाया नहीं जा सकता</value>
+  </data>
+  <data name="DeleteAccountWithTransactions" xml:space="preserve">
+    <value>क्या आप &apos;{0}&apos; हटाना चाहते हैं?
+
+{1} लेन-देन और {2} नियमित नियम &apos;{3}&apos; में चले जाएंगे।</value>
+  </data>
+  <data name="DeleteAccountNoTransactions" xml:space="preserve">
+    <value>क्या आप &apos;{0}&apos; हटाना चाहते हैं?</value>
+  </data>
+  <data name="CategoryDeletedAndTransactionsMoved" xml:space="preserve">
+    <value>श्रेणी &apos;{0}&apos; हट गई और {1} लेन-देन &apos;{2}&apos; में चले गए</value>
+  </data>
+  <data name="DeleteCategoryConfirmation" xml:space="preserve">
+    <value>क्या आप &apos;{0}&apos; हटाना चाहते हैं?</value>
+  </data>
+  <data name="TransferUpdatedSuccessfully" xml:space="preserve">
+    <value>ट्रांसफ़र अपडेट हो गया</value>
+  </data>
+  <data name="FailedToSaveTransfer" xml:space="preserve">
+    <value>ट्रांसफ़र सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToLoadTransfers" xml:space="preserve">
+    <value>ट्रांसफ़र लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToDeleteTransfer" xml:space="preserve">
+    <value>ट्रांसफ़र हटाया नहीं जा सका</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>उपलब्ध: {0}</value>
+  </data>
+  <data name="AddCategoryToBudget" xml:space="preserve">
+    <value>बजट में श्रेणी जोड़ें</value>
+  </data>
+  <data name="BudgetLimit" xml:space="preserve">
+    <value>बजट सीमा</value>
+  </data>
+  <data name="AddBudgetButton" xml:space="preserve">
+    <value>बजट जोड़ें</value>
+  </data>
+  <data name="NoBudgetsYet" xml:space="preserve">
+    <value>अभी कोई बजट नहीं</value>
+  </data>
+  <data name="AddBudgetToStart" xml:space="preserve">
+    <value>किसी खर्च श्रेणी की सीमा तय करने के लिए + दबाएं।</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>बचा</value>
+  </data>
+  <data name="Exceeded" xml:space="preserve">
+    <value>सीमा पार</value>
+  </data>
+  <data name="TotalBudgeted" xml:space="preserve">
+    <value>बजट</value>
+  </data>
+  <data name="TotalSpent" xml:space="preserve">
+    <value>खर्च हुआ</value>
+  </data>
+  <data name="TotalRemaining" xml:space="preserve">
+    <value>बचा</value>
+  </data>
+  <data name="BudgetAddedSuccessfully" xml:space="preserve">
+    <value>बजट जुड़ गया</value>
+  </data>
+  <data name="FailedToSaveBudget" xml:space="preserve">
+    <value>बजट सहेजा नहीं जा सका</value>
+  </data>
+  <data name="DeleteBudgetConfirmation" xml:space="preserve">
+    <value>क्या आप &apos;{0}&apos; को अपने बजट से हटाना चाहते हैं?</value>
+  </data>
+  <data name="FailedToDeleteBudget" xml:space="preserve">
+    <value>बजट हटाया नहीं जा सका</value>
+  </data>
+  <data name="EditBudget" xml:space="preserve">
+    <value>बजट बदलें</value>
+  </data>
+  <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
+    <value>लेन-देन अपडेट हो गया</value>
+  </data>
+  <data name="FailedToLoadTransactions" xml:space="preserve">
+    <value>लेन-देन लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToDeleteTransaction" xml:space="preserve">
+    <value>लेन-देन हटाया नहीं जा सका</value>
+  </data>
+  <data name="PerDay" xml:space="preserve">
+    <value>रोज़</value>
+  </data>
+  <data name="PerMonth" xml:space="preserve">
+    <value>हर महीने</value>
+  </data>
+  <data name="PerYear" xml:space="preserve">
+    <value>हर साल</value>
+  </data>
+  <data name="BudgetPeriod" xml:space="preserve">
+    <value>बजट अवधि</value>
+  </data>
+  <data name="BudgetExceeded" xml:space="preserve">
+    <value>⚠️ &apos;{0}&apos; का बजट पार हो गया! {2} की सीमा में से {1} खर्च हुए।</value>
+  </data>
+  <data name="BudgetNearLimit" xml:space="preserve">
+    <value>⚠️ &apos;{0}&apos; का बजट सीमा के पास है। सिर्फ़ {1} बचे हैं।</value>
+  </data>
+  <data name="BudgetSummary" xml:space="preserve">
+    <value>बजट सारांश</value>
+  </data>
+  <data name="OnTrack" xml:space="preserve">
+    <value>ठीक चल रहा है</value>
+  </data>
+  <data name="OverBudget" xml:space="preserve">
+    <value>बजट से ज़्यादा</value>
+  </data>
+  <data name="RecurringTransactions" xml:space="preserve">
+    <value>नियमित</value>
+  </data>
+  <data name="MakeRecurring" xml:space="preserve">
+    <value>नियमित बनाएं</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>कितनी बार</value>
+  </data>
+  <data name="SelectFrequency" xml:space="preserve">
+    <value>बारंबारता चुनें</value>
+  </data>
+  <data name="HasEndDate" xml:space="preserve">
+    <value>आखिरी तारीख़ तय करें</value>
+  </data>
+  <data name="EndDateOptional" xml:space="preserve">
+    <value>आखिरी तारीख़ (वैकल्पिक)</value>
+  </data>
+  <data name="FrequencyDaily" xml:space="preserve">
+    <value>रोज़</value>
+  </data>
+  <data name="FrequencyWeekly" xml:space="preserve">
+    <value>हर हफ़्ते</value>
+  </data>
+  <data name="FrequencyBiweekly" xml:space="preserve">
+    <value>हर 2 हफ़्ते</value>
+  </data>
+  <data name="FrequencyMonthly" xml:space="preserve">
+    <value>हर महीने</value>
+  </data>
+  <data name="FrequencyYearly" xml:space="preserve">
+    <value>हर साल</value>
+  </data>
+  <data name="NextOccurrence" xml:space="preserve">
+    <value>अगला</value>
+  </data>
+  <data name="NoRecurringTransactions" xml:space="preserve">
+    <value>कोई नियमित लेन-देन नहीं</value>
+  </data>
+  <data name="AddRecurringToStart" xml:space="preserve">
+    <value>नया तय करने के लिए + दबाएं, या लेन-देन जोड़ते समय &quot;नियमित बनाएं&quot; चालू करें</value>
+  </data>
+  <data name="DeleteRecurringConfirmation" xml:space="preserve">
+    <value>क्या आप नियमित लेन-देन &apos;{0}&apos; हटाना चाहते हैं?</value>
+  </data>
+  <data name="RecurringTransactionDeleted" xml:space="preserve">
+    <value>नियमित लेन-देन हट गया</value>
+  </data>
+  <data name="FailedToLoadRecurringTransactions" xml:space="preserve">
+    <value>नियमित लेन-देन लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToDeleteRecurringTransaction" xml:space="preserve">
+    <value>नियमित लेन-देन हटाया नहीं जा सका</value>
+  </data>
+  <data name="FailedToUpdateRecurringTransaction" xml:space="preserve">
+    <value>नियमित लेन-देन अपडेट नहीं हो सका</value>
+  </data>
+  <data name="SpecificDayOfMonth" xml:space="preserve">
+    <value>महीने का खास दिन</value>
+  </data>
+  <data name="SelectDay" xml:space="preserve">
+    <value>दिन चुनें</value>
+  </data>
+  <data name="DayN" xml:space="preserve">
+    <value>दिन {0}</value>
+  </data>
+  <data name="EditRecurring" xml:space="preserve">
+    <value>नियमित लेन-देन बदलें</value>
+  </data>
+  <data name="RecurringTransactionUpdated" xml:space="preserve">
+    <value>नियमित लेन-देन अपडेट हो गया</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>सेटिंग्स</value>
+  </data>
+  <data name="BackupRestore" xml:space="preserve">
+    <value>बैकअप और रीस्टोर</value>
+  </data>
+  <data name="BackupRestoreDescription" xml:space="preserve">
+    <value>अपना डेटा एक्सपोर्ट करें या बैकअप से वापस लाएं</value>
+  </data>
+  <data name="ExportFullBackup" xml:space="preserve">
+    <value>पूरा बैकअप एक्सपोर्ट करें (रसीदों समेत)</value>
+  </data>
+  <data name="SaveBackupLocal" xml:space="preserve">
+    <value>बैकअप फ़ोन में सहेजें</value>
+  </data>
+  <data name="ShareBackupExternal" xml:space="preserve">
+    <value>बैकअप शेयर करें</value>
+  </data>
+  <data name="ExportTransactionsCsv" xml:space="preserve">
+    <value>लेन-देन एक्सपोर्ट करें (CSV)</value>
+  </data>
+  <data name="RestoreFromBackup" xml:space="preserve">
+    <value>बैकअप से रीस्टोर करें</value>
+  </data>
+  <data name="RestoreNote" xml:space="preserve">
+    <value>बैकअप रीस्टोर करने पर मौजूदा सारा डेटा बदल जाता है। पहले आपका मौजूदा डेटा सहेजा जाता है, इसलिए रीस्टोर को पलटा जा सकता है।</value>
+  </data>
+  <data name="ShareBackup" xml:space="preserve">
+    <value>बैकअप शेयर करें</value>
+  </data>
+  <data name="ShareTransactions" xml:space="preserve">
+    <value>लेन-देन शेयर करें</value>
+  </data>
+  <data name="BackupCreatedSuccessfully" xml:space="preserve">
+    <value>बैकअप बन गया</value>
+  </data>
+  <data name="CsvExportedSuccessfully" xml:space="preserve">
+    <value>CSV एक्सपोर्ट हो गई</value>
+  </data>
+  <data name="FailedToCreateBackup" xml:space="preserve">
+    <value>बैकअप नहीं बन सका</value>
+  </data>
+  <data name="FailedToExportCsv" xml:space="preserve">
+    <value>CSV एक्सपोर्ट नहीं हो सकी</value>
+  </data>
+  <data name="ConfirmRestore" xml:space="preserve">
+    <value>रीस्टोर पक्का करें</value>
+  </data>
+  <data name="RestoreWarning" xml:space="preserve">
+    <value>इससे आपका मौजूदा सारा डेटा बैकअप के डेटा से बदल जाएगा। पहले आपका मौजूदा डेटा सहेजा जाता है, इसलिए आप रीस्टोर को पलट सकते हैं। आगे बढ़ें?</value>
+  </data>
+  <data name="YesRestore" xml:space="preserve">
+    <value>हाँ, रीस्टोर करें</value>
+  </data>
+  <data name="FailedToRestore" xml:space="preserve">
+    <value>बैकअप रीस्टोर नहीं हो सका</value>
+  </data>
+  <data name="RestoreSuccessful" xml:space="preserve">
+    <value>{0} रिकॉर्ड रीस्टोर हुए। आपका पिछला डेटा {1} के नाम से सहेजा गया है; उसे बाद में बैकअप सूची से वापस ला सकते हैं।</value>
+  </data>
+  <data name="RestoreComplete" xml:space="preserve">
+    <value>रीस्टोर पूरा हुआ</value>
+  </data>
+  <data name="UndoRestore" xml:space="preserve">
+    <value>रीस्टोर पलटें</value>
+  </data>
+  <data name="RestoreUndone" xml:space="preserve">
+    <value>रीस्टोर पलट गया: आपका पिछला डेटा वापस आ गया</value>
+  </data>
+  <data name="SelectBackupFile" xml:space="preserve">
+    <value>बैकअप फ़ाइल चुनें</value>
+  </data>
+  <data name="BaseCurrency" xml:space="preserve">
+    <value>मूल मुद्रा</value>
+  </data>
+  <data name="BaseCurrencyDescription" xml:space="preserve">
+    <value>कुल और रिपोर्ट इसी मुद्रा में दिखते हैं। दूसरी मुद्राओं के बैलेंस अलग से दिखते हैं, कभी जोड़े नहीं जाते।</value>
+  </data>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>हटाने से पहले बदलें</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>&apos;{0}&apos; {1} में है और डिफ़ॉल्ट खाता &apos;{2}&apos; {3} में। इसके लेन-देन और नियमित नियम &apos;{2}&apos; में चले जाते हैं, इसलिए उनकी रकम बदली जाएगी। दर या अंतिम रकम डालें: एक भरने पर दूसरी अपने-आप भर जाती है।</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>विनिमय दर</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>इसके लेन-देन का कुल: {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>{0} में कीमत</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>इसके लेन-देन का जोड़ शून्य है, इसलिए सिर्फ़ दर डाली जा सकती है।</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>यह वापस नहीं हो सकता।</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>बदलें और हटाएं</value>
+  </data>
+  <data name="SearchTransactions" xml:space="preserve">
+    <value>लेन-देन खोजें...</value>
+  </data>
+  <data name="FilterByType" xml:space="preserve">
+    <value>प्रकार</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>श्रेणी</value>
+  </data>
+  <data name="FilterByAccount" xml:space="preserve">
+    <value>खाता</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>सभी श्रेणियां</value>
+  </data>
+  <data name="AllAccounts" xml:space="preserve">
+    <value>सभी खाते</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>न्यूनतम</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>अधिकतम</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>साफ़ करें</value>
+  </data>
+  <data name="Trends" xml:space="preserve">
+    <value>रुझान</value>
+  </data>
+  <data name="NoTrendsData" xml:space="preserve">
+    <value>रुझान का डेटा नहीं है</value>
+  </data>
+  <data name="AddTransactionsForTrends" xml:space="preserve">
+    <value>खर्च के रुझान और पैटर्न देखने के लिए लेन-देन जोड़ें</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>टैग</value>
+  </data>
+  <data name="TagsPlaceholder" xml:space="preserve">
+    <value>जैसे राशन, हफ़्ते का, ज़रूरी</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>रसीद</value>
+  </data>
+  <data name="ReceiptAttached" xml:space="preserve">
+    <value>रसीद जुड़ी है</value>
+  </data>
+  <data name="CameraNotSupported" xml:space="preserve">
+    <value>इस फ़ोन में कैमरा काम नहीं करता</value>
+  </data>
+  <data name="FailedToTakePhoto" xml:space="preserve">
+    <value>फ़ोटो नहीं खींची जा सकी</value>
+  </data>
+  <data name="FailedToPickPhoto" xml:space="preserve">
+    <value>फ़ोटो नहीं चुनी जा सकी</value>
+  </data>
+  <data name="ViewReceipt" xml:space="preserve">
+    <value>रसीद देखें</value>
+  </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>फ़ोटो हटाएं</value>
+  </data>
+  <data name="CloseReceipt" xml:space="preserve">
+    <value>रसीद बंद करें</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>मुद्रा</value>
+  </data>
+  <data name="SelectCurrency" xml:space="preserve">
+    <value>मुद्रा चुनें</value>
+  </data>
+  <data name="DefaultCurrency" xml:space="preserve">
+    <value>डिफ़ॉल्ट मुद्रा</value>
+  </data>
+  <data name="RecentTransactions" xml:space="preserve">
+    <value>हाल के लेन-देन</value>
+  </data>
+  <data name="NetIncome" xml:space="preserve">
+    <value>शुद्ध</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>फटाफट काम</value>
+  </data>
+  <data name="AccountHasTransfers" xml:space="preserve">
+    <value>&apos;{0}&apos; में {1} ट्रांसफ़र हैं। पहले उन्हें ट्रांसफ़र पेज से हटाएं, ताकि दूसरे खातों का बैलेंस सही रहे।</value>
+  </data>
+  <data name="ConfirmCategoryMove" xml:space="preserve">
+    <value>{0} लेन-देन और {1} नियमित नियम &apos;{2}&apos; से &apos;{3}&apos; में ले जाकर &apos;{2}&apos; हटाएं?</value>
+  </data>
+  <data name="CategoryBudgetMoves" xml:space="preserve">
+    <value>इसका बजट &apos;{0}&apos; में चला जाएगा।</value>
+  </data>
+  <data name="CategoryBudgetDeleted" xml:space="preserve">
+    <value>इसका बजट हट जाएगा, क्योंकि &apos;{0}&apos; का बजट पहले से है।</value>
+  </data>
+  <data name="DeleteCategoryWithBudget" xml:space="preserve">
+    <value>क्या आप &apos;{0}&apos; हटाना चाहते हैं? इसका बजट भी हट जाएगा।</value>
+  </data>
+  <data name="DeleteFailedDataChanged" xml:space="preserve">
+    <value>&apos;{0}&apos; हटाया नहीं जा सका, क्योंकि इस बीच उसका डेटा बदल गया। फिर से कोशिश करें।</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>अज्ञात</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>सभी</value>
+  </data>
+  <data name="TransferToAccount" xml:space="preserve">
+    <value>{0} में ट्रांसफ़र</value>
+  </data>
+  <data name="TransferFromAccount" xml:space="preserve">
+    <value>{0} से ट्रांसफ़र</value>
+  </data>
+  <data name="TransactionCountOne" xml:space="preserve">
+    <value>{0} लेन-देन</value>
+  </data>
+  <data name="TransactionCountOther" xml:space="preserve">
+    <value>{0} लेन-देन</value>
+  </data>
+  <data name="DefaultTransferDescription" xml:space="preserve">
+    <value>ट्रांसफ़र</value>
+  </data>
+  <data name="FailedToDeleteAccount" xml:space="preserve">
+    <value>खाता हटाया नहीं जा सका</value>
+  </data>
+  <data name="FailedToDeleteCategory" xml:space="preserve">
+    <value>श्रेणी हटाई नहीं जा सकी</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>रिपोर्ट</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>बजट</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>अधिक</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>नया जोड़ें</value>
+  </data>
+  <data name="AddNewHint" xml:space="preserve">
+    <value>सीधे खर्च जोड़ने के लिए दो बार दबाकर रखें</value>
+  </data>
+  <data name="DuplicateButton" xml:space="preserve">
+    <value>कॉपी बनाएं</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>सब देखें</value>
+  </data>
+  <data name="ShowingCurrencyAccounts" xml:space="preserve">
+    <value>{0} खाते</value>
+  </data>
+  <data name="ShowAllAccounts" xml:space="preserve">
+    <value>सब दिखाएं</value>
+  </data>
+  <data name="FilterByAmount" xml:space="preserve">
+    <value>रकम</value>
+  </data>
+  <data name="FilterByTag" xml:space="preserve">
+    <value>टैग</value>
+  </data>
+  <data name="AllTags" xml:space="preserve">
+    <value>सभी टैग</value>
+  </data>
+  <data name="NoTransactionsInPeriod" xml:space="preserve">
+    <value>इस अवधि में कोई लेन-देन नहीं</value>
+  </data>
+  <data name="AddEntryHint" xml:space="preserve">
+    <value>खर्च, आय या ट्रांसफ़र जोड़ने के लिए + दबाएं।</value>
+  </data>
+  <data name="NoMatchingTransactions" xml:space="preserve">
+    <value>इन फ़िल्टर से कोई लेन-देन नहीं मिला</value>
+  </data>
+  <data name="TryOtherFilters" xml:space="preserve">
+    <value>और देखने के लिए फ़िल्टर बदलें या साफ़ करें।</value>
+  </data>
+  <data name="FilteredOfTotal" xml:space="preserve">
+    <value>{1} में से {0}</value>
+  </data>
+  <data name="MoreDetails" xml:space="preserve">
+    <value>और ब्योरा</value>
+  </data>
+  <data name="LastActivityDate" xml:space="preserve">
+    <value>आखिरी गतिविधि: {0}</value>
+  </data>
+  <data name="AccountCountOne" xml:space="preserve">
+    <value>खाते: {0}</value>
+  </data>
+  <data name="AccountCountOther" xml:space="preserve">
+    <value>खाते: {0}</value>
+  </data>
+  <data name="NearLimit" xml:space="preserve">
+    <value>सीमा के पास</value>
+  </data>
+  <data name="NoCategoriesLeftForBudget" xml:space="preserve">
+    <value>हर खर्च श्रेणी का बजट पहले से है।</value>
+  </data>
+  <data name="BudgetSpentOfLimit" xml:space="preserve">
+    <value>{1} में से {0}</value>
+  </data>
+  <data name="HomeSpentLine" xml:space="preserve">
+    <value>{0}: {1} खर्च हुए</value>
+  </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value>{0} बचे</value>
+  </data>
+  <data name="BudgetOver" xml:space="preserve">
+    <value>{0} ज़्यादा</value>
+  </data>
+  <data name="OtherCategories" xml:space="preserve">
+    <value>अन्य</value>
+  </data>
+  <data name="Spending" xml:space="preserve">
+    <value>खर्च</value>
+  </data>
+  <data name="DeltaVsPrevious" xml:space="preserve">
+    <value>पिछली अवधि से {0}</value>
+  </data>
+  <data name="DeltaNoChange" xml:space="preserve">
+    <value>पिछली अवधि जितना ही</value>
+  </data>
+  <data name="DeltaNothingBefore" xml:space="preserve">
+    <value>पिछली अवधि में कुछ नहीं</value>
+  </data>
+  <data name="CashFlow" xml:space="preserve">
+    <value>नकदी प्रवाह</value>
+  </data>
+  <data name="NetCashFlow" xml:space="preserve">
+    <value>शुद्ध नकदी प्रवाह</value>
+  </data>
+  <data name="NetWorth" xml:space="preserve">
+    <value>कुल संपत्ति</value>
+  </data>
+  <data name="NetWorthCurrencyOnly" xml:space="preserve">
+    <value>सिर्फ़ {0} के खाते</value>
+  </data>
+  <data name="BudgetVsActual" xml:space="preserve">
+    <value>बजट बनाम असल खर्च</value>
+  </data>
+  <data name="BudgetSeries" xml:space="preserve">
+    <value>बजट</value>
+  </data>
+  <data name="SpentSeries" xml:space="preserve">
+    <value>खर्च</value>
+  </data>
+  <data name="NetSeries" xml:space="preserve">
+    <value>शुद्ध</value>
+  </data>
+  <data name="MonthsShown" xml:space="preserve">
+    <value>महीने</value>
+  </data>
+  <data name="TotalSpending" xml:space="preserve">
+    <value>इन महीनों का खर्च</value>
+  </data>
+  <data name="SetupAssistant" xml:space="preserve">
+    <value>सेटअप गाइड</value>
+  </data>
+  <data name="SetupAssistantDescription" xml:space="preserve">
+    <value>भाषा, मूल मुद्रा, शुरुआती खाते और श्रेणियां</value>
+  </data>
+  <data name="SetupWelcome" xml:space="preserve">
+    <value>MoneyRecord में आपका स्वागत है</value>
+  </data>
+  <data name="SetupStepOf" xml:space="preserve">
+    <value>चरण {0} / {1}</value>
+  </data>
+  <data name="SetupLanguageTitle" xml:space="preserve">
+    <value>भाषा और मुद्रा</value>
+  </data>
+  <data name="SetupLanguageDescription" xml:space="preserve">
+    <value>ऐप की भाषा और वह मुद्रा चुनें जिसमें कुल दिखें।</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>भाषा</value>
+  </data>
+  <data name="SystemDefault" xml:space="preserve">
+    <value>फ़ोन की भाषा</value>
+  </data>
+  <data name="SetupAccountsTitle" xml:space="preserve">
+    <value>शुरुआती खाते</value>
+  </data>
+  <data name="SetupAccountsDescription" xml:space="preserve">
+    <value>आपका पैसा कहां रहता है? हर खाते में आज जितना है, {0} में डालें।</value>
+  </data>
+  <data name="SetupAccountsAddDescription" xml:space="preserve">
+    <value>नए खाते आपके मौजूदा खातों में जुड़ते हैं, {0} में।</value>
+  </data>
+  <data name="SetupCategoriesTitle" xml:space="preserve">
+    <value>अपनी श्रेणियां चुनें</value>
+  </data>
+  <data name="SetupCategoriesDescription" xml:space="preserve">
+    <value>जो काम की नहीं, उनका निशान हटाएं। अपनी श्रेणियां बाद में जोड़ सकते हैं।</value>
+  </data>
+  <data name="SetupCategoriesAddDescription" xml:space="preserve">
+    <value>निशान वाली जो श्रेणियां आपके पास नहीं हैं, वे जुड़ जाएंगी।</value>
+  </data>
+  <data name="SetupNeedsAccount" xml:space="preserve">
+    <value>नाम के साथ कम से कम एक खाता जोड़ें।</value>
+  </data>
+  <data name="SetupFailed" xml:space="preserve">
+    <value>सेटअप सहेजा नहीं जा सका। फिर से कोशिश करें।</value>
+  </data>
+  <data name="SetupGetStarted" xml:space="preserve">
+    <value>शुरू करें</value>
+  </data>
+  <data name="RemoveAccount" xml:space="preserve">
+    <value>खाता हटाएं</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>आगे</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>छोड़ें</value>
+  </data>
+  <data name="LanguageAndAppearance" xml:space="preserve">
+    <value>भाषा और रूप</value>
+  </data>
+  <data name="LanguageAndAppearanceDescription" xml:space="preserve">
+    <value>ऐप की भाषा और उसका लाइट या डार्क रूप</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>थीम</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>लाइट</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>डार्क</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>जानकारी</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>वर्शन, लाइसेंस और ओपन-सोर्स हिस्से</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>वर्शन {0}</value>
+  </data>
+  <data name="AppLicenseNotice" xml:space="preserve">
+    <value>MoneyRecord फ़्री सॉफ़्टवेयर है: आप इसे GNU Affero General Public License v3.0 के तहत बांट और बदल सकते हैं।</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>सोर्स कोड</value>
+  </data>
+  <data name="OpenSourceComponents" xml:space="preserve">
+    <value>ओपन-सोर्स हिस्से</value>
+  </data>
+  <data name="OpenSourceComponentsDescription" xml:space="preserve">
+    <value>MoneyRecord इन प्रोजेक्ट से बना है। लाइसेंस पढ़ने के लिए किसी एक को दबाएं।</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>लाइसेंस</value>
+  </data>
+  <data name="FailedToOpenLicense" xml:space="preserve">
+    <value>लाइसेंस का पाठ खुल नहीं सका।</value>
+  </data>
+  <data name="FailedToOpenLink" xml:space="preserve">
+    <value>लिंक खुल नहीं सका।</value>
+  </data>
+  <data name="ShareLogs" xml:space="preserve">
+    <value>लॉग शेयर करें</value>
+  </data>
+  <data name="ShareLogsDescription" xml:space="preserve">
+    <value>गड़बड़ी बताने के लिए एरर लॉग। इसमें सिर्फ़ तकनीकी जानकारी होती है।</value>
+  </data>
+  <data name="NoLogsYet" xml:space="preserve">
+    <value>लॉग में अभी कुछ नहीं है।</value>
+  </data>
+  <data name="FailedToShareLogs" xml:space="preserve">
+    <value>लॉग शेयर नहीं हो सके।</value>
+  </data>
+  <data name="CrashReports" xml:space="preserve">
+    <value>क्रैश रिपोर्ट भेजें</value>
+  </data>
+  <data name="CrashReportsDescription" xml:space="preserve">
+    <value>ऐप में गड़बड़ी होने पर तकनीकी जानकारी डेवलपर को भेजें (Sentry के ज़रिए)। आपकी रकम और विवरण इसमें नहीं होते। चालू करने पर यह ऐप के अगली बार शुरू होने से लागू होगा।</value>
+  </data>
+  <data name="CrashReportsQuestionTitle" xml:space="preserve">
+    <value>MoneyRecord को बेहतर बनाने में मदद करें?</value>
+  </data>
+  <data name="CrashReportsQuestion" xml:space="preserve">
+    <value>कुछ गड़बड़ होने पर क्या ऐप क्रैश रिपोर्ट भेज सकता है? रिपोर्ट में सिर्फ़ तकनीकी जानकारी होती है, जैसे गड़बड़ी और Android वर्शन; आपकी रकम या विवरण नहीं। इसे सेटिंग्स में बदल सकते हैं।</value>
+  </data>
+  <data name="CrashReportsAccept" xml:space="preserve">
+    <value>रिपोर्ट भेजें</value>
+  </data>
+  <data name="CrashReportsDecline" xml:space="preserve">
+    <value>नहीं, रहने दें</value>
+  </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>आने वाले</value>
+  </data>
+  <data name="UpcomingSubtitle" xml:space="preserve">
+    <value>अगले 30 दिन</value>
+  </data>
+  <data name="NoUpcoming" xml:space="preserve">
+    <value>अगले 30 दिन में कुछ तय नहीं है</value>
+  </data>
+  <data name="RecurringSchedules" xml:space="preserve">
+    <value>तय लेन-देन</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>कल</value>
+  </data>
+  <data name="InDaysOne" xml:space="preserve">
+    <value>{0} दिन में</value>
+  </data>
+  <data name="InDaysOther" xml:space="preserve">
+    <value>{0} दिन में</value>
+  </data>
+  <data name="Reminders" xml:space="preserve">
+    <value>रिमाइंडर</value>
+  </data>
+  <data name="RemindersDescription" xml:space="preserve">
+    <value>बिल की तारीख़ से पहले और बजट सीमा के पास होने पर</value>
+  </data>
+  <data name="BillReminders" xml:space="preserve">
+    <value>बिल रिमाइंडर</value>
+  </data>
+  <data name="BillRemindersOff" xml:space="preserve">
+    <value>बंद</value>
+  </data>
+  <data name="BillRemindersSameDay" xml:space="preserve">
+    <value>उसी दिन</value>
+  </data>
+  <data name="DaysBeforeOne" xml:space="preserve">
+    <value>{0} दिन पहले</value>
+  </data>
+  <data name="DaysBeforeOther" xml:space="preserve">
+    <value>{0} दिन पहले</value>
+  </data>
+  <data name="BudgetAlerts" xml:space="preserve">
+    <value>बजट अलर्ट</value>
+  </data>
+  <data name="RecurringAddedAlerts" xml:space="preserve">
+    <value>नियमित लेन-देन जुड़ने पर</value>
+  </data>
+  <data name="ChannelBills" xml:space="preserve">
+    <value>बिल और नियमित लेन-देन</value>
+  </data>
+  <data name="BillDueTitle" xml:space="preserve">
+    <value>बिल की तारीख़: {0}</value>
+  </data>
+  <data name="BudgetNearLimitTitle" xml:space="preserve">
+    <value>{0}: बजट सीमा के पास</value>
+  </data>
+  <data name="BudgetExceededTitle" xml:space="preserve">
+    <value>{0}: बजट से ज़्यादा</value>
+  </data>
+  <data name="RecurringAddedOne" xml:space="preserve">
+    <value>नियमित लेन-देन जुड़े: {0}</value>
+  </data>
+  <data name="RecurringAddedOther" xml:space="preserve">
+    <value>नियमित लेन-देन जुड़े: {0}</value>
+  </data>
+  <data name="RemindersOfferTitle" xml:space="preserve">
+    <value>रिमाइंडर चाहिए?</value>
+  </data>
+  <data name="RemindersOfferMessage" xml:space="preserve">
+    <value>MoneyRecord बिल की तारीख़ से पहले और बजट सीमा के पास होने पर याद दिला सकता है। इसे सेटिंग्स में बदल सकते हैं।</value>
+  </data>
+  <data name="RemindersOfferAccept" xml:space="preserve">
+    <value>चालू करें</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>अभी नहीं</value>
+  </data>
+  <data name="NotificationsBlockedTitle" xml:space="preserve">
+    <value>नोटिफ़िकेशन बंद हैं</value>
+  </data>
+  <data name="NotificationsBlockedMessage" xml:space="preserve">
+    <value>रिमाइंडर पाने के लिए सिस्टम सेटिंग्स में MoneyRecord के नोटिफ़िकेशन की अनुमति दें।</value>
+  </data>
+  <data name="OpenSystemSettings" xml:space="preserve">
+    <value>सेटिंग्स खोलें</value>
+  </data>
+  <data name="AppLock" xml:space="preserve">
+    <value>ऐप लॉक</value>
+  </data>
+  <data name="AppLockDescription" xml:space="preserve">
+    <value>MoneyRecord खोलने के लिए फ़िंगरप्रिंट, चेहरा या फ़ोन का स्क्रीन लॉक पूछें</value>
+  </data>
+  <data name="LockAfter" xml:space="preserve">
+    <value>इतनी देर बाद लॉक करें</value>
+  </data>
+  <data name="MinutesOne" xml:space="preserve">
+    <value>{0} मिनट</value>
+  </data>
+  <data name="MinutesOther" xml:space="preserve">
+    <value>{0} मिनट</value>
+  </data>
+  <data name="OneHour" xml:space="preserve">
+    <value>1 घंटा</value>
+  </data>
+  <data name="AppLocked" xml:space="preserve">
+    <value>MoneyRecord लॉक है</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>खोलें</value>
+  </data>
+  <data name="UnlockSubtitle" xml:space="preserve">
+    <value>फ़िंगरप्रिंट, चेहरा या फ़ोन का स्क्रीन लॉक इस्तेमाल करें</value>
+  </data>
+  <data name="TurnOnAppLock" xml:space="preserve">
+    <value>ऐप लॉक चालू करें</value>
+  </data>
+  <data name="NoScreenLockTitle" xml:space="preserve">
+    <value>स्क्रीन लॉक नहीं है</value>
+  </data>
+  <data name="NoScreenLockMessage" xml:space="preserve">
+    <value>पहले अपने फ़ोन में स्क्रीन लॉक (PIN, पैटर्न, पासवर्ड या फ़िंगरप्रिंट) लगाएं, फिर ऐप लॉक चालू करें।</value>
+  </data>
+  <data name="HideBalances" xml:space="preserve">
+    <value>बैलेंस छिपाएं</value>
+  </data>
+  <data name="ShowBalances" xml:space="preserve">
+    <value>बैलेंस दिखाएं</value>
+  </data>
+  <data name="EncryptDatabase" xml:space="preserve">
+    <value>डेटाबेस एन्क्रिप्ट करें</value>
+  </data>
+  <data name="EncryptDatabaseDescription" xml:space="preserve">
+    <value>आपका डेटा इस फ़ोन में रखी चाबी से एन्क्रिप्ट होता है। यह चालू रहने पर Android का अपने-आप होने वाला बैकअप इसे शामिल नहीं करता।</value>
+  </data>
+  <data name="EncryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>डेटाबेस एन्क्रिप्ट करें?</value>
+  </data>
+  <data name="EncryptDatabaseQuestion" xml:space="preserve">
+    <value>चाबी इसी फ़ोन में रहती है, इसलिए Android का अपने-आप होने वाला बैकअप और फ़ोन-से-फ़ोन ट्रांसफ़र अब आपका डेटा शामिल नहीं करेंगे। फ़ोन बदलने से पहले बैकअप और रीस्टोर में बैकअप सहेज लें (बैकअप फ़ाइलें एन्क्रिप्ट नहीं होतीं)।</value>
+  </data>
+  <data name="EncryptDatabaseAccept" xml:space="preserve">
+    <value>एन्क्रिप्ट करें</value>
+  </data>
+  <data name="DecryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>एन्क्रिप्शन बंद करें?</value>
+  </data>
+  <data name="DecryptDatabaseQuestion" xml:space="preserve">
+    <value>आपका डेटा फिर से बिना एन्क्रिप्शन के रखा जाएगा, और Android का अपने-आप होने वाला बैकअप उसे शामिल करेगा।</value>
+  </data>
+  <data name="DecryptDatabaseAccept" xml:space="preserve">
+    <value>बंद करें</value>
+  </data>
+  <data name="DatabaseEncrypted" xml:space="preserve">
+    <value>डेटाबेस एन्क्रिप्ट हो गया</value>
+  </data>
+  <data name="DatabaseDecrypted" xml:space="preserve">
+    <value>एन्क्रिप्शन बंद हो गया</value>
+  </data>
+  <data name="FailedToChangeEncryption" xml:space="preserve">
+    <value>एन्क्रिप्शन बदला नहीं जा सका। आपका डेटा जैसा था वैसा ही है।</value>
+  </data>
+  <data name="UnreadableDatabaseTitle" xml:space="preserve">
+    <value>एन्क्रिप्ट किया डेटा खुल नहीं सका</value>
+  </data>
+  <data name="UnreadableDatabaseMessage" xml:space="preserve">
+    <value>आपके एन्क्रिप्ट किए डेटाबेस की चाबी अब इस फ़ोन में नहीं है, इसलिए ऐप नए डेटाबेस के साथ शुरू हुआ। अपना डेटा वापस पाने के लिए सेटिंग्स में बैकअप रीस्टोर करें।</value>
+  </data>
+  <data name="AmountReceived" xml:space="preserve">
+    <value>मिली रकम</value>
+  </data>
+  <data name="CrossCurrencyTransferHint" xml:space="preserve">
+    <value>खातों की मुद्राएं अलग हैं ({0} → {1}): जितनी रकम पहुंची, वह डालें।</value>
+  </data>
+  <data name="ExchangeRateValue" xml:space="preserve">
+    <value>दर: {0}</value>
+  </data>
+  <data name="BudgetNotCounted" xml:space="preserve">
+    <value>गिना नहीं गया: {0}</value>
+  </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>विनिमय दरें</value>
+  </data>
+  <data name="ExchangeRatesDescription" xml:space="preserve">
+    <value>दूसरी मुद्राएं बदलने के लिए frankfurter.dev से रोज़ की दरें डाउनलोड करें। सिर्फ़ मुद्रा कोड और तारीख़ें भेजी जाती हैं।</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>अभी अपडेट करें</value>
+  </data>
+  <data name="ExchangeRatesUpdated" xml:space="preserve">
+    <value>अपडेट: {0}</value>
+  </data>
+  <data name="ExchangeRatesNever" xml:space="preserve">
+    <value>अभी डाउनलोड नहीं हुईं</value>
+  </data>
+  <data name="ExchangeRatesUpdating" xml:space="preserve">
+    <value>अपडेट हो रहा है…</value>
+  </data>
+  <data name="ExchangeRatesUnavailable" xml:space="preserve">
+    <value>{0} की दरें नहीं हैं</value>
+  </data>
+  <data name="ExchangeRatesFailed" xml:space="preserve">
+    <value>विनिमय दरें डाउनलोड नहीं हो सकीं। इंटरनेट जांचकर फिर कोशिश करें।</value>
+  </data>
+  <data name="AmountInCurrency" xml:space="preserve">
+    <value>{0} में रकम</value>
+  </data>
+  <data name="ConvertedAmountHint" xml:space="preserve">
+    <value>वैकल्पिक: {0} में इसकी कीमत, जैसी आपके स्टेटमेंट में दिखती है। डाउनलोड की गई दर इस्तेमाल करने के लिए खाली छोड़ें।</value>
+  </data>
+  <data name="ShowByCurrency" xml:space="preserve">
+    <value>मुद्रा के अनुसार</value>
+  </data>
+  <data name="ConvertedAtDailyRate" xml:space="preserve">
+    <value>≈ हर दिन की विनिमय दर पर · अपडेट: {0}</value>
+  </data>
+  <data name="NoRateYet" xml:space="preserve">
+    <value>अभी विनिमय दर नहीं है</value>
+  </data>
+  <data name="NotConvertedNote" xml:space="preserve">
+    <value>अभी विनिमय दर नहीं है: {0}</value>
+  </data>
+  <data name="ImportColumnName" xml:space="preserve">
+    <value>कॉलम {0}</value>
+  </data>
+  <data name="ImportStatement" xml:space="preserve">
+    <value>बैंक स्टेटमेंट इंपोर्ट करें</value>
+  </data>
+  <data name="ImportStatementDescription" xml:space="preserve">
+    <value>अपने बैंक की वेबसाइट से लिया CSV, OFX या QIF फ़ाइल का लेन-देन किसी एक खाते में जोड़ें।</value>
+  </data>
+  <data name="ImportChooseFile" xml:space="preserve">
+    <value>स्टेटमेंट फ़ाइल चुनें</value>
+  </data>
+  <data name="ImportChooseAnotherFile" xml:space="preserve">
+    <value>दूसरी फ़ाइल चुनें</value>
+  </data>
+  <data name="ImportIntro" xml:space="preserve">
+    <value>अपने बैंक की वेबसाइट से लेन-देन OFX, QIF या CSV में एक्सपोर्ट करें, फिर फ़ाइल यहां चुनें। कुछ भी जुड़ने से पहले आप हर पंक्ति जांच सकते हैं।</value>
+  </data>
+  <data name="ImportRowsOne" xml:space="preserve">
+    <value>पंक्तियां: {0}</value>
+  </data>
+  <data name="ImportRowsOther" xml:space="preserve">
+    <value>पंक्तियां: {0}</value>
+  </data>
+  <data name="ImportNoTable" xml:space="preserve">
+    <value>इस फ़ाइल में तारीख़ और रकम वाला कोई लेन-देन नहीं मिला।</value>
+  </data>
+  <data name="ImportFailedToRead" xml:space="preserve">
+    <value>फ़ाइल पढ़ी नहीं जा सकी</value>
+  </data>
+  <data name="ImportDateColumn" xml:space="preserve">
+    <value>तारीख़ का कॉलम</value>
+  </data>
+  <data name="ImportDateFormat" xml:space="preserve">
+    <value>तारीख़ का फ़ॉर्मैट</value>
+  </data>
+  <data name="ImportDescriptionColumn" xml:space="preserve">
+    <value>विवरण का कॉलम</value>
+  </data>
+  <data name="ImportAmountColumn" xml:space="preserve">
+    <value>रकम का कॉलम</value>
+  </data>
+  <data name="ImportPositiveIsExpense" xml:space="preserve">
+    <value>पॉज़िटिव रकम खर्च हैं (क्रेडिट कार्ड स्टेटमेंट)</value>
+  </data>
+  <data name="ImportExpenseCategory" xml:space="preserve">
+    <value>नए खर्च की श्रेणी</value>
+  </data>
+  <data name="ImportIncomeCategory" xml:space="preserve">
+    <value>नई आय की श्रेणी</value>
+  </data>
+  <data name="ImportCategoryHint" xml:space="preserve">
+    <value>पहले इस्तेमाल हुए विवरण को पिछली बार वाली श्रेणी मिलती है। बदलने के लिए पंक्ति की श्रेणी दबाएं।</value>
+  </data>
+  <data name="ImportSummary" xml:space="preserve">
+    <value>नए: {0} · पहले से दर्ज: {1} · पढ़े न जा सके: {2}</value>
+  </data>
+  <data name="ImportAlreadyRecorded" xml:space="preserve">
+    <value>पहले से दर्ज</value>
+  </data>
+  <data name="ImportProblemDate" xml:space="preserve">
+    <value>तारीख़ पढ़ी नहीं गई</value>
+  </data>
+  <data name="ImportProblemAmount" xml:space="preserve">
+    <value>रकम पढ़ी नहीं गई</value>
+  </data>
+  <data name="ImportProblemZero" xml:space="preserve">
+    <value>रकम शून्य</value>
+  </data>
+  <data name="ImportProblemCurrency" xml:space="preserve">
+    <value>दूसरी मुद्रा में</value>
+  </data>
+  <data name="ImportButtonOne" xml:space="preserve">
+    <value>{0} लेन-देन इंपोर्ट करें</value>
+  </data>
+  <data name="ImportButtonOther" xml:space="preserve">
+    <value>{0} लेन-देन इंपोर्ट करें</value>
+  </data>
+  <data name="ImportDoneTitle" xml:space="preserve">
+    <value>इंपोर्ट पूरा हुआ</value>
+  </data>
+  <data name="ImportDoneMessage" xml:space="preserve">
+    <value>{0} को {1} में जोड़ा गया।</value>
+  </data>
+  <data name="ImportUndo" xml:space="preserve">
+    <value>इंपोर्ट पलटें</value>
+  </data>
+  <data name="ImportUndone" xml:space="preserve">
+    <value>इंपोर्ट पलट गया</value>
+  </data>
+  <data name="ImportFailed" xml:space="preserve">
+    <value>लेन-देन इंपोर्ट नहीं हो सके</value>
+  </data>
+  <data name="ImportLearnedCategory" xml:space="preserve">
+    <value>पिछली बार जैसी श्रेणी</value>
+  </data>
+  <data name="ImportSavedMapping" xml:space="preserve">
+    <value>इस बैंक की पिछली इंपोर्ट फ़ाइल जैसे ही कॉलम और खाता।</value>
+  </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>{0} का एक्सपोर्ट पहचाना गया: कॉलम, चिह्न और श्रेणियां अपने-आप पढ़ी गईं।</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>जो श्रेणियां नहीं हैं, उन्हें बनाएं</value>
+  </data>
+  <data name="AutoBackups" xml:space="preserve">
+    <value>अपने-आप बैकअप</value>
+  </data>
+  <data name="AutoBackupsDescription" xml:space="preserve">
+    <value>आपके सारे डेटा की कॉपी, आपके चुने फ़ोल्डर में अपने-आप बनती है: SD कार्ड में या Google Drive जैसे क्लाउड ऐप में</value>
+  </data>
+  <data name="BackupFolder" xml:space="preserve">
+    <value>फ़ोल्डर</value>
+  </data>
+  <data name="BackupFolderNone" xml:space="preserve">
+    <value>चुना नहीं गया</value>
+  </data>
+  <data name="ChooseFolder" xml:space="preserve">
+    <value>चुनें</value>
+  </data>
+  <data name="BackupFrequency" xml:space="preserve">
+    <value>कितनी बार</value>
+  </data>
+  <data name="BackupDaily" xml:space="preserve">
+    <value>रोज़</value>
+  </data>
+  <data name="BackupWeekly" xml:space="preserve">
+    <value>हर हफ़्ते</value>
+  </data>
+  <data name="BackupMonthly" xml:space="preserve">
+    <value>हर महीने</value>
+  </data>
+  <data name="BackupsToKeep" xml:space="preserve">
+    <value>रखें</value>
+  </data>
+  <data name="BackupsOne" xml:space="preserve">
+    <value>{0} बैकअप</value>
+  </data>
+  <data name="BackupsOther" xml:space="preserve">
+    <value>{0} बैकअप</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>आखिरी बैकअप: {0}</value>
+  </data>
+  <data name="NoBackupYet" xml:space="preserve">
+    <value>अभी कोई बैकअप नहीं</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>बैकअप हो रहा है…</value>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>आखिरी बैकअप नहीं हो सका ({0})</value>
+  </data>
+  <data name="BackupFolderUnavailable" xml:space="preserve">
+    <value>ऐप अब फ़ोल्डर तक नहीं पहुंच पा रहा। उसे फिर से चुनें।</value>
+  </data>
+  <data name="BackUpNow" xml:space="preserve">
+    <value>अभी बैकअप लें</value>
+  </data>
+  <data name="AutoBackupNote" xml:space="preserve">
+    <value>सिर्फ़ सबसे नए अपने-आप वाले बैकअप रखे जाते हैं, और नया तभी बनता है जब कुछ बदला हो। किसी को रीस्टोर करने के लिए बैकअप से रीस्टोर → बैकअप फ़ाइल चुनें इस्तेमाल करें।</value>
+  </data>
+  <data name="BackupPassword" xml:space="preserve">
+    <value>बैकअप को पासवर्ड से सुरक्षित करें</value>
+  </data>
+  <data name="BackupPasswordDescription" xml:space="preserve">
+    <value>बैकअप, अपने-आप वाले भी, एन्क्रिप्ट होते हैं। पासवर्ड के बिना उन्हें रीस्टोर नहीं किया जा सकता, इसलिए इसे सुरक्षित जगह रखें।</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>पासवर्ड बदलें</value>
+  </data>
+  <data name="BackupPasswordTitle" xml:space="preserve">
+    <value>बैकअप पासवर्ड</value>
+  </data>
+  <data name="BackupPasswordMessage" xml:space="preserve">
+    <value>बैकअप सिर्फ़ इसी पासवर्ड से रीस्टोर हो सकते हैं। भूल जाने पर वे खोले नहीं जा सकते।</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>पासवर्ड</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>पासवर्ड दोबारा डालें</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>पासवर्ड मेल नहीं खाते</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>पासवर्ड डालें</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>पासवर्ड दिखाएं</value>
+  </data>
+  <data name="RemoveBackupPasswordTitle" xml:space="preserve">
+    <value>बैकअप पासवर्ड हटाएं?</value>
+  </data>
+  <data name="RemoveBackupPasswordMessage" xml:space="preserve">
+    <value>नए बैकअप एन्क्रिप्ट नहीं होंगे। पासवर्ड से बने बैकअप को खोलने के लिए फिर भी पासवर्ड चाहिए।</value>
+  </data>
+  <data name="RemovePassword" xml:space="preserve">
+    <value>हटाएं</value>
+  </data>
+  <data name="BackupPasswordSaved" xml:space="preserve">
+    <value>बैकअप पासवर्ड सहेज लिया गया</value>
+  </data>
+  <data name="BackupPasswordRemoved" xml:space="preserve">
+    <value>बैकअप पासवर्ड हट गया</value>
+  </data>
+  <data name="RestorePasswordTitle" xml:space="preserve">
+    <value>सुरक्षित बैकअप</value>
+  </data>
+  <data name="RestorePasswordMessage" xml:space="preserve">
+    <value>वह पासवर्ड डालें जिससे यह बैकअप बना था।</value>
+  </data>
+  <data name="RestoreWrongPassword" xml:space="preserve">
+    <value>पासवर्ड गलत है। फिर कोशिश करें।</value>
+  </data>
+  <data name="SavingsGoals" xml:space="preserve">
+    <value>लक्ष्य</value>
+  </data>
+  <data name="SavingsGoalsTitle" xml:space="preserve">
+    <value>बचत के लक्ष्य</value>
+  </data>
+  <data name="AddGoal" xml:space="preserve">
+    <value>लक्ष्य जोड़ें</value>
+  </data>
+  <data name="EditGoal" xml:space="preserve">
+    <value>लक्ष्य बदलें</value>
+  </data>
+  <data name="GoalName" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="GoalNamePlaceholder" xml:space="preserve">
+    <value>जैसे छुट्टियां</value>
+  </data>
+  <data name="GoalTarget" xml:space="preserve">
+    <value>लक्ष्य की रकम</value>
+  </data>
+  <data name="GoalHasTargetDate" xml:space="preserve">
+    <value>किसी तारीख़ तक पूरा करें</value>
+  </data>
+  <data name="GoalAccounts" xml:space="preserve">
+    <value>बचत रखने वाले खाते</value>
+  </data>
+  <data name="GoalAccountsHint" xml:space="preserve">
+    <value>बचत = उनका बैलेंस, या पॉकेट में जो रखा है। हर खाता या पॉकेट सिर्फ़ एक लक्ष्य में गिना जाता है, और खाते के साथ उसके अपने पॉकेट नहीं चुने जाते।</value>
+  </data>
+  <data name="GoalNoFreeAccounts" xml:space="preserve">
+    <value>{0} में कोई खाली खाता नहीं। खातों में एक जोड़ें।</value>
+  </data>
+  <data name="NoGoalsYet" xml:space="preserve">
+    <value>अभी कोई बचत लक्ष्य नहीं</value>
+  </data>
+  <data name="AddGoalToStart" xml:space="preserve">
+    <value>एक लक्ष्य जोड़ें और उसका पैसा रखने वाले खाते जोड़ें।</value>
+  </data>
+  <data name="PleaseEnterGoalName" xml:space="preserve">
+    <value>लक्ष्य का नाम लिखें</value>
+  </data>
+  <data name="PleaseSelectGoalAccount" xml:space="preserve">
+    <value>कम से कम एक खाता चुनें</value>
+  </data>
+  <data name="GoalAdded" xml:space="preserve">
+    <value>लक्ष्य जुड़ गया</value>
+  </data>
+  <data name="FailedToLoadGoals" xml:space="preserve">
+    <value>लक्ष्य लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToSaveGoal" xml:space="preserve">
+    <value>लक्ष्य सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToDeleteGoal" xml:space="preserve">
+    <value>लक्ष्य हटाया नहीं जा सका</value>
+  </data>
+  <data name="DeleteGoalConfirmation" xml:space="preserve">
+    <value>लक्ष्य &quot;{0}&quot; हटाएं? उसके खाते और उनका पैसा बने रहेंगे।</value>
+  </data>
+  <data name="GoalReached" xml:space="preserve">
+    <value>पूरा हुआ</value>
+  </data>
+  <data name="GoalBehind" xml:space="preserve">
+    <value>पीछे</value>
+  </data>
+  <data name="GoalSavedOfTarget" xml:space="preserve">
+    <value>{1} में से {0}</value>
+  </data>
+  <data name="GoalNeededPerMonth" xml:space="preserve">
+    <value>{1} तक पूरा करने के लिए हर महीने {0} बचाएं</value>
+  </data>
+  <data name="GoalTargetDatePassed" xml:space="preserve">
+    <value>लक्ष्य की तारीख़ {0} थी</value>
+  </data>
+  <data name="GoalNotEnoughHistory" xml:space="preserve">
+    <value>अनुमान के लिए अभी पर्याप्त इतिहास नहीं है</value>
+  </data>
+  <data name="GoalNoRecentSavings" xml:space="preserve">
+    <value>पिछले {0} महीनों में कोई बचत नहीं</value>
+  </data>
+  <data name="GoalAtYourPace" xml:space="preserve">
+    <value>आपकी रफ़्तार से: {0}</value>
+  </data>
+  <data name="GoalNotInSight" xml:space="preserve">
+    <value>आपकी रफ़्तार से यह जल्दी पूरा नहीं होगा</value>
+  </data>
+  <data name="GoalAccountsNotCounted" xml:space="preserve">
+    <value>गिने नहीं गए (दूसरी मुद्रा): {0}</value>
+  </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>सहेजने पर अब दूसरी मुद्रा वाले खाते हट जाएंगे: {0}</value>
+  </data>
+  <data name="Payee" xml:space="preserve">
+    <value>पाने वाला</value>
+  </data>
+  <data name="PayeePlaceholder" xml:space="preserve">
+    <value>दुकान या व्यक्ति (वैकल्पिक)</value>
+  </data>
+  <data name="Payees" xml:space="preserve">
+    <value>पाने वाले</value>
+  </data>
+  <data name="SearchPayees" xml:space="preserve">
+    <value>पाने वाले खोजें</value>
+  </data>
+  <data name="NoMatchingPayees" xml:space="preserve">
+    <value>आपकी खोज से कोई पाने वाला नहीं मिला।</value>
+  </data>
+  <data name="PayeeLastUsed" xml:space="preserve">
+    <value>आखिरी {0}</value>
+  </data>
+  <data name="RenamePayee" xml:space="preserve">
+    <value>नाम बदलें</value>
+  </data>
+  <data name="RenamePayeeMessage" xml:space="preserve">
+    <value>&quot;{0}&quot; का नया नाम</value>
+  </data>
+  <data name="PayeeExistsTitle" xml:space="preserve">
+    <value>पाने वाला पहले से है</value>
+  </data>
+  <data name="PayeeExistsMergeMessage" xml:space="preserve">
+    <value>&quot;{1}&quot; पहले से है। &quot;{0}&quot; को उसमें मिला दें?</value>
+  </data>
+  <data name="MergePayee" xml:space="preserve">
+    <value>दूसरे पाने वाले में मिलाएं</value>
+  </data>
+  <data name="MergePayeeInto" xml:space="preserve">
+    <value>&quot;{0}&quot; को इसमें मिलाएं</value>
+  </data>
+  <data name="MergePayeeConfirmMessage" xml:space="preserve">
+    <value>&quot;{0}&quot; हट जाएगा और जो उसे इस्तेमाल करता है ({2}) वह &quot;{1}&quot; में चला जाएगा।</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>मिलाएं</value>
+  </data>
+  <data name="DeletePayee" xml:space="preserve">
+    <value>पाने वाला हटाएं</value>
+  </data>
+  <data name="DeletePayeeConfirmation" xml:space="preserve">
+    <value>&quot;{0}&quot; हटाएं? जो उसे इस्तेमाल करता है ({1}) वह बिना पाने वाले के रहेगा।</value>
+  </data>
+  <data name="PayeesMerged" xml:space="preserve">
+    <value>पाने वाले मिल गए</value>
+  </data>
+  <data name="PayeeDeleted" xml:space="preserve">
+    <value>पाने वाला हट गया</value>
+  </data>
+  <data name="FailedToLoadPayees" xml:space="preserve">
+    <value>पाने वाले लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToSavePayee" xml:space="preserve">
+    <value>पाने वाला अपडेट नहीं हो सका</value>
+  </data>
+  <data name="RecurringCountOne" xml:space="preserve">
+    <value>नियमित: {0}</value>
+  </data>
+  <data name="RecurringCountOther" xml:space="preserve">
+    <value>नियमित: {0}</value>
+  </data>
+  <data name="SplitPayment" xml:space="preserve">
+    <value>श्रेणियों में बांटें</value>
+  </data>
+  <data name="AddSplitPart" xml:space="preserve">
+    <value>श्रेणी जोड़ें</value>
+  </data>
+  <data name="SplitDescriptionPlaceholder" xml:space="preserve">
+    <value>हर हिस्से की श्रेणी</value>
+  </data>
+  <data name="SplitLeftToAssign" xml:space="preserve">
+    <value>बांटना बाकी: {0}</value>
+  </data>
+  <data name="SplitOverBy" xml:space="preserve">
+    <value>रकम से {0} ज़्यादा</value>
+  </data>
+  <data name="SplitFullyAssigned" xml:space="preserve">
+    <value>पूरा बंट गया</value>
+  </data>
+  <data name="SplitPartNeedsCategory" xml:space="preserve">
+    <value>हर हिस्से के लिए श्रेणी चुनें</value>
+  </data>
+  <data name="SplitPartNeedsAmount" xml:space="preserve">
+    <value>हर हिस्से की रकम डालें</value>
+  </data>
+  <data name="SplitMustAddUp" xml:space="preserve">
+    <value>हिस्सों का जोड़ {0} होना चाहिए</value>
+  </data>
+  <data name="SplitPaymentLabel" xml:space="preserve">
+    <value>बंटा हुआ भुगतान</value>
+  </data>
+  <data name="SplitPaymentTotal" xml:space="preserve">
+    <value>{0} का भुगतान {1} हिस्सों में बंटा</value>
+  </data>
+  <data name="Debts" xml:space="preserve">
+    <value>उधार</value>
+  </data>
+  <data name="AddDebt" xml:space="preserve">
+    <value>उधार जोड़ें</value>
+  </data>
+  <data name="EditDebt" xml:space="preserve">
+    <value>उधार बदलें</value>
+  </data>
+  <data name="AddDebtToStart" xml:space="preserve">
+    <value>जो पैसा आपने दिया या लिया, उसे दर्ज करें, फिर उसकी किस्तें आते ही जोड़ें।</value>
+  </data>
+  <data name="NoDebtsYet" xml:space="preserve">
+    <value>कोई खुला उधार नहीं</value>
+  </data>
+  <data name="NoPaidOffDebts" xml:space="preserve">
+    <value>अभी कोई चुकाया हुआ उधार नहीं</value>
+  </data>
+  <data name="DebtAdded" xml:space="preserve">
+    <value>उधार जुड़ गया</value>
+  </data>
+  <data name="DebtsOpen" xml:space="preserve">
+    <value>खुले</value>
+  </data>
+  <data name="DebtsOwedToYou" xml:space="preserve">
+    <value>आपको मिलना है</value>
+  </data>
+  <data name="DebtsYouOwe" xml:space="preserve">
+    <value>आपको देना है</value>
+  </data>
+  <data name="DebtOwesYou" xml:space="preserve">
+    <value>उसे आपको देना है</value>
+  </data>
+  <data name="DebtYouOwe" xml:space="preserve">
+    <value>आपको देना है</value>
+  </data>
+  <data name="DebtILent" xml:space="preserve">
+    <value>मैंने उधार दिया</value>
+  </data>
+  <data name="DebtIBorrowed" xml:space="preserve">
+    <value>मैंने उधार लिया</value>
+  </data>
+  <data name="DebtPerson" xml:space="preserve">
+    <value>व्यक्ति</value>
+  </data>
+  <data name="DebtPersonPlaceholder" xml:space="preserve">
+    <value>किसके साथ</value>
+  </data>
+  <data name="DebtAmountLent" xml:space="preserve">
+    <value>दी गई रकम</value>
+  </data>
+  <data name="DebtAmountBorrowed" xml:space="preserve">
+    <value>ली गई रकम</value>
+  </data>
+  <data name="DebtFromAccount" xml:space="preserve">
+    <value>किस खाते से दिया</value>
+  </data>
+  <data name="DebtIntoAccount" xml:space="preserve">
+    <value>किस खाते में आया</value>
+  </data>
+  <data name="DebtPaidFromAccount" xml:space="preserve">
+    <value>किस खाते से दिया</value>
+  </data>
+  <data name="DebtPaidIntoAccount" xml:space="preserve">
+    <value>किस खाते में आया</value>
+  </data>
+  <data name="DebtAlreadyOwedOption" xml:space="preserve">
+    <value>पहले से बकाया (पैसा नहीं हिलता)</value>
+  </data>
+  <data name="DebtAlreadyOwed" xml:space="preserve">
+    <value>पहले से बकाया</value>
+  </data>
+  <data name="DebtNote" xml:space="preserve">
+    <value>नोट</value>
+  </data>
+  <data name="DebtNotePlaceholder" xml:space="preserve">
+    <value>किस लिए था (वैकल्पिक)</value>
+  </data>
+  <data name="DebtHasDueDate" xml:space="preserve">
+    <value>आखिरी तारीख़</value>
+  </data>
+  <data name="DebtHasSchedule" xml:space="preserve">
+    <value>तय किस्तों में भुगतान</value>
+  </data>
+  <data name="DebtScheduleAmount" xml:space="preserve">
+    <value>हर किस्त</value>
+  </data>
+  <data name="DebtFirstPayment" xml:space="preserve">
+    <value>पहली किस्त</value>
+  </data>
+  <data name="DebtHasInterest" xml:space="preserve">
+    <value>ब्याज का हिस्सा</value>
+  </data>
+  <data name="DebtInterestHint" xml:space="preserve">
+    <value>किस्त के ऊपर, ब्याज श्रेणी में खर्च (या आय) के रूप में सहेजा जाता है।</value>
+  </data>
+  <data name="DebtHistory" xml:space="preserve">
+    <value>इतिहास</value>
+  </data>
+  <data name="DebtRecordPayment" xml:space="preserve">
+    <value>भुगतान दर्ज करें</value>
+  </data>
+  <data name="DebtLendMore" xml:space="preserve">
+    <value>और उधार दें</value>
+  </data>
+  <data name="DebtBorrowMore" xml:space="preserve">
+    <value>और उधार लें</value>
+  </data>
+  <data name="DebtLeft" xml:space="preserve">
+    <value>बाकी: {0}</value>
+  </data>
+  <data name="DebtPaymentTooLarge" xml:space="preserve">
+    <value>यह बाकी रकम ({0}) से ज़्यादा है।</value>
+  </data>
+  <data name="DebtNoAccountInCurrency" xml:space="preserve">
+    <value>{0} में कोई खाता नहीं है। पहले खातों में एक जोड़ें।</value>
+  </data>
+  <data name="DebtPaidOffToast" xml:space="preserve">
+    <value>{0} के साथ उधार चुक गया</value>
+  </data>
+  <data name="DebtPaidOfTotal" xml:space="preserve">
+    <value>{1} में से {0} चुकाया</value>
+  </data>
+  <data name="DebtDueOn" xml:space="preserve">
+    <value>{0} तक</value>
+  </data>
+  <data name="DebtNextPayment" xml:space="preserve">
+    <value>अगली किस्त {0}, {1} को · {2}</value>
+  </data>
+  <data name="DebtInterestTotal" xml:space="preserve">
+    <value>ब्याज {0}</value>
+  </data>
+  <data name="DebtPaidOff" xml:space="preserve">
+    <value>चुक गया</value>
+  </data>
+  <data name="DebtOverdue" xml:space="preserve">
+    <value>देर हो गई</value>
+  </data>
+  <data name="DebtDueSoon" xml:space="preserve">
+    <value>जल्द देय</value>
+  </data>
+  <data name="DebtLent" xml:space="preserve">
+    <value>दिया</value>
+  </data>
+  <data name="DebtBorrowed" xml:space="preserve">
+    <value>लिया</value>
+  </data>
+  <data name="DebtPaidBack" xml:space="preserve">
+    <value>चुकाया</value>
+  </data>
+  <data name="DebtInterest" xml:space="preserve">
+    <value>ब्याज</value>
+  </data>
+  <data name="InterestCategory" xml:space="preserve">
+    <value>ब्याज</value>
+  </data>
+  <data name="DebtPaymentTo" xml:space="preserve">
+    <value>{0} को भुगतान</value>
+  </data>
+  <data name="DebtPaymentFrom" xml:space="preserve">
+    <value>{0} से भुगतान</value>
+  </data>
+  <data name="DebtCountOne" xml:space="preserve">
+    <value>उधार: {0}</value>
+  </data>
+  <data name="DebtCountOther" xml:space="preserve">
+    <value>उधार: {0}</value>
+  </data>
+  <data name="DebtPaidOffLentTitle" xml:space="preserve">
+    <value>{0} ने पूरा पैसा लौटा दिया</value>
+  </data>
+  <data name="DebtPaidOffBorrowedTitle" xml:space="preserve">
+    <value>{0} का आपका उधार चुक गया</value>
+  </data>
+  <data name="DebtDueLentTitle" xml:space="preserve">
+    <value>{0} को आपको पैसे लौटाने हैं</value>
+  </data>
+  <data name="DebtDueBorrowedTitle" xml:space="preserve">
+    <value>{0} को पैसे लौटाएं</value>
+  </data>
+  <data name="DeleteDebtConfirmation" xml:space="preserve">
+    <value>{0} के साथ का उधार हटाएं? उसका इतिहास भी हट जाएगा, इसलिए खातों का बैलेंस वैसा हो जाएगा जैसा उसके बिना होता।</value>
+  </data>
+  <data name="DeleteDebtMovementConfirmation" xml:space="preserve">
+    <value>{1} का &quot;{0}&quot; ({2}) हटाएं?</value>
+  </data>
+  <data name="FailedToLoadDebts" xml:space="preserve">
+    <value>उधार लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToSaveDebt" xml:space="preserve">
+    <value>उधार सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToDeleteDebt" xml:space="preserve">
+    <value>उधार हटाया नहीं जा सका</value>
+  </data>
+  <data name="PayeeHasDebts" xml:space="preserve">
+    <value>{0} के साथ उधार हैं। पहले उन्हें उधार पेज से हटाएं, या {0} को किसी दूसरे पाने वाले में मिलाएं।</value>
+  </data>
+  <data name="PleaseEnterDebtPerson" xml:space="preserve">
+    <value>लिखें कि उधार किसके साथ है</value>
+  </data>
+  <data name="DebtsPaidOff" xml:space="preserve">
+    <value>चुक गए</value>
+  </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>{0} ज़्यादा चुकाया</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>इसके बिना, दिए या लिए गए से ज़्यादा लौटाया हुआ दिखेगा। पहले भुगतान हटाएं।</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>उधार के भुगतान उधार पेज पर बदले जाते हैं</value>
+  </data>
+  <data name="WidgetPickAccount" xml:space="preserve">
+    <value>विजेट में कौन सा खाता दिखाएं?</value>
+  </data>
+  <data name="ScanReceipt" xml:space="preserve">
+    <value>रसीद स्कैन करें</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>फ़ोटो खींचें</value>
+  </data>
+  <data name="ChoosePhoto" xml:space="preserve">
+    <value>गैलरी से चुनें</value>
+  </data>
+  <data name="ReadingReceipt" xml:space="preserve">
+    <value>रसीद पढ़ी जा रही है…</value>
+  </data>
+  <data name="ReceiptFilledIn" xml:space="preserve">
+    <value>रसीद से भरा गया: {0}</value>
+  </data>
+  <data name="ReceiptSays" xml:space="preserve">
+    <value>रसीद में {0} लिखा है</value>
+  </data>
+  <data name="ReceiptNotRead" xml:space="preserve">
+    <value>रसीद में कुल रकम या तारीख़ नहीं मिली</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>एक्सपोर्ट</value>
+  </data>
+  <data name="ExportReportFor" xml:space="preserve">
+    <value>{0} एक्सपोर्ट करें</value>
+  </data>
+  <data name="ExportPdfReport" xml:space="preserve">
+    <value>PDF रिपोर्ट</value>
+  </data>
+  <data name="ExportPeriodCsv" xml:space="preserve">
+    <value>लेन-देन (CSV)</value>
+  </data>
+  <data name="ShareReport" xml:space="preserve">
+    <value>रिपोर्ट शेयर करें</value>
+  </data>
+  <data name="FailedToExportReport" xml:space="preserve">
+    <value>रिपोर्ट नहीं बन सकी</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>वित्तीय रिपोर्ट</value>
+  </data>
+  <data name="ReportCreatedOn" xml:space="preserve">
+    <value>{0} को MoneyRecord से बनी</value>
+  </data>
+  <data name="ReportPageOf" xml:space="preserve">
+    <value>पेज {0} / {1}</value>
+  </data>
+  <data name="ReportSpendingByCategory" xml:space="preserve">
+    <value>श्रेणी के अनुसार खर्च</value>
+  </data>
+  <data name="ReportIncomeByCategory" xml:space="preserve">
+    <value>श्रेणी के अनुसार आय</value>
+  </data>
+  <data name="ReportShare" xml:space="preserve">
+    <value>हिस्सा</value>
+  </data>
+  <data name="ReportLimit" xml:space="preserve">
+    <value>सीमा</value>
+  </data>
+  <data name="ReportStatus" xml:space="preserve">
+    <value>स्थिति</value>
+  </data>
+  <data name="ReportBalanceOn" xml:space="preserve">
+    <value>{0} को बैलेंस</value>
+  </data>
+  <data name="ReportConvertedTo" xml:space="preserve">
+    <value>हर दिन की विनिमय दर पर {0} में बदला गया (≈)</value>
+  </data>
+  <data name="ReportInCurrencyOnly" xml:space="preserve">
+    <value>सिर्फ़ {0} की रकम; दूसरी मुद्राएं सारांश में हैं</value>
+  </data>
+  <data name="ReportTransfer" xml:space="preserve">
+    <value>ट्रांसफ़र</value>
+  </data>
+  <data name="ShowCents" xml:space="preserve">
+    <value>पैसे दिखाएं</value>
+  </data>
+  <data name="ShowCentsDescription" xml:space="preserve">
+    <value>बंद करने पर उस मुद्रा की पूरी रकम दिखती है। रकम फिर भी पैसे तक सहेजी जाती है।</value>
+  </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>आय</value>
+  </data>
+  <data name="AddRecurring" xml:space="preserve">
+    <value>नियमित लेन-देन जोड़ें</value>
+  </data>
+  <data name="NewRecurringExpense" xml:space="preserve">
+    <value>नया नियमित खर्च</value>
+  </data>
+  <data name="NewRecurringIncome" xml:space="preserve">
+    <value>नई नियमित आय</value>
+  </data>
+  <data name="FirstDate" xml:space="preserve">
+    <value>पहली तारीख़</value>
+  </data>
+  <data name="ScheduleStartsNote" xml:space="preserve">
+    <value>सिर्फ़ शेड्यूल सहेजा जाता है: पहली एंट्री {0} को दर्ज होगी।</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>आगे की तारीख़: यह {0} से बैलेंस में गिना जाएगा।</value>
+  </data>
+  <data name="ScheduleDateMustBeFuture" xml:space="preserve">
+    <value>कल या उसके बाद की पहली तारीख़ चुनें।</value>
+  </data>
+  <data name="RecurringScheduled" xml:space="preserve">
+    <value>नियमित लेन-देन तय हो गया</value>
+  </data>
+  <data name="TripCategoryLodging" xml:space="preserve">
+    <value>ठहरना</value>
+  </data>
+  <data name="TripCategoryFlights" xml:space="preserve">
+    <value>फ़्लाइट</value>
+  </data>
+  <data name="TripCategoryTransport" xml:space="preserve">
+    <value>आना-जाना</value>
+  </data>
+  <data name="TripCategoryFood" xml:space="preserve">
+    <value>खाना</value>
+  </data>
+  <data name="TripCategoryActivities" xml:space="preserve">
+    <value>घूमना-फिरना</value>
+  </data>
+  <data name="TripCategoryShopping" xml:space="preserve">
+    <value>शॉपिंग</value>
+  </data>
+  <data name="TripCategoryOther" xml:space="preserve">
+    <value>अन्य</value>
+  </data>
+  <data name="TravelCategory" xml:space="preserve">
+    <value>यात्रा</value>
+  </data>
+  <data name="TripActive" xml:space="preserve">
+    <value>चालू</value>
+  </data>
+  <data name="TripEnded" xml:space="preserve">
+    <value>खत्म</value>
+  </data>
+  <data name="TripSince" xml:space="preserve">
+    <value>{0} से</value>
+  </data>
+  <data name="SpentOfBudget" xml:space="preserve">
+    <value>{1} में से {0}</value>
+  </data>
+  <data name="TripSpent" xml:space="preserve">
+    <value>{0} खर्च हुए</value>
+  </data>
+  <data name="TripNotConverted" xml:space="preserve">
+    <value>बदला नहीं गया: {0}</value>
+  </data>
+  <data name="TripBanner" xml:space="preserve">
+    <value>यात्रा: {0}</value>
+  </data>
+  <data name="NotPartOfTrip" xml:space="preserve">
+    <value>यात्रा का हिस्सा नहीं</value>
+  </data>
+  <data name="TripInfo" xml:space="preserve">
+    <value>यात्रा: {0} · {1}</value>
+  </data>
+  <data name="TripInfoOnly" xml:space="preserve">
+    <value>यात्रा: {0}</value>
+  </data>
+  <data name="TripsTitle" xml:space="preserve">
+    <value>यात्राएं</value>
+  </data>
+  <data name="TripCategoriesTitle" xml:space="preserve">
+    <value>यात्रा की श्रेणियां</value>
+  </data>
+  <data name="AddTripCategory" xml:space="preserve">
+    <value>यात्रा श्रेणी जोड़ें</value>
+  </data>
+  <data name="EditTripCategory" xml:space="preserve">
+    <value>यात्रा श्रेणी बदलें</value>
+  </data>
+  <data name="FailedToLoadTrips" xml:space="preserve">
+    <value>यात्राएं लोड नहीं हो सकीं</value>
+  </data>
+  <data name="FailedToSaveTrip" xml:space="preserve">
+    <value>यात्रा सहेजी नहीं जा सकी</value>
+  </data>
+  <data name="FailedToDeleteTrip" xml:space="preserve">
+    <value>यात्रा हटाई नहीं जा सकी</value>
+  </data>
+  <data name="FailedToSaveTripCategory" xml:space="preserve">
+    <value>यात्रा श्रेणी सहेजी नहीं जा सकी</value>
+  </data>
+  <data name="FailedToDeleteTripCategory" xml:space="preserve">
+    <value>यात्रा श्रेणी हटाई नहीं जा सकी</value>
+  </data>
+  <data name="LastTripCategoryCannotDelete" xml:space="preserve">
+    <value>यही एकमात्र यात्रा श्रेणी है और इस्तेमाल में है, इसलिए हटाई नहीं जा सकती।</value>
+  </data>
+  <data name="TripCategoryInUse" xml:space="preserve">
+    <value>&quot;{0}&quot; यात्रा के खर्च या सीमाओं में इस्तेमाल हो रही है। उन्हें यहां ले जाएं:</value>
+  </data>
+  <data name="DeleteTripCategoryConfirmation" xml:space="preserve">
+    <value>यात्रा श्रेणी &quot;{0}&quot; हटाएं?</value>
+  </data>
+  <data name="StartTrip" xml:space="preserve">
+    <value>यात्रा शुरू करें</value>
+  </data>
+  <data name="EditTrip" xml:space="preserve">
+    <value>यात्रा बदलें</value>
+  </data>
+  <data name="TripName" xml:space="preserve">
+    <value>यात्रा का नाम</value>
+  </data>
+  <data name="TripNamePlaceholder" xml:space="preserve">
+    <value>गोवा, गर्मी की छुट्टी</value>
+  </data>
+  <data name="TripStartDate" xml:space="preserve">
+    <value>शुरू होने की तारीख़</value>
+  </data>
+  <data name="TripBudgetOptional" xml:space="preserve">
+    <value>बजट (वैकल्पिक)</value>
+  </data>
+  <data name="TripDefaultAccount" xml:space="preserve">
+    <value>यात्रा में भुगतान वाला खाता</value>
+  </data>
+  <data name="TripNoAccount" xml:space="preserve">
+    <value>कोई नहीं (आखिरी इस्तेमाल हुआ)</value>
+  </data>
+  <data name="TripLimits" xml:space="preserve">
+    <value>हर यात्रा श्रेणी की सीमा (वैकल्पिक)</value>
+  </data>
+  <data name="TripLimitsHint" xml:space="preserve">
+    <value>यात्रा की मुद्रा में। बिना सीमा के लिए खाली छोड़ें।</value>
+  </data>
+  <data name="PleaseEnterTripName" xml:space="preserve">
+    <value>यात्रा का नाम लिखें</value>
+  </data>
+  <data name="TripEndBeforeStart" xml:space="preserve">
+    <value>यात्रा शुरू होने से पहले खत्म नहीं हो सकती</value>
+  </data>
+  <data name="TripAlreadyActive" xml:space="preserve">
+    <value>दूसरी यात्रा चालू है। पहले उसे खत्म करें।</value>
+  </data>
+  <data name="TripStarted" xml:space="preserve">
+    <value>यात्रा शुरू हो गई</value>
+  </data>
+  <data name="NoTripsYet" xml:space="preserve">
+    <value>अभी कोई यात्रा नहीं</value>
+  </data>
+  <data name="AddTripToStart" xml:space="preserve">
+    <value>रोज़ के खर्च से अलग यात्रा का खर्च दर्ज करने के लिए यात्रा शुरू करें।</value>
+  </data>
+  <data name="DeleteTripConfirmation" xml:space="preserve">
+    <value>यात्रा &quot;{0}&quot; हटाएं? उसके खर्च आपके लेन-देन में बने रहेंगे।</value>
+  </data>
+  <data name="TripDeleteNeedsEnd" xml:space="preserve">
+    <value>हटाने से पहले यात्रा खत्म करें।</value>
+  </data>
+  <data name="TripCategoriesBreakdown" xml:space="preserve">
+    <value>श्रेणी के अनुसार</value>
+  </data>
+  <data name="TripExpenses" xml:space="preserve">
+    <value>खर्च</value>
+  </data>
+  <data name="NoTripExpenses" xml:space="preserve">
+    <value>अभी कोई खर्च नहीं</value>
+  </data>
+  <data name="TravelCategoryCannotDelete" xml:space="preserve">
+    <value>यात्रा श्रेणी में आपकी यात्राओं के खर्च रहते हैं, इसलिए इसे हटाया नहीं जा सकता। इसका नाम बदल सकते हैं।</value>
+  </data>
+  <data name="EndTrip" xml:space="preserve">
+    <value>यात्रा खत्म करें</value>
+  </data>
+  <data name="EndTripHint" xml:space="preserve">
+    <value>चुनें कि हर यात्रा श्रेणी का खर्च आपकी सामान्य श्रेणियों में कहां जाए।</value>
+  </data>
+  <data name="SameCategoryForAll" xml:space="preserve">
+    <value>सबके लिए एक ही श्रेणी</value>
+  </data>
+  <data name="ReopenTrip" xml:space="preserve">
+    <value>यात्रा फिर चालू करें</value>
+  </data>
+  <data name="ReopenTripConfirmation" xml:space="preserve">
+    <value>&quot;{0}&quot; फिर चालू करें? उसके खर्च वापस यात्रा श्रेणी में आ जाएंगे।</value>
+  </data>
+  <data name="TripEndedToast" xml:space="preserve">
+    <value>यात्रा खत्म हुई</value>
+  </data>
+  <data name="FailedToEndTrip" xml:space="preserve">
+    <value>यात्रा अपडेट नहीं हो सकी</value>
+  </data>
+  <data name="PleaseChooseCategoryForEach" xml:space="preserve">
+    <value>हर यात्रा श्रेणी के लिए श्रेणी चुनें</value>
+  </data>
+  <data name="PartiesTitle" xml:space="preserve">
+    <value>इवेंट</value>
+  </data>
+  <data name="PartyFriends" xml:space="preserve">
+    <value>दोस्त</value>
+  </data>
+  <data name="NoPartiesYet" xml:space="preserve">
+    <value>अभी कोई इवेंट नहीं</value>
+  </data>
+  <data name="AddPartyToStart" xml:space="preserve">
+    <value>साझा इवेंट का खर्च बांटने के लिए इवेंट जोड़ें</value>
+  </data>
+  <data name="NewParty" xml:space="preserve">
+    <value>नया इवेंट</value>
+  </data>
+  <data name="EditParty" xml:space="preserve">
+    <value>इवेंट बदलें</value>
+  </data>
+  <data name="PartyName" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="PartyNamePlaceholder" xml:space="preserve">
+    <value>जैसे अनु का जन्मदिन</value>
+  </data>
+  <data name="PartyBudgetOptional" xml:space="preserve">
+    <value>बजट (वैकल्पिक)</value>
+  </data>
+  <data name="PartyMembers" xml:space="preserve">
+    <value>कौन शामिल है</value>
+  </data>
+  <data name="PartyNoFriendsYet" xml:space="preserve">
+    <value>पहले दोस्त जोड़ें, फिर चुनें कि कौन शामिल है</value>
+  </data>
+  <data name="PleaseEnterPartyName" xml:space="preserve">
+    <value>इवेंट का नाम लिखें</value>
+  </data>
+  <data name="PartyNeedsMembers" xml:space="preserve">
+    <value>कम से कम एक व्यक्ति चुनें</value>
+  </data>
+  <data name="PartyMemberInUse" xml:space="preserve">
+    <value>जिस व्यक्ति के खर्च या योगदान हैं, उसे हटाया नहीं जा सकता</value>
+  </data>
+  <data name="PartyNobodyShares" xml:space="preserve">
+    <value>इस व्यक्ति को हटाने पर एक खर्च ऐसा रह जाएगा जिसे बांटने वाला कोई नहीं</value>
+  </data>
+  <data name="FailedToLoadParties" xml:space="preserve">
+    <value>इवेंट लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToSaveParty" xml:space="preserve">
+    <value>इवेंट सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToDeleteParty" xml:space="preserve">
+    <value>इवेंट हटाया नहीं जा सका</value>
+  </data>
+  <data name="FriendsTitle" xml:space="preserve">
+    <value>दोस्त</value>
+  </data>
+  <data name="NoFriendsYet" xml:space="preserve">
+    <value>अभी कोई दोस्त नहीं</value>
+  </data>
+  <data name="AddFriendToStart" xml:space="preserve">
+    <value>जिनके साथ खर्च बांटते हैं, उन्हें जोड़ें</value>
+  </data>
+  <data name="FriendNamePlaceholder" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="AddFriend" xml:space="preserve">
+    <value>जोड़ें</value>
+  </data>
+  <data name="RenameFriend" xml:space="preserve">
+    <value>नाम बदलें</value>
+  </data>
+  <data name="RenameFriendTitle" xml:space="preserve">
+    <value>दोस्त का नाम बदलें</value>
+  </data>
+  <data name="DeleteFriendQuestion" xml:space="preserve">
+    <value>{0} को हटाएं?</value>
+  </data>
+  <data name="FriendInParty" xml:space="preserve">
+    <value>यह दोस्त किसी इवेंट में है, इसलिए हटाया नहीं जा सकता</value>
+  </data>
+  <data name="FriendNameTaken" xml:space="preserve">
+    <value>इस नाम का दोस्त पहले से है</value>
+  </data>
+  <data name="FailedToLoadFriends" xml:space="preserve">
+    <value>दोस्त लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToSaveFriend" xml:space="preserve">
+    <value>दोस्त सहेजा नहीं जा सका</value>
+  </data>
+  <data name="PartyLeft" xml:space="preserve">
+    <value>{0} बचे</value>
+  </data>
+  <data name="PartyOver" xml:space="preserve">
+    <value>{0} ज़्यादा</value>
+  </data>
+  <data name="PartyBalances" xml:space="preserve">
+    <value>हिसाब</value>
+  </data>
+  <data name="PartyExpenses" xml:space="preserve">
+    <value>खर्च</value>
+  </data>
+  <data name="PartyContributions" xml:space="preserve">
+    <value>योगदान</value>
+  </data>
+  <data name="PartyPot" xml:space="preserve">
+    <value>साझा कोष</value>
+  </data>
+  <data name="PartyPotHint" xml:space="preserve">
+    <value>पहले से जमा पैसा, जो सबके लिए साझा है</value>
+  </data>
+  <data name="AddPartyExpense" xml:space="preserve">
+    <value>खर्च जोड़ें</value>
+  </data>
+  <data name="EditPartyExpense" xml:space="preserve">
+    <value>खर्च बदलें</value>
+  </data>
+  <data name="AddPartyContribution" xml:space="preserve">
+    <value>योगदान जोड़ें</value>
+  </data>
+  <data name="EditPartyContribution" xml:space="preserve">
+    <value>योगदान बदलें</value>
+  </data>
+  <data name="PartyPaidBy" xml:space="preserve">
+    <value>किसने दिया</value>
+  </data>
+  <data name="PartyPaidByPot" xml:space="preserve">
+    <value>साझा कोष</value>
+  </data>
+  <data name="PartyPaidByLine" xml:space="preserve">
+    <value>{0} ने दिया</value>
+  </data>
+  <data name="PartyWho" xml:space="preserve">
+    <value>कौन</value>
+  </data>
+  <data name="PartySharedBetween" xml:space="preserve">
+    <value>इनके बीच बंटा</value>
+  </data>
+  <data name="PartySharedLine" xml:space="preserve">
+    <value>{1} में से {0} में बंटा</value>
+  </data>
+  <data name="PartyOwed" xml:space="preserve">
+    <value>को {0} मिलने हैं</value>
+  </data>
+  <data name="PartyOwes" xml:space="preserve">
+    <value>को {0} देने हैं</value>
+  </data>
+  <data name="PartyEven" xml:space="preserve">
+    <value>बराबर</value>
+  </data>
+  <data name="NoPartyExpenses" xml:space="preserve">
+    <value>अभी कोई खर्च नहीं</value>
+  </data>
+  <data name="NoPartyContributions" xml:space="preserve">
+    <value>अभी कोई योगदान नहीं</value>
+  </data>
+  <data name="DeletePartyQuestion" xml:space="preserve">
+    <value>यह इवेंट और इसका सब कुछ हटाएं?</value>
+  </data>
+  <data name="DeletePartyExpenseQuestion" xml:space="preserve">
+    <value>यह खर्च हटाएं?</value>
+  </data>
+  <data name="DeletePartyContributionQuestion" xml:space="preserve">
+    <value>यह योगदान हटाएं?</value>
+  </data>
+  <data name="PartyNeedsSharer" xml:space="preserve">
+    <value>खर्च बांटने के लिए कोई होना चाहिए</value>
+  </data>
+  <data name="FailedToSavePartyExpense" xml:space="preserve">
+    <value>खर्च सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToSavePartyContribution" xml:space="preserve">
+    <value>योगदान सहेजा नहीं जा सका</value>
+  </data>
+  <data name="PartyPaidLine" xml:space="preserve">
+    <value>दिए {0}</value>
+  </data>
+  <data name="PartyHandedInLine" xml:space="preserve">
+    <value>जमा किए {0}</value>
+  </data>
+  <data name="PartyShareLine" xml:space="preserve">
+    <value>हिस्सा {0}</value>
+  </data>
+  <data name="PartySettleUp" xml:space="preserve">
+    <value>हिसाब चुकता करें</value>
+  </data>
+  <data name="PartyPaysLine" xml:space="preserve">
+    <value>{0} को {1} को {2} देने हैं</value>
+  </data>
+  <data name="PartyAllSettled" xml:space="preserve">
+    <value>सबका हिसाब बराबर है</value>
+  </data>
+  <data name="PartyMarkPaid" xml:space="preserve">
+    <value>चुकाया दर्ज करें</value>
+  </data>
+  <data name="PartyPaymentsMade" xml:space="preserve">
+    <value>किए गए भुगतान</value>
+  </data>
+  <data name="SharePartySummary" xml:space="preserve">
+    <value>सारांश शेयर करें</value>
+  </data>
+  <data name="DeletePartyPaymentQuestion" xml:space="preserve">
+    <value>यह भुगतान हटाएं? यह फिर से बकाया गिना जाएगा।</value>
+  </data>
+  <data name="FailedToSavePartyPayment" xml:space="preserve">
+    <value>भुगतान सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>सारांश शेयर नहीं हो सका</value>
+  </data>
+  <data name="PartyRecordMyShare" xml:space="preserve">
+    <value>मेरा हिस्सा दर्ज करें</value>
+  </data>
+  <data name="PartyUpdateMyShare" xml:space="preserve">
+    <value>मेरा हिस्सा अपडेट करें</value>
+  </data>
+  <data name="PartyWhichIsYou" xml:space="preserve">
+    <value>इनमें आप कौन हैं?</value>
+  </data>
+  <data name="PartyShareAccount" xml:space="preserve">
+    <value>आपके हिस्से का खाता</value>
+  </data>
+  <data name="PartyShareCategory" xml:space="preserve">
+    <value>आपके हिस्से की श्रेणी</value>
+  </data>
+  <data name="PartyShareRecorded" xml:space="preserve">
+    <value>आपका हिस्सा ({0}) आपके खर्च में दर्ज है</value>
+  </data>
+  <data name="PartyNoShareYet" xml:space="preserve">
+    <value>अभी दर्ज करने लायक आपका कोई हिस्सा नहीं</value>
+  </data>
+  <data name="PartyNoAccountInCurrency" xml:space="preserve">
+    <value>{0} में आपका कोई खाता नहीं</value>
+  </data>
+  <data name="FailedToRecordPartyShare" xml:space="preserve">
+    <value>आपका हिस्सा दर्ज नहीं हो सका</value>
+  </data>
+  <data name="Pockets" xml:space="preserve">
+    <value>पॉकेट</value>
+  </data>
+  <data name="NewPocket" xml:space="preserve">
+    <value>नया पॉकेट</value>
+  </data>
+  <data name="EditPocket" xml:space="preserve">
+    <value>पॉकेट बदलें</value>
+  </data>
+  <data name="PocketName" xml:space="preserve">
+    <value>पॉकेट का नाम</value>
+  </data>
+  <data name="PocketNamePlaceholder" xml:space="preserve">
+    <value>जैसे यात्रा</value>
+  </data>
+  <data name="PleaseEnterPocketName" xml:space="preserve">
+    <value>पॉकेट का नाम लिखें</value>
+  </data>
+  <data name="SetAside" xml:space="preserve">
+    <value>अलग रखें</value>
+  </data>
+  <data name="TakeOut" xml:space="preserve">
+    <value>निकालें</value>
+  </data>
+  <data name="PocketHolds" xml:space="preserve">
+    <value>इस पॉकेट में: {0}</value>
+  </data>
+  <data name="PocketAccountAvailable" xml:space="preserve">
+    <value>{0} में उपलब्ध: {1}</value>
+  </data>
+  <data name="PocketMovements" xml:space="preserve">
+    <value>लेन-देन</value>
+  </data>
+  <data name="NoPocketMovements" xml:space="preserve">
+    <value>अभी कुछ अलग नहीं रखा।</value>
+  </data>
+  <data name="AvailableAndInPockets" xml:space="preserve">
+    <value>उपलब्ध {0} · पॉकेट में {1}</value>
+  </data>
+  <data name="InPockets" xml:space="preserve">
+    <value>पॉकेट में {0}</value>
+  </data>
+  <data name="PocketNotEnoughAvailable" xml:space="preserve">
+    <value>{0} में इतना उपलब्ध नहीं है।</value>
+  </data>
+  <data name="PocketNotEnoughInPocket" xml:space="preserve">
+    <value>इस पॉकेट में इससे कम है।</value>
+  </data>
+  <data name="DeletePocketConfirmation" xml:space="preserve">
+    <value>पॉकेट &quot;{0}&quot; हटाएं? उसका पैसा {1} में लौट जाएगा।</value>
+  </data>
+  <data name="FailedToSavePocket" xml:space="preserve">
+    <value>पॉकेट सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToDeletePocket" xml:space="preserve">
+    <value>पॉकेट हटाया नहीं जा सका</value>
+  </data>
+  <data name="FailedToMovePocket" xml:space="preserve">
+    <value>पॉकेट अपडेट नहीं हो सका</value>
+  </data>
+  <data name="PocketsCurrencyChange" xml:space="preserve">
+    <value>{0} के पॉकेट की रकम वैसी ही रहेगी, पर वे {1} के लक्ष्यों में नहीं गिने जाएंगे। फिर भी मुद्रा बदलें?</value>
+  </data>
+  <data name="DeleteAccountPockets" xml:space="preserve">
+    <value>इसके पॉकेट भी हट जाएंगे।</value>
+  </data>
+  <data name="PocketCoverTitle" xml:space="preserve">
+    <value>इसमें आपके अलग रखे {0} लगेंगे। यहां से लें:</value>
+  </data>
+  <data name="PocketCoverKeep" xml:space="preserve">
+    <value>पॉकेट जैसे हैं वैसे रहने दें</value>
+  </data>
+  <data name="WhatsNewTitle" xml:space="preserve">
+    <value>{0} में नया क्या है</value>
+  </data>
+  <data name="WhatsNewGotIt" xml:space="preserve">
+    <value>समझ गया</value>
+  </data>
+  <data name="WhatsNewMenu" xml:space="preserve">
+    <value>नया क्या है</value>
+  </data>
+  <data name="FailedToLoadWhatsNew" xml:space="preserve">
+    <value>रिलीज़ नोट लोड नहीं हो सके</value>
+  </data>
+  <data name="PendingEntryTitle" xml:space="preserve">
+    <value>{0} दर्ज करें</value>
+  </data>
+  <data name="AmountVaries" xml:space="preserve">
+    <value>रकम बदलती रहती है</value>
+  </data>
+  <data name="EnterOccurrence" xml:space="preserve">
+    <value>दर्ज करें</value>
+  </data>
+  <data name="ToEnter" xml:space="preserve">
+    <value>दर्ज करना बाकी</value>
+  </data>
+  <data name="SkipOccurrenceTitle" xml:space="preserve">
+    <value>इसे छोड़ें?</value>
+  </data>
+  <data name="SkipOccurrenceMessage" xml:space="preserve">
+    <value>{1} का {0} दर्ज नहीं होगा।</value>
+  </data>
+  <data name="OccurrenceSkipped" xml:space="preserve">
+    <value>छोड़ दिया</value>
+  </data>
+  <data name="OccurrenceNoLongerPending" xml:space="preserve">
+    <value>यह एंट्री अब दर्ज होने की प्रतीक्षा में नहीं है।</value>
+  </data>
+  <data name="AmountVariesHint" xml:space="preserve">
+    <value>कुछ भी अपने-आप नहीं सहेजा जाता: हर बार रकम आप डालते हैं।</value>
+  </data>
+  <data name="HomeCardBalance" xml:space="preserve">
+    <value>कुल बैलेंस</value>
+  </data>
+  <data name="HomeCardPeriodSummary" xml:space="preserve">
+    <value>आय और खर्च</value>
+  </data>
+  <data name="HomeCardTrip" xml:space="preserve">
+    <value>चालू यात्रा</value>
+  </data>
+  <data name="CustomizeHome" xml:space="preserve">
+    <value>होम को अपने हिसाब से सजाएं</value>
+  </data>
+  <data name="HomeLayoutTitle" xml:space="preserve">
+    <value>होम स्क्रीन</value>
+  </data>
+  <data name="HomeLayoutDescription" xml:space="preserve">
+    <value>होम कार्ड का क्रम बदलें और दिखाएं या छिपाएं</value>
+  </data>
+  <data name="HomeLayoutHint" xml:space="preserve">
+    <value>जिन कार्ड में दिखाने को कुछ नहीं है, वे छिपे रहते हैं। कुल बैलेंस हमेशा दिखता है।</value>
+  </data>
+  <data name="HomeLayoutReset" xml:space="preserve">
+    <value>डिफ़ॉल्ट पर लौटें</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>ऊपर ले जाएं</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>नीचे ले जाएं</value>
+  </data>
+  <data name="SavingsChallenges" xml:space="preserve">
+    <value>बचत चैलेंज</value>
+  </data>
+  <data name="NoChallengesYet" xml:space="preserve">
+    <value>अभी कोई चैलेंज नहीं</value>
+  </data>
+  <data name="AddChallengeToStart" xml:space="preserve">
+    <value>एक लक्ष्य और दिन चुनें; ऐप हिसाब लगाता है कि रोज़ कितना बचाना है।</value>
+  </data>
+  <data name="AddChallenge" xml:space="preserve">
+    <value>चैलेंज जोड़ें</value>
+  </data>
+  <data name="NewChallenge" xml:space="preserve">
+    <value>नया चैलेंज</value>
+  </data>
+  <data name="EditChallenge" xml:space="preserve">
+    <value>चैलेंज बदलें</value>
+  </data>
+  <data name="ChallengeName" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="ChallengeNamePlaceholder" xml:space="preserve">
+    <value>जैसे छुट्टी का फ़ंड</value>
+  </data>
+  <data name="ChallengeGoal" xml:space="preserve">
+    <value>लक्ष्य</value>
+  </data>
+  <data name="ChallengeDays" xml:space="preserve">
+    <value>दिन</value>
+  </data>
+  <data name="ChallengeStartDate" xml:space="preserve">
+    <value>शुरू होने की तारीख़</value>
+  </data>
+  <data name="ChallengeMode" xml:space="preserve">
+    <value>तरीका</value>
+  </data>
+  <data name="ChallengeModeDoubling" xml:space="preserve">
+    <value>दोगुना (1, 2, 4, 8…)</value>
+  </data>
+  <data name="ChallengeModeLinear" xml:space="preserve">
+    <value>क्रमवार (1, 2, 3, 4…)</value>
+  </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>रोज़ बराबर</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>रोज़ की रकम (वैकल्पिक)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>खाली = दिनों में बराबर बांटें</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>रोज़ {0}</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>रोज़ {0} · आखिरी दिन {1}</value>
+  </data>
+  <data name="ChallengeRounding" xml:space="preserve">
+    <value>हर दिन की रकम पूरी करें</value>
+  </data>
+  <data name="ChallengeRoundingNone" xml:space="preserve">
+    <value>पूरी न करें</value>
+  </data>
+  <data name="ChallengeRoundTo" xml:space="preserve">
+    <value>{0} तक</value>
+  </data>
+  <data name="ChallengeToAccount" xml:space="preserve">
+    <value>इसमें जमा करें</value>
+  </data>
+  <data name="ChallengeNoAccount" xml:space="preserve">
+    <value>कोई नहीं (सिर्फ़ दिन चिह्नित करें)</value>
+  </data>
+  <data name="ChallengePreviewDays" xml:space="preserve">
+    <value>पहला दिन {0} · आखिरी दिन {1}</value>
+  </data>
+  <data name="ChallengePreviewTotal" xml:space="preserve">
+    <value>कुल {0}</value>
+  </data>
+  <data name="ChallengePreviewOver" xml:space="preserve">
+    <value>कुल {0} · लक्ष्य से {1} ज़्यादा</value>
+  </data>
+  <data name="ChallengePreviewUnder" xml:space="preserve">
+    <value>कुल {0} · लक्ष्य से {1} कम</value>
+  </data>
+  <data name="ChallengeLevelsWarning" xml:space="preserve">
+    <value>{0} दिन तक रोज़ दोगुना करने पर शुरुआत एक इकाई से भी कम होगी। योजना {1} चरणों में दोगुनी होती है, जिनमें से हर चरण कई दिन का है; {1} दिन होने पर यह रोज़ दोगुनी होती है।</value>
+  </data>
+  <data name="ChallengePlanLocked" xml:space="preserve">
+    <value>कोई दिन पूरा होने के बाद लक्ष्य, दिन, तरीका और रकम पूरी करना बदले नहीं जा सकते।</value>
+  </data>
+  <data name="ChallengeSavedOf" xml:space="preserve">
+    <value>{1} में से {0} बचे</value>
+  </data>
+  <data name="ChallengeDaysLeftOne" xml:space="preserve">
+    <value>{0} दिन बाकी</value>
+  </data>
+  <data name="ChallengeDaysLeftOther" xml:space="preserve">
+    <value>{0} दिन बाकी</value>
+  </data>
+  <data name="ChallengeFinished" xml:space="preserve">
+    <value>पूरा हुआ</value>
+  </data>
+  <data name="ChallengeAdded" xml:space="preserve">
+    <value>चैलेंज जुड़ गया</value>
+  </data>
+  <data name="PleaseEnterChallengeName" xml:space="preserve">
+    <value>नाम लिखें</value>
+  </data>
+  <data name="PleaseEnterChallengeDays" xml:space="preserve">
+    <value>1 से 3650 के बीच दिन डालें</value>
+  </data>
+  <data name="FailedToLoadChallenges" xml:space="preserve">
+    <value>चैलेंज लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToSaveChallenge" xml:space="preserve">
+    <value>चैलेंज सहेजा नहीं जा सका</value>
+  </data>
+  <data name="FailedToDeleteChallenge" xml:space="preserve">
+    <value>चैलेंज हटाया नहीं जा सका</value>
+  </data>
+  <data name="DeleteChallengeConfirmation" xml:space="preserve">
+    <value>&quot;{0}&quot; हटाएं? इसके दर्ज किए ट्रांसफ़र बने रहेंगे।</value>
+  </data>
+  <data name="ChallengeJustMark" xml:space="preserve">
+    <value>सिर्फ़ दिन चिह्नित करें</value>
+  </data>
+  <data name="ChallengeRemainingOnly" xml:space="preserve">
+    <value>सिर्फ़ बाकी</value>
+  </data>
+  <data name="ChallengeViewNext30" xml:space="preserve">
+    <value>अगले 30 दिन</value>
+  </data>
+  <data name="ChallengeViewThisMonth" xml:space="preserve">
+    <value>यह महीना</value>
+  </data>
+  <data name="ChallengeFirstDay" xml:space="preserve">
+    <value>पहला दिन (वैकल्पिक)</value>
+  </data>
+  <data name="ChallengeFirstDayHint" xml:space="preserve">
+    <value>खाली = बढ़ोतरी जितना</value>
+  </data>
+  <data name="ChallengeStep" xml:space="preserve">
+    <value>रोज़ की बढ़ोतरी (वैकल्पिक)</value>
+  </data>
+  <data name="ChallengeStepHint" xml:space="preserve">
+    <value>खाली = दिनों से निकाला जाएगा</value>
+  </data>
+  <data name="ChallengeFirstDayTooHigh" xml:space="preserve">
+    <value>इस लक्ष्य और इन दिनों के लिए पहला दिन बहुत ज़्यादा है।</value>
+  </data>
+  <data name="ChallengeViewFromStart" xml:space="preserve">
+    <value>शुरुआत से</value>
+  </data>
+  <data name="ChallengeMonthCurrent" xml:space="preserve">
+    <value>इस महीने पर जाएं</value>
+  </data>
+  <data name="ChallengeViewRange" xml:space="preserve">
+    <value>तारीख़ की सीमा</value>
+  </data>
+  <data name="ChallengeRangeFrom" xml:space="preserve">
+    <value>से</value>
+  </data>
+  <data name="ChallengeRangeTo" xml:space="preserve">
+    <value>तक</value>
+  </data>
+  <data name="ChallengeNoDaysInView" xml:space="preserve">
+    <value>यहां दिखाने को कोई दिन नहीं।</value>
+  </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · दिन {2}–{3} / {4}</value>
+  </data>
+  <data name="ChallengeDayDescription" xml:space="preserve">
+    <value>दिन {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>इसके लिए {0} से ज़्यादा दिन लगेंगे। रोज़ की रकम बढ़ाएं या लक्ष्य घटाएं।</value>
+  </data>
+  <data name="ChallengeDayDone" xml:space="preserve">
+    <value>हो गया</value>
+  </data>
+  <data name="ChallengeDayPending" xml:space="preserve">
+    <value>बाकी</value>
+  </data>
+  <data name="FailedToUpdateChallenge" xml:space="preserve">
+    <value>दिन अपडेट नहीं हो सका</value>
+  </data>
+  <data name="ChallengeAccountsHint" xml:space="preserve">
+    <value>चुनने पर, दिन चिह्नित करते समय पूछा जाता है कि पैसा कहां से आएगा और वह यहां चला जाता है: खातों के बीच ट्रांसफ़र, या पॉकेट से निकाला या उसमें अलग रखा पैसा।</value>
+  </data>
+  <data name="ChallengeSourceTitle" xml:space="preserve">
+    <value>{0} का पैसा कहां से आएगा?</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>दिन {0} का निशान हटाएं? इसमें {1} गया था।</value>
+  </data>
+  <data name="ChallengeUnmarkUndo" xml:space="preserve">
+    <value>निशान हटाएं और गया पैसा लौटाएं</value>
+  </data>
+  <data name="ChallengeUnmarkKeep" xml:space="preserve">
+    <value>निशान हटाएं, गया पैसा रहने दें</value>
+  </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>MoneyRecord का साथ दें</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord मुफ़्त और ओपन सोर्स है, इसमें न विज्ञापन हैं न ट्रैकिंग। अगर यह आपके काम आता है, तो आप इसके विकास में साथ दे सकते हैं। कुछ भी बंद नहीं है: आप दें या न दें, सब कुछ एक जैसा चलता है।</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>प्रोजेक्ट का साथ दें</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>टिप दें</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>आपके साथ के लिए धन्यवाद!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>आपकी टिप भुगतान पूरा होने की राह देख रही है। धन्यवाद!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>टिप पूरी नहीं हो सकी।</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>टिप अभी उपलब्ध नहीं है। बाद में फिर कोशिश करें।</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>पलटें</value>
+  </data>
+  <data name="ExpenseDeletedUndo" xml:space="preserve">
+    <value>खर्च हट गया</value>
+  </data>
+  <data name="IncomeDeletedUndo" xml:space="preserve">
+    <value>आय हट गई</value>
+  </data>
+  <data name="TransferDeletedUndo" xml:space="preserve">
+    <value>ट्रांसफ़र हट गया</value>
+  </data>
+  <data name="SplitDeletedUndo" xml:space="preserve">
+    <value>बंटा हुआ भुगतान हट गया ({0} हिस्से)</value>
+  </data>
+  <data name="UndoNotPossible" xml:space="preserve">
+    <value>पलटा नहीं जा सका। यह एंट्री अब वापस नहीं लाई जा सकती।</value>
+  </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>शुरू करें</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>छिपाएं</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>अपना पहला खर्च जोड़ें</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>अपने डेटा का बैकअप लें</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>ऐप को लॉक करें</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>रिमाइंडर चालू करें</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>बदलने या हटाने के लिए पंक्ति को बाईं ओर खिसकाएं</value>
+  </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>श्रेणियां खोजें</value>
+  </data>
+  <data name="SearchCurrencies" xml:space="preserve">
+    <value>मुद्राएं खोजें</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>खाते खोजें</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>आपकी खोज से कुछ नहीं मिला।</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>अभी कोई पाने वाला नहीं</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>खर्च या आय जोड़ते समय एक लिखें और वह यहां दिखेगा।</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>अभी नकदी प्रवाह का डेटा नहीं है</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>नकदी प्रवाह देखने के लिए आय और खर्च जोड़ें।</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>अभी कुल संपत्ति का डेटा नहीं है</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>कुल संपत्ति देखने के लिए खाते का बैलेंस, आय या खर्च जोड़ें।</value>
+  </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>पिछली अवधि</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>अगली अवधि</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>फ़िल्टर</value>
+  </data>
+  <data name="SelectedState" xml:space="preserve">
+    <value>चुना गया</value>
+  </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>तारीख़ के अनुसार</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>फ़िल्टर हटाएं: {0}</value>
+  </data>
+  <data name="GroupMoney" xml:space="preserve">
+    <value>पैसा</value>
+  </data>
+  <data name="GroupPlanning" xml:space="preserve">
+    <value>योजना</value>
+  </data>
+  <data name="GroupSharedTravel" xml:space="preserve">
+    <value>साझा और यात्रा</value>
+  </data>
+  <data name="GroupApp" xml:space="preserve">
+    <value>ऐप</value>
+  </data>
+  <data name="SectionAppearance" xml:space="preserve">
+    <value>रूप-रंग</value>
+  </data>
+  <data name="SectionDataBackup" xml:space="preserve">
+    <value>डेटा और बैकअप</value>
+  </data>
+  <data name="SectionPrivacySecurity" xml:space="preserve">
+    <value>गोपनीयता और सुरक्षा</value>
+  </data>
+  <data name="SearchSettings" xml:space="preserve">
+    <value>सेटिंग्स खोजें</value>
+  </data>
+  <data name="EnterAmount" xml:space="preserve">
+    <value>रकम डालें</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>कल</value>
+  </data>
+  <data name="PickDate" xml:space="preserve">
+    <value>तारीख़ चुनें</value>
+  </data>
+  <data name="GroupBy" xml:space="preserve">
+    <value>समूह बनाएं</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>सब खोलें</value>
+  </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>सब समेटें</value>
+  </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>फटाफट एंट्री</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>अभी कोई फटाफट एंट्री नहीं</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>जो बार-बार होता है, जैसे चाय, उसे सहेजें और होम से एक टैप में जोड़ें।</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} सहेजा गया</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>फटाफट एंट्री सहेजी नहीं जा सकी।</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>फटाफट एंट्री लोड नहीं हो सकीं।</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>नाम</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>चाय</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>रकम (खाली: हर बार पूछें)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>{0} की रकम</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>इसे फटाफट एंट्री बनाएं?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>आपने हाल में &quot;{0}&quot; कई बार डाला है। एक टैप में जोड़ने के लिए सहेजें?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>फटाफट एंट्री जुड़ गई</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>फटाफट एंट्री हट गई</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>&quot;{0}&quot; हटाएं? आपके लेन-देन बने रहेंगे।</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>नई फटाफट एंट्री</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>फटाफट एंट्री बदलें</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>फटाफट एंट्री के रूप में सहेजें</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>फटाफट एंट्री का नाम लिखें।</value>
+  </data>
+  <data name="HomeCardForecast" xml:space="preserve">
+    <value>अनुमान</value>
+  </data>
+  <data name="SafeToSpendLine" xml:space="preserve">
+    <value>{2} तक खर्च करने लायक {0}, लगभग रोज़ {1}</value>
+  </data>
+  <data name="SafeToSpendShort" xml:space="preserve">
+    <value>{1} तक {0} कम</value>
+  </data>
+  <data name="ForecastDipLine" xml:space="preserve">
+    <value>{0} को बैलेंस शून्य से नीचे जाता है</value>
+  </data>
+  <data name="SafeToSpendUntilSetting" xml:space="preserve">
+    <value>खर्च करने लायक, इस तारीख़ तक</value>
+  </data>
+  <data name="SafeToSpendNextIncome" xml:space="preserve">
+    <value>अगली आय</value>
+  </data>
+  <data name="SafeToSpendEndOfMonth" xml:space="preserve">
+    <value>महीने का अंत</value>
+  </data>
+  <data name="SafeToSpendHint" xml:space="preserve">
+    <value>आपके नियमित और आगे की तारीख़ वाली एंट्री से लगाया अनुमान; जो आय अभी आई नहीं, वह गिनी नहीं जाती।</value>
+  </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>सबसे कम: {1} को {0}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>{0} को बैलेंस: {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} दिन</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>बैलेंस किससे बदलता है</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>इस अवधि में कुछ तय नहीं है।</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>अभी अनुमान लगाने को कुछ नहीं</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>आपका बैलेंस किस ओर जा रहा है, यह देखने के लिए खाता जोड़ें।</value>
+  </data>
+  <data name="LowBalanceReminders" xml:space="preserve">
+    <value>कम बैलेंस की चेतावनी</value>
+  </data>
+  <data name="LowBalanceWithinDays" xml:space="preserve">
+    <value>{0} दिन के भीतर</value>
+  </data>
+  <data name="LowBalanceTitle" xml:space="preserve">
+    <value>आगे बैलेंस कम होने वाला है</value>
+  </data>
+  <data name="LowBalanceBody" xml:space="preserve">
+    <value>{1} को {0} शून्य से नीचे जा सकता है</value>
+  </data>
+  <data name="BudgetCarriedOver" xml:space="preserve">
+    <value>इसमें आगे लाए गए {0} शामिल हैं</value>
+  </data>
+  <data name="BudgetPerDay" xml:space="preserve">
+    <value>{1} दिन के लिए रोज़ {0}</value>
+  </data>
+  <data name="BudgetRollover" xml:space="preserve">
+    <value>जो बचे, उसे आगे ले जाएं</value>
+  </data>
+  <data name="BudgetRolloverHint" xml:space="preserve">
+    <value>जो पैसा खर्च नहीं हुआ, वह अगली अवधि की सीमा में जुड़ जाता है। ज़्यादा खर्च आगे नहीं जाता।</value>
+  </data>
+  <data name="AllSpending" xml:space="preserve">
+    <value>सारा खर्च</value>
+  </data>
+  <data name="SuggestBudgets" xml:space="preserve">
+    <value>बजट सुझाएं</value>
+  </data>
+  <data name="SuggestBudgetsHint" xml:space="preserve">
+    <value>पिछले 3 महीनों के औसत खर्च पर आधारित महीने की सीमाएं। जिन्हें बनाना है, उन पर निशान लगाएं।</value>
+  </data>
+  <data name="NoBudgetSuggestions" xml:space="preserve">
+    <value>अभी सुझाने को कुछ नहीं: बिना बजट वाली श्रेणियों में पिछले 3 महीनों में कोई खर्च नहीं।</value>
+  </data>
+  <data name="CreateBudgetsButton" xml:space="preserve">
+    <value>बजट बनाएं</value>
+  </data>
+  <data name="BudgetsCreated" xml:space="preserve">
+    <value>बजट बन गए</value>
+  </data>
+  <data name="CategoryTrend" xml:space="preserve">
+    <value>श्रेणी का रुझान</value>
+  </data>
+  <data name="CategoryTrendHint" xml:space="preserve">
+    <value>एक श्रेणी, महीने-दर-महीने</value>
+  </data>
+  <data name="DeltaVsAverage" xml:space="preserve">
+    <value>महीने के औसत से {0}</value>
+  </data>
+  <data name="MoreReports" xml:space="preserve">
+    <value>और रिपोर्ट</value>
+  </data>
+  <data name="NoCategoryTrendHint" xml:space="preserve">
+    <value>इन महीनों में इस श्रेणी में कुछ नहीं है। दूसरी श्रेणी या लंबी अवधि चुनें।</value>
+  </data>
+  <data name="TrendAverage" xml:space="preserve">
+    <value>महीने का औसत</value>
+  </data>
+  <data name="TrendHighest" xml:space="preserve">
+    <value>सबसे ज़्यादा वाला महीना</value>
+  </data>
+  <data name="TrendLowest" xml:space="preserve">
+    <value>सबसे कम वाला महीना</value>
+  </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>पाने वालों की रिपोर्ट</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>आप किसे देते हैं या किससे कमाते हैं</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>पाने वालों का डेटा नहीं है</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>यहां देखने के लिए अपने लेन-देन में पाने वाला जोड़ें।</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(कोई पाने वाला नहीं)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} बार · औसत {1}</value>
+  </data>
+  <data name="TagsHint" xml:space="preserve">
+    <value>लेबल के अनुसार खर्च और आय; उनका नाम बदलें या उन्हें मिलाएं</value>
+  </data>
+  <data name="NoTagData" xml:space="preserve">
+    <value>अभी कोई टैग नहीं</value>
+  </data>
+  <data name="NoTagDataHint" xml:space="preserve">
+    <value>यहां देखने के लिए अपने लेन-देन में टैग जोड़ें।</value>
+  </data>
+  <data name="NoTagRow" xml:space="preserve">
+    <value>(कोई टैग नहीं)</value>
+  </data>
+  <data name="TagNotUsedInPeriod" xml:space="preserve">
+    <value>इस अवधि में इस्तेमाल नहीं हुआ</value>
+  </data>
+  <data name="RenameTag" xml:space="preserve">
+    <value>टैग का नाम बदलें</value>
+  </data>
+  <data name="RenameTagMessage" xml:space="preserve">
+    <value>&quot;{0}&quot; का नया नाम</value>
+  </data>
+  <data name="TagExistsTitle" xml:space="preserve">
+    <value>टैग पहले से है</value>
+  </data>
+  <data name="TagExistsMergeMessage" xml:space="preserve">
+    <value>&quot;{1}&quot; पहले से है। &quot;{0}&quot; को उसमें मिला दें?</value>
+  </data>
+  <data name="MergeTag" xml:space="preserve">
+    <value>दूसरे टैग में मिलाएं</value>
+  </data>
+  <data name="MergeTagInto" xml:space="preserve">
+    <value>&quot;{0}&quot; को इसमें मिलाएं</value>
+  </data>
+  <data name="DeleteTag" xml:space="preserve">
+    <value>टैग हटाएं</value>
+  </data>
+  <data name="DeleteTagConfirmation" xml:space="preserve">
+    <value>&quot;{0}&quot; को {1} से हटाएं? लेन-देन बने रहेंगे।</value>
+  </data>
+  <data name="TagsMerged" xml:space="preserve">
+    <value>टैग मिल गए</value>
+  </data>
+  <data name="TagRenamed" xml:space="preserve">
+    <value>टैग का नाम बदला</value>
+  </data>
+  <data name="TagDeleted" xml:space="preserve">
+    <value>टैग हट गया</value>
+  </data>
+  <data name="FailedToLoadTags" xml:space="preserve">
+    <value>टैग लोड नहीं हो सके</value>
+  </data>
+  <data name="FailedToSaveTag" xml:space="preserve">
+    <value>टैग अपडेट नहीं हो सका</value>
+  </data>
+  <data name="SeeTagTransactions" xml:space="preserve">
+    <value>लेन-देन देखें</value>
+  </data>
+  <data name="AccountReport" xml:space="preserve">
+    <value>खाते की रिपोर्ट</value>
+  </data>
+  <data name="AccountReportHint" xml:space="preserve">
+    <value>हर खाते की आय, खर्च और ट्रांसफ़र</value>
+  </data>
+  <data name="AccountReportRowDetail" xml:space="preserve">
+    <value>आय {0} · खर्च {1} · ट्रांसफ़र {2}</value>
+  </data>
+  <data name="AccountReportBalance" xml:space="preserve">
+    <value>बैलेंस {0}</value>
+  </data>
+  <data name="NoAccountData" xml:space="preserve">
+    <value>अभी कोई खाता नहीं</value>
+  </data>
+  <data name="NoAccountDataHint" xml:space="preserve">
+    <value>खातों के बीच पैसा कैसे घूमता है, यह देखने के लिए खाता जोड़ें।</value>
+  </data>
+  <data name="CompareReport" xml:space="preserve">
+    <value>अवधियों की तुलना</value>
+  </data>
+  <data name="CompareReportHint" xml:space="preserve">
+    <value>दो अवधियां आमने-सामने, श्रेणी के अनुसार</value>
+  </data>
+  <data name="ComparePeriodA" xml:space="preserve">
+    <value>अवधि</value>
+  </data>
+  <data name="ComparePeriodB" xml:space="preserve">
+    <value>इससे तुलना</value>
+  </data>
+  <data name="CompareDeltaVs" xml:space="preserve">
+    <value>दूसरी अवधि से {0}</value>
+  </data>
+  <data name="ComparePresetMonth" xml:space="preserve">
+    <value>यह महीना बनाम पिछला</value>
+  </data>
+  <data name="ComparePresetYear" xml:space="preserve">
+    <value>यह साल बनाम पिछला</value>
+  </data>
+  <data name="ComparePresetSameMonth" xml:space="preserve">
+    <value>पिछले साल का वही महीना</value>
+  </data>
+  <data name="ComparePresetLast30" xml:space="preserve">
+    <value>पिछले 30 दिन बनाम उससे पहले</value>
+  </data>
+  <data name="NoCompareData" xml:space="preserve">
+    <value>तुलना के लिए कुछ नहीं</value>
+  </data>
+  <data name="NoCompareDataHint" xml:space="preserve">
+    <value>दोनों अवधियों में इस तरह की कोई एंट्री नहीं है।</value>
+  </data>
+  <data name="CompareRowAmounts" xml:space="preserve">
+    <value>{0} बनाम {1}</value>
+  </data>
+  <data name="YearReview" xml:space="preserve">
+    <value>साल का लेखा-जोखा</value>
+  </data>
+  <data name="YearReviewHint" xml:space="preserve">
+    <value>आपका साल आंकड़ों में: कुल, शीर्ष श्रेणियां, सबसे ज़्यादा और सबसे कम खर्च वाले महीने</value>
+  </data>
+  <data name="YearReviewTitle" xml:space="preserve">
+    <value>{0} का लेखा-जोखा</value>
+  </data>
+  <data name="YearOverview" xml:space="preserve">
+    <value>एक नज़र में</value>
+  </data>
+  <data name="YearIncome" xml:space="preserve">
+    <value>आय</value>
+  </data>
+  <data name="YearExpenses" xml:space="preserve">
+    <value>खर्च</value>
+  </data>
+  <data name="YearNet" xml:space="preserve">
+    <value>शुद्ध</value>
+  </data>
+  <data name="YearSavingsRate" xml:space="preserve">
+    <value>बचत की दर</value>
+  </data>
+  <data name="YearMonths" xml:space="preserve">
+    <value>महीने</value>
+  </data>
+  <data name="YearHighestMonth" xml:space="preserve">
+    <value>सबसे ज़्यादा खर्च</value>
+  </data>
+  <data name="YearLowestMonth" xml:space="preserve">
+    <value>सबसे कम खर्च</value>
+  </data>
+  <data name="YearTopCategories" xml:space="preserve">
+    <value>शीर्ष श्रेणियां</value>
+  </data>
+  <data name="YearTopPayees" xml:space="preserve">
+    <value>शीर्ष पाने वाले</value>
+  </data>
+  <data name="YearBiggestExpense" xml:space="preserve">
+    <value>सबसे बड़ा खर्च</value>
+  </data>
+  <data name="YearHabits" xml:space="preserve">
+    <value>आदतें</value>
+  </data>
+  <data name="YearNoSpendDays" xml:space="preserve">
+    <value>बिना खर्च वाले दिन</value>
+  </data>
+  <data name="YearOfDays" xml:space="preserve">
+    <value>{1} में से {0}</value>
+  </data>
+  <data name="YearTopTag" xml:space="preserve">
+    <value>सबसे ज़्यादा इस्तेमाल हुआ टैग</value>
+  </data>
+  <data name="YearTagUses" xml:space="preserve">
+    <value>{0} ({1} बार)</value>
+  </data>
+  <data name="NoYearData" xml:space="preserve">
+    <value>अभी देखने को कुछ नहीं</value>
+  </data>
+  <data name="NoYearDataHint" xml:space="preserve">
+    <value>इस साल के लेन-देन जोड़ें और उनका लेखा-जोखा यहां दिखेगा।</value>
+  </data>
+  <data name="YearShareTitle" xml:space="preserve">
+    <value>अपना साल शेयर करें</value>
+  </data>
+  <data name="YearShareAsPdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="YearShareAsText" xml:space="preserve">
+    <value>टेक्स्ट सारांश</value>
+  </data>
+  <data name="YearShareNoAmounts" xml:space="preserve">
+    <value>{0} रकम के बिना</value>
+  </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>सहेजे फ़िल्टर</value>
+  </data>
+  <data name="SaveThisFilter" xml:space="preserve">
+    <value>यह फ़िल्टर सहेजें</value>
+  </data>
+  <data name="SavedFilterNameHint" xml:space="preserve">
+    <value>इसे नाम दें, ताकि एक टैप में दोबारा लगा सकें।</value>
+  </data>
+  <data name="SavedFilterLimit" xml:space="preserve">
+    <value>आप 20 तक फ़िल्टर सहेज सकते हैं। दूसरा सहेजने के लिए एक हटाएं।</value>
+  </data>
+  <data name="SavedFilterSaved" xml:space="preserve">
+    <value>फ़िल्टर सहेजा गया</value>
+  </data>
+  <data name="SavedFilterNameTaken" xml:space="preserve">
+    <value>इस नाम का एक सहेजा फ़िल्टर पहले से है।</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>नाम बदलें</value>
+  </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>लगाएं</value>
+  </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>इस फ़िल्टर का एक हिस्सा (श्रेणी, खाता या पाने वाला) हट चुका था और छोड़ दिया गया।</value>
+  </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>PDF जोड़ें</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>अटैचमेंट हटाएं</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>फ़ाइल बहुत बड़ी है (ज़्यादा से ज़्यादा 10 MB)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>फ़ाइल जोड़ी नहीं जा सकी</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>फ़ाइल खुल नहीं सकी</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>अटैचमेंट</value>
+  </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>लेन-देन एक्सपोर्ट करें (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>लेन-देन (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>स्प्रेडशीट एक्सपोर्ट नहीं हो सकी</value>
+  </data>
+  <data name="PinSubtitle" xml:space="preserve">
+    <value>अपना PIN डालें</value>
+  </data>
+  <data name="PinWrongTries" xml:space="preserve">
+    <value>PIN गलत है। इंतज़ार से पहले {0} कोशिशें बाकी हैं।</value>
+  </data>
+  <data name="PinLockedOut" xml:space="preserve">
+    <value>बहुत ज़्यादा गलत कोशिशें। {0} बाद फिर कोशिश करें।</value>
+  </data>
+  <data name="UsePhoneLock" xml:space="preserve">
+    <value>फ़ोन का लॉक इस्तेमाल करें</value>
+  </data>
+  <data name="PinSetTitle" xml:space="preserve">
+    <value>PIN चुनें</value>
+  </data>
+  <data name="PinRepeatTitle" xml:space="preserve">
+    <value>PIN दोबारा डालें</value>
+  </data>
+  <data name="PinSetMessage" xml:space="preserve">
+    <value>4 से 8 अंक। भूला हुआ PIN वापस नहीं मिल सकता: आपको ऐप का डेटा साफ़ करके बैकअप रीस्टोर करना होगा।</value>
+  </data>
+  <data name="PinMismatch" xml:space="preserve">
+    <value>PIN मेल नहीं खाए। फिर से चुनें।</value>
+  </data>
+  <data name="PinLength" xml:space="preserve">
+    <value>4 से 8 अंक इस्तेमाल करें।</value>
+  </data>
+  <data name="PinRepeated" xml:space="preserve">
+    <value>एक ही अंक बार-बार न डालें।</value>
+  </data>
+  <data name="PinBackspace" xml:space="preserve">
+    <value>आखिरी अंक मिटाएं</value>
+  </data>
+  <data name="PinDigitsTyped" xml:space="preserve">
+    <value>{0} अंक डाले गए</value>
+  </data>
+  <data name="AppPin" xml:space="preserve">
+    <value>ऐप PIN</value>
+  </data>
+  <data name="AppPinDescription" xml:space="preserve">
+    <value>MoneyRecord को अपने PIN से खोलें; ज़्यादा गलत कोशिशों के बाद इंतज़ार करना पड़ता है</value>
+  </data>
+  <data name="SetPin" xml:space="preserve">
+    <value>PIN लगाएं</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>PIN बदलें</value>
+  </data>
+  <data name="RemovePin" xml:space="preserve">
+    <value>PIN हटाएं</value>
+  </data>
+  <data name="RemovePinMessage" xml:space="preserve">
+    <value>MoneyRecord अब PIN से नहीं खुलेगा।</value>
+  </data>
+  <data name="PinSaved" xml:space="preserve">
+    <value>PIN सहेज लिया गया</value>
+  </data>
+  <data name="PinRemoved" xml:space="preserve">
+    <value>PIN हट गया</value>
+  </data>
+  <data name="UnlockWith" xml:space="preserve">
+    <value>इससे खोलें</value>
+  </data>
+  <data name="LockMethodDevice" xml:space="preserve">
+    <value>फ़ोन का लॉक</value>
+  </data>
+  <data name="LockMethodPin" xml:space="preserve">
+    <value>ऐप PIN</value>
+  </data>
+  <data name="LockMethodBoth" xml:space="preserve">
+    <value>फ़ोन का लॉक या PIN</value>
+  </data>
+  <data name="NoScreenLockPinHint" xml:space="preserve">
+    <value>आपके फ़ोन में स्क्रीन लॉक नहीं है। ऐप लॉक इस्तेमाल करने के लिए ऐप PIN लगाएं।</value>
+  </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>आपका PIN पढ़ा नहीं जा सका और हटा दिया गया। फ़ोन का लॉक इस्तेमाल करें।</value>
+  </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>स्क्रीनशॉट रोकें</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>स्क्रीनशॉट, स्क्रीन रिकॉर्डिंग और हाल के ऐप की स्क्रीन में ऐप छिपा रहता है।</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>गोपनीयता</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>चुनें कि होम आपका पैसा कैसे दिखाए। इसे बाद में सेटिंग्स में बदल सकते हैं।</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>टैप करने तक होम पर बैलेंस छिपाएं</value>
+  </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>अपने बैकअप को पासवर्ड से सुरक्षित करें</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>बैकअप में आपका सारा डेटा होता है और वह सादी फ़ाइलों के रूप में सहेजा जाता है। पासवर्ड लगाएं ताकि सिर्फ़ आप उन्हें खोल सकें। इसे बाद में सेटिंग्स → बैकअप और रीस्टोर में बदल सकते हैं।</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>पासवर्ड लगाएं</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>अभी नहीं</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (एन्क्रिप्ट नहीं)</value>
+  </data>
+</root>

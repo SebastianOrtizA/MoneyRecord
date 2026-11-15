@@ -93,6 +93,7 @@
 		<MauiAsset Include="..\fastlane\metadata\android\tr-TR\changelogs\history.txt" LogicalName="Changelog/tr-TR.txt" Link="Resources\Changelog\tr-TR.txt" />
 		<MauiAsset Include="..\fastlane\metadata\android\id\changelogs\history.txt" LogicalName="Changelog/id.txt" Link="Resources\Changelog\id.txt" />
 		<MauiAsset Include="..\fastlane\metadata\android\ru-RU\changelogs\history.txt" LogicalName="Changelog/ru-RU.txt" Link="Resources\Changelog\ru-RU.txt" />
+		<MauiAsset Include="..\fastlane\metadata\android\hi-IN\changelogs\history.txt" LogicalName="Changelog/hi-IN.txt" Link="Resources\Changelog\hi-IN.txt" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -194,20 +194,20 @@ namespace MoneyRecord.Helpers
             return plain.ToString();
         }
 
-        [GeneratedRegex(@"\b(total a pagar|a pagar|amount due|balance due|total due|grand total|total general|total factura|total venta|total compra|net a payer|total a payer|totale da pagare|totale complessivo|total geral|valor a pagar|zu zahlen|zahlbetrag|gesamtbetrag|gesamtsumme|endsumme|genel toplam|odenecek tutar|odenecek|total bayar|harus dibayar|jumlah bayar|к оплате|итого к оплате|всего к оплате)\b")]
+        [GeneratedRegex(@"\b(total a pagar|a pagar|amount due|balance due|total due|grand total|total general|total factura|total venta|total compra|net a payer|total a payer|totale da pagare|totale complessivo|total geral|valor a pagar|zu zahlen|zahlbetrag|gesamtbetrag|gesamtsumme|endsumme|genel toplam|odenecek tutar|odenecek|total bayar|harus dibayar|jumlah bayar|к оплате|देय राशि|कल राशि|कल योग|итого к оплате|всего к оплате)\b")]
         private static partial Regex StrongTotalRegex();
 
-        [GeneratedRegex(@"\b(total|totale|importe|amount|montant|suma|soma|monto|valor|gesamt|summe|toplam|tutar|jumlah|итого|всего|сумма)\b")]
+        [GeneratedRegex(@"\b(total|totale|importe|amount|montant|suma|soma|monto|valor|gesamt|summe|toplam|tutar|jumlah|итого|всего|сумма|कल|योग|राशि)\b")]
         private static partial Regex TotalRegex();
 
-        [GeneratedRegex(@"\b(sub\s*-?\s*total|descuentos?|dto|discount|ahorro|savings?|cambio|change|vuelto|vueltas|devuelta|efectivo|cash|recibido|entregado|tendered|items?|articulos?|unidades|uds|cantidad|qty|puntos|points|propina|tip|sous\s*-?\s*total|subtotale|remise|reduction|rendu|monnaie|especes|pourboire|articles?|articoli|pezzi|quantite|quantita|sconto|resto|contanti|mancia|desconto|troco|dinheiro|gorjeta|itens|quantidade|pontos|zwischensumme|zw\.?\s*summe|rabatt|ruckgeld|wechselgeld|bargeld|bar|gegeben|trinkgeld|artikel|menge|anzahl|stuck|ara\s+toplam|indirim|para\s+ustu|nakit|bahsis|adet|urun|diskon|kembali|kembalian|tunai|barang|подитог|скидка|скидки|сдача|наличные|наличными|кол-во|количество|чаевые|товаров)\b")]
+        [GeneratedRegex(@"\b(sub\s*-?\s*total|descuentos?|dto|discount|ahorro|savings?|cambio|change|vuelto|vueltas|devuelta|efectivo|cash|recibido|entregado|tendered|items?|articulos?|unidades|uds|cantidad|qty|puntos|points|propina|tip|sous\s*-?\s*total|subtotale|remise|reduction|rendu|monnaie|especes|pourboire|articles?|articoli|pezzi|quantite|quantita|sconto|resto|contanti|mancia|desconto|troco|dinheiro|gorjeta|itens|quantidade|pontos|zwischensumme|zw\.?\s*summe|rabatt|ruckgeld|wechselgeld|bargeld|bar|gegeben|trinkgeld|artikel|menge|anzahl|stuck|ara\s+toplam|indirim|para\s+ustu|nakit|bahsis|adet|urun|diskon|kembali|kembalian|tunai|barang|подитог|скидка|скидки|сдача|наличные|наличными|кол-во|количество|чаевые|товаров|उप योग|उप-योग|छट|नकद|शष|वापसी|वापस|मातरा|आइटम|टिप)\b")]
         private static partial Regex ExcludedRegex();
 
-        [GeneratedRegex(@"\b(iva|tva|tax|taxes|vat|impuestos?|impots?|imposte?|imposta|imposto|impostos|icms|igic|base|mwst|ust|steuer|kdv|vergi|ppn|pajak|ндс|налог)\b")]
+        [GeneratedRegex(@"\b(iva|tva|tax|taxes|vat|impuestos?|impots?|imposte?|imposta|imposto|impostos|icms|igic|base|mwst|ust|steuer|kdv|vergi|ppn|pajak|ндс|налог|जीएसटी|कर)\b")]
         private static partial Regex TaxRegex();
 
         // "Total (IVA incluido)", "Total incl. tax": a total row that mentions the tax
-        [GeneratedRegex(@"\b(incl|incluido|incluidos|included|inc|inclus|incluse|compris|comprise|ttc|incluso|inclusa|compreso|incluida|incluidas|inkl|inklusive|enthalten|dahil|termasuk|включая|включен|включено|вкл)\b")]
+        [GeneratedRegex(@"\b(incl|incluido|incluidos|included|inc|inclus|incluse|compris|comprise|ttc|incluso|inclusa|compreso|incluida|incluidas|inkl|inklusive|enthalten|dahil|termasuk|включая|включен|включено|вкл|सहित|शामिल)\b")]
         private static partial Regex IncludedRegex();
 
         [GeneratedRegex(@"(?<![\p{L}\d.,])(?:\d{1,3}(?:[.,'’  ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)(?![\p{L}\d%]|[.,]\d)")]
@@ -217,11 +217,11 @@ namespace MoneyRecord.Helpers
         private static partial Regex NumericDateRegex();
 
         // "14 oct 2026", "14-OCT-26", "14 de octubre de 2026"
-        [GeneratedRegex(@"(?<![\p{L}\d])(?<day>\d{1,2})(?:\s*de\s+|[\s\-/.]*)(?<month>\p{L}{3,10}\.?)(?:\s+de\s+|[\s\-/.,]+)(?<year>\d{4}|\d{2})(?!\d)", RegexOptions.IgnoreCase)]
+        [GeneratedRegex(@"(?<![\p{L}\d])(?<day>\d{1,2})(?:\s*de\s+|[\s\-/.]*)(?<month>[\p{L}\p{M}]{3,10}\.?)(?:\s+de\s+|[\s\-/.,]+)(?<year>\d{4}|\d{2})(?!\d)", RegexOptions.IgnoreCase)]
         private static partial Regex DayMonthYearRegex();
 
         // "Oct 14, 2026"
-        [GeneratedRegex(@"(?<![\p{L}\d])(?<month>\p{L}{3,10}\.?)\s+(?<day>\d{1,2}),?\s+(?<year>\d{4})(?!\d)", RegexOptions.IgnoreCase)]
+        [GeneratedRegex(@"(?<![\p{L}\d])(?<month>[\p{L}\p{M}]{3,10}\.?)\s+(?<day>\d{1,2}),?\s+(?<year>\d{4})(?!\d)", RegexOptions.IgnoreCase)]
         private static partial Regex MonthDayYearRegex();
 
         [GeneratedRegex(@"(?<!\d)\d{1,2}:\d{2}(?::\d{2})?(?:\s?[ap]\.?\s?m\.?)?", RegexOptions.IgnoreCase)]
