@@ -42,7 +42,9 @@ public sealed class SyncServiceTests : IAsyncLifetime
         public string? Name => Path == null ? null : System.IO.Path.GetFileName(Path);
         public Task<bool> PickAsync() => Task.FromResult(true);
         public void Clear() => Path = null;
-        public ISyncStore? Open() => store ?? (Path == null ? null : new DirectorySyncStore(Path));
+        public bool ThrowOnOpen { get; set; }
+        public ISyncStore? Open() => ThrowOnOpen ? throw new UnauthorizedAccessException("permission taken back")
+            : store ?? (Path == null ? null : new DirectorySyncStore(Path));
     }
 
     private sealed class BrokenStore : ISyncStore
@@ -246,6 +248,19 @@ public sealed class SyncServiceTests : IAsyncLifetime
         var pc = await NewDeviceAsync(true, "My PC", shared: new FakeFolder(store: new BrokenStore()));
         await pc.Service.EnableAsync();
         await pc.Db.InsertAsync(new Payee { Name = "Test Payee Local" });
+
+        (await pc.Service.SyncNowAsync()).Should().Be(SyncOutcome.FolderUnavailable);
+
+        // The local export still happened: the change file is in the device's own store
+        var store = new DirectorySyncStore(pc.Paths.SyncFolder);
+        (await store.DevicesAsync()).Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task AFolderWhoseOpenThrows_IsReportedToo()
+    {
+        var pc = await NewDeviceAsync(true, "My PC", shared: new FakeFolder { ThrowOnOpen = true });
+        await pc.Service.EnableAsync();
 
         (await pc.Service.SyncNowAsync()).Should().Be(SyncOutcome.FolderUnavailable);
     }

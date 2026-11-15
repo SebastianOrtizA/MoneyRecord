@@ -147,6 +147,18 @@ namespace MoneyRecord.Services.Sync
             categories.InvalidateCache();
         }
 
+        private string? SafeFolderName()
+        {
+            try
+            {
+                return sharedFolder?.Name;
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                return null; // a folder that can no longer be reached is shown as none chosen
+            }
+        }
+
         public async Task<SyncStatus> GetStatusAsync()
         {
             var profile = await LoadAsync();
@@ -155,7 +167,7 @@ namespace MoneyRecord.Services.Sync
                     ? [.. profile.Devices.Select(d => new SyncPeer(d.DeviceId, d.Name, [], 0, "", d.LastSeen))]
                     : [.. profile.Peers];
             return new SyncStatus(secrets.IsSupported, profile != null, platform.CanListen, _server != null,
-                profile?.DeviceName ?? platform.DeviceName, peers, sharedFolder?.IsSupported ?? false, profile == null ? null : sharedFolder?.Name);
+                profile?.DeviceName ?? platform.DeviceName, peers, sharedFolder?.IsSupported ?? false, profile == null ? null : SafeFolderName());
         }
 
         // ---- The devices that paired with this one (the listening side) ----
@@ -394,17 +406,23 @@ namespace MoneyRecord.Services.Sync
                     }
 
                     // The shared folder (away from home, or the computer is off): the same copy, with the folder as the other store
-                    if (sharedFolder?.Open() is { } shared)
+                    // (Open() too is inside the try: resolving a saved folder is where a revoked permission shows. Platform stores throw their own
+                    // exception types, so anything but a cancellation counts as "the folder is not available".)
+                    if (sharedFolder != null)
                     {
                         try
                         {
-                            await SyncStores.CopyMissingAsync(store, shared);
-                            await SyncStores.CopyMissingAsync(shared, store);
-                            // The computer not answering is no problem when the folder did the work
-                            if (outcome == SyncOutcome.Unreachable)
-                                outcome = SyncOutcome.Done;
+                            if (sharedFolder.Open() is { } shared)
+                            {
+                                await SyncStores.CopyMissingAsync(store, shared);
+                                await SyncStores.CopyMissingAsync(shared, store);
+                                // The computer not answering is no problem when the folder did the work (with several computers the
+                                // last one's outcome wins, as before)
+                                if (outcome == SyncOutcome.Unreachable)
+                                    outcome = SyncOutcome.Done;
+                            }
                         }
-                        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+                        catch (Exception ex) when (ex is not OperationCanceledException)
                         {
                             if (outcome == SyncOutcome.Done)
                                 outcome = SyncOutcome.FolderUnavailable;
