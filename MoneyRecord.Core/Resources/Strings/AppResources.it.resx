@@ -3659,4 +3659,10 @@
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} e questo dispositivo smetteranno di sincronizzarsi. Per sincronizzare di nuovo, collegali ancora con un nuovo codice.</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>Inquadra il codice QR</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>La scansione non è disponibile su questo telefono. Usa Collegati a un dispositivo e digita il codice.</value>
+  </data>
 </root>

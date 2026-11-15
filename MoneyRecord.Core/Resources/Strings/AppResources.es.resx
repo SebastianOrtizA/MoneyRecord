@@ -3710,4 +3710,10 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} y este dispositivo dejarán de sincronizarse. Para volver a sincronizar, conéctalos de nuevo con un código nuevo.</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>Escanear el código QR</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>El escaneo no está disponible en este teléfono. Usa Conectar con un dispositivo y escribe el código.</value>
+  </data>
 </root>

@@ -3659,4 +3659,10 @@
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} ile bu cihaz artık eşitlenmeyecek. Yeniden eşitlemek için ikisini yeni bir kodla tekrar bağla.</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>QR kodunu tara</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>Bu telefonda tarama kullanılamıyor. «Bir cihaza bağlan» seçeneğini kullanıp kodu yazın.</value>
+  </data>
 </root>

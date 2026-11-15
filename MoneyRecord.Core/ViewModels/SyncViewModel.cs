@@ -14,7 +14,7 @@ namespace MoneyRecord.ViewModels
     /// <summary>
     /// More → Sync: turning sync on at the computer, the code it shows, connecting a phone with that code, Sync now, and the devices.
     /// </summary>
-    public partial class SyncViewModel(ISyncService sync, IDialogService dialogs, IErrorHandler errors, IClipboardService clipboard, TimeProvider? time = null) : ObservableObject
+    public partial class SyncViewModel(ISyncService sync, IDialogService dialogs, IErrorHandler errors, IClipboardService clipboard, IQrScanner scanner, TimeProvider? time = null) : ObservableObject
     {
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ShowNotAvailable), nameof(ShowTurnOn), nameof(ShowConnect))]
@@ -53,6 +53,7 @@ namespace MoneyRecord.ViewModels
         public bool ShowDevices => IsEnabled;
         public bool ShowAddDevice => IsEnabled && IsListening;
         public bool ShowTurnOff => IsEnabled;
+        public bool CanScan => scanner.IsSupported;
         public bool HasCode => !string.IsNullOrEmpty(CodeText);
 
         public async Task InitializeAsync()
@@ -150,7 +151,28 @@ namespace MoneyRecord.ViewModels
             await dialogs.ToastAsync(AppResources.SyncCodeCopied);
         }
 
-        /// <summary>At the phone: asks for the code, confirms that this device's data is replaced, and pairs.</summary>
+        /// <summary>At the phone: scans the QR the computer shows, then confirms that this device's data is replaced and pairs.</summary>
+        [RelayCommand]
+        private async Task ScanCodeAsync()
+        {
+            if (IsBusy)
+                return;
+            string? code;
+            try
+            {
+                code = await scanner.ScanAsync();
+            }
+            catch (Exception ex)
+            {
+                await errors.HandleAsync(ex, AppResources.SyncScanUnavailable);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(code))
+                return;
+            await PairWithAsync(code);
+        }
+
+        /// <summary>At the phone: asks for the typed code, then confirms that this device's data is replaced and pairs.</summary>
         [RelayCommand]
         private async Task ConnectAsync()
         {
@@ -159,6 +181,11 @@ namespace MoneyRecord.ViewModels
             var code = await dialogs.PromptAsync(AppResources.SyncEnterCodeTitle, AppResources.SyncEnterCodeMessage, AppResources.SyncConnectButton, AppResources.Cancel);
             if (string.IsNullOrWhiteSpace(code))
                 return;
+            await PairWithAsync(code);
+        }
+
+        private async Task PairWithAsync(string code)
+        {
             if (!await dialogs.ConfirmAsync(AppResources.SyncReplaceTitle, AppResources.SyncReplaceMessage, AppResources.SyncReplaceAccept, AppResources.Cancel))
                 return;
 

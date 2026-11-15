@@ -66,6 +66,9 @@ namespace MoneyRecord.Models
             // Not open source: free to use under Google's terms; the .NET binding itself is MIT (.NET Foundation)
             new("Google ML Kit Text Recognition (with Google Play services client libraries)", "ML Kit and Google APIs terms (proprietary)", "Google LLC",
                 "https://developers.google.com/ml-kit/terms", null, ["Xamarin.Google.MLKit.TextRecognition"]),
+            // Scans the sync QR through Play services (no camera permission in this app); the .NET binding is MIT (.NET Foundation)
+            new("Google code scanner (Google Play services)", "ML Kit and Google APIs terms (proprietary)", "Google LLC",
+                "https://developers.google.com/ml-kit/terms", null, ["Xamarin.GooglePlayServices.Code.Scanner"]),
             // The next two ship in the Google Play build only (tips through Play Billing; Distribution=Play in the csproj)
             new("Plugin.InAppBilling (Google Play build only)", "MIT", "James Montemagno / Refractored LLC",
                 "https://github.com/jamesmontemagno/InAppBillingPlugin", "InAppBilling.txt", ["Plugin.InAppBilling"]),

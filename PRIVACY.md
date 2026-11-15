@@ -48,12 +48,16 @@ currency codes and dates (for example USD, COP and a date range), never your amo
 any web request, it reveals your IP address to that server. The rates are stored on the device.
 
 ## Sync between your devices (optional, off by default)
-When you turn on **More â†’ Sync**, your computer and your phone keep their data the same over your own Wi-Fi. The devices talk
+When you turn on **More → Sync**, your computer and your phone keep their data the same over your own Wi-Fi. The devices talk
 to each other directly: there is no server, no account and nothing goes through the internet or to the developer. The data
 travels inside a connection that only the paired devices can open, and the change files are encrypted with a key that is made
 on your computer and kept in the device secure storage (never in a backup). Each device also tells the other its **name** (the
 name you gave the device in its system settings, for example a first name) and its network address, so you can recognise it in
 the list. Removing a device locks it out; turning sync off deletes the key, the list and the change files from that device.
+On Android, **Scan the QR code** uses Google's code scanner, part of Google Play services: Google shows the camera screen, this
+app gets no camera permission and receives only the text of the code. Google Play services may send Google diagnostics about
+the scanner's use (see [ML Kit's data disclosure](https://developers.google.com/ml-kit/android-data-disclosure)). You can type
+the code instead.
 ## Supporting the project (optional)
 **More → Support MoneyRecord** changes nothing in the app: nothing is locked or unlocked, whether you give or not.
 In the Google Play version you can leave a tip through Google Play. Google processes the payment under its own terms
@@ -140,14 +144,18 @@ Cuando activas **Configuración → Tipos de cambio**, la app descarga tipos de 
 solo códigos de moneda y fechas (por ejemplo USD, COP y un rango de fechas), nunca tus importes, descripciones ni
 cuentas. Como cualquier solicitud web, revela tu dirección IP a ese servidor. Las tasas se guardan en el dispositivo.
 
-## SincronizaciÃ³n entre tus dispositivos (opcional, desactivada por defecto)
-Cuando activas **MÃ¡s â†’ SincronizaciÃ³n**, tu ordenador y tu mÃ³vil mantienen sus datos iguales a travÃ©s de tu propio Wi-Fi. Los
-dispositivos hablan directamente entre sÃ­: no hay servidor ni cuenta, y nada pasa por internet ni llega al desarrollador. Los
-datos viajan dentro de una conexiÃ³n que solo pueden abrir los dispositivos emparejados, y los archivos de cambios van cifrados
+## Sincronización entre tus dispositivos (opcional, desactivada por defecto)
+Cuando activas **Más → Sincronización**, tu ordenador y tu móvil mantienen sus datos iguales a través de tu propio Wi-Fi. Los
+dispositivos hablan directamente entre sí: no hay servidor ni cuenta, y nada pasa por internet ni llega al desarrollador. Los
+datos viajan dentro de una conexión que solo pueden abrir los dispositivos emparejados, y los archivos de cambios van cifrados
 con una clave que se crea en tu ordenador y se guarda en el almacenamiento seguro del dispositivo (nunca en una copia de
-seguridad). Cada dispositivo tambiÃ©n le dice al otro su **nombre** (el que le diste en los ajustes del sistema, por ejemplo un
-nombre de pila) y su direcciÃ³n de red, para que lo reconozcas en la lista. Quitar un dispositivo lo deja sin acceso; desactivar
-la sincronizaciÃ³n borra de ese dispositivo la clave, la lista y los archivos de cambios.
+seguridad). Cada dispositivo también le dice al otro su **nombre** (el que le diste en los ajustes del sistema, por ejemplo un
+nombre de pila) y su dirección de red, para que lo reconozcas en la lista. Quitar un dispositivo lo deja sin acceso; desactivar
+la sincronización borra de ese dispositivo la clave, la lista y los archivos de cambios.
+En Android, **Escanear el código QR** usa el escáner de códigos de Google, parte de los servicios de Google Play: Google muestra
+la pantalla de la cámara, esta app no recibe permiso de cámara y solo obtiene el texto del código. Los servicios de Google Play
+pueden enviar a Google diagnósticos sobre el uso del escáner (ver [la divulgación de datos de ML Kit](https://developers.google.com/ml-kit/android-data-disclosure)).
+Puedes escribir el código en su lugar.
 ## Apoyar el proyecto (opcional)
 **Más → Apoya MoneyRecord** no cambia nada en la app: no se bloquea ni se desbloquea nada, des o no.
 En la versión de Google Play puedes dejar una propina a través de Google Play. Google procesa el pago según sus propias

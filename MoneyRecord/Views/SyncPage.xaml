@@ -26,6 +26,7 @@
             <Border Style="{StaticResource Card}" IsVisible="{Binding ShowConnect}">
                 <VerticalStackLayout Spacing="12">
                     <Label Text="{ext:Localize SyncConnectHint}" FontSize="14" />
+                    <Button Text="{ext:Localize SyncScan}" Command="{Binding ScanCodeCommand}" IsVisible="{Binding CanScan}" MinimumHeightRequest="44" CornerRadius="22" />
                     <Button Text="{ext:Localize SyncConnect}" Command="{Binding ConnectCommand}" MinimumHeightRequest="44" CornerRadius="22" />
                 </VerticalStackLayout>
             </Border>

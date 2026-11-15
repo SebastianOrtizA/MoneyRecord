@@ -3661,4 +3661,10 @@
   <data name="SyncRemoveMessage" xml:space="preserve">
     <value>{0} и это устройство больше не будут синхронизироваться. Чтобы снова синхронизировать, подключи их заново с новым кодом.</value>
   </data>
+  <data name="SyncScan" xml:space="preserve">
+    <value>Сканировать QR-код</value>
+  </data>
+  <data name="SyncScanUnavailable" xml:space="preserve">
+    <value>Сканирование недоступно на этом телефоне. Выберите «Подключиться к устройству» и введите код.</value>
+  </data>
 </root>

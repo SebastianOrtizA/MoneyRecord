@@ -10233,6 +10233,24 @@ namespace MoneyRecord.Resources.Strings {
         }
 
         /// <summary>
+        ///   Looks up a localized string like SyncScan.
+        /// </summary>
+        public static string SyncScan {
+            get {
+                return ResourceManager.GetString("SyncScan", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncScanUnavailable.
+        /// </summary>
+        public static string SyncScanUnavailable {
+            get {
+                return ResourceManager.GetString("SyncScanUnavailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string like SyncConnectButton.
         /// </summary>
         public static string SyncConnectButton {
