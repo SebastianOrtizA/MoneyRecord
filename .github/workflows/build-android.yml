@@ -241,7 +241,9 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           $name = if ($env:VERSION) { $env:VERSION } else { 'dev' }
           New-Item -ItemType Directory -Force release | Out-Null
-          Compress-Archive -Path publish/windows/* -DestinationPath "release/MoneyRecord-$name-win-x64.zip"
+          $folder = "MoneyRecord-$name-win-x64"
+          Move-Item publish/windows $folder
+          Compress-Archive -Path $folder -DestinationPath "release/$folder.zip"
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
@@ -254,7 +256,7 @@ jobs:
     name: Create GitHub Release
     runs-on: windows-latest
     needs: [build-android, build-windows]
-    if: needs.build-android.outputs.publish == 'true'
+    if: always() && needs.build-android.result == 'success' && needs.build-android.outputs.publish == 'true'
     permissions:
       contents: write
     steps:
@@ -265,6 +267,7 @@ jobs:
           path: release
 
       - name: Download Windows artifact
+        if: needs.build-windows.result == 'success'
         uses: actions/download-artifact@v4
         with:
           name: MoneyRecord-Windows
