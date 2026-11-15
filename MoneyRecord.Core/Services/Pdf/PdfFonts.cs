@@ -65,14 +65,18 @@ namespace MoneyRecord.Services.Pdf
             try { latin = new CultureInfo("en-" + new RegionInfo(CultureInfo.CurrentCulture.Name).TwoLetterISORegionName); }
             catch (ArgumentException) { latin = new CultureInfo("en-US"); }
 
-            var scope = new Restore(CultureInfo.CurrentCulture, ui, AppResources.Culture);
+            // One scope at a time: a second export must not take the first one's English as the culture to restore
+            Monitor.Enter(ScopeGate);
+            var scope = new Restore(CultureInfo.CurrentCulture, ui, AppResources.Culture, latin);
             CultureInfo.CurrentCulture = latin;
             CultureInfo.CurrentUICulture = latin;
             AppResources.Culture = latin;
             return scope;
         }
 
-        private sealed class Restore(CultureInfo? culture, CultureInfo? ui, CultureInfo? resources) : IDisposable
+        private static readonly object ScopeGate = new();
+
+        private sealed class Restore(CultureInfo? culture, CultureInfo? ui, CultureInfo? resources, CultureInfo? latin = null) : IDisposable
         {
             public void Dispose()
             {
@@ -80,7 +84,10 @@ namespace MoneyRecord.Services.Pdf
                     return;
                 CultureInfo.CurrentCulture = culture;
                 CultureInfo.CurrentUICulture = ui!;
-                AppResources.Culture = resources;
+                // A language picked meanwhile stays
+                if (ReferenceEquals(AppResources.Culture, latin))
+                    AppResources.Culture = resources;
+                Monitor.Exit(ScopeGate);
             }
         }
 

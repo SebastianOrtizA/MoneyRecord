@@ -194,6 +194,8 @@ namespace MoneyRecord.Helpers
             return plain.ToString();
         }
 
+        // Devanagari words are written without their combining marks (Normalize strips them), so the short ones (कर "tax",
+        // कल "total") collapse other words; they only ever match a whole word of a receipt row, which is acceptable here
         [GeneratedRegex(@"\b(total a pagar|a pagar|amount due|balance due|total due|grand total|total general|total factura|total venta|total compra|net a payer|total a payer|totale da pagare|totale complessivo|total geral|valor a pagar|zu zahlen|zahlbetrag|gesamtbetrag|gesamtsumme|endsumme|genel toplam|odenecek tutar|odenecek|total bayar|harus dibayar|jumlah bayar|к оплате|देय राशि|कल राशि|कल योग|итого к оплате|всего к оплате)\b")]
         private static partial Regex StrongTotalRegex();
 

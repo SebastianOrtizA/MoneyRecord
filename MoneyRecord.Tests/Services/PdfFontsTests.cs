@@ -6,6 +6,7 @@ using Xunit;
 
 namespace MoneyRecord.Tests.Services;
 
+[Collection("Language")]
 public class PdfFontsTests
 {
     [Fact]
