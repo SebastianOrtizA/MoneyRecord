@@ -28,6 +28,22 @@ namespace MoneyRecord.Platforms.Windows
         public Task SetAsync(string? password) => WindowsSecretStore.SetAsync(KeyName, password);
     }
 
+    /// <summary>The sync profile (key, certificate, devices) under DPAPI (<see cref="WindowsSecretStore"/>).</summary>
+    public sealed class WindowsSyncSecretStore : MoneyRecord.Services.Sync.ISyncSecretStore
+    {
+        private const string KeyName = "SyncProfile";
+
+        public bool IsSupported => true;
+
+        public async Task<string?> GetAsync()
+        {
+            var json = await WindowsSecretStore.GetAsync(KeyName);
+            return string.IsNullOrEmpty(json) ? null : json;
+        }
+
+        public Task SetAsync(string? json) => WindowsSecretStore.SetAsync(KeyName, json);
+    }
+
     /// <summary>
     /// The PIN hash and lockout state under DPAPI (<see cref="WindowsSecretStore"/>).
     /// </summary>

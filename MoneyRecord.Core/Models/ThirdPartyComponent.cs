@@ -57,6 +57,8 @@ namespace MoneyRecord.Models
                 "https://github.com/icsharpcode/SharpZipLib", "SharpZipLib.txt", ["SharpZipLib"]),
             new("PDFsharp and MigraDoc", "MIT", "empira Software GmbH",
                 "https://github.com/empira/PDFsharp", "PDFsharp.txt", ["PDFsharp-MigraDoc"]),
+            new("QRCoder", "MIT", "Raffael Herrmann",
+                "https://github.com/codebude/QRCoder", "QRCoder.txt", ["QRCoder"]),
             new("Sentry SDKs (.NET, Android, Native)", "MIT", "Sentry and individual contributors",
                 "https://github.com/getsentry/sentry-dotnet", "Sentry.txt", ["Sentry.Maui"]),
             new("SQLite", "Public domain", string.Empty,

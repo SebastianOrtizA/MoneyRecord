@@ -43,6 +43,7 @@ namespace MoneyRecord
             Routing.RegisterRoute(nameof(PartyPage), typeof(PartyPage));
             Routing.RegisterRoute(nameof(FriendsPage), typeof(FriendsPage));
             Routing.RegisterRoute(nameof(PayeesPage), typeof(PayeesPage));
+            Routing.RegisterRoute(nameof(SyncPage), typeof(SyncPage));
             Routing.RegisterRoute(nameof(QuickEntriesPage), typeof(QuickEntriesPage));
             Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
             Routing.RegisterRoute(nameof(HomeLayoutPage), typeof(HomeLayoutPage));

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MoneyRecord.ViewModels;assembly=MoneyRecord.Core"
+             xmlns:ext="clr-namespace:MoneyRecord.Extensions"
+             x:Class="MoneyRecord.Views.SyncPage"
+             x:DataType="viewmodels:SyncViewModel"
+             Title="{ext:Localize SyncTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <Label Text="{ext:Localize SyncIntro}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+
+            <Label Text="{ext:Localize SyncNotAvailable}" IsVisible="{Binding ShowNotAvailable}" />
+
+            <!-- The computer: turn on, then it listens and shows the code -->
+            <Border Style="{StaticResource Card}" IsVisible="{Binding ShowTurnOn}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{ext:Localize SyncTurnOnHint}" FontSize="14" />
+                    <Button Text="{ext:Localize SyncTurnOn}" Command="{Binding TurnOnCommand}" MinimumHeightRequest="44" CornerRadius="22" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- The phone: connect with the code the computer shows -->
+            <Border Style="{StaticResource Card}" IsVisible="{Binding ShowConnect}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{ext:Localize SyncConnectHint}" FontSize="14" />
+                    <Button Text="{ext:Localize SyncConnect}" Command="{Binding ConnectCommand}" MinimumHeightRequest="44" CornerRadius="22" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Sync is on -->
+            <Border Style="{StaticResource Card}" IsVisible="{Binding ShowDevices}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{ext:Localize SyncThisDevice}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    <Label Text="{Binding DeviceName}" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="{ext:Localize SyncWaiting}" FontSize="13" IsVisible="{Binding IsListening}" />
+                    <HorizontalStackLayout Spacing="12" Margin="0,4,0,0">
+                        <Button Text="{ext:Localize SyncNow}" Command="{Binding SyncNowCommand}" MinimumHeightRequest="44" CornerRadius="22" Padding="20,0" />
+                        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" VerticalOptions="Center" HeightRequest="24" WidthRequest="24" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <VerticalStackLayout Spacing="8" IsVisible="{Binding ShowDevices}">
+                <Label Text="{ext:Localize SyncDevices}" FontSize="18" FontAttributes="Bold" />
+                <CollectionView ItemsSource="{Binding Peers}" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="viewmodels:SyncPeerRow">
+                            <Border Style="{StaticResource Card}" Margin="0,4">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Spacing="2">
+                                        <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
+                                        <Label Text="{Binding LastSyncText}" FontSize="13" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="1" Text="{ext:Localize SyncRemoveDevice}"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:SyncViewModel}}, Path=RemovePeerCommand}"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}"
+                                            VerticalOptions="Center" MinimumHeightRequest="44" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- The computer: the code for another device, as text and as a QR code -->
+            <Border Style="{StaticResource Card}" IsVisible="{Binding ShowAddDevice}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{ext:Localize SyncAddDevice}" FontSize="18" FontAttributes="Bold" />
+                    <Button Text="{ext:Localize SyncCodeTitle}" Command="{Binding ShowCodeCommand}"
+                            IsVisible="{Binding HasCode, Converter={StaticResource InvertedBoolConverter}}"
+                            MinimumHeightRequest="44" CornerRadius="22" />
+                    <VerticalStackLayout Spacing="12" IsVisible="{Binding HasCode}">
+                        <Label Text="{Binding CodeHint}" FontSize="14" />
+                        <Border BackgroundColor="White" StrokeThickness="0" Padding="12" HorizontalOptions="Center">
+                            <Image Source="{Binding CodeText, Converter={StaticResource QrCodeImageConverter}}" WidthRequest="240" HeightRequest="240" />
+                        </Border>
+                        <Label Text="{Binding CodeText}" FontSize="11" LineBreakMode="CharacterWrap" MaxLines="3" />
+                        <Button Text="{ext:Localize SyncCopyCode}" Command="{Binding CopyCodeCommand}" MinimumHeightRequest="44" CornerRadius="22"
+                                HorizontalOptions="Start" Padding="20,0" />
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="{ext:Localize SyncTurnOff}" Command="{Binding TurnOffCommand}" IsVisible="{Binding ShowTurnOff}"
+                    BackgroundColor="Transparent" TextColor="{AppThemeBinding Light=#B3261E, Dark=#F2B8B5}" MinimumHeightRequest="44" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

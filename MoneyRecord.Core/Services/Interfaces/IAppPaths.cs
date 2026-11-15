@@ -22,5 +22,8 @@ namespace MoneyRecord.Services.Interfaces
 
         /// <summary>The app's log files (one per day, the last 7 kept). They never leave the device unless shared.</summary>
         string LogsFolder { get; }
+
+        /// <summary>Change files of this device and the devices it syncs with (Stage 26): <c>sync/&lt;device&gt;/&lt;seq&gt;.chg</c>.</summary>
+        string SyncFolder { get; }
     }
 }
