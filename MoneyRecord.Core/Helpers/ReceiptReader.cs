@@ -160,7 +160,7 @@ namespace MoneyRecord.Helpers
                 {
                     for (var i = 0; i < 12; i++)
                     {
-                        // "oct", "oct.", "octubre", "sept": the abbreviation, or the start of the full name (Russian "октября" is the genitive)
+                        // "oct", "oct.", "octubre", "sept": the abbreviation, or the start of the full name (Russian "октября" is the genitive; elsewhere it equals the full name)
                         if (Normalize(format.AbbreviatedMonthNames[i]).TrimEnd('.') == key || Normalize(format.MonthNames[i]).StartsWith(key)
                             || Normalize(format.MonthGenitiveNames[i]).StartsWith(key))
                             return i + 1;
