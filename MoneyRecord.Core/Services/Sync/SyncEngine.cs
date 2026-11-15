@@ -60,6 +60,8 @@ namespace MoneyRecord.Services.Sync
         /// </summary>
         public async Task<int> ApplyAsync(ISyncStore store)
         {
+            // Local edits not collected yet have no clock: without this they would lose to (or be undone by) an older remote change
+            await state.MaterializeAsync();
             var me = (await StateRow()).DeviceId;
             var applied = 0;
             bool progress;
@@ -113,6 +115,8 @@ namespace MoneyRecord.Services.Sync
         public async Task ApplySnapshotAsync(byte[] data, bool replaceLocalData)
         {
             var batch = Decode("snapshot", data);
+            if (!replaceLocalData)
+                await state.MaterializeAsync(); // as in ApplyAsync: local edits get their clock before the merge
             await Run(s =>
             {
                 s.CheckVersions(batch);
@@ -219,7 +223,11 @@ namespace MoneyRecord.Services.Sync
             private SyncChange? ToChange(SyncMeta meta)
             {
                 if (meta.Deleted)
-                    return new SyncChange(meta.TableName, meta.GlobalId, meta.Clock, meta.DeviceId, true, null);
+                {
+                    // The last values go along, so a device that gets the delete (or a snapshot) can bring the row back if it turns out to be in use
+                    var kept = meta.Payload == null ? null : JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(meta.Payload);
+                    return new SyncChange(meta.TableName, meta.GlobalId, meta.Clock, meta.DeviceId, true, kept == null ? null : ToWire(meta.TableName, kept));
+                }
                 var fields = RawFields(meta.TableName, meta.LocalId);
                 return fields == null
                     ? null // deleted after it was collected: the next collection sends the delete
@@ -274,26 +282,34 @@ namespace MoneyRecord.Services.Sync
                 return true;
             }
 
-            public void ApplyBatch(SyncBatch batch)
+            public void ApplyBatch(SyncBatch batch) => WithApplying(() => ApplyChanges(batch));
+
+            /// <summary>The writes of <paramref name="work"/> are other devices' changes, not local edits: the triggers stay quiet.</summary>
+            private void WithApplying(Action work)
             {
-                // The writes below are other devices' changes, not local edits: the triggers stay quiet
                 db.Execute("UPDATE SyncState SET Applying = 1 WHERE Id = 1");
                 try
                 {
-                    foreach (var table in SyncSchema.Order)
-                    {
-                        foreach (var change in batch.Changes.Where(c => !c.Deleted && c.Table == table))
-                            ApplyUpsert(change);
-                    }
-                    foreach (var table in SyncSchema.Order.Reverse())
-                    {
-                        foreach (var change in batch.Changes.Where(c => c.Deleted && c.Table == table))
-                            ApplyDelete(change);
-                    }
+                    work();
                 }
                 finally
                 {
                     db.Execute("UPDATE SyncState SET Applying = 0 WHERE Id = 1");
+                }
+            }
+
+            private void ApplyChanges(SyncBatch batch)
+            {
+                var byTable = batch.Changes.ToLookup(c => c.Table);
+                foreach (var table in SyncSchema.Order)
+                {
+                    foreach (var change in byTable[table].Where(c => !c.Deleted))
+                        ApplyUpsert(change);
+                }
+                foreach (var table in SyncSchema.Order.Reverse())
+                {
+                    foreach (var change in byTable[table].Where(c => c.Deleted))
+                        ApplyDelete(change);
                 }
             }
 
@@ -324,13 +340,18 @@ namespace MoneyRecord.Services.Sync
 
                 if (meta == null)
                 {
-                    db.Insert(new SyncMeta { GlobalId = change.GlobalId, TableName = change.Table, Clock = change.Clock, DeviceId = change.DeviceId, Deleted = true });
+                    db.Insert(new SyncMeta
+                    {
+                        GlobalId = change.GlobalId, TableName = change.Table, Clock = change.Clock, DeviceId = change.DeviceId,
+                        Deleted = true, Payload = KeptValues(change)
+                    });
                     return;
                 }
                 if (meta.Deleted)
                 {
                     meta.Clock = change.Clock;
                     meta.DeviceId = change.DeviceId;
+                    meta.Payload ??= KeptValues(change);
                     db.Update(meta);
                     return;
                 }
@@ -350,6 +371,10 @@ namespace MoneyRecord.Services.Sync
                 meta.DeviceId = change.DeviceId;
                 db.Update(meta);
             }
+
+            /// <summary>The values a delete carried, kept as they came (foreign keys as global id strings: the rows they name may not exist here, and <see cref="ToWire"/> leaves strings alone).</summary>
+            private static string? KeptValues(SyncChange change) =>
+                change.Fields == null ? null : JsonSerializer.Serialize(change.Fields);
 
             private string? RawJson(string table, int localId) =>
                 RawFields(table, localId) is { } fields ? JsonSerializer.Serialize(fields) : null;
@@ -421,7 +446,7 @@ namespace MoneyRecord.Services.Sync
             /// <summary>The local ID of a row a change refers to; a row deleted here is brought back from its kept values (and sent again).</summary>
             private int EnsureLive(string gid)
             {
-                var meta = db.Find<SyncMeta>(gid)!;
+                var meta = db.Find<SyncMeta>(gid) ?? throw new InvalidOperationException("CanApply must have checked that this row is known.");
                 if (!meta.Deleted)
                     return meta.LocalId;
 
@@ -443,32 +468,26 @@ namespace MoneyRecord.Services.Sync
                 return new SyncBatch(FormatVersion, SchemaVersion, state.DeviceId, 0, changes, peers);
             }
 
-            public void ApplySnapshot(SyncBatch snapshot, bool replaceLocalData)
+            public void ApplySnapshot(SyncBatch snapshot, bool replaceLocalData) => WithApplying(() =>
             {
-                db.Execute("UPDATE SyncState SET Applying = 1 WHERE Id = 1");
-                try
+                if (replaceLocalData)
                 {
-                    if (replaceLocalData)
-                    {
-                        foreach (var table in SyncSchema.Order.Reverse())
-                            db.Execute($"DELETE FROM \"{table}\"");
-                        db.DeleteAll<SyncMeta>();
-                        db.DeleteAll<SyncDirty>();
-                        _gids.Clear();
-                    }
-                }
-                finally
-                {
-                    db.Execute("UPDATE SyncState SET Applying = 0 WHERE Id = 1");
+                    foreach (var table in SyncSchema.Order.Reverse())
+                        db.Execute($"DELETE FROM \"{table}\"");
+                    db.DeleteAll<SyncMeta>();
+                    db.DeleteAll<SyncDirty>();
+                    // What this device had applied from other devices belonged to the data that is gone: the snapshot says where to go on
+                    db.Execute("DELETE FROM SyncPeerState WHERE DeviceId <> ?", state.DeviceId);
+                    _gids.Clear();
                 }
 
-                ApplyBatch(snapshot);
+                ApplyChanges(snapshot);
                 foreach (var (device, seq) in snapshot.PeerSeqs ?? [])
                 {
                     if (seq > PeerSeq(device))
                         SetPeerSeq(device, seq);
                 }
-            }
+            });
 
             // ---- Description ----
 

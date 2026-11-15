@@ -209,6 +209,78 @@ public sealed class SyncEngineTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task LocalEditNotCollectedYet_BeatsAnOlderRemoteEdit_WhenFilesAreApplied()
+    {
+        var a = await NewDeviceAsync();
+        await a.AddCategoryAsync("Test Cat");
+        var b = await PairedWithAsync(a);
+        await b.UpdateAsync("Category", await b.IdOfAsync("Category", "Test Cat"), "Name", "Remote");
+        await b.Engine.ExportAsync(b.Store);
+        await Task.Delay(30);
+        await a.UpdateAsync("Category", await a.IdOfAsync("Category", "Test Cat"), "Name", "Local"); // newer, not collected
+        await SyncStores.CopyMissingAsync(b.Store, a.Store);
+
+        await a.Engine.ApplyAsync(a.Store); // on its own, as a received file would trigger it
+
+        (await a.Db.Table<Category>().ToListAsync()).Select(c => c.Name).Should().Contain("Local").And.NotContain("Remote");
+        await SyncAllAsync(a, b);
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync()).And.Contain("Name=Local");
+    }
+
+    [Fact]
+    public async Task LocalDeleteNotCollectedYet_IsNotUndoneByAnOlderRemoteEdit()
+    {
+        var a = await NewDeviceAsync();
+        await a.AddCategoryAsync("Test Cat");
+        var b = await PairedWithAsync(a);
+        await b.UpdateAsync("Category", await b.IdOfAsync("Category", "Test Cat"), "Name", "Remote");
+        await b.Engine.ExportAsync(b.Store);
+        await Task.Delay(30);
+        await a.DeleteAsync("Category", await a.IdOfAsync("Category", "Test Cat")); // newer, not collected
+        await SyncStores.CopyMissingAsync(b.Store, a.Store);
+
+        await a.Engine.ApplyAsync(a.Store);
+
+        (await a.Db.Table<Category>().ToListAsync()).Select(c => c.Name).Should().NotContain(["Test Cat", "Remote"]);
+        await SyncAllAsync(a, b);
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
+    }
+
+    [Fact]
+    public async Task DeviceFromASnapshotTakenAfterADelete_CanStillBringTheRowBack()
+    {
+        var a = await NewDeviceAsync();
+        var account = await a.AddAccountAsync("Cash 2");
+        await a.AddCategoryAsync("Test Food");
+        var b = await PairedWithAsync(a); // knows the category
+        await a.DeleteAsync("Category", await a.IdOfAsync("Category", "Test Food"));
+        await a.Engine.ExportAsync(a.Store);
+        var fresh = await PairedWithAsync(a); // its snapshot already has the category as deleted
+        await b.AddTransactionAsync(await b.IdOfAsync("Category", "Test Food"), await b.IdOfAsync("Account", "Cash 2"), 500);
+        await b.Engine.ExportAsync(b.Store);
+
+        await fresh.Store.WriteAsync(b.DeviceId, 1, (await b.Store.ReadAsync(b.DeviceId, 1))!);
+        var applied = await fresh.Engine.ApplyAsync(fresh.Store);
+
+        applied.Should().Be(1, "the file is not blocked for good by a deleted row it needs");
+        (await fresh.Db.Table<Category>().ToListAsync()).Should().Contain(c => c.Name == "Test Food");
+        (await fresh.DanglingReferencesAsync()).Should().Be(0);
+        account.Should().BeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task ReplacingMyData_ForgetsWhatWasAppliedFromOtherDevicesBefore()
+    {
+        var a = await NewDeviceAsync();
+        var b = await NewDeviceAsync();
+        await b.Db.ExecuteAsync("INSERT INTO SyncPeerState (DeviceId, LastSeq) VALUES ('ghost', 5)");
+
+        await b.Engine.ApplySnapshotAsync(await a.Engine.CreateSnapshotAsync(), replaceLocalData: true);
+
+        (await b.Db.Table<SyncPeerState>().ToListAsync()).Should().NotContain(p => p.DeviceId == "ghost");
+    }
+
+    [Fact]
     public async Task DeleteOfARowStillUsedHere_IsRefusedAtOnce_NoRowIsLeftPointingAtNothing()
     {
         var a = await NewDeviceAsync();
