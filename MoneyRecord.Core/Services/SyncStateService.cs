@@ -1,6 +1,7 @@
 using MoneyRecord.Models;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
+using MoneyRecord.Services.Sync;
 using SQLite;
 
 namespace MoneyRecord.Services
@@ -32,10 +33,11 @@ namespace MoneyRecord.Services
                 state.TriggerHash = SyncCapture.Install(db);
                 db.InsertOrReplace(state);
 
+                var now = _time.GetUtcNow().ToUnixTimeMilliseconds();
                 foreach (var type in SyncCapture.SyncedTables)
                 {
                     var mapping = db.GetMapping(type);
-                    db.Execute($"INSERT INTO SyncDirty (TableName, LocalId, Deleted) SELECT '{mapping.TableName}', \"{mapping.PK.Name}\", 0 FROM \"{mapping.TableName}\"");
+                    db.Execute($"INSERT INTO SyncDirty (TableName, LocalId, Deleted, At) SELECT '{mapping.TableName}', \"{mapping.PK.Name}\", 0, {now} FROM \"{mapping.TableName}\"");
                 }
             });
         }
@@ -90,7 +92,7 @@ namespace MoneyRecord.Services
                         meta.Payload = group.Where(d => d.Deleted).MaxBy(d => d.Id)?.Payload ?? meta.Payload;
                     }
 
-                    meta.Clock = Tick(state);
+                    meta.Clock = SyncClock.Tick(state, group.Max(d => d.At));
                     meta.DeviceId = state.DeviceId;
                     meta.Dirty = true;
                     db.InsertOrReplace(meta);
@@ -102,14 +104,6 @@ namespace MoneyRecord.Services
                 db.Update(state);
             });
             return marked;
-        }
-
-        /// <summary>The next hybrid logical clock value: wall clock milliseconds in the high bits, a counter for the same millisecond.</summary>
-        private long Tick(SyncState state)
-        {
-            var physical = Math.Max(_time.GetUtcNow().ToUnixTimeMilliseconds(), state.LastClock >> 16);
-            state.LastClock = physical == state.LastClock >> 16 ? state.LastClock + 1 : physical << 16;
-            return state.LastClock;
         }
     }
 }

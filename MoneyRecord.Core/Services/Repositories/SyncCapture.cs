@@ -35,6 +35,9 @@ namespace MoneyRecord.Services.Repositories
 
         private const string ApplyingTest = "(SELECT Applying FROM SyncState WHERE Id = 1) = 0";
 
+        /// <summary>The current time in milliseconds since 1970, in SQL (the time of a write is taken when it happens).</summary>
+        private const string NowMs = "CAST(strftime('%s', 'now') AS INTEGER) * 1000 + CAST(substr(strftime('%f', 'now'), 4) AS INTEGER)";
+
         public static string TableName(Type type) => new TableMapping(type).TableName;
 
         /// <summary>The SQL of the three triggers of every synced table.</summary>
@@ -57,7 +60,7 @@ namespace MoneyRecord.Services.Repositories
 
         private static string Build(string name, string action, string table, string values) =>
             $"CREATE TRIGGER \"{name}\" AFTER {action} ON \"{table}\" WHEN {ApplyingTest} " +
-            $"BEGIN INSERT INTO SyncDirty (TableName, LocalId, Deleted, Payload) VALUES ({values}); END";
+            $"BEGIN INSERT INTO SyncDirty (TableName, LocalId, Deleted, Payload, At) VALUES ({values}, {NowMs}); END";
 
         public static string HashOf(IReadOnlyList<(string Name, string Sql)> triggers) =>
             Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(string.Join('\n', triggers.Select(t => t.Sql)))));
