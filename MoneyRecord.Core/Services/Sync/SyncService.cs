@@ -23,10 +23,16 @@ namespace MoneyRecord.Services.Sync
         WrongDevice,
 
         /// <summary>One of the two apps is older than the files the other writes.</summary>
-        VersionMismatch
+        VersionMismatch,
+
+        /// <summary>The shared folder could not be read or written (removed, permission taken back, a provider that is offline).</summary>
+        FolderUnavailable
     }
 
-    public sealed record SyncStatus(bool Supported, bool Enabled, bool CanListen, bool Listening, string DeviceName, IReadOnlyList<SyncPeer> Peers);
+    /// <param name="FolderSupported">This device can use a shared folder.</param>
+    /// <param name="FolderName">The chosen shared folder; null when none is chosen (or it can no longer be reached).</param>
+    public sealed record SyncStatus(bool Supported, bool Enabled, bool CanListen, bool Listening, string DeviceName, IReadOnlyList<SyncPeer> Peers,
+        bool FolderSupported = false, string? FolderName = null);
 
     public sealed record PairingCode(string Text, DateTimeOffset Expires);
 
@@ -54,6 +60,12 @@ namespace MoneyRecord.Services.Sync
         /// </summary>
         Task RemovePeerAsync(string deviceId);
 
+        /// <summary>Lets the user pick the shared folder (needs sync on); false when cancelled.</summary>
+        Task<bool> PickFolderAsync();
+
+        /// <summary>Stops using the shared folder (its files stay where they are).</summary>
+        Task ClearFolderAsync();
+
         /// <summary>Stops syncing and forgets the key and the devices (the data stays).</summary>
         Task DisableAsync();
 
@@ -72,7 +84,8 @@ namespace MoneyRecord.Services.Sync
         TimeProvider? time = null,
         Func<IReadOnlyList<string>>? localAddresses = null,
         Func<string, Task<(string Address, int Port)?>>? findComputer = null,
-        ISyncBackground? background = null) : ISyncService
+        ISyncBackground? background = null,
+        ISyncFolder? sharedFolder = null) : ISyncService
     {
         private const int PreferredPort = 48731;
         private const int MaxNameLength = 64;
@@ -142,7 +155,7 @@ namespace MoneyRecord.Services.Sync
                     ? [.. profile.Devices.Select(d => new SyncPeer(d.DeviceId, d.Name, [], 0, "", d.LastSeen))]
                     : [.. profile.Peers];
             return new SyncStatus(secrets.IsSupported, profile != null, platform.CanListen, _server != null,
-                profile?.DeviceName ?? platform.DeviceName, peers);
+                profile?.DeviceName ?? platform.DeviceName, peers, sharedFolder?.IsSupported ?? false, profile == null ? null : sharedFolder?.Name);
         }
 
         // ---- The devices that paired with this one (the listening side) ----
@@ -380,6 +393,24 @@ namespace MoneyRecord.Services.Sync
                         }
                     }
 
+                    // The shared folder (away from home, or the computer is off): the same copy, with the folder as the other store
+                    if (sharedFolder?.Open() is { } shared)
+                    {
+                        try
+                        {
+                            await SyncStores.CopyMissingAsync(store, shared);
+                            await SyncStores.CopyMissingAsync(shared, store);
+                            // The computer not answering is no problem when the folder did the work
+                            if (outcome == SyncOutcome.Unreachable)
+                                outcome = SyncOutcome.Done;
+                        }
+                        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException)
+                        {
+                            if (outcome == SyncOutcome.Done)
+                                outcome = SyncOutcome.FolderUnavailable;
+                        }
+                    }
+
                     try
                     {
                         await engine.ApplyAsync(store);
@@ -418,6 +449,19 @@ namespace MoneyRecord.Services.Sync
             {
                 _busy.Release();
             }
+        }
+
+        public async Task<bool> PickFolderAsync()
+        {
+            if (sharedFolder is not { IsSupported: true } || await LoadAsync() == null)
+                return false;
+            return await sharedFolder.PickAsync();
+        }
+
+        public Task ClearFolderAsync()
+        {
+            sharedFolder?.Clear();
+            return Task.CompletedTask;
         }
 
         /// <summary>Another device wrote change files into this device's store (it is listening): apply them.</summary>
@@ -465,6 +509,7 @@ namespace MoneyRecord.Services.Sync
                     _server = null;
                 }
                 background?.Cancel();
+                sharedFolder?.Clear();
                 await syncState.DisableAsync();
                 await SaveAsync(null);
                 if (Directory.Exists(paths.SyncFolder))

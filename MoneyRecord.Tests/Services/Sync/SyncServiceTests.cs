@@ -35,6 +35,24 @@ public sealed class SyncServiceTests : IAsyncLifetime
         public string DeviceName => name;
     }
 
+    private sealed class FakeFolder(string? path = null, ISyncStore? store = null) : ISyncFolder
+    {
+        public string? Path { get; set; } = path;
+        public bool IsSupported => true;
+        public string? Name => Path == null ? null : System.IO.Path.GetFileName(Path);
+        public Task<bool> PickAsync() => Task.FromResult(true);
+        public void Clear() => Path = null;
+        public ISyncStore? Open() => store ?? (Path == null ? null : new DirectorySyncStore(Path));
+    }
+
+    private sealed class BrokenStore : ISyncStore
+    {
+        public Task<IReadOnlyList<string>> DevicesAsync() => throw new IOException("the provider is offline");
+        public Task<long> LastSeqAsync(string deviceId) => throw new IOException("the provider is offline");
+        public Task<byte[]?> ReadAsync(string deviceId, long seq) => throw new IOException("the provider is offline");
+        public Task WriteAsync(string deviceId, long seq, byte[] data) => throw new IOException("the provider is offline");
+    }
+
     private sealed class Device
     {
         public required string Folder { get; init; }
@@ -58,7 +76,7 @@ public sealed class SyncServiceTests : IAsyncLifetime
         }
     }
 
-    private async Task<Device> NewDeviceAsync(bool canListen, string name, Func<string, Task<(string Address, int Port)?>>? find = null)
+    private async Task<Device> NewDeviceAsync(bool canListen, string name, Func<string, Task<(string Address, int Port)?>>? find = null, ISyncFolder? shared = null)
     {
         var folder = Path.Combine(Path.GetTempPath(), $"moneyrecord-svc-{Guid.NewGuid():N}");
         Directory.CreateDirectory(folder);
@@ -68,7 +86,7 @@ public sealed class SyncServiceTests : IAsyncLifetime
         var state = new SyncStateService(database);
         var secrets = new MemorySecrets();
         var service = new SyncService(database, state, secrets, new Platform(canListen, name), paths,
-            new AccountRepository(database), new CategoryRepository(database), localAddresses: () => Loopback, findComputer: find);
+            new AccountRepository(database), new CategoryRepository(database), localAddresses: () => Loopback, findComputer: find, sharedFolder: shared);
         var device = new Device { Folder = folder, Db = db, Database = database, Paths = paths, Service = service, State = state, Secrets = secrets };
         _devices.Add(device);
         return device;
@@ -190,6 +208,60 @@ public sealed class SyncServiceTests : IAsyncLifetime
 
         asked.Should().Equal(peer.DeviceId);
         (await again.GetStatusAsync()).Peers.Single().Port.Should().Be(peer.Port);
+    }
+
+    [Fact]
+    public async Task ThroughASharedFolder_TheDevicesSyncWithoutTheComputerAnswering()
+    {
+        var shared = Path.Combine(Path.GetTempPath(), $"moneyrecord-shared-{Guid.NewGuid():N}");
+        try
+        {
+            var pc = await NewDeviceAsync(true, "My PC", shared: new FakeFolder(shared));
+            var phone = await NewDeviceAsync(false, "My Phone", shared: new FakeFolder(shared));
+            await pc.Service.EnableAsync();
+            await phone.Service.PairAsync((await pc.Service.CreatePairingCodeAsync()).Text);
+            var peer = (await phone.Service.GetStatusAsync()).Peers.Single();
+
+            // Away from home: the phone's saved port no longer answers and nobody answers the beacon
+            await phone.Secrets.SetAsync((await phone.Secrets.GetAsync())!.Replace($"\"Port\":{peer.Port}", "\"Port\":1"));
+            var away = new SyncService(phone.Database, new SyncStateService(phone.Database), phone.Secrets, new Platform(false, "My Phone"), phone.Paths,
+                new AccountRepository(phone.Database), new CategoryRepository(phone.Database),
+                findComputer: _ => Task.FromResult<(string, int)?>(null), sharedFolder: new FakeFolder(shared));
+            await phone.Db.InsertAsync(new Category { Name = "Test Category Away", Type = CategoryType.Expense });
+
+            (await away.SyncNowAsync()).Should().Be(SyncOutcome.Done, "the folder did the work");
+            await pc.Service.SyncNowAsync(); // later, the computer reads the folder
+
+            (await NamesAsync(pc, "Category")).Should().Contain("Test Category Away");
+        }
+        finally
+        {
+            try { Directory.Delete(shared, recursive: true); } catch (IOException) { }
+        }
+    }
+
+    [Fact]
+    public async Task AFolderThatCannotBeReached_IsReported_AndTheRestOfTheSyncStillRuns()
+    {
+        var pc = await NewDeviceAsync(true, "My PC", shared: new FakeFolder(store: new BrokenStore()));
+        await pc.Service.EnableAsync();
+        await pc.Db.InsertAsync(new Payee { Name = "Test Payee Local" });
+
+        (await pc.Service.SyncNowAsync()).Should().Be(SyncOutcome.FolderUnavailable);
+    }
+
+    [Fact]
+    public async Task TheFolder_IsOnlyForgottenByTheUser_OrWhenSyncIsTurnedOff()
+    {
+        var folder = new FakeFolder(Path.Combine(Path.GetTempPath(), "x-shared"));
+        var pc = await NewDeviceAsync(true, "My PC", shared: folder);
+        await pc.Service.EnableAsync();
+
+        (await pc.Service.GetStatusAsync()).Should().BeEquivalentTo(new { FolderSupported = true, FolderName = "x-shared" });
+        await pc.Service.DisableAsync();
+
+        folder.Path.Should().BeNull();
+        (await pc.Service.GetStatusAsync()).FolderName.Should().BeNull();
     }
 
     [Fact]
