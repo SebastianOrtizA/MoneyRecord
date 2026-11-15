@@ -1,0 +1,3548 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Para Kaydı</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Düzenle</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Hata</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Onayla</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Evet</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Hayır</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Ana sayfa</value>
+  </data>
+  <data name="Transfers" xml:space="preserve">
+    <value>Transferler</value>
+  </data>
+  <data name="ManageAccounts" xml:space="preserve">
+    <value>Hesapları yönet</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Hesaplar</value>
+  </data>
+  <data name="IncomeCategories" xml:space="preserve">
+    <value>Gelir kategorileri</value>
+  </data>
+  <data name="ExpenseCategories" xml:space="preserve">
+    <value>Gider kategorileri</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Özet</value>
+  </data>
+  <data name="SelectPeriod" xml:space="preserve">
+    <value>Dönem seç</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Başlangıç:</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Bitiş:</value>
+  </data>
+  <data name="TotalBalance" xml:space="preserve">
+    <value>Toplam bakiye</value>
+  </data>
+  <data name="Incomes" xml:space="preserve">
+    <value>Gelirler</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Giderler</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Gelir</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>Gider</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>İşlemler</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Düzenle</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="CalendarMonth" xml:space="preserve">
+    <value>Takvim ayı</value>
+  </data>
+  <data name="CalendarYear" xml:space="preserve">
+    <value>Takvim yılı</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Bugün</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>Geçen hafta</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>Geçen ay</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>Geçen yıl</value>
+  </data>
+  <data name="CustomPeriod" xml:space="preserve">
+    <value>Özel dönem</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>Liste görünümü</value>
+  </data>
+  <data name="GroupByCategory" xml:space="preserve">
+    <value>Kategoriye göre</value>
+  </data>
+  <data name="GroupByAccount" xml:space="preserve">
+    <value>Hesaba göre</value>
+  </data>
+  <data name="Ungrouped" xml:space="preserve">
+    <value>Gruplanmamış</value>
+  </data>
+  <data name="Grouped" xml:space="preserve">
+    <value>Gruplu</value>
+  </data>
+  <data name="SortOldestFirst" xml:space="preserve">
+    <value>Önce en eski</value>
+  </data>
+  <data name="SortNewestFirst" xml:space="preserve">
+    <value>Önce en yeni</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Sırala</value>
+  </data>
+  <data name="AddTransaction" xml:space="preserve">
+    <value>İşlem ekle</value>
+  </data>
+  <data name="AddIncome" xml:space="preserve">
+    <value>Gelir ekle</value>
+  </data>
+  <data name="AddExpense" xml:space="preserve">
+    <value>Gider ekle</value>
+  </data>
+  <data name="EditIncome" xml:space="preserve">
+    <value>Geliri düzenle</value>
+  </data>
+  <data name="EditExpense" xml:space="preserve">
+    <value>Gideri düzenle</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Tarih</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Açıklama</value>
+  </data>
+  <data name="EnterDescription" xml:space="preserve">
+    <value>Açıklama gir</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Tutar</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Hesap</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Hesap seç</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>Kategori seç</value>
+  </data>
+  <data name="NewTransfer" xml:space="preserve">
+    <value>Yeni transfer</value>
+  </data>
+  <data name="EditTransfer" xml:space="preserve">
+    <value>Transferi düzenle</value>
+  </data>
+  <data name="NoTransfers" xml:space="preserve">
+    <value>Henüz transfer yok</value>
+  </data>
+  <data name="TransferBetweenAccounts" xml:space="preserve">
+    <value>Hesapların arasında para aktar</value>
+  </data>
+  <data name="FromAccount" xml:space="preserve">
+    <value>Kaynak hesap *</value>
+  </data>
+  <data name="ToAccount" xml:space="preserve">
+    <value>Hedef hesap *</value>
+  </data>
+  <data name="SelectSourceAccount" xml:space="preserve">
+    <value>Kaynak hesabı seç</value>
+  </data>
+  <data name="SelectDestinationAccount" xml:space="preserve">
+    <value>Hedef hesabı seç</value>
+  </data>
+  <data name="TransferButton" xml:space="preserve">
+    <value>Aktar</value>
+  </data>
+  <data name="TransferDescription" xml:space="preserve">
+    <value>Açıklama</value>
+  </data>
+  <data name="TransferOptional" xml:space="preserve">
+    <value>Transfer (isteğe bağlı)</value>
+  </data>
+  <data name="FromLabel" xml:space="preserve">
+    <value>Kaynak:</value>
+  </data>
+  <data name="ToLabel" xml:space="preserve">
+    <value>Hedef:</value>
+  </data>
+  <data name="AddNewAccount" xml:space="preserve">
+    <value>Yeni hesap ekle</value>
+  </data>
+  <data name="EditAccount" xml:space="preserve">
+    <value>Hesabı düzenle</value>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Hesap adı</value>
+  </data>
+  <data name="AccountNamePlaceholder" xml:space="preserve">
+    <value>ör. Banka hesabı, Nakit, Kredi kartı</value>
+  </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>Başlangıç bakiyesi</value>
+  </data>
+  <data name="SelectIcon" xml:space="preserve">
+    <value>Simge seç</value>
+  </data>
+  <data name="AddAccountButton" xml:space="preserve">
+    <value>Hesap ekle</value>
+  </data>
+  <data name="UpdateAccount" xml:space="preserve">
+    <value>Hesabı güncelle</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>Düzenlemeyi iptal et</value>
+  </data>
+  <data name="NoAccounts" xml:space="preserve">
+    <value>Henüz hesap yok. İlk hesabını eklemek için + düğmesine dokun.</value>
+  </data>
+  <data name="AllowNegativeBalance" xml:space="preserve">
+    <value>Negatif bakiyeye izin ver</value>
+  </data>
+  <data name="InsufficientAccountBalance" xml:space="preserve">
+    <value>Bu gider bakiyeyi eksiye düşürür. '{0}' hesabı negatif bakiyeye izin vermiyor.</value>
+  </data>
+  <data name="NegativeBalanceNotAllowed" xml:space="preserve">
+    <value>Negatif başlangıç bakiyesine izin verilmiyor. Negatif değer girmek için 'Negatif bakiyeye izin ver' seçeneğini aç.</value>
+  </data>
+  <data name="AddNewCategory" xml:space="preserve">
+    <value>Yeni kategori ekle</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Kategoriyi düzenle</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Kategori adı</value>
+  </data>
+  <data name="AddCategoryButton" xml:space="preserve">
+    <value>Kategori ekle</value>
+  </data>
+  <data name="UpdateCategory" xml:space="preserve">
+    <value>Kategoriyi güncelle</value>
+  </data>
+  <data name="YourCategories" xml:space="preserve">
+    <value>Kategorilerin</value>
+  </data>
+  <data name="NoCategories" xml:space="preserve">
+    <value>Henüz kategori yok. Yukarıdan ilk kategorini ekle.</value>
+  </data>
+  <data name="TotalExpenses" xml:space="preserve">
+    <value>Toplam gider</value>
+  </data>
+  <data name="TotalIncome" xml:space="preserve">
+    <value>Toplam gelir</value>
+  </data>
+  <data name="CategoryBreakdown" xml:space="preserve">
+    <value>Kategori dağılımı</value>
+  </data>
+  <data name="NoExpenseData" xml:space="preserve">
+    <value>Bu dönem için gider verisi yok</value>
+  </data>
+  <data name="NoIncomeData" xml:space="preserve">
+    <value>Bu dönem için gelir verisi yok</value>
+  </data>
+  <data name="AddExpensesToStart" xml:space="preserve">
+    <value>Harcama dağılımını görmek için biraz gider ekle</value>
+  </data>
+  <data name="AddIncomeToStart" xml:space="preserve">
+    <value>Kazanç dağılımını görmek için biraz gelir ekle</value>
+  </data>
+  <data name="NoExpenseDataFound" xml:space="preserve">
+    <value>Gider verisi bulunamadı</value>
+  </data>
+  <data name="NoIncomeDataFound" xml:space="preserve">
+    <value>Gelir verisi bulunamadı</value>
+  </data>
+  <data name="AddExpenseTransactionsToSee" xml:space="preserve">
+    <value>Harcama analizini görmek için biraz gider işlemi ekle</value>
+  </data>
+  <data name="AddIncomeTransactionsToSee" xml:space="preserve">
+    <value>Kazanç analizini görmek için biraz gelir işlemi ekle</value>
+  </data>
+  <data name="PleaseEnterValidAmount" xml:space="preserve">
+    <value>Lütfen geçerli bir tutar gir</value>
+  </data>
+  <data name="PleaseSelectAccount" xml:space="preserve">
+    <value>Lütfen bir hesap seç</value>
+  </data>
+  <data name="PleaseSelectCategory" xml:space="preserve">
+    <value>Lütfen bir kategori seç</value>
+  </data>
+  <data name="PleaseEnterCategoryName" xml:space="preserve">
+    <value>Lütfen bir kategori adı gir</value>
+  </data>
+  <data name="PleaseEnterAccountName" xml:space="preserve">
+    <value>Lütfen bir hesap adı gir</value>
+  </data>
+  <data name="PleaseSelectSourceAccount" xml:space="preserve">
+    <value>Lütfen bir kaynak hesap seç</value>
+  </data>
+  <data name="PleaseSelectDestinationAccount" xml:space="preserve">
+    <value>Lütfen bir hedef hesap seç</value>
+  </data>
+  <data name="SourceDestinationMustBeDifferent" xml:space="preserve">
+    <value>Kaynak ve hedef hesap farklı olmalı</value>
+  </data>
+  <data name="InsufficientFunds" xml:space="preserve">
+    <value>Kaynak hesapta yeterli bakiye yok</value>
+  </data>
+  <data name="DeleteTransaction" xml:space="preserve">
+    <value>İşlemi sil</value>
+  </data>
+  <data name="DeleteTransactionConfirm" xml:space="preserve">
+    <value>Bu işlemi silmek istediğine emin misin?</value>
+  </data>
+  <data name="DeleteTransfer" xml:space="preserve">
+    <value>Transferi sil</value>
+  </data>
+  <data name="DeleteTransferConfirm" xml:space="preserve">
+    <value>Bu transferi silmek istediğine emin misin?</value>
+  </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Kategoriyi sil</value>
+  </data>
+  <data name="DeleteCategoryConfirm" xml:space="preserve">
+    <value>Bu kategoriyi silmek istediğine emin misin?</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Hesabı sil</value>
+  </data>
+  <data name="DeleteAccountConfirm" xml:space="preserve">
+    <value>Bu hesabı silmek istediğine emin misin?</value>
+  </data>
+  <data name="CannotDelete" xml:space="preserve">
+    <value>Silinemiyor</value>
+  </data>
+  <data name="LastCategoryCannotDelete" xml:space="preserve">
+    <value>Bu, bu türdeki son kategori. İşlemleri varken silemezsin. Önce başka bir kategori oluştur.</value>
+  </data>
+  <data name="CategoryHasTransactions" xml:space="preserve">
+    <value>'{0}' için yeni bir kategori seç:</value>
+  </data>
+  <data name="AvailableBalance" xml:space="preserve">
+    <value>Kullanılabilir: {0}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Geri</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Kategoriler</value>
+  </data>
+  <data name="NoCategoriesYet" xml:space="preserve">
+    <value>Henüz kategori yok</value>
+  </data>
+  <data name="DefaultAccountCash" xml:space="preserve">
+    <value>Nakit</value>
+  </data>
+  <data name="DefaultCategorySalary" xml:space="preserve">
+    <value>Maaş</value>
+  </data>
+  <data name="DefaultCategoryFreelance" xml:space="preserve">
+    <value>Serbest çalışma</value>
+  </data>
+  <data name="DefaultCategoryInvestment" xml:space="preserve">
+    <value>Yatırım</value>
+  </data>
+  <data name="DefaultCategoryOtherIncome" xml:space="preserve">
+    <value>Diğer gelir</value>
+  </data>
+  <data name="DefaultCategoryFood" xml:space="preserve">
+    <value>Yiyecek</value>
+  </data>
+  <data name="DefaultCategoryTransportation" xml:space="preserve">
+    <value>Ulaşım</value>
+  </data>
+  <data name="DefaultCategoryEntertainment" xml:space="preserve">
+    <value>Eğlence</value>
+  </data>
+  <data name="DefaultCategoryUtilities" xml:space="preserve">
+    <value>Faturalar</value>
+  </data>
+  <data name="DefaultCategoryShopping" xml:space="preserve">
+    <value>Alışveriş</value>
+  </data>
+  <data name="DefaultCategoryHome" xml:space="preserve">
+    <value>Ev</value>
+  </data>
+  <data name="DefaultCategoryOtherExpense" xml:space="preserve">
+    <value>Diğer gider</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Başarılı</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Silmeyi onayla</value>
+  </data>
+  <data name="YesDelete" xml:space="preserve">
+    <value>Evet, sil</value>
+  </data>
+  <data name="FailedToLoadAccountBalances" xml:space="preserve">
+    <value>Hesap bakiyeleri yüklenemedi</value>
+  </data>
+  <data name="FailedToLoadReportData" xml:space="preserve">
+    <value>Rapor verileri yüklenemedi</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Toplam</value>
+  </data>
+  <data name="CannotDeleteDefaultAccount" xml:space="preserve">
+    <value>Varsayılan Nakit hesabı silinemez</value>
+  </data>
+  <data name="DeleteAccountWithTransactions" xml:space="preserve">
+    <value>'{0}' hesabını silmek istediğine emin misin?
+
+{1} işlem ve {2} yinelenen kural '{3}' hesabına taşınacak.</value>
+  </data>
+  <data name="DeleteAccountNoTransactions" xml:space="preserve">
+    <value>'{0}' hesabını silmek istediğine emin misin?</value>
+  </data>
+  <data name="CategoryDeletedAndTransactionsMoved" xml:space="preserve">
+    <value>'{0}' kategorisi silindi ve {1} işlem '{2}' kategorisine taşındı</value>
+  </data>
+  <data name="DeleteCategoryConfirmation" xml:space="preserve">
+    <value>'{0}' kategorisini silmek istediğine emin misin?</value>
+  </data>
+  <data name="TransferUpdatedSuccessfully" xml:space="preserve">
+    <value>Transfer güncellendi</value>
+  </data>
+  <data name="FailedToSaveTransfer" xml:space="preserve">
+    <value>Transfer kaydedilemedi</value>
+  </data>
+  <data name="FailedToLoadTransfers" xml:space="preserve">
+    <value>Transferler yüklenemedi</value>
+  </data>
+  <data name="FailedToDeleteTransfer" xml:space="preserve">
+    <value>Transfer silinemedi</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Kullanılabilir: {0}</value>
+  </data>
+  <data name="AddCategoryToBudget" xml:space="preserve">
+    <value>Bütçeye kategori ekle</value>
+  </data>
+  <data name="BudgetLimit" xml:space="preserve">
+    <value>Bütçe limiti</value>
+  </data>
+  <data name="AddBudgetButton" xml:space="preserve">
+    <value>Bütçe ekle</value>
+  </data>
+  <data name="NoBudgetsYet" xml:space="preserve">
+    <value>Henüz bütçe yok</value>
+  </data>
+  <data name="AddBudgetToStart" xml:space="preserve">
+    <value>Bir gider kategorisi için harcama limiti belirlemek üzere + düğmesine dokun.</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>Kalan</value>
+  </data>
+  <data name="Exceeded" xml:space="preserve">
+    <value>Aşıldı</value>
+  </data>
+  <data name="TotalBudgeted" xml:space="preserve">
+    <value>Bütçelenen</value>
+  </data>
+  <data name="TotalSpent" xml:space="preserve">
+    <value>Harcanan</value>
+  </data>
+  <data name="TotalRemaining" xml:space="preserve">
+    <value>Kalan</value>
+  </data>
+  <data name="BudgetAddedSuccessfully" xml:space="preserve">
+    <value>Bütçe eklendi</value>
+  </data>
+  <data name="FailedToSaveBudget" xml:space="preserve">
+    <value>Bütçe kaydedilemedi</value>
+  </data>
+  <data name="DeleteBudgetConfirmation" xml:space="preserve">
+    <value>'{0}' kategorisini bütçenden çıkarmak istediğine emin misin?</value>
+  </data>
+  <data name="FailedToDeleteBudget" xml:space="preserve">
+    <value>Bütçe silinemedi</value>
+  </data>
+  <data name="EditBudget" xml:space="preserve">
+    <value>Bütçeyi düzenle</value>
+  </data>
+  <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
+    <value>İşlem güncellendi</value>
+  </data>
+  <data name="FailedToLoadTransactions" xml:space="preserve">
+    <value>İşlemler yüklenemedi</value>
+  </data>
+  <data name="FailedToDeleteTransaction" xml:space="preserve">
+    <value>İşlem silinemedi</value>
+  </data>
+  <data name="PerDay" xml:space="preserve">
+    <value>Günlük</value>
+  </data>
+  <data name="PerMonth" xml:space="preserve">
+    <value>Aylık</value>
+  </data>
+  <data name="PerYear" xml:space="preserve">
+    <value>Yıllık</value>
+  </data>
+  <data name="BudgetPeriod" xml:space="preserve">
+    <value>Bütçe dönemi</value>
+  </data>
+  <data name="BudgetExceeded" xml:space="preserve">
+    <value>⚠️ '{0}' bütçesi aşıldı! {2} limitin {1} kadarı harcandı.</value>
+  </data>
+  <data name="BudgetNearLimit" xml:space="preserve">
+    <value>⚠️ '{0}' bütçesi limite yakın. Yalnızca {1} kaldı.</value>
+  </data>
+  <data name="BudgetSummary" xml:space="preserve">
+    <value>Bütçe özeti</value>
+  </data>
+  <data name="OnTrack" xml:space="preserve">
+    <value>Yolunda</value>
+  </data>
+  <data name="OverBudget" xml:space="preserve">
+    <value>Bütçe aşıldı</value>
+  </data>
+  <data name="RecurringTransactions" xml:space="preserve">
+    <value>Yinelenen</value>
+  </data>
+  <data name="MakeRecurring" xml:space="preserve">
+    <value>Yinelenen yap</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Sıklık</value>
+  </data>
+  <data name="SelectFrequency" xml:space="preserve">
+    <value>Sıklık seç</value>
+  </data>
+  <data name="HasEndDate" xml:space="preserve">
+    <value>Bitiş tarihi belirle</value>
+  </data>
+  <data name="EndDateOptional" xml:space="preserve">
+    <value>Bitiş tarihi (isteğe bağlı)</value>
+  </data>
+  <data name="FrequencyDaily" xml:space="preserve">
+    <value>Günlük</value>
+  </data>
+  <data name="FrequencyWeekly" xml:space="preserve">
+    <value>Haftalık</value>
+  </data>
+  <data name="FrequencyBiweekly" xml:space="preserve">
+    <value>2 haftada bir</value>
+  </data>
+  <data name="FrequencyMonthly" xml:space="preserve">
+    <value>Aylık</value>
+  </data>
+  <data name="FrequencyYearly" xml:space="preserve">
+    <value>Yıllık</value>
+  </data>
+  <data name="NextOccurrence" xml:space="preserve">
+    <value>Sonraki</value>
+  </data>
+  <data name="NoRecurringTransactions" xml:space="preserve">
+    <value>Yinelenen işlem yok</value>
+  </data>
+  <data name="AddRecurringToStart" xml:space="preserve">
+    <value>Planlamak için + düğmesine dokun veya işlem eklerken "Yinelenen yap" seçeneğini aç</value>
+  </data>
+  <data name="DeleteRecurringConfirmation" xml:space="preserve">
+    <value>'{0}' yinelenen işlemini silmek istediğine emin misin?</value>
+  </data>
+  <data name="RecurringTransactionDeleted" xml:space="preserve">
+    <value>Yinelenen işlem silindi</value>
+  </data>
+  <data name="FailedToLoadRecurringTransactions" xml:space="preserve">
+    <value>Yinelenen işlemler yüklenemedi</value>
+  </data>
+  <data name="FailedToDeleteRecurringTransaction" xml:space="preserve">
+    <value>Yinelenen işlem silinemedi</value>
+  </data>
+  <data name="FailedToUpdateRecurringTransaction" xml:space="preserve">
+    <value>Yinelenen işlem güncellenemedi</value>
+  </data>
+  <data name="SpecificDayOfMonth" xml:space="preserve">
+    <value>Ayın belirli bir günü</value>
+  </data>
+  <data name="SelectDay" xml:space="preserve">
+    <value>Gün seç</value>
+  </data>
+  <data name="DayN" xml:space="preserve">
+    <value>{0}. gün</value>
+  </data>
+  <data name="EditRecurring" xml:space="preserve">
+    <value>Yinelenen işlemi düzenle</value>
+  </data>
+  <data name="RecurringTransactionUpdated" xml:space="preserve">
+    <value>Yinelenen işlem güncellendi</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="BackupRestore" xml:space="preserve">
+    <value>Yedekle ve geri yükle</value>
+  </data>
+  <data name="BackupRestoreDescription" xml:space="preserve">
+    <value>Verilerini dışa aktar veya bir yedekten geri yükle</value>
+  </data>
+  <data name="ExportFullBackup" xml:space="preserve">
+    <value>Tam yedeği dışa aktar (fişlerle)</value>
+  </data>
+  <data name="SaveBackupLocal" xml:space="preserve">
+    <value>Yedeği cihaza kaydet</value>
+  </data>
+  <data name="ShareBackupExternal" xml:space="preserve">
+    <value>Yedeği paylaş</value>
+  </data>
+  <data name="ExportTransactionsCsv" xml:space="preserve">
+    <value>İşlemleri dışa aktar (CSV)</value>
+  </data>
+  <data name="RestoreFromBackup" xml:space="preserve">
+    <value>Yedekten geri yükle</value>
+  </data>
+  <data name="RestoreNote" xml:space="preserve">
+    <value>Bir yedeği geri yüklemek tüm mevcut verilerin yerine geçer. Mevcut verilerin önce kaydedilir, böylece geri yükleme geri alınabilir.</value>
+  </data>
+  <data name="ShareBackup" xml:space="preserve">
+    <value>Yedeği paylaş</value>
+  </data>
+  <data name="ShareTransactions" xml:space="preserve">
+    <value>İşlemleri paylaş</value>
+  </data>
+  <data name="BackupCreatedSuccessfully" xml:space="preserve">
+    <value>Yedek oluşturuldu</value>
+  </data>
+  <data name="CsvExportedSuccessfully" xml:space="preserve">
+    <value>CSV dışa aktarıldı</value>
+  </data>
+  <data name="FailedToCreateBackup" xml:space="preserve">
+    <value>Yedek oluşturulamadı</value>
+  </data>
+  <data name="FailedToExportCsv" xml:space="preserve">
+    <value>CSV dışa aktarılamadı</value>
+  </data>
+  <data name="ConfirmRestore" xml:space="preserve">
+    <value>Geri yüklemeyi onayla</value>
+  </data>
+  <data name="RestoreWarning" xml:space="preserve">
+    <value>Bu, TÜM mevcut verilerinin yerine yedekteki verileri koyar. Mevcut verilerin önce kaydedilir, böylece geri yüklemeyi geri alabilirsin. Devam edilsin mi?</value>
+  </data>
+  <data name="YesRestore" xml:space="preserve">
+    <value>Evet, geri yükle</value>
+  </data>
+  <data name="FailedToRestore" xml:space="preserve">
+    <value>Yedek geri yüklenemedi</value>
+  </data>
+  <data name="RestoreSuccessful" xml:space="preserve">
+    <value>{0} kayıt geri yüklendi. Önceki verilerin {1} olarak kaydedildi; daha sonra yedek listesinden geri yükleyebilirsin.</value>
+  </data>
+  <data name="RestoreComplete" xml:space="preserve">
+    <value>Geri yükleme tamamlandı</value>
+  </data>
+  <data name="UndoRestore" xml:space="preserve">
+    <value>Geri yüklemeyi geri al</value>
+  </data>
+  <data name="RestoreUndone" xml:space="preserve">
+    <value>Geri yükleme geri alındı: önceki verilerin geri geldi</value>
+  </data>
+  <data name="SelectBackupFile" xml:space="preserve">
+    <value>Yedek dosyasını seç</value>
+  </data>
+  <data name="BaseCurrency" xml:space="preserve">
+    <value>Ana para birimi</value>
+  </data>
+  <data name="BaseCurrencyDescription" xml:space="preserve">
+    <value>Toplamlar ve raporlar bu para biriminde gösterilir. Diğer para birimlerindeki bakiyeler ayrı listelenir, asla toplanmaz.</value>
+  </data>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>Silmeden önce dönüştür</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>'{0}' hesabı {1} cinsinden, varsayılan '{2}' hesabı ise {3} cinsinden. İşlemleri ve yinelenen kuralları '{2}' hesabına taşınır, bu yüzden tutarları dönüştürülür. Kuru veya nihai tutarı gir: her biri diğerini doldurur.</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>Döviz kuru</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>İşlemlerinin net toplamı: {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>{0} karşılığı</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>İşlemlerinin toplamı sıfır, bu yüzden yalnızca kur girilebilir.</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>Bu geri alınamaz.</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>Dönüştür ve sil</value>
+  </data>
+  <data name="SearchTransactions" xml:space="preserve">
+    <value>İşlemlerde ara...</value>
+  </data>
+  <data name="FilterByType" xml:space="preserve">
+    <value>Tür</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="FilterByAccount" xml:space="preserve">
+    <value>Hesap</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Tüm kategoriler</value>
+  </data>
+  <data name="AllAccounts" xml:space="preserve">
+    <value>Tüm hesaplar</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>Min</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Maks</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="Trends" xml:space="preserve">
+    <value>Eğilimler</value>
+  </data>
+  <data name="NoTrendsData" xml:space="preserve">
+    <value>Eğilim verisi yok</value>
+  </data>
+  <data name="AddTransactionsForTrends" xml:space="preserve">
+    <value>Harcama eğilimlerini ve kalıplarını görmek için işlem ekle</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Etiketler</value>
+  </data>
+  <data name="TagsPlaceholder" xml:space="preserve">
+    <value>ör. market, haftalık, acil</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>Fiş</value>
+  </data>
+  <data name="ReceiptAttached" xml:space="preserve">
+    <value>Fiş eklendi</value>
+  </data>
+  <data name="CameraNotSupported" xml:space="preserve">
+    <value>Bu cihazda kamera desteklenmiyor</value>
+  </data>
+  <data name="FailedToTakePhoto" xml:space="preserve">
+    <value>Fotoğraf çekilemedi</value>
+  </data>
+  <data name="FailedToPickPhoto" xml:space="preserve">
+    <value>Fotoğraf seçilemedi</value>
+  </data>
+  <data name="ViewReceipt" xml:space="preserve">
+    <value>Fişi görüntüle</value>
+  </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>Fotoğrafı kaldır</value>
+  </data>
+  <data name="CloseReceipt" xml:space="preserve">
+    <value>Fişi kapat</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Para birimi</value>
+  </data>
+  <data name="SelectCurrency" xml:space="preserve">
+    <value>Para birimi seç</value>
+  </data>
+  <data name="DefaultCurrency" xml:space="preserve">
+    <value>Varsayılan para birimi</value>
+  </data>
+  <data name="RecentTransactions" xml:space="preserve">
+    <value>Son işlemler</value>
+  </data>
+  <data name="NetIncome" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>Hızlı işlemler</value>
+  </data>
+  <data name="AccountHasTransfers" xml:space="preserve">
+    <value>'{0}' hesabının {1} transferi var. Diğer hesapların bakiyeleri doğru kalsın diye önce onları Transferler sayfasından sil.</value>
+  </data>
+  <data name="ConfirmCategoryMove" xml:space="preserve">
+    <value>{0} işlem ve {1} yinelenen kural '{2}' kategorisinden '{3}' kategorisine taşınsın ve '{2}' silinsin mi?</value>
+  </data>
+  <data name="CategoryBudgetMoves" xml:space="preserve">
+    <value>Bütçesi '{0}' kategorisine taşınır.</value>
+  </data>
+  <data name="CategoryBudgetDeleted" xml:space="preserve">
+    <value>'{0}' kategorisinin zaten bir bütçesi olduğundan bütçesi silinecek.</value>
+  </data>
+  <data name="DeleteCategoryWithBudget" xml:space="preserve">
+    <value>'{0}' kategorisini silmek istediğine emin misin? Bütçesi de silinecek.</value>
+  </data>
+  <data name="DeleteFailedDataChanged" xml:space="preserve">
+    <value>'{0}' silinemedi çünkü verileri bu arada değişti. Lütfen tekrar dene.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Bilinmiyor</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tümü</value>
+  </data>
+  <data name="TransferToAccount" xml:space="preserve">
+    <value>{0} hesabına transfer</value>
+  </data>
+  <data name="TransferFromAccount" xml:space="preserve">
+    <value>{0} hesabından transfer</value>
+  </data>
+  <data name="TransactionCountOne" xml:space="preserve">
+    <value>{0} işlem</value>
+  </data>
+  <data name="TransactionCountOther" xml:space="preserve">
+    <value>{0} işlem</value>
+  </data>
+  <data name="DefaultTransferDescription" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="FailedToDeleteAccount" xml:space="preserve">
+    <value>Hesap silinemedi</value>
+  </data>
+  <data name="FailedToDeleteCategory" xml:space="preserve">
+    <value>Kategori silinemedi</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Raporlar</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Bütçeler</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Daha fazla</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Yeni ekle</value>
+  </data>
+  <data name="AddNewHint" xml:space="preserve">
+    <value>Doğrudan gider eklemek için çift dokunup basılı tut</value>
+  </data>
+  <data name="DuplicateButton" xml:space="preserve">
+    <value>Kopyala</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>Tümünü gör</value>
+  </data>
+  <data name="ShowingCurrencyAccounts" xml:space="preserve">
+    <value>{0} hesap</value>
+  </data>
+  <data name="ShowAllAccounts" xml:space="preserve">
+    <value>Tümünü göster</value>
+  </data>
+  <data name="FilterByAmount" xml:space="preserve">
+    <value>Tutar</value>
+  </data>
+  <data name="FilterByTag" xml:space="preserve">
+    <value>Etiket</value>
+  </data>
+  <data name="AllTags" xml:space="preserve">
+    <value>Tüm etiketler</value>
+  </data>
+  <data name="NoTransactionsInPeriod" xml:space="preserve">
+    <value>Bu dönemde işlem yok</value>
+  </data>
+  <data name="AddEntryHint" xml:space="preserve">
+    <value>Gider, gelir veya transfer eklemek için + düğmesine dokun.</value>
+  </data>
+  <data name="NoMatchingTransactions" xml:space="preserve">
+    <value>Bu filtrelerle eşleşen işlem yok</value>
+  </data>
+  <data name="TryOtherFilters" xml:space="preserve">
+    <value>Daha fazlasını görmek için filtreleri değiştir veya temizle.</value>
+  </data>
+  <data name="FilteredOfTotal" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="MoreDetails" xml:space="preserve">
+    <value>Daha fazla ayrıntı</value>
+  </data>
+  <data name="LastActivityDate" xml:space="preserve">
+    <value>Son hareket: {0}</value>
+  </data>
+  <data name="AccountCountOne" xml:space="preserve">
+    <value>{0} hesap</value>
+  </data>
+  <data name="AccountCountOther" xml:space="preserve">
+    <value>{0} hesap</value>
+  </data>
+  <data name="NearLimit" xml:space="preserve">
+    <value>Limite yakın</value>
+  </data>
+  <data name="NoCategoriesLeftForBudget" xml:space="preserve">
+    <value>Her gider kategorisinin zaten bir bütçesi var.</value>
+  </data>
+  <data name="BudgetSpentOfLimit" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="HomeSpentLine" xml:space="preserve">
+    <value>{0}: {1} harcandı</value>
+  </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value>{0} kaldı</value>
+  </data>
+  <data name="BudgetOver" xml:space="preserve">
+    <value>{0} aşıldı</value>
+  </data>
+  <data name="OtherCategories" xml:space="preserve">
+    <value>Diğer</value>
+  </data>
+  <data name="Spending" xml:space="preserve">
+    <value>Harcama</value>
+  </data>
+  <data name="DeltaVsPrevious" xml:space="preserve">
+    <value>Önceki döneme göre {0}</value>
+  </data>
+  <data name="DeltaNoChange" xml:space="preserve">
+    <value>Önceki dönemle aynı</value>
+  </data>
+  <data name="DeltaNothingBefore" xml:space="preserve">
+    <value>Önceki dönemde hiçbir şey yok</value>
+  </data>
+  <data name="CashFlow" xml:space="preserve">
+    <value>Nakit akışı</value>
+  </data>
+  <data name="NetCashFlow" xml:space="preserve">
+    <value>Net nakit akışı</value>
+  </data>
+  <data name="NetWorth" xml:space="preserve">
+    <value>Net varlık</value>
+  </data>
+  <data name="NetWorthCurrencyOnly" xml:space="preserve">
+    <value>Yalnızca {0} hesapları</value>
+  </data>
+  <data name="BudgetVsActual" xml:space="preserve">
+    <value>Bütçe ve gerçekleşen</value>
+  </data>
+  <data name="BudgetSeries" xml:space="preserve">
+    <value>Bütçe</value>
+  </data>
+  <data name="SpentSeries" xml:space="preserve">
+    <value>Harcanan</value>
+  </data>
+  <data name="NetSeries" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="MonthsShown" xml:space="preserve">
+    <value>Aylar</value>
+  </data>
+  <data name="TotalSpending" xml:space="preserve">
+    <value>Bu aylardaki harcama</value>
+  </data>
+  <data name="SetupAssistant" xml:space="preserve">
+    <value>Kurulum asistanı</value>
+  </data>
+  <data name="SetupAssistantDescription" xml:space="preserve">
+    <value>Dil, ana para birimi, başlangıç hesapları ve kategorileri</value>
+  </data>
+  <data name="SetupWelcome" xml:space="preserve">
+    <value>MoneyRecord'a hoş geldin</value>
+  </data>
+  <data name="SetupStepOf" xml:space="preserve">
+    <value>Adım {0} / {1}</value>
+  </data>
+  <data name="SetupLanguageTitle" xml:space="preserve">
+    <value>Dil ve para birimi</value>
+  </data>
+  <data name="SetupLanguageDescription" xml:space="preserve">
+    <value>Uygulama dilini ve toplamlarının gösterileceği para birimini seç.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <data name="SystemDefault" xml:space="preserve">
+    <value>Sistem varsayılanı</value>
+  </data>
+  <data name="SetupAccountsTitle" xml:space="preserve">
+    <value>Başlangıç hesapları</value>
+  </data>
+  <data name="SetupAccountsDescription" xml:space="preserve">
+    <value>Paranı nerede tutuyorsun? Her hesapta bugün ne kadar olduğunu {0} cinsinden gir.</value>
+  </data>
+  <data name="SetupAccountsAddDescription" xml:space="preserve">
+    <value>Yeni hesaplar, mevcut hesaplarına eklenir, {0} cinsinden.</value>
+  </data>
+  <data name="SetupCategoriesTitle" xml:space="preserve">
+    <value>Kategorilerini seç</value>
+  </data>
+  <data name="SetupCategoriesDescription" xml:space="preserve">
+    <value>Kullanmayacaklarının işaretini kaldır. Kendi kategorilerini sonra ekleyebilirsin.</value>
+  </data>
+  <data name="SetupCategoriesAddDescription" xml:space="preserve">
+    <value>İşaretli olup henüz sende olmayan kategoriler eklenir.</value>
+  </data>
+  <data name="SetupNeedsAccount" xml:space="preserve">
+    <value>Adı olan en az bir hesap ekle.</value>
+  </data>
+  <data name="SetupFailed" xml:space="preserve">
+    <value>Kurulum kaydedilemedi. Lütfen tekrar dene.</value>
+  </data>
+  <data name="SetupGetStarted" xml:space="preserve">
+    <value>Başla</value>
+  </data>
+  <data name="RemoveAccount" xml:space="preserve">
+    <value>Hesabı kaldır</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>İleri</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Atla</value>
+  </data>
+  <data name="LanguageAndAppearance" xml:space="preserve">
+    <value>Dil ve görünüm</value>
+  </data>
+  <data name="LanguageAndAppearanceDescription" xml:space="preserve">
+    <value>Uygulama dili ve açık veya koyu görünümü</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Koyu</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Hakkında</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Sürüm, lisans ve açık kaynak bileşenler</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Sürüm {0}</value>
+  </data>
+  <data name="AppLicenseNotice" xml:space="preserve">
+    <value>MoneyRecord özgür bir yazılımdır: GNU Affero Genel Kamu Lisansı v3.0 kapsamında dağıtabilir ve değiştirebilirsin.</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Kaynak kod</value>
+  </data>
+  <data name="OpenSourceComponents" xml:space="preserve">
+    <value>Açık kaynak bileşenler</value>
+  </data>
+  <data name="OpenSourceComponentsDescription" xml:space="preserve">
+    <value>MoneyRecord bu projelerle geliştirildi. Lisansını okumak için birine dokun.</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>Lisans</value>
+  </data>
+  <data name="FailedToOpenLicense" xml:space="preserve">
+    <value>Lisans metni açılamadı.</value>
+  </data>
+  <data name="FailedToOpenLink" xml:space="preserve">
+    <value>Bağlantı açılamadı.</value>
+  </data>
+  <data name="ShareLogs" xml:space="preserve">
+    <value>Günlükleri paylaş</value>
+  </data>
+  <data name="ShareLogsDescription" xml:space="preserve">
+    <value>Bir sorunu bildirmek için hata günlüğü. Yalnızca teknik ayrıntılar içerir.</value>
+  </data>
+  <data name="NoLogsYet" xml:space="preserve">
+    <value>Günlükte henüz bir şey yok.</value>
+  </data>
+  <data name="FailedToShareLogs" xml:space="preserve">
+    <value>Günlükler paylaşılamadı.</value>
+  </data>
+  <data name="CrashReports" xml:space="preserve">
+    <value>Çökme raporları gönder</value>
+  </data>
+  <data name="CrashReportsDescription" xml:space="preserve">
+    <value>Uygulama bozulduğunda teknik ayrıntıları geliştiriciye gönder (Sentry üzerinden). Tutarların ve açıklamaların dahil edilmez. Açtığında uygulama bir sonraki başlayışında devreye girer.</value>
+  </data>
+  <data name="CrashReportsQuestionTitle" xml:space="preserve">
+    <value>MoneyRecord'u geliştirmeye yardım edelim mi?</value>
+  </data>
+  <data name="CrashReportsQuestion" xml:space="preserve">
+    <value>Bir şeyler ters gittiğinde uygulama çökme raporu gönderebilir mi? Raporlar yalnızca hata ve Android sürümü gibi teknik ayrıntılar içerir, tutarlarını veya açıklamalarını içermez. Bunu Ayarlar'dan değiştirebilirsin.</value>
+  </data>
+  <data name="CrashReportsAccept" xml:space="preserve">
+    <value>Rapor gönder</value>
+  </data>
+  <data name="CrashReportsDecline" xml:space="preserve">
+    <value>Hayır, teşekkürler</value>
+  </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>Yaklaşanlar</value>
+  </data>
+  <data name="UpcomingSubtitle" xml:space="preserve">
+    <value>Önümüzdeki 30 gün</value>
+  </data>
+  <data name="NoUpcoming" xml:space="preserve">
+    <value>Önümüzdeki 30 günde planlanmış bir şey yok</value>
+  </data>
+  <data name="RecurringSchedules" xml:space="preserve">
+    <value>Planlar</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Yarın</value>
+  </data>
+  <data name="InDaysOne" xml:space="preserve">
+    <value>{0} gün sonra</value>
+  </data>
+  <data name="InDaysOther" xml:space="preserve">
+    <value>{0} gün sonra</value>
+  </data>
+  <data name="Reminders" xml:space="preserve">
+    <value>Hatırlatıcılar</value>
+  </data>
+  <data name="RemindersDescription" xml:space="preserve">
+    <value>Vadesi gelen faturalar ve limitine yaklaşan bütçeler</value>
+  </data>
+  <data name="BillReminders" xml:space="preserve">
+    <value>Fatura hatırlatıcıları</value>
+  </data>
+  <data name="BillRemindersOff" xml:space="preserve">
+    <value>Kapalı</value>
+  </data>
+  <data name="BillRemindersSameDay" xml:space="preserve">
+    <value>Aynı gün</value>
+  </data>
+  <data name="DaysBeforeOne" xml:space="preserve">
+    <value>{0} gün önce</value>
+  </data>
+  <data name="DaysBeforeOther" xml:space="preserve">
+    <value>{0} gün önce</value>
+  </data>
+  <data name="BudgetAlerts" xml:space="preserve">
+    <value>Bütçe uyarıları</value>
+  </data>
+  <data name="RecurringAddedAlerts" xml:space="preserve">
+    <value>Eklenen yinelenen işlemler</value>
+  </data>
+  <data name="ChannelBills" xml:space="preserve">
+    <value>Faturalar ve yinelenen işlemler</value>
+  </data>
+  <data name="BillDueTitle" xml:space="preserve">
+    <value>Fatura vadesi: {0}</value>
+  </data>
+  <data name="BudgetNearLimitTitle" xml:space="preserve">
+    <value>{0}: bütçe limite yakın</value>
+  </data>
+  <data name="BudgetExceededTitle" xml:space="preserve">
+    <value>{0}: bütçe aşıldı</value>
+  </data>
+  <data name="RecurringAddedOne" xml:space="preserve">
+    <value>{0} yinelenen işlem eklendi</value>
+  </data>
+  <data name="RecurringAddedOther" xml:space="preserve">
+    <value>{0} yinelenen işlem eklendi</value>
+  </data>
+  <data name="RemindersOfferTitle" xml:space="preserve">
+    <value>Hatırlatıcılar alınsın mı?</value>
+  </data>
+  <data name="RemindersOfferMessage" xml:space="preserve">
+    <value>MoneyRecord, bir faturanın vadesi gelmeden önce ve bir bütçe limitine yaklaştığında seni uyarabilir. Bunu Ayarlar'dan değiştirebilirsin.</value>
+  </data>
+  <data name="RemindersOfferAccept" xml:space="preserve">
+    <value>Aç</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Şimdi değil</value>
+  </data>
+  <data name="NotificationsBlockedTitle" xml:space="preserve">
+    <value>Bildirimler kapalı</value>
+  </data>
+  <data name="NotificationsBlockedMessage" xml:space="preserve">
+    <value>Hatırlatıcı almak için sistem ayarlarında MoneyRecord için bildirimlere izin ver.</value>
+  </data>
+  <data name="OpenSystemSettings" xml:space="preserve">
+    <value>Ayarları aç</value>
+  </data>
+  <data name="AppLock" xml:space="preserve">
+    <value>Uygulama kilidi</value>
+  </data>
+  <data name="AppLockDescription" xml:space="preserve">
+    <value>MoneyRecord'u açmak için parmak izi, yüz veya telefon ekran kilidi iste</value>
+  </data>
+  <data name="LockAfter" xml:space="preserve">
+    <value>Kilitleme süresi</value>
+  </data>
+  <data name="MinutesOne" xml:space="preserve">
+    <value>{0} dakika</value>
+  </data>
+  <data name="MinutesOther" xml:space="preserve">
+    <value>{0} dakika</value>
+  </data>
+  <data name="OneHour" xml:space="preserve">
+    <value>1 saat</value>
+  </data>
+  <data name="AppLocked" xml:space="preserve">
+    <value>MoneyRecord kilitli</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Kilidi aç</value>
+  </data>
+  <data name="UnlockSubtitle" xml:space="preserve">
+    <value>Parmak izini, yüzünü veya telefon ekran kilidini kullan</value>
+  </data>
+  <data name="TurnOnAppLock" xml:space="preserve">
+    <value>Uygulama kilidini aç</value>
+  </data>
+  <data name="NoScreenLockTitle" xml:space="preserve">
+    <value>Ekran kilidi yok</value>
+  </data>
+  <data name="NoScreenLockMessage" xml:space="preserve">
+    <value>Önce telefonunda bir ekran kilidi (PIN, desen, parola veya parmak izi) ayarla, sonra uygulama kilidini aç.</value>
+  </data>
+  <data name="HideBalances" xml:space="preserve">
+    <value>Bakiyeleri gizle</value>
+  </data>
+  <data name="ShowBalances" xml:space="preserve">
+    <value>Bakiyeleri göster</value>
+  </data>
+  <data name="EncryptDatabase" xml:space="preserve">
+    <value>Veritabanını şifrele</value>
+  </data>
+  <data name="EncryptDatabaseDescription" xml:space="preserve">
+    <value>Verilerin bu telefonda tutulan bir anahtarla şifrelenir. Bu açıkken Android'in otomatik yedeklemesi verilerini dışarıda bırakır.</value>
+  </data>
+  <data name="EncryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Veritabanı şifrelensin mi?</value>
+  </data>
+  <data name="EncryptDatabaseQuestion" xml:space="preserve">
+    <value>Anahtar bu telefonda kalır, bu yüzden Android'in otomatik yedeklemesi ve telefondan telefona aktarım artık verilerini içermez. Telefon değiştirmeden önce Yedekle ve geri yükle bölümünden bir yedek kaydet (yedek dosyaları şifreli değildir).</value>
+  </data>
+  <data name="EncryptDatabaseAccept" xml:space="preserve">
+    <value>Şifrele</value>
+  </data>
+  <data name="DecryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Şifreleme kapatılsın mı?</value>
+  </data>
+  <data name="DecryptDatabaseQuestion" xml:space="preserve">
+    <value>Verilerin yeniden şifresiz saklanacak ve Android'in otomatik yedeklemesine dahil edilecek.</value>
+  </data>
+  <data name="DecryptDatabaseAccept" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="DatabaseEncrypted" xml:space="preserve">
+    <value>Veritabanı şifrelendi</value>
+  </data>
+  <data name="DatabaseDecrypted" xml:space="preserve">
+    <value>Şifreleme kapatıldı</value>
+  </data>
+  <data name="FailedToChangeEncryption" xml:space="preserve">
+    <value>Şifreleme değiştirilemedi. Verilerin değişmedi.</value>
+  </data>
+  <data name="UnreadableDatabaseTitle" xml:space="preserve">
+    <value>Şifreli veriler açılamadı</value>
+  </data>
+  <data name="UnreadableDatabaseMessage" xml:space="preserve">
+    <value>Şifreli veritabanının anahtarı artık bu telefonda yok, bu yüzden uygulama yeni bir veritabanıyla başladı. Verilerini geri almak için Ayarlar'dan bir yedeği geri yükle.</value>
+  </data>
+  <data name="AmountReceived" xml:space="preserve">
+    <value>Alınan tutar</value>
+  </data>
+  <data name="CrossCurrencyTransferHint" xml:space="preserve">
+    <value>Hesaplar farklı para birimleri kullanıyor ({0} → {1}): karşı tarafa ulaşan tutarı gir.</value>
+  </data>
+  <data name="ExchangeRateValue" xml:space="preserve">
+    <value>Kur: {0}</value>
+  </data>
+  <data name="BudgetNotCounted" xml:space="preserve">
+    <value>Sayılmadı: {0}</value>
+  </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Döviz kurları</value>
+  </data>
+  <data name="ExchangeRatesDescription" xml:space="preserve">
+    <value>Diğer para birimlerini çevirmek için frankfurter.dev'den günlük kurları indir. Yalnızca para birimi kodları ve tarihler gönderilir.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Şimdi güncelle</value>
+  </data>
+  <data name="ExchangeRatesUpdated" xml:space="preserve">
+    <value>Güncellendi: {0}</value>
+  </data>
+  <data name="ExchangeRatesNever" xml:space="preserve">
+    <value>Henüz indirilmedi</value>
+  </data>
+  <data name="ExchangeRatesUpdating" xml:space="preserve">
+    <value>Güncelleniyor…</value>
+  </data>
+  <data name="ExchangeRatesUnavailable" xml:space="preserve">
+    <value>{0} için kur yok</value>
+  </data>
+  <data name="ExchangeRatesFailed" xml:space="preserve">
+    <value>Döviz kurları indirilemedi. Bağlantını kontrol edip tekrar dene.</value>
+  </data>
+  <data name="AmountInCurrency" xml:space="preserve">
+    <value>{0} cinsinden tutar</value>
+  </data>
+  <data name="ConvertedAmountHint" xml:space="preserve">
+    <value>İsteğe bağlı: ekstrende göründüğü şekliyle {0} cinsinden ne tuttuğu. İndirilen kuru kullanmak için boş bırak.</value>
+  </data>
+  <data name="ShowByCurrency" xml:space="preserve">
+    <value>Para birimine göre</value>
+  </data>
+  <data name="ConvertedAtDailyRate" xml:space="preserve">
+    <value>≈ Her günün döviz kuruyla · güncelleme: {0}</value>
+  </data>
+  <data name="NoRateYet" xml:space="preserve">
+    <value>Henüz döviz kuru yok</value>
+  </data>
+  <data name="NotConvertedNote" xml:space="preserve">
+    <value>Henüz döviz kuru yok: {0}</value>
+  </data>
+  <data name="ImportColumnName" xml:space="preserve">
+    <value>Sütun {0}</value>
+  </data>
+  <data name="ImportStatement" xml:space="preserve">
+    <value>Banka ekstresini içe aktar</value>
+  </data>
+  <data name="ImportStatementDescription" xml:space="preserve">
+    <value>Bankanın web sitesinden aldığın CSV, OFX veya QIF dosyasındaki hareketleri bir hesaba ekle.</value>
+  </data>
+  <data name="ImportChooseFile" xml:space="preserve">
+    <value>Ekstre dosyası seç</value>
+  </data>
+  <data name="ImportChooseAnotherFile" xml:space="preserve">
+    <value>Başka dosya seç</value>
+  </data>
+  <data name="ImportIntro" xml:space="preserve">
+    <value>Hareketlerini bankanın web sitesinden OFX, QIF veya CSV olarak dışa aktar, sonra dosyayı buradan seç. Bir şey eklenmeden önce her satırı sen kontrol edersin.</value>
+  </data>
+  <data name="ImportRowsOne" xml:space="preserve">
+    <value>{0} satır</value>
+  </data>
+  <data name="ImportRowsOther" xml:space="preserve">
+    <value>{0} satır</value>
+  </data>
+  <data name="ImportNoTable" xml:space="preserve">
+    <value>Bu dosyada tarihi ve tutarı olan hareket bulunamadı.</value>
+  </data>
+  <data name="ImportFailedToRead" xml:space="preserve">
+    <value>Dosya okunamadı</value>
+  </data>
+  <data name="ImportDateColumn" xml:space="preserve">
+    <value>Tarih sütunu</value>
+  </data>
+  <data name="ImportDateFormat" xml:space="preserve">
+    <value>Tarih biçimi</value>
+  </data>
+  <data name="ImportDescriptionColumn" xml:space="preserve">
+    <value>Açıklama sütunu</value>
+  </data>
+  <data name="ImportAmountColumn" xml:space="preserve">
+    <value>Tutar sütunu</value>
+  </data>
+  <data name="ImportPositiveIsExpense" xml:space="preserve">
+    <value>Pozitif tutarlar giderdir (kredi kartı ekstreleri)</value>
+  </data>
+  <data name="ImportExpenseCategory" xml:space="preserve">
+    <value>Yeni giderler için kategori</value>
+  </data>
+  <data name="ImportIncomeCategory" xml:space="preserve">
+    <value>Yeni gelirler için kategori</value>
+  </data>
+  <data name="ImportCategoryHint" xml:space="preserve">
+    <value>Daha önce kullandığın bir açıklama, geçen seferki kategorinin aynısını alır. Değiştirmek için bir satırın kategorisine dokun.</value>
+  </data>
+  <data name="ImportSummary" xml:space="preserve">
+    <value>Yeni: {0} · Zaten kayıtlı: {1} · Okunamayan: {2}</value>
+  </data>
+  <data name="ImportAlreadyRecorded" xml:space="preserve">
+    <value>Zaten kayıtlı</value>
+  </data>
+  <data name="ImportProblemDate" xml:space="preserve">
+    <value>Okunamayan tarih</value>
+  </data>
+  <data name="ImportProblemAmount" xml:space="preserve">
+    <value>Okunamayan tutar</value>
+  </data>
+  <data name="ImportProblemZero" xml:space="preserve">
+    <value>Sıfır tutar</value>
+  </data>
+  <data name="ImportProblemCurrency" xml:space="preserve">
+    <value>Başka para biriminde</value>
+  </data>
+  <data name="ImportButtonOne" xml:space="preserve">
+    <value>{0} işlemi içe aktar</value>
+  </data>
+  <data name="ImportButtonOther" xml:space="preserve">
+    <value>{0} işlemi içe aktar</value>
+  </data>
+  <data name="ImportDoneTitle" xml:space="preserve">
+    <value>İçe aktarma tamamlandı</value>
+  </data>
+  <data name="ImportDoneMessage" xml:space="preserve">
+    <value>{0}, {1} hesabına eklendi.</value>
+  </data>
+  <data name="ImportUndo" xml:space="preserve">
+    <value>İçe aktarmayı geri al</value>
+  </data>
+  <data name="ImportUndone" xml:space="preserve">
+    <value>İçe aktarma geri alındı</value>
+  </data>
+  <data name="ImportFailed" xml:space="preserve">
+    <value>İşlemler içe aktarılamadı</value>
+  </data>
+  <data name="ImportLearnedCategory" xml:space="preserve">
+    <value>Geçen seferkiyle aynı kategori</value>
+  </data>
+  <data name="ImportSavedMapping" xml:space="preserve">
+    <value>Bu bankanın dosyasındaki son içe aktarmanla aynı sütunlar ve hesap.</value>
+  </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>{0} dışa aktarımı tanındı: sütunlar, işaretler ve kategoriler senin için okunur.</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>Henüz olmayan kategorileri oluştur</value>
+  </data>
+  <data name="AutoBackups" xml:space="preserve">
+    <value>Otomatik yedekler</value>
+  </data>
+  <data name="AutoBackupsDescription" xml:space="preserve">
+    <value>Tüm verilerinin, seçtiğin bir klasörde kendiliğinden alınan kopyası: SD kartta veya Google Drive gibi bir bulut uygulamasında</value>
+  </data>
+  <data name="BackupFolder" xml:space="preserve">
+    <value>Klasör</value>
+  </data>
+  <data name="BackupFolderNone" xml:space="preserve">
+    <value>Seçilmedi</value>
+  </data>
+  <data name="ChooseFolder" xml:space="preserve">
+    <value>Seç</value>
+  </data>
+  <data name="BackupFrequency" xml:space="preserve">
+    <value>Ne sıklıkla</value>
+  </data>
+  <data name="BackupDaily" xml:space="preserve">
+    <value>Her gün</value>
+  </data>
+  <data name="BackupWeekly" xml:space="preserve">
+    <value>Her hafta</value>
+  </data>
+  <data name="BackupMonthly" xml:space="preserve">
+    <value>Her ay</value>
+  </data>
+  <data name="BackupsToKeep" xml:space="preserve">
+    <value>Saklanan</value>
+  </data>
+  <data name="BackupsOne" xml:space="preserve">
+    <value>{0} yedek</value>
+  </data>
+  <data name="BackupsOther" xml:space="preserve">
+    <value>{0} yedek</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Son yedek: {0}</value>
+  </data>
+  <data name="NoBackupYet" xml:space="preserve">
+    <value>Henüz yedek yok</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Yedekleniyor…</value>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>Son yedekleme başarısız oldu ({0})</value>
+  </data>
+  <data name="BackupFolderUnavailable" xml:space="preserve">
+    <value>Uygulama artık klasöre erişemiyor. Yeniden seç.</value>
+  </data>
+  <data name="BackUpNow" xml:space="preserve">
+    <value>Şimdi yedekle</value>
+  </data>
+  <data name="AutoBackupNote" xml:space="preserve">
+    <value>Yalnızca en yeni otomatik yedekler saklanır ve yeni bir yedek sadece bir şey değiştiğinde alınır. Birini geri yüklemek için Yedekten geri yükle → Yedek dosyasını seç yolunu kullan.</value>
+  </data>
+  <data name="BackupPassword" xml:space="preserve">
+    <value>Yedekleri parolayla koru</value>
+  </data>
+  <data name="BackupPasswordDescription" xml:space="preserve">
+    <value>Yedekler, otomatik olanlar da dahil, şifrelenir. Parola olmadan geri yüklenemezler, bu yüzden onu güvenli bir yerde sakla.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Parolayı değiştir</value>
+  </data>
+  <data name="BackupPasswordTitle" xml:space="preserve">
+    <value>Yedek parolası</value>
+  </data>
+  <data name="BackupPasswordMessage" xml:space="preserve">
+    <value>Yedekler yalnızca bu parolayla geri yüklenebilir. Unutursan açılamazlar.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Parola</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>Parolayı tekrarla</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>Parolalar eşleşmiyor</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Bir parola gir</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Parolayı göster</value>
+  </data>
+  <data name="RemoveBackupPasswordTitle" xml:space="preserve">
+    <value>Yedek parolası kaldırılsın mı?</value>
+  </data>
+  <data name="RemoveBackupPasswordMessage" xml:space="preserve">
+    <value>Yeni yedekler şifrelenmez. Parolayla alınmış yedekler yine de parola ister.</value>
+  </data>
+  <data name="RemovePassword" xml:space="preserve">
+    <value>Kaldır</value>
+  </data>
+  <data name="BackupPasswordSaved" xml:space="preserve">
+    <value>Yedek parolası kaydedildi</value>
+  </data>
+  <data name="BackupPasswordRemoved" xml:space="preserve">
+    <value>Yedek parolası kaldırıldı</value>
+  </data>
+  <data name="RestorePasswordTitle" xml:space="preserve">
+    <value>Korumalı yedek</value>
+  </data>
+  <data name="RestorePasswordMessage" xml:space="preserve">
+    <value>Bu yedeğin alındığı parolayı gir.</value>
+  </data>
+  <data name="RestoreWrongPassword" xml:space="preserve">
+    <value>Yanlış parola. Tekrar dene.</value>
+  </data>
+  <data name="SavingsGoals" xml:space="preserve">
+    <value>Hedefler</value>
+  </data>
+  <data name="SavingsGoalsTitle" xml:space="preserve">
+    <value>Birikim hedefleri</value>
+  </data>
+  <data name="AddGoal" xml:space="preserve">
+    <value>Hedef ekle</value>
+  </data>
+  <data name="EditGoal" xml:space="preserve">
+    <value>Hedefi düzenle</value>
+  </data>
+  <data name="GoalName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="GoalNamePlaceholder" xml:space="preserve">
+    <value>ör. Tatil</value>
+  </data>
+  <data name="GoalTarget" xml:space="preserve">
+    <value>Hedef tutar</value>
+  </data>
+  <data name="GoalHasTargetDate" xml:space="preserve">
+    <value>Bir tarihe kadar ulaş</value>
+  </data>
+  <data name="GoalAccounts" xml:space="preserve">
+    <value>Birikimi tutan hesaplar</value>
+  </data>
+  <data name="GoalAccountsHint" xml:space="preserve">
+    <value>Biriken = hesapların bakiyesi veya bir cebin tuttuğu. Bir hesap veya cep yalnızca bir hedefe sayılır; bir hesap, kendi ceplerinle birlikte işaretlenmez.</value>
+  </data>
+  <data name="GoalNoFreeAccounts" xml:space="preserve">
+    <value>{0} cinsinden boş hesap yok. Hesaplar bölümünden bir tane ekle.</value>
+  </data>
+  <data name="NoGoalsYet" xml:space="preserve">
+    <value>Henüz birikim hedefi yok</value>
+  </data>
+  <data name="AddGoalToStart" xml:space="preserve">
+    <value>Bir hedef ekle ve parasını tutan hesapları bağla.</value>
+  </data>
+  <data name="PleaseEnterGoalName" xml:space="preserve">
+    <value>Lütfen hedef için bir ad gir</value>
+  </data>
+  <data name="PleaseSelectGoalAccount" xml:space="preserve">
+    <value>En az bir hesap seç</value>
+  </data>
+  <data name="GoalAdded" xml:space="preserve">
+    <value>Hedef eklendi</value>
+  </data>
+  <data name="FailedToLoadGoals" xml:space="preserve">
+    <value>Hedefler yüklenemedi</value>
+  </data>
+  <data name="FailedToSaveGoal" xml:space="preserve">
+    <value>Hedef kaydedilemedi</value>
+  </data>
+  <data name="FailedToDeleteGoal" xml:space="preserve">
+    <value>Hedef silinemedi</value>
+  </data>
+  <data name="DeleteGoalConfirmation" xml:space="preserve">
+    <value>"{0}" hedefi silinsin mi? Hesapları ve içindeki para kalır.</value>
+  </data>
+  <data name="GoalReached" xml:space="preserve">
+    <value>Ulaşıldı</value>
+  </data>
+  <data name="GoalBehind" xml:space="preserve">
+    <value>Geride</value>
+  </data>
+  <data name="GoalSavedOfTarget" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="GoalNeededPerMonth" xml:space="preserve">
+    <value>{1} tarihine kadar ulaşmak için ayda {0} biriktir</value>
+  </data>
+  <data name="GoalTargetDatePassed" xml:space="preserve">
+    <value>Hedef tarih {0} idi</value>
+  </data>
+  <data name="GoalNotEnoughHistory" xml:space="preserve">
+    <value>Tahmin için henüz yeterli geçmiş yok</value>
+  </data>
+  <data name="GoalNoRecentSavings" xml:space="preserve">
+    <value>Son {0} ayda birikim yok</value>
+  </data>
+  <data name="GoalAtYourPace" xml:space="preserve">
+    <value>Mevcut hızınla: {0}</value>
+  </data>
+  <data name="GoalNotInSight" xml:space="preserve">
+    <value>Mevcut hızınla yakın zamanda ulaşılamaz</value>
+  </data>
+  <data name="GoalAccountsNotCounted" xml:space="preserve">
+    <value>Sayılmadı (başka para birimi): {0}</value>
+  </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>Kaydetmek, artık başka para biriminde olan hesapları kaldırır: {0}</value>
+  </data>
+  <data name="Payee" xml:space="preserve">
+    <value>Alıcı</value>
+  </data>
+  <data name="PayeePlaceholder" xml:space="preserve">
+    <value>Dükkân veya kişi (isteğe bağlı)</value>
+  </data>
+  <data name="Payees" xml:space="preserve">
+    <value>Alıcılar</value>
+  </data>
+  <data name="SearchPayees" xml:space="preserve">
+    <value>Alıcılarda ara</value>
+  </data>
+  <data name="NoMatchingPayees" xml:space="preserve">
+    <value>Aramanla eşleşen alıcı yok.</value>
+  </data>
+  <data name="PayeeLastUsed" xml:space="preserve">
+    <value>son: {0}</value>
+  </data>
+  <data name="RenamePayee" xml:space="preserve">
+    <value>Yeniden adlandır</value>
+  </data>
+  <data name="RenamePayeeMessage" xml:space="preserve">
+    <value>"{0}" için yeni ad</value>
+  </data>
+  <data name="PayeeExistsTitle" xml:space="preserve">
+    <value>Alıcı zaten var</value>
+  </data>
+  <data name="PayeeExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" zaten var. "{0}" onunla birleştirilsin mi?</value>
+  </data>
+  <data name="MergePayee" xml:space="preserve">
+    <value>Başka bir alıcıyla birleştir</value>
+  </data>
+  <data name="MergePayeeInto" xml:space="preserve">
+    <value>"{0}" şununla birleştirilsin</value>
+  </data>
+  <data name="MergePayeeConfirmMessage" xml:space="preserve">
+    <value>"{0}" silinir ve onu kullananlar ({2}) "{1}" alıcısına taşınır.</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Birleştir</value>
+  </data>
+  <data name="DeletePayee" xml:space="preserve">
+    <value>Alıcıyı sil</value>
+  </data>
+  <data name="DeletePayeeConfirmation" xml:space="preserve">
+    <value>"{0}" silinsin mi? Onu kullananlar ({1}) alıcısız kalır.</value>
+  </data>
+  <data name="PayeesMerged" xml:space="preserve">
+    <value>Alıcılar birleştirildi</value>
+  </data>
+  <data name="PayeeDeleted" xml:space="preserve">
+    <value>Alıcı silindi</value>
+  </data>
+  <data name="FailedToLoadPayees" xml:space="preserve">
+    <value>Alıcılar yüklenemedi</value>
+  </data>
+  <data name="FailedToSavePayee" xml:space="preserve">
+    <value>Alıcı güncellenemedi</value>
+  </data>
+  <data name="RecurringCountOne" xml:space="preserve">
+    <value>{0} yinelenen</value>
+  </data>
+  <data name="RecurringCountOther" xml:space="preserve">
+    <value>{0} yinelenen</value>
+  </data>
+  <data name="SplitPayment" xml:space="preserve">
+    <value>Kategoriler arasında böl</value>
+  </data>
+  <data name="AddSplitPart" xml:space="preserve">
+    <value>Kategori ekle</value>
+  </data>
+  <data name="SplitDescriptionPlaceholder" xml:space="preserve">
+    <value>Her parçanın kategorisi</value>
+  </data>
+  <data name="SplitLeftToAssign" xml:space="preserve">
+    <value>Dağıtılacak: {0}</value>
+  </data>
+  <data name="SplitOverBy" xml:space="preserve">
+    <value>Tutarı {0} aşıyor</value>
+  </data>
+  <data name="SplitFullyAssigned" xml:space="preserve">
+    <value>Tamamı dağıtıldı</value>
+  </data>
+  <data name="SplitPartNeedsCategory" xml:space="preserve">
+    <value>Lütfen her parça için bir kategori seç</value>
+  </data>
+  <data name="SplitPartNeedsAmount" xml:space="preserve">
+    <value>Lütfen her parça için bir tutar gir</value>
+  </data>
+  <data name="SplitMustAddUp" xml:space="preserve">
+    <value>Parçaların toplamı {0} olmalı</value>
+  </data>
+  <data name="SplitPaymentLabel" xml:space="preserve">
+    <value>Bölünmüş ödeme</value>
+  </data>
+  <data name="SplitPaymentTotal" xml:space="preserve">
+    <value>{0} tutarında ödeme, {1} parçaya bölündü</value>
+  </data>
+  <data name="Debts" xml:space="preserve">
+    <value>Borçlar</value>
+  </data>
+  <data name="AddDebt" xml:space="preserve">
+    <value>Borç ekle</value>
+  </data>
+  <data name="EditDebt" xml:space="preserve">
+    <value>Borcu düzenle</value>
+  </data>
+  <data name="AddDebtToStart" xml:space="preserve">
+    <value>Borç verdiğin veya aldığın parayı kaydet, ardından ödemeleri geldikçe işle.</value>
+  </data>
+  <data name="NoDebtsYet" xml:space="preserve">
+    <value>Açık borç yok</value>
+  </data>
+  <data name="NoPaidOffDebts" xml:space="preserve">
+    <value>Henüz kapanmış borç yok</value>
+  </data>
+  <data name="DebtAdded" xml:space="preserve">
+    <value>Borç eklendi</value>
+  </data>
+  <data name="DebtsOpen" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="DebtsOwedToYou" xml:space="preserve">
+    <value>Sana borçlu olanlar</value>
+  </data>
+  <data name="DebtsYouOwe" xml:space="preserve">
+    <value>Borçların</value>
+  </data>
+  <data name="DebtOwesYou" xml:space="preserve">
+    <value>Sana borçlu</value>
+  </data>
+  <data name="DebtYouOwe" xml:space="preserve">
+    <value>Borcun var</value>
+  </data>
+  <data name="DebtILent" xml:space="preserve">
+    <value>Borç verdim</value>
+  </data>
+  <data name="DebtIBorrowed" xml:space="preserve">
+    <value>Borç aldım</value>
+  </data>
+  <data name="DebtPerson" xml:space="preserve">
+    <value>Kişi</value>
+  </data>
+  <data name="DebtPersonPlaceholder" xml:space="preserve">
+    <value>Kiminle</value>
+  </data>
+  <data name="DebtAmountLent" xml:space="preserve">
+    <value>Verilen tutar</value>
+  </data>
+  <data name="DebtAmountBorrowed" xml:space="preserve">
+    <value>Alınan tutar</value>
+  </data>
+  <data name="DebtFromAccount" xml:space="preserve">
+    <value>Ödenen hesap</value>
+  </data>
+  <data name="DebtIntoAccount" xml:space="preserve">
+    <value>Alınan hesap</value>
+  </data>
+  <data name="DebtPaidFromAccount" xml:space="preserve">
+    <value>Ödenen hesap</value>
+  </data>
+  <data name="DebtPaidIntoAccount" xml:space="preserve">
+    <value>Alınan hesap</value>
+  </data>
+  <data name="DebtAlreadyOwedOption" xml:space="preserve">
+    <value>Zaten borçlu (para hareketi yok)</value>
+  </data>
+  <data name="DebtAlreadyOwed" xml:space="preserve">
+    <value>Zaten borçlu</value>
+  </data>
+  <data name="DebtNote" xml:space="preserve">
+    <value>Not</value>
+  </data>
+  <data name="DebtNotePlaceholder" xml:space="preserve">
+    <value>Ne için olduğu (isteğe bağlı)</value>
+  </data>
+  <data name="DebtHasDueDate" xml:space="preserve">
+    <value>Vade tarihi</value>
+  </data>
+  <data name="DebtHasSchedule" xml:space="preserve">
+    <value>Planlı ödemeler</value>
+  </data>
+  <data name="DebtScheduleAmount" xml:space="preserve">
+    <value>Her ödeme</value>
+  </data>
+  <data name="DebtFirstPayment" xml:space="preserve">
+    <value>İlk ödeme</value>
+  </data>
+  <data name="DebtHasInterest" xml:space="preserve">
+    <value>Faiz kısmı</value>
+  </data>
+  <data name="DebtInterestHint" xml:space="preserve">
+    <value>Ödemeye ek olarak Faiz kategorisinde gider (veya gelir) olarak kaydedilir.</value>
+  </data>
+  <data name="DebtHistory" xml:space="preserve">
+    <value>Geçmiş</value>
+  </data>
+  <data name="DebtRecordPayment" xml:space="preserve">
+    <value>Ödeme kaydet</value>
+  </data>
+  <data name="DebtLendMore" xml:space="preserve">
+    <value>Daha fazla borç ver</value>
+  </data>
+  <data name="DebtBorrowMore" xml:space="preserve">
+    <value>Daha fazla borç al</value>
+  </data>
+  <data name="DebtLeft" xml:space="preserve">
+    <value>Kalan: {0}</value>
+  </data>
+  <data name="DebtPaymentTooLarge" xml:space="preserve">
+    <value>Bu, kalandan ({0}) fazla.</value>
+  </data>
+  <data name="DebtNoAccountInCurrency" xml:space="preserve">
+    <value>{0} cinsinden hesap yok. Önce Hesaplar bölümünden bir tane ekle.</value>
+  </data>
+  <data name="DebtPaidOffToast" xml:space="preserve">
+    <value>{0} ile olan borç kapandı</value>
+  </data>
+  <data name="DebtPaidOfTotal" xml:space="preserve">
+    <value>{1} borcun {0} kısmı geri ödendi</value>
+  </data>
+  <data name="DebtDueOn" xml:space="preserve">
+    <value>Vade: {0}</value>
+  </data>
+  <data name="DebtNextPayment" xml:space="preserve">
+    <value>Sonraki ödeme {0}, {1} · {2}</value>
+  </data>
+  <data name="DebtInterestTotal" xml:space="preserve">
+    <value>Faiz {0}</value>
+  </data>
+  <data name="DebtPaidOff" xml:space="preserve">
+    <value>Kapandı</value>
+  </data>
+  <data name="DebtOverdue" xml:space="preserve">
+    <value>Gecikmiş</value>
+  </data>
+  <data name="DebtDueSoon" xml:space="preserve">
+    <value>Vadesi yakın</value>
+  </data>
+  <data name="DebtLent" xml:space="preserve">
+    <value>Verilen</value>
+  </data>
+  <data name="DebtBorrowed" xml:space="preserve">
+    <value>Alınan</value>
+  </data>
+  <data name="DebtPaidBack" xml:space="preserve">
+    <value>Geri ödenen</value>
+  </data>
+  <data name="DebtInterest" xml:space="preserve">
+    <value>Faiz</value>
+  </data>
+  <data name="InterestCategory" xml:space="preserve">
+    <value>Faiz</value>
+  </data>
+  <data name="DebtPaymentTo" xml:space="preserve">
+    <value>{0} kişisine ödeme</value>
+  </data>
+  <data name="DebtPaymentFrom" xml:space="preserve">
+    <value>{0} kişisinden ödeme</value>
+  </data>
+  <data name="DebtCountOne" xml:space="preserve">
+    <value>{0} borç</value>
+  </data>
+  <data name="DebtCountOther" xml:space="preserve">
+    <value>{0} borç</value>
+  </data>
+  <data name="DebtPaidOffLentTitle" xml:space="preserve">
+    <value>{0} sana borcunu tamamen ödedi</value>
+  </data>
+  <data name="DebtPaidOffBorrowedTitle" xml:space="preserve">
+    <value>{0} kişisine olan borcun kapandı</value>
+  </data>
+  <data name="DebtDueLentTitle" xml:space="preserve">
+    <value>{0} sana geri ödeme yapmalı</value>
+  </data>
+  <data name="DebtDueBorrowedTitle" xml:space="preserve">
+    <value>{0} kişisine geri öde</value>
+  </data>
+  <data name="DeleteDebtConfirmation" xml:space="preserve">
+    <value>{0} ile olan borç silinsin mi? Geçmişi de silinir, böylece hesapların bakiyeleri borç olmasaydı olacakları hale döner.</value>
+  </data>
+  <data name="DeleteDebtMovementConfirmation" xml:space="preserve">
+    <value>{1} tutarındaki "{0}" silinsin mi ({2})?</value>
+  </data>
+  <data name="FailedToLoadDebts" xml:space="preserve">
+    <value>Borçlar yüklenemedi</value>
+  </data>
+  <data name="FailedToSaveDebt" xml:space="preserve">
+    <value>Borç kaydedilemedi</value>
+  </data>
+  <data name="FailedToDeleteDebt" xml:space="preserve">
+    <value>Borç silinemedi</value>
+  </data>
+  <data name="PayeeHasDebts" xml:space="preserve">
+    <value>{0} kişisinin borçları var. Önce onları Borçlar sayfasından sil veya {0} kişisini başka bir alıcıyla birleştir.</value>
+  </data>
+  <data name="PleaseEnterDebtPerson" xml:space="preserve">
+    <value>Lütfen borcun kiminle olduğunu gir</value>
+  </data>
+  <data name="DebtsPaidOff" xml:space="preserve">
+    <value>Kapanan</value>
+  </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>{0} fazla ödendi</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>Bu olmadan, verilenden veya alınandan fazlası geri ödenmiş olur. Önce ödemeleri sil.</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>Borç ödemeleri Borçlar sayfasında değiştirilir</value>
+  </data>
+  <data name="WidgetPickAccount" xml:space="preserve">
+    <value>Widget hangi hesabı göstersin?</value>
+  </data>
+  <data name="ScanReceipt" xml:space="preserve">
+    <value>Fişi tara</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Fotoğraf çek</value>
+  </data>
+  <data name="ChoosePhoto" xml:space="preserve">
+    <value>Galeriden seç</value>
+  </data>
+  <data name="ReadingReceipt" xml:space="preserve">
+    <value>Fiş okunuyor…</value>
+  </data>
+  <data name="ReceiptFilledIn" xml:space="preserve">
+    <value>Fişten dolduruldu: {0}</value>
+  </data>
+  <data name="ReceiptSays" xml:space="preserve">
+    <value>Fişte {0} yazıyor</value>
+  </data>
+  <data name="ReceiptNotRead" xml:space="preserve">
+    <value>Fişte toplam veya tarih bulunamadı</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>Dışa aktar</value>
+  </data>
+  <data name="ExportReportFor" xml:space="preserve">
+    <value>{0} dışa aktar</value>
+  </data>
+  <data name="ExportPdfReport" xml:space="preserve">
+    <value>PDF raporu</value>
+  </data>
+  <data name="ExportPeriodCsv" xml:space="preserve">
+    <value>İşlemler (CSV)</value>
+  </data>
+  <data name="ShareReport" xml:space="preserve">
+    <value>Raporu paylaş</value>
+  </data>
+  <data name="FailedToExportReport" xml:space="preserve">
+    <value>Rapor oluşturulamadı</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>Mali rapor</value>
+  </data>
+  <data name="ReportCreatedOn" xml:space="preserve">
+    <value>{0} tarihinde MoneyRecord ile oluşturuldu</value>
+  </data>
+  <data name="ReportPageOf" xml:space="preserve">
+    <value>Sayfa {0} / {1}</value>
+  </data>
+  <data name="ReportSpendingByCategory" xml:space="preserve">
+    <value>Kategoriye göre harcama</value>
+  </data>
+  <data name="ReportIncomeByCategory" xml:space="preserve">
+    <value>Kategoriye göre gelir</value>
+  </data>
+  <data name="ReportShare" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="ReportLimit" xml:space="preserve">
+    <value>Limit</value>
+  </data>
+  <data name="ReportStatus" xml:space="preserve">
+    <value>Durum</value>
+  </data>
+  <data name="ReportBalanceOn" xml:space="preserve">
+    <value>{0} tarihindeki bakiye</value>
+  </data>
+  <data name="ReportConvertedTo" xml:space="preserve">
+    <value>Her günün döviz kuruyla {0} cinsine çevrildi (≈)</value>
+  </data>
+  <data name="ReportInCurrencyOnly" xml:space="preserve">
+    <value>Yalnızca {0} cinsinden tutarlar; diğer para birimleri özette listelenir</value>
+  </data>
+  <data name="ReportTransfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="ShowCents" xml:space="preserve">
+    <value>Kuruşları göster</value>
+  </data>
+  <data name="ShowCentsDescription" xml:space="preserve">
+    <value>Kapalıyken o para biriminde tam tutarlar gösterilir. Tutarlar yine de kuruşa kadar kaydedilir.</value>
+  </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>Gelir</value>
+  </data>
+  <data name="AddRecurring" xml:space="preserve">
+    <value>Yinelenen işlem ekle</value>
+  </data>
+  <data name="NewRecurringExpense" xml:space="preserve">
+    <value>Yeni yinelenen gider</value>
+  </data>
+  <data name="NewRecurringIncome" xml:space="preserve">
+    <value>Yeni yinelenen gelir</value>
+  </data>
+  <data name="FirstDate" xml:space="preserve">
+    <value>İlk tarih</value>
+  </data>
+  <data name="ScheduleStartsNote" xml:space="preserve">
+    <value>Yalnızca plan kaydedilir: ilk kayıt {0} tarihinde yapılır.</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>İleri tarihli: bakiyelere {0} tarihinden itibaren sayılır.</value>
+  </data>
+  <data name="ScheduleDateMustBeFuture" xml:space="preserve">
+    <value>Yarından itibaren bir ilk tarih seç.</value>
+  </data>
+  <data name="RecurringScheduled" xml:space="preserve">
+    <value>Yinelenen işlem planlandı</value>
+  </data>
+  <data name="TripCategoryLodging" xml:space="preserve">
+    <value>Konaklama</value>
+  </data>
+  <data name="TripCategoryFlights" xml:space="preserve">
+    <value>Uçuşlar</value>
+  </data>
+  <data name="TripCategoryTransport" xml:space="preserve">
+    <value>Ulaşım</value>
+  </data>
+  <data name="TripCategoryFood" xml:space="preserve">
+    <value>Yiyecek</value>
+  </data>
+  <data name="TripCategoryActivities" xml:space="preserve">
+    <value>Etkinlikler</value>
+  </data>
+  <data name="TripCategoryShopping" xml:space="preserve">
+    <value>Alışveriş</value>
+  </data>
+  <data name="TripCategoryOther" xml:space="preserve">
+    <value>Diğer</value>
+  </data>
+  <data name="TravelCategory" xml:space="preserve">
+    <value>Seyahat</value>
+  </data>
+  <data name="TripActive" xml:space="preserve">
+    <value>Aktif</value>
+  </data>
+  <data name="TripEnded" xml:space="preserve">
+    <value>Bitti</value>
+  </data>
+  <data name="TripSince" xml:space="preserve">
+    <value>{0} tarihinden beri</value>
+  </data>
+  <data name="SpentOfBudget" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="TripSpent" xml:space="preserve">
+    <value>{0} harcandı</value>
+  </data>
+  <data name="TripNotConverted" xml:space="preserve">
+    <value>Dönüştürülmedi: {0}</value>
+  </data>
+  <data name="TripBanner" xml:space="preserve">
+    <value>Gezi: {0}</value>
+  </data>
+  <data name="NotPartOfTrip" xml:space="preserve">
+    <value>Gezinin parçası değil</value>
+  </data>
+  <data name="TripInfo" xml:space="preserve">
+    <value>Gezi: {0} · {1}</value>
+  </data>
+  <data name="TripInfoOnly" xml:space="preserve">
+    <value>Gezi: {0}</value>
+  </data>
+  <data name="TripsTitle" xml:space="preserve">
+    <value>Geziler</value>
+  </data>
+  <data name="TripCategoriesTitle" xml:space="preserve">
+    <value>Gezi kategorileri</value>
+  </data>
+  <data name="AddTripCategory" xml:space="preserve">
+    <value>Gezi kategorisi ekle</value>
+  </data>
+  <data name="EditTripCategory" xml:space="preserve">
+    <value>Gezi kategorisini düzenle</value>
+  </data>
+  <data name="FailedToLoadTrips" xml:space="preserve">
+    <value>Geziler yüklenemedi</value>
+  </data>
+  <data name="FailedToSaveTrip" xml:space="preserve">
+    <value>Gezi kaydedilemedi</value>
+  </data>
+  <data name="FailedToDeleteTrip" xml:space="preserve">
+    <value>Gezi silinemedi</value>
+  </data>
+  <data name="FailedToSaveTripCategory" xml:space="preserve">
+    <value>Gezi kategorisi kaydedilemedi</value>
+  </data>
+  <data name="FailedToDeleteTripCategory" xml:space="preserve">
+    <value>Gezi kategorisi silinemedi</value>
+  </data>
+  <data name="LastTripCategoryCannotDelete" xml:space="preserve">
+    <value>Bu tek gezi kategorisi ve kullanımda, bu yüzden silinemez.</value>
+  </data>
+  <data name="TripCategoryInUse" xml:space="preserve">
+    <value>"{0}" gezi giderlerinde veya limitlerinde kullanılıyor. Bunları şuraya taşı:</value>
+  </data>
+  <data name="DeleteTripCategoryConfirmation" xml:space="preserve">
+    <value>"{0}" gezi kategorisi silinsin mi?</value>
+  </data>
+  <data name="StartTrip" xml:space="preserve">
+    <value>Geziyi başlat</value>
+  </data>
+  <data name="EditTrip" xml:space="preserve">
+    <value>Geziyi düzenle</value>
+  </data>
+  <data name="TripName" xml:space="preserve">
+    <value>Gezi adı</value>
+  </data>
+  <data name="TripNamePlaceholder" xml:space="preserve">
+    <value>Lizbon, yaz</value>
+  </data>
+  <data name="TripStartDate" xml:space="preserve">
+    <value>Başlangıç tarihi</value>
+  </data>
+  <data name="TripBudgetOptional" xml:space="preserve">
+    <value>Bütçe (isteğe bağlı)</value>
+  </data>
+  <data name="TripDefaultAccount" xml:space="preserve">
+    <value>Gezinin ödeme yaptığı hesap</value>
+  </data>
+  <data name="TripNoAccount" xml:space="preserve">
+    <value>Yok (son kullanılan)</value>
+  </data>
+  <data name="TripLimits" xml:space="preserve">
+    <value>Gezi kategorisi başına limit (isteğe bağlı)</value>
+  </data>
+  <data name="TripLimitsHint" xml:space="preserve">
+    <value>Gezinin para biriminde. Limit istemiyorsan boş bırak.</value>
+  </data>
+  <data name="PleaseEnterTripName" xml:space="preserve">
+    <value>Lütfen bir gezi adı gir</value>
+  </data>
+  <data name="TripEndBeforeStart" xml:space="preserve">
+    <value>Gezi başlamadan bitemez</value>
+  </data>
+  <data name="TripAlreadyActive" xml:space="preserve">
+    <value>Başka bir gezi aktif. Önce onu bitir.</value>
+  </data>
+  <data name="TripStarted" xml:space="preserve">
+    <value>Gezi başladı</value>
+  </data>
+  <data name="NoTripsYet" xml:space="preserve">
+    <value>Henüz gezi yok</value>
+  </data>
+  <data name="AddTripToStart" xml:space="preserve">
+    <value>Harcamalarını günlük giderlerinden ayrı kaydetmek için bir gezi başlat.</value>
+  </data>
+  <data name="DeleteTripConfirmation" xml:space="preserve">
+    <value>"{0}" gezisi silinsin mi? Giderleri işlemlerinde kalır.</value>
+  </data>
+  <data name="TripDeleteNeedsEnd" xml:space="preserve">
+    <value>Silmeden önce geziyi bitir.</value>
+  </data>
+  <data name="TripCategoriesBreakdown" xml:space="preserve">
+    <value>Kategoriye göre</value>
+  </data>
+  <data name="TripExpenses" xml:space="preserve">
+    <value>Giderler</value>
+  </data>
+  <data name="NoTripExpenses" xml:space="preserve">
+    <value>Henüz gider yok</value>
+  </data>
+  <data name="TravelCategoryCannotDelete" xml:space="preserve">
+    <value>Seyahat kategorisi gezilerinin giderlerini tutar, bu yüzden silinemez. Yeniden adlandırabilirsin.</value>
+  </data>
+  <data name="EndTrip" xml:space="preserve">
+    <value>Geziyi bitir</value>
+  </data>
+  <data name="EndTripHint" xml:space="preserve">
+    <value>Her gezi kategorisinin giderlerinin normal kategorilerinden hangisine gideceğini seç.</value>
+  </data>
+  <data name="SameCategoryForAll" xml:space="preserve">
+    <value>Hepsi için aynı kategori</value>
+  </data>
+  <data name="ReopenTrip" xml:space="preserve">
+    <value>Geziyi yeniden aç</value>
+  </data>
+  <data name="ReopenTripConfirmation" xml:space="preserve">
+    <value>"{0}" yeniden açılsın mı? Giderleri Seyahat kategorisine geri taşınır.</value>
+  </data>
+  <data name="TripEndedToast" xml:space="preserve">
+    <value>Gezi bitti</value>
+  </data>
+  <data name="FailedToEndTrip" xml:space="preserve">
+    <value>Gezi güncellenemedi</value>
+  </data>
+  <data name="PleaseChooseCategoryForEach" xml:space="preserve">
+    <value>Her gezi kategorisi için bir kategori seç</value>
+  </data>
+  <data name="PartiesTitle" xml:space="preserve">
+    <value>Etkinlikler</value>
+  </data>
+  <data name="PartyFriends" xml:space="preserve">
+    <value>Arkadaşlar</value>
+  </data>
+  <data name="NoPartiesYet" xml:space="preserve">
+    <value>Henüz etkinlik yok</value>
+  </data>
+  <data name="AddPartyToStart" xml:space="preserve">
+    <value>Ortak bir etkinliğin masraflarını bölüşmek için etkinlik ekle</value>
+  </data>
+  <data name="NewParty" xml:space="preserve">
+    <value>Yeni etkinlik</value>
+  </data>
+  <data name="EditParty" xml:space="preserve">
+    <value>Etkinliği düzenle</value>
+  </data>
+  <data name="PartyName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="PartyNamePlaceholder" xml:space="preserve">
+    <value>ör. Ana'nın doğum günü</value>
+  </data>
+  <data name="PartyBudgetOptional" xml:space="preserve">
+    <value>Bütçe (isteğe bağlı)</value>
+  </data>
+  <data name="PartyMembers" xml:space="preserve">
+    <value>Kimler katılıyor</value>
+  </data>
+  <data name="PartyNoFriendsYet" xml:space="preserve">
+    <value>Önce arkadaş ekle, sonra kimin katıldığını seç</value>
+  </data>
+  <data name="PleaseEnterPartyName" xml:space="preserve">
+    <value>Lütfen etkinlik için bir ad gir</value>
+  </data>
+  <data name="PartyNeedsMembers" xml:space="preserve">
+    <value>En az bir kişi seç</value>
+  </data>
+  <data name="PartyMemberInUse" xml:space="preserve">
+    <value>Gideri veya katkısı olan kişi çıkarılamaz</value>
+  </data>
+  <data name="PartyNobodyShares" xml:space="preserve">
+    <value>Bu kişiyi çıkarmak, bir gideri paylaşacak kimse bırakmaz</value>
+  </data>
+  <data name="FailedToLoadParties" xml:space="preserve">
+    <value>Etkinlikler yüklenemedi</value>
+  </data>
+  <data name="FailedToSaveParty" xml:space="preserve">
+    <value>Etkinlik kaydedilemedi</value>
+  </data>
+  <data name="FailedToDeleteParty" xml:space="preserve">
+    <value>Etkinlik silinemedi</value>
+  </data>
+  <data name="FriendsTitle" xml:space="preserve">
+    <value>Arkadaşlar</value>
+  </data>
+  <data name="NoFriendsYet" xml:space="preserve">
+    <value>Henüz arkadaş yok</value>
+  </data>
+  <data name="AddFriendToStart" xml:space="preserve">
+    <value>Masrafları paylaştığın kişileri ekle</value>
+  </data>
+  <data name="FriendNamePlaceholder" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="AddFriend" xml:space="preserve">
+    <value>Ekle</value>
+  </data>
+  <data name="RenameFriend" xml:space="preserve">
+    <value>Yeniden adlandır</value>
+  </data>
+  <data name="RenameFriendTitle" xml:space="preserve">
+    <value>Arkadaşı yeniden adlandır</value>
+  </data>
+  <data name="DeleteFriendQuestion" xml:space="preserve">
+    <value>{0} silinsin mi?</value>
+  </data>
+  <data name="FriendInParty" xml:space="preserve">
+    <value>Bu arkadaş bir etkinlikte olduğundan silinemez</value>
+  </data>
+  <data name="FriendNameTaken" xml:space="preserve">
+    <value>Bu adda bir arkadaş zaten var</value>
+  </data>
+  <data name="FailedToLoadFriends" xml:space="preserve">
+    <value>Arkadaşlar yüklenemedi</value>
+  </data>
+  <data name="FailedToSaveFriend" xml:space="preserve">
+    <value>Arkadaş kaydedilemedi</value>
+  </data>
+  <data name="PartyLeft" xml:space="preserve">
+    <value>{0} kaldı</value>
+  </data>
+  <data name="PartyOver" xml:space="preserve">
+    <value>{0} aşıldı</value>
+  </data>
+  <data name="PartyBalances" xml:space="preserve">
+    <value>Bakiyeler</value>
+  </data>
+  <data name="PartyExpenses" xml:space="preserve">
+    <value>Giderler</value>
+  </data>
+  <data name="PartyContributions" xml:space="preserve">
+    <value>Katkılar</value>
+  </data>
+  <data name="PartyPot" xml:space="preserve">
+    <value>Ortak kasa</value>
+  </data>
+  <data name="PartyPotHint" xml:space="preserve">
+    <value>Baştan verilen ve herkesin paylaştığı para</value>
+  </data>
+  <data name="AddPartyExpense" xml:space="preserve">
+    <value>Gider ekle</value>
+  </data>
+  <data name="EditPartyExpense" xml:space="preserve">
+    <value>Gideri düzenle</value>
+  </data>
+  <data name="AddPartyContribution" xml:space="preserve">
+    <value>Katkı ekle</value>
+  </data>
+  <data name="EditPartyContribution" xml:space="preserve">
+    <value>Katkıyı düzenle</value>
+  </data>
+  <data name="PartyPaidBy" xml:space="preserve">
+    <value>Ödeyen</value>
+  </data>
+  <data name="PartyPaidByPot" xml:space="preserve">
+    <value>Ortak kasa</value>
+  </data>
+  <data name="PartyPaidByLine" xml:space="preserve">
+    <value>Ödeyen: {0}</value>
+  </data>
+  <data name="PartyWho" xml:space="preserve">
+    <value>Kim</value>
+  </data>
+  <data name="PartySharedBetween" xml:space="preserve">
+    <value>Paylaşanlar</value>
+  </data>
+  <data name="PartySharedLine" xml:space="preserve">
+    <value>{1} kişiden {0} kişi paylaşıyor</value>
+  </data>
+  <data name="PartyOwed" xml:space="preserve">
+    <value>{0} alacaklı</value>
+  </data>
+  <data name="PartyOwes" xml:space="preserve">
+    <value>{0} borçlu</value>
+  </data>
+  <data name="PartyEven" xml:space="preserve">
+    <value>denk</value>
+  </data>
+  <data name="NoPartyExpenses" xml:space="preserve">
+    <value>Henüz gider yok</value>
+  </data>
+  <data name="NoPartyContributions" xml:space="preserve">
+    <value>Henüz katkı yok</value>
+  </data>
+  <data name="DeletePartyQuestion" xml:space="preserve">
+    <value>Bu etkinlik ve içindeki her şey silinsin mi?</value>
+  </data>
+  <data name="DeletePartyExpenseQuestion" xml:space="preserve">
+    <value>Bu gider silinsin mi?</value>
+  </data>
+  <data name="DeletePartyContributionQuestion" xml:space="preserve">
+    <value>Bu katkı silinsin mi?</value>
+  </data>
+  <data name="PartyNeedsSharer" xml:space="preserve">
+    <value>Gideri en az birinin paylaşması gerekir</value>
+  </data>
+  <data name="FailedToSavePartyExpense" xml:space="preserve">
+    <value>Gider kaydedilemedi</value>
+  </data>
+  <data name="FailedToSavePartyContribution" xml:space="preserve">
+    <value>Katkı kaydedilemedi</value>
+  </data>
+  <data name="PartyPaidLine" xml:space="preserve">
+    <value>Ödediği {0}</value>
+  </data>
+  <data name="PartyHandedInLine" xml:space="preserve">
+    <value>Verdiği {0}</value>
+  </data>
+  <data name="PartyShareLine" xml:space="preserve">
+    <value>Payı {0}</value>
+  </data>
+  <data name="PartySettleUp" xml:space="preserve">
+    <value>Hesaplaş</value>
+  </data>
+  <data name="PartyPaysLine" xml:space="preserve">
+    <value>{0}, {1} kişisine {2} öder</value>
+  </data>
+  <data name="PartyAllSettled" xml:space="preserve">
+    <value>Herkes denk</value>
+  </data>
+  <data name="PartyMarkPaid" xml:space="preserve">
+    <value>Ödendi işaretle</value>
+  </data>
+  <data name="PartyPaymentsMade" xml:space="preserve">
+    <value>Yapılan ödemeler</value>
+  </data>
+  <data name="SharePartySummary" xml:space="preserve">
+    <value>Özeti paylaş</value>
+  </data>
+  <data name="DeletePartyPaymentQuestion" xml:space="preserve">
+    <value>Bu ödeme silinsin mi? Yeniden ödenmemiş sayılır.</value>
+  </data>
+  <data name="FailedToSavePartyPayment" xml:space="preserve">
+    <value>Ödeme kaydedilemedi</value>
+  </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>Özet paylaşılamadı</value>
+  </data>
+  <data name="PartyRecordMyShare" xml:space="preserve">
+    <value>Payımı kaydet</value>
+  </data>
+  <data name="PartyUpdateMyShare" xml:space="preserve">
+    <value>Payımı güncelle</value>
+  </data>
+  <data name="PartyWhichIsYou" xml:space="preserve">
+    <value>Hangi arkadaş sensin?</value>
+  </data>
+  <data name="PartyShareAccount" xml:space="preserve">
+    <value>Payın için hesap</value>
+  </data>
+  <data name="PartyShareCategory" xml:space="preserve">
+    <value>Payın için kategori</value>
+  </data>
+  <data name="PartyShareRecorded" xml:space="preserve">
+    <value>Payın ({0}) giderlerinde</value>
+  </data>
+  <data name="PartyNoShareYet" xml:space="preserve">
+    <value>Henüz kaydedilecek bir payın yok</value>
+  </data>
+  <data name="PartyNoAccountInCurrency" xml:space="preserve">
+    <value>{0} cinsinden hesabın yok</value>
+  </data>
+  <data name="FailedToRecordPartyShare" xml:space="preserve">
+    <value>Payın kaydedilemedi</value>
+  </data>
+  <data name="Pockets" xml:space="preserve">
+    <value>Cepler</value>
+  </data>
+  <data name="NewPocket" xml:space="preserve">
+    <value>Yeni cep</value>
+  </data>
+  <data name="EditPocket" xml:space="preserve">
+    <value>Cebi düzenle</value>
+  </data>
+  <data name="PocketName" xml:space="preserve">
+    <value>Cep adı</value>
+  </data>
+  <data name="PocketNamePlaceholder" xml:space="preserve">
+    <value>ör. Seyahat</value>
+  </data>
+  <data name="PleaseEnterPocketName" xml:space="preserve">
+    <value>Lütfen bir cep adı gir</value>
+  </data>
+  <data name="SetAside" xml:space="preserve">
+    <value>Ayır</value>
+  </data>
+  <data name="TakeOut" xml:space="preserve">
+    <value>Çıkar</value>
+  </data>
+  <data name="PocketHolds" xml:space="preserve">
+    <value>Bu ceptekiler: {0}</value>
+  </data>
+  <data name="PocketAccountAvailable" xml:space="preserve">
+    <value>{0} içinde kullanılabilir: {1}</value>
+  </data>
+  <data name="PocketMovements" xml:space="preserve">
+    <value>Hareketler</value>
+  </data>
+  <data name="NoPocketMovements" xml:space="preserve">
+    <value>Henüz ayrılan bir şey yok.</value>
+  </data>
+  <data name="AvailableAndInPockets" xml:space="preserve">
+    <value>Kullanılabilir {0} · ceplerde {1}</value>
+  </data>
+  <data name="InPockets" xml:space="preserve">
+    <value>Ceplerde {0}</value>
+  </data>
+  <data name="PocketNotEnoughAvailable" xml:space="preserve">
+    <value>{0} içinde o kadar kullanılabilir tutar yok.</value>
+  </data>
+  <data name="PocketNotEnoughInPocket" xml:space="preserve">
+    <value>Bu cepte ondan az var.</value>
+  </data>
+  <data name="DeletePocketConfirmation" xml:space="preserve">
+    <value>"{0}" cebi silinsin mi? Parası {1} hesabına geri döner.</value>
+  </data>
+  <data name="FailedToSavePocket" xml:space="preserve">
+    <value>Cep kaydedilemedi</value>
+  </data>
+  <data name="FailedToDeletePocket" xml:space="preserve">
+    <value>Cep silinemedi</value>
+  </data>
+  <data name="FailedToMovePocket" xml:space="preserve">
+    <value>Cep güncellenemedi</value>
+  </data>
+  <data name="PocketsCurrencyChange" xml:space="preserve">
+    <value>{0} hesabının ceplerinin tutarları kalır ama {1} cinsinden hedeflere sayılmaz. Para birimi yine de değiştirilsin mi?</value>
+  </data>
+  <data name="DeleteAccountPockets" xml:space="preserve">
+    <value>Cepleri de silinir.</value>
+  </data>
+  <data name="PocketCoverTitle" xml:space="preserve">
+    <value>Bu, ayırdığın {0} tutarını kullanıyor. Şuradan al:</value>
+  </data>
+  <data name="PocketCoverKeep" xml:space="preserve">
+    <value>Ceplere dokunma</value>
+  </data>
+  <data name="WhatsNewTitle" xml:space="preserve">
+    <value>{0} sürümünde yenilikler</value>
+  </data>
+  <data name="WhatsNewGotIt" xml:space="preserve">
+    <value>Anladım</value>
+  </data>
+  <data name="WhatsNewMenu" xml:space="preserve">
+    <value>Yenilikler</value>
+  </data>
+  <data name="FailedToLoadWhatsNew" xml:space="preserve">
+    <value>Sürüm notları yüklenemedi</value>
+  </data>
+  <data name="PendingEntryTitle" xml:space="preserve">
+    <value>{0} gir</value>
+  </data>
+  <data name="AmountVaries" xml:space="preserve">
+    <value>Tutar değişir</value>
+  </data>
+  <data name="EnterOccurrence" xml:space="preserve">
+    <value>Gir</value>
+  </data>
+  <data name="ToEnter" xml:space="preserve">
+    <value>Girilecek</value>
+  </data>
+  <data name="SkipOccurrenceTitle" xml:space="preserve">
+    <value>Bu atlansın mı?</value>
+  </data>
+  <data name="SkipOccurrenceMessage" xml:space="preserve">
+    <value>{1} tarihli {0} kaydedilmeyecek.</value>
+  </data>
+  <data name="OccurrenceSkipped" xml:space="preserve">
+    <value>Atlandı</value>
+  </data>
+  <data name="OccurrenceNoLongerPending" xml:space="preserve">
+    <value>Bu kaydın girilmesi artık beklemiyor.</value>
+  </data>
+  <data name="AmountVariesHint" xml:space="preserve">
+    <value>Hiçbir şey otomatik kaydedilmez: tutarı her seferinde sen girersin.</value>
+  </data>
+  <data name="HomeCardBalance" xml:space="preserve">
+    <value>Toplam bakiye</value>
+  </data>
+  <data name="HomeCardPeriodSummary" xml:space="preserve">
+    <value>Gelir ve giderler</value>
+  </data>
+  <data name="HomeCardTrip" xml:space="preserve">
+    <value>Aktif gezi</value>
+  </data>
+  <data name="CustomizeHome" xml:space="preserve">
+    <value>Ana sayfayı özelleştir</value>
+  </data>
+  <data name="HomeLayoutTitle" xml:space="preserve">
+    <value>Ana ekran</value>
+  </data>
+  <data name="HomeLayoutDescription" xml:space="preserve">
+    <value>Ana sayfa kartlarını sırala, göster veya gizle</value>
+  </data>
+  <data name="HomeLayoutHint" xml:space="preserve">
+    <value>Gösterecek bir şeyi olmayan kartlar gizli kalır. Toplam bakiye her zaman görünür.</value>
+  </data>
+  <data name="HomeLayoutReset" xml:space="preserve">
+    <value>Varsayılana sıfırla</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Yukarı taşı</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Aşağı taşı</value>
+  </data>
+  <data name="SavingsChallenges" xml:space="preserve">
+    <value>Birikim mücadelesi</value>
+  </data>
+  <data name="NoChallengesYet" xml:space="preserve">
+    <value>Henüz mücadele yok</value>
+  </data>
+  <data name="AddChallengeToStart" xml:space="preserve">
+    <value>Bir hedef ve gün sayısı seç; uygulama her gün ne biriktireceğini hesaplar.</value>
+  </data>
+  <data name="AddChallenge" xml:space="preserve">
+    <value>Mücadele ekle</value>
+  </data>
+  <data name="NewChallenge" xml:space="preserve">
+    <value>Yeni mücadele</value>
+  </data>
+  <data name="EditChallenge" xml:space="preserve">
+    <value>Mücadeleyi düzenle</value>
+  </data>
+  <data name="ChallengeName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="ChallengeNamePlaceholder" xml:space="preserve">
+    <value>ör. Tatil fonu</value>
+  </data>
+  <data name="ChallengeGoal" xml:space="preserve">
+    <value>Hedef</value>
+  </data>
+  <data name="ChallengeDays" xml:space="preserve">
+    <value>Gün</value>
+  </data>
+  <data name="ChallengeStartDate" xml:space="preserve">
+    <value>Başlangıç tarihi</value>
+  </data>
+  <data name="ChallengeMode" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="ChallengeModeDoubling" xml:space="preserve">
+    <value>İkiye katlama (1, 2, 4, 8…)</value>
+  </data>
+  <data name="ChallengeModeLinear" xml:space="preserve">
+    <value>Doğrusal (1, 2, 3, 4…)</value>
+  </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>Her gün aynı</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>Günlük tutar (isteğe bağlı)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>Boş = günlere bölünür</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>Her gün {0}</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>Günde {0} · son gün {1}</value>
+  </data>
+  <data name="ChallengeRounding" xml:space="preserve">
+    <value>Her günü yuvarla</value>
+  </data>
+  <data name="ChallengeRoundingNone" xml:space="preserve">
+    <value>Yuvarlama yok</value>
+  </data>
+  <data name="ChallengeRoundTo" xml:space="preserve">
+    <value>{0} değerine</value>
+  </data>
+  <data name="ChallengeToAccount" xml:space="preserve">
+    <value>Şuraya biriktir</value>
+  </data>
+  <data name="ChallengeNoAccount" xml:space="preserve">
+    <value>Yok (yalnızca günleri işaretle)</value>
+  </data>
+  <data name="ChallengePreviewDays" xml:space="preserve">
+    <value>İlk gün {0} · son gün {1}</value>
+  </data>
+  <data name="ChallengePreviewTotal" xml:space="preserve">
+    <value>Toplam {0}</value>
+  </data>
+  <data name="ChallengePreviewOver" xml:space="preserve">
+    <value>Toplam {0} · hedefi {1} aşıyor</value>
+  </data>
+  <data name="ChallengePreviewUnder" xml:space="preserve">
+    <value>Toplam {0} · hedefin {1} altında</value>
+  </data>
+  <data name="ChallengeLevelsWarning" xml:space="preserve">
+    <value>{0} gün boyunca her gün ikiye katlamak bir birimin altından başlar. Plan, her biri birkaç gün süren {1} adımda ikiye katlanır; {1} günle her gün ikiye katlanır.</value>
+  </data>
+  <data name="ChallengePlanLocked" xml:space="preserve">
+    <value>Bir gün tamamlandıktan sonra hedef, gün sayısı, mod ve yuvarlama değiştirilemez.</value>
+  </data>
+  <data name="ChallengeSavedOf" xml:space="preserve">
+    <value>{1} hedefin {0} kadarı birikti</value>
+  </data>
+  <data name="ChallengeDaysLeftOne" xml:space="preserve">
+    <value>{0} gün kaldı</value>
+  </data>
+  <data name="ChallengeDaysLeftOther" xml:space="preserve">
+    <value>{0} gün kaldı</value>
+  </data>
+  <data name="ChallengeFinished" xml:space="preserve">
+    <value>Bitti</value>
+  </data>
+  <data name="ChallengeAdded" xml:space="preserve">
+    <value>Mücadele eklendi</value>
+  </data>
+  <data name="PleaseEnterChallengeName" xml:space="preserve">
+    <value>Lütfen bir ad gir</value>
+  </data>
+  <data name="PleaseEnterChallengeDays" xml:space="preserve">
+    <value>1 ile 3650 arasında gün gir</value>
+  </data>
+  <data name="FailedToLoadChallenges" xml:space="preserve">
+    <value>Mücadeleler yüklenemedi</value>
+  </data>
+  <data name="FailedToSaveChallenge" xml:space="preserve">
+    <value>Mücadele kaydedilemedi</value>
+  </data>
+  <data name="FailedToDeleteChallenge" xml:space="preserve">
+    <value>Mücadele silinemedi</value>
+  </data>
+  <data name="DeleteChallengeConfirmation" xml:space="preserve">
+    <value>"{0}" silinsin mi? Kaydettiği transferler kalır.</value>
+  </data>
+  <data name="ChallengeJustMark" xml:space="preserve">
+    <value>Yalnızca günü işaretle</value>
+  </data>
+  <data name="ChallengeRemainingOnly" xml:space="preserve">
+    <value>Yalnızca bekleyenler</value>
+  </data>
+  <data name="ChallengeViewNext30" xml:space="preserve">
+    <value>Sonraki 30 gün</value>
+  </data>
+  <data name="ChallengeViewThisMonth" xml:space="preserve">
+    <value>Bu ay</value>
+  </data>
+  <data name="ChallengeFirstDay" xml:space="preserve">
+    <value>İlk gün (isteğe bağlı)</value>
+  </data>
+  <data name="ChallengeFirstDayHint" xml:space="preserve">
+    <value>Boş = artışla aynı</value>
+  </data>
+  <data name="ChallengeStep" xml:space="preserve">
+    <value>Günlük artış (isteğe bağlı)</value>
+  </data>
+  <data name="ChallengeStepHint" xml:space="preserve">
+    <value>Boş = günlere göre hesaplanır</value>
+  </data>
+  <data name="ChallengeFirstDayTooHigh" xml:space="preserve">
+    <value>İlk gün bu hedef ve bu günler için çok yüksek.</value>
+  </data>
+  <data name="ChallengeViewFromStart" xml:space="preserve">
+    <value>Başlangıçtan</value>
+  </data>
+  <data name="ChallengeMonthCurrent" xml:space="preserve">
+    <value>Bu aya git</value>
+  </data>
+  <data name="ChallengeViewRange" xml:space="preserve">
+    <value>Tarih aralığı</value>
+  </data>
+  <data name="ChallengeRangeFrom" xml:space="preserve">
+    <value>Başlangıç</value>
+  </data>
+  <data name="ChallengeRangeTo" xml:space="preserve">
+    <value>Bitiş</value>
+  </data>
+  <data name="ChallengeNoDaysInView" xml:space="preserve">
+    <value>Burada gösterilecek gün yok.</value>
+  </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · {4} günün {2}–{3}. günleri</value>
+  </data>
+  <data name="ChallengeDayDescription" xml:space="preserve">
+    <value>{0}. gün, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>Bu {0} günden fazla gerektirir. Günlük tutarı artır veya hedefi düşür.</value>
+  </data>
+  <data name="ChallengeDayDone" xml:space="preserve">
+    <value>tamam</value>
+  </data>
+  <data name="ChallengeDayPending" xml:space="preserve">
+    <value>yapılmadı</value>
+  </data>
+  <data name="FailedToUpdateChallenge" xml:space="preserve">
+    <value>Gün güncellenemedi</value>
+  </data>
+  <data name="ChallengeAccountsHint" xml:space="preserve">
+    <value>Ayarlandığında, bir günü işaretlemek paranın nereden geldiğini sorar ve parayı buraya taşır: hesaplar arası transfer veya bir cepten çıkarılan ya da cebe ayrılan para.</value>
+  </data>
+  <data name="ChallengeSourceTitle" xml:space="preserve">
+    <value>{0} için para nereden geliyor?</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>{0}. günün işareti kaldırılsın mı? {1} taşımıştı.</value>
+  </data>
+  <data name="ChallengeUnmarkUndo" xml:space="preserve">
+    <value>İşareti kaldır ve taşınan parayı geri al</value>
+  </data>
+  <data name="ChallengeUnmarkKeep" xml:space="preserve">
+    <value>İşareti kaldır, taşınan parayı koru</value>
+  </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>MoneyRecord'u destekle</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord ücretsiz ve açık kaynaklıdır; reklam ve izleme yoktur. İşine yarıyorsa geliştirilmesini destekleyebilirsin. Hiçbir şey kilitli değil: bağış yapsan da yapmasan da her şey aynı çalışır.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Projeyi destekle</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Bahşiş bırak</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>Desteğin için teşekkürler!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>Bahşişin ödemenin tamamlanmasını bekliyor. Teşekkürler!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>Bahşiş tamamlanamadı.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>Bahşişler şu anda kullanılamıyor. Lütfen daha sonra tekrar dene.</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Geri al</value>
+  </data>
+  <data name="ExpenseDeletedUndo" xml:space="preserve">
+    <value>Gider silindi</value>
+  </data>
+  <data name="IncomeDeletedUndo" xml:space="preserve">
+    <value>Gelir silindi</value>
+  </data>
+  <data name="TransferDeletedUndo" xml:space="preserve">
+    <value>Transfer silindi</value>
+  </data>
+  <data name="SplitDeletedUndo" xml:space="preserve">
+    <value>Bölünmüş ödeme silindi ({0} parça)</value>
+  </data>
+  <data name="UndoNotPossible" xml:space="preserve">
+    <value>Geri alınamadı. Kayıt artık geri yüklenemiyor.</value>
+  </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Başlangıç</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Gizle</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>İlk giderini ekle</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Verilerini yedekle</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Uygulamayı kilitle</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Hatırlatıcıları aç</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Düzenlemek veya silmek için bir satırı sola kaydır</value>
+  </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>Kategorilerde ara</value>
+  </data>
+  <data name="SearchCurrencies" xml:space="preserve">
+    <value>Para birimlerinde ara</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>Hesaplarda ara</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>Aramanla eşleşen bir şey yok.</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>Henüz alıcı yok</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>Gider veya gelir eklerken bir tane yaz, burada görünür.</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>Henüz nakit akışı verisi yok</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>Nakit akışını görmek için gelir ve gider ekle.</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>Henüz net varlık verisi yok</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>Net varlığını görmek için bir hesap bakiyesi, gelir veya gider ekle.</value>
+  </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>Önceki dönem</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>Sonraki dönem</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filtreler</value>
+  </data>
+  <data name="SelectedState" xml:space="preserve">
+    <value>seçili</value>
+  </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>Tarihe göre</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Filtreyi kaldır: {0}</value>
+  </data>
+  <data name="GroupMoney" xml:space="preserve">
+    <value>Para</value>
+  </data>
+  <data name="GroupPlanning" xml:space="preserve">
+    <value>Planlama</value>
+  </data>
+  <data name="GroupSharedTravel" xml:space="preserve">
+    <value>Ortak ve seyahat</value>
+  </data>
+  <data name="GroupApp" xml:space="preserve">
+    <value>Uygulama</value>
+  </data>
+  <data name="SectionAppearance" xml:space="preserve">
+    <value>Görünüm</value>
+  </data>
+  <data name="SectionDataBackup" xml:space="preserve">
+    <value>Veri ve yedekleme</value>
+  </data>
+  <data name="SectionPrivacySecurity" xml:space="preserve">
+    <value>Gizlilik ve güvenlik</value>
+  </data>
+  <data name="SearchSettings" xml:space="preserve">
+    <value>Ayarlarda ara</value>
+  </data>
+  <data name="EnterAmount" xml:space="preserve">
+    <value>Bir tutar gir</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Dün</value>
+  </data>
+  <data name="PickDate" xml:space="preserve">
+    <value>Tarih seç</value>
+  </data>
+  <data name="GroupBy" xml:space="preserve">
+    <value>Grupla</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Tümünü aç</value>
+  </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Tümünü kapat</value>
+  </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Hızlı kayıtlar</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>Henüz hızlı kayıt yok</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Tekrarladığın şeyi, örneğin bir kahveyi, kaydet ve Ana sayfadan tek dokunuşla ekle.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} kaydedildi</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>Hızlı kayıt kaydedilemedi.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>Hızlı kayıtlar yüklenemedi.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Ad</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Kahve</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Tutar (boş: her seferinde sor)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>{0} için tutar</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>Hızlı kayıt yapılsın mı?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>Son zamanlarda "{0}" kaydını birkaç kez girdin. Tek dokunuşla eklemek için kaydedilsin mi?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Hızlı kayıt eklendi</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Hızlı kayıt silindi</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>"{0}" silinsin mi? İşlemlerin kalır.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>Yeni hızlı kayıt</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Hızlı kaydı düzenle</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Hızlı kayıt olarak kaydet</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Lütfen hızlı kayıt için bir ad gir.</value>
+  </data>
+  <data name="HomeCardForecast" xml:space="preserve">
+    <value>Tahmin</value>
+  </data>
+  <data name="SafeToSpendLine" xml:space="preserve">
+    <value>Harcanabilir {0}, {2} tarihine kadar günde yaklaşık {1}</value>
+  </data>
+  <data name="SafeToSpendShort" xml:space="preserve">
+    <value>{1} tarihine kadar {0} eksik</value>
+  </data>
+  <data name="ForecastDipLine" xml:space="preserve">
+    <value>Bakiye {0} tarihinde sıfırın altına düşüyor</value>
+  </data>
+  <data name="SafeToSpendUntilSetting" xml:space="preserve">
+    <value>Şu tarihe kadar harcanabilir</value>
+  </data>
+  <data name="SafeToSpendNextIncome" xml:space="preserve">
+    <value>Sonraki gelir</value>
+  </data>
+  <data name="SafeToSpendEndOfMonth" xml:space="preserve">
+    <value>Ay sonu</value>
+  </data>
+  <data name="SafeToSpendHint" xml:space="preserve">
+    <value>Yinelenen ve ileri tarihli kayıtlarından yapılan bir tahmin; henüz gelmemiş gelir sayılmaz.</value>
+  </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>En düşük: {1} tarihinde {0}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>{0} tarihindeki bakiye: {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} gün</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>Bakiyeyi ne değiştiriyor</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>Bu dönemde planlanmış bir şey yok.</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>Henüz tahmin edilecek bir şey yok</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>Bakiyenin nereye gittiğini görmek için bir hesap ekle.</value>
+  </data>
+  <data name="LowBalanceReminders" xml:space="preserve">
+    <value>Düşük bakiye uyarısı</value>
+  </data>
+  <data name="LowBalanceWithinDays" xml:space="preserve">
+    <value>{0} gün içinde</value>
+  </data>
+  <data name="LowBalanceTitle" xml:space="preserve">
+    <value>Önde düşük bakiye var</value>
+  </data>
+  <data name="LowBalanceBody" xml:space="preserve">
+    <value>{0}, {1} tarihinde sıfırın altına düşebilir</value>
+  </data>
+  <data name="BudgetCarriedOver" xml:space="preserve">
+    <value>{0} devredilen dahil</value>
+  </data>
+  <data name="BudgetPerDay" xml:space="preserve">
+    <value>{1} gün için günde {0}</value>
+  </data>
+  <data name="BudgetRollover" xml:space="preserve">
+    <value>Kalanı devret</value>
+  </data>
+  <data name="BudgetRolloverHint" xml:space="preserve">
+    <value>Harcamadığın para sonraki dönemin limitine eklenir. Aşılan kısım devredilmez.</value>
+  </data>
+  <data name="AllSpending" xml:space="preserve">
+    <value>Tüm harcamalar</value>
+  </data>
+  <data name="SuggestBudgets" xml:space="preserve">
+    <value>Bütçe öner</value>
+  </data>
+  <data name="SuggestBudgetsHint" xml:space="preserve">
+    <value>Son 3 aydaki ortalama harcamana göre aylık limitler. Oluşturulacak olanları işaretle.</value>
+  </data>
+  <data name="NoBudgetSuggestions" xml:space="preserve">
+    <value>Henüz önerilecek bir şey yok: bütçesi olmayan kategorilerin son 3 ayda harcaması yok.</value>
+  </data>
+  <data name="CreateBudgetsButton" xml:space="preserve">
+    <value>Bütçe oluştur</value>
+  </data>
+  <data name="BudgetsCreated" xml:space="preserve">
+    <value>Bütçeler oluşturuldu</value>
+  </data>
+  <data name="CategoryTrend" xml:space="preserve">
+    <value>Kategori eğilimi</value>
+  </data>
+  <data name="CategoryTrendHint" xml:space="preserve">
+    <value>Tek kategori, ay ay</value>
+  </data>
+  <data name="DeltaVsAverage" xml:space="preserve">
+    <value>Aylık ortalamaya göre {0}</value>
+  </data>
+  <data name="MoreReports" xml:space="preserve">
+    <value>Diğer raporlar</value>
+  </data>
+  <data name="NoCategoryTrendHint" xml:space="preserve">
+    <value>Bu aylarda bu kategoride bir şey yok. Başka bir kategori veya daha uzun bir dönem seç.</value>
+  </data>
+  <data name="TrendAverage" xml:space="preserve">
+    <value>Aylık ortalama</value>
+  </data>
+  <data name="TrendHighest" xml:space="preserve">
+    <value>En yüksek ay</value>
+  </data>
+  <data name="TrendLowest" xml:space="preserve">
+    <value>En düşük ay</value>
+  </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>Alıcı raporu</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>Kimlere harcadığın veya kimlerden kazandığın</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>Alıcı verisi yok</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>Burada görmek için işlemlerine bir alıcı ekle.</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(alıcı yok)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} × · ortalama {1}</value>
+  </data>
+  <data name="TagsHint" xml:space="preserve">
+    <value>Etikete göre harcama ve gelir; yeniden adlandır veya birleştir</value>
+  </data>
+  <data name="NoTagData" xml:space="preserve">
+    <value>Henüz etiket yok</value>
+  </data>
+  <data name="NoTagDataHint" xml:space="preserve">
+    <value>Burada görmek için işlemlerine etiket ekle.</value>
+  </data>
+  <data name="NoTagRow" xml:space="preserve">
+    <value>(etiket yok)</value>
+  </data>
+  <data name="TagNotUsedInPeriod" xml:space="preserve">
+    <value>Bu dönemde kullanılmadı</value>
+  </data>
+  <data name="RenameTag" xml:space="preserve">
+    <value>Etiketi yeniden adlandır</value>
+  </data>
+  <data name="RenameTagMessage" xml:space="preserve">
+    <value>"{0}" için yeni ad</value>
+  </data>
+  <data name="TagExistsTitle" xml:space="preserve">
+    <value>Etiket zaten var</value>
+  </data>
+  <data name="TagExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" zaten var. "{0}" onunla birleştirilsin mi?</value>
+  </data>
+  <data name="MergeTag" xml:space="preserve">
+    <value>Başka bir etiketle birleştir</value>
+  </data>
+  <data name="MergeTagInto" xml:space="preserve">
+    <value>"{0}" şununla birleştirilsin</value>
+  </data>
+  <data name="DeleteTag" xml:space="preserve">
+    <value>Etiketi sil</value>
+  </data>
+  <data name="DeleteTagConfirmation" xml:space="preserve">
+    <value>"{0}", {1} kayıttan kaldırılsın mı? İşlemler kalır.</value>
+  </data>
+  <data name="TagsMerged" xml:space="preserve">
+    <value>Etiketler birleştirildi</value>
+  </data>
+  <data name="TagRenamed" xml:space="preserve">
+    <value>Etiket yeniden adlandırıldı</value>
+  </data>
+  <data name="TagDeleted" xml:space="preserve">
+    <value>Etiket silindi</value>
+  </data>
+  <data name="FailedToLoadTags" xml:space="preserve">
+    <value>Etiketler yüklenemedi</value>
+  </data>
+  <data name="FailedToSaveTag" xml:space="preserve">
+    <value>Etiket güncellenemedi</value>
+  </data>
+  <data name="SeeTagTransactions" xml:space="preserve">
+    <value>İşlemleri gör</value>
+  </data>
+  <data name="AccountReport" xml:space="preserve">
+    <value>Hesap raporu</value>
+  </data>
+  <data name="AccountReportHint" xml:space="preserve">
+    <value>Hesap başına gelir, gider ve transferler</value>
+  </data>
+  <data name="AccountReportRowDetail" xml:space="preserve">
+    <value>Gelir {0} · Gider {1} · Transfer {2}</value>
+  </data>
+  <data name="AccountReportBalance" xml:space="preserve">
+    <value>Bakiye {0}</value>
+  </data>
+  <data name="NoAccountData" xml:space="preserve">
+    <value>Henüz hesap yok</value>
+  </data>
+  <data name="NoAccountDataHint" xml:space="preserve">
+    <value>Paranın hesaplar arasında nasıl hareket ettiğini görmek için bir hesap ekle.</value>
+  </data>
+  <data name="CompareReport" xml:space="preserve">
+    <value>Dönemleri karşılaştır</value>
+  </data>
+  <data name="CompareReportHint" xml:space="preserve">
+    <value>İki dönem yan yana, kategori kategori</value>
+  </data>
+  <data name="ComparePeriodA" xml:space="preserve">
+    <value>Dönem</value>
+  </data>
+  <data name="ComparePeriodB" xml:space="preserve">
+    <value>Karşılaştırılan</value>
+  </data>
+  <data name="CompareDeltaVs" xml:space="preserve">
+    <value>Diğer döneme göre {0}</value>
+  </data>
+  <data name="ComparePresetMonth" xml:space="preserve">
+    <value>Bu ay ve geçen ay</value>
+  </data>
+  <data name="ComparePresetYear" xml:space="preserve">
+    <value>Bu yıl ve geçen yıl</value>
+  </data>
+  <data name="ComparePresetSameMonth" xml:space="preserve">
+    <value>Geçen yılın aynı ayı</value>
+  </data>
+  <data name="ComparePresetLast30" xml:space="preserve">
+    <value>Son 30 gün ve öncesi</value>
+  </data>
+  <data name="NoCompareData" xml:space="preserve">
+    <value>Karşılaştırılacak bir şey yok</value>
+  </data>
+  <data name="NoCompareDataHint" xml:space="preserve">
+    <value>İki dönemde de bu türde kayıt yok.</value>
+  </data>
+  <data name="CompareRowAmounts" xml:space="preserve">
+    <value>{0} ve {1}</value>
+  </data>
+  <data name="YearReview" xml:space="preserve">
+    <value>Yıl özeti</value>
+  </data>
+  <data name="YearReviewHint" xml:space="preserve">
+    <value>Rakamlarla yılın: toplamlar, öne çıkan kategoriler, en yüksek ve en düşük harcama ayları</value>
+  </data>
+  <data name="YearReviewTitle" xml:space="preserve">
+    <value>{0} özeti</value>
+  </data>
+  <data name="YearOverview" xml:space="preserve">
+    <value>Genel bakış</value>
+  </data>
+  <data name="YearIncome" xml:space="preserve">
+    <value>Gelir</value>
+  </data>
+  <data name="YearExpenses" xml:space="preserve">
+    <value>Gider</value>
+  </data>
+  <data name="YearNet" xml:space="preserve">
+    <value>Net</value>
+  </data>
+  <data name="YearSavingsRate" xml:space="preserve">
+    <value>Birikim oranı</value>
+  </data>
+  <data name="YearMonths" xml:space="preserve">
+    <value>Aylar</value>
+  </data>
+  <data name="YearHighestMonth" xml:space="preserve">
+    <value>En yüksek harcama</value>
+  </data>
+  <data name="YearLowestMonth" xml:space="preserve">
+    <value>En düşük harcama</value>
+  </data>
+  <data name="YearTopCategories" xml:space="preserve">
+    <value>Öne çıkan kategoriler</value>
+  </data>
+  <data name="YearTopPayees" xml:space="preserve">
+    <value>Öne çıkan alıcılar</value>
+  </data>
+  <data name="YearBiggestExpense" xml:space="preserve">
+    <value>En büyük gider</value>
+  </data>
+  <data name="YearHabits" xml:space="preserve">
+    <value>Alışkanlıklar</value>
+  </data>
+  <data name="YearNoSpendDays" xml:space="preserve">
+    <value>Harcamasız günler</value>
+  </data>
+  <data name="YearOfDays" xml:space="preserve">
+    <value>{1} günün {0} kadarı</value>
+  </data>
+  <data name="YearTopTag" xml:space="preserve">
+    <value>En çok kullanılan etiket</value>
+  </data>
+  <data name="YearTagUses" xml:space="preserve">
+    <value>{0} ({1}×)</value>
+  </data>
+  <data name="NoYearData" xml:space="preserve">
+    <value>Henüz özetlenecek bir şey yok</value>
+  </data>
+  <data name="NoYearDataHint" xml:space="preserve">
+    <value>Bu yıla ait işlemler ekle, özeti burada görünür.</value>
+  </data>
+  <data name="YearShareTitle" xml:space="preserve">
+    <value>Yılını paylaş</value>
+  </data>
+  <data name="YearShareAsPdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="YearShareAsText" xml:space="preserve">
+    <value>Metin özeti</value>
+  </data>
+  <data name="YearShareNoAmounts" xml:space="preserve">
+    <value>{0} tutarsız</value>
+  </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>Kayıtlı filtreler</value>
+  </data>
+  <data name="SaveThisFilter" xml:space="preserve">
+    <value>Bu filtreyi kaydet</value>
+  </data>
+  <data name="SavedFilterNameHint" xml:space="preserve">
+    <value>Tek dokunuşla yeniden uygulamak için bir ad ver.</value>
+  </data>
+  <data name="SavedFilterLimit" xml:space="preserve">
+    <value>En fazla 20 kayıtlı filtre tutabilirsin. Başka birini kaydetmek için birini sil.</value>
+  </data>
+  <data name="SavedFilterSaved" xml:space="preserve">
+    <value>Filtre kaydedildi</value>
+  </data>
+  <data name="SavedFilterNameTaken" xml:space="preserve">
+    <value>Bu ada sahip bir kayıtlı filtre zaten var.</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Yeniden adlandır</value>
+  </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>Uygula</value>
+  </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Bu filtrenin bir kısmı (bir kategori, hesap veya alıcı) silinmişti ve dışarıda bırakıldı.</value>
+  </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>PDF ekle</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>Eki kaldır</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>Dosya çok büyük (en fazla 10 MB)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>Dosya eklenemedi</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>Dosya açılamadı</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>Ekler</value>
+  </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>İşlemleri dışa aktar (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>İşlemler (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Hesap tablosu dışa aktarılamadı</value>
+  </data>
+  <data name="PinSubtitle" xml:space="preserve">
+    <value>PIN'ini gir</value>
+  </data>
+  <data name="PinWrongTries" xml:space="preserve">
+    <value>Yanlış PIN. Beklemeden önce {0} deneme hakkın kaldı.</value>
+  </data>
+  <data name="PinLockedOut" xml:space="preserve">
+    <value>Çok fazla yanlış deneme. {0} sonra tekrar dene.</value>
+  </data>
+  <data name="UsePhoneLock" xml:space="preserve">
+    <value>Telefon kilidini kullan</value>
+  </data>
+  <data name="PinSetTitle" xml:space="preserve">
+    <value>Bir PIN seç</value>
+  </data>
+  <data name="PinRepeatTitle" xml:space="preserve">
+    <value>PIN'i tekrarla</value>
+  </data>
+  <data name="PinSetMessage" xml:space="preserve">
+    <value>4 ila 8 basamak. Unutulan PIN kurtarılamaz: uygulamanın verilerini silip bir yedeği geri yüklemen gerekir.</value>
+  </data>
+  <data name="PinMismatch" xml:space="preserve">
+    <value>PIN'ler eşleşmedi. Yeniden seç.</value>
+  </data>
+  <data name="PinLength" xml:space="preserve">
+    <value>4 ila 8 basamak kullan.</value>
+  </data>
+  <data name="PinRepeated" xml:space="preserve">
+    <value>Tekrarlanan tek bir rakam kullanma.</value>
+  </data>
+  <data name="PinBackspace" xml:space="preserve">
+    <value>Son basamağı sil</value>
+  </data>
+  <data name="PinDigitsTyped" xml:space="preserve">
+    <value>{0} basamak girildi</value>
+  </data>
+  <data name="AppPin" xml:space="preserve">
+    <value>Uygulama PIN'i</value>
+  </data>
+  <data name="AppPinDescription" xml:space="preserve">
+    <value>MoneyRecord'u kendi PIN'inle aç; çok fazla yanlış denemeden sonra beklemen gerekir</value>
+  </data>
+  <data name="SetPin" xml:space="preserve">
+    <value>PIN belirle</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>PIN'i değiştir</value>
+  </data>
+  <data name="RemovePin" xml:space="preserve">
+    <value>PIN'i kaldır</value>
+  </data>
+  <data name="RemovePinMessage" xml:space="preserve">
+    <value>MoneyRecord artık PIN ile açılmayacak.</value>
+  </data>
+  <data name="PinSaved" xml:space="preserve">
+    <value>PIN kaydedildi</value>
+  </data>
+  <data name="PinRemoved" xml:space="preserve">
+    <value>PIN kaldırıldı</value>
+  </data>
+  <data name="UnlockWith" xml:space="preserve">
+    <value>Kilit açma yöntemi</value>
+  </data>
+  <data name="LockMethodDevice" xml:space="preserve">
+    <value>Telefon kilidi</value>
+  </data>
+  <data name="LockMethodPin" xml:space="preserve">
+    <value>Uygulama PIN'i</value>
+  </data>
+  <data name="LockMethodBoth" xml:space="preserve">
+    <value>Telefon kilidi veya PIN</value>
+  </data>
+  <data name="NoScreenLockPinHint" xml:space="preserve">
+    <value>Telefonunda ekran kilidi yok. Uygulama kilidini kullanmak için bir uygulama PIN'i belirle.</value>
+  </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>PIN'in okunamadı ve kaldırıldı. Telefon kilidini kullan.</value>
+  </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Ekran görüntülerini engelle</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Uygulamayı ekran görüntülerinde, ekran kayıtlarında ve son uygulamalar ekranında gizler.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Gizlilik</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Ana sayfanın paranı nasıl göstereceğini seç. Bunu sonra Ayarlar'dan değiştirebilirsin.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Ana sayfada bakiyeleri dokunulana kadar gizle</value>
+  </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Yedeklerini parolayla koru</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>Yedekler tüm verilerini tutar ve düz dosya olarak kaydedilir. Yalnızca senin açabilmen için bir parola belirle. Bunu sonra Ayarlar → Yedekle ve geri yükle bölümünden değiştirebilirsin.</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Parola belirle</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Şimdi değil</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (şifresiz)</value>
+  </data>
+</root>

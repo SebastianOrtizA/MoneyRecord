@@ -3,13 +3,13 @@ name: translate-moneyrecord
 description: Add or update a MoneyRecord translation (app strings, widget, Play listing, What's new). Use when asked to add a language, translate new strings, or check translation terminology.
 ---
 
-Languages are the rows of `AppLanguage.All` (`MoneyRecord.Core/Models/AppLanguage.cs`): en, es, pt (pt-BR), fr, it.
+Languages are the rows of `AppLanguage.All` (`MoneyRecord.Core/Models/AppLanguage.cs`): en, es, pt (pt-BR), fr, it, de, tr.
 The picker, device detection, culture fallback, Play changelog locale and plural rule all read that list.
 
 ## New strings in a feature PR
 Add the English key to `AppResources.resx`, then the same key (same `{n}` placeholders) to every `AppResources.xx.resx`.
 `ResourceParityTests` fails per language until all exist. Use the glossary below; keep tab labels, chips and buttons short
-(pt/fr/it run 20-30% longer than English). Informal address: es tú, pt você, fr tu, it tu.
+(pt/fr/it run 20-30% longer than English). Informal address: es tú, pt você, fr tu, it tu, de du, tr sen.
 
 ## Adding a language
 1. One row in `AppLanguage.All` (`Code`, default culture = Play store locale, `ZeroIsSingular` for French-like plurals).

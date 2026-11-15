@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">Saldo</string>
+    <string name="widget_description">Der Saldo eines Kontos mit Schaltflächen für Ausgabe, Einnahme und Überweisung</string>
+    <string name="widget_preview_account">Bargeld</string>
+    <string name="widget_preview_balance">1.250,00 €</string>
+    <string name="widget_expense">Ausgabe</string>
+    <string name="widget_income">Einnahme</string>
+    <string name="widget_transfer">Überweisen</string>
+</resources>

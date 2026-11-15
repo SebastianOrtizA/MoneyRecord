@@ -1,0 +1,41 @@
+MoneyRecord ist ein einfacher, kostenloser, privater Geldtracker. Erfasse, was du ausgibst und einnimmst, sieh, wohin dein Geld fließt, bleib im Budget und spare für deine Ziele. Deine Daten bleiben auf deinem Handy: keine Anmeldung, keine Werbung.
+
+<b>Schnelle Eingabe</b>
+• Füge eine Ausgabe, Einnahme oder Überweisung mit wenigen Tipps hinzu: erst der Betrag, dann eine Kategorie aus einem Raster, das deine zuletzt genutzten zuerst zeigt.
+• Beleg scannen: Summe und Datum werden auf deinem Handy gelesen.
+• Zahlungsempfänger mit Vorschlägen, Tags, Belegfotos und Beschreibungen, wenn du möchtest.
+• Teile einen Beleg auf mehrere Kategorien auf.
+
+<b>Konten und Währungen</b>
+• Bargeld, Bank, Sparkonto, Kreditkarten … jeweils mit eigener Währung.
+• Summen pro Währung oder mit täglichen Wechselkursen in deine Hauptwährung umgerechnet (optional).
+• Blende die Cent bei Währungen aus, die sie nicht brauchen.
+
+<b>Budgets und Sparziele</b>
+• Ausgabenlimits pro Kategorie, pro Tag, Monat oder Jahr: im Plan, fast am Limit oder über Budget auf einen Blick.
+• Sparziele mit Zieldatum: wie viel du pro Monat sparen musst und ob dein Tempo dich ans Ziel bringt.
+
+<b>Wiederkehrend und anstehend</b>
+• Gehalt, Miete, Abos: täglich, wöchentlich, alle zwei Wochen, monatlich oder jährlich, ab heute oder ab einem künftigen Datum.
+• Sieh, was in den nächsten 30 Tagen ansteht, mit Erinnerungen vor fälligen Rechnungen und wenn ein Budget aufgebraucht ist.
+
+<b>Verliehenes und geliehenes Geld</b>
+• Behalte im Blick, was Freunde dir schulden und was du ihnen schuldest, mit Zahlungen nach Plan.
+
+<b>Berichte</b>
+• Ausgaben und Einnahmen nach Kategorie, Trends, Cashflow und Nettovermögen.
+• Tippe auf ein Diagramm, um die Buchungen dahinter zu sehen.
+• Exportiere einen PDF-Bericht oder eine CSV-Datei für jeden Zeitraum.
+
+<b>Deine Daten, deine Kontrolle</b>
+• Funktioniert offline. Kein Konto, keine Werbung.
+• Vollständige Sicherungen, von Hand oder automatisch (täglich, wöchentlich oder monatlich) in einen beliebigen Ordner, auch Google Drive, mit optionalem Passwort.
+• Importiere Kontoauszüge aus CSV, wobei Duplikate erkannt und Kategorien vorgeschlagen werden.
+• App-Sperre mit Fingerabdruck, Gesicht oder Displaysperre und eine verschlüsselte Datenbank.
+• Optionale Absturzberichte, aus, solange du sie nicht einschaltest.
+
+<b>Für dich gemacht</b>
+• Startbildschirm-Widget mit deinem Saldo und Schnellzugriffen zum Hinzufügen.
+• Deutsch, Türkisch, Englisch, Spanisch, Portugiesisch, Französisch und Italienisch, helles und dunkles Design, eine schnelle Einrichtung beim ersten Start.
+
+MoneyRecord ist kostenlos und Open Source (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

@@ -54,7 +54,7 @@ public sealed class LanguageSettingTests : LanguageTestBase
 
     [Theory]
     [InlineData("")]
-    [InlineData("de")]
+    [InlineData("ja")]
     public void An_empty_or_unsupported_language_follows_the_device(string saved)
     {
         _preferences.Set(LocalizationService.LanguagePreferenceKey, saved);
@@ -72,6 +72,8 @@ public sealed class LanguageSettingTests : LanguageTestBase
     [InlineData("pt", "Português")]
     [InlineData("fr", "Français")]
     [InlineData("it", "Italiano")]
+    [InlineData("de", "Deutsch")]
+    [InlineData("tr", "Türkçe")]
     public void Language_names_are_written_in_their_own_language(string code, string name)
     {
         LocalizationService.GetLanguageName(code).Should().Be(name);

@@ -182,7 +182,8 @@ namespace MoneyRecord.Helpers
         /// <summary>Lower case without accents: "TOTAL A PAGAR", "Total a Pagar" and "total à pagar" read the same.</summary>
         private static string Normalize(string text)
         {
-            var decomposed = text.ToLowerInvariant().Normalize(NormalizationForm.FormD);
+            // Turkish dotted İ and dotless ı fold to i first: invariant lower casing leaves İ alone
+            var decomposed = text.Replace('İ', 'i').Replace('ı', 'i').ToLowerInvariant().Normalize(NormalizationForm.FormD);
             var plain = new StringBuilder(decomposed.Length);
             foreach (var c in decomposed)
             {
@@ -192,20 +193,20 @@ namespace MoneyRecord.Helpers
             return plain.ToString();
         }
 
-        [GeneratedRegex(@"\b(total a pagar|a pagar|amount due|balance due|total due|grand total|total general|total factura|total venta|total compra|net a payer|total a payer|totale da pagare|totale complessivo|total geral|valor a pagar)\b")]
+        [GeneratedRegex(@"\b(total a pagar|a pagar|amount due|balance due|total due|grand total|total general|total factura|total venta|total compra|net a payer|total a payer|totale da pagare|totale complessivo|total geral|valor a pagar|zu zahlen|zahlbetrag|gesamtbetrag|gesamtsumme|endsumme|genel toplam|odenecek tutar|odenecek)\b")]
         private static partial Regex StrongTotalRegex();
 
-        [GeneratedRegex(@"\b(total|totale|importe|amount|montant|suma|soma|monto|valor)\b")]
+        [GeneratedRegex(@"\b(total|totale|importe|amount|montant|suma|soma|monto|valor|gesamt|summe|toplam|tutar)\b")]
         private static partial Regex TotalRegex();
 
-        [GeneratedRegex(@"\b(sub\s*-?\s*total|descuentos?|dto|discount|ahorro|savings?|cambio|change|vuelto|vueltas|devuelta|efectivo|cash|recibido|entregado|tendered|items?|articulos?|unidades|uds|cantidad|qty|puntos|points|propina|tip|sous\s*-?\s*total|subtotale|remise|reduction|rendu|monnaie|especes|pourboire|articles?|articoli|pezzi|quantite|quantita|sconto|resto|contanti|mancia|desconto|troco|dinheiro|gorjeta|itens|quantidade|pontos)\b")]
+        [GeneratedRegex(@"\b(sub\s*-?\s*total|descuentos?|dto|discount|ahorro|savings?|cambio|change|vuelto|vueltas|devuelta|efectivo|cash|recibido|entregado|tendered|items?|articulos?|unidades|uds|cantidad|qty|puntos|points|propina|tip|sous\s*-?\s*total|subtotale|remise|reduction|rendu|monnaie|especes|pourboire|articles?|articoli|pezzi|quantite|quantita|sconto|resto|contanti|mancia|desconto|troco|dinheiro|gorjeta|itens|quantidade|pontos|zwischensumme|zw\.?\s*summe|rabatt|ruckgeld|wechselgeld|bargeld|bar|gegeben|trinkgeld|artikel|menge|anzahl|stuck|ara\s+toplam|indirim|para\s+ustu|nakit|bahsis|adet|urun)\b")]
         private static partial Regex ExcludedRegex();
 
-        [GeneratedRegex(@"\b(iva|tva|tax|taxes|vat|impuestos?|impots?|imposte?|imposta|imposto|impostos|icms|igic|base)\b")]
+        [GeneratedRegex(@"\b(iva|tva|tax|taxes|vat|impuestos?|impots?|imposte?|imposta|imposto|impostos|icms|igic|base|mwst|ust|steuer|kdv|vergi)\b")]
         private static partial Regex TaxRegex();
 
         // "Total (IVA incluido)", "Total incl. tax": a total row that mentions the tax
-        [GeneratedRegex(@"\b(incl|incluido|incluidos|included|inc|inclus|incluse|compris|comprise|ttc|incluso|inclusa|compreso|incluida|incluidas)\b")]
+        [GeneratedRegex(@"\b(incl|incluido|incluidos|included|inc|inclus|incluse|compris|comprise|ttc|incluso|inclusa|compreso|incluida|incluidas|inkl|inklusive|enthalten|dahil)\b")]
         private static partial Regex IncludedRegex();
 
         [GeneratedRegex(@"(?<![\p{L}\d.,])(?:\d{1,3}(?:[.,'’  ]\d{3})+(?:[.,]\d{1,2})?|\d+(?:[.,]\d{1,2})?)(?![\p{L}\d%]|[.,]\d)")]
