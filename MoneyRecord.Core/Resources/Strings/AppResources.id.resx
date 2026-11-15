@@ -3667,4 +3667,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>Pemindaian tidak tersedia di ponsel ini. Gunakan Hubungkan ke perangkat lalu ketik kodenya.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Folder bersama</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Sinkronkan saat Anda jauh dari rumah atau komputer mati, melalui folder yang dijaga oleh Google Drive, Nextcloud, Syncthing, atau flash disk USB. Pilih folder yang sama di setiap perangkat. File di dalamnya dienkripsi.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Pilih folder</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Ganti folder</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Berhenti memakai folder</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>Folder bersama tidak dapat diakses. Pastikan folder masih ada dan aplikasi boleh menggunakannya, lalu pilih lagi.</value>
+  </data>
 </root>

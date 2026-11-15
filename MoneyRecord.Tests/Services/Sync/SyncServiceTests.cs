@@ -257,6 +257,22 @@ public sealed class SyncServiceTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task WhenTheComputerIsAwayAndTheFolderFails_TheFolderIsWhatTheUserHearsAbout()
+    {
+        var pc = await NewDeviceAsync(true, "My PC");
+        var phone = await NewDeviceAsync(false, "My Phone");
+        await pc.Service.EnableAsync();
+        await phone.Service.PairAsync((await pc.Service.CreatePairingCodeAsync()).Text);
+        var peer = (await phone.Service.GetStatusAsync()).Peers.Single();
+        await phone.Secrets.SetAsync((await phone.Secrets.GetAsync())!.Replace($"\"Port\":{peer.Port}", "\"Port\":1"));
+        var away = new SyncService(phone.Database, new SyncStateService(phone.Database), phone.Secrets, new Platform(false, "My Phone"), phone.Paths,
+            new AccountRepository(phone.Database), new CategoryRepository(phone.Database),
+            findComputer: _ => Task.FromResult<(string, int)?>(null), sharedFolder: new FakeFolder(store: new BrokenStore()));
+
+        (await away.SyncNowAsync()).Should().Be(SyncOutcome.FolderUnavailable);
+    }
+
+    [Fact]
     public async Task AFolderWhoseOpenThrows_IsReportedToo()
     {
         var pc = await NewDeviceAsync(true, "My PC", shared: new FakeFolder { ThrowOnOpen = true });

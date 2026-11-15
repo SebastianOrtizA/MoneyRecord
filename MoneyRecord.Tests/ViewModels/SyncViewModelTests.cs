@@ -23,6 +23,58 @@ public sealed class SyncViewModelTests
         _sync.GetStatusAsync().Returns(new SyncStatus(true, enabled, canListen, listening, "My device", peers));
 
     [Fact]
+    public async Task TheFolderCard_ShowsOnlyWhenSyncIsOn_AndTheDeviceCanUseAFolder()
+    {
+        _sync.GetStatusAsync().Returns(new SyncStatus(true, true, false, false, "My device", [], FolderSupported: true, FolderName: "Drive sync"));
+        var vm = Create();
+        await vm.InitializeAsync();
+        vm.ShowFolder.Should().BeTrue();
+        vm.HasFolder.Should().BeTrue();
+        vm.FolderName.Should().Be("Drive sync");
+
+        _sync.GetStatusAsync().Returns(new SyncStatus(true, false, false, false, "My device", [], FolderSupported: true));
+        var off = Create();
+        await off.InitializeAsync();
+        off.ShowFolder.Should().BeFalse();
+
+        _sync.GetStatusAsync().Returns(new SyncStatus(true, true, false, false, "My device", []));
+        var unsupported = Create();
+        await unsupported.InitializeAsync();
+        unsupported.ShowFolder.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ChoosingAndStoppingTheFolder_CallTheService_AndReloadTheStatus()
+    {
+        _sync.GetStatusAsync().Returns(new SyncStatus(true, true, false, false, "My device", [], FolderSupported: true));
+        _sync.PickFolderAsync().Returns(true);
+        var vm = Create();
+        await vm.InitializeAsync();
+
+        _sync.GetStatusAsync().Returns(new SyncStatus(true, true, false, false, "My device", [], FolderSupported: true, FolderName: "Shared"));
+        await vm.ChooseFolderCommand.ExecuteAsync(null);
+        vm.FolderName.Should().Be("Shared");
+
+        _sync.GetStatusAsync().Returns(new SyncStatus(true, true, false, false, "My device", [], FolderSupported: true));
+        await vm.StopFolderCommand.ExecuteAsync(null);
+        await _sync.Received(1).ClearFolderAsync();
+        vm.HasFolder.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task AnUnreachableFolder_ShowsItsOwnMessage()
+    {
+        Status(enabled: true, canListen: false);
+        _sync.SyncNowAsync().Returns(SyncOutcome.FolderUnavailable);
+        var vm = Create();
+        await vm.InitializeAsync();
+
+        await vm.SyncNowCommand.ExecuteAsync(null);
+
+        await _errors.Received().HandleAsync(AppResources.SyncFolderUnavailable);
+    }
+
+    [Fact]
     public async Task Computer_NotYetOn_OffersTurnOn_Phone_OffersConnect()
     {
         Status(enabled: false, canListen: true);

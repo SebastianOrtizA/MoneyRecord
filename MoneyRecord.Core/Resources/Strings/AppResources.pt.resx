@@ -3667,4 +3667,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>A leitura não está disponível neste telefone. Use Conectar a um dispositivo e digite o código.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Pasta compartilhada</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Sincronize fora de casa ou com o computador desligado, por meio de uma pasta mantida pelo Google Drive, Nextcloud, Syncthing ou um pen drive. Escolha a mesma pasta em cada dispositivo. Os arquivos nela são criptografados.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Escolher uma pasta</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Alterar pasta</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Parar de usar a pasta</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>Não foi possível acessar a pasta compartilhada. Verifique se ela ainda existe e se o app pode usá-la, e escolha-a novamente.</value>
+  </data>
 </root>

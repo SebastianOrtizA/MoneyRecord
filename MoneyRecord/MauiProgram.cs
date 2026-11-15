@@ -176,6 +176,13 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IClipboardService, MauiClipboardService>();
             builder.Services.AddSingleton<ISyncPlatform, MauiSyncPlatform>();
 #if ANDROID
+            builder.Services.AddSingleton<ISyncFolder, Platforms.Android.AndroidSyncFolder>();
+#elif WINDOWS
+            builder.Services.AddSingleton<ISyncFolder, Platforms.Windows.WindowsSyncFolder>();
+#else
+            builder.Services.AddSingleton<ISyncFolder, NoSyncFolder>();
+#endif
+#if ANDROID
             builder.Services.AddSingleton<ISyncBackground, Platforms.Android.AndroidSyncBackground>();
 #else
             builder.Services.AddSingleton<ISyncBackground, NoSyncBackground>();

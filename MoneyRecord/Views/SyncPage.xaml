@@ -44,6 +44,21 @@
                 </VerticalStackLayout>
             </Border>
 
+            <!-- The shared folder: sync while apart (Drive, Nextcloud, Syncthing, a USB drive) -->
+            <Border Style="{StaticResource Card}" IsVisible="{Binding ShowFolder}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="{ext:Localize SyncFolderTitle}" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="{ext:Localize SyncFolderHint}" FontSize="14" TextColor="{AppThemeBinding Light=#666666, Dark=#AAAAAA}" />
+                    <Label Text="{Binding FolderName}" FontSize="16" FontAttributes="Bold" IsVisible="{Binding HasFolder}" />
+                    <FlexLayout Wrap="Wrap" Margin="0,4,0,0">
+                        <Button Text="{ext:Localize SyncFolderChoose}" Command="{Binding ChooseFolderCommand}" IsVisible="{Binding NoFolder}" MinimumHeightRequest="44" CornerRadius="22" Padding="20,0" Margin="0,0,12,0" />
+                        <Button Text="{ext:Localize SyncFolderChange}" Command="{Binding ChooseFolderCommand}" IsVisible="{Binding HasFolder}" MinimumHeightRequest="44" CornerRadius="22" Padding="20,0" Margin="0,0,12,0" />
+                        <Button Text="{ext:Localize SyncFolderStop}" Command="{Binding StopFolderCommand}" IsVisible="{Binding HasFolder}"
+                                BackgroundColor="Transparent" TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource PrimaryDark}}" MinimumHeightRequest="44" />
+                    </FlexLayout>
+                </VerticalStackLayout>
+            </Border>
+
             <VerticalStackLayout Spacing="8" IsVisible="{Binding ShowDevices}">
                 <Label Text="{ext:Localize SyncDevices}" FontSize="18" FontAttributes="Bold" />
                 <CollectionView ItemsSource="{Binding Peers}" SelectionMode="None">

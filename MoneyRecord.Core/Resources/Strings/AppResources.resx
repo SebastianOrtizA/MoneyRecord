@@ -3719,4 +3719,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>Scanning isn't available on this phone. Use Connect to a device and type the code instead.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Shared folder</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Sync when you are away from home or the computer is off, through a folder that Google Drive, Nextcloud, Syncthing or a USB drive keeps for you. Pick the same folder on each device. The files in it are encrypted.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Choose a folder</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Change folder</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Stop using the folder</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>The shared folder can't be reached. Check that it still exists and that the app may use it, then choose it again.</value>
+  </data>
 </root>

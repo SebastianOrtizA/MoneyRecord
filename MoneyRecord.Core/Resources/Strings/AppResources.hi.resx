@@ -3665,4 +3665,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>इस फ़ोन पर स्कैन उपलब्ध नहीं है। «डिवाइस से जुड़ें» चुनकर कोड टाइप करें।</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>साझा फ़ोल्डर</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>घर से दूर होने पर या कंप्यूटर बंद होने पर, Google Drive, Nextcloud, Syncthing या USB ड्राइव द्वारा सँभाले जा रहे फ़ोल्डर के ज़रिए सिंक करें। हर डिवाइस पर वही फ़ोल्डर चुनें। इसमें मौजूद फ़ाइलें एन्क्रिप्टेड हैं।</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>फ़ोल्डर चुनें</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>फ़ोल्डर बदलें</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>फ़ोल्डर का उपयोग बंद करें</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>साझा फ़ोल्डर तक नहीं पहुँचा जा सकता। जाँचें कि वह अब भी मौजूद है और ऐप उसका उपयोग कर सकता है, फिर उसे दोबारा चुनें।</value>
+  </data>
 </root>

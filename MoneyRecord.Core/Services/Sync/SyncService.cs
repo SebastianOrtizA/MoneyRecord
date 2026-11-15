@@ -147,11 +147,12 @@ namespace MoneyRecord.Services.Sync
             categories.InvalidateCache();
         }
 
-        private string? SafeFolderName()
+        private async Task<string?> SafeFolderNameAsync()
         {
             try
             {
-                return sharedFolder?.Name;
+                // Off the caller's thread: a cloud provider can take seconds to answer
+                return sharedFolder == null ? null : await Task.Run(() => sharedFolder.Name);
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
@@ -167,7 +168,7 @@ namespace MoneyRecord.Services.Sync
                     ? [.. profile.Devices.Select(d => new SyncPeer(d.DeviceId, d.Name, [], 0, "", d.LastSeen))]
                     : [.. profile.Peers];
             return new SyncStatus(secrets.IsSupported, profile != null, platform.CanListen, _server != null,
-                profile?.DeviceName ?? platform.DeviceName, peers, sharedFolder?.IsSupported ?? false, profile == null ? null : SafeFolderName());
+                profile?.DeviceName ?? platform.DeviceName, peers, sharedFolder?.IsSupported ?? false, profile == null ? null : await SafeFolderNameAsync());
         }
 
         // ---- The devices that paired with this one (the listening side) ----
@@ -412,7 +413,7 @@ namespace MoneyRecord.Services.Sync
                     {
                         try
                         {
-                            if (sharedFolder.Open() is { } shared)
+                            if (await Task.Run(sharedFolder.Open) is { } shared)
                             {
                                 await SyncStores.CopyMissingAsync(store, shared);
                                 await SyncStores.CopyMissingAsync(shared, store);
@@ -424,8 +425,8 @@ namespace MoneyRecord.Services.Sync
                         }
                         catch (Exception ex) when (ex is not OperationCanceledException)
                         {
-                            if (outcome == SyncOutcome.Done)
-                                outcome = SyncOutcome.FolderUnavailable;
+                            if (outcome is SyncOutcome.Done or SyncOutcome.Unreachable)
+                                outcome = SyncOutcome.FolderUnavailable; // the user should hear about the folder even when the computer is also away
                         }
                     }
 
