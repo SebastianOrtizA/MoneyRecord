@@ -41,7 +41,7 @@ namespace MoneyRecord.Services
         }
 
         public async Task DisableAsync() =>
-            await database.RunInTransactionAsync(db => SyncCapture.ResetOnRestore(db));
+            await database.RunInTransactionAsync(db => SyncCapture.Reset(db));
 
         public async Task<int> MaterializeAsync()
         {
@@ -57,12 +57,22 @@ namespace MoneyRecord.Services
                     return;
 
                 var tables = SyncCapture.SyncedTables.Select(t => db.GetMapping(t)).ToDictionary(m => m.TableName);
+
+                // One query per touched table, not two per row: the first call after Enable covers every row
+                var existing = new Dictionary<string, HashSet<int>>();
+                var metas = new Dictionary<(string, int), SyncMeta>();
+                foreach (var table in dirty.Select(d => d.TableName).Distinct())
+                {
+                    existing[table] = db.QueryScalars<int>($"SELECT \"{tables[table].PK.Name}\" FROM \"{table}\"").ToHashSet();
+                    foreach (var m in db.Query<SyncMeta>("SELECT * FROM SyncMeta WHERE TableName = ?", table))
+                        metas[(table, m.LocalId)] = m;
+                }
+
                 foreach (var group in dirty.GroupBy(d => (d.TableName, d.LocalId)).OrderBy(g => g.Max(d => d.Id)))
                 {
                     var (table, localId) = group.Key;
-                    var last = group.MaxBy(d => d.Id)!;
-                    var exists = db.ExecuteScalar<int>($"SELECT COUNT(*) FROM \"{table}\" WHERE \"{tables[table].PK.Name}\" = ?", localId) > 0;
-                    var meta = db.Query<SyncMeta>("SELECT * FROM SyncMeta WHERE TableName = ? AND LocalId = ?", table, localId).FirstOrDefault();
+                    var exists = existing[table].Contains(localId);
+                    metas.TryGetValue((table, localId), out var meta);
 
                     if (exists)
                     {
@@ -84,6 +94,7 @@ namespace MoneyRecord.Services
                     meta.DeviceId = state.DeviceId;
                     meta.Dirty = true;
                     db.InsertOrReplace(meta);
+                    metas[(table, localId)] = meta;
                     marked++;
                 }
 

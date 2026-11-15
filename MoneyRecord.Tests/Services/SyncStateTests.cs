@@ -74,11 +74,12 @@ public sealed class SyncStateTests : IAsyncLifetime
         (await _sync.IsEnabledAsync()).Should().BeTrue();
         (await _sync.GetDeviceIdAsync()).Should().NotBeNullOrEmpty();
         (await _sync.MaterializeAsync()).Should().BeGreaterThanOrEqualTo(categories + 1);
+        var device = await _sync.GetDeviceIdAsync();
 
         var meta = await MetaAsync("Category");
         meta.Should().HaveCount(categories + 1);
         meta.Select(m => m.GlobalId).Should().OnlyHaveUniqueItems();
-        meta.Should().OnlyContain(m => m.Dirty && !m.Deleted && m.DeviceId == _sync.GetDeviceIdAsync().Result);
+        meta.Should().OnlyContain(m => m.Dirty && !m.Deleted && m.DeviceId == device);
         (await _sync.MaterializeAsync()).Should().Be(0);
     }
 

@@ -89,11 +89,11 @@ namespace MoneyRecord.Services.Repositories
         }
 
         /// <summary>
-        /// A backup is being restored over this database: its rows are not changes to send, and the sync data belongs to the old
-        /// content, so sync is turned off with a new device id (it is switched on again, and paired again, if wanted).
-        /// Run inside the restore's transaction, before the rows are replaced.
+        /// Turns sync off and forgets all sync data, with a new device id next time it is switched on. Used when sync is turned off and
+        /// when a backup is restored (the restored rows are not changes to send, and the old sync data belongs to the old content;
+        /// sync is switched on and paired again if wanted). Runs inside the caller's transaction, before rows are replaced.
         /// </summary>
-        public static void ResetOnRestore(SQLiteConnection db)
+        public static void Reset(SQLiteConnection db)
         {
             Remove(db);
             db.DeleteAll<SyncDirty>();
