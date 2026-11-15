@@ -1,0 +1,1 @@
+Impor mutasi bank dari file OFX/QFX dan QIF, bukan hanya CSV: catatan yang sudah pernah diimpor dilewati. Impor ekspor dari YNAB dan Mint: kolomnya terisi otomatis. Lampirkan beberapa foto dan PDF ke satu transaksi dan buka langsung dari sana. Ekspor transaksimu sebagai workbook Excel (.xlsx) dari Pengaturan atau dari tab Laporan.

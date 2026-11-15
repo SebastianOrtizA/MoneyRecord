@@ -30,6 +30,8 @@ public class PluralsTests : LanguageTestBase
     [InlineData("pt", false)]
     [InlineData("de", false)]
     [InlineData("tr", false)]
+    [InlineData("id", false)]
+    [InlineData("ru", false)]
     public void Zero_IsSingularOnlyWhereTheLanguageCountsItSo(string language, bool singular)
     {
         LocalizationService.Instance.SetLanguage(language, new FakePreferences());

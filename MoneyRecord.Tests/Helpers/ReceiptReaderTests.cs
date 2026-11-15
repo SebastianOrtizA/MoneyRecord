@@ -153,9 +153,13 @@ public sealed class ReceiptReaderTests
     [InlineData("pt-BR", "Subtotal 20,00", "ICMS 2,00", "TOTAL 22,00", "Dinheiro 50,00", "Troco 28,00", "14 de outubro de 2026")]
     [InlineData("de-DE", "Zwischensumme 20,00", "MwSt 2,00", "GESAMT 22,00", "Bar 50,00", "Rückgeld 28,00", "14. Oktober 2026")]
     [InlineData("tr-TR", "Ara Toplam 20,00", "KDV 2,00", "TOPLAM 22,00", "Nakit 50,00", "Para Üstü 28,00", "14 Ekim 2026")]
+    [InlineData("id-ID", "Subtotal 20,00", "PPN 2,00", "TOTAL 22,00", "Tunai 50,00", "Kembalian 28,00", "14 Oktober 2026")]
+    [InlineData("ru-RU", "Подитог 20,00", "НДС 2,00", "ИТОГО 22,00", "Наличные 50,00", "Сдача 28,00", "14 октября 2026")]
+    [InlineData("ru-RU", "Всего товаров 3,00", "НДС 2,00", "ИТОГО 22,00", "Наличные 50,00", "Сдача 28,00", "14 октября 2026")]
+    [InlineData("id-ID", "Jumlah barang 3,00", "PPN 2,00", "TOTAL 22,00", "Tunai 50,00", "Kembalian 28,00", "14 Oktober 2026")]
     [InlineData("tr-TR", "İNDİRİM 3,00", "KDV DAHİL 2,00", "TOPLAM 22,00", "Nakit 50,00", "Para Üstü 28,00", "14 Ekim 2026")]
     [InlineData("de-DE", "Zwischensumme 20,00", "MwSt 2,00", "GESAMT 22,00", "Bar 50,00", "Wechselgeld 28,00", "14. Oktober 2026")]
-    public void Receipts_in_French_Italian_Portuguese_German_and_Turkish_read_the_total_and_date(
+    public void Receipts_in_other_languages_read_the_total_and_date(
         string culture, string subtotal, string tax, string total, string cash, string change, string date)
     {
         var reading = Read(CultureInfo.GetCultureInfo(culture), "Boulangerie", date, subtotal, tax, total, cash, change);

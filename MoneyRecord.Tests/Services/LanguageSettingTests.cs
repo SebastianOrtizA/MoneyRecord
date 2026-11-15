@@ -74,6 +74,8 @@ public sealed class LanguageSettingTests : LanguageTestBase
     [InlineData("it", "Italiano")]
     [InlineData("de", "Deutsch")]
     [InlineData("tr", "Türkçe")]
+    [InlineData("id", "Indonesia")]
+    [InlineData("ru", "Русский")]
     public void Language_names_are_written_in_their_own_language(string code, string name)
     {
         LocalizationService.GetLanguageName(code).Should().Be(name);

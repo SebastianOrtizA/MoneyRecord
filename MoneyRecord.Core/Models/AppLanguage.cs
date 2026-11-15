@@ -10,8 +10,9 @@ namespace MoneyRecord.Models
     /// </summary>
     /// <param name="Code">Two-letter code ("pt"): the saved language setting and the resource suffix.</param>
     /// <param name="DefaultCulture">The culture used when the device has no region of this language, and the store locale ("pt-BR").</param>
+    /// <param name="PlayLocale">The store locale when Play names it differently from the culture (Indonesian is "id", not "id-ID").</param>
     /// <param name="ZeroIsSingular">"0 transaction" (French) rather than "0 transactions".</param>
-    public sealed record AppLanguage(string Code, string DefaultCulture, bool ZeroIsSingular = false)
+    public sealed record AppLanguage(string Code, string DefaultCulture, bool ZeroIsSingular = false, string? PlayLocale = null)
     {
         /// <summary>English first: it is also the fallback for every other device language.</summary>
         public static IReadOnlyList<AppLanguage> All { get; } =
@@ -23,6 +24,8 @@ namespace MoneyRecord.Models
             new("it", "it-IT"),
             new("de", "de-DE"),
             new("tr", "tr-TR"),
+            new("id", "id-ID", PlayLocale: "id"),
+            new("ru", "ru-RU"),
         ];
 
         public static AppLanguage English => All[0];

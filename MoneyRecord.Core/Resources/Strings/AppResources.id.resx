@@ -1,0 +1,3550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- App General -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>Money Record</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Ubah</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Kesalahan</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Konfirmasi</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ya</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Tidak</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Beranda</value>
+  </data>
+  <data name="Transfers" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="ManageAccounts" xml:space="preserve">
+    <value>Kelola Akun</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Akun</value>
+  </data>
+  <data name="IncomeCategories" xml:space="preserve">
+    <value>Kategori Pemasukan</value>
+  </data>
+  <data name="ExpenseCategories" xml:space="preserve">
+    <value>Kategori Pengeluaran</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Ringkasan</value>
+  </data>
+  <data name="SelectPeriod" xml:space="preserve">
+    <value>Pilih Periode</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>Dari:</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>Ke:</value>
+  </data>
+  <data name="TotalBalance" xml:space="preserve">
+    <value>Total saldo</value>
+  </data>
+  <data name="Incomes" xml:space="preserve">
+    <value>Pemasukan</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Pengeluaran</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Pemasukan</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>Pengeluaran</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Transaksi</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Ubah</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="CalendarMonth" xml:space="preserve">
+    <value>Bulan Kalender</value>
+  </data>
+  <data name="CalendarYear" xml:space="preserve">
+    <value>Tahun Kalender</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Hari Ini</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>Minggu Lalu</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>Bulan Lalu</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>Tahun Lalu</value>
+  </data>
+  <data name="CustomPeriod" xml:space="preserve">
+    <value>Periode Kustom</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>Tampilan Daftar</value>
+  </data>
+  <data name="GroupByCategory" xml:space="preserve">
+    <value>Per Kategori</value>
+  </data>
+  <data name="GroupByAccount" xml:space="preserve">
+    <value>Per Akun</value>
+  </data>
+  <data name="Ungrouped" xml:space="preserve">
+    <value>Tanpa Grup</value>
+  </data>
+  <data name="Grouped" xml:space="preserve">
+    <value>Berkelompok</value>
+  </data>
+  <data name="SortOldestFirst" xml:space="preserve">
+    <value>Terlama Dulu</value>
+  </data>
+  <data name="SortNewestFirst" xml:space="preserve">
+    <value>Terbaru Dulu</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Urutkan</value>
+  </data>
+  <data name="AddTransaction" xml:space="preserve">
+    <value>Tambah Transaksi</value>
+  </data>
+  <data name="AddIncome" xml:space="preserve">
+    <value>Tambah Pemasukan</value>
+  </data>
+  <data name="AddExpense" xml:space="preserve">
+    <value>Tambah Pengeluaran</value>
+  </data>
+  <data name="EditIncome" xml:space="preserve">
+    <value>Ubah Pemasukan</value>
+  </data>
+  <data name="EditExpense" xml:space="preserve">
+    <value>Ubah Pengeluaran</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Tanggal</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Deskripsi</value>
+  </data>
+  <data name="EnterDescription" xml:space="preserve">
+    <value>Masukkan deskripsi</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Akun</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Pilih Akun</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>Pilih Kategori</value>
+  </data>
+  <data name="NewTransfer" xml:space="preserve">
+    <value>Transfer Baru</value>
+  </data>
+  <data name="EditTransfer" xml:space="preserve">
+    <value>Ubah Transfer</value>
+  </data>
+  <data name="NoTransfers" xml:space="preserve">
+    <value>Belum ada transfer</value>
+  </data>
+  <data name="TransferBetweenAccounts" xml:space="preserve">
+    <value>Pindahkan uang antar akunmu</value>
+  </data>
+  <data name="FromAccount" xml:space="preserve">
+    <value>Dari Akun *</value>
+  </data>
+  <data name="ToAccount" xml:space="preserve">
+    <value>Ke Akun *</value>
+  </data>
+  <data name="SelectSourceAccount" xml:space="preserve">
+    <value>Pilih Akun Asal</value>
+  </data>
+  <data name="SelectDestinationAccount" xml:space="preserve">
+    <value>Pilih Akun Tujuan</value>
+  </data>
+  <data name="TransferButton" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="TransferDescription" xml:space="preserve">
+    <value>Deskripsi</value>
+  </data>
+  <data name="TransferOptional" xml:space="preserve">
+    <value>Transfer (opsional)</value>
+  </data>
+  <data name="FromLabel" xml:space="preserve">
+    <value>Dari:</value>
+  </data>
+  <data name="ToLabel" xml:space="preserve">
+    <value>Ke:</value>
+  </data>
+  <data name="AddNewAccount" xml:space="preserve">
+    <value>Tambah Akun Baru</value>
+  </data>
+  <data name="EditAccount" xml:space="preserve">
+    <value>Ubah Akun</value>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Nama Akun</value>
+  </data>
+  <data name="AccountNamePlaceholder" xml:space="preserve">
+    <value>mis. Rekening Bank, Tunai, Kartu Kredit</value>
+  </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>Saldo Awal</value>
+  </data>
+  <data name="SelectIcon" xml:space="preserve">
+    <value>Pilih Ikon</value>
+  </data>
+  <data name="AddAccountButton" xml:space="preserve">
+    <value>Tambah Akun</value>
+  </data>
+  <data name="UpdateAccount" xml:space="preserve">
+    <value>Perbarui Akun</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>Batalkan Perubahan</value>
+  </data>
+  <data name="NoAccounts" xml:space="preserve">
+    <value>Belum ada akun. Ketuk + untuk menambah akun pertamamu.</value>
+  </data>
+  <data name="AllowNegativeBalance" xml:space="preserve">
+    <value>Izinkan saldo negatif</value>
+  </data>
+  <data name="InsufficientAccountBalance" xml:space="preserve">
+    <value>Pengeluaran ini akan membuat saldo negatif. Akun '{0}' tidak mengizinkan saldo negatif.</value>
+  </data>
+  <data name="NegativeBalanceNotAllowed" xml:space="preserve">
+    <value>Saldo awal negatif tidak diizinkan. Aktifkan 'Izinkan saldo negatif' untuk memakai nilai negatif.</value>
+  </data>
+  <data name="AddNewCategory" xml:space="preserve">
+    <value>Tambah Kategori Baru</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Ubah Kategori</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Nama kategori</value>
+  </data>
+  <data name="AddCategoryButton" xml:space="preserve">
+    <value>Tambah Kategori</value>
+  </data>
+  <data name="UpdateCategory" xml:space="preserve">
+    <value>Perbarui Kategori</value>
+  </data>
+  <data name="YourCategories" xml:space="preserve">
+    <value>Kategorimu</value>
+  </data>
+  <data name="NoCategories" xml:space="preserve">
+    <value>Belum ada kategori. Tambahkan kategori pertamamu di atas.</value>
+  </data>
+  <data name="TotalExpenses" xml:space="preserve">
+    <value>Total Pengeluaran</value>
+  </data>
+  <data name="TotalIncome" xml:space="preserve">
+    <value>Total Pemasukan</value>
+  </data>
+  <data name="CategoryBreakdown" xml:space="preserve">
+    <value>Rincian Kategori</value>
+  </data>
+  <data name="NoExpenseData" xml:space="preserve">
+    <value>Tidak ada data pengeluaran untuk periode ini</value>
+  </data>
+  <data name="NoIncomeData" xml:space="preserve">
+    <value>Tidak ada data pemasukan untuk periode ini</value>
+  </data>
+  <data name="AddExpensesToStart" xml:space="preserve">
+    <value>Tambahkan pengeluaran untuk melihat rincian pengeluaranmu</value>
+  </data>
+  <data name="AddIncomeToStart" xml:space="preserve">
+    <value>Tambahkan pemasukan untuk melihat rincian penghasilanmu</value>
+  </data>
+  <data name="NoExpenseDataFound" xml:space="preserve">
+    <value>Data pengeluaran tidak ditemukan</value>
+  </data>
+  <data name="NoIncomeDataFound" xml:space="preserve">
+    <value>Data pemasukan tidak ditemukan</value>
+  </data>
+  <data name="AddExpenseTransactionsToSee" xml:space="preserve">
+    <value>Tambahkan transaksi pengeluaran untuk melihat analisis pengeluaranmu</value>
+  </data>
+  <data name="AddIncomeTransactionsToSee" xml:space="preserve">
+    <value>Tambahkan transaksi pemasukan untuk melihat analisis penghasilanmu</value>
+  </data>
+  <data name="PleaseEnterValidAmount" xml:space="preserve">
+    <value>Masukkan jumlah yang valid</value>
+  </data>
+  <data name="PleaseSelectAccount" xml:space="preserve">
+    <value>Pilih sebuah akun</value>
+  </data>
+  <data name="PleaseSelectCategory" xml:space="preserve">
+    <value>Pilih sebuah kategori</value>
+  </data>
+  <data name="PleaseEnterCategoryName" xml:space="preserve">
+    <value>Masukkan nama kategori</value>
+  </data>
+  <data name="PleaseEnterAccountName" xml:space="preserve">
+    <value>Masukkan nama akun</value>
+  </data>
+  <data name="PleaseSelectSourceAccount" xml:space="preserve">
+    <value>Pilih akun asal</value>
+  </data>
+  <data name="PleaseSelectDestinationAccount" xml:space="preserve">
+    <value>Pilih akun tujuan</value>
+  </data>
+  <data name="SourceDestinationMustBeDifferent" xml:space="preserve">
+    <value>Akun asal dan tujuan harus berbeda</value>
+  </data>
+  <data name="InsufficientFunds" xml:space="preserve">
+    <value>Dana di akun asal tidak cukup</value>
+  </data>
+  <data name="DeleteTransaction" xml:space="preserve">
+    <value>Hapus Transaksi</value>
+  </data>
+  <data name="DeleteTransactionConfirm" xml:space="preserve">
+    <value>Yakin ingin menghapus transaksi ini?</value>
+  </data>
+  <data name="DeleteTransfer" xml:space="preserve">
+    <value>Hapus Transfer</value>
+  </data>
+  <data name="DeleteTransferConfirm" xml:space="preserve">
+    <value>Yakin ingin menghapus transfer ini?</value>
+  </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Hapus Kategori</value>
+  </data>
+  <data name="DeleteCategoryConfirm" xml:space="preserve">
+    <value>Yakin ingin menghapus kategori ini?</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Hapus Akun</value>
+  </data>
+  <data name="DeleteAccountConfirm" xml:space="preserve">
+    <value>Yakin ingin menghapus akun ini?</value>
+  </data>
+  <data name="CannotDelete" xml:space="preserve">
+    <value>Tidak Bisa Dihapus</value>
+  </data>
+  <data name="LastCategoryCannotDelete" xml:space="preserve">
+    <value>Ini kategori terakhir dari jenisnya. Kategori ini tidak bisa dihapus selama masih punya transaksi. Buat kategori lain dulu.</value>
+  </data>
+  <data name="CategoryHasTransactions" xml:space="preserve">
+    <value>Pilih kategori baru untuk '{0}':</value>
+  </data>
+  <data name="AvailableBalance" xml:space="preserve">
+    <value>Tersedia: {0}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Kembali</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="NoCategoriesYet" xml:space="preserve">
+    <value>Belum ada kategori</value>
+  </data>
+  <data name="DefaultAccountCash" xml:space="preserve">
+    <value>Tunai</value>
+  </data>
+  <data name="DefaultCategorySalary" xml:space="preserve">
+    <value>Gaji</value>
+  </data>
+  <data name="DefaultCategoryFreelance" xml:space="preserve">
+    <value>Freelance</value>
+  </data>
+  <data name="DefaultCategoryInvestment" xml:space="preserve">
+    <value>Investasi</value>
+  </data>
+  <data name="DefaultCategoryOtherIncome" xml:space="preserve">
+    <value>Pemasukan Lain</value>
+  </data>
+  <data name="DefaultCategoryFood" xml:space="preserve">
+    <value>Makanan</value>
+  </data>
+  <data name="DefaultCategoryTransportation" xml:space="preserve">
+    <value>Transportasi</value>
+  </data>
+  <data name="DefaultCategoryEntertainment" xml:space="preserve">
+    <value>Hiburan</value>
+  </data>
+  <data name="DefaultCategoryUtilities" xml:space="preserve">
+    <value>Tagihan</value>
+  </data>
+  <data name="DefaultCategoryShopping" xml:space="preserve">
+    <value>Belanja</value>
+  </data>
+  <data name="DefaultCategoryHome" xml:space="preserve">
+    <value>Rumah</value>
+  </data>
+  <data name="DefaultCategoryOtherExpense" xml:space="preserve">
+    <value>Pengeluaran Lain</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Berhasil</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Konfirmasi Hapus</value>
+  </data>
+  <data name="YesDelete" xml:space="preserve">
+    <value>Ya, Hapus</value>
+  </data>
+  <data name="FailedToLoadAccountBalances" xml:space="preserve">
+    <value>Gagal memuat saldo akun</value>
+  </data>
+  <data name="FailedToLoadReportData" xml:space="preserve">
+    <value>Gagal memuat data laporan</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="CannotDeleteDefaultAccount" xml:space="preserve">
+    <value>Akun Tunai bawaan tidak bisa dihapus</value>
+  </data>
+  <data name="DeleteAccountWithTransactions" xml:space="preserve">
+    <value>Yakin ingin menghapus '{0}'?
+
+{1} transaksi dan {2} aturan berulang akan dipindahkan ke '{3}'.</value>
+  </data>
+  <data name="DeleteAccountNoTransactions" xml:space="preserve">
+    <value>Yakin ingin menghapus '{0}'?</value>
+  </data>
+  <data name="CategoryDeletedAndTransactionsMoved" xml:space="preserve">
+    <value>Kategori '{0}' dihapus dan {1} transaksi dipindahkan ke '{2}'</value>
+  </data>
+  <data name="DeleteCategoryConfirmation" xml:space="preserve">
+    <value>Yakin ingin menghapus '{0}'?</value>
+  </data>
+  <data name="TransferUpdatedSuccessfully" xml:space="preserve">
+    <value>Transfer berhasil diperbarui</value>
+  </data>
+  <data name="FailedToSaveTransfer" xml:space="preserve">
+    <value>Gagal menyimpan transfer</value>
+  </data>
+  <data name="FailedToLoadTransfers" xml:space="preserve">
+    <value>Gagal memuat transfer</value>
+  </data>
+  <data name="FailedToDeleteTransfer" xml:space="preserve">
+    <value>Gagal menghapus transfer</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Tersedia: {0}</value>
+  </data>
+  <data name="AddCategoryToBudget" xml:space="preserve">
+    <value>Tambah Kategori ke Anggaran</value>
+  </data>
+  <data name="BudgetLimit" xml:space="preserve">
+    <value>Batas Anggaran</value>
+  </data>
+  <data name="AddBudgetButton" xml:space="preserve">
+    <value>Tambah Anggaran</value>
+  </data>
+  <data name="NoBudgetsYet" xml:space="preserve">
+    <value>Belum ada anggaran</value>
+  </data>
+  <data name="AddBudgetToStart" xml:space="preserve">
+    <value>Ketuk + untuk menetapkan batas pengeluaran bagi sebuah kategori pengeluaran.</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>Sisa</value>
+  </data>
+  <data name="Exceeded" xml:space="preserve">
+    <value>Terlampaui</value>
+  </data>
+  <data name="TotalBudgeted" xml:space="preserve">
+    <value>Dianggarkan</value>
+  </data>
+  <data name="TotalSpent" xml:space="preserve">
+    <value>Terpakai</value>
+  </data>
+  <data name="TotalRemaining" xml:space="preserve">
+    <value>Sisa</value>
+  </data>
+  <data name="BudgetAddedSuccessfully" xml:space="preserve">
+    <value>Anggaran berhasil ditambahkan</value>
+  </data>
+  <data name="FailedToSaveBudget" xml:space="preserve">
+    <value>Gagal menyimpan anggaran</value>
+  </data>
+  <data name="DeleteBudgetConfirmation" xml:space="preserve">
+    <value>Yakin ingin menghapus '{0}' dari anggaranmu?</value>
+  </data>
+  <data name="FailedToDeleteBudget" xml:space="preserve">
+    <value>Gagal menghapus anggaran</value>
+  </data>
+  <data name="EditBudget" xml:space="preserve">
+    <value>Ubah Anggaran</value>
+  </data>
+  <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
+    <value>Transaksi berhasil diperbarui</value>
+  </data>
+  <data name="FailedToLoadTransactions" xml:space="preserve">
+    <value>Gagal memuat transaksi</value>
+  </data>
+  <data name="FailedToDeleteTransaction" xml:space="preserve">
+    <value>Gagal menghapus transaksi</value>
+  </data>
+  <data name="PerDay" xml:space="preserve">
+    <value>Per Hari</value>
+  </data>
+  <data name="PerMonth" xml:space="preserve">
+    <value>Per Bulan</value>
+  </data>
+  <data name="PerYear" xml:space="preserve">
+    <value>Per Tahun</value>
+  </data>
+  <data name="BudgetPeriod" xml:space="preserve">
+    <value>Periode Anggaran</value>
+  </data>
+  <data name="BudgetExceeded" xml:space="preserve">
+    <value>⚠️ Anggaran '{0}' terlampaui! Terpakai {1} dari batas {2}.</value>
+  </data>
+  <data name="BudgetNearLimit" xml:space="preserve">
+    <value>⚠️ Anggaran '{0}' hampir mencapai batas. Tersisa {1}.</value>
+  </data>
+  <data name="BudgetSummary" xml:space="preserve">
+    <value>Ringkasan Anggaran</value>
+  </data>
+  <data name="OnTrack" xml:space="preserve">
+    <value>Sesuai rencana</value>
+  </data>
+  <data name="OverBudget" xml:space="preserve">
+    <value>Melebihi anggaran</value>
+  </data>
+  <data name="RecurringTransactions" xml:space="preserve">
+    <value>Berulang</value>
+  </data>
+  <data name="MakeRecurring" xml:space="preserve">
+    <value>Jadikan Berulang</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Frekuensi</value>
+  </data>
+  <data name="SelectFrequency" xml:space="preserve">
+    <value>Pilih Frekuensi</value>
+  </data>
+  <data name="HasEndDate" xml:space="preserve">
+    <value>Atur Tanggal Berakhir</value>
+  </data>
+  <data name="EndDateOptional" xml:space="preserve">
+    <value>Tanggal Berakhir (opsional)</value>
+  </data>
+  <data name="FrequencyDaily" xml:space="preserve">
+    <value>Harian</value>
+  </data>
+  <data name="FrequencyWeekly" xml:space="preserve">
+    <value>Mingguan</value>
+  </data>
+  <data name="FrequencyBiweekly" xml:space="preserve">
+    <value>Tiap 2 Minggu</value>
+  </data>
+  <data name="FrequencyMonthly" xml:space="preserve">
+    <value>Bulanan</value>
+  </data>
+  <data name="FrequencyYearly" xml:space="preserve">
+    <value>Tahunan</value>
+  </data>
+  <data name="NextOccurrence" xml:space="preserve">
+    <value>Berikutnya</value>
+  </data>
+  <data name="NoRecurringTransactions" xml:space="preserve">
+    <value>Tidak ada transaksi berulang</value>
+  </data>
+  <data name="AddRecurringToStart" xml:space="preserve">
+    <value>Ketuk + untuk menjadwalkan, atau aktifkan "Jadikan Berulang" saat menambah transaksi</value>
+  </data>
+  <data name="DeleteRecurringConfirmation" xml:space="preserve">
+    <value>Yakin ingin menghapus transaksi berulang '{0}'?</value>
+  </data>
+  <data name="RecurringTransactionDeleted" xml:space="preserve">
+    <value>Transaksi berulang dihapus</value>
+  </data>
+  <data name="FailedToLoadRecurringTransactions" xml:space="preserve">
+    <value>Gagal memuat transaksi berulang</value>
+  </data>
+  <data name="FailedToDeleteRecurringTransaction" xml:space="preserve">
+    <value>Gagal menghapus transaksi berulang</value>
+  </data>
+  <data name="FailedToUpdateRecurringTransaction" xml:space="preserve">
+    <value>Gagal memperbarui transaksi berulang</value>
+  </data>
+  <data name="SpecificDayOfMonth" xml:space="preserve">
+    <value>Tanggal Tertentu dalam Bulan</value>
+  </data>
+  <data name="SelectDay" xml:space="preserve">
+    <value>Pilih Tanggal</value>
+  </data>
+  <data name="DayN" xml:space="preserve">
+    <value>tanggal {0}</value>
+  </data>
+  <data name="EditRecurring" xml:space="preserve">
+    <value>Ubah Transaksi Berulang</value>
+  </data>
+  <data name="RecurringTransactionUpdated" xml:space="preserve">
+    <value>Transaksi berulang diperbarui</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
+  <data name="BackupRestore" xml:space="preserve">
+    <value>Cadangan &amp; Pemulihan</value>
+  </data>
+  <data name="BackupRestoreDescription" xml:space="preserve">
+    <value>Ekspor datamu atau pulihkan dari cadangan</value>
+  </data>
+  <data name="ExportFullBackup" xml:space="preserve">
+    <value>Ekspor Cadangan Lengkap (dengan struk)</value>
+  </data>
+  <data name="SaveBackupLocal" xml:space="preserve">
+    <value>Simpan Cadangan ke Perangkat</value>
+  </data>
+  <data name="ShareBackupExternal" xml:space="preserve">
+    <value>Bagikan Cadangan</value>
+  </data>
+  <data name="ExportTransactionsCsv" xml:space="preserve">
+    <value>Ekspor Transaksi (CSV)</value>
+  </data>
+  <data name="RestoreFromBackup" xml:space="preserve">
+    <value>Pulihkan dari Cadangan</value>
+  </data>
+  <data name="RestoreNote" xml:space="preserve">
+    <value>Memulihkan cadangan akan mengganti semua data saat ini. Data saat ini disimpan dulu, jadi pemulihan bisa dibatalkan.</value>
+  </data>
+  <data name="ShareBackup" xml:space="preserve">
+    <value>Bagikan Cadangan</value>
+  </data>
+  <data name="ShareTransactions" xml:space="preserve">
+    <value>Bagikan Transaksi</value>
+  </data>
+  <data name="BackupCreatedSuccessfully" xml:space="preserve">
+    <value>Cadangan berhasil dibuat</value>
+  </data>
+  <data name="CsvExportedSuccessfully" xml:space="preserve">
+    <value>CSV berhasil diekspor</value>
+  </data>
+  <data name="FailedToCreateBackup" xml:space="preserve">
+    <value>Gagal membuat cadangan</value>
+  </data>
+  <data name="FailedToExportCsv" xml:space="preserve">
+    <value>Gagal mengekspor CSV</value>
+  </data>
+  <data name="ConfirmRestore" xml:space="preserve">
+    <value>Konfirmasi Pemulihan</value>
+  </data>
+  <data name="RestoreWarning" xml:space="preserve">
+    <value>Ini akan mengganti SEMUA data saat ini dengan data cadangan. Data saat ini disimpan dulu, jadi kamu bisa membatalkan pemulihan. Lanjutkan?</value>
+  </data>
+  <data name="YesRestore" xml:space="preserve">
+    <value>Ya, Pulihkan</value>
+  </data>
+  <data name="FailedToRestore" xml:space="preserve">
+    <value>Gagal memulihkan cadangan</value>
+  </data>
+  <data name="RestoreSuccessful" xml:space="preserve">
+    <value>{0} catatan dipulihkan. Datamu sebelumnya disimpan sebagai {1}; kamu bisa memulihkannya nanti dari daftar cadangan.</value>
+  </data>
+  <data name="RestoreComplete" xml:space="preserve">
+    <value>Pemulihan selesai</value>
+  </data>
+  <data name="UndoRestore" xml:space="preserve">
+    <value>Batalkan pemulihan</value>
+  </data>
+  <data name="RestoreUndone" xml:space="preserve">
+    <value>Pemulihan dibatalkan: datamu sebelumnya kembali</value>
+  </data>
+  <data name="SelectBackupFile" xml:space="preserve">
+    <value>Pilih File Cadangan</value>
+  </data>
+  <data name="BaseCurrency" xml:space="preserve">
+    <value>Mata Uang Dasar</value>
+  </data>
+  <data name="BaseCurrencyDescription" xml:space="preserve">
+    <value>Total dan laporan ditampilkan dalam mata uang ini. Saldo dalam mata uang lain dicantumkan terpisah, tidak pernah dijumlahkan.</value>
+  </data>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>Konversi sebelum menghapus</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>'{0}' memakai {1} dan akun bawaan '{2}' memakai {3}. Transaksi dan aturan berulangnya pindah ke '{2}', jadi jumlahnya dikonversi. Masukkan kurs atau jumlah akhir: masing-masing mengisi yang lain.</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>Kurs</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>Total bersih transaksinya: {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>Bernilai dalam {0}</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>Transaksinya berjumlah nol, jadi hanya kurs yang bisa dimasukkan.</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>Ini tidak bisa dibatalkan.</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>Konversi dan hapus</value>
+  </data>
+  <data name="SearchTransactions" xml:space="preserve">
+    <value>Cari transaksi...</value>
+  </data>
+  <data name="FilterByType" xml:space="preserve">
+    <value>Jenis</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="FilterByAccount" xml:space="preserve">
+    <value>Akun</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Semua Kategori</value>
+  </data>
+  <data name="AllAccounts" xml:space="preserve">
+    <value>Semua Akun</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>Min</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Maks</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="Trends" xml:space="preserve">
+    <value>Tren</value>
+  </data>
+  <data name="NoTrendsData" xml:space="preserve">
+    <value>Data tren tidak tersedia</value>
+  </data>
+  <data name="AddTransactionsForTrends" xml:space="preserve">
+    <value>Tambahkan transaksi untuk melihat tren dan pola pengeluaranmu</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="TagsPlaceholder" xml:space="preserve">
+    <value>mis. belanja, mingguan, mendesak</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>Struk</value>
+  </data>
+  <data name="ReceiptAttached" xml:space="preserve">
+    <value>Struk terlampir</value>
+  </data>
+  <data name="CameraNotSupported" xml:space="preserve">
+    <value>Kamera tidak didukung di perangkat ini</value>
+  </data>
+  <data name="FailedToTakePhoto" xml:space="preserve">
+    <value>Gagal mengambil foto</value>
+  </data>
+  <data name="FailedToPickPhoto" xml:space="preserve">
+    <value>Gagal memilih foto</value>
+  </data>
+  <data name="ViewReceipt" xml:space="preserve">
+    <value>Lihat Struk</value>
+  </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>Hapus foto</value>
+  </data>
+  <data name="CloseReceipt" xml:space="preserve">
+    <value>Tutup struk</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Mata Uang</value>
+  </data>
+  <data name="SelectCurrency" xml:space="preserve">
+    <value>Pilih Mata Uang</value>
+  </data>
+  <data name="DefaultCurrency" xml:space="preserve">
+    <value>Mata Uang Bawaan</value>
+  </data>
+  <data name="RecentTransactions" xml:space="preserve">
+    <value>Transaksi Terbaru</value>
+  </data>
+  <data name="NetIncome" xml:space="preserve">
+    <value>Bersih</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>Aksi Cepat</value>
+  </data>
+  <data name="AccountHasTransfers" xml:space="preserve">
+    <value>'{0}' punya {1} transfer. Hapus dulu di halaman Transfer, agar saldo akun lain tetap benar.</value>
+  </data>
+  <data name="ConfirmCategoryMove" xml:space="preserve">
+    <value>Pindahkan {0} transaksi dan {1} aturan berulang dari '{2}' ke '{3}', lalu hapus '{2}'?</value>
+  </data>
+  <data name="CategoryBudgetMoves" xml:space="preserve">
+    <value>Anggarannya pindah ke '{0}'.</value>
+  </data>
+  <data name="CategoryBudgetDeleted" xml:space="preserve">
+    <value>Anggarannya akan dihapus, karena '{0}' sudah punya anggaran.</value>
+  </data>
+  <data name="DeleteCategoryWithBudget" xml:space="preserve">
+    <value>Yakin ingin menghapus '{0}'? Anggarannya juga akan dihapus.</value>
+  </data>
+  <data name="DeleteFailedDataChanged" xml:space="preserve">
+    <value>Tidak bisa menghapus '{0}' karena datanya berubah. Coba lagi.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Tidak diketahui</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Semua</value>
+  </data>
+  <data name="TransferToAccount" xml:space="preserve">
+    <value>Transfer ke {0}</value>
+  </data>
+  <data name="TransferFromAccount" xml:space="preserve">
+    <value>Transfer dari {0}</value>
+  </data>
+  <data name="TransactionCountOne" xml:space="preserve">
+    <value>{0} transaksi</value>
+  </data>
+  <data name="TransactionCountOther" xml:space="preserve">
+    <value>{0} transaksi</value>
+  </data>
+  <data name="DefaultTransferDescription" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="FailedToDeleteAccount" xml:space="preserve">
+    <value>Gagal menghapus akun</value>
+  </data>
+  <data name="FailedToDeleteCategory" xml:space="preserve">
+    <value>Gagal menghapus kategori</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Laporan</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Anggaran</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Lainnya</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Tambah baru</value>
+  </data>
+  <data name="AddNewHint" xml:space="preserve">
+    <value>Ketuk dua kali dan tahan untuk langsung menambah pengeluaran</value>
+  </data>
+  <data name="DuplicateButton" xml:space="preserve">
+    <value>Duplikat</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>Lihat semua</value>
+  </data>
+  <data name="ShowingCurrencyAccounts" xml:space="preserve">
+    <value>{0} akun</value>
+  </data>
+  <data name="ShowAllAccounts" xml:space="preserve">
+    <value>Tampilkan semua</value>
+  </data>
+  <data name="FilterByAmount" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="FilterByTag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="AllTags" xml:space="preserve">
+    <value>Semua Tag</value>
+  </data>
+  <data name="NoTransactionsInPeriod" xml:space="preserve">
+    <value>Tidak ada transaksi di periode ini</value>
+  </data>
+  <data name="AddEntryHint" xml:space="preserve">
+    <value>Ketuk + untuk menambah pengeluaran, pemasukan, atau transfer.</value>
+  </data>
+  <data name="NoMatchingTransactions" xml:space="preserve">
+    <value>Tidak ada transaksi yang cocok dengan filter ini</value>
+  </data>
+  <data name="TryOtherFilters" xml:space="preserve">
+    <value>Ubah atau hapus filter untuk melihat lebih banyak.</value>
+  </data>
+  <data name="FilteredOfTotal" xml:space="preserve">
+    <value>{0} dari {1}</value>
+  </data>
+  <data name="MoreDetails" xml:space="preserve">
+    <value>Detail lainnya</value>
+  </data>
+  <data name="LastActivityDate" xml:space="preserve">
+    <value>Aktivitas terakhir: {0}</value>
+  </data>
+  <data name="AccountCountOne" xml:space="preserve">
+    <value>{0} akun</value>
+  </data>
+  <data name="AccountCountOther" xml:space="preserve">
+    <value>{0} akun</value>
+  </data>
+  <data name="NearLimit" xml:space="preserve">
+    <value>Mendekati batas</value>
+  </data>
+  <data name="NoCategoriesLeftForBudget" xml:space="preserve">
+    <value>Setiap kategori pengeluaran sudah punya anggaran.</value>
+  </data>
+  <data name="BudgetSpentOfLimit" xml:space="preserve">
+    <value>{0} dari {1}</value>
+  </data>
+  <data name="HomeSpentLine" xml:space="preserve">
+    <value>{0}: terpakai {1}</value>
+  </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value>Sisa {0}</value>
+  </data>
+  <data name="BudgetOver" xml:space="preserve">
+    <value>Lebih {0}</value>
+  </data>
+  <data name="OtherCategories" xml:space="preserve">
+    <value>Lainnya</value>
+  </data>
+  <data name="Spending" xml:space="preserve">
+    <value>Pengeluaran</value>
+  </data>
+  <data name="DeltaVsPrevious" xml:space="preserve">
+    <value>{0} dibanding periode sebelumnya</value>
+  </data>
+  <data name="DeltaNoChange" xml:space="preserve">
+    <value>Sama dengan periode sebelumnya</value>
+  </data>
+  <data name="DeltaNothingBefore" xml:space="preserve">
+    <value>Tidak ada data di periode sebelumnya</value>
+  </data>
+  <data name="CashFlow" xml:space="preserve">
+    <value>Arus kas</value>
+  </data>
+  <data name="NetCashFlow" xml:space="preserve">
+    <value>Arus kas bersih</value>
+  </data>
+  <data name="NetWorth" xml:space="preserve">
+    <value>Kekayaan bersih</value>
+  </data>
+  <data name="NetWorthCurrencyOnly" xml:space="preserve">
+    <value>Hanya akun dalam {0}</value>
+  </data>
+  <data name="BudgetVsActual" xml:space="preserve">
+    <value>Anggaran vs aktual</value>
+  </data>
+  <data name="BudgetSeries" xml:space="preserve">
+    <value>Anggaran</value>
+  </data>
+  <data name="SpentSeries" xml:space="preserve">
+    <value>Terpakai</value>
+  </data>
+  <data name="NetSeries" xml:space="preserve">
+    <value>Bersih</value>
+  </data>
+  <data name="MonthsShown" xml:space="preserve">
+    <value>Bulan</value>
+  </data>
+  <data name="TotalSpending" xml:space="preserve">
+    <value>Pengeluaran di bulan-bulan ini</value>
+  </data>
+  <data name="SetupAssistant" xml:space="preserve">
+    <value>Asisten penyiapan</value>
+  </data>
+  <data name="SetupAssistantDescription" xml:space="preserve">
+    <value>Bahasa, mata uang dasar, akun awal, dan kategori</value>
+  </data>
+  <data name="SetupWelcome" xml:space="preserve">
+    <value>Selamat datang di MoneyRecord</value>
+  </data>
+  <data name="SetupStepOf" xml:space="preserve">
+    <value>Langkah {0} dari {1}</value>
+  </data>
+  <data name="SetupLanguageTitle" xml:space="preserve">
+    <value>Bahasa dan mata uang</value>
+  </data>
+  <data name="SetupLanguageDescription" xml:space="preserve">
+    <value>Pilih bahasa aplikasi dan mata uang untuk menampilkan totalmu.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
+  <data name="SystemDefault" xml:space="preserve">
+    <value>Bawaan sistem</value>
+  </data>
+  <data name="SetupAccountsTitle" xml:space="preserve">
+    <value>Akun awal</value>
+  </data>
+  <data name="SetupAccountsDescription" xml:space="preserve">
+    <value>Di mana kamu menyimpan uang? Masukkan isi tiap akun saat ini, dalam {0}.</value>
+  </data>
+  <data name="SetupAccountsAddDescription" xml:space="preserve">
+    <value>Akun baru ditambahkan ke akun yang sudah kamu punya, dalam {0}.</value>
+  </data>
+  <data name="SetupCategoriesTitle" xml:space="preserve">
+    <value>Pilih kategorimu</value>
+  </data>
+  <data name="SetupCategoriesDescription" xml:space="preserve">
+    <value>Hapus centang pada yang tidak akan kamu pakai. Kamu bisa menambah kategori sendiri nanti.</value>
+  </data>
+  <data name="SetupCategoriesAddDescription" xml:space="preserve">
+    <value>Kategori bercentang yang belum kamu punya akan ditambahkan.</value>
+  </data>
+  <data name="SetupNeedsAccount" xml:space="preserve">
+    <value>Tambahkan minimal satu akun dengan nama.</value>
+  </data>
+  <data name="SetupFailed" xml:space="preserve">
+    <value>Penyiapan tidak bisa disimpan. Coba lagi.</value>
+  </data>
+  <data name="SetupGetStarted" xml:space="preserve">
+    <value>Mulai</value>
+  </data>
+  <data name="RemoveAccount" xml:space="preserve">
+    <value>Hapus akun</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Lanjut</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Lewati</value>
+  </data>
+  <data name="LanguageAndAppearance" xml:space="preserve">
+    <value>Bahasa dan tampilan</value>
+  </data>
+  <data name="LanguageAndAppearanceDescription" xml:space="preserve">
+    <value>Bahasa aplikasi dan tampilan terang atau gelap</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Terang</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Gelap</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>Tentang</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Versi, lisensi, dan komponen sumber terbuka</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Versi {0}</value>
+  </data>
+  <data name="AppLicenseNotice" xml:space="preserve">
+    <value>MoneyRecord adalah perangkat lunak bebas: kamu boleh mendistribusikan dan mengubahnya di bawah GNU Affero General Public License v3.0.</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Kode sumber</value>
+  </data>
+  <data name="OpenSourceComponents" xml:space="preserve">
+    <value>Komponen sumber terbuka</value>
+  </data>
+  <data name="OpenSourceComponentsDescription" xml:space="preserve">
+    <value>MoneyRecord dibuat dengan proyek-proyek ini. Ketuk salah satu untuk membaca lisensinya.</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>Lisensi</value>
+  </data>
+  <data name="FailedToOpenLicense" xml:space="preserve">
+    <value>Teks lisensi tidak bisa dibuka.</value>
+  </data>
+  <data name="FailedToOpenLink" xml:space="preserve">
+    <value>Tautan tidak bisa dibuka.</value>
+  </data>
+  <data name="ShareLogs" xml:space="preserve">
+    <value>Bagikan log</value>
+  </data>
+  <data name="ShareLogsDescription" xml:space="preserve">
+    <value>Log kesalahan, untuk melaporkan masalah. Hanya berisi detail teknis.</value>
+  </data>
+  <data name="NoLogsYet" xml:space="preserve">
+    <value>Belum ada isi di log.</value>
+  </data>
+  <data name="FailedToShareLogs" xml:space="preserve">
+    <value>Log tidak bisa dibagikan.</value>
+  </data>
+  <data name="CrashReports" xml:space="preserve">
+    <value>Kirim laporan crash</value>
+  </data>
+  <data name="CrashReportsDescription" xml:space="preserve">
+    <value>Saat aplikasi gagal, kirim detail teknis ke pengembang (lewat Sentry). Jumlah dan deskripsimu tidak disertakan. Mengaktifkannya berlaku saat aplikasi dimulai berikutnya.</value>
+  </data>
+  <data name="CrashReportsQuestionTitle" xml:space="preserve">
+    <value>Bantu tingkatkan MoneyRecord?</value>
+  </data>
+  <data name="CrashReportsQuestion" xml:space="preserve">
+    <value>Bolehkah aplikasi mengirim laporan crash saat terjadi masalah? Laporan hanya berisi detail teknis, seperti kesalahan dan versi Android, bukan jumlah atau deskripsimu. Kamu bisa mengubahnya di Pengaturan.</value>
+  </data>
+  <data name="CrashReportsAccept" xml:space="preserve">
+    <value>Kirim laporan</value>
+  </data>
+  <data name="CrashReportsDecline" xml:space="preserve">
+    <value>Tidak, terima kasih</value>
+  </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>Mendatang</value>
+  </data>
+  <data name="UpcomingSubtitle" xml:space="preserve">
+    <value>30 hari ke depan</value>
+  </data>
+  <data name="NoUpcoming" xml:space="preserve">
+    <value>Tidak ada jadwal dalam 30 hari ke depan</value>
+  </data>
+  <data name="RecurringSchedules" xml:space="preserve">
+    <value>Jadwal</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Besok</value>
+  </data>
+  <data name="InDaysOne" xml:space="preserve">
+    <value>{0} hari lagi</value>
+  </data>
+  <data name="InDaysOther" xml:space="preserve">
+    <value>{0} hari lagi</value>
+  </data>
+  <data name="Reminders" xml:space="preserve">
+    <value>Pengingat</value>
+  </data>
+  <data name="RemindersDescription" xml:space="preserve">
+    <value>Tagihan sebelum jatuh tempo dan anggaran yang mendekati batas</value>
+  </data>
+  <data name="BillReminders" xml:space="preserve">
+    <value>Pengingat tagihan</value>
+  </data>
+  <data name="BillRemindersOff" xml:space="preserve">
+    <value>Mati</value>
+  </data>
+  <data name="BillRemindersSameDay" xml:space="preserve">
+    <value>Di hari itu</value>
+  </data>
+  <data name="DaysBeforeOne" xml:space="preserve">
+    <value>{0} hari sebelumnya</value>
+  </data>
+  <data name="DaysBeforeOther" xml:space="preserve">
+    <value>{0} hari sebelumnya</value>
+  </data>
+  <data name="BudgetAlerts" xml:space="preserve">
+    <value>Peringatan anggaran</value>
+  </data>
+  <data name="RecurringAddedAlerts" xml:space="preserve">
+    <value>Transaksi berulang ditambahkan</value>
+  </data>
+  <data name="ChannelBills" xml:space="preserve">
+    <value>Tagihan dan transaksi berulang</value>
+  </data>
+  <data name="BillDueTitle" xml:space="preserve">
+    <value>Tagihan jatuh tempo: {0}</value>
+  </data>
+  <data name="BudgetNearLimitTitle" xml:space="preserve">
+    <value>{0}: anggaran mendekati batas</value>
+  </data>
+  <data name="BudgetExceededTitle" xml:space="preserve">
+    <value>{0}: melebihi anggaran</value>
+  </data>
+  <data name="RecurringAddedOne" xml:space="preserve">
+    <value>{0} transaksi berulang ditambahkan</value>
+  </data>
+  <data name="RecurringAddedOther" xml:space="preserve">
+    <value>{0} transaksi berulang ditambahkan</value>
+  </data>
+  <data name="RemindersOfferTitle" xml:space="preserve">
+    <value>Aktifkan pengingat?</value>
+  </data>
+  <data name="RemindersOfferMessage" xml:space="preserve">
+    <value>MoneyRecord bisa mengingatkanmu sebelum tagihan jatuh tempo dan saat anggaran mendekati batas. Kamu bisa mengubahnya di Pengaturan.</value>
+  </data>
+  <data name="RemindersOfferAccept" xml:space="preserve">
+    <value>Aktifkan</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Nanti saja</value>
+  </data>
+  <data name="NotificationsBlockedTitle" xml:space="preserve">
+    <value>Notifikasi mati</value>
+  </data>
+  <data name="NotificationsBlockedMessage" xml:space="preserve">
+    <value>Izinkan notifikasi untuk MoneyRecord di pengaturan sistem agar mendapat pengingat.</value>
+  </data>
+  <data name="OpenSystemSettings" xml:space="preserve">
+    <value>Buka pengaturan</value>
+  </data>
+  <data name="AppLock" xml:space="preserve">
+    <value>Kunci aplikasi</value>
+  </data>
+  <data name="AppLockDescription" xml:space="preserve">
+    <value>Minta sidik jari, wajah, atau kunci layar ponsel untuk membuka MoneyRecord</value>
+  </data>
+  <data name="LockAfter" xml:space="preserve">
+    <value>Kunci setelah</value>
+  </data>
+  <data name="MinutesOne" xml:space="preserve">
+    <value>{0} menit</value>
+  </data>
+  <data name="MinutesOther" xml:space="preserve">
+    <value>{0} menit</value>
+  </data>
+  <data name="OneHour" xml:space="preserve">
+    <value>1 jam</value>
+  </data>
+  <data name="AppLocked" xml:space="preserve">
+    <value>MoneyRecord terkunci</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Buka kunci</value>
+  </data>
+  <data name="UnlockSubtitle" xml:space="preserve">
+    <value>Gunakan sidik jari, wajah, atau kunci layar ponsel</value>
+  </data>
+  <data name="TurnOnAppLock" xml:space="preserve">
+    <value>Aktifkan kunci aplikasi</value>
+  </data>
+  <data name="NoScreenLockTitle" xml:space="preserve">
+    <value>Tidak ada kunci layar</value>
+  </data>
+  <data name="NoScreenLockMessage" xml:space="preserve">
+    <value>Atur kunci layar (PIN, pola, kata sandi, atau sidik jari) di ponselmu dulu, lalu aktifkan kunci aplikasi.</value>
+  </data>
+  <data name="HideBalances" xml:space="preserve">
+    <value>Sembunyikan saldo</value>
+  </data>
+  <data name="ShowBalances" xml:space="preserve">
+    <value>Tampilkan saldo</value>
+  </data>
+  <data name="EncryptDatabase" xml:space="preserve">
+    <value>Enkripsi database</value>
+  </data>
+  <data name="EncryptDatabaseDescription" xml:space="preserve">
+    <value>Datamu dienkripsi dengan kunci yang disimpan di ponsel ini. Selama aktif, pencadangan otomatis Android tidak menyertakannya.</value>
+  </data>
+  <data name="EncryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Enkripsi database?</value>
+  </data>
+  <data name="EncryptDatabaseQuestion" xml:space="preserve">
+    <value>Kunci tetap di ponsel ini, jadi pencadangan otomatis Android dan pemindahan data antar ponsel tidak lagi menyertakan datamu. Sebelum berganti ponsel, simpan cadangan di Cadangan &amp; Pemulihan (file cadangan tidak dienkripsi).</value>
+  </data>
+  <data name="EncryptDatabaseAccept" xml:space="preserve">
+    <value>Enkripsi</value>
+  </data>
+  <data name="DecryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Matikan enkripsi?</value>
+  </data>
+  <data name="DecryptDatabaseQuestion" xml:space="preserve">
+    <value>Datamu akan disimpan tanpa enkripsi lagi, dan pencadangan otomatis Android akan menyertakannya.</value>
+  </data>
+  <data name="DecryptDatabaseAccept" xml:space="preserve">
+    <value>Matikan</value>
+  </data>
+  <data name="DatabaseEncrypted" xml:space="preserve">
+    <value>Database dienkripsi</value>
+  </data>
+  <data name="DatabaseDecrypted" xml:space="preserve">
+    <value>Enkripsi dimatikan</value>
+  </data>
+  <data name="FailedToChangeEncryption" xml:space="preserve">
+    <value>Enkripsi tidak bisa diubah. Datamu tidak berubah.</value>
+  </data>
+  <data name="UnreadableDatabaseTitle" xml:space="preserve">
+    <value>Data terenkripsi tidak bisa dibuka</value>
+  </data>
+  <data name="UnreadableDatabaseMessage" xml:space="preserve">
+    <value>Kunci database terenkripsimu sudah tidak ada di ponsel ini, jadi aplikasi dimulai dengan database baru. Pulihkan cadangan di Pengaturan untuk mengembalikan datamu.</value>
+  </data>
+  <data name="AmountReceived" xml:space="preserve">
+    <value>Jumlah diterima</value>
+  </data>
+  <data name="CrossCurrencyTransferHint" xml:space="preserve">
+    <value>Akun memakai mata uang berbeda ({0} → {1}): masukkan jumlah yang sampai.</value>
+  </data>
+  <data name="ExchangeRateValue" xml:space="preserve">
+    <value>Kurs: {0}</value>
+  </data>
+  <data name="BudgetNotCounted" xml:space="preserve">
+    <value>Tidak dihitung: {0}</value>
+  </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Kurs mata uang</value>
+  </data>
+  <data name="ExchangeRatesDescription" xml:space="preserve">
+    <value>Unduh kurs harian dari frankfurter.dev untuk mengonversi mata uang lain. Hanya kode mata uang dan tanggal yang dikirim.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Perbarui sekarang</value>
+  </data>
+  <data name="ExchangeRatesUpdated" xml:space="preserve">
+    <value>Diperbarui {0}</value>
+  </data>
+  <data name="ExchangeRatesNever" xml:space="preserve">
+    <value>Belum diunduh</value>
+  </data>
+  <data name="ExchangeRatesUpdating" xml:space="preserve">
+    <value>Memperbarui…</value>
+  </data>
+  <data name="ExchangeRatesUnavailable" xml:space="preserve">
+    <value>Tidak ada kurs untuk {0}</value>
+  </data>
+  <data name="ExchangeRatesFailed" xml:space="preserve">
+    <value>Kurs mata uang tidak bisa diunduh. Periksa koneksimu dan coba lagi.</value>
+  </data>
+  <data name="AmountInCurrency" xml:space="preserve">
+    <value>Jumlah dalam {0}</value>
+  </data>
+  <data name="ConvertedAmountHint" xml:space="preserve">
+    <value>Opsional: biayanya dalam {0}, sesuai yang tertera di mutasimu. Kosongkan untuk memakai kurs yang diunduh.</value>
+  </data>
+  <data name="ShowByCurrency" xml:space="preserve">
+    <value>Per mata uang</value>
+  </data>
+  <data name="ConvertedAtDailyRate" xml:space="preserve">
+    <value>≈ Dengan kurs harian · diperbarui {0}</value>
+  </data>
+  <data name="NoRateYet" xml:space="preserve">
+    <value>Belum ada kurs</value>
+  </data>
+  <data name="NotConvertedNote" xml:space="preserve">
+    <value>Belum ada kurs: {0}</value>
+  </data>
+  <data name="ImportColumnName" xml:space="preserve">
+    <value>Kolom {0}</value>
+  </data>
+  <data name="ImportStatement" xml:space="preserve">
+    <value>Impor mutasi bank</value>
+  </data>
+  <data name="ImportStatementDescription" xml:space="preserve">
+    <value>Tambahkan mutasi dari file CSV, OFX, atau QIF dari situs web banknya ke satu akun.</value>
+  </data>
+  <data name="ImportChooseFile" xml:space="preserve">
+    <value>Pilih file mutasi</value>
+  </data>
+  <data name="ImportChooseAnotherFile" xml:space="preserve">
+    <value>Pilih file lain</value>
+  </data>
+  <data name="ImportIntro" xml:space="preserve">
+    <value>Ekspor mutasimu dari situs web bank sebagai OFX, QIF, atau CSV, lalu pilih filenya di sini. Kamu memeriksa setiap baris sebelum apa pun ditambahkan.</value>
+  </data>
+  <data name="ImportRowsOne" xml:space="preserve">
+    <value>{0} baris</value>
+  </data>
+  <data name="ImportRowsOther" xml:space="preserve">
+    <value>{0} baris</value>
+  </data>
+  <data name="ImportNoTable" xml:space="preserve">
+    <value>Tidak ditemukan mutasi dengan tanggal dan jumlah di file ini.</value>
+  </data>
+  <data name="ImportFailedToRead" xml:space="preserve">
+    <value>File tidak bisa dibaca</value>
+  </data>
+  <data name="ImportDateColumn" xml:space="preserve">
+    <value>Kolom tanggal</value>
+  </data>
+  <data name="ImportDateFormat" xml:space="preserve">
+    <value>Format tanggal</value>
+  </data>
+  <data name="ImportDescriptionColumn" xml:space="preserve">
+    <value>Kolom deskripsi</value>
+  </data>
+  <data name="ImportAmountColumn" xml:space="preserve">
+    <value>Kolom jumlah</value>
+  </data>
+  <data name="ImportPositiveIsExpense" xml:space="preserve">
+    <value>Jumlah positif adalah pengeluaran (mutasi kartu kredit)</value>
+  </data>
+  <data name="ImportExpenseCategory" xml:space="preserve">
+    <value>Kategori untuk pengeluaran baru</value>
+  </data>
+  <data name="ImportIncomeCategory" xml:space="preserve">
+    <value>Kategori untuk pemasukan baru</value>
+  </data>
+  <data name="ImportCategoryHint" xml:space="preserve">
+    <value>Deskripsi yang pernah kamu pakai mendapat kategori yang sama seperti sebelumnya. Ketuk kategori sebuah baris untuk mengubahnya.</value>
+  </data>
+  <data name="ImportSummary" xml:space="preserve">
+    <value>Baru: {0} · Sudah tercatat: {1} · Tidak terbaca: {2}</value>
+  </data>
+  <data name="ImportAlreadyRecorded" xml:space="preserve">
+    <value>Sudah tercatat</value>
+  </data>
+  <data name="ImportProblemDate" xml:space="preserve">
+    <value>Tanggal tidak terbaca</value>
+  </data>
+  <data name="ImportProblemAmount" xml:space="preserve">
+    <value>Jumlah tidak terbaca</value>
+  </data>
+  <data name="ImportProblemZero" xml:space="preserve">
+    <value>Jumlah nol</value>
+  </data>
+  <data name="ImportProblemCurrency" xml:space="preserve">
+    <value>Dalam mata uang lain</value>
+  </data>
+  <data name="ImportButtonOne" xml:space="preserve">
+    <value>Impor {0} transaksi</value>
+  </data>
+  <data name="ImportButtonOther" xml:space="preserve">
+    <value>Impor {0} transaksi</value>
+  </data>
+  <data name="ImportDoneTitle" xml:space="preserve">
+    <value>Impor selesai</value>
+  </data>
+  <data name="ImportDoneMessage" xml:space="preserve">
+    <value>{0} ditambahkan ke {1}.</value>
+  </data>
+  <data name="ImportUndo" xml:space="preserve">
+    <value>Batalkan impor</value>
+  </data>
+  <data name="ImportUndone" xml:space="preserve">
+    <value>Impor dibatalkan</value>
+  </data>
+  <data name="ImportFailed" xml:space="preserve">
+    <value>Transaksi tidak bisa diimpor</value>
+  </data>
+  <data name="ImportLearnedCategory" xml:space="preserve">
+    <value>Kategori sama seperti sebelumnya</value>
+  </data>
+  <data name="ImportSavedMapping" xml:space="preserve">
+    <value>Kolom dan akun sama seperti impor terakhirmu dari file bank ini.</value>
+  </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>Ekspor {0} dikenali: kolom, tanda, dan kategori dibaca otomatis.</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>Buat kategori yang belum ada</value>
+  </data>
+  <data name="AutoBackups" xml:space="preserve">
+    <value>Cadangan otomatis</value>
+  </data>
+  <data name="AutoBackupsDescription" xml:space="preserve">
+    <value>Salinan semua datamu, dibuat otomatis di folder pilihanmu: di kartu SD atau di aplikasi cloud seperti Google Drive</value>
+  </data>
+  <data name="BackupFolder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="BackupFolderNone" xml:space="preserve">
+    <value>Belum dipilih</value>
+  </data>
+  <data name="ChooseFolder" xml:space="preserve">
+    <value>Pilih</value>
+  </data>
+  <data name="BackupFrequency" xml:space="preserve">
+    <value>Seberapa sering</value>
+  </data>
+  <data name="BackupDaily" xml:space="preserve">
+    <value>Setiap hari</value>
+  </data>
+  <data name="BackupWeekly" xml:space="preserve">
+    <value>Setiap minggu</value>
+  </data>
+  <data name="BackupMonthly" xml:space="preserve">
+    <value>Setiap bulan</value>
+  </data>
+  <data name="BackupsToKeep" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
+  <data name="BackupsOne" xml:space="preserve">
+    <value>{0} cadangan</value>
+  </data>
+  <data name="BackupsOther" xml:space="preserve">
+    <value>{0} cadangan</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Cadangan terakhir: {0}</value>
+  </data>
+  <data name="NoBackupYet" xml:space="preserve">
+    <value>Belum ada cadangan</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Mencadangkan…</value>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>Cadangan terakhir gagal ({0})</value>
+  </data>
+  <data name="BackupFolderUnavailable" xml:space="preserve">
+    <value>Aplikasi tidak bisa lagi mengakses folder itu. Pilih lagi.</value>
+  </data>
+  <data name="BackUpNow" xml:space="preserve">
+    <value>Cadangkan sekarang</value>
+  </data>
+  <data name="AutoBackupNote" xml:space="preserve">
+    <value>Hanya cadangan otomatis terbaru yang disimpan, dan yang baru dibuat hanya jika ada perubahan. Untuk memulihkannya, gunakan Pulihkan dari Cadangan → Pilih File Cadangan.</value>
+  </data>
+  <data name="BackupPassword" xml:space="preserve">
+    <value>Lindungi cadangan dengan kata sandi</value>
+  </data>
+  <data name="BackupPasswordDescription" xml:space="preserve">
+    <value>Cadangan, termasuk yang otomatis, dienkripsi. Tanpa kata sandi, cadangan tidak bisa dipulihkan, jadi simpan di tempat aman.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Ubah kata sandi</value>
+  </data>
+  <data name="BackupPasswordTitle" xml:space="preserve">
+    <value>Kata sandi cadangan</value>
+  </data>
+  <data name="BackupPasswordMessage" xml:space="preserve">
+    <value>Cadangan hanya bisa dipulihkan dengan kata sandi ini. Jika lupa, cadangan tidak bisa dibuka.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Kata sandi</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>Ulangi kata sandi</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>Kata sandi tidak cocok</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Masukkan kata sandi</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Tampilkan kata sandi</value>
+  </data>
+  <data name="RemoveBackupPasswordTitle" xml:space="preserve">
+    <value>Hapus kata sandi cadangan?</value>
+  </data>
+  <data name="RemoveBackupPasswordMessage" xml:space="preserve">
+    <value>Cadangan baru tidak akan dienkripsi. Cadangan yang dibuat dengan kata sandi tetap memerlukannya.</value>
+  </data>
+  <data name="RemovePassword" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="BackupPasswordSaved" xml:space="preserve">
+    <value>Kata sandi cadangan disimpan</value>
+  </data>
+  <data name="BackupPasswordRemoved" xml:space="preserve">
+    <value>Kata sandi cadangan dihapus</value>
+  </data>
+  <data name="RestorePasswordTitle" xml:space="preserve">
+    <value>Cadangan terlindungi</value>
+  </data>
+  <data name="RestorePasswordMessage" xml:space="preserve">
+    <value>Masukkan kata sandi yang dipakai untuk membuat cadangan ini.</value>
+  </data>
+  <data name="RestoreWrongPassword" xml:space="preserve">
+    <value>Kata sandi salah. Coba lagi.</value>
+  </data>
+  <data name="SavingsGoals" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="SavingsGoalsTitle" xml:space="preserve">
+    <value>Target tabungan</value>
+  </data>
+  <data name="AddGoal" xml:space="preserve">
+    <value>Tambah target</value>
+  </data>
+  <data name="EditGoal" xml:space="preserve">
+    <value>Ubah target</value>
+  </data>
+  <data name="GoalName" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="GoalNamePlaceholder" xml:space="preserve">
+    <value>mis. Liburan</value>
+  </data>
+  <data name="GoalTarget" xml:space="preserve">
+    <value>Jumlah target</value>
+  </data>
+  <data name="GoalHasTargetDate" xml:space="preserve">
+    <value>Capai pada tanggal tertentu</value>
+  </data>
+  <data name="GoalAccounts" xml:space="preserve">
+    <value>Akun penyimpan tabungan</value>
+  </data>
+  <data name="GoalAccountsHint" xml:space="preserve">
+    <value>Tersimpan = saldonya, atau isi sebuah kantong. Sebuah akun atau kantong hanya dihitung untuk satu target, dan akun tidak dicentang bersama kantongnya sendiri.</value>
+  </data>
+  <data name="GoalNoFreeAccounts" xml:space="preserve">
+    <value>Tidak ada akun bebas dalam {0}. Tambahkan di Akun.</value>
+  </data>
+  <data name="NoGoalsYet" xml:space="preserve">
+    <value>Belum ada target tabungan</value>
+  </data>
+  <data name="AddGoalToStart" xml:space="preserve">
+    <value>Tambahkan target dan tautkan akun yang menyimpan uangnya.</value>
+  </data>
+  <data name="PleaseEnterGoalName" xml:space="preserve">
+    <value>Masukkan nama untuk target</value>
+  </data>
+  <data name="PleaseSelectGoalAccount" xml:space="preserve">
+    <value>Pilih minimal satu akun</value>
+  </data>
+  <data name="GoalAdded" xml:space="preserve">
+    <value>Target ditambahkan</value>
+  </data>
+  <data name="FailedToLoadGoals" xml:space="preserve">
+    <value>Gagal memuat target</value>
+  </data>
+  <data name="FailedToSaveGoal" xml:space="preserve">
+    <value>Gagal menyimpan target</value>
+  </data>
+  <data name="FailedToDeleteGoal" xml:space="preserve">
+    <value>Gagal menghapus target</value>
+  </data>
+  <data name="DeleteGoalConfirmation" xml:space="preserve">
+    <value>Hapus target "{0}"? Akun dan uangnya tetap ada.</value>
+  </data>
+  <data name="GoalReached" xml:space="preserve">
+    <value>Tercapai</value>
+  </data>
+  <data name="GoalBehind" xml:space="preserve">
+    <value>Tertinggal</value>
+  </data>
+  <data name="GoalSavedOfTarget" xml:space="preserve">
+    <value>{0} dari {1}</value>
+  </data>
+  <data name="GoalNeededPerMonth" xml:space="preserve">
+    <value>Tabung {0} per bulan untuk mencapainya pada {1}</value>
+  </data>
+  <data name="GoalTargetDatePassed" xml:space="preserve">
+    <value>Tanggal targetnya {0}</value>
+  </data>
+  <data name="GoalNotEnoughHistory" xml:space="preserve">
+    <value>Riwayat belum cukup untuk proyeksi</value>
+  </data>
+  <data name="GoalNoRecentSavings" xml:space="preserve">
+    <value>Tidak ada tabungan dalam {0} bulan terakhir</value>
+  </data>
+  <data name="GoalAtYourPace" xml:space="preserve">
+    <value>Dengan lajumu: {0}</value>
+  </data>
+  <data name="GoalNotInSight" xml:space="preserve">
+    <value>Dengan lajumu, target tidak akan tercapai dalam waktu dekat</value>
+  </data>
+  <data name="GoalAccountsNotCounted" xml:space="preserve">
+    <value>Tidak dihitung (mata uang lain): {0}</value>
+  </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>Menyimpan akan menghapus akun yang kini memakai mata uang lain: {0}</value>
+  </data>
+  <data name="Payee" xml:space="preserve">
+    <value>Penerima</value>
+  </data>
+  <data name="PayeePlaceholder" xml:space="preserve">
+    <value>Toko atau orang (opsional)</value>
+  </data>
+  <data name="Payees" xml:space="preserve">
+    <value>Penerima</value>
+  </data>
+  <data name="SearchPayees" xml:space="preserve">
+    <value>Cari penerima</value>
+  </data>
+  <data name="NoMatchingPayees" xml:space="preserve">
+    <value>Tidak ada penerima yang cocok dengan pencarianmu.</value>
+  </data>
+  <data name="PayeeLastUsed" xml:space="preserve">
+    <value>terakhir {0}</value>
+  </data>
+  <data name="RenamePayee" xml:space="preserve">
+    <value>Ganti nama</value>
+  </data>
+  <data name="RenamePayeeMessage" xml:space="preserve">
+    <value>Nama baru untuk "{0}"</value>
+  </data>
+  <data name="PayeeExistsTitle" xml:space="preserve">
+    <value>Penerima sudah ada</value>
+  </data>
+  <data name="PayeeExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" sudah ada. Gabungkan "{0}" ke dalamnya?</value>
+  </data>
+  <data name="MergePayee" xml:space="preserve">
+    <value>Gabungkan ke penerima lain</value>
+  </data>
+  <data name="MergePayeeInto" xml:space="preserve">
+    <value>Gabungkan "{0}" ke</value>
+  </data>
+  <data name="MergePayeeConfirmMessage" xml:space="preserve">
+    <value>"{0}" dihapus dan yang memakainya ({2}) pindah ke "{1}".</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Gabungkan</value>
+  </data>
+  <data name="DeletePayee" xml:space="preserve">
+    <value>Hapus penerima</value>
+  </data>
+  <data name="DeletePayeeConfirmation" xml:space="preserve">
+    <value>Hapus "{0}"? Yang memakainya ({1}) tetap ada, tanpa penerima.</value>
+  </data>
+  <data name="PayeesMerged" xml:space="preserve">
+    <value>Penerima digabungkan</value>
+  </data>
+  <data name="PayeeDeleted" xml:space="preserve">
+    <value>Penerima dihapus</value>
+  </data>
+  <data name="FailedToLoadPayees" xml:space="preserve">
+    <value>Gagal memuat penerima</value>
+  </data>
+  <data name="FailedToSavePayee" xml:space="preserve">
+    <value>Gagal memperbarui penerima</value>
+  </data>
+  <data name="RecurringCountOne" xml:space="preserve">
+    <value>{0} berulang</value>
+  </data>
+  <data name="RecurringCountOther" xml:space="preserve">
+    <value>{0} berulang</value>
+  </data>
+  <data name="SplitPayment" xml:space="preserve">
+    <value>Bagi ke beberapa kategori</value>
+  </data>
+  <data name="AddSplitPart" xml:space="preserve">
+    <value>Tambah kategori</value>
+  </data>
+  <data name="SplitDescriptionPlaceholder" xml:space="preserve">
+    <value>Kategori tiap bagian</value>
+  </data>
+  <data name="SplitLeftToAssign" xml:space="preserve">
+    <value>Belum dialokasikan: {0}</value>
+  </data>
+  <data name="SplitOverBy" xml:space="preserve">
+    <value>Melebihi jumlah sebesar {0}</value>
+  </data>
+  <data name="SplitFullyAssigned" xml:space="preserve">
+    <value>Terbagi penuh</value>
+  </data>
+  <data name="SplitPartNeedsCategory" xml:space="preserve">
+    <value>Pilih kategori untuk setiap bagian</value>
+  </data>
+  <data name="SplitPartNeedsAmount" xml:space="preserve">
+    <value>Masukkan jumlah untuk setiap bagian</value>
+  </data>
+  <data name="SplitMustAddUp" xml:space="preserve">
+    <value>Total bagian harus {0}</value>
+  </data>
+  <data name="SplitPaymentLabel" xml:space="preserve">
+    <value>Pembayaran terbagi</value>
+  </data>
+  <data name="SplitPaymentTotal" xml:space="preserve">
+    <value>Pembayaran terbagi {0} dalam {1} bagian</value>
+  </data>
+  <data name="Debts" xml:space="preserve">
+    <value>Utang</value>
+  </data>
+  <data name="AddDebt" xml:space="preserve">
+    <value>Tambah utang</value>
+  </data>
+  <data name="EditDebt" xml:space="preserve">
+    <value>Ubah utang</value>
+  </data>
+  <data name="AddDebtToStart" xml:space="preserve">
+    <value>Catat uang yang kamu pinjamkan atau pinjam, lalu pembayarannya saat terjadi.</value>
+  </data>
+  <data name="NoDebtsYet" xml:space="preserve">
+    <value>Tidak ada utang terbuka</value>
+  </data>
+  <data name="NoPaidOffDebts" xml:space="preserve">
+    <value>Belum ada utang lunas</value>
+  </data>
+  <data name="DebtAdded" xml:space="preserve">
+    <value>Utang ditambahkan</value>
+  </data>
+  <data name="DebtsOpen" xml:space="preserve">
+    <value>Terbuka</value>
+  </data>
+  <data name="DebtsOwedToYou" xml:space="preserve">
+    <value>Utang kepadamu</value>
+  </data>
+  <data name="DebtsYouOwe" xml:space="preserve">
+    <value>Utangmu</value>
+  </data>
+  <data name="DebtOwesYou" xml:space="preserve">
+    <value>Berutang padamu</value>
+  </data>
+  <data name="DebtYouOwe" xml:space="preserve">
+    <value>Kamu berutang</value>
+  </data>
+  <data name="DebtILent" xml:space="preserve">
+    <value>Aku meminjamkan</value>
+  </data>
+  <data name="DebtIBorrowed" xml:space="preserve">
+    <value>Aku meminjam</value>
+  </data>
+  <data name="DebtPerson" xml:space="preserve">
+    <value>Orang</value>
+  </data>
+  <data name="DebtPersonPlaceholder" xml:space="preserve">
+    <value>Dengan siapa</value>
+  </data>
+  <data name="DebtAmountLent" xml:space="preserve">
+    <value>Jumlah dipinjamkan</value>
+  </data>
+  <data name="DebtAmountBorrowed" xml:space="preserve">
+    <value>Jumlah dipinjam</value>
+  </data>
+  <data name="DebtFromAccount" xml:space="preserve">
+    <value>Dibayar dari</value>
+  </data>
+  <data name="DebtIntoAccount" xml:space="preserve">
+    <value>Diterima di</value>
+  </data>
+  <data name="DebtPaidFromAccount" xml:space="preserve">
+    <value>Dibayar dari</value>
+  </data>
+  <data name="DebtPaidIntoAccount" xml:space="preserve">
+    <value>Diterima di</value>
+  </data>
+  <data name="DebtAlreadyOwedOption" xml:space="preserve">
+    <value>Sudah berutang (tanpa perpindahan uang)</value>
+  </data>
+  <data name="DebtAlreadyOwed" xml:space="preserve">
+    <value>Sudah berutang</value>
+  </data>
+  <data name="DebtNote" xml:space="preserve">
+    <value>Catatan</value>
+  </data>
+  <data name="DebtNotePlaceholder" xml:space="preserve">
+    <value>Untuk apa (opsional)</value>
+  </data>
+  <data name="DebtHasDueDate" xml:space="preserve">
+    <value>Jatuh tempo</value>
+  </data>
+  <data name="DebtHasSchedule" xml:space="preserve">
+    <value>Pembayaran terjadwal</value>
+  </data>
+  <data name="DebtScheduleAmount" xml:space="preserve">
+    <value>Tiap pembayaran</value>
+  </data>
+  <data name="DebtFirstPayment" xml:space="preserve">
+    <value>Pembayaran pertama</value>
+  </data>
+  <data name="DebtHasInterest" xml:space="preserve">
+    <value>Bagian bunga</value>
+  </data>
+  <data name="DebtInterestHint" xml:space="preserve">
+    <value>Disimpan sebagai pengeluaran (atau pemasukan) di kategori Bunga, di luar pembayaran.</value>
+  </data>
+  <data name="DebtHistory" xml:space="preserve">
+    <value>Riwayat</value>
+  </data>
+  <data name="DebtRecordPayment" xml:space="preserve">
+    <value>Catat pembayaran</value>
+  </data>
+  <data name="DebtLendMore" xml:space="preserve">
+    <value>Pinjamkan lagi</value>
+  </data>
+  <data name="DebtBorrowMore" xml:space="preserve">
+    <value>Pinjam lagi</value>
+  </data>
+  <data name="DebtLeft" xml:space="preserve">
+    <value>Sisa: {0}</value>
+  </data>
+  <data name="DebtPaymentTooLarge" xml:space="preserve">
+    <value>Itu melebihi sisa ({0}).</value>
+  </data>
+  <data name="DebtNoAccountInCurrency" xml:space="preserve">
+    <value>Tidak ada akun dalam {0}. Tambahkan dulu di Akun.</value>
+  </data>
+  <data name="DebtPaidOffToast" xml:space="preserve">
+    <value>Utang dengan {0} lunas</value>
+  </data>
+  <data name="DebtPaidOfTotal" xml:space="preserve">
+    <value>Dibayar kembali {0} dari {1}</value>
+  </data>
+  <data name="DebtDueOn" xml:space="preserve">
+    <value>Jatuh tempo {0}</value>
+  </data>
+  <data name="DebtNextPayment" xml:space="preserve">
+    <value>Pembayaran berikutnya {0} pada {1} · {2}</value>
+  </data>
+  <data name="DebtInterestTotal" xml:space="preserve">
+    <value>Bunga {0}</value>
+  </data>
+  <data name="DebtPaidOff" xml:space="preserve">
+    <value>Lunas</value>
+  </data>
+  <data name="DebtOverdue" xml:space="preserve">
+    <value>Terlambat</value>
+  </data>
+  <data name="DebtDueSoon" xml:space="preserve">
+    <value>Segera jatuh tempo</value>
+  </data>
+  <data name="DebtLent" xml:space="preserve">
+    <value>Dipinjamkan</value>
+  </data>
+  <data name="DebtBorrowed" xml:space="preserve">
+    <value>Dipinjam</value>
+  </data>
+  <data name="DebtPaidBack" xml:space="preserve">
+    <value>Dibayar kembali</value>
+  </data>
+  <data name="DebtInterest" xml:space="preserve">
+    <value>Bunga</value>
+  </data>
+  <data name="InterestCategory" xml:space="preserve">
+    <value>Bunga</value>
+  </data>
+  <data name="DebtPaymentTo" xml:space="preserve">
+    <value>Pembayaran ke {0}</value>
+  </data>
+  <data name="DebtPaymentFrom" xml:space="preserve">
+    <value>Pembayaran dari {0}</value>
+  </data>
+  <data name="DebtCountOne" xml:space="preserve">
+    <value>{0} utang</value>
+  </data>
+  <data name="DebtCountOther" xml:space="preserve">
+    <value>{0} utang</value>
+  </data>
+  <data name="DebtPaidOffLentTitle" xml:space="preserve">
+    <value>{0} sudah membayar lunas kepadamu</value>
+  </data>
+  <data name="DebtPaidOffBorrowedTitle" xml:space="preserve">
+    <value>Utangmu kepada {0} lunas</value>
+  </data>
+  <data name="DebtDueLentTitle" xml:space="preserve">
+    <value>{0} waktunya membayar kepadamu</value>
+  </data>
+  <data name="DebtDueBorrowedTitle" xml:space="preserve">
+    <value>Bayar kembali {0}</value>
+  </data>
+  <data name="DeleteDebtConfirmation" xml:space="preserve">
+    <value>Hapus utang dengan {0}? Riwayatnya ikut dihapus, jadi saldo akun kembali seperti tanpa utang ini.</value>
+  </data>
+  <data name="DeleteDebtMovementConfirmation" xml:space="preserve">
+    <value>Hapus "{0}" sebesar {1} ({2})?</value>
+  </data>
+  <data name="FailedToLoadDebts" xml:space="preserve">
+    <value>Gagal memuat utang</value>
+  </data>
+  <data name="FailedToSaveDebt" xml:space="preserve">
+    <value>Gagal menyimpan utang</value>
+  </data>
+  <data name="FailedToDeleteDebt" xml:space="preserve">
+    <value>Gagal menghapus utang</value>
+  </data>
+  <data name="PayeeHasDebts" xml:space="preserve">
+    <value>{0} punya utang. Hapus dulu di halaman Utang, atau gabungkan {0} ke penerima lain.</value>
+  </data>
+  <data name="PleaseEnterDebtPerson" xml:space="preserve">
+    <value>Masukkan dengan siapa utang ini</value>
+  </data>
+  <data name="DebtsPaidOff" xml:space="preserve">
+    <value>Lunas</value>
+  </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>Kelebihan bayar {0}</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>Tanpa ini, jumlah yang dibayar kembali melebihi yang dipinjamkan atau dipinjam. Hapus pembayarannya dulu.</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>Pembayaran utang diubah di halaman Utang</value>
+  </data>
+  <data name="WidgetPickAccount" xml:space="preserve">
+    <value>Akun mana yang ditampilkan widget?</value>
+  </data>
+  <data name="ScanReceipt" xml:space="preserve">
+    <value>Pindai struk</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Ambil foto</value>
+  </data>
+  <data name="ChoosePhoto" xml:space="preserve">
+    <value>Pilih dari galeri</value>
+  </data>
+  <data name="ReadingReceipt" xml:space="preserve">
+    <value>Membaca struk…</value>
+  </data>
+  <data name="ReceiptFilledIn" xml:space="preserve">
+    <value>Diisi dari struk: {0}</value>
+  </data>
+  <data name="ReceiptSays" xml:space="preserve">
+    <value>Struk tertulis {0}</value>
+  </data>
+  <data name="ReceiptNotRead" xml:space="preserve">
+    <value>Total atau tanggal tidak ditemukan di struk</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>Ekspor</value>
+  </data>
+  <data name="ExportReportFor" xml:space="preserve">
+    <value>Ekspor {0}</value>
+  </data>
+  <data name="ExportPdfReport" xml:space="preserve">
+    <value>Laporan PDF</value>
+  </data>
+  <data name="ExportPeriodCsv" xml:space="preserve">
+    <value>Transaksi (CSV)</value>
+  </data>
+  <data name="ShareReport" xml:space="preserve">
+    <value>Bagikan laporan</value>
+  </data>
+  <data name="FailedToExportReport" xml:space="preserve">
+    <value>Laporan tidak bisa dibuat</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>Laporan keuangan</value>
+  </data>
+  <data name="ReportCreatedOn" xml:space="preserve">
+    <value>Dibuat pada {0} dengan MoneyRecord</value>
+  </data>
+  <data name="ReportPageOf" xml:space="preserve">
+    <value>Halaman {0} dari {1}</value>
+  </data>
+  <data name="ReportSpendingByCategory" xml:space="preserve">
+    <value>Pengeluaran per kategori</value>
+  </data>
+  <data name="ReportIncomeByCategory" xml:space="preserve">
+    <value>Pemasukan per kategori</value>
+  </data>
+  <data name="ReportShare" xml:space="preserve">
+    <value>Porsi</value>
+  </data>
+  <data name="ReportLimit" xml:space="preserve">
+    <value>Batas</value>
+  </data>
+  <data name="ReportStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="ReportBalanceOn" xml:space="preserve">
+    <value>Saldo pada {0}</value>
+  </data>
+  <data name="ReportConvertedTo" xml:space="preserve">
+    <value>Dikonversi ke {0} dengan kurs harian (≈)</value>
+  </data>
+  <data name="ReportInCurrencyOnly" xml:space="preserve">
+    <value>Hanya jumlah dalam {0}; mata uang lain tercantum di ringkasan</value>
+  </data>
+  <data name="ReportTransfer" xml:space="preserve">
+    <value>Transfer</value>
+  </data>
+  <data name="ShowCents" xml:space="preserve">
+    <value>Tampilkan sen</value>
+  </data>
+  <data name="ShowCentsDescription" xml:space="preserve">
+    <value>Jika mati, jumlah ditampilkan bulat dalam mata uang itu. Jumlah tetap disimpan hingga sen.</value>
+  </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>Pemasukan</value>
+  </data>
+  <data name="AddRecurring" xml:space="preserve">
+    <value>Tambah transaksi berulang</value>
+  </data>
+  <data name="NewRecurringExpense" xml:space="preserve">
+    <value>Pengeluaran berulang baru</value>
+  </data>
+  <data name="NewRecurringIncome" xml:space="preserve">
+    <value>Pemasukan berulang baru</value>
+  </data>
+  <data name="FirstDate" xml:space="preserve">
+    <value>Tanggal pertama</value>
+  </data>
+  <data name="ScheduleStartsNote" xml:space="preserve">
+    <value>Hanya jadwalnya yang disimpan: catatan pertama dibuat pada {0}.</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>Bertanggal di masa depan: dihitung dalam saldo mulai {0}.</value>
+  </data>
+  <data name="ScheduleDateMustBeFuture" xml:space="preserve">
+    <value>Pilih tanggal pertama mulai besok.</value>
+  </data>
+  <data name="RecurringScheduled" xml:space="preserve">
+    <value>Transaksi berulang dijadwalkan</value>
+  </data>
+  <data name="TripCategoryLodging" xml:space="preserve">
+    <value>Penginapan</value>
+  </data>
+  <data name="TripCategoryFlights" xml:space="preserve">
+    <value>Penerbangan</value>
+  </data>
+  <data name="TripCategoryTransport" xml:space="preserve">
+    <value>Transportasi</value>
+  </data>
+  <data name="TripCategoryFood" xml:space="preserve">
+    <value>Makanan</value>
+  </data>
+  <data name="TripCategoryActivities" xml:space="preserve">
+    <value>Aktivitas</value>
+  </data>
+  <data name="TripCategoryShopping" xml:space="preserve">
+    <value>Belanja</value>
+  </data>
+  <data name="TripCategoryOther" xml:space="preserve">
+    <value>Lainnya</value>
+  </data>
+  <data name="TravelCategory" xml:space="preserve">
+    <value>Perjalanan</value>
+  </data>
+  <data name="TripActive" xml:space="preserve">
+    <value>Aktif</value>
+  </data>
+  <data name="TripEnded" xml:space="preserve">
+    <value>Selesai</value>
+  </data>
+  <data name="TripSince" xml:space="preserve">
+    <value>Sejak {0}</value>
+  </data>
+  <data name="SpentOfBudget" xml:space="preserve">
+    <value>{0} dari {1}</value>
+  </data>
+  <data name="TripSpent" xml:space="preserve">
+    <value>Terpakai {0}</value>
+  </data>
+  <data name="TripNotConverted" xml:space="preserve">
+    <value>Belum dikonversi: {0}</value>
+  </data>
+  <data name="TripBanner" xml:space="preserve">
+    <value>Perjalanan: {0}</value>
+  </data>
+  <data name="NotPartOfTrip" xml:space="preserve">
+    <value>Bukan bagian perjalanan</value>
+  </data>
+  <data name="TripInfo" xml:space="preserve">
+    <value>Perjalanan: {0} · {1}</value>
+  </data>
+  <data name="TripInfoOnly" xml:space="preserve">
+    <value>Perjalanan: {0}</value>
+  </data>
+  <data name="TripsTitle" xml:space="preserve">
+    <value>Perjalanan</value>
+  </data>
+  <data name="TripCategoriesTitle" xml:space="preserve">
+    <value>Kategori perjalanan</value>
+  </data>
+  <data name="AddTripCategory" xml:space="preserve">
+    <value>Tambah kategori perjalanan</value>
+  </data>
+  <data name="EditTripCategory" xml:space="preserve">
+    <value>Ubah kategori perjalanan</value>
+  </data>
+  <data name="FailedToLoadTrips" xml:space="preserve">
+    <value>Gagal memuat perjalanan</value>
+  </data>
+  <data name="FailedToSaveTrip" xml:space="preserve">
+    <value>Gagal menyimpan perjalanan</value>
+  </data>
+  <data name="FailedToDeleteTrip" xml:space="preserve">
+    <value>Gagal menghapus perjalanan</value>
+  </data>
+  <data name="FailedToSaveTripCategory" xml:space="preserve">
+    <value>Gagal menyimpan kategori perjalanan</value>
+  </data>
+  <data name="FailedToDeleteTripCategory" xml:space="preserve">
+    <value>Gagal menghapus kategori perjalanan</value>
+  </data>
+  <data name="LastTripCategoryCannotDelete" xml:space="preserve">
+    <value>Ini satu-satunya kategori perjalanan dan sedang dipakai, jadi tidak bisa dihapus.</value>
+  </data>
+  <data name="TripCategoryInUse" xml:space="preserve">
+    <value>"{0}" dipakai oleh pengeluaran atau batas perjalanan. Pindahkan ke:</value>
+  </data>
+  <data name="DeleteTripCategoryConfirmation" xml:space="preserve">
+    <value>Hapus kategori perjalanan "{0}"?</value>
+  </data>
+  <data name="StartTrip" xml:space="preserve">
+    <value>Mulai perjalanan</value>
+  </data>
+  <data name="EditTrip" xml:space="preserve">
+    <value>Ubah perjalanan</value>
+  </data>
+  <data name="TripName" xml:space="preserve">
+    <value>Nama perjalanan</value>
+  </data>
+  <data name="TripNamePlaceholder" xml:space="preserve">
+    <value>Bali, musim panas</value>
+  </data>
+  <data name="TripStartDate" xml:space="preserve">
+    <value>Tanggal mulai</value>
+  </data>
+  <data name="TripBudgetOptional" xml:space="preserve">
+    <value>Anggaran (opsional)</value>
+  </data>
+  <data name="TripDefaultAccount" xml:space="preserve">
+    <value>Akun pembayaran perjalanan</value>
+  </data>
+  <data name="TripNoAccount" xml:space="preserve">
+    <value>Tidak ada (terakhir dipakai)</value>
+  </data>
+  <data name="TripLimits" xml:space="preserve">
+    <value>Batas per kategori perjalanan (opsional)</value>
+  </data>
+  <data name="TripLimitsHint" xml:space="preserve">
+    <value>Dalam mata uang perjalanan. Kosongkan jika tanpa batas.</value>
+  </data>
+  <data name="PleaseEnterTripName" xml:space="preserve">
+    <value>Masukkan nama perjalanan</value>
+  </data>
+  <data name="TripEndBeforeStart" xml:space="preserve">
+    <value>Perjalanan tidak bisa berakhir sebelum dimulai</value>
+  </data>
+  <data name="TripAlreadyActive" xml:space="preserve">
+    <value>Perjalanan lain sedang aktif. Akhiri dulu.</value>
+  </data>
+  <data name="TripStarted" xml:space="preserve">
+    <value>Perjalanan dimulai</value>
+  </data>
+  <data name="NoTripsYet" xml:space="preserve">
+    <value>Belum ada perjalanan</value>
+  </data>
+  <data name="AddTripToStart" xml:space="preserve">
+    <value>Mulai perjalanan untuk mencatat pengeluarannya terpisah dari pengeluaran sehari-hari.</value>
+  </data>
+  <data name="DeleteTripConfirmation" xml:space="preserve">
+    <value>Hapus perjalanan "{0}"? Pengeluarannya tetap ada di transaksimu.</value>
+  </data>
+  <data name="TripDeleteNeedsEnd" xml:space="preserve">
+    <value>Akhiri perjalanan sebelum menghapusnya.</value>
+  </data>
+  <data name="TripCategoriesBreakdown" xml:space="preserve">
+    <value>Per kategori</value>
+  </data>
+  <data name="TripExpenses" xml:space="preserve">
+    <value>Pengeluaran</value>
+  </data>
+  <data name="NoTripExpenses" xml:space="preserve">
+    <value>Belum ada pengeluaran</value>
+  </data>
+  <data name="TravelCategoryCannotDelete" xml:space="preserve">
+    <value>Kategori Perjalanan menampung pengeluaran perjalananmu, jadi tidak bisa dihapus. Kamu bisa mengganti namanya.</value>
+  </data>
+  <data name="EndTrip" xml:space="preserve">
+    <value>Akhiri perjalanan</value>
+  </data>
+  <data name="EndTripHint" xml:space="preserve">
+    <value>Pilih ke mana pengeluaran tiap kategori perjalanan masuk di kategori biasamu.</value>
+  </data>
+  <data name="SameCategoryForAll" xml:space="preserve">
+    <value>Kategori sama untuk semua</value>
+  </data>
+  <data name="ReopenTrip" xml:space="preserve">
+    <value>Buka kembali perjalanan</value>
+  </data>
+  <data name="ReopenTripConfirmation" xml:space="preserve">
+    <value>Buka kembali "{0}"? Pengeluarannya kembali ke Perjalanan.</value>
+  </data>
+  <data name="TripEndedToast" xml:space="preserve">
+    <value>Perjalanan selesai</value>
+  </data>
+  <data name="FailedToEndTrip" xml:space="preserve">
+    <value>Gagal memperbarui perjalanan</value>
+  </data>
+  <data name="PleaseChooseCategoryForEach" xml:space="preserve">
+    <value>Pilih kategori untuk setiap kategori perjalanan</value>
+  </data>
+  <data name="PartiesTitle" xml:space="preserve">
+    <value>Acara</value>
+  </data>
+  <data name="PartyFriends" xml:space="preserve">
+    <value>Teman</value>
+  </data>
+  <data name="NoPartiesYet" xml:space="preserve">
+    <value>Belum ada acara</value>
+  </data>
+  <data name="AddPartyToStart" xml:space="preserve">
+    <value>Tambahkan acara untuk membagi biaya acara bersama</value>
+  </data>
+  <data name="NewParty" xml:space="preserve">
+    <value>Acara baru</value>
+  </data>
+  <data name="EditParty" xml:space="preserve">
+    <value>Ubah acara</value>
+  </data>
+  <data name="PartyName" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="PartyNamePlaceholder" xml:space="preserve">
+    <value>mis. Ulang tahun Ana</value>
+  </data>
+  <data name="PartyBudgetOptional" xml:space="preserve">
+    <value>Anggaran (opsional)</value>
+  </data>
+  <data name="PartyMembers" xml:space="preserve">
+    <value>Siapa yang ikut</value>
+  </data>
+  <data name="PartyNoFriendsYet" xml:space="preserve">
+    <value>Tambahkan teman dulu, lalu pilih siapa yang ikut</value>
+  </data>
+  <data name="PleaseEnterPartyName" xml:space="preserve">
+    <value>Masukkan nama acara</value>
+  </data>
+  <data name="PartyNeedsMembers" xml:space="preserve">
+    <value>Pilih minimal satu orang</value>
+  </data>
+  <data name="PartyMemberInUse" xml:space="preserve">
+    <value>Orang yang punya pengeluaran atau kontribusi tidak bisa dikeluarkan</value>
+  </data>
+  <data name="PartyNobodyShares" xml:space="preserve">
+    <value>Mengeluarkan orang ini akan membuat sebuah pengeluaran tanpa yang menanggung</value>
+  </data>
+  <data name="FailedToLoadParties" xml:space="preserve">
+    <value>Gagal memuat acara</value>
+  </data>
+  <data name="FailedToSaveParty" xml:space="preserve">
+    <value>Gagal menyimpan acara</value>
+  </data>
+  <data name="FailedToDeleteParty" xml:space="preserve">
+    <value>Gagal menghapus acara</value>
+  </data>
+  <data name="FriendsTitle" xml:space="preserve">
+    <value>Teman</value>
+  </data>
+  <data name="NoFriendsYet" xml:space="preserve">
+    <value>Belum ada teman</value>
+  </data>
+  <data name="AddFriendToStart" xml:space="preserve">
+    <value>Tambahkan orang yang berbagi pengeluaran denganmu</value>
+  </data>
+  <data name="FriendNamePlaceholder" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="AddFriend" xml:space="preserve">
+    <value>Tambah</value>
+  </data>
+  <data name="RenameFriend" xml:space="preserve">
+    <value>Ganti nama</value>
+  </data>
+  <data name="RenameFriendTitle" xml:space="preserve">
+    <value>Ganti nama teman</value>
+  </data>
+  <data name="DeleteFriendQuestion" xml:space="preserve">
+    <value>Hapus {0}?</value>
+  </data>
+  <data name="FriendInParty" xml:space="preserve">
+    <value>Teman ini ada di sebuah acara dan tidak bisa dihapus</value>
+  </data>
+  <data name="FriendNameTaken" xml:space="preserve">
+    <value>Teman dengan nama ini sudah ada</value>
+  </data>
+  <data name="FailedToLoadFriends" xml:space="preserve">
+    <value>Gagal memuat teman</value>
+  </data>
+  <data name="FailedToSaveFriend" xml:space="preserve">
+    <value>Gagal menyimpan teman</value>
+  </data>
+  <data name="PartyLeft" xml:space="preserve">
+    <value>Sisa {0}</value>
+  </data>
+  <data name="PartyOver" xml:space="preserve">
+    <value>Lebih {0}</value>
+  </data>
+  <data name="PartyBalances" xml:space="preserve">
+    <value>Saldo</value>
+  </data>
+  <data name="PartyExpenses" xml:space="preserve">
+    <value>Pengeluaran</value>
+  </data>
+  <data name="PartyContributions" xml:space="preserve">
+    <value>Kontribusi</value>
+  </data>
+  <data name="PartyPot" xml:space="preserve">
+    <value>Kas</value>
+  </data>
+  <data name="PartyPotHint" xml:space="preserve">
+    <value>Uang yang disetor di muka, dipakai bersama oleh semua</value>
+  </data>
+  <data name="AddPartyExpense" xml:space="preserve">
+    <value>Tambah pengeluaran</value>
+  </data>
+  <data name="EditPartyExpense" xml:space="preserve">
+    <value>Ubah pengeluaran</value>
+  </data>
+  <data name="AddPartyContribution" xml:space="preserve">
+    <value>Tambah kontribusi</value>
+  </data>
+  <data name="EditPartyContribution" xml:space="preserve">
+    <value>Ubah kontribusi</value>
+  </data>
+  <data name="PartyPaidBy" xml:space="preserve">
+    <value>Dibayar oleh</value>
+  </data>
+  <data name="PartyPaidByPot" xml:space="preserve">
+    <value>Kas</value>
+  </data>
+  <data name="PartyPaidByLine" xml:space="preserve">
+    <value>Dibayar oleh {0}</value>
+  </data>
+  <data name="PartyWho" xml:space="preserve">
+    <value>Siapa</value>
+  </data>
+  <data name="PartySharedBetween" xml:space="preserve">
+    <value>Dibagi antara</value>
+  </data>
+  <data name="PartySharedLine" xml:space="preserve">
+    <value>Ditanggung {0} dari {1}</value>
+  </data>
+  <data name="PartyOwed" xml:space="preserve">
+    <value>dapat {0}</value>
+  </data>
+  <data name="PartyOwes" xml:space="preserve">
+    <value>berutang {0}</value>
+  </data>
+  <data name="PartyEven" xml:space="preserve">
+    <value>impas</value>
+  </data>
+  <data name="NoPartyExpenses" xml:space="preserve">
+    <value>Belum ada pengeluaran</value>
+  </data>
+  <data name="NoPartyContributions" xml:space="preserve">
+    <value>Belum ada kontribusi</value>
+  </data>
+  <data name="DeletePartyQuestion" xml:space="preserve">
+    <value>Hapus acara ini beserta isinya?</value>
+  </data>
+  <data name="DeletePartyExpenseQuestion" xml:space="preserve">
+    <value>Hapus pengeluaran ini?</value>
+  </data>
+  <data name="DeletePartyContributionQuestion" xml:space="preserve">
+    <value>Hapus kontribusi ini?</value>
+  </data>
+  <data name="PartyNeedsSharer" xml:space="preserve">
+    <value>Harus ada yang menanggung pengeluaran ini</value>
+  </data>
+  <data name="FailedToSavePartyExpense" xml:space="preserve">
+    <value>Gagal menyimpan pengeluaran</value>
+  </data>
+  <data name="FailedToSavePartyContribution" xml:space="preserve">
+    <value>Gagal menyimpan kontribusi</value>
+  </data>
+  <data name="PartyPaidLine" xml:space="preserve">
+    <value>Membayar {0}</value>
+  </data>
+  <data name="PartyHandedInLine" xml:space="preserve">
+    <value>Menyetor {0}</value>
+  </data>
+  <data name="PartyShareLine" xml:space="preserve">
+    <value>Bagian {0}</value>
+  </data>
+  <data name="PartySettleUp" xml:space="preserve">
+    <value>Lunasi</value>
+  </data>
+  <data name="PartyPaysLine" xml:space="preserve">
+    <value>{0} membayar {1} {2}</value>
+  </data>
+  <data name="PartyAllSettled" xml:space="preserve">
+    <value>Semua sudah impas</value>
+  </data>
+  <data name="PartyMarkPaid" xml:space="preserve">
+    <value>Tandai lunas</value>
+  </data>
+  <data name="PartyPaymentsMade" xml:space="preserve">
+    <value>Pembayaran dilakukan</value>
+  </data>
+  <data name="SharePartySummary" xml:space="preserve">
+    <value>Bagikan ringkasan</value>
+  </data>
+  <data name="DeletePartyPaymentQuestion" xml:space="preserve">
+    <value>Hapus pembayaran ini? Akan dihitung belum dibayar lagi.</value>
+  </data>
+  <data name="FailedToSavePartyPayment" xml:space="preserve">
+    <value>Pembayaran tidak bisa disimpan</value>
+  </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>Ringkasan tidak bisa dibagikan</value>
+  </data>
+  <data name="PartyRecordMyShare" xml:space="preserve">
+    <value>Catat bagianku</value>
+  </data>
+  <data name="PartyUpdateMyShare" xml:space="preserve">
+    <value>Perbarui bagianku</value>
+  </data>
+  <data name="PartyWhichIsYou" xml:space="preserve">
+    <value>Teman yang mana kamu?</value>
+  </data>
+  <data name="PartyShareAccount" xml:space="preserve">
+    <value>Akun untuk bagianmu</value>
+  </data>
+  <data name="PartyShareCategory" xml:space="preserve">
+    <value>Kategori untuk bagianmu</value>
+  </data>
+  <data name="PartyShareRecorded" xml:space="preserve">
+    <value>Bagianmu ({0}) sudah ada di pengeluaranmu</value>
+  </data>
+  <data name="PartyNoShareYet" xml:space="preserve">
+    <value>Belum ada bagian untuk dicatat</value>
+  </data>
+  <data name="PartyNoAccountInCurrency" xml:space="preserve">
+    <value>Kamu tidak punya akun dalam {0}</value>
+  </data>
+  <data name="FailedToRecordPartyShare" xml:space="preserve">
+    <value>Bagianmu tidak bisa dicatat</value>
+  </data>
+  <data name="Pockets" xml:space="preserve">
+    <value>Kantong</value>
+  </data>
+  <data name="NewPocket" xml:space="preserve">
+    <value>Kantong baru</value>
+  </data>
+  <data name="EditPocket" xml:space="preserve">
+    <value>Ubah kantong</value>
+  </data>
+  <data name="PocketName" xml:space="preserve">
+    <value>Nama kantong</value>
+  </data>
+  <data name="PocketNamePlaceholder" xml:space="preserve">
+    <value>mis. Perjalanan</value>
+  </data>
+  <data name="PleaseEnterPocketName" xml:space="preserve">
+    <value>Masukkan nama kantong</value>
+  </data>
+  <data name="SetAside" xml:space="preserve">
+    <value>Sisihkan</value>
+  </data>
+  <data name="TakeOut" xml:space="preserve">
+    <value>Ambil</value>
+  </data>
+  <data name="PocketHolds" xml:space="preserve">
+    <value>Di kantong ini: {0}</value>
+  </data>
+  <data name="PocketAccountAvailable" xml:space="preserve">
+    <value>Tersedia di {0}: {1}</value>
+  </data>
+  <data name="PocketMovements" xml:space="preserve">
+    <value>Mutasi</value>
+  </data>
+  <data name="NoPocketMovements" xml:space="preserve">
+    <value>Belum ada yang disisihkan.</value>
+  </data>
+  <data name="AvailableAndInPockets" xml:space="preserve">
+    <value>Tersedia {0} · {1} di kantong</value>
+  </data>
+  <data name="InPockets" xml:space="preserve">
+    <value>{0} di kantong</value>
+  </data>
+  <data name="PocketNotEnoughAvailable" xml:space="preserve">
+    <value>Tidak sebanyak itu yang tersedia di {0}.</value>
+  </data>
+  <data name="PocketNotEnoughInPocket" xml:space="preserve">
+    <value>Kantong ini berisi kurang dari itu.</value>
+  </data>
+  <data name="DeletePocketConfirmation" xml:space="preserve">
+    <value>Hapus kantong "{0}"? Uangnya kembali ke {1}.</value>
+  </data>
+  <data name="FailedToSavePocket" xml:space="preserve">
+    <value>Kantong tidak bisa disimpan</value>
+  </data>
+  <data name="FailedToDeletePocket" xml:space="preserve">
+    <value>Kantong tidak bisa dihapus</value>
+  </data>
+  <data name="FailedToMovePocket" xml:space="preserve">
+    <value>Kantong tidak bisa diperbarui</value>
+  </data>
+  <data name="PocketsCurrencyChange" xml:space="preserve">
+    <value>Kantong milik {0} tetap menyimpan jumlahnya tetapi tidak lagi dihitung untuk target dalam {1}. Tetap ganti mata uang?</value>
+  </data>
+  <data name="DeleteAccountPockets" xml:space="preserve">
+    <value>Kantongnya ikut dihapus.</value>
+  </data>
+  <data name="PocketCoverTitle" xml:space="preserve">
+    <value>Ini memakai {0} yang kamu sisihkan. Ambil dari:</value>
+  </data>
+  <data name="PocketCoverKeep" xml:space="preserve">
+    <value>Biarkan kantong seperti semula</value>
+  </data>
+  <data name="WhatsNewTitle" xml:space="preserve">
+    <value>Yang baru di {0}</value>
+  </data>
+  <data name="WhatsNewGotIt" xml:space="preserve">
+    <value>Mengerti</value>
+  </data>
+  <data name="WhatsNewMenu" xml:space="preserve">
+    <value>Yang baru</value>
+  </data>
+  <data name="FailedToLoadWhatsNew" xml:space="preserve">
+    <value>Catatan rilis tidak bisa dimuat</value>
+  </data>
+  <data name="PendingEntryTitle" xml:space="preserve">
+    <value>Catat {0}</value>
+  </data>
+  <data name="AmountVaries" xml:space="preserve">
+    <value>Jumlah berubah-ubah</value>
+  </data>
+  <data name="EnterOccurrence" xml:space="preserve">
+    <value>Catat</value>
+  </data>
+  <data name="ToEnter" xml:space="preserve">
+    <value>Perlu dicatat</value>
+  </data>
+  <data name="SkipOccurrenceTitle" xml:space="preserve">
+    <value>Lewati yang ini?</value>
+  </data>
+  <data name="SkipOccurrenceMessage" xml:space="preserve">
+    <value>{0} pada {1} tidak akan dicatat.</value>
+  </data>
+  <data name="OccurrenceSkipped" xml:space="preserve">
+    <value>Dilewati</value>
+  </data>
+  <data name="OccurrenceNoLongerPending" xml:space="preserve">
+    <value>Catatan ini tidak lagi menunggu untuk dicatat.</value>
+  </data>
+  <data name="AmountVariesHint" xml:space="preserve">
+    <value>Tidak ada yang disimpan otomatis: kamu memasukkan jumlahnya setiap kali.</value>
+  </data>
+  <data name="HomeCardBalance" xml:space="preserve">
+    <value>Total saldo</value>
+  </data>
+  <data name="HomeCardPeriodSummary" xml:space="preserve">
+    <value>Pemasukan dan pengeluaran</value>
+  </data>
+  <data name="HomeCardTrip" xml:space="preserve">
+    <value>Perjalanan aktif</value>
+  </data>
+  <data name="CustomizeHome" xml:space="preserve">
+    <value>Atur Beranda</value>
+  </data>
+  <data name="HomeLayoutTitle" xml:space="preserve">
+    <value>Layar Beranda</value>
+  </data>
+  <data name="HomeLayoutDescription" xml:space="preserve">
+    <value>Urutkan serta tampilkan atau sembunyikan kartu Beranda</value>
+  </data>
+  <data name="HomeLayoutHint" xml:space="preserve">
+    <value>Kartu tanpa isi tetap tersembunyi. Total saldo selalu tampil.</value>
+  </data>
+  <data name="HomeLayoutReset" xml:space="preserve">
+    <value>Kembalikan ke bawaan</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Naikkan</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Turunkan</value>
+  </data>
+  <data name="SavingsChallenges" xml:space="preserve">
+    <value>Tantangan menabung</value>
+  </data>
+  <data name="NoChallengesYet" xml:space="preserve">
+    <value>Belum ada tantangan</value>
+  </data>
+  <data name="AddChallengeToStart" xml:space="preserve">
+    <value>Pilih target dan jumlah hari; aplikasi menghitung berapa yang ditabung tiap hari.</value>
+  </data>
+  <data name="AddChallenge" xml:space="preserve">
+    <value>Tambah tantangan</value>
+  </data>
+  <data name="NewChallenge" xml:space="preserve">
+    <value>Tantangan baru</value>
+  </data>
+  <data name="EditChallenge" xml:space="preserve">
+    <value>Ubah tantangan</value>
+  </data>
+  <data name="ChallengeName" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="ChallengeNamePlaceholder" xml:space="preserve">
+    <value>mis. Dana liburan</value>
+  </data>
+  <data name="ChallengeGoal" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="ChallengeDays" xml:space="preserve">
+    <value>Hari</value>
+  </data>
+  <data name="ChallengeStartDate" xml:space="preserve">
+    <value>Tanggal mulai</value>
+  </data>
+  <data name="ChallengeMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="ChallengeModeDoubling" xml:space="preserve">
+    <value>Berlipat (1, 2, 4, 8…)</value>
+  </data>
+  <data name="ChallengeModeLinear" xml:space="preserve">
+    <value>Bertahap (1, 2, 3, 4…)</value>
+  </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>Sama tiap hari</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>Jumlah per hari (opsional)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>Kosong = dibagi rata ke semua hari</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>{0} setiap hari</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>{0} sehari · hari terakhir {1}</value>
+  </data>
+  <data name="ChallengeRounding" xml:space="preserve">
+    <value>Bulatkan tiap hari</value>
+  </data>
+  <data name="ChallengeRoundingNone" xml:space="preserve">
+    <value>Tanpa pembulatan</value>
+  </data>
+  <data name="ChallengeRoundTo" xml:space="preserve">
+    <value>Ke {0}</value>
+  </data>
+  <data name="ChallengeToAccount" xml:space="preserve">
+    <value>Simpan di</value>
+  </data>
+  <data name="ChallengeNoAccount" xml:space="preserve">
+    <value>Tidak ada (hanya tandai hari)</value>
+  </data>
+  <data name="ChallengePreviewDays" xml:space="preserve">
+    <value>Hari pertama {0} · hari terakhir {1}</value>
+  </data>
+  <data name="ChallengePreviewTotal" xml:space="preserve">
+    <value>Total {0}</value>
+  </data>
+  <data name="ChallengePreviewOver" xml:space="preserve">
+    <value>Total {0} · {1} di atas target</value>
+  </data>
+  <data name="ChallengePreviewUnder" xml:space="preserve">
+    <value>Total {0} · {1} di bawah target</value>
+  </data>
+  <data name="ChallengeLevelsWarning" xml:space="preserve">
+    <value>Menggandakan setiap hari selama {0} hari akan dimulai di bawah satu unit. Rencananya menggandakan dalam {1} langkah yang masing-masing berlangsung beberapa hari; dengan {1} hari, rencana menggandakan setiap hari.</value>
+  </data>
+  <data name="ChallengePlanLocked" xml:space="preserve">
+    <value>Target, hari, mode, dan pembulatan tidak bisa diubah setelah ada hari yang selesai.</value>
+  </data>
+  <data name="ChallengeSavedOf" xml:space="preserve">
+    <value>{0} tersimpan dari {1}</value>
+  </data>
+  <data name="ChallengeDaysLeftOne" xml:space="preserve">
+    <value>Sisa {0} hari</value>
+  </data>
+  <data name="ChallengeDaysLeftOther" xml:space="preserve">
+    <value>Sisa {0} hari</value>
+  </data>
+  <data name="ChallengeFinished" xml:space="preserve">
+    <value>Selesai</value>
+  </data>
+  <data name="ChallengeAdded" xml:space="preserve">
+    <value>Tantangan ditambahkan</value>
+  </data>
+  <data name="PleaseEnterChallengeName" xml:space="preserve">
+    <value>Masukkan nama</value>
+  </data>
+  <data name="PleaseEnterChallengeDays" xml:space="preserve">
+    <value>Masukkan 1 sampai 3650 hari</value>
+  </data>
+  <data name="FailedToLoadChallenges" xml:space="preserve">
+    <value>Gagal memuat tantangan</value>
+  </data>
+  <data name="FailedToSaveChallenge" xml:space="preserve">
+    <value>Gagal menyimpan tantangan</value>
+  </data>
+  <data name="FailedToDeleteChallenge" xml:space="preserve">
+    <value>Gagal menghapus tantangan</value>
+  </data>
+  <data name="DeleteChallengeConfirmation" xml:space="preserve">
+    <value>Hapus "{0}"? Transfer yang dicatatnya tetap ada.</value>
+  </data>
+  <data name="ChallengeJustMark" xml:space="preserve">
+    <value>Cukup tandai harinya</value>
+  </data>
+  <data name="ChallengeRemainingOnly" xml:space="preserve">
+    <value>Hanya yang tertunda</value>
+  </data>
+  <data name="ChallengeViewNext30" xml:space="preserve">
+    <value>30 hari ke depan</value>
+  </data>
+  <data name="ChallengeViewThisMonth" xml:space="preserve">
+    <value>Bulan ini</value>
+  </data>
+  <data name="ChallengeFirstDay" xml:space="preserve">
+    <value>Hari pertama (opsional)</value>
+  </data>
+  <data name="ChallengeFirstDayHint" xml:space="preserve">
+    <value>Kosong = sama dengan kenaikannya</value>
+  </data>
+  <data name="ChallengeStep" xml:space="preserve">
+    <value>Kenaikan per hari (opsional)</value>
+  </data>
+  <data name="ChallengeStepHint" xml:space="preserve">
+    <value>Kosong = dihitung dari jumlah hari</value>
+  </data>
+  <data name="ChallengeFirstDayTooHigh" xml:space="preserve">
+    <value>Hari pertama terlalu tinggi untuk target dan hari ini.</value>
+  </data>
+  <data name="ChallengeViewFromStart" xml:space="preserve">
+    <value>Dari awal</value>
+  </data>
+  <data name="ChallengeMonthCurrent" xml:space="preserve">
+    <value>Ke bulan ini</value>
+  </data>
+  <data name="ChallengeViewRange" xml:space="preserve">
+    <value>Rentang tanggal</value>
+  </data>
+  <data name="ChallengeRangeFrom" xml:space="preserve">
+    <value>Dari</value>
+  </data>
+  <data name="ChallengeRangeTo" xml:space="preserve">
+    <value>Sampai</value>
+  </data>
+  <data name="ChallengeNoDaysInView" xml:space="preserve">
+    <value>Tidak ada hari untuk ditampilkan di sini.</value>
+  </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · hari {2}–{3} dari {4}</value>
+  </data>
+  <data name="ChallengeDayDescription" xml:space="preserve">
+    <value>Hari {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>Itu butuh lebih dari {0} hari. Naikkan jumlah harian atau turunkan targetnya.</value>
+  </data>
+  <data name="ChallengeDayDone" xml:space="preserve">
+    <value>selesai</value>
+  </data>
+  <data name="ChallengeDayPending" xml:space="preserve">
+    <value>belum selesai</value>
+  </data>
+  <data name="FailedToUpdateChallenge" xml:space="preserve">
+    <value>Gagal memperbarui hari</value>
+  </data>
+  <data name="ChallengeAccountsHint" xml:space="preserve">
+    <value>Jika diatur, menandai sebuah hari akan menanyakan asal uangnya dan memindahkannya ke sini: transfer antar akun, atau uang yang diambil dari atau disisihkan ke sebuah kantong.</value>
+  </data>
+  <data name="ChallengeSourceTitle" xml:space="preserve">
+    <value>Dari mana uang untuk {0}?</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>Batalkan tanda hari {0}? Hari itu memindahkan {1}.</value>
+  </data>
+  <data name="ChallengeUnmarkUndo" xml:space="preserve">
+    <value>Batalkan tanda dan kembalikan uang yang dipindahkan</value>
+  </data>
+  <data name="ChallengeUnmarkKeep" xml:space="preserve">
+    <value>Batalkan tanda, biarkan uang yang dipindahkan</value>
+  </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>Dukung MoneyRecord</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord gratis dan sumber terbuka, tanpa iklan dan tanpa pelacakan. Jika bermanfaat bagimu, kamu bisa mendukung pengembangannya. Tidak ada yang dikunci: semuanya berfungsi sama baik kamu memberi maupun tidak.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Dukung proyek ini</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Beri tip</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>Terima kasih atas dukunganmu!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>Tipmu menunggu pembayaran selesai. Terima kasih!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>Tip tidak bisa diselesaikan.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>Tip tidak tersedia saat ini. Coba lagi nanti.</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Urungkan</value>
+  </data>
+  <data name="ExpenseDeletedUndo" xml:space="preserve">
+    <value>Pengeluaran dihapus</value>
+  </data>
+  <data name="IncomeDeletedUndo" xml:space="preserve">
+    <value>Pemasukan dihapus</value>
+  </data>
+  <data name="TransferDeletedUndo" xml:space="preserve">
+    <value>Transfer dihapus</value>
+  </data>
+  <data name="SplitDeletedUndo" xml:space="preserve">
+    <value>Pembayaran terbagi dihapus ({0} bagian)</value>
+  </data>
+  <data name="UndoNotPossible" xml:space="preserve">
+    <value>Tidak bisa diurungkan. Catatan ini tidak bisa dipulihkan lagi.</value>
+  </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Mulai</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Sembunyikan</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>Tambah pengeluaran pertamamu</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Cadangkan datamu</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Kunci aplikasi</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Aktifkan pengingat</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Geser baris ke kiri untuk mengubah atau menghapus</value>
+  </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>Cari kategori</value>
+  </data>
+  <data name="SearchCurrencies" xml:space="preserve">
+    <value>Cari mata uang</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>Cari akun</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>Tidak ada yang cocok dengan pencarianmu.</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>Belum ada penerima</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>Ketik satu saat menambah pengeluaran atau pemasukan dan penerima muncul di sini.</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>Belum ada data arus kas</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>Tambahkan pemasukan dan pengeluaran untuk melihat arus kasmu.</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>Belum ada data kekayaan bersih</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>Tambahkan saldo akun, pemasukan, atau pengeluaran untuk melihat kekayaan bersihmu.</value>
+  </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>Periode sebelumnya</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>Periode berikutnya</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="SelectedState" xml:space="preserve">
+    <value>dipilih</value>
+  </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>Per Tanggal</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Hapus filter: {0}</value>
+  </data>
+  <data name="GroupMoney" xml:space="preserve">
+    <value>Uang</value>
+  </data>
+  <data name="GroupPlanning" xml:space="preserve">
+    <value>Perencanaan</value>
+  </data>
+  <data name="GroupSharedTravel" xml:space="preserve">
+    <value>Bersama dan perjalanan</value>
+  </data>
+  <data name="GroupApp" xml:space="preserve">
+    <value>Aplikasi</value>
+  </data>
+  <data name="SectionAppearance" xml:space="preserve">
+    <value>Tampilan</value>
+  </data>
+  <data name="SectionDataBackup" xml:space="preserve">
+    <value>Data dan cadangan</value>
+  </data>
+  <data name="SectionPrivacySecurity" xml:space="preserve">
+    <value>Privasi dan keamanan</value>
+  </data>
+  <data name="SearchSettings" xml:space="preserve">
+    <value>Cari pengaturan</value>
+  </data>
+  <data name="EnterAmount" xml:space="preserve">
+    <value>Masukkan jumlah</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Kemarin</value>
+  </data>
+  <data name="PickDate" xml:space="preserve">
+    <value>Pilih tanggal</value>
+  </data>
+  <data name="GroupBy" xml:space="preserve">
+    <value>Kelompokkan</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Buka semua</value>
+  </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Tutup semua</value>
+  </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Catatan cepat</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>Belum ada catatan cepat</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Simpan yang sering kamu ulang, seperti secangkir kopi, dan tambahkan dengan satu ketukan dari Beranda.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} disimpan</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>Catatan cepat tidak bisa disimpan.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>Catatan cepat tidak bisa dimuat.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Kopi</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Jumlah (kosong: tanya setiap kali)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>Jumlah untuk {0}</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>Jadikan catatan cepat?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>Kamu beberapa kali memasukkan "{0}" belakangan ini. Simpan agar bisa ditambah dengan satu ketukan?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Catatan cepat ditambahkan</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Catatan cepat dihapus</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>Hapus "{0}"? Transaksimu tetap ada.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>Catatan cepat baru</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Ubah catatan cepat</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Simpan sebagai catatan cepat</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Masukkan nama untuk catatan cepat.</value>
+  </data>
+  <data name="HomeCardForecast" xml:space="preserve">
+    <value>Prakiraan</value>
+  </data>
+  <data name="SafeToSpendLine" xml:space="preserve">
+    <value>Aman dibelanjakan {0}, sekitar {1} per hari hingga {2}</value>
+  </data>
+  <data name="SafeToSpendShort" xml:space="preserve">
+    <value>Kurang {0} hingga {1}</value>
+  </data>
+  <data name="ForecastDipLine" xml:space="preserve">
+    <value>Saldo turun di bawah nol pada {0}</value>
+  </data>
+  <data name="SafeToSpendUntilSetting" xml:space="preserve">
+    <value>Aman dibelanjakan hingga</value>
+  </data>
+  <data name="SafeToSpendNextIncome" xml:space="preserve">
+    <value>Pemasukan berikutnya</value>
+  </data>
+  <data name="SafeToSpendEndOfMonth" xml:space="preserve">
+    <value>Akhir bulan</value>
+  </data>
+  <data name="SafeToSpendHint" xml:space="preserve">
+    <value>Perkiraan dari catatan berulang dan catatan bertanggal masa depan; pemasukan yang belum tiba tidak dihitung.</value>
+  </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>Terendah: {0} pada {1}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>Saldo pada {0}: {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} hari</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>Yang mengubah saldo</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>Tidak ada jadwal di periode ini.</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>Belum ada yang diprakirakan</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>Tambahkan akun untuk melihat ke mana saldomu menuju.</value>
+  </data>
+  <data name="LowBalanceReminders" xml:space="preserve">
+    <value>Peringatan saldo rendah</value>
+  </data>
+  <data name="LowBalanceWithinDays" xml:space="preserve">
+    <value>Dalam {0} hari</value>
+  </data>
+  <data name="LowBalanceTitle" xml:space="preserve">
+    <value>Saldo rendah di depan</value>
+  </data>
+  <data name="LowBalanceBody" xml:space="preserve">
+    <value>{0} bisa turun di bawah nol pada {1}</value>
+  </data>
+  <data name="BudgetCarriedOver" xml:space="preserve">
+    <value>Termasuk {0} yang dibawa dari sebelumnya</value>
+  </data>
+  <data name="BudgetPerDay" xml:space="preserve">
+    <value>{0} per hari selama {1} hari</value>
+  </data>
+  <data name="BudgetRollover" xml:space="preserve">
+    <value>Bawa sisanya</value>
+  </data>
+  <data name="BudgetRolloverHint" xml:space="preserve">
+    <value>Uang yang tidak terpakai ditambahkan ke batas periode berikutnya. Kelebihan belanja tidak dibawa.</value>
+  </data>
+  <data name="AllSpending" xml:space="preserve">
+    <value>Semua pengeluaran</value>
+  </data>
+  <data name="SuggestBudgets" xml:space="preserve">
+    <value>Sarankan anggaran</value>
+  </data>
+  <data name="SuggestBudgetsHint" xml:space="preserve">
+    <value>Batas bulanan berdasarkan rata-rata pengeluaranmu dalam 3 bulan terakhir. Centang yang ingin dibuat.</value>
+  </data>
+  <data name="NoBudgetSuggestions" xml:space="preserve">
+    <value>Belum ada saran: kategori tanpa anggaran tidak punya pengeluaran dalam 3 bulan terakhir.</value>
+  </data>
+  <data name="CreateBudgetsButton" xml:space="preserve">
+    <value>Buat anggaran</value>
+  </data>
+  <data name="BudgetsCreated" xml:space="preserve">
+    <value>Anggaran dibuat</value>
+  </data>
+  <data name="CategoryTrend" xml:space="preserve">
+    <value>Tren kategori</value>
+  </data>
+  <data name="CategoryTrendHint" xml:space="preserve">
+    <value>Satu kategori, bulan demi bulan</value>
+  </data>
+  <data name="DeltaVsAverage" xml:space="preserve">
+    <value>{0} dibanding rata-rata bulanan</value>
+  </data>
+  <data name="MoreReports" xml:space="preserve">
+    <value>Laporan lainnya</value>
+  </data>
+  <data name="NoCategoryTrendHint" xml:space="preserve">
+    <value>Tidak ada data di kategori ini pada bulan-bulan ini. Pilih kategori lain atau periode lebih panjang.</value>
+  </data>
+  <data name="TrendAverage" xml:space="preserve">
+    <value>Rata-rata bulanan</value>
+  </data>
+  <data name="TrendHighest" xml:space="preserve">
+    <value>Bulan tertinggi</value>
+  </data>
+  <data name="TrendLowest" xml:space="preserve">
+    <value>Bulan terendah</value>
+  </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>Laporan penerima</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>Dengan siapa kamu berbelanja atau dari siapa kamu menerima</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>Tidak ada data penerima</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>Tambahkan penerima ke transaksimu untuk melihatnya di sini.</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(tanpa penerima)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} × · rata-rata {1}</value>
+  </data>
+  <data name="TagsHint" xml:space="preserve">
+    <value>Pengeluaran dan pemasukan per label; ganti nama atau gabungkan</value>
+  </data>
+  <data name="NoTagData" xml:space="preserve">
+    <value>Belum ada tag</value>
+  </data>
+  <data name="NoTagDataHint" xml:space="preserve">
+    <value>Tambahkan tag ke transaksimu untuk melihatnya di sini.</value>
+  </data>
+  <data name="NoTagRow" xml:space="preserve">
+    <value>(tanpa tag)</value>
+  </data>
+  <data name="TagNotUsedInPeriod" xml:space="preserve">
+    <value>Tidak dipakai di periode ini</value>
+  </data>
+  <data name="RenameTag" xml:space="preserve">
+    <value>Ganti nama tag</value>
+  </data>
+  <data name="RenameTagMessage" xml:space="preserve">
+    <value>Nama baru untuk "{0}"</value>
+  </data>
+  <data name="TagExistsTitle" xml:space="preserve">
+    <value>Tag sudah ada</value>
+  </data>
+  <data name="TagExistsMergeMessage" xml:space="preserve">
+    <value>"{1}" sudah ada. Gabungkan "{0}" ke dalamnya?</value>
+  </data>
+  <data name="MergeTag" xml:space="preserve">
+    <value>Gabungkan ke tag lain</value>
+  </data>
+  <data name="MergeTagInto" xml:space="preserve">
+    <value>Gabungkan "{0}" ke</value>
+  </data>
+  <data name="DeleteTag" xml:space="preserve">
+    <value>Hapus tag</value>
+  </data>
+  <data name="DeleteTagConfirmation" xml:space="preserve">
+    <value>Hapus "{0}" dari {1}? Transaksinya tetap ada.</value>
+  </data>
+  <data name="TagsMerged" xml:space="preserve">
+    <value>Tag digabungkan</value>
+  </data>
+  <data name="TagRenamed" xml:space="preserve">
+    <value>Nama tag diganti</value>
+  </data>
+  <data name="TagDeleted" xml:space="preserve">
+    <value>Tag dihapus</value>
+  </data>
+  <data name="FailedToLoadTags" xml:space="preserve">
+    <value>Gagal memuat tag</value>
+  </data>
+  <data name="FailedToSaveTag" xml:space="preserve">
+    <value>Gagal memperbarui tag</value>
+  </data>
+  <data name="SeeTagTransactions" xml:space="preserve">
+    <value>Lihat transaksi</value>
+  </data>
+  <data name="AccountReport" xml:space="preserve">
+    <value>Laporan akun</value>
+  </data>
+  <data name="AccountReportHint" xml:space="preserve">
+    <value>Pemasukan, pengeluaran, dan transfer per akun</value>
+  </data>
+  <data name="AccountReportRowDetail" xml:space="preserve">
+    <value>Pemasukan {0} · Pengeluaran {1} · Transfer {2}</value>
+  </data>
+  <data name="AccountReportBalance" xml:space="preserve">
+    <value>Saldo {0}</value>
+  </data>
+  <data name="NoAccountData" xml:space="preserve">
+    <value>Belum ada akun</value>
+  </data>
+  <data name="NoAccountDataHint" xml:space="preserve">
+    <value>Tambahkan akun untuk melihat perpindahan uang di antaranya.</value>
+  </data>
+  <data name="CompareReport" xml:space="preserve">
+    <value>Bandingkan periode</value>
+  </data>
+  <data name="CompareReportHint" xml:space="preserve">
+    <value>Dua periode berdampingan, kategori demi kategori</value>
+  </data>
+  <data name="ComparePeriodA" xml:space="preserve">
+    <value>Periode</value>
+  </data>
+  <data name="ComparePeriodB" xml:space="preserve">
+    <value>Dibandingkan dengan</value>
+  </data>
+  <data name="CompareDeltaVs" xml:space="preserve">
+    <value>{0} dibanding periode lainnya</value>
+  </data>
+  <data name="ComparePresetMonth" xml:space="preserve">
+    <value>Bulan ini vs lalu</value>
+  </data>
+  <data name="ComparePresetYear" xml:space="preserve">
+    <value>Tahun ini vs lalu</value>
+  </data>
+  <data name="ComparePresetSameMonth" xml:space="preserve">
+    <value>Bulan sama tahun lalu</value>
+  </data>
+  <data name="ComparePresetLast30" xml:space="preserve">
+    <value>30 hari terakhir vs sebelumnya</value>
+  </data>
+  <data name="NoCompareData" xml:space="preserve">
+    <value>Tidak ada yang dibandingkan</value>
+  </data>
+  <data name="NoCompareDataHint" xml:space="preserve">
+    <value>Tidak ada catatan jenis ini di kedua periode.</value>
+  </data>
+  <data name="CompareRowAmounts" xml:space="preserve">
+    <value>{0} vs {1}</value>
+  </data>
+  <data name="YearReview" xml:space="preserve">
+    <value>Tinjauan tahun</value>
+  </data>
+  <data name="YearReviewHint" xml:space="preserve">
+    <value>Tahunmu dalam angka: total, kategori teratas, bulan pengeluaran tertinggi dan terendah</value>
+  </data>
+  <data name="YearReviewTitle" xml:space="preserve">
+    <value>Tinjauan {0}</value>
+  </data>
+  <data name="YearOverview" xml:space="preserve">
+    <value>Ikhtisar</value>
+  </data>
+  <data name="YearIncome" xml:space="preserve">
+    <value>Pemasukan</value>
+  </data>
+  <data name="YearExpenses" xml:space="preserve">
+    <value>Pengeluaran</value>
+  </data>
+  <data name="YearNet" xml:space="preserve">
+    <value>Bersih</value>
+  </data>
+  <data name="YearSavingsRate" xml:space="preserve">
+    <value>Rasio tabungan</value>
+  </data>
+  <data name="YearMonths" xml:space="preserve">
+    <value>Bulan</value>
+  </data>
+  <data name="YearHighestMonth" xml:space="preserve">
+    <value>Pengeluaran tertinggi</value>
+  </data>
+  <data name="YearLowestMonth" xml:space="preserve">
+    <value>Pengeluaran terendah</value>
+  </data>
+  <data name="YearTopCategories" xml:space="preserve">
+    <value>Kategori teratas</value>
+  </data>
+  <data name="YearTopPayees" xml:space="preserve">
+    <value>Penerima teratas</value>
+  </data>
+  <data name="YearBiggestExpense" xml:space="preserve">
+    <value>Pengeluaran terbesar</value>
+  </data>
+  <data name="YearHabits" xml:space="preserve">
+    <value>Kebiasaan</value>
+  </data>
+  <data name="YearNoSpendDays" xml:space="preserve">
+    <value>Hari tanpa belanja</value>
+  </data>
+  <data name="YearOfDays" xml:space="preserve">
+    <value>{0} dari {1}</value>
+  </data>
+  <data name="YearTopTag" xml:space="preserve">
+    <value>Tag paling sering dipakai</value>
+  </data>
+  <data name="YearTagUses" xml:space="preserve">
+    <value>{0} ({1}×)</value>
+  </data>
+  <data name="NoYearData" xml:space="preserve">
+    <value>Belum ada yang ditinjau</value>
+  </data>
+  <data name="NoYearDataHint" xml:space="preserve">
+    <value>Tambahkan transaksi tahun ini dan tinjauannya muncul di sini.</value>
+  </data>
+  <data name="YearShareTitle" xml:space="preserve">
+    <value>Bagikan tahunmu</value>
+  </data>
+  <data name="YearShareAsPdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="YearShareAsText" xml:space="preserve">
+    <value>Ringkasan teks</value>
+  </data>
+  <data name="YearShareNoAmounts" xml:space="preserve">
+    <value>{0} tanpa jumlah</value>
+  </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>Filter tersimpan</value>
+  </data>
+  <data name="SaveThisFilter" xml:space="preserve">
+    <value>Simpan filter ini</value>
+  </data>
+  <data name="SavedFilterNameHint" xml:space="preserve">
+    <value>Beri nama agar bisa diterapkan lagi dengan satu ketukan.</value>
+  </data>
+  <data name="SavedFilterLimit" xml:space="preserve">
+    <value>Kamu bisa menyimpan hingga 20 filter. Hapus satu untuk menyimpan yang lain.</value>
+  </data>
+  <data name="SavedFilterSaved" xml:space="preserve">
+    <value>Filter disimpan</value>
+  </data>
+  <data name="SavedFilterNameTaken" xml:space="preserve">
+    <value>Sudah ada filter tersimpan dengan nama itu.</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Ganti nama</value>
+  </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>Terapkan</value>
+  </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Sebagian filter ini sudah dihapus (kategori, akun, atau penerima) dan dilewati.</value>
+  </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>Lampirkan PDF</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>Hapus lampiran</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>File terlalu besar (maksimum 10 MB)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>Gagal melampirkan file</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>Gagal membuka file</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>Lampiran</value>
+  </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>Ekspor Transaksi (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>Transaksi (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Gagal mengekspor spreadsheet</value>
+  </data>
+  <data name="PinSubtitle" xml:space="preserve">
+    <value>Masukkan PIN-mu</value>
+  </data>
+  <data name="PinWrongTries" xml:space="preserve">
+    <value>PIN salah. Sisa {0} percobaan sebelum harus menunggu.</value>
+  </data>
+  <data name="PinLockedOut" xml:space="preserve">
+    <value>Terlalu banyak percobaan salah. Coba lagi dalam {0}.</value>
+  </data>
+  <data name="UsePhoneLock" xml:space="preserve">
+    <value>Pakai kunci ponsel</value>
+  </data>
+  <data name="PinSetTitle" xml:space="preserve">
+    <value>Pilih PIN</value>
+  </data>
+  <data name="PinRepeatTitle" xml:space="preserve">
+    <value>Ulangi PIN</value>
+  </data>
+  <data name="PinSetMessage" xml:space="preserve">
+    <value>4 sampai 8 digit. PIN yang terlupa tidak bisa dipulihkan: kamu harus menghapus data aplikasi dan memulihkan cadangan.</value>
+  </data>
+  <data name="PinMismatch" xml:space="preserve">
+    <value>PIN tidak cocok. Pilih lagi.</value>
+  </data>
+  <data name="PinLength" xml:space="preserve">
+    <value>Gunakan 4 sampai 8 digit.</value>
+  </data>
+  <data name="PinRepeated" xml:space="preserve">
+    <value>Jangan pakai satu digit yang diulang.</value>
+  </data>
+  <data name="PinBackspace" xml:space="preserve">
+    <value>Hapus digit terakhir</value>
+  </data>
+  <data name="PinDigitsTyped" xml:space="preserve">
+    <value>{0} digit diketik</value>
+  </data>
+  <data name="AppPin" xml:space="preserve">
+    <value>PIN aplikasi</value>
+  </data>
+  <data name="AppPinDescription" xml:space="preserve">
+    <value>Buka MoneyRecord dengan PIN tersendiri, dengan jeda setelah terlalu banyak percobaan salah</value>
+  </data>
+  <data name="SetPin" xml:space="preserve">
+    <value>Atur PIN</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Ubah PIN</value>
+  </data>
+  <data name="RemovePin" xml:space="preserve">
+    <value>Hapus PIN</value>
+  </data>
+  <data name="RemovePinMessage" xml:space="preserve">
+    <value>MoneyRecord tidak akan lagi dibuka dengan PIN.</value>
+  </data>
+  <data name="PinSaved" xml:space="preserve">
+    <value>PIN disimpan</value>
+  </data>
+  <data name="PinRemoved" xml:space="preserve">
+    <value>PIN dihapus</value>
+  </data>
+  <data name="UnlockWith" xml:space="preserve">
+    <value>Buka kunci dengan</value>
+  </data>
+  <data name="LockMethodDevice" xml:space="preserve">
+    <value>Kunci ponsel</value>
+  </data>
+  <data name="LockMethodPin" xml:space="preserve">
+    <value>PIN aplikasi</value>
+  </data>
+  <data name="LockMethodBoth" xml:space="preserve">
+    <value>Kunci ponsel atau PIN</value>
+  </data>
+  <data name="NoScreenLockPinHint" xml:space="preserve">
+    <value>Ponselmu tidak punya kunci layar. Atur PIN aplikasi untuk memakai kunci aplikasi.</value>
+  </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>PIN-mu tidak bisa dibaca dan dihapus. Gunakan kunci ponselmu.</value>
+  </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Blokir tangkapan layar</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Menyembunyikan aplikasi di tangkapan layar, rekaman layar, dan layar aplikasi terbaru.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Privasi</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Pilih cara Beranda menampilkan uangmu. Kamu bisa mengubahnya nanti di Pengaturan.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Sembunyikan saldo di Beranda sampai diketuk</value>
+  </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Lindungi cadanganmu dengan kata sandi</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>Cadangan berisi semua datamu dan disimpan sebagai file biasa. Atur kata sandi agar hanya kamu yang bisa membukanya. Kamu bisa mengubahnya nanti di Pengaturan → Cadangan &amp; Pemulihan.</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Atur kata sandi</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Nanti saja</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (tidak dienkripsi)</value>
+  </data>
+</root>

@@ -24,7 +24,7 @@ namespace MoneyRecord.Helpers
             if (AppLanguage.Find(culture.TwoLetterISOLanguageName) is not { } language)
                 return Fallback;
             if (language.Code != "es")
-                return language.DefaultCulture;
+                return language.PlayLocale ?? language.DefaultCulture;
 
             // The region is the culture name's last part ("es-CO", "es-419"); read from the name, not RegionInfo, which
             // does not know a UN region like 419. A neutral "es" has none: Spain's text, like the language fallback elsewhere
