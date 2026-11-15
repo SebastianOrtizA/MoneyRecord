@@ -49,12 +49,16 @@ internal sealed class SyncTestDevice : IAsyncDisposable
     public Task<int> CollectAsync() => _state.MaterializeAsync();
 
     /// <summary>This device's changes into its store, then the shared store gets them, then the other devices' files come back and apply; returns how many rows were sent and files applied.</summary>
-    public async Task<int> SyncThroughAsync(ISyncStore shared)
+    public async Task<int> SyncThroughAsync(ISyncStore shared, int compactEvery = SyncEngine.CompactEvery)
     {
         var sent = await Engine.ExportAsync(Store);
+        await Engine.CompactAsync(Store, compactEvery);
         await SyncStores.CopyMissingAsync(Store, shared);
         await SyncStores.CopyMissingAsync(shared, Store);
-        return sent + await Engine.ApplyAsync(Store);
+        await Engine.PruneAsync(shared);
+        var applied = await Engine.ApplyAsync(Store);
+        await Engine.PruneAsync(Store);
+        return sent + applied;
     }
 
     public Task<string> DescribeAsync() => Engine.DescribeAsync();

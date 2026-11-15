@@ -17,4 +17,13 @@ namespace MoneyRecord.Services.Sync
         /// <summary>Writes a file; one that is already there is replaced with the same content (a repeated write).</summary>
         Task WriteAsync(string deviceId, long seq, byte[] data);
     }
+
+    /// <summary>A store whose files can be listed and deleted (compaction): the device's own folder and a shared folder, not the link to another device.</summary>
+    public interface IPrunableSyncStore : ISyncStore
+    {
+        Task<IReadOnlyList<long>> SeqsAsync(string deviceId);
+
+        /// <summary>Deletes a file; no error when it is not there.</summary>
+        Task DeleteAsync(string deviceId, long seq);
+    }
 }

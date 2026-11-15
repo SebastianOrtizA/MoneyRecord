@@ -7,7 +7,7 @@ namespace MoneyRecord.Services.Sync
     /// A file is written under a temporary name and renamed, so a reader never sees half of it; files that do not follow the
     /// naming (a sync tool's "name (1).chg" copy) are ignored.
     /// </summary>
-    public sealed class DirectorySyncStore(string root) : ISyncStore
+    public sealed class DirectorySyncStore(string root) : IPrunableSyncStore
     {
         private const string Extension = ".chg";
 
@@ -18,16 +18,27 @@ namespace MoneyRecord.Services.Sync
                 ? Directory.GetDirectories(root).Select(d => Path.GetFileName(d)).ToList()
                 : []);
 
-        public Task<long> LastSeqAsync(string deviceId)
+        public Task<long> LastSeqAsync(string deviceId) => Task.FromResult(Seqs(deviceId).DefaultIfEmpty(0).Max());
+
+        public Task<IReadOnlyList<long>> SeqsAsync(string deviceId) => Task.FromResult<IReadOnlyList<long>>(Seqs(deviceId).Order().ToList());
+
+        public Task DeleteAsync(string deviceId, long seq)
+        {
+            File.Delete(FileOf(deviceId, seq));
+            return Task.CompletedTask;
+        }
+
+        private IEnumerable<long> Seqs(string deviceId)
         {
             var folder = Path.Combine(root, deviceId);
-            var last = Directory.Exists(folder)
-                ? Directory.GetFiles(folder, "*" + Extension)
-                    .Select(f => long.TryParse(Path.GetFileNameWithoutExtension(f), NumberStyles.None, CultureInfo.InvariantCulture, out var n)
-                        && Path.GetFileName(f) == $"{n:D8}{Extension}" ? n : 0)
-                    .DefaultIfEmpty(0).Max()
-                : 0;
-            return Task.FromResult(last);
+            if (!Directory.Exists(folder))
+                yield break;
+            foreach (var file in Directory.GetFiles(folder, "*" + Extension))
+            {
+                if (long.TryParse(Path.GetFileNameWithoutExtension(file), NumberStyles.None, CultureInfo.InvariantCulture, out var n)
+                    && Path.GetFileName(file) == $"{n:D8}{Extension}")
+                    yield return n;
+            }
         }
 
         public Task<byte[]?> ReadAsync(string deviceId, long seq)
@@ -49,18 +60,35 @@ namespace MoneyRecord.Services.Sync
 
     public static class SyncStores
     {
-        /// <summary>Copies every file that <paramref name="to"/> lacks from <paramref name="from"/> (stops at a gap); returns how many.</summary>
+        /// <summary>
+        /// Copies every file that <paramref name="to"/> lacks from <paramref name="from"/>; returns how many. Files can be missing
+        /// in two ways: not delivered yet (a sync tool delivers in any order: copy them when they come) or compacted away (the
+        /// device wrote a base file that replaces them: <see cref="SyncEngine"/> skips over such a hole). Neither stops the copy.
+        /// </summary>
         public static async Task<int> CopyMissingAsync(ISyncStore from, ISyncStore to)
         {
             var copied = 0;
             foreach (var device in await from.DevicesAsync())
             {
                 var have = await to.LastSeqAsync(device);
-                var last = await from.LastSeqAsync(device);
-                for (var seq = have + 1; seq <= last; seq++)
+                IEnumerable<long> candidates;
+                if (from is IPrunableSyncStore listable)
+                {
+                    // Exactly the files that are there; of the other side only what it lacks
+                    var present = to is IPrunableSyncStore target ? (await target.SeqsAsync(device)).ToHashSet() : null;
+                    candidates = (await listable.SeqsAsync(device)).Where(s => present != null ? !present.Contains(s) : s > have);
+                }
+                else
+                {
+                    // A link to another device cannot list: its files after the last one here, holes (compacted away) skipped
+                    var last = await from.LastSeqAsync(device);
+                    candidates = Enumerable.Range(0, (int)Math.Max(0, last - have)).Select(i => have + 1 + i);
+                }
+
+                foreach (var seq in candidates)
                 {
                     if (await from.ReadAsync(device, seq) is not { } data)
-                        break;
+                        continue;
                     await to.WriteAsync(device, seq, data);
                     copied++;
                 }

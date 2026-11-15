@@ -372,6 +372,7 @@ namespace MoneyRecord.Services.Sync
                 try
                 {
                     await engine.ExportAsync(store);
+                    await engine.CompactAsync(store);
 
                     // A copy of the list: a device removed meanwhile is simply not updated at the end
                     foreach (var peer in profile.Peers.ToList())
@@ -417,6 +418,8 @@ namespace MoneyRecord.Services.Sync
                             {
                                 await SyncStores.CopyMissingAsync(store, shared);
                                 await SyncStores.CopyMissingAsync(shared, store);
+                                // Files that a base file replaces are deleted in the folder too, or it would grow a file per sync for ever
+                                await engine.PruneAsync(shared);
                                 // The computer not answering is no problem when the folder did the work (with several computers the
                                 // last one's outcome wins, as before)
                                 if (outcome == SyncOutcome.Unreachable)
@@ -433,6 +436,7 @@ namespace MoneyRecord.Services.Sync
                     try
                     {
                         await engine.ApplyAsync(store);
+                        await engine.PruneAsync(store);
                     }
                     catch (SyncVersionException)
                     {

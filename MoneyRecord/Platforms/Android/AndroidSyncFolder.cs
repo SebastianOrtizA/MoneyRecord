@@ -90,7 +90,7 @@ namespace MoneyRecord.Platforms.Android
         /// The store over the tree. Listings are cached for the life of the store (one sync run): a provider like Drive is slow to list,
         /// and a run reads each folder once. A file is written under a temporary name and renamed, so a reader never sees half of it.
         /// </summary>
-        private sealed class SafSyncStore(Uri tree) : ISyncStore
+        private sealed class SafSyncStore(Uri tree) : IPrunableSyncStore
         {
             private const string Extension = ".chg";
             private const string TempSuffix = ".tmp";
@@ -148,9 +148,14 @@ namespace MoneyRecord.Platforms.Android
                     ? List(root).Where(e => e.IsDirectory).Select(e => e.Name).ToList()
                     : [];
 
-            private long LastSeq(string deviceId)
+            public Task<IReadOnlyList<long>> SeqsAsync(string deviceId) => Task.Run<IReadOnlyList<long>>(() => Seqs(deviceId).Order().ToList());
+
+            public Task DeleteAsync(string deviceId, long seq) => Task.Run(() => Delete(deviceId, seq));
+
+            private long LastSeq(string deviceId) => Seqs(deviceId).DefaultIfEmpty(0).Max();
+
+            private IEnumerable<long> Seqs(string deviceId)
             {
-                long last = 0;
                 if (Root(create: false) is { } root && Folder(root, deviceId, create: false) is { } device)
                 {
                     foreach (var entry in List(device).Where(e => !e.IsDirectory))
@@ -159,10 +164,19 @@ namespace MoneyRecord.Platforms.Android
                         if (entry.Name.EndsWith(Extension, StringComparison.Ordinal)
                             && long.TryParse(entry.Name[..^Extension.Length], NumberStyles.None, CultureInfo.InvariantCulture, out var n)
                             && entry.Name == NameOf(n))
-                            last = Math.Max(last, n);
+                            yield return n;
                     }
                 }
-                return last;
+            }
+
+            private void Delete(string deviceId, long seq)
+            {
+                if (Root(create: false) is not { } root || Folder(root, deviceId, create: false) is not { } device
+                    || List(device).FirstOrDefault(e => !e.IsDirectory && e.Name == NameOf(seq)) is not { } file)
+                    return;
+                if (!DocumentsContract.DeleteDocument(Resolver, DocumentUri(tree, file.Id)))
+                    throw new IOException("The sync folder can't delete a file");
+                List(device).Remove(file); // not a fresh listing per delete: a provider like Drive is slow
             }
 
             private static string NameOf(long seq) => $"{seq:D8}{Extension}";
