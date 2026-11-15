@@ -3665,4 +3665,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>La scansione non è disponibile su questo telefono. Usa Collegati a un dispositivo e digita il codice.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Cartella condivisa</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Sincronizza fuori casa o a computer spento, tramite una cartella gestita da Google Drive, Nextcloud, Syncthing o da una chiavetta USB. Scegli la stessa cartella su ogni dispositivo. I file al suo interno sono cifrati.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Scegli una cartella</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Cambia cartella</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Smetti di usare la cartella</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>Impossibile raggiungere la cartella condivisa. Controlla che esista ancora e che l'app possa usarla, poi sceglila di nuovo.</value>
+  </data>
 </root>

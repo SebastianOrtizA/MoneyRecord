@@ -3667,4 +3667,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>Сканирование недоступно на этом телефоне. Выберите «Подключиться к устройству» и введите код.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Общая папка</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Синхронизируйте вне дома или при выключенном компьютере через папку, которую хранят Google Drive, Nextcloud, Syncthing или USB-накопитель. Выберите одну и ту же папку на каждом устройстве. Файлы в ней зашифрованы.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Выбрать папку</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Сменить папку</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Больше не использовать папку</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>Общая папка недоступна. Убедитесь, что она существует и приложению разрешён доступ, затем выберите её снова.</value>
+  </data>
 </root>

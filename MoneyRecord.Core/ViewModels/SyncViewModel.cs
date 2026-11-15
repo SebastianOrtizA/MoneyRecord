@@ -45,6 +45,14 @@ namespace MoneyRecord.ViewModels
         [ObservableProperty]
         private bool isBusy;
 
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ShowFolder), nameof(HasFolder), nameof(NoFolder))]
+        private bool folderSupported;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasFolder), nameof(NoFolder))]
+        private string? folderName;
+
         public ObservableCollection<SyncPeerRow> Peers { get; } = [];
 
         public bool ShowNotAvailable => !IsSupported;
@@ -53,6 +61,9 @@ namespace MoneyRecord.ViewModels
         public bool ShowDevices => IsEnabled;
         public bool ShowAddDevice => IsEnabled && IsListening;
         public bool ShowTurnOff => IsEnabled;
+        public bool ShowFolder => IsEnabled && FolderSupported;
+        public bool HasFolder => !string.IsNullOrEmpty(FolderName);
+        public bool NoFolder => !HasFolder;
         public bool CanScan => scanner.IsSupported;
         public bool HasCode => !string.IsNullOrEmpty(CodeText);
 
@@ -66,6 +77,8 @@ namespace MoneyRecord.ViewModels
                 CanListen = status.CanListen;
                 IsListening = status.Listening;
                 DeviceName = status.DeviceName;
+                FolderSupported = status.FolderSupported;
+                FolderName = status.FolderName;
                 Peers.Clear();
                 foreach (var peer in status.Peers)
                     Peers.Add(new SyncPeerRow(peer.DeviceId, peer.Name, LastSyncText(peer.LastSync)));
@@ -238,6 +251,35 @@ namespace MoneyRecord.ViewModels
             }
         }
 
+        /// <summary>Picks (or changes) the shared folder for syncing away from home.</summary>
+        [RelayCommand]
+        private async Task ChooseFolderAsync()
+        {
+            try
+            {
+                if (await sync.PickFolderAsync())
+                    await InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                await errors.HandleAsync(ex, AppResources.SyncFailed);
+            }
+        }
+
+        [RelayCommand]
+        private async Task StopFolderAsync()
+        {
+            try
+            {
+                await sync.ClearFolderAsync();
+                await InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                await errors.HandleAsync(ex, AppResources.SyncFailed);
+            }
+        }
+
         [RelayCommand]
         private async Task RemovePeerAsync(SyncPeerRow peer)
         {
@@ -261,6 +303,7 @@ namespace MoneyRecord.ViewModels
             SyncOutcome.WrongDevice => AppResources.SyncWrongDevice,
             SyncOutcome.NotRecognised => AppResources.SyncNotRecognised,
             SyncOutcome.VersionMismatch => AppResources.SyncVersionMismatch,
+            SyncOutcome.FolderUnavailable => AppResources.SyncFolderUnavailable,
             _ => AppResources.SyncFailed
         };
     }

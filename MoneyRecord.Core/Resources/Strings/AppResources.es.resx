@@ -3716,4 +3716,22 @@ Se moverán {1} transacción(es) y {2} regla(s) recurrente(s) a '{3}'.</value>
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>El escaneo no está disponible en este teléfono. Usa Conectar con un dispositivo y escribe el código.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Carpeta compartida</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Sincroniza fuera de casa o con el ordenador apagado, a través de una carpeta que mantiene Google Drive, Nextcloud, Syncthing o una unidad USB. Elige la misma carpeta en cada dispositivo. Los archivos que contiene están cifrados.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Elegir una carpeta</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Cambiar carpeta</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Dejar de usar la carpeta</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>No se puede acceder a la carpeta compartida. Comprueba que sigue existiendo y que la app puede usarla, y vuelve a elegirla.</value>
+  </data>
 </root>

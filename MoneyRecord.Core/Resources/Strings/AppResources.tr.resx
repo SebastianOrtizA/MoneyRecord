@@ -3665,4 +3665,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>Bu telefonda tarama kullanılamıyor. «Bir cihaza bağlan» seçeneğini kullanıp kodu yazın.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Paylaşılan klasör</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Evden uzaktayken veya bilgisayar kapalıyken Google Drive, Nextcloud, Syncthing ya da bir USB bellek tarafından tutulan bir klasör üzerinden eşitleyin. Her cihazda aynı klasörü seçin. İçindeki dosyalar şifrelidir.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Klasör seç</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Klasörü değiştir</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Klasörü kullanmayı bırak</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>Paylaşılan klasöre ulaşılamıyor. Klasörün hâlâ var olduğunu ve uygulamanın kullanabildiğini kontrol edip yeniden seçin.</value>
+  </data>
 </root>

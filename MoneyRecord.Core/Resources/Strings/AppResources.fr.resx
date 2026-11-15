@@ -3666,4 +3666,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>Le scan n'est pas disponible sur ce téléphone. Utilisez « Se connecter à un appareil » et saisissez le code.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Dossier partagé</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Synchronisez hors de chez vous ou quand l'ordinateur est éteint, via un dossier que Google Drive, Nextcloud, Syncthing ou une clé USB tient à jour. Choisissez le même dossier sur chaque appareil. Les fichiers qu'il contient sont chiffrés.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Choisir un dossier</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Changer de dossier</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Ne plus utiliser le dossier</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>Le dossier partagé est inaccessible. Vérifiez qu'il existe toujours et que l'appli peut l'utiliser, puis choisissez-le à nouveau.</value>
+  </data>
 </root>

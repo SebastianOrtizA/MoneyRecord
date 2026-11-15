@@ -3665,4 +3665,22 @@
   <data name="SyncScanUnavailable" xml:space="preserve">
     <value>Das Scannen ist auf diesem Telefon nicht verfügbar. Nutze „Mit einem Gerät verbinden“ und gib den Code ein.</value>
   </data>
+  <data name="SyncFolderTitle" xml:space="preserve">
+    <value>Gemeinsamer Ordner</value>
+  </data>
+  <data name="SyncFolderHint" xml:space="preserve">
+    <value>Synchronisiere unterwegs oder bei ausgeschaltetem Computer über einen Ordner, den Google Drive, Nextcloud, Syncthing oder ein USB-Stick bereithält. Wähle auf jedem Gerät denselben Ordner. Die Dateien darin sind verschlüsselt.</value>
+  </data>
+  <data name="SyncFolderChoose" xml:space="preserve">
+    <value>Ordner wählen</value>
+  </data>
+  <data name="SyncFolderChange" xml:space="preserve">
+    <value>Ordner ändern</value>
+  </data>
+  <data name="SyncFolderStop" xml:space="preserve">
+    <value>Ordner nicht mehr verwenden</value>
+  </data>
+  <data name="SyncFolderUnavailable" xml:space="preserve">
+    <value>Auf den gemeinsamen Ordner kann nicht zugegriffen werden. Prüfe, ob er noch existiert und die App ihn verwenden darf, und wähle ihn erneut aus.</value>
+  </data>
 </root>

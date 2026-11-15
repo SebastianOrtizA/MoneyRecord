@@ -10420,5 +10420,59 @@ namespace MoneyRecord.Resources.Strings {
                 return ResourceManager.GetString("SyncRemoveMessage", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncFolderTitle.
+        /// </summary>
+        public static string SyncFolderTitle {
+            get {
+                return ResourceManager.GetString("SyncFolderTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncFolderHint.
+        /// </summary>
+        public static string SyncFolderHint {
+            get {
+                return ResourceManager.GetString("SyncFolderHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncFolderChoose.
+        /// </summary>
+        public static string SyncFolderChoose {
+            get {
+                return ResourceManager.GetString("SyncFolderChoose", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncFolderChange.
+        /// </summary>
+        public static string SyncFolderChange {
+            get {
+                return ResourceManager.GetString("SyncFolderChange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncFolderStop.
+        /// </summary>
+        public static string SyncFolderStop {
+            get {
+                return ResourceManager.GetString("SyncFolderStop", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncFolderUnavailable.
+        /// </summary>
+        public static string SyncFolderUnavailable {
+            get {
+                return ResourceManager.GetString("SyncFolderUnavailable", resourceCulture);
+            }
+        }
     }
 }
