@@ -21,6 +21,7 @@ namespace MoneyRecord.Services.Pdf
         public static void Write(YearReview review, bool includeAmounts, Stream output)
         {
             PdfFonts.Install();
+            using var latin = PdfFonts.LatinScope();
             var renderer = new PdfDocumentRenderer { Document = Build(review, includeAmounts) };
             renderer.RenderDocument();
             renderer.PdfDocument.Save(output, closeStream: false);

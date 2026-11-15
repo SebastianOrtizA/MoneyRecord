@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_name">बैलेंस</string>
+    <string name="widget_description">किसी खाते का बैलेंस, खर्च, आय और ट्रांसफ़र के बटनों के साथ</string>
+    <string name="widget_preview_account">नकद</string>
+    <string name="widget_preview_balance">₹1,250.00</string>
+    <string name="widget_expense">खर्च</string>
+    <string name="widget_income">आय</string>
+    <string name="widget_transfer">ट्रांसफ़र</string>
+</resources>

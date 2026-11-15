@@ -26,6 +26,7 @@ namespace MoneyRecord.Models
             new("tr", "tr-TR"),
             new("id", "id-ID", PlayLocale: "id"),
             new("ru", "ru-RU"),
+            new("hi", "hi-IN", ZeroIsSingular: true),
         ];
 
         public static AppLanguage English => All[0];

@@ -3,13 +3,13 @@ name: translate-moneyrecord
 description: Add or update a MoneyRecord translation (app strings, widget, Play listing, What's new). Use when asked to add a language, translate new strings, or check translation terminology.
 ---
 
-Languages are the rows of `AppLanguage.All` (`MoneyRecord.Core/Models/AppLanguage.cs`): en, es, pt (pt-BR), fr, it, de, tr, id, ru.
+Languages are the rows of `AppLanguage.All` (`MoneyRecord.Core/Models/AppLanguage.cs`): en, es, pt (pt-BR), fr, it, de, tr, id, ru, hi.
 The picker, device detection, culture fallback, Play changelog locale and plural rule all read that list.
 
 ## New strings in a feature PR
 Add the English key to `AppResources.resx`, then the same key (same `{n}` placeholders) to every `AppResources.xx.resx`.
 `ResourceParityTests` fails per language until all exist. Use the glossary below; keep tab labels, chips and buttons short
-(pt/fr/it run 20-30% longer than English). Informal address: es tú, pt você, fr tu, it tu, de du, tr sen, id kamu, ru ты.
+(pt/fr/it run 20-30% longer than English). Informal address: es tú, pt você, fr tu, it tu, de du, tr sen, id kamu, ru ты, hi आप (polite).
 
 ## Adding a language
 1. One row in `AppLanguage.All` (`Code`, default culture = Play store locale, `ZeroIsSingular` for French-like plurals).
@@ -44,3 +44,10 @@ Add the English key to `AppResources.resx`, then the same key (same `{n}` placeh
 | Trends / Cash flow / Net worth | Tendências / Fluxo de caixa / Patrimônio | Tendances / Flux de trésorerie / Patrimoine net | Andamento / Flusso di cassa / Patrimonio netto |
 | Settings | Configurações | Réglages | (see resx) |
 | Backup | (see resx) | sauvegarde | (see resx) |
+
+## Scripts Open Sans cannot draw (Hindi)
+The PDF export uses Open Sans, which has no Devanagari, and PDFsharp does no complex-script shaping, so embedding a Devanagari
+font would still print broken conjuncts and vowel signs. `PdfFonts.LatinScope()` therefore builds the PDF with English labels
+and dates when the language's own name is outside the font; user-typed names in such a script are left out. On screen the app
+uses the system font for those glyphs. Receipt keywords for such scripts are written with combining marks removed (`ReceiptReader`
+strips them: कुल → कल).

@@ -1,3 +1,4 @@
+using MoneyRecord.Resources.Strings;
 using PdfSharp.Fonts;
 using System.Buffers.Binary;
 using System.Globalization;
@@ -48,6 +49,47 @@ namespace MoneyRecord.Services.Pdf
 
         /// <summary>Whether the fonts have a glyph for the character.</summary>
         public static bool CanShow(int codePoint) => Covered.Value.Contains(codePoint);
+
+        /// <summary>
+        /// While the PDF is built: when the language's own name is a script Open Sans can't draw (Devanagari), the labels and
+        /// dates come out in English. PDFsharp does no complex-script shaping (conjuncts, vowel signs), so embedding a Devanagari
+        /// font would still print broken text; user-typed names in such a script are left out by <see cref="Printable"/>.
+        /// </summary>
+        public static IDisposable LatinScope()
+        {
+            var ui = CultureInfo.CurrentUICulture;
+            if (ui.NativeName.EnumerateRunes().All(r => CanShow(r.Value)))
+                return new Restore(null, null, null);
+
+            CultureInfo latin;
+            try { latin = new CultureInfo("en-" + new RegionInfo(CultureInfo.CurrentCulture.Name).TwoLetterISORegionName); }
+            catch (ArgumentException) { latin = new CultureInfo("en-US"); }
+
+            // One scope at a time: a second export must not take the first one's English as the culture to restore
+            Monitor.Enter(ScopeGate);
+            var scope = new Restore(CultureInfo.CurrentCulture, ui, AppResources.Culture, latin);
+            CultureInfo.CurrentCulture = latin;
+            CultureInfo.CurrentUICulture = latin;
+            AppResources.Culture = latin;
+            return scope;
+        }
+
+        private static readonly object ScopeGate = new();
+
+        private sealed class Restore(CultureInfo? culture, CultureInfo? ui, CultureInfo? resources, CultureInfo? latin = null) : IDisposable
+        {
+            public void Dispose()
+            {
+                if (culture == null)
+                    return;
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = ui!;
+                // A language picked meanwhile stays
+                if (ReferenceEquals(AppResources.Culture, latin))
+                    AppResources.Culture = resources;
+                Monitor.Exit(ScopeGate);
+            }
+        }
 
         /// <summary>
         /// The text with what the font can't draw replaced: "▲ 12%" → "+12%", "▼" → "−", "→" → "›", a thin or narrow
