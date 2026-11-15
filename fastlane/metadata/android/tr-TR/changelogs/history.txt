@@ -1,0 +1,125 @@
+## 1.5.0
+- Banka ekstrelerini artık yalnızca CSV değil, OFX/QFX ve QIF dosyalarından da içe aktar: daha önce aktardığın kayıtlar atlanır.
+- YNAB ve Mint dışa aktarımlarını içe aktar: sütunlar senin için doldurulur.
+- Bir işleme birden fazla fotoğraf ve PDF ekle, işlemden aç.
+- İşlemlerini Ayarlar'dan veya Raporlar sekmesinden Excel çalışma kitabı (.xlsx) olarak dışa aktar.
+
+## 1.4.4
+- Varsayılan hesaptan farklı para biriminde bir hesabı silmek artık hatayla durmuyor: döviz kurunu veya nihai tutarı gir, işlemleri ve yinelenen kuralları dönüştürülür.
+
+## 1.4.3
+- Para birimleri artık kod yerine yerelde kullanılan sembolü gösteriyor, örneğin Kenya şilini için KSh.
+- Düzeltildi: mevcut bir hesabın para birimini değiştirmek hiçbir şey yapmıyor ve formu kapatıyordu.
+
+## 1.4.2
+- Her para birimi artık kullanılabilir: liste 25 yerine, koda göre sıralanmış 159 ISO para biriminin tamamını içeriyor.
+- Para birimi seçmek artık arama kutulu bir liste açıyor: kod, ad veya sembol yaz.
+
+## 1.4.1
+- Kategori eğilimi, çok sayıda kategorin olduğunda bir çip duvarı yerine kategoriyi, her birinin toplamını gösteren bir listeden seçtiriyor.
+
+## 1.4.0
+- Yeni rapor merkezi (Daha fazla → Diğer raporlar): Kategori eğilimi, Alıcı raporu, Etiketler, Hesap raporu, Dönemleri karşılaştır ve Yıl özeti.
+- Kategori eğilimi, seçtiğin kategorilerdeki harcamanın ay ay nasıl değiştiğini gösterir.
+- Alıcı raporu, paranın alıcıya göre nereye gittiğini sıralar; işlemlerini görmek için bir satıra dokun.
+- Etiketlerin kendi sayfası var: her etiketin toplamını gör, etiketleri yeniden adlandır, birleştir veya sil.
+- Hesap raporu, hesap başına gelir, gider ve transferleri gösterir.
+- Dönemleri karşılaştır, iki dönemi yan yana, kategori kategori ve değişimiyle gösterir.
+- Yıl özeti yılını özetler ve metin veya PDF olarak paylaşılabilir.
+- İşlemler filtresi artık aynı anda birden fazla kategori alıyor.
+- Kayıtlı filtreler: sık kullandığın filtreleri bir adla kaydet ve İşlemler sayfasından tek dokunuşla uygula.
+
+## 1.3.1
+- Düzeltildi: Tahmin grafiğinin altındaki tarihler artık İspanyolca ve Portekizcede üst üste binmiyor.
+
+## 1.3.0
+- Yeni Tahmin sayfası (Daha fazla → Planlama → Tahmin): bakiyelerinin önümüzdeki 30, 60 veya 90 günde yinelenen kayıtlarına, planlı kayıtlarına ve borç ödemelerine göre nasıl değişebileceğini gör. Bunlar tahmindir, söz değil.
+- Ana sayfada, bir sonraki gelirine kadar harcaması güvenli tutarı gösteren bir Tahmin kartı var.
+- Düşük bakiye uyarısı: Ayarlar'da, bir hesabın eksiye düşmesi beklendiğinde 7, 14 veya 30 gün önceden haber verilmesini seç.
+- Bütçeler günde ne kadar harcayabileceğini gösterir ve harcamadığını sonraki döneme devredebilir.
+- Yeni "Tüm harcamalar" bütçesi: kategori bütçelerinin yanında, harcadığın her şey için tek limit.
+- Bütçe öner: bütçesi olmayan her kategori için son 3 ayına dayalı aylık bir limit al ve oluşturulacak olanları işaretle.
+- Düzeltildi: uygulama kilidi açıkken açılan bir başlatıcı kısayolu artık kilidi açmanı bekliyor.
+
+## 1.2.2
+- Uygulamanın kodu daha da kırpıldı, bu yüzden biraz daha az yer ve bellek kaplıyor.
+
+## 1.2.1
+- Uygulamanın kodu artık küçültülmenin yanı sıra optimize de ediliyor, bu yüzden biraz daha küçük ve belleğe daha hafif.
+
+## 1.2.0
+- Hızlı kayıtlar: sabah kahven gibi tekrarlayan bir gider veya geliri kaydet, Ana sayfadaki veya ekleme formundaki bir çipten tek dokunuşla ekle. Geri al her zaman sunulur; Daha fazla → Hızlı kayıtlar bunları düzenlemeni ve sıralamanı sağlar.
+- Bir hızlı kayıt tutarı boş bırakıp her seferinde sorabilir ve uygulama, aynı kaydı birkaç kez tekrarladıktan sonra bir tane önerir.
+- Hemen bir Gider, Gelir veya Transfer eklemek için uygulama simgesine uzun bas; en üstteki hızlı kayıtların da orada.
+- Yeni bir gideri doğrudan başlatmak için ekle düğmesine uzun bas.
+- Bir kaydı ayrıntılarından veya kaydırarak kopyala ve bugünün tarihiyle yeniden ekle.
+- Bir alıcı seçmek artık son kaydın hesabını ve tutarını da dolduruyor.
+
+## 1.1.1
+- İşlemler: güne, kategoriye veya hesaba göre gruplama ve sıralama düzeni artık filtre sayfasında (⋮ menüsü kalktı).
+- Gruplar kapalı başlıyor, böylece liste taramak daha kolay; arama veya filtreleme sırasında açılıyorlar ve Tümünü aç hepsini bir anda açıyor.
+- Uzun bir özel tarih aralığı artık kesilmek yerine ekrana sığıyor.
+
+## 1.1.0
+- Kayıt eklemek daha hızlı: üstten Gider, Gelir ve Transfer arasında geç, hesabı ve Bugün veya Dün'ü tek dokunuşla seç; Kaydet klavyenin üstünde kalıyor ve tutar geçerli olunca etkinleşiyor.
+- İşlemler güne göre, her günün toplamıyla gruplanıyor. Arama araç çubuğunda bir simge ve her etkin filtre kaldırabileceğin bir çip olarak görünüyor.
+- Bir dönem adımlayıcı (‹ Ekim 2026 ›) Ana sayfa, İşlemler, Bütçeler ve Raporlar'daki dönem açılır listesinin yerini aldı.
+- Raporlar: daha net sekmeler ve grafik renkleri; bir halka diliminin tutarını görmek için üzerine basılı tutabilirsin.
+- Bütçe kartları, kalanı veya aşımı bir ilerleme çubuğuyla, en acili önde olacak şekilde gösteriyor.
+- Daha fazla ve Ayarlar başlıklar altında gruplandı, Ayarlar'da bir arama kutusu var.
+
+## 1.0.0
+- Bir işlemi, bölünmüş ödemeyi veya transferi silmek artık onay istemiyor: geri getirmek için çıkan mesajdaki Geri al'a dokun.
+- Yeni: Ana sayfadaki Başlangıç kartı ilk adımlarda (gider ekle, verilerini yedekle, hatırlatıcıları aç) sana yol gösteriyor; boş ekranlar da artık sırada ne yapacağını söylüyor.
+- Kategorilerde ve Hesaplarda arama kutusu var; Transferler, Nakit akışı, Net varlık ve Alıcılar boşken kendilerini açıklıyor.
+- Büyük yazı: tutarlar asla kesilmiyor; kategoriler, bakiye başlığı ve düğmeler en büyük yazı boyutlarında da sığıyor.
+- TalkBack ile daha iyi: daha çok denetimin etiketi var, dokunma hedefleri en az 48 dp ve soluk metin daha koyu.
+- Gelir her yerde mavi, gider kırmızı; Ana sayfa karoları daha sakin ve durum çubuğu simgeleri mor çubukta okunabiliyor.
+
+## 0.20.1
+- Hedefler: hedef ekleme/düzenleme sayfası artık kayıyor, böylece çok hesabın olduğunda Kaydet'e erişilebilir kalıyor.
+
+## 0.20.0
+- Google Play sürümünde yeni MoneyRecord'u destekle ekranı (Daha fazla sekmesi): projeyi desteklemek için Google Play üzerinden küçük, isteğe bağlı bir bahşiş bırak. Bağış yapsan da yapmasan da hiçbir şey kilitlenmez ya da açılmaz.
+
+## 0.19.2
+- Birikim mücadeleleri: doğrusal bir mücadele artık bir ilk günden başlayıp günde belirli bir tutar artabilir. Artışı yaz, uygulama kaç güne ihtiyacın olduğunu hesaplasın. İkiye katlama artık yeni mücadeleler için sunulmuyor; mevcut olanlar çalışmaya devam ediyor.
+- Mücadele sayfasında yeni filtreler var: Başlangıçtan, Bu ay (takvim gibi ay ay gez), Sonraki 30 gün ve Tarih aralığı, ayrıca Yalnızca bekleyenler.
+- Mücadele ızgarasındaki tarihler artık bazı dillerde kesilmiyor.
+- Kayıt eklerken: Daha fazla ayrıntı'yı açmak artık yeni alanlara kaydırıyor.
+- Simgeler: gider ve gelir kategorileri için çok daha fazlası, hesaplar için de birkaç tane daha.
+
+## 0.19.1
+- Bir donma düzeltildi: başka bir dil seçtikten sonra Ayarlar → Dil'de "Sistem varsayılanı"nı seçmek uygulamayı kilitleyebiliyordu.
+
+## 0.19.0
+- MoneyRecord artık İngilizce ve İspanyolcanın yanı sıra Brezilya Portekizcesi, Fransızca ve İtalyanca da konuşuyor. Telefonunun dilini izler veya Ayarlar → Dil'den birini seç.
+- Fiş tarama Fransızca, İtalyanca ve Portekizce fişleri anlıyor: toplamlar, ara toplamlar, vergi, para üstü ve tarihler.
+
+## 0.18.1
+- Birikim mücadeleleri: her günü 5, 50 veya 500'e de yuvarla; Kolombiya pesosu gibi para birimleri için kullanışlı.
+- Yeni "Her gün aynı" modu: hedefi günlere eşit böl veya günlük tutarı belirle, uygulama kaç gün süreceğini hesaplasın. Son gün kalanı alır.
+- Mücadele sayfası artık sonraki 30 günde açılıyor; bu, geçen ve gelecek ay, hedefin son 30 günü ve bir tarih aralığı için filtreler var, böylece uzun mücadeleler hafif kalıyor.
+
+## 0.18.0
+- Birikim mücadeleleri: günlük tutarları seviyeler hâlinde ikiye katlanan veya doğrusal artan, isteğe bağlı yuvarlamalı bir birikim oyunu.
+- Bir hedef hesap veya cep seç; her gün parayı seçtiğin hesaptan veya cepten oraya taşır.
+- Yenilikler penceresi her değişikliği kendi satırında ve kaçırdığın her sürümü listeliyor.
+- Yedekler artık v7 biçimini kullanıyor.
+- Optimize edilmiş uygulama derlemesi.
+
+## 0.16.0
+- Cepler: bir hesabın içinde para ayır ve bir gider ona dokunduğunda hangi cepten alınacağını seç.
+- Her seferinde onayladığın, tutarı değişen yinelenen faturalar.
+- Ana sayfayı özelleştir (kartların sırası, göster/gizle) ve isteğe bağlı bir Borçlar kartı.
+- Güncellemelerden sonra bir Yenilikler penceresi.
+- Son tutarlar artık Bakiyeleri gizle ile gizleniyor.
+- Yedekler artık v6 biçimini kullanıyor.
+
+## 0.13.1
+- Tutarlar artık yazarken binlik ayırıcıları gösteriyor, böylece uzun bir sayı girerken kolay okunuyor.
+- İşlemler tutar filtresinde ve gezi kategorisi limitlerinde de aynısı geçerli.
+
+## 0.13.0
+- Etkinlikler: gezileri ve ortak masrafları arkadaşlarınla böl, kimin kime borçlu olduğunu gör, hesaplaş, özeti paylaş ve kendi payını gider olarak kaydet.
+- Yedekler artık v5 biçimini kullanıyor.

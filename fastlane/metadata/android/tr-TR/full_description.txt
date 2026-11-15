@@ -1,0 +1,41 @@
+MoneyRecord basit, ücretsiz ve gizliliğe saygılı bir para takip uygulaması. Harcadığını ve kazandığını kaydet, paranın nereye gittiğini gör, bütçende kal ve hedefleri için biriktir. Verilerin telefonunda kalır: üyelik yok, reklam yok.
+
+<b>Hızlı kayıt</b>
+• Birkaç dokunuşla gider, gelir veya transfer ekle: önce tutar, sonra son kullandıklarını öne alan bir ızgaradan kategori.
+• Fişi tara: toplamı ve tarihi telefonunda okunur.
+• İstersen öneri veren alıcılar, etiketler, fiş fotoğrafları ve açıklamalar.
+• Tek bir fişi birkaç kategoriye böl.
+
+<b>Hesaplar ve para birimleri</b>
+• Nakit, banka, birikim, kredi kartları… her biri kendi para biriminde.
+• Para birimi başına toplamlar veya günlük döviz kurlarıyla ana para birimine çevrilmiş hâli (isteğe bağlı).
+• Kuruşa ihtiyaç duymayan para birimlerinin kuruşlarını gizle.
+
+<b>Bütçeler ve birikim hedefleri</b>
+• Kategori başına günlük, aylık veya yıllık harcama limitleri: yolunda mı, limite yakın mı, aşıldı mı tek bakışta.
+• Hedef tarihli birikim hedefleri: ayda ne kadar biriktirmen gerektiği ve hızının seni oraya ulaştırıp ulaştırmadığı.
+
+<b>Yinelenen ve yaklaşan kayıtlar</b>
+• Maaş, kira, abonelikler: günlük, haftalık, iki haftada bir, aylık veya yıllık; bugünden ya da ileri bir tarihten başlayarak.
+• Önümüzdeki 30 günde neyin geleceğini gör; faturaların vadesinden önce ve bir bütçe bittiğinde hatırlatıcılar al.
+
+<b>Verdiğin ve aldığın borçlar</b>
+• Arkadaşlarının sana ve senin onlara ne kadar borçlu olduğunu, planlı ödemelerle takip et.
+
+<b>Raporlar</b>
+• Kategoriye göre harcama ve gelir, eğilimler, nakit akışı ve net varlık.
+• Arkasındaki işlemleri görmek için bir grafiğe dokun.
+• Herhangi bir dönemin PDF raporunu veya CSV dosyasını dışa aktar.
+
+<b>Verin, senin kontrolünde</b>
+• Çevrimdışı çalışır. Hesap yok, reklam yok.
+• Elle veya otomatik (günlük, haftalık ya da aylık) tam yedekler; Google Drive dahil herhangi bir klasöre, isteğe bağlı parolayla.
+• Banka ekstrelerini CSV'den içe aktar; tekrarlar bulunur ve kategoriler önerilir.
+• Parmak izi, yüz veya ekran kilidiyle uygulama kilidi ve şifreli veritabanı.
+• İsteğe bağlı çökme raporları, sen açmadıkça kapalı.
+
+<b>Senin için yapıldı</b>
+• Bakiyeni ve hızlı ekleme düğmelerini gösteren ana ekran widget'ı.
+• İngilizce, İspanyolca, Portekizce, Fransızca, İtalyanca, Almanca ve Türkçe; açık ve koyu tema; ilk açılışta hızlı kurulum.
+
+MoneyRecord ücretsiz ve açık kaynaklıdır (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

@@ -1,0 +1,1 @@
+İçe aktarma artık yalnızca CSV değil, OFX/QFX ve QIF banka ekstrelerini de destekliyor: daha önce aktardığın kayıtlar atlanır. YNAB ve Mint dışa aktarımlarını içe aktar: sütunlar senin için doldurulur. Bir işleme birden fazla fotoğraf ve PDF ekle, işlemden aç. İşlemlerini Ayarlar'dan veya Raporlar sekmesinden Excel çalışma kitabı (.xlsx) olarak dışa aktar.

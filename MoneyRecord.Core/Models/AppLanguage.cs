@@ -21,6 +21,8 @@ namespace MoneyRecord.Models
             new("pt", "pt-BR"),
             new("fr", "fr-FR", ZeroIsSingular: true),
             new("it", "it-IT"),
+            new("de", "de-DE"),
+            new("tr", "tr-TR"),
         ];
 
         public static AppLanguage English => All[0];

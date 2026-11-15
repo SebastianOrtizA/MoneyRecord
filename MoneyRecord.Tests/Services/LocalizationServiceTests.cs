@@ -24,7 +24,7 @@ public class LocalizationServiceTests
     [InlineData("fr", "en-US", "fr-FR")]
     [InlineData("pt", "es-ES", "pt-BR")]
     [InlineData("it", "en-US", "it-IT")]
-    [InlineData("de", "en-US", "en-US")]
+    [InlineData("ja", "en-US", "en-US")]
     [InlineData("es", "en-US", "es-ES")]
     [InlineData("es", "es", "es-ES")]
     public void ResolveCulture_OtherLanguageOrNoRegion_FallsBack(string language, string device, string expected)

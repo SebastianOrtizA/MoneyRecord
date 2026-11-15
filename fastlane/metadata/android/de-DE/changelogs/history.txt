@@ -1,0 +1,125 @@
+## 1.5.0
+- Importiere Kontoauszüge als OFX/QFX- und QIF-Dateien, nicht nur als CSV: bereits importierte Einträge werden übersprungen.
+- Importiere Exporte von YNAB und Mint: Die Spalten werden für dich ausgefüllt.
+- Hänge mehrere Fotos und PDFs an eine Buchung an und öffne sie direkt dort.
+- Exportiere deine Buchungen als Excel-Arbeitsmappe (.xlsx) aus den Einstellungen oder vom Tab „Berichte“.
+
+## 1.4.4
+- Das Löschen eines Kontos in einer anderen Währung als das Standardkonto bricht nicht mehr mit einem Fehler ab: Gib den Wechselkurs oder den Endbetrag ein, dann werden seine Buchungen und Wiederholungsregeln umgerechnet.
+
+## 1.4.3
+- Währungen zeigen jetzt das vor Ort übliche Symbol, etwa KSh für den Kenia-Schilling, statt des Codes.
+- Behoben: Das Ändern der Währung eines bestehenden Kontos bewirkte nichts und schloss das Formular.
+
+## 1.4.2
+- Jede Währung ist jetzt verfügbar: Die Liste enthält alle 159 ISO-Währungen, nach Code sortiert, statt 25.
+- Beim Wählen einer Währung öffnet sich eine Liste mit Suchfeld: Tippe einen Code, einen Namen oder ein Symbol ein.
+
+## 1.4.1
+- Der Kategorietrend wählt die Kategorie jetzt aus einer Liste, die die Summe jeder Kategorie zeigt, statt einer Wand aus Chips, wenn du viele Kategorien hast.
+
+## 1.4.0
+- Neue Berichtsübersicht (Mehr → Weitere Berichte): Kategorietrend, Zahlungsempfängerbericht, Tags, Kontobericht, Zeiträume vergleichen und Jahresrückblick.
+- Der Kategorietrend zeigt, wie sich die Ausgaben der gewählten Kategorien Monat für Monat entwickeln.
+- Der Zahlungsempfängerbericht ordnet, wohin dein Geld fließt, nach Zahlungsempfänger; tippe auf eine Zeile, um die Buchungen zu sehen.
+- Tags hat eine eigene Seite: Sieh, was jeder Tag ergibt, und benenne Tags um, führe sie zusammen oder lösche sie.
+- Der Kontobericht zeigt Einnahmen, Ausgaben und Überweisungen pro Konto.
+- „Zeiträume vergleichen“ stellt zwei Zeiträume nebeneinander, Kategorie für Kategorie, mit der Veränderung.
+- Der Jahresrückblick fasst dein Jahr zusammen und lässt sich als Text oder PDF teilen.
+- Der Buchungsfilter nimmt jetzt mehrere Kategorien gleichzeitig.
+- Gespeicherte Filter: Speichere oft genutzte Filter unter einem Namen und wende sie mit einem Tipp auf der Seite „Buchungen“ an.
+
+## 1.3.1
+- Behoben: Die Daten unter dem Prognosediagramm überlappen sich auf Spanisch und Portugiesisch nicht mehr.
+
+## 1.3.0
+- Neue Seite „Prognose“ (Mehr → Planung → Prognose): Sieh, wie sich deine Salden in den nächsten 30, 60 oder 90 Tagen aus deinen wiederkehrenden Einträgen, geplanten Einträgen und Schuldzahlungen entwickeln könnten. Das sind Schätzungen, keine Versprechen.
+- Der Start hat eine Prognosekarte mit dem Betrag, der bis zu deiner nächsten Einnahme sicher ausgegeben werden kann.
+- Warnung bei niedrigem Saldo: Lege in den Einstellungen fest, dass du 7, 14 oder 30 Tage vorher informiert wirst, wenn ein Konto voraussichtlich ins Minus rutscht.
+- Budgets zeigen, wie viel du pro Tag noch ausgeben kannst, und können übrig gebliebenes Geld in den nächsten Zeitraum übertragen.
+- Neues Budget „Alle Ausgaben“: ein Limit für alles, was du ausgibst, neben deinen Kategoriebudgets.
+- Budgets vorschlagen: Erhalte für jede Kategorie ohne Budget ein Monatslimit auf Basis deiner letzten 3 Monate und hake die an, die angelegt werden sollen.
+- Behoben: Eine bei aktiver App-Sperre geöffnete Launcher-Verknüpfung wartet jetzt, bis du entsperrst.
+
+## 1.2.2
+- Der Code der App wurde weiter gekürzt, sodass sie etwas weniger Platz und Speicher braucht.
+
+## 1.2.1
+- Der Code der App ist jetzt optimiert und verkleinert, sodass sie etwas kleiner und schonender für den Speicher ist.
+
+## 1.2.0
+- Schnelleinträge: Speichere eine wiederkehrende Ausgabe oder Einnahme, etwa deinen Morgenkaffee, und füge sie mit einem Tipp über einen Chip auf dem Start oder im Hinzufügen-Formular hinzu. „Rückgängig“ wird immer angeboten, und unter Mehr → Schnelleinträge kannst du sie bearbeiten und neu ordnen.
+- Ein Schnelleintrag kann den Betrag leer lassen, um jedes Mal zu fragen, und die App schlägt einen vor, wenn du denselben Eintrag mehrmals wiederholst.
+- Halte das App-Symbol gedrückt, um sofort eine Ausgabe, Einnahme oder Überweisung hinzuzufügen, dazu deine wichtigsten Schnelleinträge.
+- Halte die Hinzufügen-Schaltfläche gedrückt, um direkt eine neue Ausgabe zu beginnen.
+- Dupliziere einen Eintrag aus seinen Details oder per Wischen, um ihn mit dem heutigen Datum erneut hinzuzufügen.
+- Die Wahl eines Zahlungsempfängers füllt jetzt auch das Konto und den Betrag des letzten Eintrags aus.
+
+## 1.1.1
+- Buchungen: Gruppieren nach Tag, Kategorie oder Konto und die Sortierreihenfolge befinden sich jetzt im Filterblatt (das ⋮-Menü ist weg).
+- Gruppen starten eingeklappt, damit die Liste übersichtlicher ist; sie öffnen sich bei Suche oder Filter, und „Alle ausklappen“ öffnet alle auf einmal.
+- Ein langer eigener Zeitraum passt jetzt auf den Bildschirm, statt abgeschnitten zu werden.
+
+## 1.1.0
+- Das Hinzufügen eines Eintrags geht schneller: Wechsle oben zwischen Ausgabe, Einnahme und Überweisung, wähle das Konto und Heute oder Gestern mit einem Tipp, und „Speichern“ bleibt über der Tastatur und wird aktiv, sobald der Betrag gültig ist.
+- Buchungen sind nach Tagen gruppiert, mit der Summe jedes Tages. Die Suche ist ein Symbol in der Symbolleiste, und jeder aktive Filter erscheint als Chip, den du entfernen kannst.
+- Ein Zeitraum-Stepper (‹ Oktober 2026 ›) ersetzt das Zeitraum-Dropdown auf Start, Buchungen, Budgets und Berichten.
+- Berichte: klarere Tabs und Diagrammfarben, und du kannst ein Ringdiagrammsegment gedrückt halten, um seinen Betrag zu sehen.
+- Budgetkarten zeigen mit einem Fortschrittsbalken, was übrig oder drüber ist, das Dringendste zuerst.
+- „Mehr“ und „Einstellungen“ sind unter Überschriften gruppiert, und die Einstellungen haben ein Suchfeld.
+
+## 1.0.0
+- Das Löschen einer Buchung, einer aufgeteilten Zahlung oder einer Überweisung verlangt keine Bestätigung mehr: Tippe in der erscheinenden Meldung auf „Rückgängig“, um sie zurückzuholen.
+- Neu: Eine Karte „Erste Schritte“ auf dem Start führt dich durch die ersten Schritte (Ausgabe hinzufügen, Daten sichern, Erinnerungen einschalten), und leere Bildschirme sagen dir jetzt, was als Nächstes zu tun ist.
+- Kategorien und Konten haben ein Suchfeld, und Überweisungen, Cashflow, Nettovermögen und Zahlungsempfänger erklären sich selbst, wenn sie leer sind.
+- Große Schrift: Beträge werden nie abgeschnitten, und Kategorien, die Saldobeschriftung und Schaltflächen passen auch bei den größten Schriftgrößen.
+- Besser mit TalkBack: mehr Bedienelemente haben Beschriftungen, Tippflächen sind mindestens 48 dp groß und blasser Text ist dunkler.
+- Einnahmen sind überall blau und Ausgaben rot, die Kacheln auf dem Start sind ruhiger, und die Statusleistensymbole sind auf der violetten Leiste lesbar.
+
+## 0.20.1
+- Ziele: Das Blatt zum Hinzufügen/Bearbeiten eines Ziels scrollt jetzt, sodass „Speichern“ auch bei vielen Konten erreichbar bleibt.
+
+## 0.20.0
+- Neuer Bildschirm „MoneyRecord unterstützen“ (Tab „Mehr“) in der Google-Play-Version: Gib über Google Play ein kleines, freiwilliges Trinkgeld, um das Projekt zu unterstützen. Nichts wird gesperrt oder freigeschaltet, ob du etwas gibst oder nicht.
+
+## 0.19.2
+- Sparchallenges: Eine lineare Challenge kann jetzt mit einem ersten Tag beginnen und pro Tag um einen Betrag wachsen. Gib die Steigerung ein, und die App berechnet, wie viele Tage du brauchst. Verdoppeln wird für neue Challenges nicht mehr angeboten; bestehende funktionieren weiter.
+- Die Challenge-Seite hat neue Filter: Ab Beginn, Dieser Monat (Monat für Monat wie ein Kalender), Nächste 30 Tage und Zeitraum sowie „Nur offene“.
+- Daten im Challenge-Raster werden in einigen Sprachen nicht mehr abgeschnitten.
+- Beim Hinzufügen eines Eintrags: „Mehr Details“ scrollt jetzt zu den neuen Feldern.
+- Symbole: viele weitere zur Auswahl für Ausgaben- und Einnahmekategorien und ein paar mehr für Konten.
+
+## 0.19.1
+- Ein Einfrieren behoben: Die Wahl von „Systemstandard“ unter Einstellungen → Sprache konnte die App blockieren, nachdem du eine andere Sprache gewählt hattest.
+
+## 0.19.0
+- MoneyRecord spricht jetzt Portugiesisch (Brasilien), Französisch und Italienisch, zusätzlich zu Englisch und Spanisch. Es folgt der Sprache deines Handys, oder wähle eine unter Einstellungen → Sprache.
+- Das Belegscannen versteht französische, italienische und portugiesische Belege: Summen, Zwischensummen, Steuer, Rückgeld und Daten.
+
+## 0.18.1
+- Sparchallenges: Runde jeden Tag auch auf 5, 50 oder 500, praktisch für Währungen wie den kolumbianischen Peso.
+- Neuer Modus „Jeden Tag gleich“: Verteile das Ziel gleichmäßig auf die Tage, oder lege den Betrag pro Tag fest, und die App berechnet, wie viele Tage es dauert. Der letzte Tag nimmt den Rest.
+- Die Challenge-Seite öffnet auf den nächsten 30 Tagen, mit Filtern für diesen, letzten und nächsten Monat, die letzten 30 Tage des Ziels und einen Zeitraum, damit lange Challenges leicht bleiben.
+
+## 0.18.0
+- Sparchallenges: ein Sparspiel mit Tagesbeträgen, die sich in Stufen verdoppeln oder linear wachsen, mit optionaler Rundung.
+- Wähle ein Zielkonto oder -fach, und jeder Tag verschiebt das Geld dorthin von dem Konto oder Fach, das du wählst.
+- Das Pop-up „Neuigkeiten“ listet jede Änderung in einer eigenen Zeile und jede Version, die du verpasst hast.
+- Sicherungen verwenden jetzt das Format v7.
+- Optimierter App-Build.
+
+## 0.16.0
+- Fächer: Lege Geld innerhalb eines Kontos zurück und wähle, aus welchem Fach entnommen wird, wenn eine Ausgabe darauf zugreift.
+- Wiederkehrende Rechnungen mit variablem Betrag, die du jedes Mal bestätigst.
+- Start anpassen (Reihenfolge, Karten ein-/ausblenden) plus eine optionale Schuldenkarte.
+- Ein Pop-up „Neuigkeiten“ nach Updates.
+- Letzte Beträge werden jetzt mit „Salden ausblenden“ verborgen.
+- Sicherungen verwenden jetzt das Format v6.
+
+## 0.13.1
+- Beträge zeigen jetzt Tausendertrennzeichen beim Tippen, sodass eine lange Zahl bei der Eingabe leicht lesbar ist.
+- Auch im Betragsfilter der Buchungen und bei den Limits der Reisekategorien.
+
+## 0.13.0
+- Events: Teile Reisen und gemeinsame Ausgaben mit Freunden, sieh, wer wem was schuldet, gleiche aus und teile die Zusammenfassung, und erfasse deinen eigenen Anteil als Ausgabe.
+- Sicherungen verwenden jetzt das Format v5.
