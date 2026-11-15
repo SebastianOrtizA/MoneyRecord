@@ -105,6 +105,8 @@ namespace MoneyRecord.Services.Sync
                 }
             }
             while (progress);
+            if (applied > 0)
+                await Run(s => s.RemoveDuplicateOccurrences());
             return applied;
         }
 
@@ -249,6 +251,38 @@ namespace MoneyRecord.Services.Sync
 
             public void SetBase(string device, long seq) =>
                 db.InsertOrReplace(new SyncPeerState { DeviceId = device, LastSeq = Math.Max(PeerSeq(device), seq), BaseSeq = seq });
+
+            private sealed class OccurrenceRow
+            {
+                public int LocalId { get; set; }
+                public string OccurrenceKey { get; set; } = "";
+                public string GlobalId { get; set; } = "";
+            }
+
+            /// <summary>
+            /// Two devices that created the same occurrence of a schedule before they synced (see <see cref="Helpers.RecurringOccurrences"/>) have
+            /// two transactions for it: the one with the lowest sync id stays. Every device picks the same one, and the others are deleted as a
+            /// normal local edit, so the delete reaches the devices that have not done it themselves.
+            /// </summary>
+            public int RemoveDuplicateOccurrences()
+            {
+                var rows = db.Query<OccurrenceRow>(
+                    "SELECT t.Id AS LocalId, t.OccurrenceKey AS OccurrenceKey, m.GlobalId AS GlobalId FROM \"Transaction\" t " +
+                    "JOIN SyncMeta m ON m.TableName = 'Transaction' AND m.LocalId = t.Id " +
+                    "WHERE t.OccurrenceKey IN (SELECT OccurrenceKey FROM \"Transaction\" WHERE OccurrenceKey IS NOT NULL GROUP BY OccurrenceKey HAVING COUNT(*) > 1)");
+                var removed = 0;
+                foreach (var group in rows.GroupBy(r => r.OccurrenceKey))
+                {
+                    foreach (var extra in group.OrderBy(r => r.GlobalId, StringComparer.Ordinal).Skip(1))
+                    {
+                        db.Execute("DELETE FROM \"TransactionTag\" WHERE TransactionId = ?", extra.LocalId);
+                        db.Execute("DELETE FROM \"TransactionAttachment\" WHERE TransactionId = ?", extra.LocalId);
+                        db.Execute("DELETE FROM \"Transaction\" WHERE Id = ?", extra.LocalId);
+                        removed++;
+                    }
+                }
+                return removed;
+            }
 
             // ---- Reading rows ----
 
