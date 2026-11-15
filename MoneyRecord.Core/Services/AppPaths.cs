@@ -23,5 +23,7 @@ namespace MoneyRecord.Services
         public string BackupsFolder => Path.Combine(appDataDirectory, BackupsFolderName);
 
         public string LogsFolder => Path.Combine(appDataDirectory, LogsFolderName);
+
+        public string SyncFolder => Path.Combine(appDataDirectory, "sync");
     }
 }

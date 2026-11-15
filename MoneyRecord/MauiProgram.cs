@@ -10,6 +10,7 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
+using MoneyRecord.Services.Sync;
 using MoneyRecord.ViewModels;
 using MoneyRecord.Views;
 
@@ -171,6 +172,18 @@ namespace MoneyRecord
             builder.Services.AddSingleton<IBackupPasswordPrompt, BackupPasswordPrompt>();
             builder.Services.AddSingleton<IBackupNudge, BackupNudge>();
             builder.Services.AddTransient<CurrencyCentsViewModel>();
+            // Sync between devices on the same network (Stage 26): the profile (key, certificate, devices) in secure storage
+            builder.Services.AddSingleton<IClipboardService, MauiClipboardService>();
+            builder.Services.AddSingleton<ISyncPlatform, MauiSyncPlatform>();
+#if ANDROID
+            builder.Services.AddSingleton<ISyncSecretStore, SecureSyncSecretStore>();
+#elif WINDOWS
+            builder.Services.AddSingleton<ISyncSecretStore, Platforms.Windows.WindowsSyncSecretStore>();
+#else
+            builder.Services.AddSingleton<ISyncSecretStore, NoSyncSecretStore>();
+#endif
+            builder.Services.AddSingleton<SyncStateService>();
+            builder.Services.AddSingleton<ISyncService, SyncService>();
 
             // The app PIN (hash + lockout in secure storage): Android only for now, like the app lock
 #if ANDROID
@@ -266,6 +279,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<PartyViewModel>();
             builder.Services.AddTransient<FriendsViewModel>();
             builder.Services.AddTransient<PayeesViewModel>();
+            builder.Services.AddTransient<SyncViewModel>();
             builder.Services.AddTransient<QuickEntriesViewModel>();
             builder.Services.AddTransient<RecurringTransactionsViewModel>();
             builder.Services.AddTransient<SettingsViewModel>();
@@ -310,6 +324,7 @@ namespace MoneyRecord
             builder.Services.AddTransient<PartyPage>();
             builder.Services.AddTransient<FriendsPage>();
             builder.Services.AddTransient<PayeesPage>();
+            builder.Services.AddTransient<SyncPage>();
             builder.Services.AddTransient<QuickEntriesPage>();
             builder.Services.AddTransient<RecurringTransactionsPage>();
             builder.Services.AddTransient<SettingsPage>();

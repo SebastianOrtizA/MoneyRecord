@@ -3599,4 +3599,118 @@
   <data name="ShareNotEncrypted" xml:space="preserve">
     <value>{0} (not encrypted)</value>
   </data>
+  <data name="SyncTitle" xml:space="preserve">
+    <value>Sync</value>
+  </data>
+  <data name="SyncIntro" xml:space="preserve">
+    <value>Keep your data the same on your computer and your phone over your home Wi-Fi. No account and no server: the devices talk to each other directly, and everything is encrypted.</value>
+  </data>
+  <data name="SyncNotAvailable" xml:space="preserve">
+    <value>Sync is not available on this device yet.</value>
+  </data>
+  <data name="SyncTurnOn" xml:space="preserve">
+    <value>Turn on sync</value>
+  </data>
+  <data name="SyncTurnOnHint" xml:space="preserve">
+    <value>While the app is open, this computer waits for your other devices on this network.</value>
+  </data>
+  <data name="SyncTurnOff" xml:space="preserve">
+    <value>Turn off sync</value>
+  </data>
+  <data name="SyncTurnOffTitle" xml:space="preserve">
+    <value>Turn off sync?</value>
+  </data>
+  <data name="SyncTurnOffMessage" xml:space="preserve">
+    <value>This device stops syncing and forgets the other devices. Your data stays here and on the other devices.</value>
+  </data>
+  <data name="SyncThisDevice" xml:space="preserve">
+    <value>This device</value>
+  </data>
+  <data name="SyncWaiting" xml:space="preserve">
+    <value>Waiting for other devices on this network. Keep the app open.</value>
+  </data>
+  <data name="SyncAddDevice" xml:space="preserve">
+    <value>Add a device</value>
+  </data>
+  <data name="SyncCodeTitle" xml:space="preserve">
+    <value>Code for the other device</value>
+  </data>
+  <data name="SyncCodeHint" xml:space="preserve">
+    <value>On the other device open More → Sync and enter this code. It works once and expires in {0} minutes.</value>
+  </data>
+  <data name="SyncCopyCode" xml:space="preserve">
+    <value>Copy code</value>
+  </data>
+  <data name="SyncCodeCopied" xml:space="preserve">
+    <value>Code copied</value>
+  </data>
+  <data name="SyncConnect" xml:space="preserve">
+    <value>Connect to a device</value>
+  </data>
+  <data name="SyncConnectHint" xml:space="preserve">
+    <value>On your computer open More → Sync and tap Add a device. Then enter the code it shows here.</value>
+  </data>
+  <data name="SyncEnterCodeTitle" xml:space="preserve">
+    <value>Enter the code</value>
+  </data>
+  <data name="SyncEnterCodeMessage" xml:space="preserve">
+    <value>Type or paste the code shown on the other device.</value>
+  </data>
+  <data name="SyncConnectButton" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="SyncReplaceTitle" xml:space="preserve">
+    <value>Replace the data on this device?</value>
+  </data>
+  <data name="SyncReplaceMessage" xml:space="preserve">
+    <value>Everything on this device will be replaced by the data of the other device. Make a backup first if you want to keep what is here.</value>
+  </data>
+  <data name="SyncReplaceAccept" xml:space="preserve">
+    <value>Replace and connect</value>
+  </data>
+  <data name="SyncConnected" xml:space="preserve">
+    <value>Connected to {0}</value>
+  </data>
+  <data name="SyncDevices" xml:space="preserve">
+    <value>Devices</value>
+  </data>
+  <data name="SyncNow" xml:space="preserve">
+    <value>Sync now</value>
+  </data>
+  <data name="SyncNever" xml:space="preserve">
+    <value>Not synced yet</value>
+  </data>
+  <data name="SyncLastSync" xml:space="preserve">
+    <value>Last sync: {0}</value>
+  </data>
+  <data name="SyncRemoveDevice" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="SyncDone" xml:space="preserve">
+    <value>Synced</value>
+  </data>
+  <data name="SyncBadCode" xml:space="preserve">
+    <value>That is not a sync code. Copy the whole code from the other device.</value>
+  </data>
+  <data name="SyncUnreachable" xml:space="preserve">
+    <value>Could not reach the other device. Both must be on the same Wi-Fi, and the app must be open on the computer.</value>
+  </data>
+  <data name="SyncWrongDevice" xml:space="preserve">
+    <value>Another device answered, not the one in the code. Check that you are on your own network.</value>
+  </data>
+  <data name="SyncNotRecognised" xml:space="preserve">
+    <value>The other device did not accept this one. The code may have expired or been used: show a new code.</value>
+  </data>
+  <data name="SyncVersionMismatch" xml:space="preserve">
+    <value>The apps are on different versions. Update the app on both devices.</value>
+  </data>
+  <data name="SyncFailed" xml:space="preserve">
+    <value>Sync did not work. Try again.</value>
+  </data>
+  <data name="SyncRemoveTitle" xml:space="preserve">
+    <value>Remove this device?</value>
+  </data>
+  <data name="SyncRemoveMessage" xml:space="preserve">
+    <value>{0} and this device will stop syncing. To sync again, connect them again with a new code.</value>
+  </data>
 </root>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using MoneyRecord.Services;
 using MoneyRecord.Services.Interfaces;
+using MoneyRecord.Services.Sync;
 using MoneyRecord.Views;
 
 namespace MoneyRecord
@@ -22,12 +23,13 @@ namespace MoneyRecord
         private readonly ITipJar _tipJar;
         private readonly NotificationLaunch _launch;
         private readonly IReceiptStore _receipts;
+        private readonly ISyncService _sync;
         private readonly ILogger<App> _logger;
 
         public App(IReminderService reminders, ISetupService setupService,
             Func<SetupPage> createSetupPage, IThemeService themeService, AppLock appLock, IDeviceLock deviceLock,
             IPrivacySettings privacy, IScreenProtection screen, Func<LockPage> createLockPage, IExchangeRateService exchangeRates, IAutoBackupService autoBackup,
-            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, NotificationLaunch launch, IReceiptStore receipts, ILogger<App> logger)
+            IHomeScreenWidgets widgets, IWhatsNewService whatsNew, ITipJar tipJar, NotificationLaunch launch, IReceiptStore receipts, ISyncService sync, ILogger<App> logger)
         {
             InitializeComponent();
             // Before the first page is created, so it never flashes in the other theme
@@ -47,6 +49,7 @@ namespace MoneyRecord
             _tipJar = tipJar;
             _launch = launch;
             _receipts = receipts;
+            _sync = sync;
             // Decrypted copies handed to a PDF viewer last time
             receipts.ClearViewFolder();
             _logger = logger;
@@ -73,6 +76,8 @@ namespace MoneyRecord
                 Platforms.Windows.WindowsDesktop.Configure(window);
                 // No background job on Windows: the same steps run now and every hour while the app is open
                 Platforms.Windows.WindowsDailyJob.Start(_reminders, _exchangeRates, _autoBackup, _logger);
+                // Listens for the phone again when sync is on (the computer is the side that waits)
+                _ = _sync.ResumeAsync();
 #else
                 _ = ProcessRecurringThenBackUpAsync();
 #endif

@@ -3547,4 +3547,118 @@
   <data name="ShareNotEncrypted" xml:space="preserve">
     <value>{0} (sem criptografia)</value>
   </data>
+  <data name="SyncTitle" xml:space="preserve">
+    <value>Sincronização</value>
+  </data>
+  <data name="SyncIntro" xml:space="preserve">
+    <value>Mantenha seus dados iguais no computador e no celular pelo seu Wi-Fi. Sem conta e sem servidor: os dispositivos conversam diretamente e tudo é criptografado.</value>
+  </data>
+  <data name="SyncNotAvailable" xml:space="preserve">
+    <value>A sincronização ainda não está disponível neste dispositivo.</value>
+  </data>
+  <data name="SyncTurnOn" xml:space="preserve">
+    <value>Ativar sincronização</value>
+  </data>
+  <data name="SyncTurnOnHint" xml:space="preserve">
+    <value>Enquanto o app estiver aberto, este computador espera seus outros dispositivos nesta rede.</value>
+  </data>
+  <data name="SyncTurnOff" xml:space="preserve">
+    <value>Desativar sincronização</value>
+  </data>
+  <data name="SyncTurnOffTitle" xml:space="preserve">
+    <value>Desativar a sincronização?</value>
+  </data>
+  <data name="SyncTurnOffMessage" xml:space="preserve">
+    <value>Este dispositivo para de sincronizar e esquece os outros dispositivos. Seus dados ficam aqui e nos outros dispositivos.</value>
+  </data>
+  <data name="SyncThisDevice" xml:space="preserve">
+    <value>Este dispositivo</value>
+  </data>
+  <data name="SyncWaiting" xml:space="preserve">
+    <value>Aguardando outros dispositivos nesta rede. Mantenha o app aberto.</value>
+  </data>
+  <data name="SyncAddDevice" xml:space="preserve">
+    <value>Adicionar um dispositivo</value>
+  </data>
+  <data name="SyncCodeTitle" xml:space="preserve">
+    <value>Código para o outro dispositivo</value>
+  </data>
+  <data name="SyncCodeHint" xml:space="preserve">
+    <value>No outro dispositivo, abra Mais → Sincronização e digite este código. Vale uma única vez e expira em {0} minutos.</value>
+  </data>
+  <data name="SyncCopyCode" xml:space="preserve">
+    <value>Copiar código</value>
+  </data>
+  <data name="SyncCodeCopied" xml:space="preserve">
+    <value>Código copiado</value>
+  </data>
+  <data name="SyncConnect" xml:space="preserve">
+    <value>Conectar a um dispositivo</value>
+  </data>
+  <data name="SyncConnectHint" xml:space="preserve">
+    <value>No computador, abra Mais → Sincronização e toque em Adicionar um dispositivo. Depois digite aqui o código mostrado.</value>
+  </data>
+  <data name="SyncEnterCodeTitle" xml:space="preserve">
+    <value>Digite o código</value>
+  </data>
+  <data name="SyncEnterCodeMessage" xml:space="preserve">
+    <value>Digite ou cole o código mostrado no outro dispositivo.</value>
+  </data>
+  <data name="SyncConnectButton" xml:space="preserve">
+    <value>Conectar</value>
+  </data>
+  <data name="SyncReplaceTitle" xml:space="preserve">
+    <value>Substituir os dados deste dispositivo?</value>
+  </data>
+  <data name="SyncReplaceMessage" xml:space="preserve">
+    <value>Tudo neste dispositivo será substituído pelos dados do outro dispositivo. Faça um backup antes se quiser guardar o que há aqui.</value>
+  </data>
+  <data name="SyncReplaceAccept" xml:space="preserve">
+    <value>Substituir e conectar</value>
+  </data>
+  <data name="SyncConnected" xml:space="preserve">
+    <value>Conectado a {0}</value>
+  </data>
+  <data name="SyncDevices" xml:space="preserve">
+    <value>Dispositivos</value>
+  </data>
+  <data name="SyncNow" xml:space="preserve">
+    <value>Sincronizar agora</value>
+  </data>
+  <data name="SyncNever" xml:space="preserve">
+    <value>Ainda não sincronizado</value>
+  </data>
+  <data name="SyncLastSync" xml:space="preserve">
+    <value>Última sincronização: {0}</value>
+  </data>
+  <data name="SyncRemoveDevice" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="SyncDone" xml:space="preserve">
+    <value>Sincronizado</value>
+  </data>
+  <data name="SyncBadCode" xml:space="preserve">
+    <value>Isso não é um código de sincronização. Copie o código inteiro do outro dispositivo.</value>
+  </data>
+  <data name="SyncUnreachable" xml:space="preserve">
+    <value>Não foi possível alcançar o outro dispositivo. Os dois precisam estar no mesmo Wi-Fi, com o app aberto no computador.</value>
+  </data>
+  <data name="SyncWrongDevice" xml:space="preserve">
+    <value>Outro dispositivo respondeu, não o do código. Verifique se você está na sua própria rede.</value>
+  </data>
+  <data name="SyncNotRecognised" xml:space="preserve">
+    <value>O outro dispositivo não aceitou este. O código pode ter expirado ou já foi usado: mostre um novo código.</value>
+  </data>
+  <data name="SyncVersionMismatch" xml:space="preserve">
+    <value>Os apps estão em versões diferentes. Atualize o app nos dois dispositivos.</value>
+  </data>
+  <data name="SyncFailed" xml:space="preserve">
+    <value>A sincronização falhou. Tente de novo.</value>
+  </data>
+  <data name="SyncRemoveTitle" xml:space="preserve">
+    <value>Remover este dispositivo?</value>
+  </data>
+  <data name="SyncRemoveMessage" xml:space="preserve">
+    <value>{0} e este dispositivo vão parar de sincronizar. Para sincronizar de novo, conecte-os outra vez com um novo código.</value>
+  </data>
 </root>

@@ -59,6 +59,7 @@ namespace MoneyRecord.ViewModels
             [
                 // Tips are sold in the Google Play build only
                 .. (_tipJar.IsAvailable ? new MoreItem[] { new("\U000F02D1", AppResources.SupportTitle, nameof(SupportPage)) } : []),
+                new("\U000F04E6", AppResources.SyncTitle, nameof(SyncPage)),
                 new("\U000F0493", AppResources.Settings, nameof(SettingsPage)),
             ]),
         ];

@@ -7868,7 +7868,7 @@ namespace MoneyRecord.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} a day · last day {1}.
+        ///   Looks up a localized string similar to {0} a day ï¿½ last day {1}.
         /// </summary>
         public static string ChallengePreviewEqualLast {
             get {
@@ -10058,6 +10058,348 @@ namespace MoneyRecord.Resources.Strings {
         public static string ShareNotEncrypted {
             get {
                 return ResourceManager.GetString("ShareNotEncrypted", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncTitle.
+        /// </summary>
+        public static string SyncTitle {
+            get {
+                return ResourceManager.GetString("SyncTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncIntro.
+        /// </summary>
+        public static string SyncIntro {
+            get {
+                return ResourceManager.GetString("SyncIntro", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncNotAvailable.
+        /// </summary>
+        public static string SyncNotAvailable {
+            get {
+                return ResourceManager.GetString("SyncNotAvailable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncTurnOn.
+        /// </summary>
+        public static string SyncTurnOn {
+            get {
+                return ResourceManager.GetString("SyncTurnOn", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncTurnOnHint.
+        /// </summary>
+        public static string SyncTurnOnHint {
+            get {
+                return ResourceManager.GetString("SyncTurnOnHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncTurnOff.
+        /// </summary>
+        public static string SyncTurnOff {
+            get {
+                return ResourceManager.GetString("SyncTurnOff", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncTurnOffTitle.
+        /// </summary>
+        public static string SyncTurnOffTitle {
+            get {
+                return ResourceManager.GetString("SyncTurnOffTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncTurnOffMessage.
+        /// </summary>
+        public static string SyncTurnOffMessage {
+            get {
+                return ResourceManager.GetString("SyncTurnOffMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncThisDevice.
+        /// </summary>
+        public static string SyncThisDevice {
+            get {
+                return ResourceManager.GetString("SyncThisDevice", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncWaiting.
+        /// </summary>
+        public static string SyncWaiting {
+            get {
+                return ResourceManager.GetString("SyncWaiting", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncAddDevice.
+        /// </summary>
+        public static string SyncAddDevice {
+            get {
+                return ResourceManager.GetString("SyncAddDevice", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncCodeTitle.
+        /// </summary>
+        public static string SyncCodeTitle {
+            get {
+                return ResourceManager.GetString("SyncCodeTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncCodeHint.
+        /// </summary>
+        public static string SyncCodeHint {
+            get {
+                return ResourceManager.GetString("SyncCodeHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncCopyCode.
+        /// </summary>
+        public static string SyncCopyCode {
+            get {
+                return ResourceManager.GetString("SyncCopyCode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncCodeCopied.
+        /// </summary>
+        public static string SyncCodeCopied {
+            get {
+                return ResourceManager.GetString("SyncCodeCopied", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncConnect.
+        /// </summary>
+        public static string SyncConnect {
+            get {
+                return ResourceManager.GetString("SyncConnect", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncConnectHint.
+        /// </summary>
+        public static string SyncConnectHint {
+            get {
+                return ResourceManager.GetString("SyncConnectHint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncEnterCodeTitle.
+        /// </summary>
+        public static string SyncEnterCodeTitle {
+            get {
+                return ResourceManager.GetString("SyncEnterCodeTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncEnterCodeMessage.
+        /// </summary>
+        public static string SyncEnterCodeMessage {
+            get {
+                return ResourceManager.GetString("SyncEnterCodeMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncConnectButton.
+        /// </summary>
+        public static string SyncConnectButton {
+            get {
+                return ResourceManager.GetString("SyncConnectButton", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncReplaceTitle.
+        /// </summary>
+        public static string SyncReplaceTitle {
+            get {
+                return ResourceManager.GetString("SyncReplaceTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncReplaceMessage.
+        /// </summary>
+        public static string SyncReplaceMessage {
+            get {
+                return ResourceManager.GetString("SyncReplaceMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncReplaceAccept.
+        /// </summary>
+        public static string SyncReplaceAccept {
+            get {
+                return ResourceManager.GetString("SyncReplaceAccept", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncConnected.
+        /// </summary>
+        public static string SyncConnected {
+            get {
+                return ResourceManager.GetString("SyncConnected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncDevices.
+        /// </summary>
+        public static string SyncDevices {
+            get {
+                return ResourceManager.GetString("SyncDevices", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncNow.
+        /// </summary>
+        public static string SyncNow {
+            get {
+                return ResourceManager.GetString("SyncNow", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncNever.
+        /// </summary>
+        public static string SyncNever {
+            get {
+                return ResourceManager.GetString("SyncNever", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncLastSync.
+        /// </summary>
+        public static string SyncLastSync {
+            get {
+                return ResourceManager.GetString("SyncLastSync", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncRemoveDevice.
+        /// </summary>
+        public static string SyncRemoveDevice {
+            get {
+                return ResourceManager.GetString("SyncRemoveDevice", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncDone.
+        /// </summary>
+        public static string SyncDone {
+            get {
+                return ResourceManager.GetString("SyncDone", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncBadCode.
+        /// </summary>
+        public static string SyncBadCode {
+            get {
+                return ResourceManager.GetString("SyncBadCode", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncUnreachable.
+        /// </summary>
+        public static string SyncUnreachable {
+            get {
+                return ResourceManager.GetString("SyncUnreachable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncWrongDevice.
+        /// </summary>
+        public static string SyncWrongDevice {
+            get {
+                return ResourceManager.GetString("SyncWrongDevice", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncNotRecognised.
+        /// </summary>
+        public static string SyncNotRecognised {
+            get {
+                return ResourceManager.GetString("SyncNotRecognised", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncVersionMismatch.
+        /// </summary>
+        public static string SyncVersionMismatch {
+            get {
+                return ResourceManager.GetString("SyncVersionMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncFailed.
+        /// </summary>
+        public static string SyncFailed {
+            get {
+                return ResourceManager.GetString("SyncFailed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncRemoveTitle.
+        /// </summary>
+        public static string SyncRemoveTitle {
+            get {
+                return ResourceManager.GetString("SyncRemoveTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string like SyncRemoveMessage.
+        /// </summary>
+        public static string SyncRemoveMessage {
+            get {
+                return ResourceManager.GetString("SyncRemoveMessage", resourceCulture);
             }
         }
     }
