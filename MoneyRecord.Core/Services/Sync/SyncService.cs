@@ -401,8 +401,11 @@ namespace MoneyRecord.Services.Sync
                             var index = current.Peers.FindIndex(p => p.DeviceId == id);
                             if (index >= 0)
                             {
-                                var known = moved.TryGetValue(id, out var m) ? m : current.Peers[index];
-                                current.Peers[index] = known with { LastSync = _time.GetUtcNow() };
+                                // Only what this run learned: the entry may have changed meanwhile
+                                var peer = current.Peers[index];
+                                if (moved.TryGetValue(id, out var m))
+                                    peer = peer with { Addresses = m.Addresses, Port = m.Port };
+                                current.Peers[index] = peer with { LastSync = _time.GetUtcNow() };
                                 changed = true;
                             }
                         }

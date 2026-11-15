@@ -77,7 +77,7 @@ namespace MoneyRecord
                 // No background job on Windows: the same steps run now and every hour while the app is open
                 Platforms.Windows.WindowsDailyJob.Start(_reminders, _exchangeRates, _autoBackup, _logger);
                 // Listens for the phone again when sync is on (the computer is the side that waits)
-                _ = _sync.ResumeAsync();
+                _ = ResumeSyncAsync();
                 Platforms.Windows.WindowsSyncTimer.Start(_sync, _logger);
 #else
                 _ = ProcessRecurringThenBackUpAsync();
@@ -90,7 +90,7 @@ namespace MoneyRecord
                 // While the app is closed, the daily job creates them (and sends the reminders)
                 Platforms.Android.DailyReminderWorker.Schedule(Android.App.Application.Context);
                 // A paired phone syncs in the background too (nothing is scheduled while sync is off)
-                _ = _sync.ResumeAsync();
+                _ = ResumeSyncAsync();
 #endif
                 _deviceLock.HideContentInRecents(_privacy.LockEnabled);
                 ApplyScreenProtection();
@@ -170,6 +170,18 @@ namespace MoneyRecord
                 SetContentHidden(window, false);
             }
         });
+
+        private async Task ResumeSyncAsync()
+        {
+            try
+            {
+                await _sync.ResumeAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Resuming sync failed");
+            }
+        }
 
         private async Task ProcessRecurringThenBackUpAsync()
         {
