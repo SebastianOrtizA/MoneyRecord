@@ -54,7 +54,7 @@ namespace MoneyRecord.Services.Sync
         {
             var file = FileOf(deviceId, seq);
             Directory.CreateDirectory(Path.GetDirectoryName(file)!);
-            var temp = file + ".tmp";
+            var temp = file + "." + Guid.NewGuid().ToString("N") + ".tmp";
             File.WriteAllBytes(temp, data);
             File.Move(temp, file, overwrite: true);
             return Task.CompletedTask;
@@ -75,7 +75,7 @@ namespace MoneyRecord.Services.Sync
         {
             var file = BlobOf(hash);
             Directory.CreateDirectory(Path.GetDirectoryName(file)!);
-            var temp = file + ".tmp";
+            var temp = file + "." + Guid.NewGuid().ToString("N") + ".tmp";
             File.WriteAllBytes(temp, sealedBlob);
             File.Move(temp, file, overwrite: true);
             return Task.CompletedTask;

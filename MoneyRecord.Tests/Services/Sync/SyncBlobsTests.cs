@@ -168,5 +168,13 @@ public sealed class SyncBlobsTests : IAsyncLifetime
 
         (await badName.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
         (await tooBig.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
+
+        // A blob that is not the file its name says (or not sealed with the sync key) is never stored, so it cannot block the good one
+        var hash = SyncBlobs.HashOf([1]);
+        var wrongKey = () => session.WriteBlobAsync(hash, SyncBlobs.Seal(SyncCrypto.NewKey(), hash, [1]));
+        var wrongContent = () => session.WriteBlobAsync(hash, SyncBlobs.Seal(_key, hash, [2]));
+        await wrongKey.Should().ThrowAsync<LanSyncException>();
+        await wrongContent.Should().ThrowAsync<LanSyncException>();
+        (await hostBlobs.HasAsync(hash)).Should().BeFalse();
     }
 }

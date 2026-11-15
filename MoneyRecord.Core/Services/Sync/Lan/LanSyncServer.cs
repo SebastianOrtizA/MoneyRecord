@@ -249,7 +249,7 @@ namespace MoneyRecord.Services.Sync.Lan
                 }
                 default:
                 {
-                    if (request.Body == null || request.Body.Length > SyncBlobs.MaxSealedBytes)
+                    if (request.Body == null || request.Body.Length > SyncBlobs.MaxSealedBytes || SyncBlobs.Open(syncKey, hash, request.Body) == null)
                         return Reply("error", "bad");
                     await _storeLock.WaitAsync(_stop.Token);
                     try { await blobs.WriteBlobAsync(hash, request.Body); }

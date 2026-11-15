@@ -137,6 +137,7 @@ namespace MoneyRecord.Services.Sync
                 }
                 catch (Exception ex) when (ex is LanSyncException or IOException or UnauthorizedAccessException)
                 {
+                    // Unreachable or unreadable source: try the next
                 }
             }
             return null;
