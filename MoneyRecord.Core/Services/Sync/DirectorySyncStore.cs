@@ -7,15 +7,18 @@ namespace MoneyRecord.Services.Sync
     /// A file is written under a temporary name and renamed, so a reader never sees half of it; files that do not follow the
     /// naming (a sync tool's "name (1).chg" copy) are ignored.
     /// </summary>
-    public sealed class DirectorySyncStore(string root) : IPrunableSyncStore
+    public sealed class DirectorySyncStore(string root) : IPrunableSyncStore, IBlobStore
     {
         private const string Extension = ".chg";
+
+        /// <summary>Receipt blobs live in <c>root/_blobs/&lt;hash&gt;.blob</c>; the underscore keeps the folder from being taken for a device.</summary>
+        private const string BlobFolder = "_blobs";
 
         private string FileOf(string deviceId, long seq) => Path.Combine(root, deviceId, $"{seq:D8}{Extension}");
 
         public Task<IReadOnlyList<string>> DevicesAsync() =>
             Task.FromResult<IReadOnlyList<string>>(Directory.Exists(root)
-                ? Directory.GetDirectories(root).Select(d => Path.GetFileName(d)).ToList()
+                ? Directory.GetDirectories(root).Select(d => Path.GetFileName(d)).Where(n => n != BlobFolder).ToList()
                 : []);
 
         public Task<long> LastSeqAsync(string deviceId) => Task.FromResult(Seqs(deviceId).DefaultIfEmpty(0).Max());
@@ -53,6 +56,27 @@ namespace MoneyRecord.Services.Sync
             Directory.CreateDirectory(Path.GetDirectoryName(file)!);
             var temp = file + ".tmp";
             File.WriteAllBytes(temp, data);
+            File.Move(temp, file, overwrite: true);
+            return Task.CompletedTask;
+        }
+
+        private string BlobOf(string hash) =>
+            SyncBlobs.IsHash(hash) ? Path.Combine(root, BlobFolder, hash + ".blob") : throw new ArgumentException("Not a blob name.", nameof(hash));
+
+        public Task<bool> HasAsync(string hash) => Task.FromResult(File.Exists(BlobOf(hash)));
+
+        public Task<byte[]?> ReadBlobAsync(string hash)
+        {
+            var file = BlobOf(hash);
+            return Task.FromResult(File.Exists(file) ? File.ReadAllBytes(file) : null);
+        }
+
+        public Task WriteBlobAsync(string hash, byte[] sealedBlob)
+        {
+            var file = BlobOf(hash);
+            Directory.CreateDirectory(Path.GetDirectoryName(file)!);
+            var temp = file + ".tmp";
+            File.WriteAllBytes(temp, sealedBlob);
             File.Move(temp, file, overwrite: true);
             return Task.CompletedTask;
         }

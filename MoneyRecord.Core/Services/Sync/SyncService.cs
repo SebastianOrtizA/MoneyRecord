@@ -251,7 +251,7 @@ namespace MoneyRecord.Services.Sync
                 return;
             var engine = EngineOf(profile);
             var server = new LanSyncServer(LanCertificate.Load(Convert.FromBase64String(profile.Certificate)), Convert.FromBase64String(profile.Key),
-                await syncState.GetDeviceIdAsync(), profile.DeviceName, Store, engine.CreateSnapshotAsync, new Registry(this), _time);
+                await syncState.GetDeviceIdAsync(), profile.DeviceName, Store, engine.CreateSnapshotAsync, new Registry(this), _time, Store);
             server.StoreChanged += () => _ = ApplyIncomingAsync();
             try
             {

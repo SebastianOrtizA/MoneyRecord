@@ -30,7 +30,7 @@ namespace MoneyRecord.Services.Sync.Lan
     /// A connection to the listening device. As an <see cref="ISyncStore"/> it is the other device's store, so
     /// <see cref="SyncStores.CopyMissingAsync"/> moves change files both ways, and the engine then applies them from the local store.
     /// </summary>
-    public sealed class LanSyncSession : ISyncStore, IAsyncDisposable
+    public sealed class LanSyncSession : ISyncStore, IBlobStore, IAsyncDisposable
     {
         private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(4);
         private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(60);
@@ -178,6 +178,18 @@ namespace MoneyRecord.Services.Sync.Lan
             await AskAsync(new LanMessage(LanMessage.Of("put", ("device", deviceId), ("seq", seq.ToString())).Header, data));
             _list = null;
         }
+
+        public async Task<bool> HasAsync(string hash) =>
+            (await AskAsync(LanMessage.Of("blob-has", ("hash", hash))))["found"] == "1";
+
+        public async Task<byte[]?> ReadBlobAsync(string hash)
+        {
+            var reply = await AskAsync(LanMessage.Of("blob-get", ("hash", hash)));
+            return reply["found"] == "1" ? reply.Body : null;
+        }
+
+        public async Task WriteBlobAsync(string hash, byte[] sealedBlob) =>
+            await AskAsync(new LanMessage(LanMessage.Of("blob-put", ("hash", hash)).Header, sealedBlob));
 
         /// <summary>The other device's whole data, for a device that is new or replaces its own (see <see cref="SyncEngine.ApplySnapshotAsync"/>).</summary>
         public async Task<byte[]> SnapshotAsync() =>
