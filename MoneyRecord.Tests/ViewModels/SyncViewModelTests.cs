@@ -106,6 +106,20 @@ public sealed class SyncViewModelTests
         await _sync.Received(1).PairAsync("moneyrecord-sync:1:qr");
     }
 
+    [Fact]
+    public async Task Scan_WhenTheScannerCannotRun_SaysSo_AndDoesNotPair()
+    {
+        Status(enabled: false, canListen: false);
+        _scanner.ScanAsync().Returns<Task<string?>>(_ => throw new InvalidOperationException());
+        var vm = Create();
+        await vm.InitializeAsync();
+
+        await vm.ScanCodeCommand.ExecuteAsync(null);
+
+        await _errors.Received(1).HandleAsync(Arg.Any<Exception>(), AppResources.SyncScanUnavailable);
+        await _sync.DidNotReceiveWithAnyArgs().PairAsync(default!);
+    }
+
     [Theory]
     [InlineData(SyncOutcome.BadCode, nameof(AppResources.SyncBadCode))]
     [InlineData(SyncOutcome.Unreachable, nameof(AppResources.SyncUnreachable))]
