@@ -45,6 +45,9 @@ namespace MoneyRecord.Models
 
         public bool Deleted { get; set; }
 
+        /// <summary>When the write happened (milliseconds since 1970 by this device's clock): the change's clock is taken from here, not from when it is collected, so a late sync does not make an old edit look new.</summary>
+        public long At { get; set; }
+
         /// <summary>For a delete: the row as it was, as JSON.</summary>
         public string? Payload { get; set; }
     }

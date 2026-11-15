@@ -1,6 +1,7 @@
 using AwesomeAssertions;
 using MoneyRecord.Models;
 using MoneyRecord.Services;
+using MoneyRecord.Services.Sync;
 using MoneyRecord.Services.Repositories;
 using SQLite;
 using Xunit;
@@ -136,19 +137,32 @@ public sealed class SyncStateTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task Clock_NeverGoesBack_EvenWithinOneMillisecondOrWhenTheWallClockMovesBack()
+    public void Clock_NeverGoesBack_EvenWithinOneMillisecondOrWhenTheWallClockMovesBack()
+    {
+        var state = new SyncState();
+        var first = SyncClock.Tick(state, 1_000_000);
+        var sameMillisecond = SyncClock.Tick(state, 1_000_000);
+        var wallClockSetBack = SyncClock.Tick(state, 400_000);
+        SyncClock.Observe(state, wallClockSetBack + 1_000_000);
+        var afterOtherDevice = SyncClock.Tick(state, 400_000);
+
+        new[] { first, sameMillisecond, wallClockSetBack, afterOtherDevice }.Should().BeInAscendingOrder().And.OnlyHaveUniqueItems();
+    }
+
+    [Fact]
+    public async Task AChange_IsStampedWhenTheWriteHappens_NotWhenItIsCollected()
     {
         await _sync.EnableAsync();
         await _sync.MaterializeAsync();
+
+        var before = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         await Db.ExecuteAsync("INSERT INTO Payee (Name) VALUES ('a')");
-        await _sync.MaterializeAsync();
-        var first = (await MetaAsync("Payee")).Single().Clock;
-
-        _time.Now = _time.Now.AddHours(-1); // the phone's clock was set back
-        await Db.ExecuteAsync("UPDATE Payee SET Name = 'b'");
+        var written = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        await Task.Delay(300);
         await _sync.MaterializeAsync();
 
-        (await MetaAsync("Payee")).Single().Clock.Should().BeGreaterThan(first);
+        var stamped = (await MetaAsync("Payee")).Single().Clock >> 16;
+        stamped.Should().BeInRange(before - 5, written + 5);
     }
 
     [Fact]
