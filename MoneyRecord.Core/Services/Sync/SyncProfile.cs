@@ -66,4 +66,23 @@ namespace MoneyRecord.Services.Sync
 
         public string DeviceName => "Device";
     }
+
+    /// <summary>
+    /// Syncing while the app is closed, where the platform has a job for it (Android's WorkManager: the phone connects to the
+    /// computer now and then). The computer's app syncs by its own timer while it is open.
+    /// </summary>
+    public interface ISyncBackground
+    {
+        /// <summary>Makes sure the periodic job is scheduled (an existing schedule is kept).</summary>
+        void Schedule();
+
+        void Cancel();
+    }
+
+    public sealed class NoSyncBackground : ISyncBackground
+    {
+        public void Schedule() { }
+
+        public void Cancel() { }
+    }
 }

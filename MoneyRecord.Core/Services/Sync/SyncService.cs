@@ -70,7 +70,9 @@ namespace MoneyRecord.Services.Sync
         IAccountRepository accounts,
         ICategoryRepository categories,
         TimeProvider? time = null,
-        Func<IReadOnlyList<string>>? localAddresses = null) : ISyncService
+        Func<IReadOnlyList<string>>? localAddresses = null,
+        Func<string, Task<(string Address, int Port)?>>? findComputer = null,
+        ISyncBackground? background = null) : ISyncService
     {
         private const int PreferredPort = 48731;
         private const int MaxNameLength = 64;
@@ -86,6 +88,7 @@ namespace MoneyRecord.Services.Sync
 
         private SyncProfile? _profile;
         private LanSyncServer? _server;
+        private LanBeacon? _beacon;
 
         public event Action? Changed;
 
@@ -210,6 +213,9 @@ namespace MoneyRecord.Services.Sync
         {
             if (_server == null && platform.CanListen && await LoadAsync() is { Certificate: not null } profile && await syncState.IsEnabledAsync())
                 await StartListeningAsync(profile);
+            // A phone that is paired syncs in the background; if sync is off nothing is scheduled
+            if (!platform.CanListen && await LoadAsync() != null && await syncState.IsEnabledAsync())
+                background?.Schedule();
         }
 
         private async Task StartListeningAsync(SyncProfile profile)
@@ -229,6 +235,12 @@ namespace MoneyRecord.Services.Sync
                 server.Start(); // the usual port is taken: any free one (a paired phone then needs a new code)
             }
             _server = server;
+            // Answers the phone's "where are you?" after this computer's address changed (best-effort)
+            var beacon = new LanBeacon(await syncState.GetDeviceIdAsync(), () => server.Port);
+            if (beacon.Start())
+                _beacon = beacon;
+            else
+                await beacon.DisposeAsync();
         }
 
         // ---- Pairing ----
@@ -273,6 +285,7 @@ namespace MoneyRecord.Services.Sync
                     await SaveAsync(profile);
                     await EngineOf(profile).ApplySnapshotAsync(snapshot, replaceLocalData: true);
                     InvalidateCaches();
+                    background?.Schedule();
                     return SyncOutcome.Done;
                 }
                 catch (LanSyncException ex)
@@ -328,6 +341,8 @@ namespace MoneyRecord.Services.Sync
                 var deviceId = await syncState.GetDeviceIdAsync();
                 var outcome = SyncOutcome.Done;
                 var reached = new List<string>();
+                var moved = new Dictionary<string, SyncPeer>();
+                var find = findComputer ?? (id => LanBeacon.FindAsync(id, TimeSpan.FromSeconds(2)));
                 try
                 {
                     await engine.ExportAsync(store);
@@ -337,10 +352,26 @@ namespace MoneyRecord.Services.Sync
                     {
                         try
                         {
-                            await using var session = await LanSyncSession.ConnectAsync(peer.Addresses, peer.Port, peer.Fingerprint, deviceId,
-                                Convert.FromBase64String(profile.AuthSecret));
-                            await SyncStores.CopyMissingAsync(store, session);
-                            await SyncStores.CopyMissingAsync(session, store);
+                            var authSecret = Convert.FromBase64String(profile.AuthSecret);
+                            LanSyncSession session;
+                            try
+                            {
+                                session = await LanSyncSession.ConnectAsync(peer.Addresses, peer.Port, peer.Fingerprint, deviceId, authSecret);
+                            }
+                            catch (LanSyncException ex) when (ex.Failure == LanFailure.Unreachable)
+                            {
+                                // The computer may have another address now: ask the network, and remember it when it answers there
+                                if (await find(peer.DeviceId) is not { } found)
+                                    throw;
+                                var current = peer with { Addresses = [found.Address], Port = found.Port };
+                                session = await LanSyncSession.ConnectAsync(current.Addresses, current.Port, current.Fingerprint, deviceId, authSecret);
+                                moved[peer.DeviceId] = current;
+                            }
+                            await using (session)
+                            {
+                                await SyncStores.CopyMissingAsync(store, session);
+                                await SyncStores.CopyMissingAsync(session, store);
+                            }
                             reached.Add(peer.DeviceId);
                         }
                         catch (LanSyncException ex)
@@ -370,7 +401,8 @@ namespace MoneyRecord.Services.Sync
                             var index = current.Peers.FindIndex(p => p.DeviceId == id);
                             if (index >= 0)
                             {
-                                current.Peers[index] = current.Peers[index] with { LastSync = _time.GetUtcNow() };
+                                var known = moved.TryGetValue(id, out var m) ? m : current.Peers[index];
+                                current.Peers[index] = known with { LastSync = _time.GetUtcNow() };
                                 changed = true;
                             }
                         }
@@ -419,11 +451,17 @@ namespace MoneyRecord.Services.Sync
             await _busy.WaitAsync();
             try
             {
+                if (_beacon != null)
+                {
+                    await _beacon.DisposeAsync();
+                    _beacon = null;
+                }
                 if (_server != null)
                 {
                     await _server.DisposeAsync();
                     _server = null;
                 }
+                background?.Cancel();
                 await syncState.DisableAsync();
                 await SaveAsync(null);
                 if (Directory.Exists(paths.SyncFolder))

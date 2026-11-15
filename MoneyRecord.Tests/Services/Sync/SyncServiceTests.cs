@@ -40,6 +40,8 @@ public sealed class SyncServiceTests : IAsyncLifetime
         public required string Folder { get; init; }
         public required SQLiteAsyncConnection Db { get; init; }
         public required SyncService Service { get; init; }
+        public required DatabaseInitializer Database { get; init; }
+        public required AppPaths Paths { get; init; }
         public required SyncStateService State { get; init; }
         public required MemorySecrets Secrets { get; init; }
     }
@@ -56,7 +58,7 @@ public sealed class SyncServiceTests : IAsyncLifetime
         }
     }
 
-    private async Task<Device> NewDeviceAsync(bool canListen, string name)
+    private async Task<Device> NewDeviceAsync(bool canListen, string name, Func<string, Task<(string Address, int Port)?>>? find = null)
     {
         var folder = Path.Combine(Path.GetTempPath(), $"moneyrecord-svc-{Guid.NewGuid():N}");
         Directory.CreateDirectory(folder);
@@ -66,8 +68,8 @@ public sealed class SyncServiceTests : IAsyncLifetime
         var state = new SyncStateService(database);
         var secrets = new MemorySecrets();
         var service = new SyncService(database, state, secrets, new Platform(canListen, name), paths,
-            new AccountRepository(database), new CategoryRepository(database), localAddresses: () => Loopback);
-        var device = new Device { Folder = folder, Db = db, Service = service, State = state, Secrets = secrets };
+            new AccountRepository(database), new CategoryRepository(database), localAddresses: () => Loopback, findComputer: find);
+        var device = new Device { Folder = folder, Db = db, Database = database, Paths = paths, Service = service, State = state, Secrets = secrets };
         _devices.Add(device);
         return device;
     }
@@ -165,6 +167,29 @@ public sealed class SyncServiceTests : IAsyncLifetime
 
         (await phone.Service.SyncNowAsync()).Should().Be(SyncOutcome.NotRecognised);
         (await pc.Service.GetStatusAsync()).Peers.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task WhenTheComputerMovedAddress_ThePhoneFindsItByBeacon_AndRemembersTheNewAddress()
+    {
+        var pc = await NewDeviceAsync(true, "My PC");
+        var phone = await NewDeviceAsync(false, "My Phone");
+        await pc.Service.EnableAsync();
+        await phone.Service.PairAsync((await pc.Service.CreatePairingCodeAsync()).Text);
+        var peer = (await phone.Service.GetStatusAsync()).Peers.Single();
+
+        // The phone's saved address is stale (another port stands in for another address); a new service reads the saved profile
+        var json = await phone.Secrets.GetAsync();
+        await phone.Secrets.SetAsync(json!.Replace($"\"Port\":{peer.Port}", "\"Port\":1"));
+        var asked = new List<string>();
+        var again = new SyncService(phone.Database, new SyncStateService(phone.Database), phone.Secrets, new Platform(false, "My Phone"), phone.Paths,
+            new AccountRepository(phone.Database), new CategoryRepository(phone.Database),
+            findComputer: id => { asked.Add(id); return Task.FromResult<(string, int)?>(("127.0.0.1", peer.Port)); });
+
+        (await again.SyncNowAsync()).Should().Be(SyncOutcome.Done);
+
+        asked.Should().Equal(peer.DeviceId);
+        (await again.GetStatusAsync()).Peers.Single().Port.Should().Be(peer.Port);
     }
 
     [Fact]
