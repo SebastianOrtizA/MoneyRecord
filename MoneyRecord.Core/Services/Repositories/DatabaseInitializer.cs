@@ -317,11 +317,20 @@ namespace MoneyRecord.Services.Repositories
             await db.CreateTableAsync<SavingsChallenge>();
             await db.CreateTableAsync<SavingsChallengeDay>();
             await db.CreateTableAsync<QuickEntry>();
+            await db.CreateTableAsync<SyncMeta>();
+            await db.CreateTableAsync<SyncDirty>();
+            await db.CreateTableAsync<SyncPeerState>();
+            await db.CreateTableAsync<SyncState>();
+            if (await db.FindAsync<SyncState>(1) == null)
+                await db.InsertAsync(new SyncState());
 
             if (isNewDatabase)
                 await migrations.StampLatestAsync(db);
             else
                 await migrations.RunAsync(db);
+
+            // Sync notices changes with triggers; a column added by this version must be in them
+            await db.RunInTransactionAsync(SyncCapture.EnsureCurrent);
         }
 
         private static async Task SeedDefaultDataAsync(SQLiteAsyncConnection db)

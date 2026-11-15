@@ -373,6 +373,9 @@ namespace MoneyRecord.Services
         /// </summary>
         private static int ReplaceAll(SQLiteConnection conn, BackupData backup)
         {
+            // The restored rows are not changes to send; sync starts over (off, new device id) after a restore
+            SyncCapture.Reset(conn);
+
             conn.DeleteAll<PartyPayment>();
             conn.DeleteAll<PartyContribution>();
             conn.DeleteAll<PartyExpenseExclusion>();
