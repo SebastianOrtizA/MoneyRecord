@@ -19,11 +19,17 @@ namespace MoneyRecord.Services.Sync.Lan
         Func<Task<byte[]>> createSnapshot, TimeProvider? time = null) : IAsyncDisposable
     {
         public const int Protocol = 1;
+        private const int MaxConnections = 16;
+        /// <summary>Before a client has proved who it is, nothing larger than this is read from it (and no body at all).</summary>
+        private const int PreAuthHeaderSize = 4096;
         private static readonly TimeSpan IdleTimeout = TimeSpan.FromSeconds(60);
 
         private readonly TimeProvider _time = time ?? TimeProvider.System;
         private readonly List<(byte[] Secret, DateTimeOffset Expires)> _offers = [];
+        // Reads need no lock: the store writes a file under a temporary name and renames it, so a reader sees all of a file or none
         private readonly SemaphoreSlim _storeLock = new(1, 1);
+        private readonly SemaphoreSlim _connections = new(MaxConnections, MaxConnections);
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<Task, byte> _handlers = new();
         private readonly CancellationTokenSource _stop = new();
         private TcpListener? _listener;
         private Task? _accepting;
@@ -34,10 +40,10 @@ namespace MoneyRecord.Services.Sync.Lan
 
         public int Port => ((IPEndPoint?)_listener?.LocalEndpoint)?.Port ?? 0;
 
-        /// <summary>Starts listening (0 = any free port) and returns the port.</summary>
-        public int Start(int port = 0)
+        /// <summary>Starts listening (0 = any free port; on all addresses unless one is given) and returns the port.</summary>
+        public int Start(int port = 0, IPAddress? address = null)
         {
-            _listener = new TcpListener(IPAddress.Any, port);
+            _listener = new TcpListener(address ?? IPAddress.Any, port);
             _listener.Start();
             _accepting = Task.Run(AcceptLoopAsync);
             return Port;
@@ -64,7 +70,18 @@ namespace MoneyRecord.Services.Sync.Lan
                 try
                 {
                     var client = await _listener!.AcceptTcpClientAsync(_stop.Token);
-                    _ = Task.Run(() => HandleAsync(client));
+                    if (!_connections.Wait(0))
+                    {
+                        client.Dispose(); // too many at once: a device that is not paired should not be able to use up memory
+                        continue;
+                    }
+                    var handler = Task.Run(async () =>
+                    {
+                        try { await HandleAsync(client); }
+                        finally { _connections.Release(); }
+                    });
+                    _handlers[handler] = 0;
+                    _ = handler.ContinueWith(t => _handlers.TryRemove(t, out _), TaskScheduler.Default);
                 }
                 catch (Exception ex) when (ex is OperationCanceledException or ObjectDisposedException or SocketException)
                 {
@@ -89,7 +106,7 @@ namespace MoneyRecord.Services.Sync.Lan
                     EnabledSslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
                 }, ct);
 
-                var hello = await LanFrames.ReadAsync(tls, ct);
+                var hello = await LanFrames.ReadAsync(tls, ct, PreAuthHeaderSize, maxBody: 0);
                 if (hello["op"] != "hello" || hello["protocol"] != Protocol.ToString())
                 {
                     await LanFrames.WriteAsync(tls, Reply("error", "version"), ct);
@@ -98,7 +115,7 @@ namespace MoneyRecord.Services.Sync.Lan
                 var nonce = RandomNumberGenerator.GetBytes(32);
                 await LanFrames.WriteAsync(tls, new LanMessage(new() { ["ok"] = "1", ["nonce"] = Convert.ToBase64String(nonce), ["device"] = deviceId, ["protocol"] = Protocol.ToString() }), ct);
 
-                var credentials = await LanFrames.ReadAsync(tls, ct);
+                var credentials = await LanFrames.ReadAsync(tls, ct, PreAuthHeaderSize, maxBody: 0);
                 var peer = credentials["device"];
                 if (!TryAuthenticate(credentials, nonce, peer, out var newKey))
                 {
@@ -136,14 +153,14 @@ namespace MoneyRecord.Services.Sync.Lan
             if (peer.Length == 0)
                 return false;
             if (credentials["op"] == "auth")
-                return CryptographicOperations.FixedTimeEquals(Mac(syncKey, nonce, peer), given);
+                return CryptographicOperations.FixedTimeEquals(Mac(syncKey, "auth", nonce, peer), given);
 
             if (credentials["op"] != "pair")
                 return false;
             lock (_offers)
             {
                 _offers.RemoveAll(o => o.Expires < _time.GetUtcNow());
-                var offer = _offers.FirstOrDefault(o => CryptographicOperations.FixedTimeEquals(Mac(o.Secret, nonce, peer), given));
+                var offer = _offers.FirstOrDefault(o => CryptographicOperations.FixedTimeEquals(Mac(o.Secret, "pair", nonce, peer), given));
                 if (offer.Secret == null)
                     return false;
                 _offers.Remove(offer); // good once
@@ -152,11 +169,24 @@ namespace MoneyRecord.Services.Sync.Lan
             return true;
         }
 
-        internal static byte[] Mac(byte[] key, byte[] nonce, string device) =>
-            HMACSHA256.HashData(key, nonce.Concat(System.Text.Encoding.UTF8.GetBytes(device)).ToArray());
+        /// <summary>HMAC over the operation, the challenge and the device id, each length-prefixed (a MAC made for pairing is no use for signing in, and the parts cannot run into each other).</summary>
+        internal static byte[] Mac(byte[] key, string op, byte[] nonce, string device)
+        {
+            using var input = new MemoryStream();
+            using var writer = new BinaryWriter(input);
+            writer.Write(op);
+            writer.Write(nonce.Length);
+            writer.Write(nonce);
+            writer.Write(device);
+            writer.Flush();
+            return HMACSHA256.HashData(key, input.ToArray());
+        }
 
         private async Task<LanMessage> ServeAsync(LanMessage request)
         {
+            if (request["op"] is "get" or "put" && !IsDeviceName(request["device"]))
+                return Reply("error", "bad");
+
             switch (request["op"])
             {
                 case "list":
@@ -173,7 +203,7 @@ namespace MoneyRecord.Services.Sync.Lan
                 }
                 case "put":
                 {
-                    if (request.Body == null || !long.TryParse(request["seq"], out var seq) || !IsDeviceName(request["device"]))
+                    if (request.Body == null || !long.TryParse(request["seq"], out var seq))
                         return Reply("error", "bad");
                     await _storeLock.WaitAsync(_stop.Token);
                     try { await store.WriteAsync(request["device"], seq, request.Body); }
@@ -200,6 +230,7 @@ namespace MoneyRecord.Services.Sync.Lan
             _listener?.Stop();
             if (_accepting != null)
                 await _accepting;
+            await Task.WhenAny(Task.WhenAll(_handlers.Keys), Task.Delay(TimeSpan.FromSeconds(2)));
             _stop.Dispose();
         }
     }

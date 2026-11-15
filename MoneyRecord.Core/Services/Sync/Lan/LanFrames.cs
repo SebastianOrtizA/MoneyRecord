@@ -1,4 +1,4 @@
-using System.Text;
+using System.Buffers.Binary;
 using System.Text.Json;
 
 namespace MoneyRecord.Services.Sync.Lan
@@ -26,30 +26,32 @@ namespace MoneyRecord.Services.Sync.Lan
         {
             var header = JsonSerializer.SerializeToUtf8Bytes(message.Header);
             var buffer = new byte[4 + header.Length + 4 + (message.Body?.Length ?? 0)];
-            BitConverter.TryWriteBytes(buffer.AsSpan(0, 4), header.Length);
+            BinaryPrimitives.WriteInt32BigEndian(buffer.AsSpan(0, 4), header.Length);
             header.CopyTo(buffer, 4);
-            BitConverter.TryWriteBytes(buffer.AsSpan(4 + header.Length, 4), message.Body?.Length ?? -1);
+            BinaryPrimitives.WriteInt32BigEndian(buffer.AsSpan(4 + header.Length, 4), message.Body?.Length ?? -1);
             message.Body?.CopyTo(buffer, 8 + header.Length);
             await stream.WriteAsync(buffer, cancellation);
             await stream.FlushAsync(cancellation);
         }
 
-        public static async Task<LanMessage> ReadAsync(Stream stream, CancellationToken cancellation)
+        /// <param name="maxHeader">Larger headers are refused before anything is allocated (a client not yet signed in gets a small limit).</param>
+        /// <param name="maxBody">Larger bodies are refused the same way.</param>
+        public static async Task<LanMessage> ReadAsync(Stream stream, CancellationToken cancellation, int maxHeader = 1024 * 1024, int maxBody = MaxSize)
         {
             var headerLength = await ReadLengthAsync(stream, cancellation);
-            if (headerLength is < 2 or > 1024 * 1024)
+            if (headerLength < 2 || headerLength > maxHeader)
                 throw new InvalidDataException("Bad header length.");
-            var header = JsonSerializer.Deserialize<Dictionary<string, string>>(Encoding.UTF8.GetString(await ReadExactAsync(stream, headerLength, cancellation)))
+            var header = JsonSerializer.Deserialize<Dictionary<string, string>>(await ReadExactAsync(stream, headerLength, cancellation))
                 ?? throw new InvalidDataException("Bad header.");
 
             var bodyLength = await ReadLengthAsync(stream, cancellation);
-            if (bodyLength < -1 || bodyLength > MaxSize)
+            if (bodyLength < -1 || bodyLength > maxBody)
                 throw new InvalidDataException("Bad body length.");
             return new LanMessage(header, bodyLength < 0 ? null : await ReadExactAsync(stream, bodyLength, cancellation));
         }
 
         private static async Task<int> ReadLengthAsync(Stream stream, CancellationToken cancellation) =>
-            BitConverter.ToInt32(await ReadExactAsync(stream, 4, cancellation));
+            BinaryPrimitives.ReadInt32BigEndian(await ReadExactAsync(stream, 4, cancellation));
 
         private static async Task<byte[]> ReadExactAsync(Stream stream, int count, CancellationToken cancellation)
         {

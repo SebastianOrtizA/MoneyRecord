@@ -39,6 +39,7 @@ namespace MoneyRecord.Services.Sync.Lan
         private readonly SslStream _tls;
         private readonly SemaphoreSlim _turn = new(1, 1);
         private Dictionary<string, long>? _list;
+        private bool _broken;
 
         private LanSyncSession(TcpClient client, SslStream tls, string peerDeviceId)
         {
@@ -53,7 +54,7 @@ namespace MoneyRecord.Services.Sync.Lan
         public static async Task<LanSyncSession> ConnectAsync(IEnumerable<string> addresses, int port, string fingerprint,
             string deviceId, byte[] syncKey, CancellationToken cancellation = default)
         {
-            var (session, _) = await OpenAsync(addresses, port, fingerprint, deviceId, nonce => ("auth", LanSyncServer.Mac(syncKey, nonce, deviceId)), cancellation);
+            var (session, _) = await OpenAsync(addresses, port, fingerprint, deviceId, nonce => ("auth", LanSyncServer.Mac(syncKey, "auth", nonce, deviceId)), cancellation);
             return session;
         }
 
@@ -61,7 +62,7 @@ namespace MoneyRecord.Services.Sync.Lan
         public static async Task<(LanSyncSession Session, byte[] SyncKey)> PairAsync(LanPairingInfo info, string deviceId, CancellationToken cancellation = default)
         {
             var secret = Convert.FromBase64String(info.Secret);
-            var (session, key) = await OpenAsync(info.Addresses, info.Port, info.Fingerprint, deviceId, nonce => ("pair", LanSyncServer.Mac(secret, nonce, deviceId)), cancellation);
+            var (session, key) = await OpenAsync(info.Addresses, info.Port, info.Fingerprint, deviceId, nonce => ("pair", LanSyncServer.Mac(secret, "pair", nonce, deviceId)), cancellation);
             return (session, key ?? throw new LanSyncException(LanFailure.Rejected, "No key was handed over."));
         }
 
@@ -69,6 +70,7 @@ namespace MoneyRecord.Services.Sync.Lan
             Func<byte[], (string Op, byte[] Mac)> credentials, CancellationToken cancellation)
         {
             Exception? last = null;
+            LanSyncException? mismatch = null; // another machine at one of the addresses (another network, the same private range): the next one may be the real device
             foreach (var address in addresses)
             {
                 var client = new TcpClient();
@@ -110,7 +112,7 @@ namespace MoneyRecord.Services.Sync.Lan
                 catch (AuthenticationException ex)
                 {
                     client.Dispose();
-                    throw new LanSyncException(LanFailure.CertificateMismatch, "The certificate is not the one in the pairing code.", ex);
+                    mismatch ??= new LanSyncException(LanFailure.CertificateMismatch, "The certificate is not the one in the pairing code.", ex);
                 }
                 catch (Exception ex) when (ex is SocketException or IOException or OperationCanceledException or InvalidDataException or FormatException)
                 {
@@ -119,7 +121,7 @@ namespace MoneyRecord.Services.Sync.Lan
                     last = ex;
                 }
             }
-            throw new LanSyncException(LanFailure.Unreachable, "The other device did not answer.", last);
+            throw mismatch ?? new LanSyncException(LanFailure.Unreachable, "The other device did not answer.", last);
         }
 
         private async Task<LanMessage> AskAsync(LanMessage request)
@@ -127,6 +129,9 @@ namespace MoneyRecord.Services.Sync.Lan
             await _turn.WaitAsync();
             try
             {
+                // After a lost or half-read frame the stream is out of step: fail at once instead of reading garbage
+                if (_broken)
+                    throw new LanSyncException(LanFailure.Unreachable, "The connection was lost.");
                 using var timeout = new CancellationTokenSource(RequestTimeout);
                 await LanFrames.WriteAsync(_tls, request, timeout.Token);
                 var reply = await LanFrames.ReadAsync(_tls, timeout.Token);
@@ -136,6 +141,7 @@ namespace MoneyRecord.Services.Sync.Lan
             }
             catch (Exception ex) when (ex is IOException or OperationCanceledException or InvalidDataException or ObjectDisposedException)
             {
+                _broken = true;
                 throw new LanSyncException(LanFailure.Unreachable, "The connection was lost.", ex);
             }
             finally

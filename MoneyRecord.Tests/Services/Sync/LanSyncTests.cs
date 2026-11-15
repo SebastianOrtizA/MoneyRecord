@@ -1,5 +1,8 @@
 using AwesomeAssertions;
 using Microsoft.Extensions.Time.Testing;
+using System.Net;
+using System.Net.Security;
+using System.Net.Sockets;
 using MoneyRecord.Models;
 using MoneyRecord.Services.Sync;
 using MoneyRecord.Services.Sync.Lan;
@@ -171,6 +174,73 @@ public sealed class LanSyncTests : IAsyncLifetime
 
         (await b.DescribeAsync()).Should().Be(await _a.DescribeAsync());
         (await _a.Db.Table<Category>().ToListAsync()).Select(c => c.Name).Should().Contain(["Test From Phone", "Test From PC", "Test Pets"]);
+    }
+
+    [Fact]
+    public async Task GetWithAPathLikeName_IsRefused()
+    {
+        var (session, _) = await LanSyncSession.PairAsync(Offer(), "phone", default);
+        await using var _ = session;
+
+        var act = () => session.ReadAsync("..", 1);
+
+        (await act.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.Rejected);
+    }
+
+    [Fact]
+    public async Task AClientNotSignedInYet_CannotMakeTheServerReadAHugeBody()
+    {
+        var info = Offer();
+        using (var raw = new TcpClient())
+        {
+            await raw.ConnectAsync("127.0.0.1", info.Port);
+            await using var tls = new SslStream(raw.GetStream(), false, (_, _, _, _) => true);
+            await tls.AuthenticateAsClientAsync("moneyrecord-sync");
+            var header = System.Text.Encoding.UTF8.GetBytes("{\"op\":\"hello\",\"protocol\":\"1\"}");
+            var frame = new byte[4 + header.Length + 4];
+            System.Buffers.Binary.BinaryPrimitives.WriteInt32BigEndian(frame, header.Length);
+            header.CopyTo(frame, 4);
+            System.Buffers.Binary.BinaryPrimitives.WriteInt32BigEndian(frame.AsSpan(4 + header.Length), 50_000_000);
+            await tls.WriteAsync(frame);
+
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            (await tls.ReadAsync(new byte[16], timeout.Token)).Should().Be(0, "the server closes the connection");
+        }
+
+        await using var session = (await LanSyncSession.PairAsync(info, "phone", default)).Session; // and still serves others
+    }
+
+    [Fact]
+    public async Task AnotherMachineAtTheFirstAddress_DoesNotStopTheNextAddressFromBeingTried()
+    {
+        var (certificate, _) = LanCertificate.Create();
+        await using var real = new LanSyncServer(certificate, _key, _a.DeviceId, "Real PC", _a.Store, _a.Engine.CreateSnapshotAsync);
+        var port = real.Start(0, IPAddress.Loopback);
+        var (otherCertificate, _) = LanCertificate.Create();
+        await using var impostor = new LanSyncServer(otherCertificate, _key, "someoneelse", "Other PC", _a.Store, _a.Engine.CreateSnapshotAsync);
+        impostor.Start(port, IPAddress.Parse("127.0.0.2"));
+
+        var info = real.CreatePairingOffer(["127.0.0.2", "127.0.0.1"], TimeSpan.FromMinutes(5));
+        var (session, key) = await LanSyncSession.PairAsync(info, "phone", default);
+        await session.DisposeAsync();
+        key.Should().Equal(_key);
+
+        var onlyImpostor = () => LanSyncSession.PairAsync(info with { Addresses = ["127.0.0.2"] }, "phone", default);
+        (await onlyImpostor.Should().ThrowAsync<LanSyncException>()).Which.Failure.Should().Be(LanFailure.CertificateMismatch);
+    }
+
+    [Fact]
+    public async Task Frames_AreBigEndian_AndRefuseBodiesOverTheLimit()
+    {
+        var stream = new MemoryStream();
+        await LanFrames.WriteAsync(stream, LanMessage.Of("x"), default);
+        stream.ToArray()[..4].Should().Equal(0, 0, 0, (byte)(stream.Length - 8));
+
+        var big = new MemoryStream();
+        await LanFrames.WriteAsync(big, new LanMessage(LanMessage.Of("x").Header, new byte[1000]), default);
+        big.Position = 0;
+        var act = () => LanFrames.ReadAsync(big, default, maxBody: 100);
+        await act.Should().ThrowAsync<InvalidDataException>();
     }
 
     [Fact]
