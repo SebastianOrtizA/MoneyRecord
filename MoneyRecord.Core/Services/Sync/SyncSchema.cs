@@ -44,8 +44,24 @@ namespace MoneyRecord.Services.Sync
                 [nameof(TripCategory)] = Fk(("LastCategoryId", nameof(Category))),
                 [nameof(TripBudget)] = Fk(("TripId", nameof(Trip)), ("TripCategoryId", nameof(TripCategory))),
                 [nameof(Transaction)] = Fk(("CategoryId", nameof(Category)), ("AccountId", nameof(Account)), ("PayeeId", nameof(Payee)),
-                    ("DebtId", nameof(Debt)), ("TripId", nameof(Trip)), ("TripCategoryId", nameof(TripCategory)))
+                    ("DebtId", nameof(Debt)), ("TripId", nameof(Trip)), ("TripCategoryId", nameof(TripCategory))),
+                [nameof(TransactionAttachment)] = Fk(("TransactionId", nameof(Transaction)))
             };
+
+        /// <summary>Columns that hold something of this device (a path in its receipts folder): never sent, and never overwritten by a change from another device.</summary>
+        public static readonly IReadOnlyDictionary<string, string[]> LocalOnlyColumns =
+            new Dictionary<string, string[]>
+            {
+                [nameof(Transaction)] = [nameof(Transaction.ReceiptPhotoPath)],
+                [nameof(TransactionAttachment)] = [nameof(TransactionAttachment.Path)]
+            };
+
+        /// <summary>
+        /// Rows that belong to a parent and go with it: a transaction's attachments. They do not count as "still in use" when the parent is
+        /// deleted (the app leaves them behind; the sync layer deletes them), and are deleted with it.
+        /// </summary>
+        public static readonly IReadOnlyDictionary<string, string> CascadeChildren =
+            new Dictionary<string, string> { [nameof(TransactionAttachment)] = nameof(Transaction) };
 
         /// <summary>The synced tables, every table after the ones it points at.</summary>
         public static readonly IReadOnlyList<string> Order = TopologicalOrder();
