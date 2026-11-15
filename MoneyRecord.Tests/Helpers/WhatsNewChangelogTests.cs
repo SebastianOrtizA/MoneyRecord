@@ -22,6 +22,8 @@ public sealed class WhatsNewChangelogTests
     [InlineData("de-DE", "de-DE")]
     [InlineData("de-AT", "de-DE")]
     [InlineData("tr-TR", "tr-TR")]
+    [InlineData("id-ID", "id")]
+    [InlineData("ru-RU", "ru-RU")]
     [InlineData("ja-JP", "en-US")]
     [InlineData("fr-FR", "fr-FR")]
     [InlineData("fr-CA", "fr-FR")]
@@ -57,6 +59,8 @@ public sealed class WhatsNewChangelogTests
     [InlineData("it-IT")]
     [InlineData("de-DE")]
     [InlineData("tr-TR")]
+    [InlineData("id")]
+    [InlineData("ru-RU")]
     public void Every_locale_the_app_picks_has_a_store_changelog_that_fits_the_play_limit(string locale)
     {
         var path = Path.Combine(FastlaneDir(), locale, "changelogs", "default.txt");
@@ -112,6 +116,8 @@ public sealed class WhatsNewChangelogTests
     [InlineData("it-IT")]
     [InlineData("de-DE")]
     [InlineData("tr-TR")]
+    [InlineData("id")]
+    [InlineData("ru-RU")]
     public void Every_locale_has_a_history_listing_the_same_versions(string locale)
     {
         var dir = FastlaneDir();

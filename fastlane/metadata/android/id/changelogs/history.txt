@@ -1,0 +1,125 @@
+## 1.5.0
+- Impor mutasi bank dari file OFX/QFX dan QIF, bukan hanya CSV: catatan yang sudah pernah diimpor dilewati.
+- Impor ekspor dari YNAB dan Mint: kolomnya terisi otomatis.
+- Lampirkan beberapa foto dan PDF ke satu transaksi dan buka langsung dari sana.
+- Ekspor transaksimu sebagai workbook Excel (.xlsx) dari Pengaturan atau dari tab Laporan.
+
+## 1.4.4
+- Menghapus akun dengan mata uang berbeda dari akun bawaan tidak lagi berhenti dengan kesalahan: masukkan kurs atau jumlah akhir, dan transaksi serta aturan berulangnya dikonversi.
+
+## 1.4.3
+- Mata uang kini menampilkan simbol yang dipakai setempat, seperti KSh untuk shilling Kenya, bukan kodenya.
+- Diperbaiki: mengganti mata uang akun yang sudah ada tidak berpengaruh dan menutup formulir.
+
+## 1.4.2
+- Semua mata uang kini tersedia: daftarnya memuat seluruh 159 mata uang ISO, diurutkan menurut kode, bukan 25.
+- Memilih mata uang membuka daftar dengan kotak pencarian: ketik kode, nama, atau simbol.
+
+## 1.4.1
+- Tren kategori kini memilih kategori dari daftar yang menampilkan total masing-masing, bukan deretan chip yang panjang saat kategorimu banyak.
+
+## 1.4.0
+- Pusat laporan baru (Lainnya → Laporan lainnya): Tren kategori, Laporan penerima, Tag, Laporan akun, Bandingkan periode, dan Tinjauan tahun.
+- Tren kategori menunjukkan perubahan pengeluaran di kategori pilihanmu dari bulan ke bulan.
+- Laporan penerima mengurutkan ke mana uangmu pergi berdasarkan penerima; ketuk baris untuk melihat transaksinya.
+- Tag punya halamannya sendiri: lihat jumlah tiap tag, ganti nama, gabungkan, atau hapus tag.
+- Laporan akun menunjukkan pemasukan, pengeluaran, dan transfer per akun.
+- Bandingkan periode menampilkan dua periode berdampingan, kategori demi kategori, beserta perubahannya.
+- Tinjauan tahun merangkum tahunmu dan bisa dibagikan sebagai teks atau PDF.
+- Filter Transaksi kini menerima beberapa kategori sekaligus.
+- Filter tersimpan: simpan filter yang sering kamu pakai dengan sebuah nama dan terapkan dengan satu ketukan dari halaman Transaksi.
+
+## 1.3.1
+- Diperbaiki: tanggal di bawah grafik Prakiraan tidak lagi saling menumpuk dalam bahasa Spanyol dan Portugis.
+
+## 1.3.0
+- Halaman Prakiraan baru (Lainnya → Perencanaan → Prakiraan): lihat bagaimana saldomu mungkin bergerak dalam 30, 60, atau 90 hari ke depan dari catatan berulang, catatan terjadwal, dan pembayaran utangmu. Ini perkiraan, bukan janji.
+- Beranda punya kartu Prakiraan dengan jumlah yang aman dibelanjakan hingga pemasukan berikutnya.
+- Peringatan saldo rendah: pilih di Pengaturan untuk diberi tahu 7, 14, atau 30 hari sebelumnya saat sebuah akun diperkirakan menjadi negatif.
+- Anggaran menunjukkan berapa yang masih bisa dibelanjakan per hari, dan bisa membawa sisa yang tidak terpakai ke periode berikutnya.
+- Anggaran baru "Semua pengeluaran": satu batas untuk semua yang kamu belanjakan, di samping anggaran per kategorimu.
+- Sarankan anggaran: dapatkan batas bulanan untuk setiap kategori tanpa anggaran, berdasarkan 3 bulan terakhirmu, lalu centang yang ingin dibuat.
+- Diperbaiki: pintasan peluncur yang dibuka saat kunci aplikasi aktif kini menunggu kamu membuka kunci.
+
+## 1.2.2
+- Kode aplikasi dipangkas lebih lanjut, jadi memakai sedikit lebih sedikit ruang dan memori.
+
+## 1.2.1
+- Kode aplikasi kini dioptimalkan sekaligus dipangkas, jadi sedikit lebih kecil dan lebih ringan di memori.
+
+## 1.2.0
+- Catatan cepat: simpan pengeluaran atau pemasukan yang berulang, seperti kopi pagimu, dengan satu ketukan dari chip di Beranda atau di formulir tambah. Urungkan selalu tersedia, dan Lainnya → Catatan cepat memungkinkanmu mengubah dan mengurutkannya.
+- Catatan cepat bisa mengosongkan jumlah untuk ditanyakan setiap kali, dan aplikasi menyarankannya setelah kamu mengulang catatan yang sama beberapa kali.
+- Tekan lama ikon aplikasi untuk langsung menambah Pengeluaran, Pemasukan, atau Transfer, ditambah catatan cepat teratasmu.
+- Tekan lama tombol tambah untuk langsung memulai pengeluaran baru.
+- Duplikat sebuah catatan dari detailnya atau dengan geseran untuk menambahkannya lagi bertanggal hari ini.
+- Memilih penerima kini juga mengisi akun dan jumlah dari catatan terakhirnya.
+
+## 1.1.1
+- Transaksi: pengelompokan per hari, kategori, atau akun, dan urutan, kini ada di lembar filter (menu ⋮ dihapus).
+- Grup dimulai dalam keadaan tertutup agar daftar lebih mudah dipindai; grup terbuka saat kamu mencari atau memfilter, dan Buka semua membukanya sekaligus.
+- Rentang tanggal kustom yang panjang kini muat di layar dan tidak terpotong.
+
+## 1.1.0
+- Menambah catatan lebih cepat: beralih antara Pengeluaran, Pemasukan, dan Transfer di bagian atas, pilih akun serta Hari Ini atau Kemarin dengan satu ketukan, dan Simpan tetap di atas keyboard serta aktif begitu jumlahnya valid.
+- Transaksi dikelompokkan per hari dengan total tiap hari. Pencarian berupa ikon di bilah alat, dan setiap filter aktif tampil sebagai chip yang bisa dihapus.
+- Pemilih periode (‹ Oktober 2026 ›) menggantikan menu periode di Beranda, Transaksi, Anggaran, dan Laporan.
+- Laporan: tab dan warna grafik yang lebih jelas, dan kamu bisa menekan lama irisan donat untuk melihat jumlahnya.
+- Kartu anggaran menampilkan sisa atau kelebihan dengan bilah kemajuan, yang paling mendesak lebih dulu.
+- Lainnya dan Pengaturan dikelompokkan di bawah judul, dan Pengaturan punya kotak pencarian.
+
+## 1.0.0
+- Menghapus transaksi, pembagian, atau transfer tidak lagi meminta konfirmasi: ketuk Urungkan di pesan yang muncul untuk mengembalikannya.
+- Baru: kartu Mulai di Beranda memandu langkah pertamamu (tambah pengeluaran, cadangkan data, aktifkan pengingat), dan layar kosong kini memberi tahu apa yang harus dilakukan berikutnya.
+- Kategori dan Akun punya kotak pencarian, dan Transfer, Arus kas, Kekayaan bersih, dan Penerima menjelaskan dirinya saat kosong.
+- Teks besar: jumlah tidak pernah terpotong, dan kategori, keterangan saldo, serta tombol muat di ukuran font terbesar.
+- Lebih baik dengan TalkBack: lebih banyak kontrol punya label, target ketukan minimal 48 dp, dan teks pudar lebih gelap.
+- Pemasukan berwarna biru dan pengeluaran merah di mana-mana, ubin Beranda lebih tenang, dan ikon bilah status terbaca di bilah ungu.
+
+## 0.20.1
+- Target: lembar tambah/ubah target kini bisa digulir, jadi Simpan tetap terjangkau saat kamu punya banyak akun.
+
+## 0.20.0
+- Layar Dukung MoneyRecord baru (tab Lainnya) di versi Google Play: beri tip kecil opsional lewat Google Play untuk mendukung proyek ini. Tidak ada yang dikunci atau dibuka, baik kamu memberi maupun tidak.
+
+## 0.19.2
+- Tantangan menabung: tantangan linear kini bisa dimulai dari hari pertama dan bertambah sejumlah tertentu per hari. Ketik kenaikannya dan aplikasi menghitung berapa hari yang kamu butuhkan. Penggandaan tidak lagi ditawarkan untuk tantangan baru; yang sudah kamu punya tetap berfungsi.
+- Halaman tantangan punya filter baru: Dari awal, Bulan ini (telusuri bulan demi bulan, seperti kalender), 30 hari ke depan, dan Rentang tanggal, ditambah Hanya yang tertunda.
+- Tanggal di kisi tantangan tidak lagi terpotong di beberapa bahasa.
+- Menambah catatan: membuka Detail lainnya kini menggulir ke bawah ke kolom baru.
+- Ikon: lebih banyak pilihan untuk kategori pengeluaran dan pemasukan, dan beberapa lagi untuk akun.
+
+## 0.19.1
+- Memperbaiki aplikasi macet: memilih "Bawaan sistem" di Pengaturan → Bahasa bisa membuat aplikasi hang setelah kamu memilih bahasa lain.
+
+## 0.19.0
+- MoneyRecord kini berbahasa Portugis (Brasil), Prancis, dan Italia, selain Inggris dan Spanyol. Mengikuti bahasa ponselmu, atau pilih di Pengaturan → Bahasa.
+- Pemindaian struk memahami struk berbahasa Prancis, Italia, dan Portugis: total, subtotal, pajak, kembalian, dan tanggal.
+
+## 0.18.1
+- Tantangan menabung: bulatkan tiap hari ke 5, 50, atau 500 juga, berguna untuk mata uang seperti peso Kolombia.
+- Mode baru "Sama tiap hari": bagi target secara merata ke seluruh hari, atau atur jumlah per hari dan aplikasi menghitung berapa hari yang dibutuhkan. Hari terakhir mengambil sisanya.
+- Halaman tantangan terbuka di 30 hari ke depan, dengan filter untuk bulan ini, lalu, dan depan, 30 hari terakhir target, dan rentang tanggal, agar tantangan panjang tetap ringan.
+
+## 0.18.0
+- Tantangan menabung: permainan menabung dengan jumlah harian yang berlipat dua per tingkat atau bertambah secara linear, dengan pembulatan opsional.
+- Pilih akun atau kantong tujuan dan setiap hari memindahkan uang ke sana dari akun atau kantong yang kamu pilih.
+- Pop-up Yang baru mencantumkan setiap perubahan di barisnya sendiri dan setiap versi yang terlewat.
+- Cadangan kini memakai format v7.
+- Build aplikasi dioptimalkan.
+
+## 0.16.0
+- Kantong: sisihkan uang di dalam sebuah akun dan pilih kantong mana yang diambil saat pengeluaran memakainya.
+- Tagihan berulang dengan jumlah yang berubah-ubah yang kamu konfirmasi setiap kali.
+- Atur Beranda (urutan, tampilkan/sembunyikan kartu) ditambah kartu Utang opsional.
+- Pop-up Yang baru setelah pembaruan.
+- Jumlah terbaru kini tersembunyi saat Sembunyikan saldo aktif.
+- Cadangan kini memakai format v6.
+
+## 0.13.1
+- Jumlah kini menampilkan pemisah ribuan saat kamu mengetik, jadi angka panjang mudah dibaca saat dimasukkan.
+- Juga di filter jumlah Transaksi dan batas kategori perjalanan.
+
+## 0.13.0
+- Acara: bagi biaya perjalanan dan pengeluaran bersama dengan teman, lihat siapa berutang kepada siapa, lunasi dan bagikan ringkasannya, serta catat bagianmu sendiri sebagai pengeluaran.
+- Cadangan kini memakai format v5.

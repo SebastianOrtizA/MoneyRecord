@@ -1,0 +1,41 @@
+MoneyRecord adalah pencatat keuangan yang sederhana, gratis, dan privat. Catat pengeluaran dan pemasukanmu, lihat ke mana uangmu pergi, jaga anggaran, dan menabung untuk target. Datamu tetap di ponselmu: tanpa daftar akun, tanpa iklan.
+
+<b>Input cepat</b>
+• Tambah pengeluaran, pemasukan, atau transfer dalam beberapa ketukan: jumlah dulu, lalu kategori dari kisi yang menempatkan kategori terbarumu di depan.
+• Pindai struk: total dan tanggalnya dibaca langsung di ponselmu.
+• Penerima dengan saran, tag, foto struk, dan deskripsi, jika kamu mau.
+• Bagi satu struk ke beberapa kategori.
+
+<b>Akun dan mata uang</b>
+• Tunai, bank, tabungan, kartu kredit… masing-masing dengan mata uangnya sendiri.
+• Total per mata uang, atau dikonversi ke mata uang utamamu dengan kurs harian (opsional).
+• Sembunyikan sen pada mata uang yang tidak membutuhkannya.
+
+<b>Anggaran dan target tabungan</b>
+• Batas pengeluaran per kategori, per hari, bulan, atau tahun: sesuai rencana, mendekati batas, atau melebihi anggaran, terlihat sekilas.
+• Target tabungan dengan tanggal tujuan: berapa yang perlu ditabung tiap bulan, dan apakah lajumu cukup untuk mencapainya.
+
+<b>Berulang dan mendatang</b>
+• Gaji, sewa, langganan: harian, mingguan, tiap dua minggu, bulanan, atau tahunan, mulai hari ini atau di tanggal mendatang.
+• Lihat yang akan datang dalam 30 hari ke depan, dengan pengingat sebelum tagihan jatuh tempo dan saat anggaran habis.
+
+<b>Uang yang dipinjamkan dan dipinjam</b>
+• Pantau apa yang teman utang kepadamu dan apa yang kamu utang kepada mereka, dengan pembayaran terjadwal.
+
+<b>Laporan</b>
+• Pengeluaran dan pemasukan per kategori, tren, arus kas, dan kekayaan bersih.
+• Ketuk grafik untuk melihat transaksi di baliknya.
+• Ekspor laporan PDF atau file CSV untuk periode mana pun.
+
+<b>Datamu, kendalimu</b>
+• Bekerja offline. Tanpa akun, tanpa iklan.
+• Cadangan lengkap, manual atau otomatis (harian, mingguan, atau bulanan) ke folder mana pun, termasuk Google Drive, dengan kata sandi opsional.
+• Impor mutasi bank dari CSV, dengan duplikat terdeteksi dan kategori disarankan.
+• Kunci aplikasi dengan sidik jari, wajah, atau kunci layar, serta database terenkripsi.
+• Laporan crash opsional, mati kecuali kamu menyalakannya.
+
+<b>Dibuat untukmu</b>
+• Widget layar utama dengan saldomu dan tombol tambah cepat.
+• Bahasa Indonesia, Rusia, Jerman, Turki, Inggris, Spanyol, Portugis, Prancis, dan Italia, tema terang dan gelap, penyiapan cepat saat pertama kali dibuka.
+
+MoneyRecord gratis dan sumber terbuka (AGPL-3.0): https://github.com/SebastianOrtizA/MoneyRecord

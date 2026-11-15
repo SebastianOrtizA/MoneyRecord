@@ -24,7 +24,7 @@ public class LanguageCoverageTests
     // es-419 has no AppLanguage row (Latin America shares "es"), but it is a store locale of its own
     public static IEnumerable<object[]> StoreLocales =>
         new[] { "en-US", "es-ES", "es-419" }
-            .Concat(AppLanguage.All.Where(l => l.Code is not ("en" or "es")).Select(l => l.DefaultCulture))
+            .Concat(AppLanguage.All.Where(l => l.Code is not ("en" or "es")).Select(l => l.PlayLocale ?? l.DefaultCulture))
             .Select(l => new object[] { l });
 
     [Theory]

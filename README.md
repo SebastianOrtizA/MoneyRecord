@@ -206,7 +206,7 @@ Your data stays on the device in every version; see [PRIVACY.md](PRIVACY.md).
   GitHub / F-Droid version has no Support screen and carries no billing library.
 
 ### Localization
-- English, Spanish, Portuguese (Brazil), French, Italian, German and Turkish, picked from the device language or chosen in Settings; the device region is kept for currency
+- English, Spanish, Portuguese (Brazil), French, Italian, German, Turkish, Indonesian and Russian, picked from the device language or chosen in Settings; the device region is kept for currency
   and number formats (e.g. `es-CO`).
 - Dates use the culture's own patterns ("October 11, 2026" / "11 de octubre de 2026"), and counts use proper plurals.
 

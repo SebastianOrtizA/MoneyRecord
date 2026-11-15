@@ -1,0 +1,3550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  
+  <!-- App General -->
+  <data name="AppTitle" xml:space="preserve">
+    <value>Money Record</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Подтвердить</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="Transfers" xml:space="preserve">
+    <value>Переводы</value>
+  </data>
+  <data name="ManageAccounts" xml:space="preserve">
+    <value>Управление счетами</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Счета</value>
+  </data>
+  <data name="IncomeCategories" xml:space="preserve">
+    <value>Категории доходов</value>
+  </data>
+  <data name="ExpenseCategories" xml:space="preserve">
+    <value>Категории расходов</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Итоги</value>
+  </data>
+  <data name="SelectPeriod" xml:space="preserve">
+    <value>Выбери период</value>
+  </data>
+  <data name="From" xml:space="preserve">
+    <value>С:</value>
+  </data>
+  <data name="To" xml:space="preserve">
+    <value>По:</value>
+  </data>
+  <data name="TotalBalance" xml:space="preserve">
+    <value>Общий баланс</value>
+  </data>
+  <data name="Incomes" xml:space="preserve">
+    <value>Доходы</value>
+  </data>
+  <data name="Expenses" xml:space="preserve">
+    <value>Расходы</value>
+  </data>
+  <data name="Income" xml:space="preserve">
+    <value>Доход</value>
+  </data>
+  <data name="Transfer" xml:space="preserve">
+    <value>Перевод</value>
+  </data>
+  <data name="Expense" xml:space="preserve">
+    <value>Расход</value>
+  </data>
+  <data name="Transactions" xml:space="preserve">
+    <value>Операции</value>
+  </data>
+  <data name="EditButton" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="DeleteButton" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="CalendarMonth" xml:space="preserve">
+    <value>Календарный месяц</value>
+  </data>
+  <data name="CalendarYear" xml:space="preserve">
+    <value>Календарный год</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Сегодня</value>
+  </data>
+  <data name="LastWeek" xml:space="preserve">
+    <value>Прошлая неделя</value>
+  </data>
+  <data name="LastMonth" xml:space="preserve">
+    <value>Прошлый месяц</value>
+  </data>
+  <data name="LastYear" xml:space="preserve">
+    <value>Прошлый год</value>
+  </data>
+  <data name="CustomPeriod" xml:space="preserve">
+    <value>Свой период</value>
+  </data>
+  <data name="ListView" xml:space="preserve">
+    <value>Список</value>
+  </data>
+  <data name="GroupByCategory" xml:space="preserve">
+    <value>По категориям</value>
+  </data>
+  <data name="GroupByAccount" xml:space="preserve">
+    <value>По счетам</value>
+  </data>
+  <data name="Ungrouped" xml:space="preserve">
+    <value>Без группировки</value>
+  </data>
+  <data name="Grouped" xml:space="preserve">
+    <value>Сгруппировано</value>
+  </data>
+  <data name="SortOldestFirst" xml:space="preserve">
+    <value>Сначала старые</value>
+  </data>
+  <data name="SortNewestFirst" xml:space="preserve">
+    <value>Сначала новые</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Сортировка</value>
+  </data>
+  <data name="AddTransaction" xml:space="preserve">
+    <value>Новая операция</value>
+  </data>
+  <data name="AddIncome" xml:space="preserve">
+    <value>Добавить доход</value>
+  </data>
+  <data name="AddExpense" xml:space="preserve">
+    <value>Добавить расход</value>
+  </data>
+  <data name="EditIncome" xml:space="preserve">
+    <value>Изменить доход</value>
+  </data>
+  <data name="EditExpense" xml:space="preserve">
+    <value>Изменить расход</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="EnterDescription" xml:space="preserve">
+    <value>Введи описание</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Сумма</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Счёт</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Выбери счёт</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="SelectCategory" xml:space="preserve">
+    <value>Выбери категорию</value>
+  </data>
+  <data name="NewTransfer" xml:space="preserve">
+    <value>Новый перевод</value>
+  </data>
+  <data name="EditTransfer" xml:space="preserve">
+    <value>Изменить перевод</value>
+  </data>
+  <data name="NoTransfers" xml:space="preserve">
+    <value>Переводов пока нет</value>
+  </data>
+  <data name="TransferBetweenAccounts" xml:space="preserve">
+    <value>Переводи деньги между своими счетами</value>
+  </data>
+  <data name="FromAccount" xml:space="preserve">
+    <value>Со счёта *</value>
+  </data>
+  <data name="ToAccount" xml:space="preserve">
+    <value>На счёт *</value>
+  </data>
+  <data name="SelectSourceAccount" xml:space="preserve">
+    <value>Выбери счёт списания</value>
+  </data>
+  <data name="SelectDestinationAccount" xml:space="preserve">
+    <value>Выбери счёт зачисления</value>
+  </data>
+  <data name="TransferButton" xml:space="preserve">
+    <value>Перевести</value>
+  </data>
+  <data name="TransferDescription" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="TransferOptional" xml:space="preserve">
+    <value>Перевод (необязательно)</value>
+  </data>
+  <data name="FromLabel" xml:space="preserve">
+    <value>Откуда:</value>
+  </data>
+  <data name="ToLabel" xml:space="preserve">
+    <value>Куда:</value>
+  </data>
+  <data name="AddNewAccount" xml:space="preserve">
+    <value>Новый счёт</value>
+  </data>
+  <data name="EditAccount" xml:space="preserve">
+    <value>Изменить счёт</value>
+  </data>
+  <data name="AccountName" xml:space="preserve">
+    <value>Название счёта</value>
+  </data>
+  <data name="AccountNamePlaceholder" xml:space="preserve">
+    <value>напр.: банковский счёт, наличные, кредитка</value>
+  </data>
+  <data name="InitialBalance" xml:space="preserve">
+    <value>Начальный баланс</value>
+  </data>
+  <data name="SelectIcon" xml:space="preserve">
+    <value>Выбери значок</value>
+  </data>
+  <data name="AddAccountButton" xml:space="preserve">
+    <value>Добавить счёт</value>
+  </data>
+  <data name="UpdateAccount" xml:space="preserve">
+    <value>Обновить счёт</value>
+  </data>
+  <data name="CancelEdit" xml:space="preserve">
+    <value>Отменить изменения</value>
+  </data>
+  <data name="NoAccounts" xml:space="preserve">
+    <value>Счетов пока нет. Нажми +, чтобы добавить первый.</value>
+  </data>
+  <data name="AllowNegativeBalance" xml:space="preserve">
+    <value>Разрешить отрицательный баланс</value>
+  </data>
+  <data name="InsufficientAccountBalance" xml:space="preserve">
+    <value>Из-за этого расхода баланс станет отрицательным. Счёт «{0}» не допускает отрицательный баланс.</value>
+  </data>
+  <data name="NegativeBalanceNotAllowed" xml:space="preserve">
+    <value>Отрицательный начальный баланс не допускается. Включи «Разрешить отрицательный баланс», чтобы указать такое значение.</value>
+  </data>
+  <data name="AddNewCategory" xml:space="preserve">
+    <value>Новая категория</value>
+  </data>
+  <data name="EditCategory" xml:space="preserve">
+    <value>Изменить категорию</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>Название категории</value>
+  </data>
+  <data name="AddCategoryButton" xml:space="preserve">
+    <value>Добавить категорию</value>
+  </data>
+  <data name="UpdateCategory" xml:space="preserve">
+    <value>Обновить категорию</value>
+  </data>
+  <data name="YourCategories" xml:space="preserve">
+    <value>Твои категории</value>
+  </data>
+  <data name="NoCategories" xml:space="preserve">
+    <value>Категорий пока нет. Добавь первую выше.</value>
+  </data>
+  <data name="TotalExpenses" xml:space="preserve">
+    <value>Всего расходов</value>
+  </data>
+  <data name="TotalIncome" xml:space="preserve">
+    <value>Всего доходов</value>
+  </data>
+  <data name="CategoryBreakdown" xml:space="preserve">
+    <value>По категориям</value>
+  </data>
+  <data name="NoExpenseData" xml:space="preserve">
+    <value>За этот период нет данных о расходах</value>
+  </data>
+  <data name="NoIncomeData" xml:space="preserve">
+    <value>За этот период нет данных о доходах</value>
+  </data>
+  <data name="AddExpensesToStart" xml:space="preserve">
+    <value>Добавь расходы, чтобы увидеть, на что уходят деньги</value>
+  </data>
+  <data name="AddIncomeToStart" xml:space="preserve">
+    <value>Добавь доходы, чтобы увидеть, откуда приходят деньги</value>
+  </data>
+  <data name="NoExpenseDataFound" xml:space="preserve">
+    <value>Данных о расходах нет</value>
+  </data>
+  <data name="NoIncomeDataFound" xml:space="preserve">
+    <value>Данных о доходах нет</value>
+  </data>
+  <data name="AddExpenseTransactionsToSee" xml:space="preserve">
+    <value>Добавь операции расходов, чтобы увидеть анализ трат</value>
+  </data>
+  <data name="AddIncomeTransactionsToSee" xml:space="preserve">
+    <value>Добавь операции доходов, чтобы увидеть анализ поступлений</value>
+  </data>
+  <data name="PleaseEnterValidAmount" xml:space="preserve">
+    <value>Введи корректную сумму</value>
+  </data>
+  <data name="PleaseSelectAccount" xml:space="preserve">
+    <value>Выбери счёт</value>
+  </data>
+  <data name="PleaseSelectCategory" xml:space="preserve">
+    <value>Выбери категорию</value>
+  </data>
+  <data name="PleaseEnterCategoryName" xml:space="preserve">
+    <value>Введи название категории</value>
+  </data>
+  <data name="PleaseEnterAccountName" xml:space="preserve">
+    <value>Введи название счёта</value>
+  </data>
+  <data name="PleaseSelectSourceAccount" xml:space="preserve">
+    <value>Выбери счёт списания</value>
+  </data>
+  <data name="PleaseSelectDestinationAccount" xml:space="preserve">
+    <value>Выбери счёт зачисления</value>
+  </data>
+  <data name="SourceDestinationMustBeDifferent" xml:space="preserve">
+    <value>Счета списания и зачисления должны различаться</value>
+  </data>
+  <data name="InsufficientFunds" xml:space="preserve">
+    <value>На счёте списания недостаточно средств</value>
+  </data>
+  <data name="DeleteTransaction" xml:space="preserve">
+    <value>Удалить операцию</value>
+  </data>
+  <data name="DeleteTransactionConfirm" xml:space="preserve">
+    <value>Точно удалить эту операцию?</value>
+  </data>
+  <data name="DeleteTransfer" xml:space="preserve">
+    <value>Удалить перевод</value>
+  </data>
+  <data name="DeleteTransferConfirm" xml:space="preserve">
+    <value>Точно удалить этот перевод?</value>
+  </data>
+  <data name="DeleteCategory" xml:space="preserve">
+    <value>Удалить категорию</value>
+  </data>
+  <data name="DeleteCategoryConfirm" xml:space="preserve">
+    <value>Точно удалить эту категорию?</value>
+  </data>
+  <data name="DeleteAccount" xml:space="preserve">
+    <value>Удалить счёт</value>
+  </data>
+  <data name="DeleteAccountConfirm" xml:space="preserve">
+    <value>Точно удалить этот счёт?</value>
+  </data>
+  <data name="CannotDelete" xml:space="preserve">
+    <value>Нельзя удалить</value>
+  </data>
+  <data name="LastCategoryCannotDelete" xml:space="preserve">
+    <value>Это последняя категория такого типа. Пока в ней есть операции, удалить её нельзя. Сначала создай другую категорию.</value>
+  </data>
+  <data name="CategoryHasTransactions" xml:space="preserve">
+    <value>Выбери новую категорию для «{0}»:</value>
+  </data>
+  <data name="AvailableBalance" xml:space="preserve">
+    <value>Доступно: {0}</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>Категории</value>
+  </data>
+  <data name="NoCategoriesYet" xml:space="preserve">
+    <value>Категорий пока нет</value>
+  </data>
+  <data name="DefaultAccountCash" xml:space="preserve">
+    <value>Наличные</value>
+  </data>
+  <data name="DefaultCategorySalary" xml:space="preserve">
+    <value>Зарплата</value>
+  </data>
+  <data name="DefaultCategoryFreelance" xml:space="preserve">
+    <value>Подработка</value>
+  </data>
+  <data name="DefaultCategoryInvestment" xml:space="preserve">
+    <value>Инвестиции</value>
+  </data>
+  <data name="DefaultCategoryOtherIncome" xml:space="preserve">
+    <value>Прочие доходы</value>
+  </data>
+  <data name="DefaultCategoryFood" xml:space="preserve">
+    <value>Еда</value>
+  </data>
+  <data name="DefaultCategoryTransportation" xml:space="preserve">
+    <value>Транспорт</value>
+  </data>
+  <data name="DefaultCategoryEntertainment" xml:space="preserve">
+    <value>Развлечения</value>
+  </data>
+  <data name="DefaultCategoryUtilities" xml:space="preserve">
+    <value>Коммунальные услуги</value>
+  </data>
+  <data name="DefaultCategoryShopping" xml:space="preserve">
+    <value>Покупки</value>
+  </data>
+  <data name="DefaultCategoryHome" xml:space="preserve">
+    <value>Дом</value>
+  </data>
+  <data name="DefaultCategoryOtherExpense" xml:space="preserve">
+    <value>Прочие расходы</value>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="ConfirmDelete" xml:space="preserve">
+    <value>Подтверди удаление</value>
+  </data>
+  <data name="YesDelete" xml:space="preserve">
+    <value>Да, удалить</value>
+  </data>
+  <data name="FailedToLoadAccountBalances" xml:space="preserve">
+    <value>Не удалось загрузить балансы счетов</value>
+  </data>
+  <data name="FailedToLoadReportData" xml:space="preserve">
+    <value>Не удалось загрузить данные отчёта</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Итого</value>
+  </data>
+  <data name="CannotDeleteDefaultAccount" xml:space="preserve">
+    <value>Нельзя удалить основной счёт «Наличные»</value>
+  </data>
+  <data name="DeleteAccountWithTransactions" xml:space="preserve">
+    <value>Удалить «{0}»?
+
+Операций: {1}, регулярных правил: {2}. Они будут перенесены в «{3}».</value>
+  </data>
+  <data name="DeleteAccountNoTransactions" xml:space="preserve">
+    <value>Удалить «{0}»?</value>
+  </data>
+  <data name="CategoryDeletedAndTransactionsMoved" xml:space="preserve">
+    <value>Категория «{0}» удалена, операций перенесено в «{2}»: {1}</value>
+  </data>
+  <data name="DeleteCategoryConfirmation" xml:space="preserve">
+    <value>Удалить «{0}»?</value>
+  </data>
+  <data name="TransferUpdatedSuccessfully" xml:space="preserve">
+    <value>Перевод обновлён</value>
+  </data>
+  <data name="FailedToSaveTransfer" xml:space="preserve">
+    <value>Не удалось сохранить перевод</value>
+  </data>
+  <data name="FailedToLoadTransfers" xml:space="preserve">
+    <value>Не удалось загрузить переводы</value>
+  </data>
+  <data name="FailedToDeleteTransfer" xml:space="preserve">
+    <value>Не удалось удалить перевод</value>
+  </data>
+  <data name="Available" xml:space="preserve">
+    <value>Доступно: {0}</value>
+  </data>
+  <data name="AddCategoryToBudget" xml:space="preserve">
+    <value>Добавить категорию в бюджет</value>
+  </data>
+  <data name="BudgetLimit" xml:space="preserve">
+    <value>Лимит бюджета</value>
+  </data>
+  <data name="AddBudgetButton" xml:space="preserve">
+    <value>Добавить бюджет</value>
+  </data>
+  <data name="NoBudgetsYet" xml:space="preserve">
+    <value>Бюджетов пока нет</value>
+  </data>
+  <data name="AddBudgetToStart" xml:space="preserve">
+    <value>Нажми +, чтобы задать лимит трат для категории расходов.</value>
+  </data>
+  <data name="Remaining" xml:space="preserve">
+    <value>Осталось</value>
+  </data>
+  <data name="Exceeded" xml:space="preserve">
+    <value>Превышено</value>
+  </data>
+  <data name="TotalBudgeted" xml:space="preserve">
+    <value>В бюджете</value>
+  </data>
+  <data name="TotalSpent" xml:space="preserve">
+    <value>Потрачено</value>
+  </data>
+  <data name="TotalRemaining" xml:space="preserve">
+    <value>Осталось</value>
+  </data>
+  <data name="BudgetAddedSuccessfully" xml:space="preserve">
+    <value>Бюджет добавлен</value>
+  </data>
+  <data name="FailedToSaveBudget" xml:space="preserve">
+    <value>Не удалось сохранить бюджет</value>
+  </data>
+  <data name="DeleteBudgetConfirmation" xml:space="preserve">
+    <value>Убрать «{0}» из бюджета?</value>
+  </data>
+  <data name="FailedToDeleteBudget" xml:space="preserve">
+    <value>Не удалось удалить бюджет</value>
+  </data>
+  <data name="EditBudget" xml:space="preserve">
+    <value>Изменить бюджет</value>
+  </data>
+  <data name="TransactionUpdatedSuccessfully" xml:space="preserve">
+    <value>Операция обновлена</value>
+  </data>
+  <data name="FailedToLoadTransactions" xml:space="preserve">
+    <value>Не удалось загрузить операции</value>
+  </data>
+  <data name="FailedToDeleteTransaction" xml:space="preserve">
+    <value>Не удалось удалить операцию</value>
+  </data>
+  <data name="PerDay" xml:space="preserve">
+    <value>В день</value>
+  </data>
+  <data name="PerMonth" xml:space="preserve">
+    <value>В месяц</value>
+  </data>
+  <data name="PerYear" xml:space="preserve">
+    <value>В год</value>
+  </data>
+  <data name="BudgetPeriod" xml:space="preserve">
+    <value>Период бюджета</value>
+  </data>
+  <data name="BudgetExceeded" xml:space="preserve">
+    <value>⚠️ Бюджет «{0}» превышен! Потрачено {1} из лимита {2}.</value>
+  </data>
+  <data name="BudgetNearLimit" xml:space="preserve">
+    <value>⚠️ Бюджет «{0}» почти исчерпан. Осталось всего {1}.</value>
+  </data>
+  <data name="BudgetSummary" xml:space="preserve">
+    <value>Итоги бюджета</value>
+  </data>
+  <data name="OnTrack" xml:space="preserve">
+    <value>В рамках бюджета</value>
+  </data>
+  <data name="OverBudget" xml:space="preserve">
+    <value>Сверх бюджета</value>
+  </data>
+  <data name="RecurringTransactions" xml:space="preserve">
+    <value>Регулярные</value>
+  </data>
+  <data name="MakeRecurring" xml:space="preserve">
+    <value>Сделать регулярной</value>
+  </data>
+  <data name="Frequency" xml:space="preserve">
+    <value>Периодичность</value>
+  </data>
+  <data name="SelectFrequency" xml:space="preserve">
+    <value>Выбери периодичность</value>
+  </data>
+  <data name="HasEndDate" xml:space="preserve">
+    <value>Указать дату окончания</value>
+  </data>
+  <data name="EndDateOptional" xml:space="preserve">
+    <value>Дата окончания (необязательно)</value>
+  </data>
+  <data name="FrequencyDaily" xml:space="preserve">
+    <value>Ежедневно</value>
+  </data>
+  <data name="FrequencyWeekly" xml:space="preserve">
+    <value>Еженедельно</value>
+  </data>
+  <data name="FrequencyBiweekly" xml:space="preserve">
+    <value>Раз в 2 недели</value>
+  </data>
+  <data name="FrequencyMonthly" xml:space="preserve">
+    <value>Ежемесячно</value>
+  </data>
+  <data name="FrequencyYearly" xml:space="preserve">
+    <value>Ежегодно</value>
+  </data>
+  <data name="NextOccurrence" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="NoRecurringTransactions" xml:space="preserve">
+    <value>Регулярных операций нет</value>
+  </data>
+  <data name="AddRecurringToStart" xml:space="preserve">
+    <value>Нажми +, чтобы запланировать, или включи «Сделать регулярной» при добавлении операции</value>
+  </data>
+  <data name="DeleteRecurringConfirmation" xml:space="preserve">
+    <value>Удалить регулярную операцию «{0}»?</value>
+  </data>
+  <data name="RecurringTransactionDeleted" xml:space="preserve">
+    <value>Регулярная операция удалена</value>
+  </data>
+  <data name="FailedToLoadRecurringTransactions" xml:space="preserve">
+    <value>Не удалось загрузить регулярные операции</value>
+  </data>
+  <data name="FailedToDeleteRecurringTransaction" xml:space="preserve">
+    <value>Не удалось удалить регулярную операцию</value>
+  </data>
+  <data name="FailedToUpdateRecurringTransaction" xml:space="preserve">
+    <value>Не удалось обновить регулярную операцию</value>
+  </data>
+  <data name="SpecificDayOfMonth" xml:space="preserve">
+    <value>Определённый день месяца</value>
+  </data>
+  <data name="SelectDay" xml:space="preserve">
+    <value>Выбери день</value>
+  </data>
+  <data name="DayN" xml:space="preserve">
+    <value>день {0}</value>
+  </data>
+  <data name="EditRecurring" xml:space="preserve">
+    <value>Изменить регулярную операцию</value>
+  </data>
+  <data name="RecurringTransactionUpdated" xml:space="preserve">
+    <value>Регулярная операция обновлена</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="BackupRestore" xml:space="preserve">
+    <value>Резервные копии</value>
+  </data>
+  <data name="BackupRestoreDescription" xml:space="preserve">
+    <value>Экспортируй данные или восстанови их из копии</value>
+  </data>
+  <data name="ExportFullBackup" xml:space="preserve">
+    <value>Полная копия (с чеками)</value>
+  </data>
+  <data name="SaveBackupLocal" xml:space="preserve">
+    <value>Сохранить копию на устройстве</value>
+  </data>
+  <data name="ShareBackupExternal" xml:space="preserve">
+    <value>Отправить копию</value>
+  </data>
+  <data name="ExportTransactionsCsv" xml:space="preserve">
+    <value>Экспорт операций (CSV)</value>
+  </data>
+  <data name="RestoreFromBackup" xml:space="preserve">
+    <value>Восстановить из копии</value>
+  </data>
+  <data name="RestoreNote" xml:space="preserve">
+    <value>Восстановление заменяет все текущие данные. Сначала они сохраняются, так что восстановление можно отменить.</value>
+  </data>
+  <data name="ShareBackup" xml:space="preserve">
+    <value>Отправить копию</value>
+  </data>
+  <data name="ShareTransactions" xml:space="preserve">
+    <value>Отправить операции</value>
+  </data>
+  <data name="BackupCreatedSuccessfully" xml:space="preserve">
+    <value>Копия создана</value>
+  </data>
+  <data name="CsvExportedSuccessfully" xml:space="preserve">
+    <value>CSV экспортирован</value>
+  </data>
+  <data name="FailedToCreateBackup" xml:space="preserve">
+    <value>Не удалось создать копию</value>
+  </data>
+  <data name="FailedToExportCsv" xml:space="preserve">
+    <value>Не удалось экспортировать CSV</value>
+  </data>
+  <data name="ConfirmRestore" xml:space="preserve">
+    <value>Подтверди восстановление</value>
+  </data>
+  <data name="RestoreWarning" xml:space="preserve">
+    <value>ВСЕ текущие данные будут заменены данными из копии. Сначала они сохраняются, так что восстановление можно отменить. Продолжить?</value>
+  </data>
+  <data name="YesRestore" xml:space="preserve">
+    <value>Да, восстановить</value>
+  </data>
+  <data name="FailedToRestore" xml:space="preserve">
+    <value>Не удалось восстановить копию</value>
+  </data>
+  <data name="RestoreSuccessful" xml:space="preserve">
+    <value>Записей восстановлено: {0}. Прежние данные сохранены как {1}; позже их можно восстановить из списка копий.</value>
+  </data>
+  <data name="RestoreComplete" xml:space="preserve">
+    <value>Восстановление завершено</value>
+  </data>
+  <data name="UndoRestore" xml:space="preserve">
+    <value>Отменить восстановление</value>
+  </data>
+  <data name="RestoreUndone" xml:space="preserve">
+    <value>Восстановление отменено: прежние данные на месте</value>
+  </data>
+  <data name="SelectBackupFile" xml:space="preserve">
+    <value>Выбери файл копии</value>
+  </data>
+  <data name="BaseCurrency" xml:space="preserve">
+    <value>Основная валюта</value>
+  </data>
+  <data name="BaseCurrencyDescription" xml:space="preserve">
+    <value>Итоги и отчёты показываются в этой валюте. Балансы в других валютах перечисляются отдельно и никогда не складываются.</value>
+  </data>
+  <data name="ConvertAccountTitle" xml:space="preserve">
+    <value>Конвертация перед удалением</value>
+  </data>
+  <data name="ConvertAccountMessage" xml:space="preserve">
+    <value>Счёт «{0}» в {1}, а основной счёт «{2}» в {3}. Его операции и регулярные правила переходят в «{2}», поэтому суммы будут конвертированы. Введи курс или итоговую сумму: одно пересчитывает другое.</value>
+  </data>
+  <data name="ConvertAccountRate" xml:space="preserve">
+    <value>Курс обмена</value>
+  </data>
+  <data name="ConvertAccountNet" xml:space="preserve">
+    <value>Итог по его операциям: {0}</value>
+  </data>
+  <data name="ConvertAccountFinal" xml:space="preserve">
+    <value>Эквивалент в {0}</value>
+  </data>
+  <data name="ConvertAccountNoNet" xml:space="preserve">
+    <value>Операции в сумме дают ноль, поэтому можно ввести только курс.</value>
+  </data>
+  <data name="ConvertAccountWarning" xml:space="preserve">
+    <value>Это нельзя отменить.</value>
+  </data>
+  <data name="ConvertAccountAction" xml:space="preserve">
+    <value>Конвертировать и удалить</value>
+  </data>
+  <data name="SearchTransactions" xml:space="preserve">
+    <value>Поиск операций...</value>
+  </data>
+  <data name="FilterByType" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>Категория</value>
+  </data>
+  <data name="FilterByAccount" xml:space="preserve">
+    <value>Счёт</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Все категории</value>
+  </data>
+  <data name="AllAccounts" xml:space="preserve">
+    <value>Все счета</value>
+  </data>
+  <data name="Min" xml:space="preserve">
+    <value>Мин.</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Макс.</value>
+  </data>
+  <data name="ClearFilters" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="Trends" xml:space="preserve">
+    <value>Динамика</value>
+  </data>
+  <data name="NoTrendsData" xml:space="preserve">
+    <value>Данных о динамике нет</value>
+  </data>
+  <data name="AddTransactionsForTrends" xml:space="preserve">
+    <value>Добавь операции, чтобы увидеть динамику и закономерности трат</value>
+  </data>
+  <data name="Tags" xml:space="preserve">
+    <value>Теги</value>
+  </data>
+  <data name="TagsPlaceholder" xml:space="preserve">
+    <value>напр.: продукты, еженедельно, срочно</value>
+  </data>
+  <data name="Receipt" xml:space="preserve">
+    <value>Чек</value>
+  </data>
+  <data name="ReceiptAttached" xml:space="preserve">
+    <value>Чек прикреплён</value>
+  </data>
+  <data name="CameraNotSupported" xml:space="preserve">
+    <value>Это устройство не поддерживает камеру</value>
+  </data>
+  <data name="FailedToTakePhoto" xml:space="preserve">
+    <value>Не удалось сделать фото</value>
+  </data>
+  <data name="FailedToPickPhoto" xml:space="preserve">
+    <value>Не удалось выбрать фото</value>
+  </data>
+  <data name="ViewReceipt" xml:space="preserve">
+    <value>Показать чек</value>
+  </data>
+  <data name="RemovePhoto" xml:space="preserve">
+    <value>Убрать фото</value>
+  </data>
+  <data name="CloseReceipt" xml:space="preserve">
+    <value>Закрыть чек</value>
+  </data>
+  <data name="Currency" xml:space="preserve">
+    <value>Валюта</value>
+  </data>
+  <data name="SelectCurrency" xml:space="preserve">
+    <value>Выбери валюту</value>
+  </data>
+  <data name="DefaultCurrency" xml:space="preserve">
+    <value>Валюта по умолчанию</value>
+  </data>
+  <data name="RecentTransactions" xml:space="preserve">
+    <value>Последние операции</value>
+  </data>
+  <data name="NetIncome" xml:space="preserve">
+    <value>Итог</value>
+  </data>
+  <data name="QuickActions" xml:space="preserve">
+    <value>Быстрые действия</value>
+  </data>
+  <data name="AccountHasTransfers" xml:space="preserve">
+    <value>У счёта «{0}» переводов: {1}. Сначала удали их на странице «Переводы», чтобы балансы других счетов остались верными.</value>
+  </data>
+  <data name="ConfirmCategoryMove" xml:space="preserve">
+    <value>Перенести из «{2}» в «{3}» операций: {0}, регулярных правил: {1}, а затем удалить «{2}»?</value>
+  </data>
+  <data name="CategoryBudgetMoves" xml:space="preserve">
+    <value>Её бюджет перейдёт в «{0}».</value>
+  </data>
+  <data name="CategoryBudgetDeleted" xml:space="preserve">
+    <value>Её бюджет будет удалён, потому что у «{0}» он уже есть.</value>
+  </data>
+  <data name="DeleteCategoryWithBudget" xml:space="preserve">
+    <value>Удалить «{0}»? Её бюджет тоже будет удалён.</value>
+  </data>
+  <data name="DeleteFailedDataChanged" xml:space="preserve">
+    <value>Не удалось удалить «{0}»: данные тем временем изменились. Попробуй ещё раз.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Неизвестно</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="TransferToAccount" xml:space="preserve">
+    <value>Перевод на {0}</value>
+  </data>
+  <data name="TransferFromAccount" xml:space="preserve">
+    <value>Перевод с {0}</value>
+  </data>
+  <data name="TransactionCountOne" xml:space="preserve">
+    <value>Операций: {0}</value>
+  </data>
+  <data name="TransactionCountOther" xml:space="preserve">
+    <value>Операций: {0}</value>
+  </data>
+  <data name="DefaultTransferDescription" xml:space="preserve">
+    <value>Перевод</value>
+  </data>
+  <data name="FailedToDeleteAccount" xml:space="preserve">
+    <value>Не удалось удалить счёт</value>
+  </data>
+  <data name="FailedToDeleteCategory" xml:space="preserve">
+    <value>Не удалось удалить категорию</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Отчёты</value>
+  </data>
+  <data name="Budgets" xml:space="preserve">
+    <value>Бюджеты</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Ещё</value>
+  </data>
+  <data name="AddNew" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="AddNewHint" xml:space="preserve">
+    <value>Дважды коснись и удерживай, чтобы сразу добавить расход</value>
+  </data>
+  <data name="DuplicateButton" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="SeeAll" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="ShowingCurrencyAccounts" xml:space="preserve">
+    <value>Счетов: {0}</value>
+  </data>
+  <data name="ShowAllAccounts" xml:space="preserve">
+    <value>Показать все</value>
+  </data>
+  <data name="FilterByAmount" xml:space="preserve">
+    <value>Сумма</value>
+  </data>
+  <data name="FilterByTag" xml:space="preserve">
+    <value>Тег</value>
+  </data>
+  <data name="AllTags" xml:space="preserve">
+    <value>Все теги</value>
+  </data>
+  <data name="NoTransactionsInPeriod" xml:space="preserve">
+    <value>За этот период операций нет</value>
+  </data>
+  <data name="AddEntryHint" xml:space="preserve">
+    <value>Нажми +, чтобы добавить расход, доход или перевод.</value>
+  </data>
+  <data name="NoMatchingTransactions" xml:space="preserve">
+    <value>Нет операций по этим фильтрам</value>
+  </data>
+  <data name="TryOtherFilters" xml:space="preserve">
+    <value>Измени или сбрось фильтры, чтобы увидеть больше.</value>
+  </data>
+  <data name="FilteredOfTotal" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="MoreDetails" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="LastActivityDate" xml:space="preserve">
+    <value>Последняя операция: {0}</value>
+  </data>
+  <data name="AccountCountOne" xml:space="preserve">
+    <value>Счетов: {0}</value>
+  </data>
+  <data name="AccountCountOther" xml:space="preserve">
+    <value>Счетов: {0}</value>
+  </data>
+  <data name="NearLimit" xml:space="preserve">
+    <value>Близко к лимиту</value>
+  </data>
+  <data name="NoCategoriesLeftForBudget" xml:space="preserve">
+    <value>У каждой категории расходов уже есть бюджет.</value>
+  </data>
+  <data name="BudgetSpentOfLimit" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="HomeSpentLine" xml:space="preserve">
+    <value>{0}: потрачено {1}</value>
+  </data>
+  <data name="BudgetLeft" xml:space="preserve">
+    <value>Осталось {0}</value>
+  </data>
+  <data name="BudgetOver" xml:space="preserve">
+    <value>Сверх на {0}</value>
+  </data>
+  <data name="OtherCategories" xml:space="preserve">
+    <value>Прочее</value>
+  </data>
+  <data name="Spending" xml:space="preserve">
+    <value>Траты</value>
+  </data>
+  <data name="DeltaVsPrevious" xml:space="preserve">
+    <value>{0} к прошлому периоду</value>
+  </data>
+  <data name="DeltaNoChange" xml:space="preserve">
+    <value>Как в прошлом периоде</value>
+  </data>
+  <data name="DeltaNothingBefore" xml:space="preserve">
+    <value>В прошлом периоде ничего не было</value>
+  </data>
+  <data name="CashFlow" xml:space="preserve">
+    <value>Денежный поток</value>
+  </data>
+  <data name="NetCashFlow" xml:space="preserve">
+    <value>Чистый денежный поток</value>
+  </data>
+  <data name="NetWorth" xml:space="preserve">
+    <value>Чистый капитал</value>
+  </data>
+  <data name="NetWorthCurrencyOnly" xml:space="preserve">
+    <value>Только счета в {0}</value>
+  </data>
+  <data name="BudgetVsActual" xml:space="preserve">
+    <value>Бюджет и факт</value>
+  </data>
+  <data name="BudgetSeries" xml:space="preserve">
+    <value>Бюджет</value>
+  </data>
+  <data name="SpentSeries" xml:space="preserve">
+    <value>Потрачено</value>
+  </data>
+  <data name="NetSeries" xml:space="preserve">
+    <value>Итог</value>
+  </data>
+  <data name="MonthsShown" xml:space="preserve">
+    <value>Месяцы</value>
+  </data>
+  <data name="TotalSpending" xml:space="preserve">
+    <value>Траты за эти месяцы</value>
+  </data>
+  <data name="SetupAssistant" xml:space="preserve">
+    <value>Мастер настройки</value>
+  </data>
+  <data name="SetupAssistantDescription" xml:space="preserve">
+    <value>Язык, основная валюта, начальные счета и категории</value>
+  </data>
+  <data name="SetupWelcome" xml:space="preserve">
+    <value>Добро пожаловать в MoneyRecord</value>
+  </data>
+  <data name="SetupStepOf" xml:space="preserve">
+    <value>Шаг {0} из {1}</value>
+  </data>
+  <data name="SetupLanguageTitle" xml:space="preserve">
+    <value>Язык и валюта</value>
+  </data>
+  <data name="SetupLanguageDescription" xml:space="preserve">
+    <value>Выбери язык приложения и валюту, в которой показываются итоги.</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="SystemDefault" xml:space="preserve">
+    <value>Как в системе</value>
+  </data>
+  <data name="SetupAccountsTitle" xml:space="preserve">
+    <value>Начальные счета</value>
+  </data>
+  <data name="SetupAccountsDescription" xml:space="preserve">
+    <value>Где ты хранишь деньги? Укажи, сколько сейчас на каждом счёте, в {0}.</value>
+  </data>
+  <data name="SetupAccountsAddDescription" xml:space="preserve">
+    <value>Новые счета добавятся к уже имеющимся, в {0}.</value>
+  </data>
+  <data name="SetupCategoriesTitle" xml:space="preserve">
+    <value>Выбери категории</value>
+  </data>
+  <data name="SetupCategoriesDescription" xml:space="preserve">
+    <value>Сними отметку с ненужных. Свои можно добавить позже.</value>
+  </data>
+  <data name="SetupCategoriesAddDescription" xml:space="preserve">
+    <value>Отмеченные категории, которых у тебя ещё нет, будут добавлены.</value>
+  </data>
+  <data name="SetupNeedsAccount" xml:space="preserve">
+    <value>Добавь хотя бы один счёт с названием.</value>
+  </data>
+  <data name="SetupFailed" xml:space="preserve">
+    <value>Не удалось сохранить настройки. Попробуй ещё раз.</value>
+  </data>
+  <data name="SetupGetStarted" xml:space="preserve">
+    <value>Начать</value>
+  </data>
+  <data name="RemoveAccount" xml:space="preserve">
+    <value>Убрать счёт</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Пропустить</value>
+  </data>
+  <data name="LanguageAndAppearance" xml:space="preserve">
+    <value>Язык и оформление</value>
+  </data>
+  <data name="LanguageAndAppearanceDescription" xml:space="preserve">
+    <value>Язык приложения и светлая или тёмная тема</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Тёмная</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>О приложении</value>
+  </data>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Версия, лицензия и компоненты с открытым кодом</value>
+  </data>
+  <data name="AppVersion" xml:space="preserve">
+    <value>Версия {0}</value>
+  </data>
+  <data name="AppLicenseNotice" xml:space="preserve">
+    <value>MoneyRecord — свободное программное обеспечение: его можно распространять и изменять на условиях GNU Affero General Public License v3.0.</value>
+  </data>
+  <data name="SourceCode" xml:space="preserve">
+    <value>Исходный код</value>
+  </data>
+  <data name="OpenSourceComponents" xml:space="preserve">
+    <value>Компоненты с открытым кодом</value>
+  </data>
+  <data name="OpenSourceComponentsDescription" xml:space="preserve">
+    <value>MoneyRecord создан на основе этих проектов. Коснись любого, чтобы прочитать лицензию.</value>
+  </data>
+  <data name="LicenseText" xml:space="preserve">
+    <value>Лицензия</value>
+  </data>
+  <data name="FailedToOpenLicense" xml:space="preserve">
+    <value>Не удалось открыть текст лицензии.</value>
+  </data>
+  <data name="FailedToOpenLink" xml:space="preserve">
+    <value>Не удалось открыть ссылку.</value>
+  </data>
+  <data name="ShareLogs" xml:space="preserve">
+    <value>Отправить журнал</value>
+  </data>
+  <data name="ShareLogsDescription" xml:space="preserve">
+    <value>Журнал ошибок, чтобы сообщить о проблеме. В нём только технические данные.</value>
+  </data>
+  <data name="NoLogsYet" xml:space="preserve">
+    <value>В журнале пока пусто.</value>
+  </data>
+  <data name="FailedToShareLogs" xml:space="preserve">
+    <value>Не удалось отправить журнал.</value>
+  </data>
+  <data name="CrashReports" xml:space="preserve">
+    <value>Отправлять отчёты о сбоях</value>
+  </data>
+  <data name="CrashReportsDescription" xml:space="preserve">
+    <value>При сбое приложения технические данные отправляются разработчику (через Sentry). Суммы и описания в них не входят. Изменение вступит в силу при следующем запуске.</value>
+  </data>
+  <data name="CrashReportsQuestionTitle" xml:space="preserve">
+    <value>Помочь улучшить MoneyRecord?</value>
+  </data>
+  <data name="CrashReportsQuestion" xml:space="preserve">
+    <value>Можно ли отправлять отчёт о сбое, если что-то пойдёт не так? В отчётах только технические данные, например ошибка и версия Android, но не твои суммы и описания. Это можно изменить в настройках.</value>
+  </data>
+  <data name="CrashReportsAccept" xml:space="preserve">
+    <value>Отправлять</value>
+  </data>
+  <data name="CrashReportsDecline" xml:space="preserve">
+    <value>Нет, спасибо</value>
+  </data>
+  <data name="Upcoming" xml:space="preserve">
+    <value>Предстоящие</value>
+  </data>
+  <data name="UpcomingSubtitle" xml:space="preserve">
+    <value>Ближайшие 30 дней</value>
+  </data>
+  <data name="NoUpcoming" xml:space="preserve">
+    <value>В ближайшие 30 дней ничего не запланировано</value>
+  </data>
+  <data name="RecurringSchedules" xml:space="preserve">
+    <value>Расписания</value>
+  </data>
+  <data name="Tomorrow" xml:space="preserve">
+    <value>Завтра</value>
+  </data>
+  <data name="InDaysOne" xml:space="preserve">
+    <value>Через {0} дн.</value>
+  </data>
+  <data name="InDaysOther" xml:space="preserve">
+    <value>Через {0} дн.</value>
+  </data>
+  <data name="Reminders" xml:space="preserve">
+    <value>Напоминания</value>
+  </data>
+  <data name="RemindersDescription" xml:space="preserve">
+    <value>Счета до срока оплаты и бюджеты, близкие к лимиту</value>
+  </data>
+  <data name="BillReminders" xml:space="preserve">
+    <value>Напоминания о счетах</value>
+  </data>
+  <data name="BillRemindersOff" xml:space="preserve">
+    <value>Выкл.</value>
+  </data>
+  <data name="BillRemindersSameDay" xml:space="preserve">
+    <value>В день оплаты</value>
+  </data>
+  <data name="DaysBeforeOne" xml:space="preserve">
+    <value>За {0} дн.</value>
+  </data>
+  <data name="DaysBeforeOther" xml:space="preserve">
+    <value>За {0} дн.</value>
+  </data>
+  <data name="BudgetAlerts" xml:space="preserve">
+    <value>Уведомления о бюджете</value>
+  </data>
+  <data name="RecurringAddedAlerts" xml:space="preserve">
+    <value>Добавленные регулярные операции</value>
+  </data>
+  <data name="ChannelBills" xml:space="preserve">
+    <value>Счета и регулярные операции</value>
+  </data>
+  <data name="BillDueTitle" xml:space="preserve">
+    <value>Срок оплаты: {0}</value>
+  </data>
+  <data name="BudgetNearLimitTitle" xml:space="preserve">
+    <value>{0}: бюджет почти исчерпан</value>
+  </data>
+  <data name="BudgetExceededTitle" xml:space="preserve">
+    <value>{0}: бюджет превышен</value>
+  </data>
+  <data name="RecurringAddedOne" xml:space="preserve">
+    <value>Добавлено регулярных операций: {0}</value>
+  </data>
+  <data name="RecurringAddedOther" xml:space="preserve">
+    <value>Добавлено регулярных операций: {0}</value>
+  </data>
+  <data name="RemindersOfferTitle" xml:space="preserve">
+    <value>Включить напоминания?</value>
+  </data>
+  <data name="RemindersOfferMessage" xml:space="preserve">
+    <value>MoneyRecord может напомнить об оплате счёта и о том, что бюджет близок к лимиту. Это можно изменить в настройках.</value>
+  </data>
+  <data name="RemindersOfferAccept" xml:space="preserve">
+    <value>Включить</value>
+  </data>
+  <data name="NotNow" xml:space="preserve">
+    <value>Не сейчас</value>
+  </data>
+  <data name="NotificationsBlockedTitle" xml:space="preserve">
+    <value>Уведомления отключены</value>
+  </data>
+  <data name="NotificationsBlockedMessage" xml:space="preserve">
+    <value>Разреши уведомления для MoneyRecord в системных настройках, чтобы получать напоминания.</value>
+  </data>
+  <data name="OpenSystemSettings" xml:space="preserve">
+    <value>Открыть настройки</value>
+  </data>
+  <data name="AppLock" xml:space="preserve">
+    <value>Блокировка приложения</value>
+  </data>
+  <data name="AppLockDescription" xml:space="preserve">
+    <value>Запрашивать отпечаток, лицо или блокировку экрана, чтобы открыть MoneyRecord</value>
+  </data>
+  <data name="LockAfter" xml:space="preserve">
+    <value>Блокировать через</value>
+  </data>
+  <data name="MinutesOne" xml:space="preserve">
+    <value>{0} мин</value>
+  </data>
+  <data name="MinutesOther" xml:space="preserve">
+    <value>{0} мин</value>
+  </data>
+  <data name="OneHour" xml:space="preserve">
+    <value>1 час</value>
+  </data>
+  <data name="AppLocked" xml:space="preserve">
+    <value>MoneyRecord заблокирован</value>
+  </data>
+  <data name="Unlock" xml:space="preserve">
+    <value>Разблокировать</value>
+  </data>
+  <data name="UnlockSubtitle" xml:space="preserve">
+    <value>Используй отпечаток, лицо или блокировку экрана</value>
+  </data>
+  <data name="TurnOnAppLock" xml:space="preserve">
+    <value>Включить блокировку приложения</value>
+  </data>
+  <data name="NoScreenLockTitle" xml:space="preserve">
+    <value>Нет блокировки экрана</value>
+  </data>
+  <data name="NoScreenLockMessage" xml:space="preserve">
+    <value>Сначала настрой на телефоне блокировку экрана (PIN, графический ключ, пароль или отпечаток), затем включи блокировку приложения.</value>
+  </data>
+  <data name="HideBalances" xml:space="preserve">
+    <value>Скрыть балансы</value>
+  </data>
+  <data name="ShowBalances" xml:space="preserve">
+    <value>Показать балансы</value>
+  </data>
+  <data name="EncryptDatabase" xml:space="preserve">
+    <value>Шифровать базу данных</value>
+  </data>
+  <data name="EncryptDatabaseDescription" xml:space="preserve">
+    <value>Данные шифруются ключом, который хранится на этом телефоне. Пока опция включена, автоматическое резервное копирование Android их не сохраняет.</value>
+  </data>
+  <data name="EncryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Зашифровать базу данных?</value>
+  </data>
+  <data name="EncryptDatabaseQuestion" xml:space="preserve">
+    <value>Ключ останется на этом телефоне, поэтому автоматическое резервное копирование Android и перенос с телефона на телефон больше не будут включать твои данные. Перед сменой телефона сохрани копию в разделе «Резервные копии» (файлы копий не шифруются).</value>
+  </data>
+  <data name="EncryptDatabaseAccept" xml:space="preserve">
+    <value>Зашифровать</value>
+  </data>
+  <data name="DecryptDatabaseQuestionTitle" xml:space="preserve">
+    <value>Отключить шифрование?</value>
+  </data>
+  <data name="DecryptDatabaseQuestion" xml:space="preserve">
+    <value>Данные снова будут храниться без шифрования, и автоматическое резервное копирование Android будет их включать.</value>
+  </data>
+  <data name="DecryptDatabaseAccept" xml:space="preserve">
+    <value>Отключить</value>
+  </data>
+  <data name="DatabaseEncrypted" xml:space="preserve">
+    <value>База данных зашифрована</value>
+  </data>
+  <data name="DatabaseDecrypted" xml:space="preserve">
+    <value>Шифрование отключено</value>
+  </data>
+  <data name="FailedToChangeEncryption" xml:space="preserve">
+    <value>Не удалось изменить шифрование. Данные не изменены.</value>
+  </data>
+  <data name="UnreadableDatabaseTitle" xml:space="preserve">
+    <value>Не удалось открыть зашифрованные данные</value>
+  </data>
+  <data name="UnreadableDatabaseMessage" xml:space="preserve">
+    <value>Ключа от зашифрованной базы данных больше нет на этом телефоне, поэтому приложение запустилось с новой базой. Восстанови копию в настройках, чтобы вернуть данные.</value>
+  </data>
+  <data name="AmountReceived" xml:space="preserve">
+    <value>Полученная сумма</value>
+  </data>
+  <data name="CrossCurrencyTransferHint" xml:space="preserve">
+    <value>Счета в разных валютах ({0} → {1}): введи сумму, которая поступила.</value>
+  </data>
+  <data name="ExchangeRateValue" xml:space="preserve">
+    <value>Курс: {0}</value>
+  </data>
+  <data name="BudgetNotCounted" xml:space="preserve">
+    <value>Не учтено: {0}</value>
+  </data>
+  <data name="ExchangeRates" xml:space="preserve">
+    <value>Курсы валют</value>
+  </data>
+  <data name="ExchangeRatesDescription" xml:space="preserve">
+    <value>Загружай ежедневные курсы с frankfurter.dev для конвертации других валют. Передаются только коды валют и даты.</value>
+  </data>
+  <data name="UpdateNow" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="ExchangeRatesUpdated" xml:space="preserve">
+    <value>Обновлено {0}</value>
+  </data>
+  <data name="ExchangeRatesNever" xml:space="preserve">
+    <value>Ещё не загружены</value>
+  </data>
+  <data name="ExchangeRatesUpdating" xml:space="preserve">
+    <value>Обновление…</value>
+  </data>
+  <data name="ExchangeRatesUnavailable" xml:space="preserve">
+    <value>Нет курсов для {0}</value>
+  </data>
+  <data name="ExchangeRatesFailed" xml:space="preserve">
+    <value>Не удалось загрузить курсы валют. Проверь соединение и попробуй ещё раз.</value>
+  </data>
+  <data name="AmountInCurrency" xml:space="preserve">
+    <value>Сумма в {0}</value>
+  </data>
+  <data name="ConvertedAmountHint" xml:space="preserve">
+    <value>Необязательно: сколько это стоило в {0}, как в твоей выписке. Оставь пустым, чтобы использовать загруженный курс.</value>
+  </data>
+  <data name="ShowByCurrency" xml:space="preserve">
+    <value>По валютам</value>
+  </data>
+  <data name="ConvertedAtDailyRate" xml:space="preserve">
+    <value>≈ По курсу на каждый день · обновлено {0}</value>
+  </data>
+  <data name="NoRateYet" xml:space="preserve">
+    <value>Курса пока нет</value>
+  </data>
+  <data name="NotConvertedNote" xml:space="preserve">
+    <value>Курса пока нет: {0}</value>
+  </data>
+  <data name="ImportColumnName" xml:space="preserve">
+    <value>Столбец {0}</value>
+  </data>
+  <data name="ImportStatement" xml:space="preserve">
+    <value>Импорт банковской выписки</value>
+  </data>
+  <data name="ImportStatementDescription" xml:space="preserve">
+    <value>Добавь операции из файла CSV, OFX или QIF с сайта банка на один счёт.</value>
+  </data>
+  <data name="ImportChooseFile" xml:space="preserve">
+    <value>Выбери файл выписки</value>
+  </data>
+  <data name="ImportChooseAnotherFile" xml:space="preserve">
+    <value>Выбери другой файл</value>
+  </data>
+  <data name="ImportIntro" xml:space="preserve">
+    <value>Экспортируй операции с сайта банка в формате OFX, QIF или CSV и выбери файл здесь. Каждую строку можно проверить до добавления.</value>
+  </data>
+  <data name="ImportRowsOne" xml:space="preserve">
+    <value>Строк: {0}</value>
+  </data>
+  <data name="ImportRowsOther" xml:space="preserve">
+    <value>Строк: {0}</value>
+  </data>
+  <data name="ImportNoTable" xml:space="preserve">
+    <value>В этом файле не найдено операций с датой и суммой.</value>
+  </data>
+  <data name="ImportFailedToRead" xml:space="preserve">
+    <value>Не удалось прочитать файл</value>
+  </data>
+  <data name="ImportDateColumn" xml:space="preserve">
+    <value>Столбец даты</value>
+  </data>
+  <data name="ImportDateFormat" xml:space="preserve">
+    <value>Формат даты</value>
+  </data>
+  <data name="ImportDescriptionColumn" xml:space="preserve">
+    <value>Столбец описания</value>
+  </data>
+  <data name="ImportAmountColumn" xml:space="preserve">
+    <value>Столбец суммы</value>
+  </data>
+  <data name="ImportPositiveIsExpense" xml:space="preserve">
+    <value>Положительные суммы — расходы (выписки по кредитным картам)</value>
+  </data>
+  <data name="ImportExpenseCategory" xml:space="preserve">
+    <value>Категория для новых расходов</value>
+  </data>
+  <data name="ImportIncomeCategory" xml:space="preserve">
+    <value>Категория для новых доходов</value>
+  </data>
+  <data name="ImportCategoryHint" xml:space="preserve">
+    <value>Описание, которое уже встречалось, получает ту же категорию, что и раньше. Коснись категории строки, чтобы изменить её.</value>
+  </data>
+  <data name="ImportSummary" xml:space="preserve">
+    <value>Новые: {0} · Уже записаны: {1} · Не прочитаны: {2}</value>
+  </data>
+  <data name="ImportAlreadyRecorded" xml:space="preserve">
+    <value>Уже записано</value>
+  </data>
+  <data name="ImportProblemDate" xml:space="preserve">
+    <value>Дата не распознана</value>
+  </data>
+  <data name="ImportProblemAmount" xml:space="preserve">
+    <value>Сумма не распознана</value>
+  </data>
+  <data name="ImportProblemZero" xml:space="preserve">
+    <value>Нулевая сумма</value>
+  </data>
+  <data name="ImportProblemCurrency" xml:space="preserve">
+    <value>В другой валюте</value>
+  </data>
+  <data name="ImportButtonOne" xml:space="preserve">
+    <value>Импортировать операции: {0}</value>
+  </data>
+  <data name="ImportButtonOther" xml:space="preserve">
+    <value>Импортировать операции: {0}</value>
+  </data>
+  <data name="ImportDoneTitle" xml:space="preserve">
+    <value>Импорт завершён</value>
+  </data>
+  <data name="ImportDoneMessage" xml:space="preserve">
+    <value>Добавлено: {0}. Счёт: {1}.</value>
+  </data>
+  <data name="ImportUndo" xml:space="preserve">
+    <value>Отменить импорт</value>
+  </data>
+  <data name="ImportUndone" xml:space="preserve">
+    <value>Импорт отменён</value>
+  </data>
+  <data name="ImportFailed" xml:space="preserve">
+    <value>Не удалось импортировать операции</value>
+  </data>
+  <data name="ImportLearnedCategory" xml:space="preserve">
+    <value>Та же категория, что и раньше</value>
+  </data>
+  <data name="ImportSavedMapping" xml:space="preserve">
+    <value>Те же столбцы и счёт, что при прошлом импорте файла этого банка.</value>
+  </data>
+  <data name="ImportPresetNote" xml:space="preserve">
+    <value>Распознан экспорт {0}: столбцы, знаки и категории определены автоматически.</value>
+  </data>
+  <data name="ImportCreateCategories" xml:space="preserve">
+    <value>Создать категории, которых ещё нет</value>
+  </data>
+  <data name="AutoBackups" xml:space="preserve">
+    <value>Автоматические копии</value>
+  </data>
+  <data name="AutoBackupsDescription" xml:space="preserve">
+    <value>Копия всех данных создаётся сама в выбранной папке: на SD-карте или в облачном приложении, например Google Диске</value>
+  </data>
+  <data name="BackupFolder" xml:space="preserve">
+    <value>Папка</value>
+  </data>
+  <data name="BackupFolderNone" xml:space="preserve">
+    <value>Не выбрана</value>
+  </data>
+  <data name="ChooseFolder" xml:space="preserve">
+    <value>Выбрать</value>
+  </data>
+  <data name="BackupFrequency" xml:space="preserve">
+    <value>Как часто</value>
+  </data>
+  <data name="BackupDaily" xml:space="preserve">
+    <value>Каждый день</value>
+  </data>
+  <data name="BackupWeekly" xml:space="preserve">
+    <value>Каждую неделю</value>
+  </data>
+  <data name="BackupMonthly" xml:space="preserve">
+    <value>Каждый месяц</value>
+  </data>
+  <data name="BackupsToKeep" xml:space="preserve">
+    <value>Хранить</value>
+  </data>
+  <data name="BackupsOne" xml:space="preserve">
+    <value>Копий: {0}</value>
+  </data>
+  <data name="BackupsOther" xml:space="preserve">
+    <value>Копий: {0}</value>
+  </data>
+  <data name="LastBackup" xml:space="preserve">
+    <value>Последняя копия: {0}</value>
+  </data>
+  <data name="NoBackupYet" xml:space="preserve">
+    <value>Копий пока нет</value>
+  </data>
+  <data name="BackingUp" xml:space="preserve">
+    <value>Создание копии…</value>
+  </data>
+  <data name="BackupFailed" xml:space="preserve">
+    <value>Последняя копия не удалась ({0})</value>
+  </data>
+  <data name="BackupFolderUnavailable" xml:space="preserve">
+    <value>У приложения больше нет доступа к папке. Выбери её снова.</value>
+  </data>
+  <data name="BackUpNow" xml:space="preserve">
+    <value>Создать копию</value>
+  </data>
+  <data name="AutoBackupNote" xml:space="preserve">
+    <value>Хранятся только самые новые автоматические копии, а новая создаётся, только если что-то изменилось. Чтобы восстановить копию, открой «Восстановить из копии» → «Выбери файл копии».</value>
+  </data>
+  <data name="BackupPassword" xml:space="preserve">
+    <value>Защитить копии паролем</value>
+  </data>
+  <data name="BackupPasswordDescription" xml:space="preserve">
+    <value>Копии, в том числе автоматические, шифруются. Без пароля их не восстановить, так что храни его в надёжном месте.</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Сменить пароль</value>
+  </data>
+  <data name="BackupPasswordTitle" xml:space="preserve">
+    <value>Пароль копий</value>
+  </data>
+  <data name="BackupPasswordMessage" xml:space="preserve">
+    <value>Копии можно восстановить только с этим паролем. Если забудешь его, открыть их не получится.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="RepeatPassword" xml:space="preserve">
+    <value>Повтори пароль</value>
+  </data>
+  <data name="PasswordsDontMatch" xml:space="preserve">
+    <value>Пароли не совпадают</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Введи пароль</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Показать пароль</value>
+  </data>
+  <data name="RemoveBackupPasswordTitle" xml:space="preserve">
+    <value>Убрать пароль копий?</value>
+  </data>
+  <data name="RemoveBackupPasswordMessage" xml:space="preserve">
+    <value>Новые копии не будут шифроваться. Копии, созданные с паролем, по-прежнему потребуют его.</value>
+  </data>
+  <data name="RemovePassword" xml:space="preserve">
+    <value>Убрать</value>
+  </data>
+  <data name="BackupPasswordSaved" xml:space="preserve">
+    <value>Пароль копий сохранён</value>
+  </data>
+  <data name="BackupPasswordRemoved" xml:space="preserve">
+    <value>Пароль копий убран</value>
+  </data>
+  <data name="RestorePasswordTitle" xml:space="preserve">
+    <value>Защищённая копия</value>
+  </data>
+  <data name="RestorePasswordMessage" xml:space="preserve">
+    <value>Введи пароль, с которым создана эта копия.</value>
+  </data>
+  <data name="RestoreWrongPassword" xml:space="preserve">
+    <value>Неверный пароль. Попробуй ещё раз.</value>
+  </data>
+  <data name="SavingsGoals" xml:space="preserve">
+    <value>Цели</value>
+  </data>
+  <data name="SavingsGoalsTitle" xml:space="preserve">
+    <value>Цели накоплений</value>
+  </data>
+  <data name="AddGoal" xml:space="preserve">
+    <value>Добавить цель</value>
+  </data>
+  <data name="EditGoal" xml:space="preserve">
+    <value>Изменить цель</value>
+  </data>
+  <data name="GoalName" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="GoalNamePlaceholder" xml:space="preserve">
+    <value>напр.: отпуск</value>
+  </data>
+  <data name="GoalTarget" xml:space="preserve">
+    <value>Целевая сумма</value>
+  </data>
+  <data name="GoalHasTargetDate" xml:space="preserve">
+    <value>Достичь к дате</value>
+  </data>
+  <data name="GoalAccounts" xml:space="preserve">
+    <value>Счета с накоплениями</value>
+  </data>
+  <data name="GoalAccountsHint" xml:space="preserve">
+    <value>Накоплено = баланс счетов или содержимое копилок. Счёт или копилка учитываются только для одной цели, а счёт не отмечается вместе с его собственными копилками.</value>
+  </data>
+  <data name="GoalNoFreeAccounts" xml:space="preserve">
+    <value>Нет свободных счетов в {0}. Добавь счёт в разделе «Счета».</value>
+  </data>
+  <data name="NoGoalsYet" xml:space="preserve">
+    <value>Целей накопления пока нет</value>
+  </data>
+  <data name="AddGoalToStart" xml:space="preserve">
+    <value>Добавь цель и свяжи счета, на которых лежат деньги для неё.</value>
+  </data>
+  <data name="PleaseEnterGoalName" xml:space="preserve">
+    <value>Введи название цели</value>
+  </data>
+  <data name="PleaseSelectGoalAccount" xml:space="preserve">
+    <value>Выбери хотя бы один счёт</value>
+  </data>
+  <data name="GoalAdded" xml:space="preserve">
+    <value>Цель добавлена</value>
+  </data>
+  <data name="FailedToLoadGoals" xml:space="preserve">
+    <value>Не удалось загрузить цели</value>
+  </data>
+  <data name="FailedToSaveGoal" xml:space="preserve">
+    <value>Не удалось сохранить цель</value>
+  </data>
+  <data name="FailedToDeleteGoal" xml:space="preserve">
+    <value>Не удалось удалить цель</value>
+  </data>
+  <data name="DeleteGoalConfirmation" xml:space="preserve">
+    <value>Удалить цель «{0}»? Её счета и деньги на них останутся.</value>
+  </data>
+  <data name="GoalReached" xml:space="preserve">
+    <value>Достигнута</value>
+  </data>
+  <data name="GoalBehind" xml:space="preserve">
+    <value>Отставание</value>
+  </data>
+  <data name="GoalSavedOfTarget" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="GoalNeededPerMonth" xml:space="preserve">
+    <value>Откладывай {0} в месяц, чтобы достичь цели к {1}</value>
+  </data>
+  <data name="GoalTargetDatePassed" xml:space="preserve">
+    <value>Срок цели прошёл: {0}</value>
+  </data>
+  <data name="GoalNotEnoughHistory" xml:space="preserve">
+    <value>Пока мало истории для прогноза</value>
+  </data>
+  <data name="GoalNoRecentSavings" xml:space="preserve">
+    <value>Накоплений за последние месяцы нет (месяцев: {0})</value>
+  </data>
+  <data name="GoalAtYourPace" xml:space="preserve">
+    <value>В твоём темпе: {0}</value>
+  </data>
+  <data name="GoalNotInSight" xml:space="preserve">
+    <value>В твоём темпе цель скоро не будет достигнута</value>
+  </data>
+  <data name="GoalAccountsNotCounted" xml:space="preserve">
+    <value>Не учтено (другая валюта): {0}</value>
+  </data>
+  <data name="GoalAccountsRemovedOnSave" xml:space="preserve">
+    <value>При сохранении будут убраны счета, которые теперь в другой валюте: {0}</value>
+  </data>
+  <data name="Payee" xml:space="preserve">
+    <value>Получатель</value>
+  </data>
+  <data name="PayeePlaceholder" xml:space="preserve">
+    <value>Магазин или человек (необязательно)</value>
+  </data>
+  <data name="Payees" xml:space="preserve">
+    <value>Получатели</value>
+  </data>
+  <data name="SearchPayees" xml:space="preserve">
+    <value>Поиск получателей</value>
+  </data>
+  <data name="NoMatchingPayees" xml:space="preserve">
+    <value>Нет получателей по твоему запросу.</value>
+  </data>
+  <data name="PayeeLastUsed" xml:space="preserve">
+    <value>последний раз {0}</value>
+  </data>
+  <data name="RenamePayee" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="RenamePayeeMessage" xml:space="preserve">
+    <value>Новое название для «{0}»</value>
+  </data>
+  <data name="PayeeExistsTitle" xml:space="preserve">
+    <value>Такой получатель уже есть</value>
+  </data>
+  <data name="PayeeExistsMergeMessage" xml:space="preserve">
+    <value>«{1}» уже существует. Объединить «{0}» с ним?</value>
+  </data>
+  <data name="MergePayee" xml:space="preserve">
+    <value>Объединить с другим получателем</value>
+  </data>
+  <data name="MergePayeeInto" xml:space="preserve">
+    <value>Объединить «{0}» с</value>
+  </data>
+  <data name="MergePayeeConfirmMessage" xml:space="preserve">
+    <value>«{0}» будет удалён, а всё, что с ним связано ({2}), перейдёт к «{1}».</value>
+  </data>
+  <data name="MergeButton" xml:space="preserve">
+    <value>Объединить</value>
+  </data>
+  <data name="DeletePayee" xml:space="preserve">
+    <value>Удалить получателя</value>
+  </data>
+  <data name="DeletePayeeConfirmation" xml:space="preserve">
+    <value>Удалить «{0}»? Связанное с ним ({1}) останется, но без получателя.</value>
+  </data>
+  <data name="PayeesMerged" xml:space="preserve">
+    <value>Получатели объединены</value>
+  </data>
+  <data name="PayeeDeleted" xml:space="preserve">
+    <value>Получатель удалён</value>
+  </data>
+  <data name="FailedToLoadPayees" xml:space="preserve">
+    <value>Не удалось загрузить получателей</value>
+  </data>
+  <data name="FailedToSavePayee" xml:space="preserve">
+    <value>Не удалось обновить получателя</value>
+  </data>
+  <data name="RecurringCountOne" xml:space="preserve">
+    <value>Регулярных: {0}</value>
+  </data>
+  <data name="RecurringCountOther" xml:space="preserve">
+    <value>Регулярных: {0}</value>
+  </data>
+  <data name="SplitPayment" xml:space="preserve">
+    <value>Разделить по категориям</value>
+  </data>
+  <data name="AddSplitPart" xml:space="preserve">
+    <value>Добавить категорию</value>
+  </data>
+  <data name="SplitDescriptionPlaceholder" xml:space="preserve">
+    <value>Категория каждой части</value>
+  </data>
+  <data name="SplitLeftToAssign" xml:space="preserve">
+    <value>Осталось распределить: {0}</value>
+  </data>
+  <data name="SplitOverBy" xml:space="preserve">
+    <value>Превышение суммы на {0}</value>
+  </data>
+  <data name="SplitFullyAssigned" xml:space="preserve">
+    <value>Всё распределено</value>
+  </data>
+  <data name="SplitPartNeedsCategory" xml:space="preserve">
+    <value>Выбери категорию для каждой части</value>
+  </data>
+  <data name="SplitPartNeedsAmount" xml:space="preserve">
+    <value>Введи сумму для каждой части</value>
+  </data>
+  <data name="SplitMustAddUp" xml:space="preserve">
+    <value>Сумма частей должна быть {0}</value>
+  </data>
+  <data name="SplitPaymentLabel" xml:space="preserve">
+    <value>Разделённый платёж</value>
+  </data>
+  <data name="SplitPaymentTotal" xml:space="preserve">
+    <value>Разделённый платёж на {0}, частей: {1}</value>
+  </data>
+  <data name="Debts" xml:space="preserve">
+    <value>Долги</value>
+  </data>
+  <data name="AddDebt" xml:space="preserve">
+    <value>Добавить долг</value>
+  </data>
+  <data name="EditDebt" xml:space="preserve">
+    <value>Изменить долг</value>
+  </data>
+  <data name="AddDebtToStart" xml:space="preserve">
+    <value>Запиши деньги, которые ты одолжил или занял, а затем вноси платежи по мере их появления.</value>
+  </data>
+  <data name="NoDebtsYet" xml:space="preserve">
+    <value>Открытых долгов нет</value>
+  </data>
+  <data name="NoPaidOffDebts" xml:space="preserve">
+    <value>Погашенных долгов пока нет</value>
+  </data>
+  <data name="DebtAdded" xml:space="preserve">
+    <value>Долг добавлен</value>
+  </data>
+  <data name="DebtsOpen" xml:space="preserve">
+    <value>Открытые</value>
+  </data>
+  <data name="DebtsOwedToYou" xml:space="preserve">
+    <value>Должны тебе</value>
+  </data>
+  <data name="DebtsYouOwe" xml:space="preserve">
+    <value>Должен ты</value>
+  </data>
+  <data name="DebtOwesYou" xml:space="preserve">
+    <value>Должен тебе</value>
+  </data>
+  <data name="DebtYouOwe" xml:space="preserve">
+    <value>Ты должен</value>
+  </data>
+  <data name="DebtILent" xml:space="preserve">
+    <value>Я одолжил</value>
+  </data>
+  <data name="DebtIBorrowed" xml:space="preserve">
+    <value>Я занял</value>
+  </data>
+  <data name="DebtPerson" xml:space="preserve">
+    <value>Человек</value>
+  </data>
+  <data name="DebtPersonPlaceholder" xml:space="preserve">
+    <value>С кем долг</value>
+  </data>
+  <data name="DebtAmountLent" xml:space="preserve">
+    <value>Сумма займа</value>
+  </data>
+  <data name="DebtAmountBorrowed" xml:space="preserve">
+    <value>Занятая сумма</value>
+  </data>
+  <data name="DebtFromAccount" xml:space="preserve">
+    <value>Списано со счёта</value>
+  </data>
+  <data name="DebtIntoAccount" xml:space="preserve">
+    <value>Зачислено на счёт</value>
+  </data>
+  <data name="DebtPaidFromAccount" xml:space="preserve">
+    <value>Списано со счёта</value>
+  </data>
+  <data name="DebtPaidIntoAccount" xml:space="preserve">
+    <value>Зачислено на счёт</value>
+  </data>
+  <data name="DebtAlreadyOwedOption" xml:space="preserve">
+    <value>Уже должен (деньги не движутся)</value>
+  </data>
+  <data name="DebtAlreadyOwed" xml:space="preserve">
+    <value>Уже должен</value>
+  </data>
+  <data name="DebtNote" xml:space="preserve">
+    <value>Заметка</value>
+  </data>
+  <data name="DebtNotePlaceholder" xml:space="preserve">
+    <value>Для чего (необязательно)</value>
+  </data>
+  <data name="DebtHasDueDate" xml:space="preserve">
+    <value>Срок возврата</value>
+  </data>
+  <data name="DebtHasSchedule" xml:space="preserve">
+    <value>Платежи по графику</value>
+  </data>
+  <data name="DebtScheduleAmount" xml:space="preserve">
+    <value>Каждый платёж</value>
+  </data>
+  <data name="DebtFirstPayment" xml:space="preserve">
+    <value>Первый платёж</value>
+  </data>
+  <data name="DebtHasInterest" xml:space="preserve">
+    <value>Часть процентов</value>
+  </data>
+  <data name="DebtInterestHint" xml:space="preserve">
+    <value>Сохраняется как расход (или доход) в категории «Проценты» сверх платежа.</value>
+  </data>
+  <data name="DebtHistory" xml:space="preserve">
+    <value>История</value>
+  </data>
+  <data name="DebtRecordPayment" xml:space="preserve">
+    <value>Записать платёж</value>
+  </data>
+  <data name="DebtLendMore" xml:space="preserve">
+    <value>Одолжить ещё</value>
+  </data>
+  <data name="DebtBorrowMore" xml:space="preserve">
+    <value>Занять ещё</value>
+  </data>
+  <data name="DebtLeft" xml:space="preserve">
+    <value>Осталось: {0}</value>
+  </data>
+  <data name="DebtPaymentTooLarge" xml:space="preserve">
+    <value>Это больше, чем осталось ({0}).</value>
+  </data>
+  <data name="DebtNoAccountInCurrency" xml:space="preserve">
+    <value>Нет счёта в {0}. Сначала добавь его в разделе «Счета».</value>
+  </data>
+  <data name="DebtPaidOffToast" xml:space="preserve">
+    <value>Долг перед {0} погашен</value>
+  </data>
+  <data name="DebtPaidOfTotal" xml:space="preserve">
+    <value>Возвращено {0} из {1}</value>
+  </data>
+  <data name="DebtDueOn" xml:space="preserve">
+    <value>Срок: {0}</value>
+  </data>
+  <data name="DebtNextPayment" xml:space="preserve">
+    <value>Следующий платёж {0}, {1} · {2}</value>
+  </data>
+  <data name="DebtInterestTotal" xml:space="preserve">
+    <value>Проценты {0}</value>
+  </data>
+  <data name="DebtPaidOff" xml:space="preserve">
+    <value>Погашен</value>
+  </data>
+  <data name="DebtOverdue" xml:space="preserve">
+    <value>Просрочен</value>
+  </data>
+  <data name="DebtDueSoon" xml:space="preserve">
+    <value>Скоро срок</value>
+  </data>
+  <data name="DebtLent" xml:space="preserve">
+    <value>Одолжено</value>
+  </data>
+  <data name="DebtBorrowed" xml:space="preserve">
+    <value>Занято</value>
+  </data>
+  <data name="DebtPaidBack" xml:space="preserve">
+    <value>Возвращено</value>
+  </data>
+  <data name="DebtInterest" xml:space="preserve">
+    <value>Проценты</value>
+  </data>
+  <data name="InterestCategory" xml:space="preserve">
+    <value>Проценты</value>
+  </data>
+  <data name="DebtPaymentTo" xml:space="preserve">
+    <value>Платёж для {0}</value>
+  </data>
+  <data name="DebtPaymentFrom" xml:space="preserve">
+    <value>Платёж от {0}</value>
+  </data>
+  <data name="DebtCountOne" xml:space="preserve">
+    <value>Долгов: {0}</value>
+  </data>
+  <data name="DebtCountOther" xml:space="preserve">
+    <value>Долгов: {0}</value>
+  </data>
+  <data name="DebtPaidOffLentTitle" xml:space="preserve">
+    <value>{0} полностью вернул(а) долг</value>
+  </data>
+  <data name="DebtPaidOffBorrowedTitle" xml:space="preserve">
+    <value>Твой долг перед {0} погашен</value>
+  </data>
+  <data name="DebtDueLentTitle" xml:space="preserve">
+    <value>Срок возврата долга от {0}</value>
+  </data>
+  <data name="DebtDueBorrowedTitle" xml:space="preserve">
+    <value>Верни долг: {0}</value>
+  </data>
+  <data name="DeleteDebtConfirmation" xml:space="preserve">
+    <value>Удалить долг с {0}? История тоже будет удалена, а балансы счетов вернутся к тому, какими были бы без него.</value>
+  </data>
+  <data name="DeleteDebtMovementConfirmation" xml:space="preserve">
+    <value>Удалить «{0}» на {1} ({2})?</value>
+  </data>
+  <data name="FailedToLoadDebts" xml:space="preserve">
+    <value>Не удалось загрузить долги</value>
+  </data>
+  <data name="FailedToSaveDebt" xml:space="preserve">
+    <value>Не удалось сохранить долг</value>
+  </data>
+  <data name="FailedToDeleteDebt" xml:space="preserve">
+    <value>Не удалось удалить долг</value>
+  </data>
+  <data name="PayeeHasDebts" xml:space="preserve">
+    <value>У получателя {0} есть долги. Сначала удали их на странице «Долги» или объедини {0} с другим получателем.</value>
+  </data>
+  <data name="PleaseEnterDebtPerson" xml:space="preserve">
+    <value>Укажи, с кем долг</value>
+  </data>
+  <data name="DebtsPaidOff" xml:space="preserve">
+    <value>Погашенные</value>
+  </data>
+  <data name="DebtOverpaidBy" xml:space="preserve">
+    <value>Переплата: {0}</value>
+  </data>
+  <data name="DebtDeleteWouldOverpay" xml:space="preserve">
+    <value>Без этого возвращено будет больше, чем одолжено или занято. Сначала удали платежи.</value>
+  </data>
+  <data name="DebtEditOnDebtsPage" xml:space="preserve">
+    <value>Платежи по долгам меняются на странице «Долги»</value>
+  </data>
+  <data name="WidgetPickAccount" xml:space="preserve">
+    <value>Какой счёт показывать в виджете?</value>
+  </data>
+  <data name="ScanReceipt" xml:space="preserve">
+    <value>Сканировать чек</value>
+  </data>
+  <data name="TakePhoto" xml:space="preserve">
+    <value>Сделать фото</value>
+  </data>
+  <data name="ChoosePhoto" xml:space="preserve">
+    <value>Выбрать из галереи</value>
+  </data>
+  <data name="ReadingReceipt" xml:space="preserve">
+    <value>Чтение чека…</value>
+  </data>
+  <data name="ReceiptFilledIn" xml:space="preserve">
+    <value>Заполнено по чеку: {0}</value>
+  </data>
+  <data name="ReceiptSays" xml:space="preserve">
+    <value>В чеке указано: {0}</value>
+  </data>
+  <data name="ReceiptNotRead" xml:space="preserve">
+    <value>В чеке не найдены итог или дата</value>
+  </data>
+  <data name="ExportReport" xml:space="preserve">
+    <value>Экспорт</value>
+  </data>
+  <data name="ExportReportFor" xml:space="preserve">
+    <value>Экспорт: {0}</value>
+  </data>
+  <data name="ExportPdfReport" xml:space="preserve">
+    <value>Отчёт в PDF</value>
+  </data>
+  <data name="ExportPeriodCsv" xml:space="preserve">
+    <value>Операции (CSV)</value>
+  </data>
+  <data name="ShareReport" xml:space="preserve">
+    <value>Отправить отчёт</value>
+  </data>
+  <data name="FailedToExportReport" xml:space="preserve">
+    <value>Не удалось создать отчёт</value>
+  </data>
+  <data name="ReportTitle" xml:space="preserve">
+    <value>Финансовый отчёт</value>
+  </data>
+  <data name="ReportCreatedOn" xml:space="preserve">
+    <value>Создан {0} в MoneyRecord</value>
+  </data>
+  <data name="ReportPageOf" xml:space="preserve">
+    <value>Стр. {0} из {1}</value>
+  </data>
+  <data name="ReportSpendingByCategory" xml:space="preserve">
+    <value>Траты по категориям</value>
+  </data>
+  <data name="ReportIncomeByCategory" xml:space="preserve">
+    <value>Доходы по категориям</value>
+  </data>
+  <data name="ReportShare" xml:space="preserve">
+    <value>Доля</value>
+  </data>
+  <data name="ReportLimit" xml:space="preserve">
+    <value>Лимит</value>
+  </data>
+  <data name="ReportStatus" xml:space="preserve">
+    <value>Статус</value>
+  </data>
+  <data name="ReportBalanceOn" xml:space="preserve">
+    <value>Баланс на {0}</value>
+  </data>
+  <data name="ReportConvertedTo" xml:space="preserve">
+    <value>Конвертировано в {0} по курсу на каждый день (≈)</value>
+  </data>
+  <data name="ReportInCurrencyOnly" xml:space="preserve">
+    <value>Только суммы в {0}; остальные валюты указаны в итогах</value>
+  </data>
+  <data name="ReportTransfer" xml:space="preserve">
+    <value>Перевод</value>
+  </data>
+  <data name="ShowCents" xml:space="preserve">
+    <value>Показывать копейки</value>
+  </data>
+  <data name="ShowCentsDescription" xml:space="preserve">
+    <value>Если выключено, суммы в этой валюте показываются целыми. Сохраняются они по-прежнему с точностью до сотых.</value>
+  </data>
+  <data name="IncomeReport" xml:space="preserve">
+    <value>Доходы</value>
+  </data>
+  <data name="AddRecurring" xml:space="preserve">
+    <value>Добавить регулярную операцию</value>
+  </data>
+  <data name="NewRecurringExpense" xml:space="preserve">
+    <value>Новый регулярный расход</value>
+  </data>
+  <data name="NewRecurringIncome" xml:space="preserve">
+    <value>Новый регулярный доход</value>
+  </data>
+  <data name="FirstDate" xml:space="preserve">
+    <value>Первая дата</value>
+  </data>
+  <data name="ScheduleStartsNote" xml:space="preserve">
+    <value>Сохраняется только расписание: первая запись появится {0}.</value>
+  </data>
+  <data name="FutureDateNote" xml:space="preserve">
+    <value>Дата в будущем: в балансах учитывается с {0}.</value>
+  </data>
+  <data name="ScheduleDateMustBeFuture" xml:space="preserve">
+    <value>Выбери первую дату, начиная с завтрашнего дня.</value>
+  </data>
+  <data name="RecurringScheduled" xml:space="preserve">
+    <value>Регулярная операция запланирована</value>
+  </data>
+  <data name="TripCategoryLodging" xml:space="preserve">
+    <value>Жильё</value>
+  </data>
+  <data name="TripCategoryFlights" xml:space="preserve">
+    <value>Перелёты</value>
+  </data>
+  <data name="TripCategoryTransport" xml:space="preserve">
+    <value>Транспорт</value>
+  </data>
+  <data name="TripCategoryFood" xml:space="preserve">
+    <value>Еда</value>
+  </data>
+  <data name="TripCategoryActivities" xml:space="preserve">
+    <value>Развлечения</value>
+  </data>
+  <data name="TripCategoryShopping" xml:space="preserve">
+    <value>Покупки</value>
+  </data>
+  <data name="TripCategoryOther" xml:space="preserve">
+    <value>Прочее</value>
+  </data>
+  <data name="TravelCategory" xml:space="preserve">
+    <value>Путешествия</value>
+  </data>
+  <data name="TripActive" xml:space="preserve">
+    <value>Идёт</value>
+  </data>
+  <data name="TripEnded" xml:space="preserve">
+    <value>Завершена</value>
+  </data>
+  <data name="TripSince" xml:space="preserve">
+    <value>С {0}</value>
+  </data>
+  <data name="SpentOfBudget" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="TripSpent" xml:space="preserve">
+    <value>Потрачено {0}</value>
+  </data>
+  <data name="TripNotConverted" xml:space="preserve">
+    <value>Не конвертировано: {0}</value>
+  </data>
+  <data name="TripBanner" xml:space="preserve">
+    <value>Поездка: {0}</value>
+  </data>
+  <data name="NotPartOfTrip" xml:space="preserve">
+    <value>Не относится к поездке</value>
+  </data>
+  <data name="TripInfo" xml:space="preserve">
+    <value>Поездка: {0} · {1}</value>
+  </data>
+  <data name="TripInfoOnly" xml:space="preserve">
+    <value>Поездка: {0}</value>
+  </data>
+  <data name="TripsTitle" xml:space="preserve">
+    <value>Поездки</value>
+  </data>
+  <data name="TripCategoriesTitle" xml:space="preserve">
+    <value>Категории поездок</value>
+  </data>
+  <data name="AddTripCategory" xml:space="preserve">
+    <value>Добавить категорию поездок</value>
+  </data>
+  <data name="EditTripCategory" xml:space="preserve">
+    <value>Изменить категорию поездок</value>
+  </data>
+  <data name="FailedToLoadTrips" xml:space="preserve">
+    <value>Не удалось загрузить поездки</value>
+  </data>
+  <data name="FailedToSaveTrip" xml:space="preserve">
+    <value>Не удалось сохранить поездку</value>
+  </data>
+  <data name="FailedToDeleteTrip" xml:space="preserve">
+    <value>Не удалось удалить поездку</value>
+  </data>
+  <data name="FailedToSaveTripCategory" xml:space="preserve">
+    <value>Не удалось сохранить категорию поездок</value>
+  </data>
+  <data name="FailedToDeleteTripCategory" xml:space="preserve">
+    <value>Не удалось удалить категорию поездок</value>
+  </data>
+  <data name="LastTripCategoryCannotDelete" xml:space="preserve">
+    <value>Это единственная категория поездок, и она используется, поэтому удалить её нельзя.</value>
+  </data>
+  <data name="TripCategoryInUse" xml:space="preserve">
+    <value>«{0}» используется в расходах или лимитах поездок. Перенеси их в:</value>
+  </data>
+  <data name="DeleteTripCategoryConfirmation" xml:space="preserve">
+    <value>Удалить категорию поездок «{0}»?</value>
+  </data>
+  <data name="StartTrip" xml:space="preserve">
+    <value>Начать поездку</value>
+  </data>
+  <data name="EditTrip" xml:space="preserve">
+    <value>Изменить поездку</value>
+  </data>
+  <data name="TripName" xml:space="preserve">
+    <value>Название поездки</value>
+  </data>
+  <data name="TripNamePlaceholder" xml:space="preserve">
+    <value>Лиссабон, лето</value>
+  </data>
+  <data name="TripStartDate" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
+  <data name="TripBudgetOptional" xml:space="preserve">
+    <value>Бюджет (необязательно)</value>
+  </data>
+  <data name="TripDefaultAccount" xml:space="preserve">
+    <value>Счёт для оплаты поездки</value>
+  </data>
+  <data name="TripNoAccount" xml:space="preserve">
+    <value>Нет (последний использованный)</value>
+  </data>
+  <data name="TripLimits" xml:space="preserve">
+    <value>Лимит по категориям поездки (необязательно)</value>
+  </data>
+  <data name="TripLimitsHint" xml:space="preserve">
+    <value>В валюте поездки. Оставь пустым, если лимита нет.</value>
+  </data>
+  <data name="PleaseEnterTripName" xml:space="preserve">
+    <value>Введи название поездки</value>
+  </data>
+  <data name="TripEndBeforeStart" xml:space="preserve">
+    <value>Поездка не может закончиться раньше начала</value>
+  </data>
+  <data name="TripAlreadyActive" xml:space="preserve">
+    <value>Другая поездка уже идёт. Сначала заверши её.</value>
+  </data>
+  <data name="TripStarted" xml:space="preserve">
+    <value>Поездка начата</value>
+  </data>
+  <data name="NoTripsYet" xml:space="preserve">
+    <value>Поездок пока нет</value>
+  </data>
+  <data name="AddTripToStart" xml:space="preserve">
+    <value>Начни поездку, чтобы вести её траты отдельно от обычных расходов.</value>
+  </data>
+  <data name="DeleteTripConfirmation" xml:space="preserve">
+    <value>Удалить поездку «{0}»? Её расходы останутся в операциях.</value>
+  </data>
+  <data name="TripDeleteNeedsEnd" xml:space="preserve">
+    <value>Заверши поездку, прежде чем удалять её.</value>
+  </data>
+  <data name="TripCategoriesBreakdown" xml:space="preserve">
+    <value>По категориям</value>
+  </data>
+  <data name="TripExpenses" xml:space="preserve">
+    <value>Расходы</value>
+  </data>
+  <data name="NoTripExpenses" xml:space="preserve">
+    <value>Расходов пока нет</value>
+  </data>
+  <data name="TravelCategoryCannotDelete" xml:space="preserve">
+    <value>В категории «Путешествия» лежат расходы твоих поездок, поэтому удалить её нельзя. Её можно переименовать.</value>
+  </data>
+  <data name="EndTrip" xml:space="preserve">
+    <value>Завершить поездку</value>
+  </data>
+  <data name="EndTripHint" xml:space="preserve">
+    <value>Выбери, в какие обычные категории попадут расходы каждой категории поездки.</value>
+  </data>
+  <data name="SameCategoryForAll" xml:space="preserve">
+    <value>Одна категория для всех</value>
+  </data>
+  <data name="ReopenTrip" xml:space="preserve">
+    <value>Возобновить поездку</value>
+  </data>
+  <data name="ReopenTripConfirmation" xml:space="preserve">
+    <value>Возобновить «{0}»? Её расходы вернутся в «Путешествия».</value>
+  </data>
+  <data name="TripEndedToast" xml:space="preserve">
+    <value>Поездка завершена</value>
+  </data>
+  <data name="FailedToEndTrip" xml:space="preserve">
+    <value>Не удалось обновить поездку</value>
+  </data>
+  <data name="PleaseChooseCategoryForEach" xml:space="preserve">
+    <value>Выбери категорию для каждой категории поездки</value>
+  </data>
+  <data name="PartiesTitle" xml:space="preserve">
+    <value>Мероприятия</value>
+  </data>
+  <data name="PartyFriends" xml:space="preserve">
+    <value>Друзья</value>
+  </data>
+  <data name="NoPartiesYet" xml:space="preserve">
+    <value>Мероприятий пока нет</value>
+  </data>
+  <data name="AddPartyToStart" xml:space="preserve">
+    <value>Добавь мероприятие, чтобы разделить расходы на общее событие</value>
+  </data>
+  <data name="NewParty" xml:space="preserve">
+    <value>Новое мероприятие</value>
+  </data>
+  <data name="EditParty" xml:space="preserve">
+    <value>Изменить мероприятие</value>
+  </data>
+  <data name="PartyName" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="PartyNamePlaceholder" xml:space="preserve">
+    <value>напр.: день рождения Ани</value>
+  </data>
+  <data name="PartyBudgetOptional" xml:space="preserve">
+    <value>Бюджет (необязательно)</value>
+  </data>
+  <data name="PartyMembers" xml:space="preserve">
+    <value>Кто участвует</value>
+  </data>
+  <data name="PartyNoFriendsYet" xml:space="preserve">
+    <value>Сначала добавь друзей, затем выбери участников</value>
+  </data>
+  <data name="PleaseEnterPartyName" xml:space="preserve">
+    <value>Введи название мероприятия</value>
+  </data>
+  <data name="PartyNeedsMembers" xml:space="preserve">
+    <value>Выбери хотя бы одного человека</value>
+  </data>
+  <data name="PartyMemberInUse" xml:space="preserve">
+    <value>Нельзя убрать человека, у которого есть расходы или взносы</value>
+  </data>
+  <data name="PartyNobodyShares" xml:space="preserve">
+    <value>Если убрать этого человека, у расхода не останется тех, кто его делит</value>
+  </data>
+  <data name="FailedToLoadParties" xml:space="preserve">
+    <value>Не удалось загрузить мероприятия</value>
+  </data>
+  <data name="FailedToSaveParty" xml:space="preserve">
+    <value>Не удалось сохранить мероприятие</value>
+  </data>
+  <data name="FailedToDeleteParty" xml:space="preserve">
+    <value>Не удалось удалить мероприятие</value>
+  </data>
+  <data name="FriendsTitle" xml:space="preserve">
+    <value>Друзья</value>
+  </data>
+  <data name="NoFriendsYet" xml:space="preserve">
+    <value>Друзей пока нет</value>
+  </data>
+  <data name="AddFriendToStart" xml:space="preserve">
+    <value>Добавь людей, с которыми делишь расходы</value>
+  </data>
+  <data name="FriendNamePlaceholder" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="AddFriend" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="RenameFriend" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="RenameFriendTitle" xml:space="preserve">
+    <value>Переименовать друга</value>
+  </data>
+  <data name="DeleteFriendQuestion" xml:space="preserve">
+    <value>Удалить {0}?</value>
+  </data>
+  <data name="FriendInParty" xml:space="preserve">
+    <value>Этот друг участвует в мероприятии, поэтому его нельзя удалить</value>
+  </data>
+  <data name="FriendNameTaken" xml:space="preserve">
+    <value>Друг с таким именем уже есть</value>
+  </data>
+  <data name="FailedToLoadFriends" xml:space="preserve">
+    <value>Не удалось загрузить друзей</value>
+  </data>
+  <data name="FailedToSaveFriend" xml:space="preserve">
+    <value>Не удалось сохранить друга</value>
+  </data>
+  <data name="PartyLeft" xml:space="preserve">
+    <value>Осталось {0}</value>
+  </data>
+  <data name="PartyOver" xml:space="preserve">
+    <value>Сверх на {0}</value>
+  </data>
+  <data name="PartyBalances" xml:space="preserve">
+    <value>Балансы</value>
+  </data>
+  <data name="PartyExpenses" xml:space="preserve">
+    <value>Расходы</value>
+  </data>
+  <data name="PartyContributions" xml:space="preserve">
+    <value>Взносы</value>
+  </data>
+  <data name="PartyPot" xml:space="preserve">
+    <value>Общая касса</value>
+  </data>
+  <data name="PartyPotHint" xml:space="preserve">
+    <value>Деньги, внесённые заранее и общие для всех</value>
+  </data>
+  <data name="AddPartyExpense" xml:space="preserve">
+    <value>Добавить расход</value>
+  </data>
+  <data name="EditPartyExpense" xml:space="preserve">
+    <value>Изменить расход</value>
+  </data>
+  <data name="AddPartyContribution" xml:space="preserve">
+    <value>Добавить взнос</value>
+  </data>
+  <data name="EditPartyContribution" xml:space="preserve">
+    <value>Изменить взнос</value>
+  </data>
+  <data name="PartyPaidBy" xml:space="preserve">
+    <value>Заплатил(а)</value>
+  </data>
+  <data name="PartyPaidByPot" xml:space="preserve">
+    <value>Общая касса</value>
+  </data>
+  <data name="PartyPaidByLine" xml:space="preserve">
+    <value>Заплатил(а): {0}</value>
+  </data>
+  <data name="PartyWho" xml:space="preserve">
+    <value>Кто</value>
+  </data>
+  <data name="PartySharedBetween" xml:space="preserve">
+    <value>Делят между собой</value>
+  </data>
+  <data name="PartySharedLine" xml:space="preserve">
+    <value>Делят: {0} из {1}</value>
+  </data>
+  <data name="PartyOwed" xml:space="preserve">
+    <value>ему должны {0}</value>
+  </data>
+  <data name="PartyOwes" xml:space="preserve">
+    <value>должен {0}</value>
+  </data>
+  <data name="PartyEven" xml:space="preserve">
+    <value>в расчёте</value>
+  </data>
+  <data name="NoPartyExpenses" xml:space="preserve">
+    <value>Расходов пока нет</value>
+  </data>
+  <data name="NoPartyContributions" xml:space="preserve">
+    <value>Взносов пока нет</value>
+  </data>
+  <data name="DeletePartyQuestion" xml:space="preserve">
+    <value>Удалить это мероприятие со всем содержимым?</value>
+  </data>
+  <data name="DeletePartyExpenseQuestion" xml:space="preserve">
+    <value>Удалить этот расход?</value>
+  </data>
+  <data name="DeletePartyContributionQuestion" xml:space="preserve">
+    <value>Удалить этот взнос?</value>
+  </data>
+  <data name="PartyNeedsSharer" xml:space="preserve">
+    <value>Расход должен кто-то делить</value>
+  </data>
+  <data name="FailedToSavePartyExpense" xml:space="preserve">
+    <value>Не удалось сохранить расход</value>
+  </data>
+  <data name="FailedToSavePartyContribution" xml:space="preserve">
+    <value>Не удалось сохранить взнос</value>
+  </data>
+  <data name="PartyPaidLine" xml:space="preserve">
+    <value>Заплатил(а) {0}</value>
+  </data>
+  <data name="PartyHandedInLine" xml:space="preserve">
+    <value>Внёс(ла) {0}</value>
+  </data>
+  <data name="PartyShareLine" xml:space="preserve">
+    <value>Доля {0}</value>
+  </data>
+  <data name="PartySettleUp" xml:space="preserve">
+    <value>Рассчитаться</value>
+  </data>
+  <data name="PartyPaysLine" xml:space="preserve">
+    <value>{0} платит {1}: {2}</value>
+  </data>
+  <data name="PartyAllSettled" xml:space="preserve">
+    <value>Все в расчёте</value>
+  </data>
+  <data name="PartyMarkPaid" xml:space="preserve">
+    <value>Отметить оплаченным</value>
+  </data>
+  <data name="PartyPaymentsMade" xml:space="preserve">
+    <value>Сделанные платежи</value>
+  </data>
+  <data name="SharePartySummary" xml:space="preserve">
+    <value>Отправить итоги</value>
+  </data>
+  <data name="DeletePartyPaymentQuestion" xml:space="preserve">
+    <value>Удалить этот платёж? Он снова будет считаться неоплаченным.</value>
+  </data>
+  <data name="FailedToSavePartyPayment" xml:space="preserve">
+    <value>Не удалось сохранить платёж</value>
+  </data>
+  <data name="FailedToSharePartySummary" xml:space="preserve">
+    <value>Не удалось отправить итоги</value>
+  </data>
+  <data name="PartyRecordMyShare" xml:space="preserve">
+    <value>Записать мою долю</value>
+  </data>
+  <data name="PartyUpdateMyShare" xml:space="preserve">
+    <value>Обновить мою долю</value>
+  </data>
+  <data name="PartyWhichIsYou" xml:space="preserve">
+    <value>Кто из друзей — это ты?</value>
+  </data>
+  <data name="PartyShareAccount" xml:space="preserve">
+    <value>Счёт для твоей доли</value>
+  </data>
+  <data name="PartyShareCategory" xml:space="preserve">
+    <value>Категория для твоей доли</value>
+  </data>
+  <data name="PartyShareRecorded" xml:space="preserve">
+    <value>Твоя доля ({0}) учтена в расходах</value>
+  </data>
+  <data name="PartyNoShareYet" xml:space="preserve">
+    <value>Пока нет доли для записи</value>
+  </data>
+  <data name="PartyNoAccountInCurrency" xml:space="preserve">
+    <value>У тебя нет счёта в {0}</value>
+  </data>
+  <data name="FailedToRecordPartyShare" xml:space="preserve">
+    <value>Не удалось записать твою долю</value>
+  </data>
+  <data name="Pockets" xml:space="preserve">
+    <value>Копилки</value>
+  </data>
+  <data name="NewPocket" xml:space="preserve">
+    <value>Новая копилка</value>
+  </data>
+  <data name="EditPocket" xml:space="preserve">
+    <value>Изменить копилку</value>
+  </data>
+  <data name="PocketName" xml:space="preserve">
+    <value>Название копилки</value>
+  </data>
+  <data name="PocketNamePlaceholder" xml:space="preserve">
+    <value>напр.: путешествия</value>
+  </data>
+  <data name="PleaseEnterPocketName" xml:space="preserve">
+    <value>Введи название копилки</value>
+  </data>
+  <data name="SetAside" xml:space="preserve">
+    <value>Отложить</value>
+  </data>
+  <data name="TakeOut" xml:space="preserve">
+    <value>Снять</value>
+  </data>
+  <data name="PocketHolds" xml:space="preserve">
+    <value>В этой копилке: {0}</value>
+  </data>
+  <data name="PocketAccountAvailable" xml:space="preserve">
+    <value>Доступно в {0}: {1}</value>
+  </data>
+  <data name="PocketMovements" xml:space="preserve">
+    <value>Движения</value>
+  </data>
+  <data name="NoPocketMovements" xml:space="preserve">
+    <value>Пока ничего не отложено.</value>
+  </data>
+  <data name="AvailableAndInPockets" xml:space="preserve">
+    <value>Доступно {0} · в копилках {1}</value>
+  </data>
+  <data name="InPockets" xml:space="preserve">
+    <value>В копилках {0}</value>
+  </data>
+  <data name="PocketNotEnoughAvailable" xml:space="preserve">
+    <value>В {0} нет столько доступных средств.</value>
+  </data>
+  <data name="PocketNotEnoughInPocket" xml:space="preserve">
+    <value>В этой копилке меньше.</value>
+  </data>
+  <data name="DeletePocketConfirmation" xml:space="preserve">
+    <value>Удалить копилку «{0}»? Её деньги вернутся на {1}.</value>
+  </data>
+  <data name="FailedToSavePocket" xml:space="preserve">
+    <value>Не удалось сохранить копилку</value>
+  </data>
+  <data name="FailedToDeletePocket" xml:space="preserve">
+    <value>Не удалось удалить копилку</value>
+  </data>
+  <data name="FailedToMovePocket" xml:space="preserve">
+    <value>Не удалось обновить копилку</value>
+  </data>
+  <data name="PocketsCurrencyChange" xml:space="preserve">
+    <value>Копилки счёта {0} сохранят суммы, но перестанут учитываться в целях в {1}. Всё равно сменить валюту?</value>
+  </data>
+  <data name="DeleteAccountPockets" xml:space="preserve">
+    <value>Его копилки тоже будут удалены.</value>
+  </data>
+  <data name="PocketCoverTitle" xml:space="preserve">
+    <value>Это использует {0} из отложенных тобой средств. Взять из:</value>
+  </data>
+  <data name="PocketCoverKeep" xml:space="preserve">
+    <value>Не трогать копилки</value>
+  </data>
+  <data name="WhatsNewTitle" xml:space="preserve">
+    <value>Что нового в {0}</value>
+  </data>
+  <data name="WhatsNewGotIt" xml:space="preserve">
+    <value>Понятно</value>
+  </data>
+  <data name="WhatsNewMenu" xml:space="preserve">
+    <value>Что нового</value>
+  </data>
+  <data name="FailedToLoadWhatsNew" xml:space="preserve">
+    <value>Не удалось загрузить заметки о выпуске</value>
+  </data>
+  <data name="PendingEntryTitle" xml:space="preserve">
+    <value>Внести: {0}</value>
+  </data>
+  <data name="AmountVaries" xml:space="preserve">
+    <value>Сумма меняется</value>
+  </data>
+  <data name="EnterOccurrence" xml:space="preserve">
+    <value>Внести</value>
+  </data>
+  <data name="ToEnter" xml:space="preserve">
+    <value>К внесению</value>
+  </data>
+  <data name="SkipOccurrenceTitle" xml:space="preserve">
+    <value>Пропустить эту?</value>
+  </data>
+  <data name="SkipOccurrenceMessage" xml:space="preserve">
+    <value>{0}, {1}: запись не будет создана.</value>
+  </data>
+  <data name="OccurrenceSkipped" xml:space="preserve">
+    <value>Пропущено</value>
+  </data>
+  <data name="OccurrenceNoLongerPending" xml:space="preserve">
+    <value>Эту запись больше не нужно вносить.</value>
+  </data>
+  <data name="AmountVariesHint" xml:space="preserve">
+    <value>Ничего не сохраняется автоматически: сумму нужно вводить каждый раз.</value>
+  </data>
+  <data name="HomeCardBalance" xml:space="preserve">
+    <value>Общий баланс</value>
+  </data>
+  <data name="HomeCardPeriodSummary" xml:space="preserve">
+    <value>Доходы и расходы</value>
+  </data>
+  <data name="HomeCardTrip" xml:space="preserve">
+    <value>Текущая поездка</value>
+  </data>
+  <data name="CustomizeHome" xml:space="preserve">
+    <value>Настроить главную</value>
+  </data>
+  <data name="HomeLayoutTitle" xml:space="preserve">
+    <value>Главный экран</value>
+  </data>
+  <data name="HomeLayoutDescription" xml:space="preserve">
+    <value>Порядок карточек главной и их показ</value>
+  </data>
+  <data name="HomeLayoutHint" xml:space="preserve">
+    <value>Карточки, которым нечего показать, скрыты. Общий баланс виден всегда.</value>
+  </data>
+  <data name="HomeLayoutReset" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="MoveUp" xml:space="preserve">
+    <value>Выше</value>
+  </data>
+  <data name="MoveDown" xml:space="preserve">
+    <value>Ниже</value>
+  </data>
+  <data name="SavingsChallenges" xml:space="preserve">
+    <value>Челлендж накоплений</value>
+  </data>
+  <data name="NoChallengesYet" xml:space="preserve">
+    <value>Челленджей пока нет</value>
+  </data>
+  <data name="AddChallengeToStart" xml:space="preserve">
+    <value>Выбери цель и число дней; приложение подсчитает, сколько откладывать каждый день.</value>
+  </data>
+  <data name="AddChallenge" xml:space="preserve">
+    <value>Добавить челлендж</value>
+  </data>
+  <data name="NewChallenge" xml:space="preserve">
+    <value>Новый челлендж</value>
+  </data>
+  <data name="EditChallenge" xml:space="preserve">
+    <value>Изменить челлендж</value>
+  </data>
+  <data name="ChallengeName" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="ChallengeNamePlaceholder" xml:space="preserve">
+    <value>напр.: отпускной фонд</value>
+  </data>
+  <data name="ChallengeGoal" xml:space="preserve">
+    <value>Цель</value>
+  </data>
+  <data name="ChallengeDays" xml:space="preserve">
+    <value>Дней</value>
+  </data>
+  <data name="ChallengeStartDate" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
+  <data name="ChallengeMode" xml:space="preserve">
+    <value>Режим</value>
+  </data>
+  <data name="ChallengeModeDoubling" xml:space="preserve">
+    <value>Удвоение (1, 2, 4, 8…)</value>
+  </data>
+  <data name="ChallengeModeLinear" xml:space="preserve">
+    <value>Линейный (1, 2, 3, 4…)</value>
+  </data>
+  <data name="ChallengeModeEqual" xml:space="preserve">
+    <value>Одинаково каждый день</value>
+  </data>
+  <data name="ChallengeDayAmount" xml:space="preserve">
+    <value>Сумма в день (необязательно)</value>
+  </data>
+  <data name="ChallengeDayAmountHint" xml:space="preserve">
+    <value>Пусто = разделить на дни</value>
+  </data>
+  <data name="ChallengePreviewEqualSame" xml:space="preserve">
+    <value>{0} каждый день</value>
+  </data>
+  <data name="ChallengePreviewEqualLast" xml:space="preserve">
+    <value>{0} в день · последний день {1}</value>
+  </data>
+  <data name="ChallengeRounding" xml:space="preserve">
+    <value>Округлять каждый день</value>
+  </data>
+  <data name="ChallengeRoundingNone" xml:space="preserve">
+    <value>Без округления</value>
+  </data>
+  <data name="ChallengeRoundTo" xml:space="preserve">
+    <value>До {0}</value>
+  </data>
+  <data name="ChallengeToAccount" xml:space="preserve">
+    <value>Откладывать на</value>
+  </data>
+  <data name="ChallengeNoAccount" xml:space="preserve">
+    <value>Нет (только отмечать дни)</value>
+  </data>
+  <data name="ChallengePreviewDays" xml:space="preserve">
+    <value>Первый день {0} · последний день {1}</value>
+  </data>
+  <data name="ChallengePreviewTotal" xml:space="preserve">
+    <value>Всего {0}</value>
+  </data>
+  <data name="ChallengePreviewOver" xml:space="preserve">
+    <value>Всего {0} · на {1} больше цели</value>
+  </data>
+  <data name="ChallengePreviewUnder" xml:space="preserve">
+    <value>Всего {0} · на {1} меньше цели</value>
+  </data>
+  <data name="ChallengeLevelsWarning" xml:space="preserve">
+    <value>При ежедневном удвоении на срок в {0} дн. сумма начнётся меньше одной единицы. План удваивается в {1} шагов, каждый из которых длится несколько дней; при {1} дн. удвоение происходит каждый день.</value>
+  </data>
+  <data name="ChallengePlanLocked" xml:space="preserve">
+    <value>Цель, дни, режим и округление нельзя менять после первого выполненного дня.</value>
+  </data>
+  <data name="ChallengeSavedOf" xml:space="preserve">
+    <value>Накоплено {0} из {1}</value>
+  </data>
+  <data name="ChallengeDaysLeftOne" xml:space="preserve">
+    <value>Осталось дн.: {0}</value>
+  </data>
+  <data name="ChallengeDaysLeftOther" xml:space="preserve">
+    <value>Осталось дн.: {0}</value>
+  </data>
+  <data name="ChallengeFinished" xml:space="preserve">
+    <value>Завершён</value>
+  </data>
+  <data name="ChallengeAdded" xml:space="preserve">
+    <value>Челлендж добавлен</value>
+  </data>
+  <data name="PleaseEnterChallengeName" xml:space="preserve">
+    <value>Введи название</value>
+  </data>
+  <data name="PleaseEnterChallengeDays" xml:space="preserve">
+    <value>Введи число дней от 1 до 3650</value>
+  </data>
+  <data name="FailedToLoadChallenges" xml:space="preserve">
+    <value>Не удалось загрузить челленджи</value>
+  </data>
+  <data name="FailedToSaveChallenge" xml:space="preserve">
+    <value>Не удалось сохранить челлендж</value>
+  </data>
+  <data name="FailedToDeleteChallenge" xml:space="preserve">
+    <value>Не удалось удалить челлендж</value>
+  </data>
+  <data name="DeleteChallengeConfirmation" xml:space="preserve">
+    <value>Удалить «{0}»? Записанные им переводы останутся.</value>
+  </data>
+  <data name="ChallengeJustMark" xml:space="preserve">
+    <value>Только отметить день</value>
+  </data>
+  <data name="ChallengeRemainingOnly" xml:space="preserve">
+    <value>Только невыполненные</value>
+  </data>
+  <data name="ChallengeViewNext30" xml:space="preserve">
+    <value>Ближайшие 30 дней</value>
+  </data>
+  <data name="ChallengeViewThisMonth" xml:space="preserve">
+    <value>Этот месяц</value>
+  </data>
+  <data name="ChallengeFirstDay" xml:space="preserve">
+    <value>Первый день (необязательно)</value>
+  </data>
+  <data name="ChallengeFirstDayHint" xml:space="preserve">
+    <value>Пусто = как прирост</value>
+  </data>
+  <data name="ChallengeStep" xml:space="preserve">
+    <value>Прирост в день (необязательно)</value>
+  </data>
+  <data name="ChallengeStepHint" xml:space="preserve">
+    <value>Пусто = рассчитать по дням</value>
+  </data>
+  <data name="ChallengeFirstDayTooHigh" xml:space="preserve">
+    <value>Первый день слишком большой для этой цели и этих дней.</value>
+  </data>
+  <data name="ChallengeViewFromStart" xml:space="preserve">
+    <value>С начала</value>
+  </data>
+  <data name="ChallengeMonthCurrent" xml:space="preserve">
+    <value>К этому месяцу</value>
+  </data>
+  <data name="ChallengeViewRange" xml:space="preserve">
+    <value>Период</value>
+  </data>
+  <data name="ChallengeRangeFrom" xml:space="preserve">
+    <value>С</value>
+  </data>
+  <data name="ChallengeRangeTo" xml:space="preserve">
+    <value>По</value>
+  </data>
+  <data name="ChallengeNoDaysInView" xml:space="preserve">
+    <value>Здесь нет дней для показа.</value>
+  </data>
+  <data name="ChallengeShowing" xml:space="preserve">
+    <value>{0} – {1} · дни {2}–{3} из {4}</value>
+  </data>
+  <data name="ChallengeDayDescription" xml:space="preserve">
+    <value>День {0}, {1}, {2}, {3}</value>
+  </data>
+  <data name="ChallengeTooManyDays" xml:space="preserve">
+    <value>Для этого нужно больше {0} дн. Увеличь дневную сумму или уменьши цель.</value>
+  </data>
+  <data name="ChallengeDayDone" xml:space="preserve">
+    <value>выполнен</value>
+  </data>
+  <data name="ChallengeDayPending" xml:space="preserve">
+    <value>не выполнен</value>
+  </data>
+  <data name="FailedToUpdateChallenge" xml:space="preserve">
+    <value>Не удалось обновить день</value>
+  </data>
+  <data name="ChallengeAccountsHint" xml:space="preserve">
+    <value>Если указан, при отметке дня приложение спросит, откуда деньги, и переместит их сюда: переводом между счетами либо снятием из копилки или откладыванием в копилку.</value>
+  </data>
+  <data name="ChallengeSourceTitle" xml:space="preserve">
+    <value>Откуда деньги для {0}?</value>
+  </data>
+  <data name="ChallengeUnmarkTitle" xml:space="preserve">
+    <value>Снять отметку с дня {0}? Он переместил {1}.</value>
+  </data>
+  <data name="ChallengeUnmarkUndo" xml:space="preserve">
+    <value>Снять отметку и вернуть деньги</value>
+  </data>
+  <data name="ChallengeUnmarkKeep" xml:space="preserve">
+    <value>Снять отметку, деньги оставить</value>
+  </data>
+  <data name="SupportTitle" xml:space="preserve">
+    <value>Поддержать MoneyRecord</value>
+  </data>
+  <data name="SupportIntro" xml:space="preserve">
+    <value>MoneyRecord бесплатен и имеет открытый код, без рекламы и слежки. Если приложение тебе полезно, можешь поддержать его развитие. Ничто не заблокировано: всё работает одинаково, поддержишь ты или нет.</value>
+  </data>
+  <data name="SupportTheProject" xml:space="preserve">
+    <value>Поддержать проект</value>
+  </data>
+  <data name="SupportTipsHeading" xml:space="preserve">
+    <value>Оставить чаевые</value>
+  </data>
+  <data name="SupportThanks" xml:space="preserve">
+    <value>Спасибо за поддержку!</value>
+  </data>
+  <data name="TipPending" xml:space="preserve">
+    <value>Твои чаевые ждут завершения платежа. Спасибо!</value>
+  </data>
+  <data name="FailedToTip" xml:space="preserve">
+    <value>Не удалось завершить отправку чаевых.</value>
+  </data>
+  <data name="TipsUnavailable" xml:space="preserve">
+    <value>Сейчас чаевые недоступны. Попробуй позже.</value>
+  </data>
+  <data name="Undo" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="ExpenseDeletedUndo" xml:space="preserve">
+    <value>Расход удалён</value>
+  </data>
+  <data name="IncomeDeletedUndo" xml:space="preserve">
+    <value>Доход удалён</value>
+  </data>
+  <data name="TransferDeletedUndo" xml:space="preserve">
+    <value>Перевод удалён</value>
+  </data>
+  <data name="SplitDeletedUndo" xml:space="preserve">
+    <value>Разделённый платёж удалён (частей: {0})</value>
+  </data>
+  <data name="UndoNotPossible" xml:space="preserve">
+    <value>Не удалось отменить. Запись больше нельзя восстановить.</value>
+  </data>
+  <data name="GetStartedTitle" xml:space="preserve">
+    <value>Начало работы</value>
+  </data>
+  <data name="GetStartedHide" xml:space="preserve">
+    <value>Скрыть</value>
+  </data>
+  <data name="GetStartedAddEntry" xml:space="preserve">
+    <value>Добавь первый расход</value>
+  </data>
+  <data name="GetStartedBackup" xml:space="preserve">
+    <value>Сделай резервную копию</value>
+  </data>
+  <data name="GetStartedAppLock" xml:space="preserve">
+    <value>Заблокируй приложение</value>
+  </data>
+  <data name="GetStartedReminders" xml:space="preserve">
+    <value>Включи напоминания</value>
+  </data>
+  <data name="SwipeHint" xml:space="preserve">
+    <value>Смахни строку влево, чтобы изменить или удалить</value>
+  </data>
+  <data name="SearchCategories" xml:space="preserve">
+    <value>Поиск категорий</value>
+  </data>
+  <data name="SearchCurrencies" xml:space="preserve">
+    <value>Поиск валют</value>
+  </data>
+  <data name="SearchAccounts" xml:space="preserve">
+    <value>Поиск счетов</value>
+  </data>
+  <data name="NoMatchingItems" xml:space="preserve">
+    <value>Ничего не найдено.</value>
+  </data>
+  <data name="NoPayeesYetTitle" xml:space="preserve">
+    <value>Получателей пока нет</value>
+  </data>
+  <data name="NoPayeesYetHint" xml:space="preserve">
+    <value>Введи получателя при добавлении расхода или дохода, и он появится здесь.</value>
+  </data>
+  <data name="NoCashFlowData" xml:space="preserve">
+    <value>Данных о денежном потоке пока нет</value>
+  </data>
+  <data name="AddForCashFlow" xml:space="preserve">
+    <value>Добавь доходы и расходы, чтобы увидеть денежный поток.</value>
+  </data>
+  <data name="NoNetWorthData" xml:space="preserve">
+    <value>Данных о чистом капитале пока нет</value>
+  </data>
+  <data name="AddForNetWorth" xml:space="preserve">
+    <value>Добавь баланс счёта, доходы или расходы, чтобы увидеть чистый капитал.</value>
+  </data>
+  <data name="PreviousPeriod" xml:space="preserve">
+    <value>Предыдущий период</value>
+  </data>
+  <data name="NextPeriod" xml:space="preserve">
+    <value>Следующий период</value>
+  </data>
+  <data name="Filters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="SelectedState" xml:space="preserve">
+    <value>выбрано</value>
+  </data>
+  <data name="GroupByDate" xml:space="preserve">
+    <value>По датам</value>
+  </data>
+  <data name="RemoveFilter" xml:space="preserve">
+    <value>Убрать фильтр: {0}</value>
+  </data>
+  <data name="GroupMoney" xml:space="preserve">
+    <value>Деньги</value>
+  </data>
+  <data name="GroupPlanning" xml:space="preserve">
+    <value>Планирование</value>
+  </data>
+  <data name="GroupSharedTravel" xml:space="preserve">
+    <value>Общее и поездки</value>
+  </data>
+  <data name="GroupApp" xml:space="preserve">
+    <value>Приложение</value>
+  </data>
+  <data name="SectionAppearance" xml:space="preserve">
+    <value>Оформление</value>
+  </data>
+  <data name="SectionDataBackup" xml:space="preserve">
+    <value>Данные и копии</value>
+  </data>
+  <data name="SectionPrivacySecurity" xml:space="preserve">
+    <value>Приватность и защита</value>
+  </data>
+  <data name="SearchSettings" xml:space="preserve">
+    <value>Поиск настроек</value>
+  </data>
+  <data name="EnterAmount" xml:space="preserve">
+    <value>Введи сумму</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Вчера</value>
+  </data>
+  <data name="PickDate" xml:space="preserve">
+    <value>Выбери дату</value>
+  </data>
+  <data name="GroupBy" xml:space="preserve">
+    <value>Группировать</value>
+  </data>
+  <data name="ExpandAll" xml:space="preserve">
+    <value>Развернуть все</value>
+  </data>
+  <data name="CollapseAll" xml:space="preserve">
+    <value>Свернуть все</value>
+  </data>
+  <data name="QuickEntries" xml:space="preserve">
+    <value>Быстрые записи</value>
+  </data>
+  <data name="QuickEntriesEmptyTitle" xml:space="preserve">
+    <value>Быстрых записей пока нет</value>
+  </data>
+  <data name="QuickEntriesEmptyHint" xml:space="preserve">
+    <value>Сохрани то, что повторяется, например кофе, и добавляй одним касанием с главной.</value>
+  </data>
+  <data name="QuickEntrySaved" xml:space="preserve">
+    <value>{0} · {1} сохранено</value>
+  </data>
+  <data name="FailedToSaveQuickEntry" xml:space="preserve">
+    <value>Не удалось сохранить быструю запись.</value>
+  </data>
+  <data name="FailedToLoadQuickEntries" xml:space="preserve">
+    <value>Не удалось загрузить быстрые записи.</value>
+  </data>
+  <data name="QuickEntryName" xml:space="preserve">
+    <value>Название</value>
+  </data>
+  <data name="QuickEntryNamePlaceholder" xml:space="preserve">
+    <value>Кофе</value>
+  </data>
+  <data name="QuickEntryAmountLabel" xml:space="preserve">
+    <value>Сумма (пусто: спрашивать каждый раз)</value>
+  </data>
+  <data name="QuickEntryAmountPrompt" xml:space="preserve">
+    <value>Сумма для {0}</value>
+  </data>
+  <data name="QuickEntrySuggestTitle" xml:space="preserve">
+    <value>Сделать быстрой записью?</value>
+  </data>
+  <data name="QuickEntrySuggestMessage" xml:space="preserve">
+    <value>Ты уже не раз вводил(а) «{0}». Сохранить, чтобы добавлять одним касанием?</value>
+  </data>
+  <data name="QuickEntryAdded" xml:space="preserve">
+    <value>Быстрая запись добавлена</value>
+  </data>
+  <data name="QuickEntryDeleted" xml:space="preserve">
+    <value>Быстрая запись удалена</value>
+  </data>
+  <data name="QuickEntryDeleteConfirm" xml:space="preserve">
+    <value>Удалить «{0}»? Твои операции останутся.</value>
+  </data>
+  <data name="NewQuickEntry" xml:space="preserve">
+    <value>Новая быстрая запись</value>
+  </data>
+  <data name="EditQuickEntry" xml:space="preserve">
+    <value>Изменить быструю запись</value>
+  </data>
+  <data name="MakeQuickEntry" xml:space="preserve">
+    <value>Сохранить как быструю запись</value>
+  </data>
+  <data name="PleaseEnterQuickEntryName" xml:space="preserve">
+    <value>Введи название быстрой записи.</value>
+  </data>
+  <data name="HomeCardForecast" xml:space="preserve">
+    <value>Прогноз</value>
+  </data>
+  <data name="SafeToSpendLine" xml:space="preserve">
+    <value>Можно тратить {0}, около {1} в день до {2}</value>
+  </data>
+  <data name="SafeToSpendShort" xml:space="preserve">
+    <value>Не хватает {0} до {1}</value>
+  </data>
+  <data name="ForecastDipLine" xml:space="preserve">
+    <value>Баланс уйдёт в минус {0}</value>
+  </data>
+  <data name="SafeToSpendUntilSetting" xml:space="preserve">
+    <value>Безопасные траты до</value>
+  </data>
+  <data name="SafeToSpendNextIncome" xml:space="preserve">
+    <value>Следующего дохода</value>
+  </data>
+  <data name="SafeToSpendEndOfMonth" xml:space="preserve">
+    <value>Конца месяца</value>
+  </data>
+  <data name="SafeToSpendHint" xml:space="preserve">
+    <value>Оценка по регулярным и будущим записям; доход, который ещё не поступил, не учитывается.</value>
+  </data>
+  <data name="ForecastLowestLine" xml:space="preserve">
+    <value>Минимум: {0}, {1}</value>
+  </data>
+  <data name="ForecastEndLine" xml:space="preserve">
+    <value>Баланс на {0}: {1}</value>
+  </data>
+  <data name="ForecastDaysChip" xml:space="preserve">
+    <value>{0} дн.</value>
+  </data>
+  <data name="ForecastEventsHeader" xml:space="preserve">
+    <value>Что меняет баланс</value>
+  </data>
+  <data name="ForecastNoEvents" xml:space="preserve">
+    <value>В этом периоде ничего не запланировано.</value>
+  </data>
+  <data name="ForecastNoData" xml:space="preserve">
+    <value>Пока нечего прогнозировать</value>
+  </data>
+  <data name="ForecastNoDataHint" xml:space="preserve">
+    <value>Добавь счёт, чтобы увидеть, куда движется баланс.</value>
+  </data>
+  <data name="LowBalanceReminders" xml:space="preserve">
+    <value>Предупреждение о низком балансе</value>
+  </data>
+  <data name="LowBalanceWithinDays" xml:space="preserve">
+    <value>В течение {0} дн.</value>
+  </data>
+  <data name="LowBalanceTitle" xml:space="preserve">
+    <value>Впереди низкий баланс</value>
+  </data>
+  <data name="LowBalanceBody" xml:space="preserve">
+    <value>{0} может уйти в минус {1}</value>
+  </data>
+  <data name="BudgetCarriedOver" xml:space="preserve">
+    <value>Включая перенесённые {0}</value>
+  </data>
+  <data name="BudgetPerDay" xml:space="preserve">
+    <value>{0} в день на {1} дн.</value>
+  </data>
+  <data name="BudgetRollover" xml:space="preserve">
+    <value>Переносить остаток</value>
+  </data>
+  <data name="BudgetRolloverHint" xml:space="preserve">
+    <value>Неистраченные деньги добавляются к лимиту следующего периода. Перерасход не переносится.</value>
+  </data>
+  <data name="AllSpending" xml:space="preserve">
+    <value>Все траты</value>
+  </data>
+  <data name="SuggestBudgets" xml:space="preserve">
+    <value>Предложить бюджеты</value>
+  </data>
+  <data name="SuggestBudgetsHint" xml:space="preserve">
+    <value>Месячные лимиты по средним тратам за последние 3 месяца. Отметь те, что нужно создать.</value>
+  </data>
+  <data name="NoBudgetSuggestions" xml:space="preserve">
+    <value>Пока нечего предложить: у категорий без бюджета нет трат за последние 3 месяца.</value>
+  </data>
+  <data name="CreateBudgetsButton" xml:space="preserve">
+    <value>Создать бюджеты</value>
+  </data>
+  <data name="BudgetsCreated" xml:space="preserve">
+    <value>Бюджеты созданы</value>
+  </data>
+  <data name="CategoryTrend" xml:space="preserve">
+    <value>Динамика категории</value>
+  </data>
+  <data name="CategoryTrendHint" xml:space="preserve">
+    <value>Одна категория по месяцам</value>
+  </data>
+  <data name="DeltaVsAverage" xml:space="preserve">
+    <value>{0} к среднемесячному</value>
+  </data>
+  <data name="MoreReports" xml:space="preserve">
+    <value>Другие отчёты</value>
+  </data>
+  <data name="NoCategoryTrendHint" xml:space="preserve">
+    <value>В эти месяцы в категории ничего нет. Выбери другую категорию или более длинный период.</value>
+  </data>
+  <data name="TrendAverage" xml:space="preserve">
+    <value>В среднем за месяц</value>
+  </data>
+  <data name="TrendHighest" xml:space="preserve">
+    <value>Максимум за месяц</value>
+  </data>
+  <data name="TrendLowest" xml:space="preserve">
+    <value>Минимум за месяц</value>
+  </data>
+  <data name="PayeeReport" xml:space="preserve">
+    <value>Отчёт по получателям</value>
+  </data>
+  <data name="PayeeReportHint" xml:space="preserve">
+    <value>Кому ты платишь и от кого получаешь</value>
+  </data>
+  <data name="NoPayeeData" xml:space="preserve">
+    <value>Данных по получателям нет</value>
+  </data>
+  <data name="NoPayeeDataHint" xml:space="preserve">
+    <value>Добавь получателя к операциям, и он появится здесь.</value>
+  </data>
+  <data name="NoPayeeRow" xml:space="preserve">
+    <value>(без получателя)</value>
+  </data>
+  <data name="PayeeRowDetail" xml:space="preserve">
+    <value>{0} × · в среднем {1}</value>
+  </data>
+  <data name="TagsHint" xml:space="preserve">
+    <value>Траты и доходы по меткам; переименуй или объедини их</value>
+  </data>
+  <data name="NoTagData" xml:space="preserve">
+    <value>Тегов пока нет</value>
+  </data>
+  <data name="NoTagDataHint" xml:space="preserve">
+    <value>Добавь теги к операциям, и они появятся здесь.</value>
+  </data>
+  <data name="NoTagRow" xml:space="preserve">
+    <value>(без тега)</value>
+  </data>
+  <data name="TagNotUsedInPeriod" xml:space="preserve">
+    <value>Не использовался в этом периоде</value>
+  </data>
+  <data name="RenameTag" xml:space="preserve">
+    <value>Переименовать тег</value>
+  </data>
+  <data name="RenameTagMessage" xml:space="preserve">
+    <value>Новое название для «{0}»</value>
+  </data>
+  <data name="TagExistsTitle" xml:space="preserve">
+    <value>Такой тег уже есть</value>
+  </data>
+  <data name="TagExistsMergeMessage" xml:space="preserve">
+    <value>«{1}» уже существует. Объединить «{0}» с ним?</value>
+  </data>
+  <data name="MergeTag" xml:space="preserve">
+    <value>Объединить с другим тегом</value>
+  </data>
+  <data name="MergeTagInto" xml:space="preserve">
+    <value>Объединить «{0}» с</value>
+  </data>
+  <data name="DeleteTag" xml:space="preserve">
+    <value>Удалить тег</value>
+  </data>
+  <data name="DeleteTagConfirmation" xml:space="preserve">
+    <value>Убрать «{0}» из: {1}? Операции останутся.</value>
+  </data>
+  <data name="TagsMerged" xml:space="preserve">
+    <value>Теги объединены</value>
+  </data>
+  <data name="TagRenamed" xml:space="preserve">
+    <value>Тег переименован</value>
+  </data>
+  <data name="TagDeleted" xml:space="preserve">
+    <value>Тег удалён</value>
+  </data>
+  <data name="FailedToLoadTags" xml:space="preserve">
+    <value>Не удалось загрузить теги</value>
+  </data>
+  <data name="FailedToSaveTag" xml:space="preserve">
+    <value>Не удалось обновить тег</value>
+  </data>
+  <data name="SeeTagTransactions" xml:space="preserve">
+    <value>Показать операции</value>
+  </data>
+  <data name="AccountReport" xml:space="preserve">
+    <value>Отчёт по счетам</value>
+  </data>
+  <data name="AccountReportHint" xml:space="preserve">
+    <value>Доходы, расходы и переводы по каждому счёту</value>
+  </data>
+  <data name="AccountReportRowDetail" xml:space="preserve">
+    <value>Доходы {0} · Расходы {1} · Переводы {2}</value>
+  </data>
+  <data name="AccountReportBalance" xml:space="preserve">
+    <value>Баланс {0}</value>
+  </data>
+  <data name="NoAccountData" xml:space="preserve">
+    <value>Счетов пока нет</value>
+  </data>
+  <data name="NoAccountDataHint" xml:space="preserve">
+    <value>Добавь счёт, чтобы увидеть, как деньги движутся между ними.</value>
+  </data>
+  <data name="CompareReport" xml:space="preserve">
+    <value>Сравнение периодов</value>
+  </data>
+  <data name="CompareReportHint" xml:space="preserve">
+    <value>Два периода рядом, по категориям</value>
+  </data>
+  <data name="ComparePeriodA" xml:space="preserve">
+    <value>Период</value>
+  </data>
+  <data name="ComparePeriodB" xml:space="preserve">
+    <value>Сравнить с</value>
+  </data>
+  <data name="CompareDeltaVs" xml:space="preserve">
+    <value>{0} к другому периоду</value>
+  </data>
+  <data name="ComparePresetMonth" xml:space="preserve">
+    <value>Этот месяц и прошлый</value>
+  </data>
+  <data name="ComparePresetYear" xml:space="preserve">
+    <value>Этот год и прошлый</value>
+  </data>
+  <data name="ComparePresetSameMonth" xml:space="preserve">
+    <value>Тот же месяц год назад</value>
+  </data>
+  <data name="ComparePresetLast30" xml:space="preserve">
+    <value>Последние 30 дней и до них</value>
+  </data>
+  <data name="NoCompareData" xml:space="preserve">
+    <value>Нечего сравнивать</value>
+  </data>
+  <data name="NoCompareDataHint" xml:space="preserve">
+    <value>Нет записей этого типа ни в одном из периодов.</value>
+  </data>
+  <data name="CompareRowAmounts" xml:space="preserve">
+    <value>{0} и {1}</value>
+  </data>
+  <data name="YearReview" xml:space="preserve">
+    <value>Итоги года</value>
+  </data>
+  <data name="YearReviewHint" xml:space="preserve">
+    <value>Твой год в цифрах: итоги, топ категорий, месяцы с наибольшими и наименьшими тратами</value>
+  </data>
+  <data name="YearReviewTitle" xml:space="preserve">
+    <value>Итоги {0}</value>
+  </data>
+  <data name="YearOverview" xml:space="preserve">
+    <value>Обзор</value>
+  </data>
+  <data name="YearIncome" xml:space="preserve">
+    <value>Доходы</value>
+  </data>
+  <data name="YearExpenses" xml:space="preserve">
+    <value>Расходы</value>
+  </data>
+  <data name="YearNet" xml:space="preserve">
+    <value>Итог</value>
+  </data>
+  <data name="YearSavingsRate" xml:space="preserve">
+    <value>Доля сбережений</value>
+  </data>
+  <data name="YearMonths" xml:space="preserve">
+    <value>Месяцы</value>
+  </data>
+  <data name="YearHighestMonth" xml:space="preserve">
+    <value>Больше всего трат</value>
+  </data>
+  <data name="YearLowestMonth" xml:space="preserve">
+    <value>Меньше всего трат</value>
+  </data>
+  <data name="YearTopCategories" xml:space="preserve">
+    <value>Топ категорий</value>
+  </data>
+  <data name="YearTopPayees" xml:space="preserve">
+    <value>Топ получателей</value>
+  </data>
+  <data name="YearBiggestExpense" xml:space="preserve">
+    <value>Самый крупный расход</value>
+  </data>
+  <data name="YearHabits" xml:space="preserve">
+    <value>Привычки</value>
+  </data>
+  <data name="YearNoSpendDays" xml:space="preserve">
+    <value>Дни без трат</value>
+  </data>
+  <data name="YearOfDays" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="YearTopTag" xml:space="preserve">
+    <value>Самый частый тег</value>
+  </data>
+  <data name="YearTagUses" xml:space="preserve">
+    <value>{0} ({1}×)</value>
+  </data>
+  <data name="NoYearData" xml:space="preserve">
+    <value>Пока нечего подводить</value>
+  </data>
+  <data name="NoYearDataHint" xml:space="preserve">
+    <value>Добавь операции за этот год, и здесь появятся его итоги.</value>
+  </data>
+  <data name="YearShareTitle" xml:space="preserve">
+    <value>Поделиться годом</value>
+  </data>
+  <data name="YearShareAsPdf" xml:space="preserve">
+    <value>PDF</value>
+  </data>
+  <data name="YearShareAsText" xml:space="preserve">
+    <value>Краткий текст</value>
+  </data>
+  <data name="YearShareNoAmounts" xml:space="preserve">
+    <value>{0} без сумм</value>
+  </data>
+  <data name="SavedFilters" xml:space="preserve">
+    <value>Сохранённые фильтры</value>
+  </data>
+  <data name="SaveThisFilter" xml:space="preserve">
+    <value>Сохранить фильтр</value>
+  </data>
+  <data name="SavedFilterNameHint" xml:space="preserve">
+    <value>Назови его, чтобы применять одним касанием.</value>
+  </data>
+  <data name="SavedFilterLimit" xml:space="preserve">
+    <value>Можно хранить до 20 фильтров. Удали один, чтобы сохранить другой.</value>
+  </data>
+  <data name="SavedFilterSaved" xml:space="preserve">
+    <value>Фильтр сохранён</value>
+  </data>
+  <data name="SavedFilterNameTaken" xml:space="preserve">
+    <value>Фильтр с таким названием уже есть.</value>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="ApplyFilter" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="SavedFilterItemsGone" xml:space="preserve">
+    <value>Часть этого фильтра была удалена (категория, счёт или получатель) и пропущена.</value>
+  </data>
+  <data name="AttachFile" xml:space="preserve">
+    <value>Прикрепить PDF</value>
+  </data>
+  <data name="RemoveAttachment" xml:space="preserve">
+    <value>Убрать вложение</value>
+  </data>
+  <data name="FileTooLarge" xml:space="preserve">
+    <value>Файл слишком большой (максимум 10 МБ)</value>
+  </data>
+  <data name="FailedToAttachFile" xml:space="preserve">
+    <value>Не удалось прикрепить файл</value>
+  </data>
+  <data name="FailedToOpenFile" xml:space="preserve">
+    <value>Не удалось открыть файл</value>
+  </data>
+  <data name="AttachmentsLabel" xml:space="preserve">
+    <value>Вложения</value>
+  </data>
+  <data name="ExportTransactionsXlsx" xml:space="preserve">
+    <value>Экспорт операций (Excel)</value>
+  </data>
+  <data name="ExportPeriodXlsx" xml:space="preserve">
+    <value>Операции (Excel)</value>
+  </data>
+  <data name="FailedToExportSpreadsheet" xml:space="preserve">
+    <value>Не удалось экспортировать таблицу</value>
+  </data>
+  <data name="PinSubtitle" xml:space="preserve">
+    <value>Введи PIN-код</value>
+  </data>
+  <data name="PinWrongTries" xml:space="preserve">
+    <value>Неверный PIN-код. Попыток до паузы: {0}.</value>
+  </data>
+  <data name="PinLockedOut" xml:space="preserve">
+    <value>Слишком много неверных попыток. Повтори через {0}.</value>
+  </data>
+  <data name="UsePhoneLock" xml:space="preserve">
+    <value>Использовать блокировку телефона</value>
+  </data>
+  <data name="PinSetTitle" xml:space="preserve">
+    <value>Выбери PIN-код</value>
+  </data>
+  <data name="PinRepeatTitle" xml:space="preserve">
+    <value>Повтори PIN-код</value>
+  </data>
+  <data name="PinSetMessage" xml:space="preserve">
+    <value>От 4 до 8 цифр. Забытый PIN-код не восстановить: придётся очистить данные приложения и восстановить копию.</value>
+  </data>
+  <data name="PinMismatch" xml:space="preserve">
+    <value>PIN-коды не совпали. Выбери его снова.</value>
+  </data>
+  <data name="PinLength" xml:space="preserve">
+    <value>Используй от 4 до 8 цифр.</value>
+  </data>
+  <data name="PinRepeated" xml:space="preserve">
+    <value>Не используй одну повторяющуюся цифру.</value>
+  </data>
+  <data name="PinBackspace" xml:space="preserve">
+    <value>Удалить последнюю цифру</value>
+  </data>
+  <data name="PinDigitsTyped" xml:space="preserve">
+    <value>Введено цифр: {0}</value>
+  </data>
+  <data name="AppPin" xml:space="preserve">
+    <value>PIN-код приложения</value>
+  </data>
+  <data name="AppPinDescription" xml:space="preserve">
+    <value>Открывай MoneyRecord по собственному PIN-коду с паузой после слишком многих неверных попыток</value>
+  </data>
+  <data name="SetPin" xml:space="preserve">
+    <value>Задать PIN-код</value>
+  </data>
+  <data name="ChangePin" xml:space="preserve">
+    <value>Сменить PIN-код</value>
+  </data>
+  <data name="RemovePin" xml:space="preserve">
+    <value>Убрать PIN-код</value>
+  </data>
+  <data name="RemovePinMessage" xml:space="preserve">
+    <value>MoneyRecord больше не будет открываться по PIN-коду.</value>
+  </data>
+  <data name="PinSaved" xml:space="preserve">
+    <value>PIN-код сохранён</value>
+  </data>
+  <data name="PinRemoved" xml:space="preserve">
+    <value>PIN-код убран</value>
+  </data>
+  <data name="UnlockWith" xml:space="preserve">
+    <value>Разблокировать с помощью</value>
+  </data>
+  <data name="LockMethodDevice" xml:space="preserve">
+    <value>Блокировка телефона</value>
+  </data>
+  <data name="LockMethodPin" xml:space="preserve">
+    <value>PIN-код приложения</value>
+  </data>
+  <data name="LockMethodBoth" xml:space="preserve">
+    <value>Блокировка телефона или PIN-код</value>
+  </data>
+  <data name="NoScreenLockPinHint" xml:space="preserve">
+    <value>На телефоне нет блокировки экрана. Задай PIN-код приложения, чтобы использовать блокировку приложения.</value>
+  </data>
+  <data name="PinLost" xml:space="preserve">
+    <value>Не удалось прочитать твой PIN-код, он удалён. Используй блокировку телефона.</value>
+  </data>
+  <data name="BlockScreenshots" xml:space="preserve">
+    <value>Запретить скриншоты</value>
+  </data>
+  <data name="BlockScreenshotsDescription" xml:space="preserve">
+    <value>Скрывает приложение на скриншотах, записях экрана и в списке недавних приложений.</value>
+  </data>
+  <data name="SetupPrivacyTitle" xml:space="preserve">
+    <value>Приватность</value>
+  </data>
+  <data name="SetupPrivacyDescription" xml:space="preserve">
+    <value>Выбери, как главная показывает твои деньги. Это можно изменить позже в настройках.</value>
+  </data>
+  <data name="SetupHideBalances" xml:space="preserve">
+    <value>Скрывать балансы на главной до касания</value>
+  </data>
+  <data name="BackupNudgeTitle" xml:space="preserve">
+    <value>Защити копии паролем</value>
+  </data>
+  <data name="BackupNudgeMessage" xml:space="preserve">
+    <value>Копии содержат все твои данные и сохраняются как обычные файлы. Задай пароль, чтобы открыть их мог только ты. Позже это можно изменить в разделе «Настройки» → «Резервные копии».</value>
+  </data>
+  <data name="BackupNudgeSet" xml:space="preserve">
+    <value>Задать пароль</value>
+  </data>
+  <data name="BackupNudgeLater" xml:space="preserve">
+    <value>Не сейчас</value>
+  </data>
+  <data name="ShareNotEncrypted" xml:space="preserve">
+    <value>{0} (не зашифровано)</value>
+  </data>
+</root>
