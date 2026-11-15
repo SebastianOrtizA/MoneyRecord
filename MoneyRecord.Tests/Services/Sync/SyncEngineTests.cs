@@ -573,6 +573,51 @@ public sealed class SyncEngineTests : IAsyncLifetime
         (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
     }
 
+    [Fact]
+    public async Task AttachmentRows_Sync_ButPathsStayOnTheirDevice()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        var account = await a.AddAccountAsync("Cash 2");
+        var category = await a.AddCategoryAsync("Shop");
+        var transaction = await a.AddTransactionAsync(category, account, 500);
+        await a.UpdateAsync("Transaction", transaction, "ReceiptPhotoPath", "/a/receipts/x.jpg");
+        await a.Db.InsertAsync(new TransactionAttachment { TransactionId = transaction, Path = "/a/receipts/x.jpg", Kind = AttachmentKind.Photo, Name = "x.jpg", ContentHash = "abc123", SizeBytes = 42 });
+        await SyncAllAsync(a, b);
+
+        var onB = (await b.Db.Table<TransactionAttachment>().ToListAsync()).Should().ContainSingle().Subject;
+        onB.ContentHash.Should().Be("abc123");
+        onB.SizeBytes.Should().Be(42);
+        onB.Path.Should().BeNullOrEmpty("the file is not on this device");
+        (await b.Db.Table<Transaction>().ToListAsync()).Single(t => t.AmountCents == 500).ReceiptPhotoPath.Should().BeNullOrEmpty();
+        (await a.Db.Table<TransactionAttachment>().ToListAsync()).Single().Path.Should().Be("/a/receipts/x.jpg");
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
+        (await b.DanglingReferencesAsync()).Should().Be(0);
+    }
+
+    [Fact]
+    public async Task DeletingATransaction_TakesItsAttachmentRowsAlong_OnEveryDevice()
+    {
+        var a = await NewDeviceAsync();
+        var b = await PairedWithAsync(a);
+        var account = await a.AddAccountAsync("Cash 2");
+        var category = await a.AddCategoryAsync("Shop");
+        var transaction = await a.AddTransactionAsync(category, account, 500);
+        await a.Db.InsertAsync(new TransactionAttachment { TransactionId = transaction, Path = "/a/x.jpg", ContentHash = "abc123" });
+        await SyncAllAsync(a, b);
+
+        // The app deletes the transaction and leaves the attachment row behind
+        await a.DeleteAsync("Transaction", transaction);
+        await SyncAllAsync(a, b);
+
+        foreach (var device in new[] { a, b })
+        {
+            (await device.Db.Table<Transaction>().ToListAsync()).Should().NotContain(t => t.AmountCents == 500);
+            (await device.Db.Table<TransactionAttachment>().ToListAsync()).Should().BeEmpty();
+        }
+        (await b.DescribeAsync()).Should().Be(await a.DescribeAsync());
+    }
+
     /// <summary>A store that cannot list, like the link to another device.</summary>
     private sealed class NoListStore(ISyncStore inner) : ISyncStore
     {

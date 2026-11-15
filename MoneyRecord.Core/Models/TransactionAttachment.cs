@@ -9,7 +9,8 @@ namespace MoneyRecord.Models
     }
 
     /// <summary>
-    /// A file attached to a transaction (a receipt photo, an invoice PDF), stored in the receipts folder. Kept in step by
+    /// A file attached to a transaction (a receipt photo, an invoice PDF), stored in the receipts folder. Synced as a row (not <see cref="Path"/>, which is
+    /// this device's: empty = the file is not on this device); the file itself travels by <see cref="ContentHash"/>. Kept in step by
     /// <see cref="Helpers.TransactionAttachments"/>; a row left behind by a delete is harmless (always read by transaction ID).
     /// </summary>
     public class TransactionAttachment
@@ -29,6 +30,11 @@ namespace MoneyRecord.Models
         public string Name { get; set; } = string.Empty;
 
         public DateTime AddedDate { get; set; }
+
+        /// <summary>SHA-256 of the file (hex), set when sync first sees it: what the file is called to the other devices (Stage 26.4). Null = not hashed yet.</summary>
+        public string? ContentHash { get; set; }
+
+        public long SizeBytes { get; set; }
 
         [Ignore, System.Text.Json.Serialization.JsonIgnore]
         public bool IsPhoto => Kind == AttachmentKind.Photo;

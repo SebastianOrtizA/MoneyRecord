@@ -324,6 +324,11 @@ namespace MoneyRecord.Services.Sync
                     if (fields.TryGetValue(column, out var value) && value.ValueKind == JsonValueKind.Number)
                         fields[column] = GidOf(parent, value.GetInt32()) is { } gid ? JsonSerializer.SerializeToElement(gid) : NullValue;
                 }
+                if (SyncSchema.LocalOnlyColumns.TryGetValue(table, out var local))
+                {
+                    foreach (var column in local)
+                        fields.Remove(column);
+                }
                 return fields;
             }
 
@@ -470,6 +475,11 @@ namespace MoneyRecord.Services.Sync
                     return;
                 }
 
+                foreach (var (child, parent) in SyncSchema.CascadeChildren.Where(c => c.Value == meta.TableName))
+                {
+                    foreach (var (childTable, column) in SyncSchema.ReferencesTo(parent).Where(r => r.Table == child))
+                        db.Execute($"DELETE FROM \"{childTable}\" WHERE \"{column}\" = ?", meta.LocalId);
+                }
                 meta.Payload = RawJson(meta.TableName, meta.LocalId);
                 db.Execute($"DELETE FROM \"{meta.TableName}\" WHERE \"{PkOf(meta.TableName)}\" = ?", meta.LocalId);
                 meta.Deleted = true;
@@ -489,7 +499,9 @@ namespace MoneyRecord.Services.Sync
             private string PkOf(string table) => db.GetMapping(SyncSchema.TypeOf(table)).PK.Name;
 
             private bool IsUsed(string table, int localId) =>
-                SyncSchema.ReferencesTo(table).Any(r =>
+                SyncSchema.ReferencesTo(table)
+                    .Where(r => !SyncSchema.CascadeChildren.TryGetValue(r.Table, out var parent) || parent != table)
+                    .Any(r =>
                     db.ExecuteScalar<int>($"SELECT COUNT(*) FROM \"{r.Table}\" WHERE \"{r.Column}\" = ?", localId) > 0);
 
             private void Touch(SyncMeta meta)

@@ -20,16 +20,15 @@ namespace MoneyRecord.Services.Repositories
             typeof(Trip), typeof(TripCategory), typeof(TripBudget), typeof(Participant), typeof(PartyEvent),
             typeof(PartyMember), typeof(PartyExpense), typeof(PartyExpenseExclusion), typeof(PartyContribution),
             typeof(PartyPayment), typeof(Pocket), typeof(PocketMovement), typeof(SavingsGoalPocket),
-            typeof(SavingsChallenge), typeof(SavingsChallengeDay), typeof(QuickEntry)
+            typeof(SavingsChallenge), typeof(SavingsChallengeDay), typeof(QuickEntry), typeof(TransactionAttachment)
         ];
 
         /// <summary>
-        /// Tables that are not synced: a cache (ExchangeRate), indexes rebuilt from a row's own text (TransactionTag), receipt
-        /// links (TransactionAttachment: they come with the receipt files, a later stage) and the sync tables themselves.
+        /// Tables that are not synced: a cache (ExchangeRate), indexes rebuilt from a row's own text (TransactionTag), and the sync tables themselves.
         /// </summary>
         public static readonly IReadOnlyList<Type> ExcludedTables =
         [
-            typeof(ExchangeRate), typeof(TransactionTag), typeof(TransactionAttachment),
+            typeof(ExchangeRate), typeof(TransactionTag),
             typeof(SyncMeta), typeof(SyncDirty), typeof(SyncPeerState), typeof(SyncState)
         ];
 

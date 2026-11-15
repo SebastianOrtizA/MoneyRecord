@@ -54,6 +54,10 @@ namespace MoneyRecord.Services
                 if (state is not { Enabled: true })
                     return;
 
+                // The app leaves a transaction's attachment rows behind when it deletes the transaction: a row whose parent is gone would bring the
+                // parent back on another device, so the sync layer deletes it (its tombstone goes out like any delete)
+                db.Execute("DELETE FROM \"TransactionAttachment\" WHERE TransactionId NOT IN (SELECT Id FROM \"Transaction\")");
+
                 var dirty = db.Query<SyncDirty>("SELECT * FROM SyncDirty ORDER BY Id");
                 if (dirty.Count == 0)
                     return;

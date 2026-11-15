@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.Json;
+using MoneyRecord.Helpers;
 using MoneyRecord.Services.Interfaces;
 using MoneyRecord.Services.Repositories;
 using MoneyRecord.Services.Sync.Lan;
@@ -371,6 +372,7 @@ namespace MoneyRecord.Services.Sync
                 var find = findComputer ?? (id => LanBeacon.FindAsync(id, TimeSpan.FromSeconds(2)));
                 try
                 {
+                    await AttachmentHashes.FillAsync(database);
                     await engine.ExportAsync(store);
                     await engine.CompactAsync(store);
 
