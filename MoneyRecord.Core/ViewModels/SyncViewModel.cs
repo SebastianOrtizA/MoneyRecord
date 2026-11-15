@@ -21,7 +21,7 @@ namespace MoneyRecord.ViewModels
         private bool isSupported = true;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowTurnOn), nameof(ShowConnect), nameof(ShowDevices), nameof(ShowAddDevice), nameof(ShowTurnOff))]
+        [NotifyPropertyChangedFor(nameof(ShowTurnOn), nameof(ShowConnect), nameof(ShowDevices), nameof(ShowAddDevice), nameof(ShowTurnOff), nameof(ShowFolder))]
         private bool isEnabled;
 
         [ObservableProperty]

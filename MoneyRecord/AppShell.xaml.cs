@@ -74,13 +74,23 @@ namespace MoneyRecord
             // (More → Accounts, Home, More showed Accounts), so the tab just left drops them
             var left = _shownSection;
             _shownSection = CurrentItem?.CurrentItem;
-            if (left == null || left == _shownSection || left.Navigation.NavigationStack.Count <= 1)
+            if (left == null || left == _shownSection)
+                return;
+
+#if WINDOWS
+            // Windows throws "Pending Navigations still processing" (inside Shell, uncatchable) when a tab is clicked
+            // while the pop of the tab just left is still running: drop the pages of the tab being entered instead
+            var stale = _shownSection;
+#else
+            var stale = left;
+#endif
+            if (stale == null || stale.Navigation.NavigationStack.Count <= 1)
                 return;
 
             // async void: an exception here would crash the app
             try
             {
-                await left.Navigation.PopToRootAsync(animated: false);
+                await stale.Navigation.PopToRootAsync(animated: false);
             }
             catch (Exception ex)
             {

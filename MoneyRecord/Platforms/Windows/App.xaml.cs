@@ -17,6 +17,8 @@ namespace MoneyRecord.WinUI
         public App()
         {
             this.InitializeComponent();
+            // WinUI raises XAML-thread exceptions here, not on AppDomain: log them before the process dies
+            UnhandledException += (_, e) => Serilog.Log.Fatal(e.Exception, "Unhandled UI exception: {Message}", e.Message);
         }
 
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
